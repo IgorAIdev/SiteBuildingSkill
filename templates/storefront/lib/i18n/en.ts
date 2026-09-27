@@ -111,6 +111,7 @@ export const EN: Record<keyof typeof RO, string> = {
   'shelf.choose': 'Choose',
   'shelf.addName': 'Add to cart: {name}',
   'shelf.chooseName': 'Choose an option: {name}',
+  'shelf.all': 'View all',
   'shelf.view': 'View',
   'shelf.viewName': 'View product: {name}',
   'cart.add': 'Add to cart',

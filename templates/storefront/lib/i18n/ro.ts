@@ -109,6 +109,7 @@ export const RO = {
   'shelf.choose': 'Alege',
   'shelf.addName': 'Adaugă în coș: {name}',
   'shelf.chooseName': 'Alegeți o variantă: {name}',
+  'shelf.all': 'Vezi toate',
   'shelf.view': 'Vezi',
   'shelf.viewName': 'Vezi produsul: {name}',
   'cart.add': 'Adaugă în coș',

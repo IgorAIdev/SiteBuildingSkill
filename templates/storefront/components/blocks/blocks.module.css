@@ -136,8 +136,7 @@
 .q{border-block-end:var(--line-w) solid var(--rule)}
 .ask{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);padding-block:var(--pad-inner);list-style:none;font-weight:600}
 .ask::-webkit-details-marker{display:none}
-.ask svg{flex:none;inline-size:1.25em;block-size:1.25em;color:var(--ink-soft);transition:transform var(--open-t) var(--ease)}
-.q[open] .ask svg{transform:rotate(180deg)}
+.ask svg{color:var(--ink-soft)}
 .answer{max-inline-size:var(--measure);padding-block-end:var(--pad-card);color:var(--ink-soft)}
 
 /* СЛОВО МАГАЗИНА — место заказчика, во всех вариантах (Story.tsx): слова и

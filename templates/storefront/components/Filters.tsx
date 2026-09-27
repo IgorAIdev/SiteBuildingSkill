@@ -5,6 +5,7 @@ import pn from '@/styles/pane.module.css'
 import s from './Filters.module.css'
 import type { FiltersView } from '@/lib/catalog-view.ts'
 import { Icon } from './Icon.tsx'
+import { Turn } from './Turn.tsx'
 
 /* Одна форма граней на обе ширины (разбор 24.09.2026, C1–C3, `firstScreen`).
 
@@ -42,7 +43,7 @@ export function Filters({ f: view }: { f: FiltersView }) {
         <div className={`${pn.body} ${s.list}`}>
           {view.facets.map((facet) => (
             <div key={facet.code} className={s.facet}>
-              <button className={`${b.btn} ${s.trigger}`} type="button" popoverTarget={facet.id}>{facet.label}<Icon id="chevron-down" /></button>
+              <button className={`${b.btn} ${s.trigger}`} type="button" popoverTarget={facet.id}>{facet.label}<Turn /></button>
               <fieldset id={facet.id} popover="auto" className={`${p.menu} ${s.drop} ${s.values}`}>
                 <legend className={s.legend}>{facet.name}</legend>
                 <div className={`${p.grid} ${s.ticks}`}>
@@ -62,7 +63,7 @@ export function Filters({ f: view }: { f: FiltersView }) {
           {/* «Применить» — главное действие шторки: заливка марки (palette,
               roles.md, «Заливки»: «применить фильтры» — кнопка покупки). */}
           <button className={b.btn} data-voice="loud" data-wide type="submit">{view.apply}</button>
-          {view.clear ? <a className={b.btn} data-wide href={view.clear.href}><Icon id="x" />{view.clear.label}</a> : null}
+          {view.clear ? <a className={b.btn} data-wide href={view.clear.href}>{view.clear.label}</a> : null}
         </div>
       </form>
     </>

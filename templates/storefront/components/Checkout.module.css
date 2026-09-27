@@ -53,8 +53,6 @@
 .peek > summary::-webkit-details-marker{display:none}
 .peek > summary b{white-space:nowrap;font-variant-numeric:tabular-nums}
 .peekName{display:inline-flex;align-items:center;gap:var(--gap-targets);color:var(--ink)}
-.peekName svg{inline-size:1.15em;block-size:1.15em;flex:none;transition:rotate var(--open-t) var(--ease)}
-.peek[open] .peekName svg{rotate:180deg}
 .peekBody{display:flex;flex-direction:column;gap:var(--air-group);padding-block:var(--air-row) var(--air-group)}
 /* Шов 820 («телефон»): коридор перестаёт держать две колонки — сводка
    уходит из ряда в раскрывашку сверху. Меняется устройство, а не величина. */
@@ -119,8 +117,6 @@
 .step:has([data-saved]:checked) [data-choose]{display:none}
 .step:has(input[name='method']:checked:not([data-saved])) [data-details]{display:none}
 
-.search{display:flex;flex-wrap:wrap;align-items:end;gap:var(--gap-row)}
-.search > label{flex:1 1 12rem}
 .country{margin:0;display:flex;flex-direction:column;gap:calc(var(--ctrl-h) * .15)}
 
 /* ── ТОВАРЫ, СВЕРКА ───────────────────────────────────────────────────────

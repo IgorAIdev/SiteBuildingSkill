@@ -68,6 +68,9 @@ export type ProductPageView = {
   brand: string | null; name: string; price: string; was: WasView | null; stock: string | null; stockLevel: 'in' | 'low' | 'out' | null; message: string | null; choose: string | null
   gallery: GalleryView; groups: OptionGroupLinks[]; facts: FactsView | null; details: DetailsView
   related: ShelfCard[]; relatedTitle: string
+  /** Выход ко всей полке товара у «похожих» — та же строка, что у полки
+   *  главной (И481); нет полки — ко всему каталогу. */
+  relatedAll: { label: string; href: string }
   buy: BuyView
 }
 
@@ -200,6 +203,7 @@ export function productView(lang: Lang, product: Product, chosen0: Record<string
     details: detailsView(lang, product, chosen),
     related: ctx.related.map((c) => shelfCard(lang, c)),
     relatedTitle: t(lang, 'product.related'),
+    relatedAll: { label: t(lang, 'shelf.all'), href: ctx.category ? hrefFor(lang, { category: ctx.category.slug }) : hrefFor(lang, { catalog: true }) },
     buy: {
       variant: sellable?.id ?? null,
       ask,

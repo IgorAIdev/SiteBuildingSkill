@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import p from '@/styles/primitives.module.css'
-import f from '@/styles/form.module.css' // look-header:search
+import { SearchForm } from './SearchForm.tsx' // look-header:search
 import go from '@/styles/go.module.css'
 import b from '@/styles/btn.module.css'
 import pn from '@/styles/pane.module.css'
@@ -100,10 +100,7 @@ const search = (lang: Lang, nav: Menu) => (
     </div>
     <div className={`${p.wrap} ${s.bar}`}>
       {logo(lang)}
-      <form className={s.field} action={hrefFor(lang, { search: '' })} method="get" role="search">
-        <input className={f.box} type="search" name="q" aria-label={t(lang, 'search.label')} placeholder={t(lang, 'search.label')} enterKeyHint="search" />
-        <button className={s.glyph} type="submit" aria-label={t(lang, 'nav.search')}><Icon id="search" /></button>
-      </form>
+      <SearchForm action={hrefFor(lang, { search: '' })} q="" label={t(lang, 'search.label')} submit={t(lang, 'nav.search')} id="head-q" quiet className={s.field} />
       <div className={s.actions}>{cart(lang, true)}{menu(lang)}</div>
     </div>
     <div className={`${p.wrap} ${s.shelfRow}`}>{shelves(lang, nav, t(lang, 'nav.menu'))}</div>

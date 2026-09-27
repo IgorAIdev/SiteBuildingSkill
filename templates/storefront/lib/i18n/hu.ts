@@ -111,6 +111,7 @@ export const HU: Record<keyof typeof RO, string> = {
   'shelf.choose': 'Válasszon',
   'shelf.addName': 'Kosárba: {name}',
   'shelf.chooseName': 'Válasszon változatot: {name}',
+  'shelf.all': 'Összes megtekintése',
   'shelf.view': 'Megnézem',
   'shelf.viewName': 'Termék megtekintése: {name}',
   'cart.add': 'Kosárba',

@@ -18,7 +18,7 @@ export function PointPicker({ details, action, permalink }: { details: PickupDet
     <section className={s.form} aria-labelledby="points-title" data-details>
       <h2 id="points-title">{details.title}</h2>
       {details.search ? (
-        <form className={s.search} action={details.search.action} method="get" role="search">
+        <form className={f.send} action={details.search.action} method="get" role="search">
           <label className={f.field}>
             <span className={f.label}>{details.search.label}</span>
             <input className={f.box} name="city" defaultValue={details.search.value} autoComplete="address-level2" />

@@ -31,6 +31,24 @@
   --side-w:calc(var(--ctrl-h) * 3.5);--side-at:50%;--side-gap:var(--air-row)
 }
 
+/* Поле и его кнопка — одна пара на сайт (И481): купон корзины, поиск пункта
+   выдачи, номер «перезвоните». До 27.09.2026 каждая была своей раскладкой
+   (flex с `align-items:flex-end`, flex с переносом, `sidebar` с порогом
+   55 %), и вид «встык» (`--pair-look: joined`, И421) доставался одному
+   купону. Первый ребёнок — поле (или его `label`), последний — кнопка:
+   поле растёт, кнопка шириной своей надписи; не помещаются рядом — кнопка
+   встаёт под полем во всю строку. Встык пара не переносится — это одна
+   коробка, угол только у внешних краёв. Поиск по сайту — другое устройство:
+   знак отправки внутри поля (SearchForm). */
+.send{display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--gap-targets)}
+.send > :first-child{flex:1 1 12rem;min-inline-size:0}
+.send > :last-child{flex:1 0 auto}
+@container style(--pair-look: joined){
+  .send{flex-wrap:nowrap;gap:0}
+  .send .box{border-start-end-radius:0;border-end-end-radius:0}
+  .send > :last-child{flex-grow:0;border-start-start-radius:0;border-end-start-radius:0}
+}
+
 .field{display:flex;flex-direction:column;gap:calc(var(--ctrl-h) * .15);min-inline-size:0}
 .label{font-size:var(--ctrl-fs-sm);font-weight:600;color:var(--ink)}
 
