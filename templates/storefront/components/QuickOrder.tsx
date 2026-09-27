@@ -61,7 +61,7 @@ export function QuickOrder({ view }: { view: QuickView }) {
       <button className={`${b.btn} ${s.trigger}`} data-size="lg" type="button" aria-haspopup="dialog" onClick={open}>{view.open}</button>
       {/* Окно — тройка общего модуля (styles/pane.module.css, И460): шапка
           стоит, прокручивается только тело. */}
-      <dialog ref={ref} className={`${pn.pane} ${s.dialog}`} aria-labelledby="quick-title">
+      <dialog ref={ref} className={pn.pane} data-pane="dialog" aria-labelledby="quick-title">
         <div className={pn.bar}>
           <h2 className={pn.title} id="quick-title">{view.title}</h2>
           <button className={`${b.btn} ${pn.close}`} type="button" aria-label={view.close} onClick={() => ref.current?.close()}><Icon id="x" /></button>

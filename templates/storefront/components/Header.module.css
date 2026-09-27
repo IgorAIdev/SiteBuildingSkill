@@ -250,27 +250,16 @@
 }
 
 /* ── Шторка меню ─────────────────────────────────────────────────────────
-   От того края, где кнопка: справа. Верхний слой, номера нет (правило 8);
-   Escape и щелчок мимо закрывают сами, третий выход — крестик. Высота — от
-   окна, `dvh`, прокручивается шторка, а не страница (правило 9). Строки —
-   кадр полки, имя, стрелка, ростом строки меню; текущая — вуалью и
-   полужирным; язык — внизу. Открытая шторка остаётся шторкой, даже если
-   окно раздвинули, пока она открыта. */
-.nav:popover-open{
-  --pane-pad:var(--pad-sheet);
-  position:fixed;inset-block:0;inset-inline:auto 0;
-  inline-size:min(22.5rem, 100% - var(--ctrl-h-lg));block-size:100dvh;
-  align-items:stretch;
-  background:var(--surface);color:var(--ink);
-  border-start-start-radius:var(--r-sheet);border-end-start-radius:var(--r-sheet);
-  box-shadow:var(--sh-overlay)
-}
-/* Тело шторки — окно общего модуля (styles/pane.module.css, И460): шапка
-   стоит, прокручиваются полки, группы и язык. В строке шапки тела нет —
-   полки стоят прямо в ней. */
+   Коробка шторки — окно общего модуля (styles/pane.module.css, И467): край
+   (`data-pane`), ширина, высота от окна, угол, тень, затемнение. Верхний
+   слой, номера нет (правило 8); Escape и щелчок мимо закрывают сами, третий
+   выход — крестик. Здесь — только что внутри: строки — кадр полки, имя,
+   стрелка, ростом строки меню; текущая — вуалью и полужирным; язык — внизу. */
+.nav:popover-open{align-items:stretch}
+/* Тело шторки — окно общего модуля (И460): шапка стоит, прокручиваются
+   полки, группы и язык. В строке шапки тела нет — полки стоят прямо в ней. */
 .nav:not(:popover-open) > .sheetBody{display:contents}
 .nav:popover-open > .sheetBody{display:flex;flex-direction:column;gap:var(--air-group)}
-.nav::backdrop{background:var(--scrim)}
 .nav:popover-open .links{flex-direction:column;align-items:stretch;flex-wrap:nowrap;column-gap:0}
 .nav:popover-open .links li + li{border-block-start:var(--line-w) solid var(--rule)}
 .nav:popover-open .links a{display:flex;min-block-size:var(--ctrl-h-lg);padding:var(--sp-2) var(--pad-inner);border-radius:var(--r-ctrl);font-size:var(--body-size);text-decoration-line:none}
@@ -304,11 +293,4 @@
    набрана ступенью органа — у фильтра она примечание, здесь — меню. */
 .pills a{font-size:var(--body-size)}
 
-/* look-header:boutique:start */
-/* Шторка «boutique» — та же шторка, от того края, где кнопка «Shop»:
-   слева. */
-.head[data-variant='boutique'] .nav:popover-open{
-  inset-inline:0 auto;
-  border-radius:0 var(--r-sheet) var(--r-sheet) 0
-}
-/* look-header:boutique:end */
+

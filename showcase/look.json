@@ -81,6 +81,7 @@
     "--ctrl-in-deck": "light-dark(#FFFCF624, #EDECEA24)",
     "--ctrl-in-hand-deck": "light-dark(#FFFCF633, #EDECEA33)",
     "--quiet-tint-paper": "light-dark(#241E1715, #EDECEA15)",
+    "--pop-tint-paper": "light-dark(#F3F0EC, #23221F)",
     "--on-quiet-tint-paper": "light-dark(#241E17, #EDECEA)",
     "--quiet-tint-deck": "light-dark(#FFFCF61F, #EDECEA1F)",
     "--on-quiet-tint-deck": "light-dark(#FFFCF6, #EDECEA)",

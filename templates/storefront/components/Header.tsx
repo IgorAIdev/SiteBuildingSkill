@@ -42,11 +42,12 @@ const menu = (lang: Lang) => <button className={`${s.glyph} ${s.menu}`} type="bu
    пилюлями (`--drawer-look: pills`, меню телефона cbdin.bg, И430): там
    выбирают поводом, а не местом. Без этого вида групп не видно; разметка
    одна на оба вида. */
-const shelves = (lang: Lang, nav: Menu, title: string) => (
-  <nav id="site-menu" popover="auto" className={`${pn.pane} ${s.nav}`} aria-label={t(lang, 'nav.categories')}>
-    {/* Шторка — окно общего модуля (styles/pane.module.css, И460): шапка
-        стоит, прокручиваются полки. В строке шапки тело свёрнуто
-        (`display:contents`), и полки стоят в ней как стояли. */}
+const shelves = (lang: Lang, nav: Menu, title: string, from: 'start' | 'end' = 'end') => (
+  <nav id="site-menu" popover="auto" className={`${pn.pane} ${s.nav}`} data-pane={from} aria-label={t(lang, 'nav.categories')}>
+    {/* Шторка — окно общего модуля (styles/pane.module.css, И460, И467):
+        шапка стоит, прокручиваются полки; край, ширина и угол — `data-pane`
+        (от того края, где кнопка: у «boutique» — начальный). В строке шапки
+        тело свёрнуто (`display:contents`), и полки стоят в ней как стояли. */}
     <div className={`${pn.bar} ${s.sheetHead}`}>
       <h2 className={pn.title}>{title}</h2>
       <button className={`${b.btn} ${pn.close}`} type="button" popoverTarget="site-menu" popoverTargetAction="hide" aria-label={t(lang, 'nav.close')}><Icon id="x" /></button>
@@ -124,7 +125,7 @@ const boutique = (lang: Lang, nav: Menu) => (
       {logo(lang)}
       <div className={s.actions}>{find(lang)}{cart(lang, false)}</div>
     </div>
-    <div className={`${p.wrap} ${s.shelfRow}`}>{shelves(lang, nav, t(lang, 'nav.shop'))}</div>
+    <div className={`${p.wrap} ${s.shelfRow}`}>{shelves(lang, nav, t(lang, 'nav.shop'), 'start')}</div>
   </header>
 )
 /* look-header:boutique:end */

@@ -83,6 +83,7 @@
   --ctrl-in-deck: light-dark(#FCFBF924, #EDEBE824);
   --ctrl-in-hand-deck: light-dark(#FCFBF933, #EDEBE833);
   --quiet-tint-paper: light-dark(#9A7B3F29, #B8955A29);
+  --pop-tint-paper: light-dark(#F2F0EA, #2B2110);
   --on-quiet-tint-paper: light-dark(#2A1E08, #CBB593);
   --quiet-tint-deck: light-dark(#FCFBF91F, #EDEBE81F);
   --on-quiet-tint-deck: light-dark(#FCFBF9, #EDEBE8);
@@ -198,6 +199,7 @@
   --ctrl-in-deck: light-dark(#FCFBF924, #EDEBE824);
   --ctrl-in-hand-deck: light-dark(#FCFBF933, #EDEBE833);
   --quiet-tint-paper: light-dark(#9A7B3F29, #B8955A29);
+  --pop-tint-paper: light-dark(#F2F0EA, #2B2110);
   --on-quiet-tint-paper: light-dark(#2A1E08, #CBB593);
   --quiet-tint-deck: light-dark(#FCFBF91F, #EDEBE81F);
   --on-quiet-tint-deck: light-dark(#FCFBF9, #EDEBE8);

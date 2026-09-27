@@ -6,6 +6,7 @@ import type { Outcome } from '@/lib/cart-ops.ts'
 import { CartForm } from './CartForm.tsx'
 import { QuantityStepper } from './QuantityStepper.tsx'
 import { QuickOrder } from './QuickOrder.tsx'
+import { AddLabel } from './AddLabel.tsx'
 
 /* Покупка на карте товара — одна строка: количество, «в корзину» и рядом
    «быстрый заказ» (слово заказчика 25.09.2026, И441, И442), ростом крупного
@@ -32,7 +33,7 @@ export function AddToCart({ lang, buy, hint, submit, call }: { lang: string; buy
   const row = (
     <>
       <QuantityStepper field={{ label: buy.quantity, name: buy.variant ? 'quantity' : undefined, min: 1, max: buy.max, less: buy.less, more: buy.more }} />
-      <button className={`${b.btn} ${s.add}`} data-voice="loud" data-size="lg" type="submit" disabled={!buy.variant && !buy.ask} aria-describedby={hint ? 'buy-hint' : undefined}>{buy.add}</button>
+      <button className={`${b.btn} ${s.add}`} data-voice="loud" data-size="lg" type="submit" disabled={!buy.variant && !buy.ask} aria-describedby={hint ? 'buy-hint' : undefined}><AddLabel add={buy.add} added={buy.added} /></button>
       <QuickOrder view={buy.quick} />
       {hint ? <p className={s.hint} id="buy-hint" role="status">{hint}</p> : null}
     </>
@@ -47,6 +48,7 @@ export function AddToCart({ lang, buy, hint, submit, call }: { lang: string; buy
   }
   return (
     <CartForm
+      key={buy.variant /* другой вариант — другая надпись: «Added» прежнего не переезжает (И469) */}
       lang={lang} className={s.buy} refresh={false} quiet submit={submit} call={call}
       initial={null} timeout={buy.timeout} failed={buy.failed}
     >

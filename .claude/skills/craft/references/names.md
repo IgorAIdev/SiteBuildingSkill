@@ -91,7 +91,7 @@ is»; Curtis (Purposeful vs Aesthetic) — перекраска марки пе�
 | ручки примитивов | `--stack-*`, `--cluster-*`, `--switch-*`, `--rail-*`, `--section-*`, `--sheet-*`, `--lede-*`, `--hero-*`, `--grid-*`, `--cols-*`, `--cell-*`, `--pin-*`, `--tray-*`, `--leaf-*`, `--chip-*`, `--qty-*`, `--chan-*`, `--side-*`, `--prose-*`, `--pinned-*`, `--sidebar-*`, `--frame-*`, `--btn-*`, `--seg-*`, `--gallery-*`, `--pane-*` | узел |
 | сырьё | `--n-N`, `--a-N`, `--e-N`, `--sale-N`, `--warn-N`, `--ok-N`, `--info-N`, `--on-*-N`, `--sp-N`, `--fs-*` | сырьё |
 | обязательные роли | `--bad`, `--bad-fill`, `--on-bad`, `--bad-tint`, `--bad-line`, `--ok`, `--ok-fill`, `--on-ok`, `--ok-tint`, `--warn`, `--warn-fill`, `--on-warn`, `--warn-tint`, `--sale`, `--sale-fill`, `--on-sale`, `--sale-tint`, `--pop-press`, `--pop-ink-hover`, `--r-pop`, `--ease-exit`, `--plate-2`, `--rule`, `--field`, `--scrim`, `--scrim-deck`, `--creep`, `--on-ink`, `--air-set`, `--quiet-pop`, `--on-quiet-pop`, `--layer-helper`, `--layer-toast` | роль |
-| объявлений в стилях набора | 953, по форме 953 | `tools/names.mjs`, `parse()` |
+| объявлений в стилях набора | 956, по форме 956 | `tools/names.mjs`, `parse()` |
 <!-- /families:names -->
 
 ## Роли, обязанные существовать

@@ -266,6 +266,10 @@ export function vendureSource(env: VendureEnv, fetchImpl: typeof fetch = globalT
         id: nativeSlug(c, p), category: p.collections[0] ? nativeSlug(c, p.collections[0]) : '', brand: p.customFields?.brand?.trim() || null, name: p.name,
         summary: p.customFields?.seoDescription?.trim() || text.split(/(?<=[.!?])\s/)[0] || '',
         description: text,
+        /* Состава и способа применения в полях движка пока нет: запрос с
+           неизвестным полем Vendure отклоняет целиком — поля встанут в запрос
+           вместе с настройкой движка (И466). */
+        ingredients: null, usage: null, standard: null,
         images: [p.featuredAsset, ...p.assets.filter((a) => a.preview !== p.featuredAsset?.preview)].flatMap((a) => (a ? [image(a, p.name)!] : [])),
         optionGroups: shown.map((g): OptionGroup => ({ code: g.code, name: g.name, options: g.options.map((o) => ({ code: o.code, name: o.name })) })),
         variants: p.variants.map((v): Variant => ({

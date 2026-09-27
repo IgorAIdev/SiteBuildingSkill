@@ -30,7 +30,7 @@ type Action = (prev: FormState, form: FormData) => Promise<FormState>
 export function PaymentForm({ view, action, permalink, children }: { view: PaymentPageView; action: Action; permalink: string; children: ReactNode }) {
   const [state, formAction, pending] = useActionState(action, null, permalink)
   return (
-    <form className={`${p.sidebar} ${s.frame}`} action={formAction} aria-labelledby="step-title">
+    <form aria-busy={pending} className={`${p.sidebar} ${s.frame}`} action={formAction} aria-labelledby="step-title">
       <div className={`${p.stack} ${s.step} ${s.measure}`}>
         {state?.message ? <p className={f.say} data-state="error" role="alert">{state.message}</p> : null}
         <fieldset className={`${s.options} ${s.plain}`} disabled={pending}>

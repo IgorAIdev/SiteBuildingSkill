@@ -57,7 +57,7 @@ export const shelfCard = (lang: Lang, c: Card): ShelfCard => {
     flag: c.stock === 'in' ? null : { level: c.stock, text: stockText(lang, c.stock) },
     buy: {
       variant: direct, ask: out ? hrefFor(lang, { product: c.id }) : hrefFor(lang, { product: c.id, choose: true }),
-      add: t(lang, 'shelf.add'), added: t(lang, 'shelf.added'), choose: t(lang, out ? 'shelf.view' : 'shelf.choose'),
+      add: t(lang, 'shelf.add'), added: t(lang, 'shelf.added', { n: '{n}' }) /* шаблон: число ставит надпись после записи (AddLabel, И469) */, choose: t(lang, out ? 'shelf.view' : 'shelf.choose'),
       name: t(lang, direct ? 'shelf.addName' : out ? 'shelf.viewName' : 'shelf.chooseName', { name }),
       timeout: t(lang, 'cart.error.timeout'), failed: t(lang, 'cart.error.unavailable'),
     },

@@ -23,9 +23,18 @@
  *
  *  Поле окна — у частей, а не у окна: полоса прокрутки идёт у самого края
  *  окна, а кольцо фокуса крайней строки не срезается краем прокрутки — у
- *  него есть поле тела. Ручка — `--pane-pad` (по умолчанию поле карточки);
- *  шторке — поле листа. Где стоит окно и какой оно ширины — у узла:
- *  окно посреди экрана, шторка от края; высота — от окна (правило 9).
+ *  него есть поле тела. Ручка — `--pane-pad`.
+ *
+ *  Где окно стоит — тоже здесь, атрибутом `data-pane` на самом окне (И467):
+ *    dialog  посреди экрана, шириной в меру строки, не выше окна за вычетом
+ *            края страницы; поле карточки;
+ *    start   шторка от начального края во всю высоту окна; поле листа;
+ *    end     шторка от конечного края.
+ *  До 27.09.2026 коробку шторки (край, ширина, высота, угол, тень,
+ *  затемнение) писали меню и фильтры каждый у себя — две копии одного
+ *  решения, и заказчик увидел это глазом: «формы подобные у нас что все
+ *  разные? Не единый источник имеют?». Узел теперь говорит только, что в
+ *  окне.
  *
  *  Тело, свёрнутое в строку (шторка фильтров и меню на широкой коробке —
  *  не окно, а строка в потоке), узел объявляет `display:contents`: разметка
@@ -34,8 +43,31 @@
 
 .pane:is([open], :popover-open){
   display:flex;flex-direction:column;
-  overflow:hidden;padding:0
+  overflow:hidden;padding:0;border:0;
+  background:var(--surface);color:var(--ink);
+  box-shadow:var(--sh-overlay)
 }
+.pane::backdrop{background:var(--scrim)}
+
+/* Окно посреди экрана. */
+.pane[data-pane='dialog']{
+  --pane-pad:var(--pad-card);
+  inline-size:min(calc(100% - var(--gut) * 2), var(--measure));
+  max-block-size:calc(100dvh - var(--gut) * 2);
+  margin:auto;border-radius:var(--r-sheet)
+}
+/* Шторка от края: во всю высоту окна (`dvh`, правило 9), шириной не больше
+   окна за вычетом полосы под палец — мимо шторки должно быть куда нажать
+   (M2, «ширина экрана минус 56»). Угол — у свободного края. Правила не
+   спрятаны под шов: открытая шторка остаётся шторкой, даже если окно
+   раздвинули, пока она открыта. */
+.pane:is([data-pane='start'], [data-pane='end']):popover-open{
+  --pane-pad:var(--pad-sheet);
+  position:fixed;inset-block:0;margin:0;
+  inline-size:min(22.5rem, 100% - var(--ctrl-h-lg));block-size:100dvh;max-block-size:none
+}
+.pane[data-pane='start']:popover-open{inset-inline:0 auto;border-radius:0;border-start-end-radius:var(--r-sheet);border-end-end-radius:var(--r-sheet)}
+.pane[data-pane='end']:popover-open{inset-inline:auto 0;border-radius:0;border-start-start-radius:var(--r-sheet);border-end-start-radius:var(--r-sheet)}
 
 .bar{
   flex:none;

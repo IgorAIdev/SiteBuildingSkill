@@ -5,6 +5,7 @@ import type { ShelfCard } from '@/lib/view.ts'
 import type { Outcome } from '@/lib/cart-ops.ts'
 import { lookNow } from '@/lib/look.ts'
 import { CartForm } from './CartForm.tsx'
+import { AddLabel } from './AddLabel.tsx'
 import { Icon } from './Icon.tsx'
 import { shot } from '@/lib/shot.ts'
 
@@ -70,7 +71,7 @@ export async function ProductCard({ card, eager = false, cart }: { card: ShelfCa
               <input type="hidden" name="variant" value={card.buy.variant} />
               <input type="hidden" name="quantity" value="1" />
               <button className={`${b.btn} ${s.add}`} data-voice="loud" type="submit" aria-label={card.buy.name}>
-                <Icon id="shopping-cart" /><span className={s.word}>{card.buy.add}</span><span className={s.done}>{card.buy.added}</span>
+                <Icon id="shopping-cart" /><AddLabel add={card.buy.add} added={card.buy.added} />
               </button>
             </CartForm>
           ) : (

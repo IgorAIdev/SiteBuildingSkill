@@ -252,6 +252,7 @@ test('quiet tint is the brand veil, except for a red-family brand', () => {
       const tint = r['--quiet-tint-paper'].slice(0, 7)
       if (redFamily(set[mode].accent)) assert.equal(tint, r['--n-12'].toUpperCase(), `${name} ${mode}: красная марка — вуаль чернил`)
       else assert.equal(tint, r['--a-9'].toUpperCase(), `${name} ${mode}: тихая марка — вуаль марки ${brand}`)
+      assert.equal(r['--pop-tint-paper'], redFamily(set[mode].accent) ? r['--n-3'] : r['--a-3'], `${name} ${mode}: поле тихой марки`)
     }
   }
 })

@@ -726,6 +726,11 @@ export function groundRoles(n, a, mode, set = {}) {
      тихая вуаль чернил. */
   const tint = redFamily(a[8]) ? { ...tintOn(ink, [ink], G, VEIL.paper.quiet), paint: ink } : { ...tintOn(a[8], [a[10], a[11]], G), paint: a[8] }
   out['--quiet-tint-paper'] = translucent(tint.paint, tint.s)
+  /* Тихая марка поля (`--pop-tint`: поле параметров, выбранный сегмент,
+     тонированная карточка) — ступень a3; у марки красной семьи — n3 (И463):
+     розовое поле параметров на карте товара было той же тревогой на трети
+     экрана. */
+  out['--pop-tint-paper'] = redFamily(a[8]) ? n[2] : a[2]
   out['--on-quiet-tint-paper'] = tint.ink
   out['--quiet-tint-deck'] = translucent(deck.ink, VEIL.deck.quiet)
   out['--on-quiet-tint-deck'] = deck.ink

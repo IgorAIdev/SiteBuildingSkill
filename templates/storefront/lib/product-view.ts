@@ -20,6 +20,11 @@ import { MARKET } from './market.ts'
  *  является (docs/open.md). */
 /** `batch` — номер партии словами («Batch RO-2409-10»), `code` — сам номер,
  *  как на этикетке: его сверяют глазом с флаконом. */
+/** Разделы о товаре под колонкой покупки (И466): меню-якоря и разделы
+ *  подряд — описание, состав, способ применения, протокол партии. Раздела без
+ *  данных нет. */
+export type DetailPart = { id: string; title: string; text: string | null; lab: LabView | null }
+export type DetailsView = { label: string; parts: DetailPart[] }
 export type LabView = { title: string; batch: string; code: string; rows: [string, string][]; open: { label: string; href: string } | null }
 /** `add` — надпись кнопки, одно действие без цены: цена стоит под именем,
  *  второй раз на кнопке она не нужна (слово заказчика 25.09.2026: «цену два
@@ -32,7 +37,7 @@ export type LabView = { title: string; batch: string; code: string; rows: [strin
 export type AskView = { action: string; keep: [string, string][] }
 /** `quantity`, `less`, `more` — подпись счётчика и имена его «−» и «+»:
  *  счётчик один на сайт (QuantityStepper), корзина и карта берут его. */
-export type BuyView = { variant: string | null; ask: AskView | null; add: string; quantity: string; less: string; more: string; max: number; timeout: string; failed: string; quick: QuickView }
+export type BuyView = { variant: string | null; ask: AskView | null; add: string; added: string; quantity: string; less: string; more: string; max: number; timeout: string; failed: string; quick: QuickView }
 /** Быстрый заказ — окно со строками мессенджеров (слово заказчика
  *  25.09.2026, И442). `what` — что заказывают, строкой окна и сообщения:
  *  марка, имя и упаковка выбранного варианта; количество окно берёт из
@@ -60,7 +65,7 @@ export type { WasView }
 export type ProductPageView = {
   crumbs: { name: string; href?: string }[]; crumbLabel: string
   brand: string | null; name: string; price: string; was: WasView | null; stock: string | null; message: string | null; choose: string | null
-  gallery: GalleryView; groups: OptionGroupLinks[]; facts: FactsView | null; description: string
+  gallery: GalleryView; groups: OptionGroupLinks[]; facts: FactsView | null; details: DetailsView
   related: ShelfCard[]; relatedTitle: string
   buy: BuyView
 }
@@ -89,6 +94,35 @@ export function labView(lang: Lang, r: LabReport): LabView {
       ['THC', percent(lang, r.thcPercent, 2)],
     ],
     open: r.url && !r.url.startsWith('#') ? { label: t(lang, 'lab.open'), href: r.url } : null,
+  }
+}
+
+/** Стандартный вариант (И468; слово заказчика 27.09.2026: «стандартные
+ *  параметры, например 10 % и 10 мл, должны быть выбраны по умолчанию»):
+ *  адрес без выбора показывает вариант магазина (`standard`), а нет его —
+ *  первый в наличии; цена, наличие и параметры сразу его, и кнопка кладёт
+ *  его в корзину без лишнего шага. Выбрал покупатель хоть одну группу или
+ *  нажал «в корзину» без выбора (`choose=1`) — решает его выбор. */
+export function withStandard(product: Product, selected: Record<string, string>, asked: boolean): Record<string, string> {
+  if (asked || Object.keys(selected).length || product.variants.length < 2) return selected
+  const standard = product.variants.find((v) => v.id === product.standard && v.stock !== 'out') ?? product.variants.find((v) => v.stock !== 'out')
+  return standard ? { ...standard.options } : selected
+}
+
+/** Разделы о товаре (И466). Протокол — партии выбранного варианта; выбора
+ *  нет — первой партии товара. */
+function detailsView(lang: Lang, product: Product, chosen: Product['variants'][number] | null): DetailsView {
+  const report = product.labReports.find((r) => r.batch === chosen?.batch) ?? product.labReports[0] ?? null
+  const text = (id: string, key: 'description' | 'ingredients' | 'usage', value: string | null): DetailPart[] =>
+    value?.trim() ? [{ id, title: t(lang, `product.tab.${key}`), text: value.trim(), lab: null }] : []
+  return {
+    label: t(lang, 'product.details'),
+    parts: [
+      ...text('about', 'description', product.description),
+      ...text('ingredients', 'ingredients', product.ingredients),
+      ...text('usage', 'usage', product.usage),
+      ...(report ? [{ id: 'coa', title: t(lang, 'product.tab.lab'), text: null, lab: labView(lang, report) }] : []),
+    ],
   }
 }
 
@@ -123,7 +157,8 @@ function quickView(lang: Lang, product: Product, variant: Product['variants'][nu
  *  убирай, делай просто поле, где будут основные параметры»); образец
  *  протокола остаётся блоком главной. `asked` — адрес несёт `choose=1`:
  *  покупатель нажал «в корзину» без выбора. */
-export function productView(lang: Lang, product: Product, selected: Record<string, string>, ctx: { category: Collection | null; related: Card[]; asked?: boolean }): ProductPageView {
+export function productView(lang: Lang, product: Product, chosen0: Record<string, string>, ctx: { category: Collection | null; related: Card[]; asked?: boolean }): ProductPageView {
+  const selected = withStandard(product, chosen0, ctx.asked === true)
   const state = pickState(product, selected)
   const cheapest = product.variants.reduce((a, b) => (b.price.minor < a.price.minor ? b : a))
   const same = product.variants.every((v) => v.price.minor === cheapest.price.minor)
@@ -160,13 +195,13 @@ export function productView(lang: Lang, product: Product, selected: Record<strin
     gallery: galleryView(lang, product.images, sale?.badge ?? null),
     groups: optionLinks(lang, product, selected),
     facts: buyable ? packFacts(lang, buyable.pack, product.strength, buyable.price) : null,
-    description: product.description,
+    details: detailsView(lang, product, chosen),
     related: ctx.related.map((c) => shelfCard(lang, c)),
     relatedTitle: t(lang, 'product.related'),
     buy: {
       variant: sellable?.id ?? null,
       ask,
-      add: t(lang, 'cart.add'),
+      add: t(lang, 'cart.add'), added: t(lang, 'cart.inCart', { n: '{n}' }) /* шаблон для AddLabel (И469) */,
       quantity: t(lang, 'cart.quantity'),
       less: t(lang, 'cart.less', { name: product.name }), more: t(lang, 'cart.more', { name: product.name }), max: QTY_MAX,
       timeout: t(lang, 'cart.error.timeout'), failed: t(lang, 'cart.error.unavailable'),

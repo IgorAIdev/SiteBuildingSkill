@@ -516,6 +516,11 @@
       "group": "palette",
       "value": "light-dark(#FCFBF9, #EDEBE8)"
     },
+    "--pop-tint-paper": {
+      "type": "colour",
+      "group": "palette",
+      "value": "light-dark(#F2F0EA, #2B2110)"
+    },
     "--pop-trail-near-paper": {
       "type": "colour",
       "group": "palette",

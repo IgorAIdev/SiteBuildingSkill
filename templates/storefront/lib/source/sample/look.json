@@ -105,6 +105,7 @@
     "--on-quiet-tint-paper": "light-dark(#2A1E08, #CBB593)",
     "--quiet-tint-deck": "light-dark(#FCFBF91F, #EDEBE81F)",
     "--on-quiet-tint-deck": "light-dark(#FCFBF9, #EDEBE8)",
+    "--pop-tint-paper": "light-dark(#F2F0EA, #2B2110)",
     "--pop-trail-near-paper": "light-dark(#B3996A, #957848)",
     "--pop-trail-far-paper": "light-dark(#CCB896, #745D36)",
     "--pop-trail-near-deck": "light-dark(#896C34, #BD9D66)",

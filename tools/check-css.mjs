@@ -1748,6 +1748,16 @@ for (const path of files) {
     seen.add(line)
     found.twiceDrawn.push(`${line}  движение знака задано на месте — оно одно, и оно в go.module.css`)
   }
+  /* Окно поверх страницы (И467): затемнение `::backdrop` в узле — значит,
+     узел рисует коробку окна сам (край, ширину, угол, тень). Меню и фильтры
+     держали по копии шторки, и заказчик увидел разницу глазом: «формы
+     подобные у нас что все разные?». Окно одно — styles/pane.module.css. */
+  for (const m of css.matchAll(/::backdrop/g)) {
+    const line = at(m.index)
+    if (seen.has(line)) continue
+    seen.add(line)
+    found.twiceDrawn.push(`${line}  окно нарисовано на месте — коробка и затемнение окна одни, в pane.module.css (data-pane)`)
+  }
 }
 
 /* ── `vector-effect`, поставленный не туда ─────────────────────────────────

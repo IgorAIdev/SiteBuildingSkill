@@ -39,7 +39,7 @@ test('running an operation returns the session, a code and the new count', async
 })
 
 test('an outcome is read only from the closed list of codes', () => {
-  assert.deepEqual(outcomeOf('ro', 'ok:add', 3), { kind: 'ok', code: 'ok:add', message: 'Produsul a fost adăugat în coș.', count: 3 })
+  assert.deepEqual(outcomeOf('ro', 'ok:add', 3), { kind: 'ok', code: 'ok:add', message: 'Produsul a fost adăugat în coș.', count: 3, inCart: null })
   assert.equal(outcomeOf('ro', 'partial:3')?.message, 'Avem doar 3 buc. în stoc — atât sunt acum în coș.')
   assert.equal(outcomeOf('en', 'e:coupon-expired')?.message, 'This code has expired — use a valid one.')
   assert.equal(outcomeOf('ro', 'e:timeout')?.kind, 'error')

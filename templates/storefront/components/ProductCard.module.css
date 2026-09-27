@@ -86,11 +86,7 @@
 .foot{display:flex;flex-direction:column;align-items:stretch;gap:var(--sp-2)}
 .buy{position:relative;display:flex;flex-direction:column}
 .add{position:relative;inline-size:100%;justify-content:center}
-/* Надпись до записи и после: «Add» → «Added» по исходу формы корзины
-   (`data-said`, CartForm quiet). Обе в кнопке, видна одна. */
-.done{display:none}
-.buy[data-said='ok'] .done,.buy[data-said='partial'] .done{display:inline}
-.buy[data-said='ok'] .word,.buy[data-said='partial'] .word{display:none}
+/* Надпись до записи и после — AddLabel, одна на сайт (И469). */
 /* Рядом с ценой (`--card-buy: beside`, «Admin → Card → Cart button»):
    кнопка ростом поменьше встаёт у правого края строки цены; не помещается —
    переносится под цену сама (`flex-wrap`), без порога ширины. */

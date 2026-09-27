@@ -34,7 +34,7 @@ export function Filters({ f: view }: { f: FiltersView }) {
       {/* Шторка — окно общего модуля (styles/pane.module.css, И460): шапка и
           низ стоят, грани прокручиваются. В строке над полкой тело свёрнуто
           (`display:contents`), и раскрытия стоят в строке примитива. */}
-      <form id="filters" popover="auto" className={`${p.cluster} ${pn.pane} ${s.filters}`} action={view.action} method="get" aria-label={view.title}>
+      <form id="filters" popover="auto" className={`${p.cluster} ${pn.pane} ${s.filters}`} data-pane="start" action={view.action} method="get" aria-label={view.title}>
         <div className={`${pn.bar} ${s.head}`}>
           <h2 className={pn.title}>{view.title}</h2>
           <button className={`${b.btn} ${pn.close}`} type="button" popoverTarget="filters" popoverTargetAction="hide" aria-label={view.close}><Icon id="x" /></button>

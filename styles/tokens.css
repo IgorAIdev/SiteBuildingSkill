@@ -143,7 +143,7 @@
      --live-11 напрямую, минуя роль (И224). */
   --pop-ink:       var(--a-11);
   --pop-ink-hover: var(--a-12);
-  --pop-tint:      var(--a-3);
+  --pop-tint:      var(--pop-tint-paper); /* a3, у красной марки — n3 (И463) */
   --select:        var(--a-4);
   --on-select:     var(--a-12);
   /* cyan-11 не цвет, а «акцент на той светлоте, на которой слово читается».

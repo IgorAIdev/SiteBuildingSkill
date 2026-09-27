@@ -1,6 +1,6 @@
 import type { Lang } from '../../locale.ts'
 import type { Card, Collection, Facet, Listing, Product, Result, SortKey, Source } from '../contract.ts'
-import { CATEGORIES, FACETS, LAB_REPORTS, PRODUCTS, type SampleProduct } from '../../products.ts'
+import { CATEGORIES, DETAILS, FACETS, LAB_REPORTS, PRODUCTS, type SampleProduct } from '../../products.ts'
 import { facetValueFilters, pageVariables, pageCount } from '../vendure/core/search.mjs'
 import { MARKET } from '../../market.ts'
 import { overallStock } from '../stock.ts'
@@ -129,6 +129,7 @@ export function sampleSource(pageSize = PAGE): Source {
       const batches = [...new Set(p.variants.map((v) => v.batch))].filter((b) => LAB_REPORTS[b])
       const product: Product = {
         id: p.id, category: p.cat, brand: p.brand, name: p.name[lang], summary: p.summary[lang], description: p.description[lang],
+        ingredients: DETAILS[p.cat]?.ingredients[lang] ?? null, usage: DETAILS[p.cat]?.usage[lang] ?? null, standard: p.standard ?? null,
         images: images(p, lang),
         optionGroups: p.groups.map((g) => ({ code: g.code, name: g.name[lang], options: g.options.map((o) => ({ code: o.code, name: o.name[lang] })) })),
         variants: p.variants.map((v) => ({ id: v.id, sku: v.sku, name: p.name[lang], price: money(v.price), was: v.was ? money(v.was) : null, stock: v.stock, options: v.options, batch: v.batch, pack: v.pack })),
