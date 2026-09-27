@@ -532,6 +532,25 @@ if (docPath && existsSync(docPath)) {
   })
 }
 
+/* ── бриф поверхности: сверено с живыми решениями (И474) ──────────────────
+ *
+ * Шаг 3 порядка дизайна — три-пять живых референсов на поверхность — стоял
+ * в CLAUDE.md словами, и исполнитель его пропустил: фон значков мессенджеров
+ * покрасил тоном марки, «не сверившись с лучшими существующими решениями»
+ * (заказчик, 27.09.2026), хотя образец лежал рядом — окно cbdin.bg. Бриф без
+ * адресов живых решений — решение из головы. Меряется так: в разделе
+ * «## 2. Референсы» каждого брифа `docs/design/*.md` (кроме образца
+ * `_brief.md`) — не меньше трёх адресов РАЗНЫХ сайтов. */
+const BRIEFS = join(ROOT, 'docs/design')
+if (existsSync(BRIEFS)) {
+  for (const f of readdirSync(BRIEFS).filter((x) => x.endsWith('.md') && !x.startsWith('_'))) {
+    const text = readFileSync(join(BRIEFS, f), 'utf8')
+    const part = text.match(/^## 2\.[^\n]*\n([\s\S]*?)(?=^## )/m)?.[1] ?? ''
+    const hosts = new Set([...part.matchAll(/https?:\/\/([^/\s)|>]+)/g)].map((m) => m[1].replace(/^www\./, '')))
+    if (hosts.size < 3) add('briefRefs', `docs/design/${f}`, `в «2. Референсы» адресов разных сайтов: ${hosts.size} из трёх`)
+  }
+}
+
 /* ── вердикт ───────────────────────────────────────────────────────────── */
 
 const counts = Object.fromEntries(Object.entries(found).map(([k, v]) => [k, v.length]))

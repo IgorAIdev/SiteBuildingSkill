@@ -21,7 +21,7 @@ export const DESIGN_FAMILIES = [
   'eyebrow', 'bareHeading', 'headRole', 'navSmall', 'flatRhythm', 'iconCards',
   'browserSurface', 'proseLink', 'gradientText', 'glassBlur', 'sideStripe',
   'hardShadow', 'glowHalo', 'trackTight', 'glyphIcon', 'monoCostume',
-  'docValue', 'docDead',
+  'docValue', 'docDead', 'briefRefs',
 ]
 
 /** Пустая база: ноль по каждой семье — новый проект долга не несёт. */
@@ -49,6 +49,7 @@ export const DESIGN_LABELS = {
   monoCostume: 'моноширинный шрифт как костюм «технологичности» вне кода, данных и замеров',
   docValue: 'DESIGN.md несёт число (#код, rgb/oklch, px, ms): вид описывается ролями, числа выпускают строители',
   docDead: 'DESIGN.md называет роль (--имя), которой нет ни в одном файле стилей — описание разошлось с системой',
+  briefRefs: 'бриф поверхности (docs/design/*.md) без живых референсов: в разделе «2. Референсы» меньше трёх адресов разных сайтов — решение вида придумано, а не сверено',
 }
 
 /** Откуда запрет: файл и строка справочника impeccable
@@ -72,4 +73,5 @@ export const DESIGN_SOURCES = {
   monoCostume: 'craft-floor.md:38 — «Monospace as a costume for "technical"»',
   docValue: 'document.md:46 — «Never split the source of truth without explicit reason»; спецификация google-labs-code/design.md: «The frontmatter is optional»; CLAUDE.md, «Делается только правильно» — краска → строитель палитры → роль',
   docDead: 'doctor.md:11 — «Truth drift. The code moved on and the document no longer describes it»',
+  briefRefs: 'CLAUDE.md, «Дизайн делается дизайнерскими скиллами», шаг 3 — «три-пять живых магазинов для этой поверхности»; слово заказчика 27.09.2026: «не сверился с лучшими существующими решениями»',
 }
