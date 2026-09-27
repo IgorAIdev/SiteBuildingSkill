@@ -53,7 +53,7 @@ export const CONCEPTS = {
   state: ['state'],
   layer: ['layer'],
   control: ['ctrl', 'chan', 'chip', 'tab', 'dock', 'edge',
-    /* ручка окна за пальцем (`--grab-size`, `--grab-w`, И488) */
+    /* ручка окна за пальцем (`--grab-size`, `--grab-w`, И494) */
     'grab'],
   layout: ['wrap', 'gut', 'head', 'anchor', 'float', 'chrome', 'tile'],
 }
@@ -158,7 +158,7 @@ export const REQUIRED = {
   '--bad-fill': 'плашка сигнала (roles.md, «Заливки»)', '--on-bad': 'знак на плашке', '--bad-tint': 'тихая полоса сигнала', '--bad-line': 'граница ошибки (roles.md, «Линии»)',
   '--ok': 'текст сигнала «успех»', '--ok-fill': 'плашка «в наличии»', '--on-ok': 'знак на плашке', '--ok-tint': 'тихая полоса',
   '--quiet-tint': 'тихая марка органа — тихая кнопка в варианте «Brand tint» каталога кнопок (styles/buttons.json; И462, И472)', '--on-quiet-tint': 'знак на тихой марке органа — тот же вариант кнопки (И462)',
-  '--pane-sheet': 'окно посреди экрана стало нижней шторкой — его читает жест окна за пальцем (templates/storefront, components/PaneSwipe.tsx; И488)',
+  '--pane-sheet': 'окно посреди экрана стало нижней шторкой — его читает жест окна за пальцем (templates/storefront, components/PaneSwipe.tsx; И494)',
   '--mark-viber': 'чужая марка: знак Viber краской своей марки — окно быстрого заказа (templates/storefront, QuickOrder.module.css; И471)', '--mark-telegram': 'чужая марка: знак Telegram (И471)', '--mark-whatsapp': 'чужая марка: знак WhatsApp (И471)', '--mark-instagram': 'чужая марка: знак Instagram (И471)',
   '--info': 'текст сведения: обещания у кнопки заказа, ТГК, производитель (roles.md; templates/storefront, Cart.module.css; И472)', '--info-tint': 'тихая полоса сведения (roles.md; templates/storefront, Cart.module.css; И472)',
   '--warn': 'текст сигнала «внимание»', '--warn-fill': 'плашка «осталось 2»', '--on-warn': 'знак на плашке', '--warn-tint': 'тихая полоса',

@@ -977,7 +977,7 @@
      место, — и ручка перестаёт быть ручкой. Проверено замером: с объявлением
      `--qty-pad:0` из корзины не доезжало вовсе. */
   padding:var(--qty-pad, calc(var(--qty-h, var(--ctrl-h-lg)) * .074));
-  /* Жёлоб одет, как тихая кнопка (И489): заливка и кромка — роли каталога
+  /* Жёлоб одет, как тихая кнопка (И495): заливка и кромка — роли каталога
      кнопок; счётчик рядом с «в корзину» и «быстрым заказом» не серая
      плита среди контуров. */
   background:var(--qty-bg, var(--ctrl-btn-fill, var(--ctrl)));box-shadow:inset 0 0 0 var(--line-w) var(--ctrl-btn-edge, transparent);border-radius:var(--r-ctrl)
@@ -1097,7 +1097,7 @@
   .seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):hover{background:var(--hover-ctrl);color:var(--ink)}
 }
 .seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):active{background:var(--press-ctrl);color:var(--ink);transform:var(--press-move)}
-/* Выбранное — чернилами, не маркой (И491, разбор impeccable 27.09.2026):
+/* Выбранное — чернилами, не маркой (И497, разбор impeccable 27.09.2026):
    марка на экране одна — у главного действия; выбранный вариант, залитый
    той же краской, спорил с «в корзину». */
 .seg :is([aria-pressed="true"], [aria-current="true"]){background:var(--ink);color:var(--on-ink);font-weight:600;box-shadow:none}
@@ -1285,7 +1285,7 @@
   display:inline-flex;align-items:center;gap:calc(var(--ctrl-h-sm) * .21);
   block-size:var(--ctrl-h-sm);padding-inline:calc(var(--ctrl-h-sm) * .38);
   border-radius:var(--r-ctrl);white-space:nowrap;
-  /* Без плиты, кромкой (И489): фишка одета, как тихая кнопка, — заливка и
+  /* Без плиты, кромкой (И495): фишка одета, как тихая кнопка, — заливка и
      кромка из каталога кнопок; серой плитки под каждой фишкой больше нет. */
   background:var(--ctrl-btn-fill, var(--ctrl));color:var(--ink);
   /* Кромка, а не только заливка. Пилюля стоит на ПОЛУ СТРАНИЦЫ, а ступень

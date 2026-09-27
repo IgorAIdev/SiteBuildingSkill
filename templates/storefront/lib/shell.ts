@@ -17,7 +17,7 @@ export type NavLink = { href: string; label: string; image: Image | null; line: 
 /** Группа «по поводу» в шторке полок (И430; меню телефона пилюлями cbdin.bg):
  *  грань всего каталога и её значения ссылками на каталог с этой гранью. */
 export type NavGroup = { name: string; links: { label: string; href: string }[] }
-/** `service` — служебное в шторке меню под полками (И491): доставка и
+/** `service` — служебное в шторке меню под полками (И497): доставка и
  *  контакты — из тех же документов магазина, что в подвале. */
 export type ShellData = { nav: NavLink[]; groups: NavGroup[]; docs: Doc[]; service: { href: string; label: string }[] }
 

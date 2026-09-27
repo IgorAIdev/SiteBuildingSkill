@@ -67,7 +67,7 @@ test('порядок дизайна: список в CLAUDE.md и DESIGN.order �
   const steps = [...section.matchAll(/^(\d+)\. /gm)].map((m) => Number(m[1]))
   assert.deepEqual(steps, DESIGN.order.map((_, i) => i + 1), 'шагов в CLAUDE.md не столько, сколько в DESIGN.order')
   assert.match(DESIGN.order[0], /PRODUCT\.md и DESIGN\.md/)
-  /* Шаг зовёт запускатель — запускатель обязан лежать в наборе (И490; до
+  /* Шаг зовёт запускатель — запускатель обязан лежать в наборе (И496; до
      27.09.2026 его не было, и шаг ссылался в пустоту, И300). */
   if (/impeccable context/.test(DESIGN.order.join(' '))) assert.ok(existsSync(join(KIT, '.claude/skills/impeccable/scripts/impeccable')), 'шаг, зовущий запускатель, которого нет')
   for (const word of ['PRODUCT.md', 'DESIGN.md', 'референсы и замок', 'docs/design/', 'одна вещь, которую запомнят']) {

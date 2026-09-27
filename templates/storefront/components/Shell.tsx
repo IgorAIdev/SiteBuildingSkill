@@ -43,7 +43,7 @@ export function Shell({ lang, data, look, chrome = 'full', children }: { lang: L
         {chrome === 'checkout' ? <CheckoutHeader lang={lang} /> : <Header lang={lang} nav={data.nav} groups={data.groups} service={data.service} variant={look.header} />}
         {children}
         <Footer lang={lang} docs={data.docs} variant={chrome === 'checkout' ? 'legal' : 'full'} />
-        {/* Окна за пальцем — один жест на документ (И488). */}
+        {/* Окна за пальцем — один жест на документ (И494). */}
         <PaneSwipe />
         {/* eslint-disable-next-line @next/next/no-css-tags -- look-panel: стили панели — ссылкой на её адрес, сайт файлы панели не импортирует (И413) */}
         {process.env.LOOK_PICKER === 'on' ? <><link rel="stylesheet" href="/look-panel/look.css" precedence="look-panel" /><script src="/look-panel/look.js" async /></> : null}{/* look-panel: стили — до первой отрисовки (резерв --dock), скрипт — после */}

@@ -21,7 +21,7 @@
 .gallery .stage{--frame:var(--shot-frame);--frame-cap:var(--gallery-fold);grid-area:stage;position:relative;border-radius:var(--r-card)}
 @container pdp (min-width:820px){ .gallery .stage{--frame-cap:var(--pin-fit)} }
 
-/* Лента и слайд — общее устройство (styles/slides.module.css, И487);
+/* Лента и слайд — общее устройство (styles/slides.module.css, И493);
    здесь только рост: во всю высоту кадра. */
 .strip,.slide{block-size:100%}
 
@@ -62,7 +62,7 @@
 .thumb:focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:calc(var(--ring-w) * -1)}
 
 /* Точки вместо миниатюр (`--pdp-thumbs: dots`): общий указатель
-   (styles/slides.module.css, И487) под кадром; здесь только место. */
+   (styles/slides.module.css, И493) под кадром; здесь только место. */
 .dots{display:none;grid-area:thumbs}
 
 @container style(--pdp-thumbs: dots){
@@ -89,7 +89,7 @@
 }
 /* Сила места (0,2,0): стрелка — орган `go`, и его `display` весом голого
    класса иначе решал бы порядок кусков сборки. */
-/* В одну колонку стрелок нет ни в каком виде (И491): кадр листает палец,
+/* В одну колонку стрелок нет ни в каком виде (И497): кадр листает палец,
    стрелки-плашки на середине кадра — мимо большого пальца и лишние коробки
    на снимке (разбор impeccable 27.09.2026). */
 @container pdp (max-width:819px){

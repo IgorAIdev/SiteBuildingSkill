@@ -21,7 +21,7 @@ const never = () => () => {}
    Размер — не здесь: блок целиком (кадр, зазор, ряд) помещается в экран
    правилом Gallery.module.css (И278), разметка о высоте окна не знает. */
 export function Gallery({ view }: { view: GalleryView }) {
-  /* Лента и точки — общее устройство (useSlides, Dots; И487). */
+  /* Лента и точки — общее устройство (useSlides, Dots; И493). */
   const { strip, current, show, pick, onScroll } = useSlides(view.slides.length)
   /* Стрелки — только со скриптом: без него они ничего не умеют. Снимок
      сервера — «скрипта нет», после гидратации — «есть». */

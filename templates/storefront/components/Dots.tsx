@@ -3,7 +3,7 @@ import type { MouseEvent } from 'react'
 import sl from '@/styles/slides.module.css'
 
 /* Указатель ленты — одна строка точек на сайт (styles/slides.module.css,
-   И487). Точка — ссылка на свой слайд; `className` — место, которое ставит
+   И493). Точка — ссылка на свой слайд; `className` — место, которое ставит
    узел (галерея — под кадром или на нём, герой — у низа сцены). */
 export function Dots({ slides, current, pick, className = '' }: {
   slides: readonly { id: string; show: string }[]; current: number; pick: (e: MouseEvent<HTMLAnchorElement>, i: number) => void; className?: string

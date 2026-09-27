@@ -253,7 +253,7 @@
 .nav:popover-open .chev svg{inline-size:1.25em;block-size:1.25em}
 .nav:popover-open .links a[aria-current='page']{background-color:var(--quiet);font-weight:600}
 .nav:popover-open .sheetLang{display:flex;flex-direction:column;gap:var(--air-row);margin-block-start:auto;padding-block-start:var(--air-row);border-block-start:var(--line-w) solid var(--rule)}
-/* Служебное шторки — строками текста над языком (И491): доставка и контакты,
+/* Служебное шторки — строками текста над языком (И497): доставка и контакты,
    без знаков и плит. Цель — строка ростом пальца. */
 .service{list-style:none;margin:0;padding:0}
 .service a{display:flex;align-items:center;min-block-size:var(--ctrl-target);color:var(--ink-soft);text-decoration:none}
