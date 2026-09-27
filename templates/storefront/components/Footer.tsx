@@ -7,7 +7,6 @@ import { hrefFor } from '@/lib/href.ts'
 import { COMPANY, ANPC_SAL_URL, SOL_URL, TERMS_DOC } from '@/lib/company.ts'
 import { CONTACTS, telHref, mailHref } from '@/lib/contacts.ts'
 import { COMPANY_IS_REAL } from '@/lib/flags.ts'
-import { LangSwitch } from './LangSwitch.tsx'
 
 const HELP = ['livrare-si-plata', 'retur', 'contact', 'despre-noi']
 const LEGAL = [TERMS_DOC, 'confidentialitate']
@@ -45,42 +44,32 @@ export function Footer({ lang, docs, variant = 'full' }: { lang: Lang; docs: Doc
   }
   return (
     <footer className={s.foot} data-ground="deck">
-      {/* Одна коробка на полосу (лист палубы): столбцы и нижняя строка —
-          внутри неё; второй прямой ребёнок пола стал бы вторым листом. */}
-      <div className={p.wrap}>
-        <div className={`${p.grid} ${s.cols}`}>
-          <nav className={`${p.stack} ${s.col}`} aria-labelledby="foot-help">
-            <p className={p.eyebrow} id="foot-help">{t(lang, 'footer.help')}</p>
-            <ul className={s.list}>{links(HELP)}</ul>
-          </nav>
-          <nav className={`${p.stack} ${s.col}`} aria-labelledby="foot-legal">
-            <p className={p.eyebrow} id="foot-legal">{t(lang, 'footer.legal')}</p>
-            <ul className={s.list}>
-              {links(LEGAL)}
-              <li><a href={ANPC_SAL_URL} rel="noopener">{t(lang, 'footer.anpc')}</a></li>
-              <li><a href={SOL_URL} rel="noopener">{t(lang, 'footer.sol')}</a></li>
-            </ul>
-          </nav>
-          <div className={`${p.stack} ${s.col}`}>
-            <p className={p.eyebrow}>{t(lang, 'footer.company')}</p>
-            <address className={s.addr}>
-              <span translate="no">{COMPANY.name}</span><br />
-              CUI {COMPANY.cui} · {COMPANY.regCom}<br />
-              {COMPANY.address}<br />
-              <a href={telHref()}>{CONTACTS.phone}</a><br />
-              <a href={mailHref()}>{CONTACTS.email}</a>
-            </address>
-          </div>
-        </div>
-        {/* Служебное — одной строкой под столбцами (И484): язык не занимает
-            столбец под один переключатель, как в подвалах магазинов (Shopify
-            Dawn: выбор языка и страны — в нижней строке подвала; cbdin.bg —
-            политики и © одной строкой внизу). Слово заказчика 27.09.2026:
-            «выбор языка, как и все второстепенные функции, нужно делать
-            минималистично». */}
-        <div className={s.base}>
-          {COMPANY_IS_REAL ? <span /> : <p className={p.note}>{t(lang, 'sample')}</p>}
-          <LangSwitch lang={lang} label={t(lang, 'nav.lang')} />
+      {/* Языка в подвале нет (И484): он в шапке и в меню — там, где его
+          ищут. Слово заказчика 27.09.2026: «я в жизни никогда не видел выбора
+          языка в подвале — убирай». */}
+      <div className={`${p.wrap} ${p.grid} ${s.cols}`}>
+        <nav className={`${p.stack} ${s.col}`} aria-labelledby="foot-help">
+          <p className={p.eyebrow} id="foot-help">{t(lang, 'footer.help')}</p>
+          <ul className={s.list}>{links(HELP)}</ul>
+        </nav>
+        <nav className={`${p.stack} ${s.col}`} aria-labelledby="foot-legal">
+          <p className={p.eyebrow} id="foot-legal">{t(lang, 'footer.legal')}</p>
+          <ul className={s.list}>
+            {links(LEGAL)}
+            <li><a href={ANPC_SAL_URL} rel="noopener">{t(lang, 'footer.anpc')}</a></li>
+            <li><a href={SOL_URL} rel="noopener">{t(lang, 'footer.sol')}</a></li>
+          </ul>
+        </nav>
+        <div className={`${p.stack} ${s.col}`}>
+          <p className={p.eyebrow}>{t(lang, 'footer.company')}</p>
+          <address className={s.addr}>
+            <span translate="no">{COMPANY.name}</span><br />
+            CUI {COMPANY.cui} · {COMPANY.regCom}<br />
+            {COMPANY.address}<br />
+            <a href={telHref()}>{CONTACTS.phone}</a><br />
+            <a href={mailHref()}>{CONTACTS.email}</a>
+          </address>
+          {COMPANY_IS_REAL ? null : <p className={p.note}>{t(lang, 'sample')}</p>}
         </div>
       </div>
     </footer>
