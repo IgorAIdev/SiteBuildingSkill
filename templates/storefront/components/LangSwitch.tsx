@@ -1,6 +1,7 @@
 'use client'
 import { usePathname } from 'next/navigation'
 import p from '@/styles/primitives.module.css'
+import s from './LangSwitch.module.css'
 import { LANG_NAMES, LOCALES, type Lang } from '@/lib/locale.ts'
 
 const FIRST = new RegExp(`^/(${LOCALES.join('|')})(?=/|$)`)
@@ -24,7 +25,7 @@ export function LangSwitch({ lang, label, title = false }: { lang: Lang; label: 
   return (
     /* Группа, а не меню: переключатель — орган (как выбор варианта), не
        навигация по разделам. */
-    <div role="group" aria-label={title ? undefined : label} aria-labelledby={title ? 'lang-title' : undefined}>
+    <div className={s.lang} role="group" aria-label={title ? undefined : label} aria-labelledby={title ? 'lang-title' : undefined}>
       {title ? <p className={p.eyebrow} id="lang-title">{label}</p> : null}
       <ul className={p.seg}>
         {LOCALES.map((l) => (
