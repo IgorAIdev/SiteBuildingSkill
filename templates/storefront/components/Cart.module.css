@@ -60,18 +60,9 @@
 .coupon > p:empty{display:none}
 .promo summary{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);font-weight:600;color:var(--ink);list-style:none}
 .promo summary::-webkit-details-marker{display:none}
-.promo summary svg{inline-size:1.15em;block-size:1.15em;flex:none;color:var(--ink-soft);transition:rotate var(--open-t) var(--ease)}
-.promo[open] summary svg{rotate:180deg}
-.code{display:flex;align-items:flex-end;gap:var(--gap-targets);margin-block-start:var(--gap-targets)}
-.code > label{flex:1 1 auto}
-/* Поле и кнопка купона — порознь (умолчание) или встык одной коробкой:
-   зазора нет, угол — только у внешних краёв пары (роль вида
-   `--pair-look: joined`, И421; элемент 42 набора). Голос кнопки прежний. */
-@container style(--pair-look: joined){
-  .code{gap:0}
-  .code input{border-start-end-radius:0;border-end-end-radius:0}
-  .code > button{border-start-start-radius:0;border-end-start-radius:0}
-}
+.promo summary svg{color:var(--ink-soft)}
+/* Поле и кнопка купона — общая пара `f.send` (styles/form.module.css). */
+.code{margin-block-start:var(--gap-targets)}
 
 /* ИТОГИ — одни на корзину, оформление и «спасибо». Свой шаг, а не ручка
    `stack`: ручка наследуется, и сводка раздавала бы итогам свой воздух. */

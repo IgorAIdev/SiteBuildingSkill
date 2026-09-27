@@ -55,10 +55,6 @@
 .row[data-mark='whatsapp'] svg{color:var(--mark-whatsapp)}
 .row[data-mark='instagram'] svg{color:var(--mark-instagram)}
 
-/* Поле номера и кнопка — пара `sidebar`: кнопка — узкая колонка шириной
-   своей надписи; не помещаются рядом — встают столбиком. */
-.pair{--side-w:auto;--side-at:55%;--side-gap:var(--gap-targets);--side-align:stretch}
-
 /* Кнопка, открывающая окно, — рядом с «в корзину» (AddToCart): тихий
    голос, растёт вместе с ней. */
 .trigger{flex:1 1 auto}

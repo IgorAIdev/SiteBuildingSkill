@@ -3,7 +3,7 @@ import s from './ProductView.module.css'
 import type { ProductPageView } from '@/lib/product-view.ts'
 import type { Outcome } from '@/lib/cart-ops.ts'
 import { Breadcrumbs } from './Breadcrumbs.tsx'
-import { ProductCard } from './ProductCard.tsx'
+import { Shelf } from './Shelf.tsx'
 import { Gallery } from './Gallery.tsx'
 import { VariantPicker } from './VariantPicker.tsx'
 import { KeyFacts } from './KeyFacts.tsx'
@@ -51,10 +51,7 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
         </div>
       </section>
       {view.related.length ? (
-        <section className={p.section}>
-          <div className={p.sectionHead}><h2>{view.relatedTitle}</h2></div>
-          <ul className={p.rail} data-rail="goods">{view.related.map((c) => <li key={c.id}><ProductCard card={c} cart={{ submit, call }} /></li>)}</ul>
-        </section>
+        <Shelf title={view.relatedTitle} id="related-title" all={view.relatedAll} cards={view.related} cart={{ submit, call }} />
       ) : null}
     </>
   )

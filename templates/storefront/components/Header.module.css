@@ -145,7 +145,7 @@
 /* ── search: полоса обещания, широкий поиск, полки второй строкой ─────── */
 .strip{--sheet-pad:var(--page-line);--sheet-air:0px;background:var(--page-deck);font-size:var(--ctrl-fs-xs)}
 .stripRow{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);min-block-size:calc(var(--ctrl-target) + var(--sp-1) * 2)}
-.field{display:flex;align-items:center;gap:var(--sp-2);flex:1 1 auto;min-inline-size:0;margin-inline:var(--air-block)}
+.field{flex:1 1 auto;min-inline-size:0;margin-inline:var(--air-block)}
 /* look-header:search:end */
 /* Обещание магазина — в полосе «search» и в светлой полосе сборок cbdin. */
 .promise{color:var(--ink-soft)} /* look-header:search,tray,nested,step */
@@ -278,8 +278,6 @@
 .nav:popover-open .links li[data-params]{display:grid;grid-template-columns:minmax(0, 1fr) auto;align-items:center;column-gap:var(--gap-row)}
 .nav:popover-open li[data-params] .chev{display:none}
 .nav:popover-open .params{display:inline-flex;--btn-h:var(--ctrl-target);inline-size:var(--btn-h);padding:0}
-.params svg{inline-size:1.25em;block-size:1.25em;transition:rotate var(--open-t) var(--ease)}
-.params[aria-expanded='true'] svg{rotate:.5turn}
 .nav:popover-open .paramsPanel:not([hidden]){
   display:flex;flex-direction:column;gap:var(--air-row);grid-column:1 / -1;
   padding:var(--sp-2) var(--pad-inner) var(--pad-inner)

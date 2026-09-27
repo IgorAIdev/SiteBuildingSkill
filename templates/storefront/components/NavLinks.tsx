@@ -6,6 +6,7 @@ import b from '@/styles/btn.module.css'
 import s from './Header.module.css'
 import type { NavLink } from '@/lib/shell.ts'
 import { Icon } from './Icon.tsx'
+import { Turn } from './Turn.tsx'
 import { shot } from '@/lib/shot.ts'
 
 /* Полки шапки. Каждая строка несёт всё, чем её может нарисовать шапка:
@@ -43,7 +44,7 @@ export function NavLinks({ links, className, more }: { links: NavLink[]; classNa
             {l.facets.length ? (
               <>
                 <button className={`${b.btn} ${s.params}`} type="button" aria-expanded={shown} aria-controls={id} aria-label={more.replace('{name}', l.label)} onClick={() => setOpen(shown ? null : l.href)}>
-                  <Icon id="chevron-down" />
+                  <Turn />
                 </button>
                 <div className={s.paramsPanel} id={id} hidden={!shown}>
                   {l.facets.map((g, k) => (
