@@ -158,7 +158,7 @@ test('contactScheme: «tel:» внутри слова после не-латин
    styles/palette.css; стили его только читают. Дефект — тона хвоста главной
    кнопки, смешанные прямо в её стилях (`color-mix(… 60% …)`), кромка
    выключенной и вуаль героя: проверки были зелёные, нарушение не мерилось. */
-test('colorOut: литерал и доля числом в стилях — находка; роль, доля состояния, маска, файл палитры и панель вида — нет (И295)', () => {
+test('colorOut: литерал и доля числом в стилях — находка; роль, доля состояния, ход 0/1 между ролями, маска, файл палитры и панель вида — нет (И295, И461)', () => {
   const dir = project({
     'kit.config.json': JSON.stringify({ styles: ['app', 'components', 'styles', 'look-panel'] }),
     'tools/css-baseline.json': '{}',
@@ -172,6 +172,8 @@ test('colorOut: литерал и доля числом в стилях — на
       '.knob { --leaf: 14%; background: color-mix(in oklab, var(--ctrl), var(--ink) var(--leaf)) }',
       '.half { background: color-mix(in oklab, var(--ctrl), var(--ink)) }',
       ':root { --x: var(--y); &:lang(bg) { --nested: oklch(0.5 0.1 80) } }',
+      '.mid { --half: 0; background: color-mix(in oklab, var(--pop), var(--pop-hover) calc(var(--half) * 100%)) }',
+      '.mid:hover { --half: .5 }',
     ].join('\n') + '\n',
     'components/Good.module.css': [
       '.role { color: var(--ink); background: var(--quiet) }',
@@ -180,15 +182,18 @@ test('colorOut: литерал и доля числом в стилях — на
       '.mask { mask-image: linear-gradient(to right, #000 80%, transparent) }',
       '.forced { outline-color: Highlight }',
       '.svg { clip-path: url(#cut) }',
+      '@property --on { syntax: "<number>"; initial-value: 0; inherits: false }',
+      '.btn { --on: 0; --flip: 0; background: color-mix(in oklab, var(--pop), var(--pop-hover) calc(var(--on) * 100%)) }',
+      '.btn:hover { --on: 1; --flip: 1; color: color-mix(in srgb, var(--pop) calc(var(--flip) * 100%), transparent) }',
     ].join('\n') + '\n',
   })
   try {
     const out = spawnSync(process.execPath, [join(dir, 'tools/check-css.mjs'), '--list', 'colorOut'], { cwd: dir, encoding: 'utf8' }).stdout
-    const bad = [[1, 'литерал #fff'], [2, 'долей числом 60%'], [3, 'имя краски white'], [4, 'литерал rgba()'], [5, 'ручкой узла --leaf'], [6, 'без доли'], [7, 'литерал oklch()']]
+    const bad = [[1, 'литерал #fff'], [2, 'долей числом 60%'], [3, 'имя краски white'], [4, 'литерал rgba()'], [5, 'ручкой узла --leaf'], [6, 'без доли'], [7, 'литерал oklch()'], [8, 'долей числом 100%']]
     for (const [line, why] of bad) {
       assert.ok(out.split('\n').some((l) => l.includes(`Bad.module.css:${line} `) && l.includes(why)), `строка ${line}: ${why}\n${out}`)
     }
-    assert.doesNotMatch(out, /Good\.module\.css/, 'роль, доля состояния, слова, маска, системная краска и ссылка url(#) — не находка')
+    assert.doesNotMatch(out, /Good\.module\.css/, 'роль, доля состояния, ход состояния 0/1 (И461), слова, маска, системная краска и ссылка url(#) — не находка')
     assert.doesNotMatch(out, /palette\.css/, 'файл палитры выпускает строитель — там цвет и рождается')
     assert.doesNotMatch(out, /look-panel/, 'панель вида вне сайта')
   } finally { rmSync(dir, { recursive: true, force: true }) }
@@ -295,6 +300,60 @@ test('varMissing: имя, объявленное кодом проекта из 
     writeFileSync(join(dir, 'src/lib/knob.ts'), 'export const set = () => {}\n')
     const back = list()
     for (const name of ['--face-latin', '--meter-fill', '--meter-lag', '--knob-at']) assert.match(back, new RegExp(`${name} — читается, не объявлен`))
+  } finally { rmSync(dir, { recursive: true, force: true }) }
+})
+
+/* И464: роли объявляет выпуск строителей — `ladder` и `palette` из
+   kit.config.json, — а у монорепозитория он лежит вне папок стилей
+   приложения; туда же ведёт `@import` (путём и именем пакета). cbdshop.bg:
+   1441 ложная находка — каждое прочитанное имя роли ритма. */
+test('varMissing: имя из выпуска строителей и из файла по @import объявлено (И464)', () => {
+  const dir = project({
+    'kit.config.json': JSON.stringify({
+      styles: ['apps/shop'], ladder: 'packages/ui/styles/scale.css', palette: 'packages/ui/styles/palette.css',
+      tokens: 'apps/shop/styles/tokens.css', aliases: { '@shop/ui/': 'packages/ui/' },
+    }),
+    'packages/ui/styles/scale.css': ':root{ --pad-inner: 1rem; --gap-row: .5rem }\n',
+    'packages/ui/styles/palette.css': ':root{ --quiet-sale: #11111139 }\n',
+    'packages/ui/styles/fonts.css': "@import './faces.css';\n:root{ --face-body: var(--face-inter) }\n",
+    'packages/ui/styles/faces.css': ':root{ --face-inter: Inter, sans-serif }\n',
+    'apps/shop/styles/tokens.css': ":root{ --ink: #111 }\n",
+    'apps/shop/styles/globals.css': "@import '@shop/ui/styles/fonts.css';\nbody{ font-family: var(--face-body) }\n",
+    'apps/shop/components/Card.module.css': '.card{ padding: var(--pad-inner); row-gap: var(--gap-row); background: var(--quiet-sale); font-family: var(--face-inter); color: var(--ghost-ink) }\n',
+  })
+  const list = () => spawnSync(process.execPath, [join(dir, 'tools/check-css.mjs'), '--list', 'varMissing'], { cwd: dir, encoding: 'utf8' }).stdout
+  try {
+    const out = list()
+    for (const name of ['--pad-inner', '--gap-row', '--quiet-sale', '--face-body', '--face-inter']) assert.ok(!out.includes(`${name} — читается`), `${name} объявлен выпуском или импортом:\n${out}`)
+    assert.match(out, /--ghost-ink — читается, не объявлен/, 'не объявлен нигде — находка')
+    /* Обратный ход: выпуска нет — имена снова не объявлены. */
+    rmSync(join(dir, 'packages/ui/styles/scale.css'))
+    assert.match(list(), /--pad-inner — читается, не объявлен/)
+  } finally { rmSync(dir, { recursive: true, force: true }) }
+})
+
+/* И463: шаг на шве, записанный переменными. Блок медиазапроса, в котором
+   только `--pad: 24px` и `--air: var(--sp-7)`, — та же ступенька величины,
+   что `padding: 24px`; до 27.09.2026 переменные в нём не считались вовсе,
+   и на cbdshop.bg число семьи было занижено. Переменная со значением
+   раскладки (`--cols: 1`, `--side: none`) — смысл, не величина. */
+test('seamStep: ступенька величины переменными в медиазапросе — находка, переменная раскладки — нет (И463)', () => {
+  const dir = project({
+    'kit.config.json': JSON.stringify({ styles: ['app'] }),
+    'app/page.module.css': [
+      '.a{ --pad: 32px }',
+      '@media (max-width: 820px){ .a{ --pad: 24px; --air: var(--sp-7) } }',
+      '.b{ --cols: 2 }',
+      '@media (max-width: 820px){ .b{ --cols: 1; --pad: 16px } }',
+      '.c{ padding: 32px }',
+      '@media (max-width: 560px){ .c{ padding: 16px } }',
+    ].join('\n') + '\n',
+  })
+  try {
+    const out = spawnSync(process.execPath, [join(dir, 'tools/check-css.mjs'), '--list', 'seamStep'], { cwd: dir, encoding: 'utf8' }).stdout
+    assert.match(out, /page\.module\.css:2 .*--pad/, `переменные величины на шве — ступенька:\n${out}`)
+    assert.match(out, /page\.module\.css:6 /, 'свойство величины на шве — ступенька, как было')
+    assert.doesNotMatch(out, /page\.module\.css:4 /, 'число колонок — смысл раскладки, не ступенька')
   } finally { rmSync(dir, { recursive: true, force: true }) }
 })
 

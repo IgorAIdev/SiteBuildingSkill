@@ -36,7 +36,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'node:fs'
 import { dirname, join, relative as nativeRelative, basename } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { COMPONENT_DIRS, STYLE_DIRS, PAGES, TOKENS, LADDER, PRIMITIVES, EXEMPT, DESIGN_DOC } from './kit-config.mjs'
+import { COMPONENT_DIRS, STYLE_DIRS, PAGES, TOKENS, LADDER, PRIMITIVES, EXEMPT, DESIGN_DOC, ALIASES } from './kit-config.mjs'
 import { DESIGN_FAMILIES, DESIGN_LABELS as NAMES, DESIGN_SOURCES as SOURCES } from './design-families.mjs'
 import { declarations } from './names.mjs'
 
@@ -119,9 +119,20 @@ const elementsOf = (compound) => {
 }
 
 const css = new Map()
-for (const file of cssFiles) {
+const loadCss = (file) => {
   const text = stripCss(readFileSync(file, 'utf8'))
   const rules = []
+  /* Под каким медиазапросом стоит правило (И463): переменная, переобъявленная
+     на шве (`@media (…){ .list{ --stack: … } }`), — такой же шаг, как в
+     основе, только на другой ширине. Раньше парсер брал правило, а условие
+     терял, и шаг читался только первый найденный. */
+  const medias = []
+  for (const mm of text.matchAll(/@media([^{]*)\{/g)) {
+    let depth = 1, i = mm.index + mm[0].length
+    while (i < text.length && depth) { if (text[i] === '{') depth++; else if (text[i] === '}') depth--; i++ }
+    medias.push({ from: mm.index, to: i, cond: mm[1].replace(/\s+/g, ' ').trim() })
+  }
+  const mediaAt = (i) => medias.filter((b) => b.from < i && i < b.to).sort((a, b) => b.from - a.from)[0]?.cond ?? null
   for (const m of text.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const head = m[1].trim()
     if (!head || head.startsWith('@') || /^(from|to|\d)/.test(head)) continue
@@ -132,10 +143,12 @@ for (const file of cssFiles) {
     }
     const lead = m[1].length - m[1].trimStart().length
     const line = lineAt(text, m.index + lead)
-    for (const sel of splitTop(head)) rules.push({ sel, parts: compounds(sel), decl, line })
+    const media = mediaAt(m.index + lead)
+    for (const sel of splitTop(head)) rules.push({ sel, parts: compounds(sel), decl, line, media })
   }
   css.set(file, { text, rules, module: file.endsWith('.module.css') })
 }
+for (const file of cssFiles) loadCss(file)
 
 /* Значения ролей — из шкалы и токенов: первое объявление имени, то есть
    корень и набор по умолчанию. */
@@ -195,6 +208,44 @@ const resolveCss = (from, spec) => {
   const tries = spec.startsWith('@/') ? [join(site, spec.slice(2)), join(ROOT, spec.slice(2))]
     : spec.startsWith('.') ? [join(dirname(from), spec)] : []
   return tries.find((p) => css.has(p) || existsSync(p)) ?? null
+}
+
+/** Классы, которые элемент получает через `composes` (И463): CSS-модуль
+ *  дописывает к классу узла класс примитива (`.list { composes: stack from
+ *  '…/primitives.module.css' }`), и элемент — это `stack` со всеми его
+ *  ручками. Раньше проверка видела только класс в разметке: шаг примитива,
+ *  подключённого так, не читался, и `flatRhythm` на cbdshop.bg был занижен.
+ *  Цепочка раскрывается вся — как её раскрывает сборщик; имя пакета — по
+ *  `aliases` kit.config.json. */
+const composedFile = (from, spec) => {
+  if (!spec) return from
+  if (spec === 'global') return null
+  const alias = Object.entries(ALIASES).find(([k]) => (k.endsWith('/') ? spec.startsWith(k) : spec === k))
+  const path = alias ? join(ROOT, alias[1] + spec.slice(alias[0].length)) : resolveCss(from, spec)
+  if (!path || !existsSync(path)) return undefined
+  if (!css.has(path)) loadCss(path)
+  return path
+}
+const withComposed = (classes) => {
+  const out = [...classes]
+  const seen = new Set(out.map((c) => `${c.file}|${c.name}`))
+  for (let k = 0; k < out.length; k += 1) {
+    const c = out[k]
+    const rules = (c.file ? [c.file] : globalFiles).flatMap((f) => (css.get(f)?.rules ?? []).filter((r) => r.parts.length === 1 && classesOf(r.parts[0]).includes(c.name)).map((r) => [f, r]))
+    for (const [f, r] of rules) {
+      const v = r.decl.get('composes')
+      if (!v) continue
+      const m = v.match(/^([\w\s-]+?)(?:\s+from\s+['"]?([^'"]+?)['"]?)?\s*$/)
+      if (!m) continue
+      const file = composedFile(f, m[2] === 'global' ? 'global' : m[2])
+      if (file === undefined) continue
+      for (const name of m[1].trim().split(/\s+/)) {
+        const key = `${file}|${name}`
+        if (!seen.has(key)) { seen.add(key); out.push({ file, name }) }
+      }
+    }
+  }
+  return out
 }
 
 /** Разбор разметки без разборщика: открывающие и закрывающие теги со
@@ -265,6 +316,7 @@ for (const file of tsxFiles) {
       ...[...cn.matchAll(/(\w+)\[['"]([\w-]+)['"]\]/g)].filter((m) => mods.has(m[1])).map((m) => ({ file: mods.get(m[1]), name: m[2] })),
       ...(/^["']/.test(cn) ? cn.slice(1, -1).split(/\s+/).filter(Boolean).map((name) => ({ file: null, name })) : []),
     ]
+    el.classes = withComposed(el.classes)
     el.levels = /^h[1-6]$/.test(el.tag) ? [Number(el.tag[1])] : aliases.get(el.tag) ?? null
   }
   views.push({ file, src, els })
@@ -358,33 +410,44 @@ for (const view of views) {
      (layout.md:20). Шаг «между детьми» — ручка примитива (`--stack`,
      `--grid-gap`, `--cluster`) или свой `gap` / `row-gap`. */
   const primName = (el, name) => el.classes.some((c) => c.name === name && c.file === PRIM)
-  const knob = (el, name) => el.classes.filter((c) => c.file !== PRIM).flatMap(rulesFor).map((r) => r.decl.get(name)).find(Boolean)
-    ?? el.classes.filter((c) => c.file === PRIM).flatMap(rulesFor).map((r) => r.decl.get(name)).find(Boolean)
+  /* Значение под условием: правило этого медиазапроса, а нет его — основа
+     (И463). Переобъявленный на шве шаг — такой же шаг, только на другой
+     ширине: до 27.09.2026 читался первый найденный, и ступень, слипшаяся
+     на телефоне, проходила чистой. */
+  const pick = (rules, name, media) => {
+    const at = rules.filter((r) => r.decl.get(name))
+    return (at.find((r) => media && r.media === media) ?? at.find((r) => !r.media) ?? (media ? null : at[0]))?.decl.get(name)
+  }
+  const knob = (el, name, media) => pick(el.classes.filter((c) => c.file !== PRIM).flatMap(rulesFor), name, media)
+    ?? pick(el.classes.filter((c) => c.file === PRIM).flatMap(rulesFor), name, media)
   /* Меряется шаг ПО ВЕРТИКАЛИ — тот, что отделяет строки и группы друг от
      друга. Ряд вбок (`cluster`, строковый flex) разводит соседей в строке:
      его зазор с вертикальным ритмом не сравнивают. */
-  const step = (el) => {
-    if (primName(el, 'stack')) return knob(el, '--stack') ?? 'var(--air-block)'
-    if (primName(el, 'grid')) return knob(el, '--grid-gap') ?? 'var(--gap-grid)'
+  const step = (el, media = null) => {
+    if (primName(el, 'stack')) return knob(el, '--stack', media) ?? 'var(--air-block)'
+    if (primName(el, 'grid')) return knob(el, '--grid-gap', media) ?? 'var(--gap-grid)'
     if (primName(el, 'cluster') || primName(el, 'switcher')) return null
     const own = el.classes.flatMap(rulesFor).filter((r) => r.parts.length === 1)
     const has = (prop, rx) => own.some((r) => rx.test(r.decl.get(prop) ?? ''))
-    const rowGap = own.map((r) => r.decl.get('row-gap')).find(Boolean)
+    const rowGap = pick(own, 'row-gap', media)
     if (rowGap) return rowGap
     const vertical = has('display', /grid/) || has('flex-direction', /column/) || has('flex-flow', /column/)
-    const gap = own.map((r) => r.decl.get('gap')).find(Boolean)
+    const gap = pick(own, 'gap', media)
     return vertical && gap ? splitTop(gap, ' ')[0] : null
   }
+  const conditions = (el) => el.classes.flatMap(rulesFor).map((r) => r.media).filter(Boolean)
   for (const el of els) {
-    const outer = step(el)
-    if (!outer) continue
-    const po = range(outer)
-    if (!po) continue
     for (const child of els.filter((e) => e.parent === el)) {
-      const inner = step(child)
-      const pi = inner && range(inner)
-      if (pi && po[0] <= pi[0] && po[1] <= pi[1]) {
-        add('flatRhythm', where(view, child), `между пунктами ${outer}, внутри пункта ${inner} — группа не отделена`)
+      for (const media of [null, ...new Set([...conditions(el), ...conditions(child)])]) {
+        const outer = step(el, media)
+        const po = outer && range(outer)
+        if (!po) continue
+        const inner = step(child, media)
+        const pi = inner && range(inner)
+        if (pi && po[0] <= pi[0] && po[1] <= pi[1]) {
+          add('flatRhythm', where(view, child), `между пунктами ${outer}, внутри пункта ${inner}${media ? ` при @media ${media}` : ''} — группа не отделена`)
+          break
+        }
       }
     }
   }
