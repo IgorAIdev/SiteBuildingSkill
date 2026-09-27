@@ -34,8 +34,10 @@ function Popular({ shelf, cart }: { shelf: ShelfView; cart: Actions }) {
    все ширины. Строка ведёт на свой вариант целиком (И110): ссылка имени
    растянута на строку, органы подняты над ней одним родителем.
 
-   Сводка — порядком решения: код скидки свёрнут под вопросом, итоги, одна
-   громкая кнопка, под ней обещания из данных (K4). */
+   Сводка — порядком решения: итоги, одна громкая кнопка, под ней обещания
+   из данных (K4), и только потом код скидки, свёрнутый под вопросом (И491,
+   разбор impeccable 27.09.2026): вопрос о купоне над итогом уводил
+   покупателя искать код, не дойдя до кнопки (Baymard, «coupon field»). */
 export function CartView({ lang, view, submit, call }: { lang: string; view: CartPageView } & Actions) {
   const msgs = { timeout: view.messages.timeout, failed: view.messages.failed }
   if (!view.lines.length) {
@@ -74,6 +76,11 @@ export function CartView({ lang, view, submit, call }: { lang: string; view: Car
         <aside className={p.aside} aria-labelledby="cart-summary">
           <h2 id="cart-summary" className={p.said}>{view.summary}</h2>
           <div className={`${p.stack} ${p.pinned} ${s.summary}`}>
+            <OrderTotals totals={view.totals} />
+            <div className={s.decide}>
+              <a className={b.btn} data-voice="loud" data-size="lg" data-wide href={view.checkout.href}>{view.checkout.label}</a>
+              <Pledges pledges={view.pledges} />
+            </div>
             <CartForm lang={lang} className={s.coupon} submit={submit} call={call} initial={view.couponNotice} {...msgs}>
               <details className={s.promo} open={view.coupon.open}>
                 <summary>{view.coupon.ask}<Turn /></summary>
@@ -93,11 +100,6 @@ export function CartView({ lang, view, submit, call }: { lang: string; view: Car
                 </div>
               ) : null}
             </CartForm>
-            <OrderTotals totals={view.totals} />
-            <div className={s.decide}>
-              <a className={b.btn} data-voice="loud" data-size="lg" data-wide href={view.checkout.href}>{view.checkout.label}</a>
-              <Pledges pledges={view.pledges} />
-            </div>
           </div>
         </aside>
       </div>

@@ -130,7 +130,9 @@
 /* Марка — первая строка заголовка (ProductView.tsx, И441): ростом и
    межстрочьем тела, краской подписи — имя остаётся главным, марка читается
    раньше него. */
-.brand{display:block;font-size:var(--body-size);line-height:var(--body-lead);font-weight:600;letter-spacing:normal;color:var(--pop-ink)}
+/* Марка — подпись над именем: сноской и чернилами (И491); марочная краска
+   здесь спорила с главной кнопкой. */
+.brand{display:block;font-size:var(--note-size);line-height:var(--note-lead);font-weight:600;letter-spacing:normal;color:var(--ink-soft)}
 .name{font-size:var(--pagehead-size);line-height:var(--pagehead-lead);font-weight:var(--pagehead-weight);letter-spacing:var(--pagehead-track);text-wrap:balance;overflow-wrap:anywhere}
 /* Цена у имени (Baymard) — Price.tsx ростом `lead` (И476); наличие — в той
    же строке, по базовой линии. */

@@ -58,7 +58,7 @@
 @media (hover:hover){ .thumb:not([aria-current='true']):hover::after{box-shadow:inset 0 0 0 var(--line-w) var(--border)} }
 /* Выбранный кадр — кольцо марки (roles.md, «граница выбранного у кадра»:
    a9; И472) и под ним кольцо пола: на светлом снимке иначе не видно. */
-.thumb[aria-current='true']::after{box-shadow:inset 0 0 0 var(--ring-w) var(--pop),inset 0 0 0 calc(var(--ring-w) * 2) var(--page)}
+.thumb[aria-current='true']::after{box-shadow:inset 0 0 0 var(--ring-w) var(--ink),inset 0 0 0 calc(var(--ring-w) * 2) var(--page)}
 .thumb:focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:calc(var(--ring-w) * -1)}
 
 /* Точки вместо миниатюр (`--pdp-thumbs: dots`): общий указатель
@@ -89,7 +89,10 @@
 }
 /* Сила места (0,2,0): стрелка — орган `go`, и его `display` весом голого
    класса иначе решал бы порядок кусков сборки. */
-@container pdp (max-width:819px) and style(--pdp-thumbs: over){
+/* В одну колонку стрелок нет ни в каком виде (И491): кадр листает палец,
+   стрелки-плашки на середине кадра — мимо большого пальца и лишние коробки
+   на снимке (разбор impeccable 27.09.2026). */
+@container pdp (max-width:819px){
   .gallery .arrow{display:none}
 }
 /* Снимок во всю ширину (`--pdp-edge: bleed`, ширину даёт колонка —

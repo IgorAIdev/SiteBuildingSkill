@@ -40,7 +40,7 @@ export function Shell({ lang, data, look, chrome = 'full', children }: { lang: L
       <body>
         <style href="look" precedence="look">{lookCss(look)}</style>
         <a className={p.skip} href="#main">{t(lang, 'skip')}</a>
-        {chrome === 'checkout' ? <CheckoutHeader lang={lang} /> : <Header lang={lang} nav={data.nav} groups={data.groups} variant={look.header} />}
+        {chrome === 'checkout' ? <CheckoutHeader lang={lang} /> : <Header lang={lang} nav={data.nav} groups={data.groups} service={data.service} variant={look.header} />}
         {children}
         <Footer lang={lang} docs={data.docs} variant={chrome === 'checkout' ? 'legal' : 'full'} />
         {/* Окна за пальцем — один жест на документ (И488). */}

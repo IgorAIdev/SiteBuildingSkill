@@ -17,7 +17,9 @@ export type NavLink = { href: string; label: string; image: Image | null; line: 
 /** Группа «по поводу» в шторке полок (И430; меню телефона пилюлями cbdin.bg):
  *  грань всего каталога и её значения ссылками на каталог с этой гранью. */
 export type NavGroup = { name: string; links: { label: string; href: string }[] }
-export type ShellData = { nav: NavLink[]; groups: NavGroup[]; docs: Doc[] }
+/** `service` — служебное в шторке меню под полками (И491): доставка и
+ *  контакты — из тех же документов магазина, что в подвале. */
+export type ShellData = { nav: NavLink[]; groups: NavGroup[]; docs: Doc[]; service: { href: string; label: string }[] }
 
 /** Грань, значения которой повторяют полки (Vendure: «category» — oil,
  *  capsules …; образец: «Форма» — Масло, Капсулы …), в шторке не нужна: полки
@@ -34,6 +36,10 @@ const mirrorsShelves = (f: Facet, cols: Collection[]): boolean => {
  *  Шапка и подвал не падают вместе с источником: не ответил — полок, групп
  *  и документов в них нет, а страница говорит сама за себя. Берут двое —
  *  макет языка и «не найдено» без языка. */
+/** Служебное шторки — доставка и контакты (разбор impeccable 27.09.2026:
+ *  в меню телефона не было ни доставки, ни связи). */
+const SERVICE = ['livrare-si-plata', 'contact']
+
 export async function shellData(lang: Lang): Promise<ShellData> {
   const [cols, docs, all] = await Promise.all([
     source().collections(lang), content().docs(lang), source().listing(lang, { facets: {}, sort: 'popular', page: null }),
@@ -59,5 +65,7 @@ export async function shellData(lang: Lang): Promise<ShellData> {
      больше одного значения; повторяющие полки — прочь. Молчит источник —
      групп нет, шторка остаётся полками. */
   const groups = all.ok ? groupsOf(all.value.facets, (code, value) => hrefFor(lang, { catalog: true, facets: { [code]: [value] } })) : NONE
-  return { nav, groups, docs: docs.ok ? docs.value : NONE }
+  const shown = docs.ok ? docs.value : NONE
+  const service = SERVICE.flatMap((slug) => shown.filter((d) => d.slug === slug).map((d) => ({ href: hrefFor(lang, { doc: d.slug }), label: d.title })))
+  return { nav, groups, docs: shown, service }
 }

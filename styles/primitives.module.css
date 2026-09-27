@@ -1097,7 +1097,10 @@
   .seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):hover{background:var(--hover-ctrl);color:var(--ink)}
 }
 .seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):active{background:var(--press-ctrl);color:var(--ink);transform:var(--press-move)}
-.seg :is([aria-pressed="true"], [aria-current="true"]){background:var(--pop);color:var(--on-pop);font-weight:600;box-shadow:none}
+/* Выбранное — чернилами, не маркой (И491, разбор impeccable 27.09.2026):
+   марка на экране одна — у главного действия; выбранный вариант, залитый
+   той же краской, спорил с «в корзину». */
+.seg :is([aria-pressed="true"], [aria-current="true"]){background:var(--ink);color:var(--on-ink);font-weight:600;box-shadow:none}
 .seg [aria-disabled="true"]{opacity:var(--state-off);cursor:not-allowed}
 /* Вид сегментов — роль вида `--seg-look` (И396): `chips` (умолчание,
    выше), `joined` — встык в волоске края, угол у крайних, выбранный — тон

@@ -1,6 +1,6 @@
 {
   "header": "classic",
-  "card": "framed",
+  "card": "bare",
   "vars": {
     "--n-1": "light-dark(#FFFCF6, #15120E)",
     "--n-2": "light-dark(#FBF8F6, #1A1816)",
@@ -303,7 +303,7 @@
     "header": "classic",
     "marker": "pill",
     "head-icons": "bare",
-    "card": "framed",
+    "card": "bare",
     "shot-frame": "square",
     "card-buy": "full",
     "sort-label": "beside",
