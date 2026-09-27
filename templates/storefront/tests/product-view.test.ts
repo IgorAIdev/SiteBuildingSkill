@@ -8,10 +8,17 @@ const none = { category: null, related: [] }
 test('nothing chosen: a "from" price, an open button without a price that leads to the choice', async () => {
   const r = await sample.product('ro', 'ulei-cbd-full-spectrum')
   assert.ok(r.ok)
-  const v = productView('ro', r.value, {}, none)
+  /* Адрес без выбора — стандартный вариант магазина выбран сам (И468):
+     10 % · 10 ml, кнопка кладёт его. */
+  const std = productView('ro', r.value, {}, none)
+  assert.equal(std.buy.variant, 'uf-10-10')
+  assert.equal(std.message, null)
+  assert.equal(std.choose, null)
+  assert.ok(std.groups.every((g) => g.options.some((o) => o.current)), 'обе группы выбраны')
+  /* Нажали «в корзину» без выбора (`choose=1`) — решает выбор покупателя. */
+  const v = productView('ro', r.value, {}, { ...none, asked: true })
   assert.equal(v.price, 'de la 34,90 €')
   assert.equal(v.message, null, 'до нажатия под кнопкой ничего: она открыта')
-  assert.equal(v.choose, null, 'ошибка выбора — только после нажатия')
   assert.equal(v.stock, null)
   assert.equal(v.buy.variant, null)
   assert.equal(v.buy.add, 'Adaugă în coș', 'без варианта — одно действие, без цены')
@@ -46,7 +53,7 @@ test('a chosen variant: its price, its stock and the key figures of its pack', a
   ])
   const doc = labView('en', { batch: 'RO-2409-10', lab: 'Lab', date: '2026-09-02', cbdPercent: 10, thcPercent: 0.1, url: '/sample/lab-RO-2409-10.pdf' })
   assert.deepEqual(doc.open, { label: 'Open the lab report', href: '/sample/lab-RO-2409-10.pdf' }, 'протокол — блоком главной')
-  assert.equal(productView('ro', r.value, {}, none).facts, null, 'без выбора поля нет: у упаковок разные числа')
+  assert.equal(productView('ro', r.value, {}, { ...none, asked: true }).facts, null, 'без выбора поля нет: у упаковок разные числа')
   const gone = productView('ro', r.value, { putere: '30', volum: '10' }, none)
   assert.equal(gone.stock, 'Stoc epuizat')
   assert.equal(gone.message, null)
@@ -70,7 +77,8 @@ test('a single product has its own price and no choice to make', async () => {
 test('buying: only a chosen variant in stock goes to the cart; the button carries no price', async () => {
   const oil = await sample.product('en', 'ulei-cbd-full-spectrum')
   assert.ok(oil.ok)
-  assert.equal(productView('en', oil.value, {}, none).buy.variant, null)
+  assert.equal(productView('en', oil.value, {}, { ...none, asked: true }).buy.variant, null)
+  assert.equal(productView('en', oil.value, {}, none).buy.variant, 'uf-10-10', 'стандартный вариант (И468)')
   const chosen = productView('en', oil.value, { putere: '20', volum: '10' }, none).buy
   assert.equal(chosen.variant, 'uf-20-10')
   assert.equal(chosen.add, 'Add to cart')

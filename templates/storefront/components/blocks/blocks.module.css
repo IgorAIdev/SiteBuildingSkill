@@ -7,10 +7,9 @@
    look-home:* Пока вид выбирается, здесь стоят все варианты; `npm run
    look-home:* look:remove` оставляет правила выбранного.
    Краска — роли палитры, размер — роли шкал, раскладка — примитивы. */
-.shelf,.rows{list-style:none;padding:0;margin:0}
+.rows{list-style:none;padding:0;margin:0}
 /* Ходовые — четыре в ряд на широком, две на телефоне; число колонок считает
    сетка (`grid`: `--cols` сверху, пол ряда — две). */
-.shelf{--cols:4;--cell-min:200px}
 
 /* look-home:scene,proof,cabinet:start */
 .tiles{list-style:none;padding:0;margin:0}
@@ -137,8 +136,7 @@
 .q{border-block-end:var(--line-w) solid var(--rule)}
 .ask{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);padding-block:var(--pad-inner);list-style:none;font-weight:600}
 .ask::-webkit-details-marker{display:none}
-.ask svg{flex:none;inline-size:1.25em;block-size:1.25em;color:var(--ink-soft);transition:transform var(--open-t) var(--ease)}
-.q[open] .ask svg{transform:rotate(180deg)}
+.ask svg{color:var(--ink-soft)}
 .answer{max-inline-size:var(--measure);padding-block-end:var(--pad-card);color:var(--ink-soft)}
 
 /* СЛОВО МАГАЗИНА — место заказчика, во всех вариантах (Story.tsx): слова и
@@ -306,8 +304,6 @@
 .showCardShot{--frame:1 / 1;inline-size:calc(var(--ctrl-h-lg) * 1.75);border-radius:var(--r-xs)}
 .showCardText{display:grid;justify-items:start}
 .showCardName{font-weight:600;text-wrap:pretty}
-.showCardPrice{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:var(--gap-row);font-variant-numeric:tabular-nums}
-.showCardPrice s{color:var(--ink-soft)}
 .showCardGo{color:var(--ink-soft)}
 .showCardGo::after{content:'';position:absolute;inset:0;border-radius:inherit}
 @media (hover:hover){ .showCard:hover .showCardGo{color:var(--ink);text-decoration-line:underline} }

@@ -1805,6 +1805,27 @@ for (const path of files) {
     seen.add(line)
     found.twiceDrawn.push(`${line}  движение знака задано на месте — оно одно, и оно в go.module.css`)
   }
+  /* Движение нажатия (И477): `:active` со своим transform — сжатие числом на
+     месте. Одно движение на всё, что нажимают, — роль `--press-move`
+     (styles/tokens.css); у счётчика стояло своё .92, у страниц — никакого. */
+  for (const m of css.matchAll(/([^{}]*:active[^{}]*)\{([^{}]*)\}/g)) {
+    const t = m[2].match(/(?<![-a-z])transform\s*:\s*([^;]+)/)
+    if (!t || /var\(--press-move\)|none/.test(t[1])) continue
+    const line = at(m.index)
+    if (seen.has(line)) continue
+    seen.add(line)
+    found.twiceDrawn.push(`${line}  движение нажатия записано на месте («${t[1].trim()}») — оно одно: var(--press-move)`)
+  }
+  /* Окно поверх страницы (И467): затемнение `::backdrop` в узле — значит,
+     узел рисует коробку окна сам (край, ширину, угол, тень). Меню и фильтры
+     держали по копии шторки, и заказчик увидел разницу глазом: «формы
+     подобные у нас что все разные?». Окно одно — styles/pane.module.css. */
+  for (const m of css.matchAll(/::backdrop/g)) {
+    const line = at(m.index)
+    if (seen.has(line)) continue
+    seen.add(line)
+    found.twiceDrawn.push(`${line}  окно нарисовано на месте — коробка и затемнение окна одни, в pane.module.css (data-pane)`)
+  }
 }
 
 /* ── `vector-effect`, поставленный не туда ─────────────────────────────────

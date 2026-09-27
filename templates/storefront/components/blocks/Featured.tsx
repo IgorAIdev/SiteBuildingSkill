@@ -1,13 +1,10 @@
 import p from '@/styles/primitives.module.css'
-import go from '@/styles/go.module.css'
-import s from './blocks.module.css'
 import type { Block } from '@/lib/source/contract.ts'
 import type { ShelfCard } from '@/lib/view.ts'
 import type { HomeVariant } from '@/lib/homes.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { t } from '@/lib/i18n/index.ts'
-import { ProductCard } from '../ProductCard.tsx'
-import { Icon } from '../Icon.tsx'
+import { Shelf } from '../Shelf.tsx'
 import type { BlockCtx, Place } from './types.ts'
 
 /* Сколько карточек полки грузится сразу, а не лениво: там, где вариант
@@ -17,19 +14,13 @@ const EAGER: Partial<Record<HomeVariant, number>> = {
   counter: 2, // look-home:counter
 }
 
+/* Карточки полки по списку блока — те, что источник ещё отдаёт. */
+const picked = (ids: readonly string[], cards: BlockCtx['cards']): ShelfCard[] => ids.map((id) => cards[id]).filter((c): c is ShelfCard => Boolean(c))
+
 export function Featured({ block, ctx, place }: { block: Extract<Block, { type: 'featured' }>; ctx: BlockCtx; place: Place }) {
-  const cards = block.ids.map((id) => ctx.cards[id]).filter((c): c is ShelfCard => Boolean(c))
+  const cards = picked(block.ids, ctx.cards)
   if (!cards.length) return null
   const eager = EAGER[ctx.home] ?? 0
-  return (
-    <section className={`${p.wrap} ${p.section}`} data-air={place.air ?? undefined}>
-      {/* Выход ко всему каталогу — в строке заголовка, у правого края: он
-          отвечает на другой вопрос. Тесно — уходит под заголовок сам. */}
-      <div className={p.sectionHead} data-row>
-        <h2>{block.title}</h2>
-        <a className={go.go} href={hrefFor(ctx.lang, { catalog: true })}>{t(ctx.lang, 'nav.catalog')}<Icon id="arrow-right" /></a>
-      </div>
-      <ul className={`${p.grid} ${s.shelf}`}>{cards.map((c, i) => <li key={c.id}><ProductCard card={c} eager={i < eager} cart={ctx.cart} /></li>)}</ul>
-    </section>
-  )
+  /* Полка — общая (components/Shelf.tsx, И481); выход — ко всему каталогу. */
+  return <Shelf title={block.title} id={`shelf-${block.ids[0] ?? 'top'}`} all={{ label: t(ctx.lang, 'nav.catalog'), href: hrefFor(ctx.lang, { catalog: true }) }} cards={cards} cart={ctx.cart} eager={eager} className={p.wrap} air={place.air ?? undefined} />
 }

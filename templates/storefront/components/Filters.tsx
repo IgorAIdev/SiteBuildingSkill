@@ -1,9 +1,11 @@
 import p from '@/styles/primitives.module.css'
 import b from '@/styles/btn.module.css'
 import f from '@/styles/form.module.css'
+import pn from '@/styles/pane.module.css'
 import s from './Filters.module.css'
 import type { FiltersView } from '@/lib/catalog-view.ts'
 import { Icon } from './Icon.tsx'
+import { Turn } from './Turn.tsx'
 
 /* Одна форма граней на обе ширины (разбор 24.09.2026, C1–C3, `firstScreen`).
 
@@ -30,31 +32,38 @@ export function Filters({ f: view }: { f: FiltersView }) {
           <Icon id="sliders-horizontal" />{view.open}
         </button>
       ) : null}
-      <form id="filters" popover="auto" className={`${p.cluster} ${s.filters}`} action={view.action} method="get" aria-label={view.title}>
-        <div className={s.head}>
-          <h2>{view.title}</h2>
-          <button className={b.btn} data-size="sm" type="button" popoverTarget="filters" popoverTargetAction="hide" aria-label={view.close}><Icon id="x" /></button>
+      {/* Шторка — окно общего модуля (styles/pane.module.css, И460): шапка и
+          низ стоят, грани прокручиваются. В строке над полкой тело свёрнуто
+          (`display:contents`), и раскрытия стоят в строке примитива. */}
+      <form id="filters" popover="auto" className={`${p.cluster} ${pn.pane} ${s.filters}`} data-pane="start" action={view.action} method="get" aria-label={view.title}>
+        <div className={`${pn.bar} ${s.head}`}>
+          <h2 className={pn.title}>{view.title}</h2>
+          <button className={`${b.btn} ${pn.close}`} type="button" popoverTarget="filters" popoverTargetAction="hide" aria-label={view.close}><Icon id="x" /></button>
         </div>
-        {view.facets.map((facet) => (
-          <div key={facet.code} className={s.facet}>
-            <button className={`${b.btn} ${s.trigger}`} type="button" popoverTarget={facet.id}>{facet.label}<Icon id="chevron-down" /></button>
-            <fieldset id={facet.id} popover="auto" className={`${p.menu} ${s.drop} ${s.values}`}>
-              <legend className={s.legend}>{facet.name}</legend>
-              <div className={`${p.grid} ${s.ticks}`}>
-                {facet.values.map((v) => (
-                  <label key={v.code} className={f.tick}>
-                    <input type="checkbox" name={`facet.${facet.code}`} value={v.code} defaultChecked={v.selected} />
-                    <span>{v.name} <span className={p.muted}>({v.count})</span></span>
-                  </label>
-                ))}
-              </div>
-              <button className={`${b.btn} ${s.apply}`} data-wide type="submit">{view.apply}</button>
-            </fieldset>
-          </div>
-        ))}
-        <div className={s.actions}>
-          <button className={b.btn} data-wide type="submit">{view.apply}</button>
-          {view.clear ? <a className={b.btn} data-wide href={view.clear.href}><Icon id="x" />{view.clear.label}</a> : null}
+        <div className={`${pn.body} ${s.list}`}>
+          {view.facets.map((facet) => (
+            <div key={facet.code} className={s.facet}>
+              <button className={`${b.btn} ${s.trigger}`} type="button" popoverTarget={facet.id}>{facet.label}<Turn /></button>
+              <fieldset id={facet.id} popover="auto" className={`${p.menu} ${s.drop} ${s.values}`}>
+                <legend className={s.legend}>{facet.name}</legend>
+                <div className={`${p.grid} ${s.ticks}`}>
+                  {facet.values.map((v) => (
+                    <label key={v.code} className={f.tick}>
+                      <input type="checkbox" name={`facet.${facet.code}`} value={v.code} defaultChecked={v.selected} />
+                      <span>{v.name} <span className={p.muted}>({v.count})</span></span>
+                    </label>
+                  ))}
+                </div>
+                <button className={`${b.btn} ${s.apply}`} data-wide type="submit">{view.apply}</button>
+              </fieldset>
+            </div>
+          ))}
+        </div>
+        <div className={`${pn.foot} ${s.actions}`}>
+          {/* «Применить» — главное действие шторки: заливка марки (palette,
+              roles.md, «Заливки»: «применить фильтры» — кнопка покупки). */}
+          <button className={b.btn} data-voice="loud" data-wide type="submit">{view.apply}</button>
+          {view.clear ? <a className={b.btn} data-wide href={view.clear.href}>{view.clear.label}</a> : null}
         </div>
       </form>
     </>

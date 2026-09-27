@@ -8,7 +8,7 @@ import { OrderItems } from './OrderItems.tsx'
 import { OrderTotals } from './OrderTotals.tsx'
 import { CheckoutSteps } from './CheckoutSteps.tsx'
 import { StateScreen } from './StateScreen.tsx'
-import { Icon } from './Icon.tsx'
+import { Turn } from './Turn.tsx'
 
 /* Сводка шага: товары и итоги. Одна разметка на два места — колонку рядом
    (широкая коробка) и раскрывашку сверху (узкая): видно ровно одно, второе
@@ -32,7 +32,7 @@ export function CheckoutFrame({ steps, summary, children }: { steps: StepsView; 
     <main id="main" className={`${p.wrap} ${p.section} ${s.corridor}`} data-air="head">
       {summary ? (
         <details className={s.peek}>
-          <summary><span className={s.peekName}>{summary.show}<Icon id="chevron-down" /></span><b>{summary.total}</b></summary>
+          <summary><span className={s.peekName}>{summary.show}<Turn /></span><b>{summary.total}</b></summary>
           <div className={s.peekBody}><Summary summary={summary} /></div>
         </details>
       ) : null}

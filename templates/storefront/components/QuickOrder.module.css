@@ -1,46 +1,59 @@
 /* Окно быстрого заказа (QuickOrder.tsx, И442). Образец — окно cbdin.bg,
    присланное заказчиком снимком; числа не взяты, взяты роли: лист окна —
-   поверхность и угол листа, поле — поле карточки, строки мессенджеров —
+   поверхность и угол листа, поле — поле карточки, плитки мессенджеров —
    кнопки сайта (тихий голос, рост крупного органа), «Call me back» — главное
-   действие окна. Тени нет: лист стоит над затемнением `::backdrop`, край
-   читается и без неё.
+   действие окна.
 
-   Три группы через `--air-group`: что это (заголовок, пояснение, что
-   заказывают); куда написать (строки); иначе — телефон. Внутри группы —
-   строкой `--air-row`, строки мессенджеров — зазором соседних целей.
+   Устройство окна — общий модуль (styles/pane.module.css, И460, И467):
+   шапка с заголовком и крестиком стоит, прокручивается только тело. Здесь —
+   только что в теле.
 
-   Окно помещается в экран (правило 9): не выше малого окна за вычетом края
-   страницы, лишнее прокручивается внутри листа. Ширина — мера строки: окно
-   шириной в абзац, а не в полстраницы. */
-.dialog{
-  inline-size:min(calc(100% - var(--gut) * 2), var(--measure));
-  max-block-size:calc(100dvh - var(--gut) * 2);
-  overflow:auto;overscroll-behavior:contain;
-  margin:auto;padding:var(--pad-card);
-  border:0;border-radius:var(--r-sheet);
-  background:var(--surface);color:var(--ink)
-}
-.dialog::backdrop{background:var(--scrim)}
-.dialog[open]{display:grid;gap:var(--air-group)}
+   В один экран телефона (слово заказчика 27.09.2026: «стоит стремиться,
+   чтоб такие формы на одно окно делать без скролинга»; И461): что
+   заказывают — полужирной строкой, без плашки; мессенджеры — плитками по
+   две в ряд, знак над именем; телефон и «перезвоните» — одной парой.
+   Четыре строки во всю ширину и плашка товара занимали полтора экрана.
 
-/* Заголовок и крестик — одной строкой; крестик — кнопка сайта ростом
-   цели, квадратная, знак из листа. */
+   Три группы тела через `--air-group`: что это (пояснение, что заказывают);
+   куда написать (плитки); иначе — телефон. Внутри группы — строкой
+   `--air-row`, плитки — зазором соседних целей.
+
+   Где окно стоит и какой оно ширины — общий модуль (`data-pane="dialog"`,
+   И467): посреди экрана, в меру строки, не выше окна (правило 9). */
+
+.body{display:grid;gap:var(--air-group);align-content:start}
 .intro{display:grid;gap:var(--air-row)}
-.head{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row)}
-.title{margin:0;font-size:var(--h2-size);line-height:var(--h2-lead);font-weight:var(--h2-weight);letter-spacing:var(--h2-track)}
-.close{--btn-h:var(--ctrl-target);inline-size:var(--btn-h);padding:0}
-.close svg{inline-size:1.25em;block-size:1.25em}
 .lead{margin:0;font-size:var(--body-size);line-height:var(--body-lead);color:var(--ink-soft)}
-/* Что заказывают — плашкой тона, как вписанное поле: это строка, которую
-   уносит сообщение, а не абзац пояснения. */
-.what{margin:0;padding:var(--pad-inner);border-radius:var(--r-ctrl);background:var(--quiet);font-size:var(--body-size);line-height:var(--body-lead);font-variant-numeric:tabular-nums}
+/* Что заказывают — полужирной строкой чернил: это строка, которую уносит
+   сообщение, и её отличает вес, а не плашка (плашка брала две строки
+   высоты и ещё одну серую площадь). */
+.what{margin:0;font-size:var(--body-size);line-height:var(--body-lead);font-weight:700;font-variant-numeric:tabular-nums}
 
-.rows{display:grid;gap:var(--gap-targets);list-style:none;margin:0;padding:0}
-.row{inline-size:100%;justify-content:flex-start}
-.row svg{inline-size:1.4em;block-size:1.4em;flex:none}
-
-.phone{display:grid;gap:var(--air-row);justify-items:start}
-.phone > :first-child{justify-self:stretch}
+/* Мессенджеры — вид панели `--quick-look` (И470). Плитки (умолчание) — две
+   колонки всегда: ячейка без пола, ряд — ровно две (ручки примитива
+   `grid`); знак над именем. Строки — одна колонка, знак слева, надпись
+   «Order via …», как у cbdin.bg. Геометрия — от роста кнопки (правило 2). */
+.rows{--cols:2;--cols-min:2;--cell-min:0px;--grid-gap:var(--gap-targets);list-style:none;margin:0;padding:0}
+.row{
+  inline-size:100%;block-size:100%;
+  flex-direction:column;gap:calc(var(--btn-h) * .1);
+  padding:calc(var(--btn-h) * .22) calc(var(--btn-h) * .2)
+}
+.row svg{inline-size:1.5em;block-size:1.5em;flex:none}
+.via{display:none}
+@container style(--quick-look: rows){
+  .rows{--cols:1;--cols-min:1}
+  .row{flex-direction:row;justify-content:flex-start;gap:calc(var(--btn-h) * .25);padding-block:0;padding-inline:calc(var(--btn-h) * .4)}
+  .name{display:none}
+  .via{display:inline}
+}
+/* Знак — краской своей марки (роли `--mark-*` строителя палитры, И471): так
+   мессенджер узнают; фон строки — тихая кнопка сайта, без своей краски
+   («фон у иконок мессенджеров не красят» — слово заказчика 27.09.2026). */
+.row[data-mark='viber'] svg{color:var(--mark-viber)}
+.row[data-mark='telegram'] svg{color:var(--mark-telegram)}
+.row[data-mark='whatsapp'] svg{color:var(--mark-whatsapp)}
+.row[data-mark='instagram'] svg{color:var(--mark-instagram)}
 
 /* Кнопка, открывающая окно, — рядом с «в корзину» (AddToCart): тихий
    голос, растёт вместе с ней. */

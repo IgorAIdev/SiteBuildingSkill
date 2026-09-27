@@ -3,7 +3,7 @@ import s from './blocks.module.css'
 import type { Block } from '@/lib/source/contract.ts'
 import { faqLd } from '@/lib/ld.ts'
 import { JsonLd } from '../JsonLd.tsx'
-import { Icon } from '../Icon.tsx'
+import { Turn } from '../Turn.tsx'
 import type { BlockCtx, Place } from './types.ts'
 
 /* Вопросы — тот же порядок, что у доставки над ними: заголовок слева,
@@ -19,7 +19,7 @@ export function Faq({ block, place }: { block: Extract<Block, { type: 'faq' }>; 
         <div className={`${s.rows} ${s.splitBody}`}>
           {block.items.map((item) => (
             <details key={item.q} className={s.q} data-faq>
-              <summary className={s.ask}>{item.q}<Icon id="chevron-down" /></summary>
+              <summary className={s.ask}>{item.q}<Turn /></summary>
               <p className={s.answer}>{item.a}</p>
             </details>
           ))}

@@ -12,7 +12,7 @@ type Action = (prev: FormState, form: FormData) => Promise<FormState>
 export function PointForm({ details, action, permalink }: { details: PickupDetails; action: Action; permalink: string }) {
   const [state, formAction, pending] = useActionState(action, null, permalink)
   return (
-    <form className={s.form} action={formAction}>
+    <form aria-busy={pending} className={s.form} action={formAction}>
       {state?.message ? <p className={f.say} data-state="error" role="alert">{state.message}</p> : null}
       <fieldset className={`${s.options} ${s.plain}`} disabled={pending} aria-labelledby="points-title">
         {details.points.map((pt) => (

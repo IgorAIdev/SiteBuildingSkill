@@ -309,6 +309,7 @@ npm run sweep         # съёмка на 41 ширине: сетка 320…1600
 | `monoCostume` | моноширинный шрифт как костюм «технологичности» вне кода, данных и замеров | craft-floor.md:38 — «Monospace as a costume for "technical"» |
 | `docValue` | DESIGN.md несёт число (#код, rgb/oklch, px, ms): вид описывается ролями, числа выпускают строители | document.md:46 — «Never split the source of truth without explicit reason»; спецификация google-labs-code/design.md: «The frontmatter is optional»; CLAUDE.md, «Делается только правильно» — краска → строитель палитры → роль |
 | `docDead` | DESIGN.md называет роль (--имя), которой нет ни в одном файле стилей — описание разошлось с системой | doctor.md:11 — «Truth drift. The code moved on and the document no longer describes it» |
+| `briefRefs` | бриф поверхности (docs/design/*.md) без живых референсов: в разделе «2. Референсы» меньше трёх адресов разных сайтов — решение вида придумано, а не сверено | document.md:62 — «rather than filling them with invented rules»; CLAUDE.md, порядок дизайна, шаг 3 — «три-пять живых магазинов для этой поверхности»; слово заказчика 27.09.2026: «не сверился с лучшими существующими решениями» |
 <!-- /families:design -->
 
 ### `check:detect` — детектор impeccable по отрисованной странице

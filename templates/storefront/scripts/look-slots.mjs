@@ -60,6 +60,7 @@ export const PRODUCT = {
   '--pdp-thumbs': { type: 'keyword', value: 'below' },
   '--pdp-edge': { type: 'keyword', value: 'inset' },
   '--seg-look': { type: 'keyword', value: 'chips' },
+  '--quick-look': { type: 'keyword', value: 'tiles' },
   '--go-hover': { type: 'colour', value: 'currentcolor' },
   '--head-icons': { type: 'keyword', value: 'bare' },
   '--say-look': { type: 'keyword', value: 'line' },

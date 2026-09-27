@@ -7,7 +7,6 @@ import { hrefFor } from '@/lib/href.ts'
 import { COMPANY, ANPC_SAL_URL, SOL_URL, TERMS_DOC } from '@/lib/company.ts'
 import { CONTACTS, telHref, mailHref } from '@/lib/contacts.ts'
 import { COMPANY_IS_REAL } from '@/lib/flags.ts'
-import { LangSwitch } from './LangSwitch.tsx'
 
 const HELP = ['livrare-si-plata', 'retur', 'contact', 'despre-noi']
 const LEGAL = [TERMS_DOC, 'confidentialitate']
@@ -45,6 +44,9 @@ export function Footer({ lang, docs, variant = 'full' }: { lang: Lang; docs: Doc
   }
   return (
     <footer className={s.foot} data-ground="deck">
+      {/* Языка в подвале нет (И484): он в шапке и в меню — там, где его
+          ищут. Слово заказчика 27.09.2026: «я в жизни никогда не видел выбора
+          языка в подвале — убирай». */}
       <div className={`${p.wrap} ${p.grid} ${s.cols}`}>
         <nav className={`${p.stack} ${s.col}`} aria-labelledby="foot-help">
           <p className={p.eyebrow} id="foot-help">{t(lang, 'footer.help')}</p>
@@ -69,7 +71,6 @@ export function Footer({ lang, docs, variant = 'full' }: { lang: Lang; docs: Doc
           </address>
           {COMPANY_IS_REAL ? null : <p className={p.note}>{t(lang, 'sample')}</p>}
         </div>
-        <LangSwitch lang={lang} label={t(lang, 'nav.lang')} />
       </div>
     </footer>
   )

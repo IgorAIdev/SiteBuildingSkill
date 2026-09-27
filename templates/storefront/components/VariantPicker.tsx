@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import f from '@/styles/form.module.css'
 import p from '@/styles/primitives.module.css'
 import s from './ProductView.module.css'
@@ -6,6 +7,12 @@ import { FocusLine } from './FocusLine.tsx'
 
 /* Выбор — ссылками: адрес несёт вариант, Back возвращает прежний, работает
    без JavaScript. Сочетания нет — опция без адреса и помечена.
+
+   Ссылка — мягкая (`Link`) и без прокрутки (`scroll={false}`, И465): простая
+   `<a>` грузила страницу заново, и нажатие «30 %» открывало карту сверху —
+   страница скакала (слово заказчика 27.09.2026: «при выборе процентов,
+   миллилитров страница перезагружается и скачет»). Без скрипта `Link` —
+   та же простая ссылка.
 
    `error` — «Choose an option» после нажатия «в корзину» без выбора: строка
    ошибки у ПЕРВОЙ группы, где ничего не выбрано, под её опциями (как у поля
@@ -18,7 +25,7 @@ export function VariantPicker({ groups, error }: { groups: OptionGroupLinks[]; e
       <legend className={s.legend}>{g.name}</legend>
       <div className={p.seg}>
         {g.options.map((o) => o.href
-          ? <a key={o.code} href={o.href} aria-current={o.current ? 'true' : undefined}>{o.name}</a>
+          ? <Link key={o.code} href={o.href} scroll={false} aria-current={o.current ? 'true' : undefined}>{o.name}</Link>
           : <a key={o.code} aria-disabled="true">{o.name}</a>)}
       </div>
       {g === open ? <FocusLine className={`${f.say} ${s.choose}`} id="choose-error">{error}</FocusLine> : null}

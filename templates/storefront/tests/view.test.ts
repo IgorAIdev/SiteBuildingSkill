@@ -4,14 +4,15 @@ import { sample } from '../lib/source/sample/catalog.ts'
 import { shelfCard } from '../lib/view.ts'
 import { faqLd } from '../lib/ld.ts'
 
-test('a shelf card carries ready strings: address, "from" price, facts, stock only as an exception', async () => {
+test('a shelf card carries ready strings: address, the standard variant price and facts, stock only as an exception', async () => {
   const r = await sample.cards('ro', ['ulei-cbd-full-spectrum', 'ser-fata-cbd', 'ulei-pisici-cbd'])
   assert.ok(r.ok)
   const [oil, serum, cats] = r.value.map((c) => shelfCard('ro', c))
   assert.equal(oil.href, '/ro/product/ulei-cbd-full-spectrum')
-  assert.equal(oil.price, 'de la 34,90 €')
+  /* Карточка стоит на стандартном варианте (И473): 10 % · 10 ml, его цена. */
+  assert.equal(oil.price, '44,90\u00a0€')
   assert.equal(oil.flag, null, '«în stoc» на полке не печатается')
-  assert.equal(oil.facts, '5–\u206030 % · 10/30 ml')
+  assert.equal(oil.facts, '10\u00a0%\u00a0· 10\u00a0ml\u00a0· 1000\u00a0mg')
   assert.equal(serum.price, '32,90 €')
   assert.deepEqual(serum.flag, { level: 'out', text: 'Stoc epuizat' })
   assert.deepEqual(cats.flag?.level, 'low')
@@ -24,22 +25,21 @@ test('a shelf card binds a number to its unit in the name', async () => {
   assert.equal(shelfCard('en', r.value[0]).name, 'CBD oil 30 % forte')
 })
 
-/* «В корзину» с полки (слово заказчика 25.09.2026): вариант один — кладётся
-   сразу; вариантов несколько — кнопка ведёт к выбору (И284); распродано —
-   на карту словом «View». Прежняя цена — у товара одной цены. */
-test('a shelf card buys one variant directly, sends a choice to the product page, shows the old price', async () => {
-  const r = await sample.cards('en', ['ulei-cbd-30-forte', 'ulei-cbd-full-spectrum', 'ser-fata-cbd'])
+/* «В корзину» с полки: кладётся стандартный вариант товара (слово заказчика
+   27.09.2026, И473) — у товара с одним вариантом он сам; распродано — на
+   карту словом «View». Прежняя цена и плашка — у цены стандартного. */
+test('a shelf card buys the standard variant directly and shows its old price; sold out leads to the page', async () => {
+  const r = await sample.cards('en', ['ulei-cbd-30-forte', 'ulei-cbd-full-spectrum', 'ser-fata-cbd', 'capsule-cbd-25'])
   assert.ok(r.ok)
-  const [forte, oil, serum] = r.value.map((c) => shelfCard('en', c))
+  const [forte, oil, serum, caps] = r.value.map((c) => shelfCard('en', c))
   assert.equal(forte.buy.variant, 'uf30-10')
   assert.equal(forte.buy.add, 'Add')
   assert.equal(forte.buy.name, 'Add to cart: CBD oil 30 % forte')
   assert.equal(forte.was?.text, '€104.90')
   assert.equal(forte.sale, '−14 %')
-  assert.equal(oil.buy.variant, null)
-  assert.equal(oil.buy.choose, 'Choose')
-  assert.equal(oil.buy.ask, '/en/product/ulei-cbd-full-spectrum?choose=1')
-  assert.equal(oil.was, null, 'у цены «от» прежней цены нет')
+  assert.equal(oil.buy.variant, 'uf-10-10', 'стандартный вариант магазина')
+  assert.equal(caps.buy.variant, 'cc-30')
+  assert.equal(caps.sale, '−15\u00a0%', 'скидка стандартного варианта')
   assert.equal(serum.buy.variant, null, 'распродано — с полки не купить')
   assert.equal(serum.buy.choose, 'View')
 })

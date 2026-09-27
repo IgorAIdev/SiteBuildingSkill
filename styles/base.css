@@ -253,6 +253,18 @@ summary{min-block-size:var(--ctrl-target);align-content:center;cursor:pointer}
    по номеру ступени»). */
 :focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:var(--ring-off)}
 
+/* Занятая форма — не выключенная (И464). Пока форма пишет (`aria-busy`),
+   её органы стоят выключенными — вторая запись не уйдёт, — но вида не
+   меняют: выключенное говорит «нельзя», а занятое — «жду», и вспышка
+   полупрозрачности на полсекунды читалась нажатием соседней кнопки.
+   Слово заказчика 27.09.2026: «при нажатии в корзину моргает кнопка
+   быстрого заказа, как будто тоже нажимается… это системная ошибка».
+   Непрозрачность выключенного у всех органов — одна роль `--state-off`
+   (кнопка, поле, галочка, «куда ведёт», лоток), и занятая форма отменяет
+   её здесь, одной строкой; кромку выключенной кнопки отменяет её модуль. */
+[aria-busy='true']{--state-off:1}
+[aria-busy='true'] :disabled{cursor:progress}
+
 /* Серая рамка, которую Android рисует поверх нажатой ссылки и держит ещё
    долю секунды после того, как палец ушёл, — это отклик БРАУЗЕРА за
    неимением нашего. Она не знает ни формы предмета (ложится прямоугольником
@@ -344,7 +356,7 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
    `<style id="look">` ПОСЛЕ стилей сайта (И270) и объявляет `--border`
    палитры на `:root` — равная сила и позднее место перебили бы усиление. */
 @media (prefers-contrast:more){
-  :root:root{ --rule:var(--ink); --ink-soft:var(--ink); --border:var(--ink); --quiet:var(--ctrl); --quiet-on:var(--ctrl) }
+  :root:root{ --rule:var(--ink); --ink-soft:var(--ink); --border:var(--ink); --quiet:var(--ctrl); --quiet-on:var(--ctrl); --quiet-tint:var(--ctrl) }
 }
 /* Принудительные цвета (Windows High Contrast): тени, заливки и градиенты
    стираются, выживают обводки и outline; единственные имена цвета —
@@ -363,6 +375,7 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
   :focus-visible{outline:var(--ring-w) solid Highlight}
 }
 @media (prefers-reduced-motion:reduce){
+  :root{--press-move:none} /* нажатие без движения — только цвет (И477) */
   *,*::before,*::after{
     animation-duration:.01ms !important;
     animation-iteration-count:1 !important;
@@ -407,6 +420,11 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
      фона. Заказчик нашёл это глазом на витрине. */
   --surface:var(--chrome-hover);
   --on-ink:var(--page-deck);
+  /* Тихая плашка (фишка, сегмент, подложка переключателя) — тоже пара:
+     до 27.09.2026 она оставалась светлой ступенью нейтрали, а чернила на
+     ней становились светлыми палубы — переключатель языка в подвале читался
+     светлым по светлому (И483). На палубе тихая плашка — плашка палубы. */
+  --plate-quiet:var(--chrome-plate);
   /* Краски палубы — строителя палитры (`-deck`, И295): здесь только
      переназначение ролей, доли и краски в стилях не рождаются. */
   --hover-ctrl:var(--hover-ctrl-deck);
@@ -425,6 +443,8 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
   --rule:var(--rule-deck);
   --quiet:var(--quiet-deck);
   --quiet-on:var(--quiet-on-deck);
+  --quiet-tint:var(--quiet-tint-deck);
+  --on-quiet-tint:var(--on-quiet-tint-deck);
   --hover-row:var(--hover-row-deck);
   --press-row:var(--press-row-deck);
   --ctrl-hand:var(--ctrl-hand-deck);
@@ -556,6 +576,7 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
   --surface:var(--plate);
   --on-ink:var(--plate);
   --ctrl:var(--plate-3);
+  --plate-quiet:var(--plate-quiet-paper);
 
   /* Составленные из чернил — заново, и по той же причине, по какой их
      пишет палуба: `var()` внутри объявления своей переменной раскрывается
@@ -567,6 +588,8 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
   --rule:var(--rule-paper);
   --quiet:var(--quiet-paper);
   --quiet-on:var(--quiet-on-paper);
+  --quiet-tint:var(--quiet-tint-paper);
+  --on-quiet-tint:var(--on-quiet-tint-paper);
   --ctrl-hand:var(--ctrl-hand-paper);
   --ctrl-in:var(--ctrl-in-paper);
   --ctrl-in-hand:var(--ctrl-in-hand-paper);

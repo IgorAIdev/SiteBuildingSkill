@@ -119,11 +119,10 @@
 }
 
 /* ── колонка покупки ──────────────────────────────────────────────────────
-   Три группы через `--air-group` (И444, бриф §7): что это — имя, цена,
-   описание; как купить — выбор и строка покупки; что внутри — поле
-   параметров. Внутри группы — строкой `--air-row`, имя и цена — ступенью
-   оптики `--sp-2`. Одним воздухом на всё колонка читалась списком: описание
-   стояло от имени так же далеко, как выбор от описания. Первая строка
+   Группы через `--air-group` (И444, И466, бриф §7): что это — марка, имя,
+   цена; как купить — выбор и строка покупки; что внутри — поле
+   параметров; о товаре — меню и разделы (ProductDetails). Внутри группы — строкой `--air-row`, имя и цена — ступенью
+   оптики `--sp-2`. Одним воздухом на всё колонка читалась списком. Первая строка
    колонки стоит на верхнем крае кадра. */
 .offer{--stack:var(--air-group)}
 .part{display:grid;gap:var(--air-row)}
@@ -131,17 +130,17 @@
 /* Марка — первая строка заголовка (ProductView.tsx, И441): ростом и
    межстрочьем тела, краской подписи — имя остаётся главным, марка читается
    раньше него. */
-.brand{display:block;font-size:var(--body-size);line-height:var(--body-lead);font-weight:600;letter-spacing:normal;color:var(--ink-soft)}
+.brand{display:block;font-size:var(--body-size);line-height:var(--body-lead);font-weight:600;letter-spacing:normal;color:var(--pop-ink)}
 .name{font-size:var(--pagehead-size);line-height:var(--pagehead-lead);font-weight:var(--pagehead-weight);letter-spacing:var(--pagehead-track);text-wrap:balance;overflow-wrap:anywhere}
-/* Цена у имени (Baymard): сейчас — заметно, прежняя — зачёркнута рядом,
-   наличие — тихо в той же строке, по базовой линии. */
-.price{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:var(--gap-row);row-gap:var(--sp-1)}
-/* Цена — роль ввода, полужирная: заметна сразу под именем, но тише его —
-   громкое слово у колонки одно (И444). Ступенью подзаголовка она спорила
-   с именем: 29 px / 600 под 42 px / 700. */
-.now{font-size:var(--intro-size);line-height:var(--intro-lead);font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
-.was{font-size:var(--body-size);color:var(--ink-soft);font-variant-numeric:tabular-nums;text-decoration-thickness:var(--line-w)}
-.stock{font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft)}
+/* Цена у имени (Baymard) — Price.tsx ростом `lead` (И476); наличие — в той
+   же строке, по базовой линии. */
+.stock{font-size:var(--note-size);line-height:var(--note-lead);font-weight:600;color:var(--ink-soft)}
+/* Наличие — текстом сигнала (palette, roles.md, «Текст и знаки»: «в
+   наличии» ok11, «осталось двое» warn11, «нет в наличии» e11; И472). Серым
+   оно стояло одним цветом на все три смысла. */
+.stock[data-level='in']{color:var(--ok)}
+.stock[data-level='low']{color:var(--warn)}
+.stock[data-level='out']{color:var(--bad)}
 
 /* Выбор: группа — подпись и опции вплотную, между группами — воздухом
    `--air-set` (ступенью ниже `--air-row`): выбор — одна строка части
@@ -166,6 +165,5 @@
 .buy > p{flex-basis:100%}
 .buy > p:empty{display:none}
 .add{flex:1 1 auto;font-variant-numeric:tabular-nums}
-.hint{flex-basis:100%;margin:0;font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft)}
 
-.related{--cols:4;--cell-min:200px;list-style:none;padding:0;margin:0}
+

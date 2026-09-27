@@ -42,7 +42,9 @@ export const COLOUR_FAMILIES = ['n', 'a', 'e', 'sale', 'warn', 'ok', 'info']
 export const CONCEPTS = {
   colour: ['ink', 'plate', 'page', 'surface', 'pop', 'select', 'ctrl', 'field', 'rule', 'border', 'line', 'ring',
     'scrim', 'quiet', 'thumb', 'tile', 'tick', 'menu', 'accent', 'hover', 'press', 'chrome', 'on',
-    'bad', 'ok', 'warn', 'sale', 'info'],
+    'bad', 'ok', 'warn', 'sale', 'info',
+    /* чужие марки: знак мессенджера краской своей марки (`--mark-viber`, И471) */
+    'mark'],
   rhythm: ['pad', 'air', 'gap'],
   text: ['hero', 'pagehead', 'h2', 'h3', 'intro', 'lede', 'body', 'note', 'eyebrow', 'measure', 'face', 'fs', 'page'],
   shape: ['r'],
@@ -81,10 +83,14 @@ export const MODIFIERS = new Set([
   /* стекло главной кнопки: краска долей, блик кромки, размытие под ней
      (`--pop-glass`, `--pop-rim`, `--frost-*`, `--ctrl-btn-frost-pop`; И427) */
   'glass', 'rim', 'frost', 'blur', 'sat',
+  /* движение нажатия — одно на всё, что нажимают (`--press-move`, И477) */
+  'move',
+  /* чужие марки (И471) */
+  'viber', 'telegram', 'whatsapp', 'instagram',
 ])
 /** Ручки примитивов — узлы. Объявляются на примитиве, не на корне. */
 export const HOOKS = ['stack', 'cluster', 'switch', 'rail', 'section', 'sheet', 'lede', 'hero', 'grid', 'cols', 'cell',
-  'pin', 'tray', 'leaf', 'chip', 'qty', 'chan', 'side', 'prose', 'pinned', 'sidebar', 'frame', 'btn', 'seg', 'gallery']
+  'pin', 'tray', 'leaf', 'chip', 'qty', 'chan', 'side', 'prose', 'pinned', 'sidebar', 'frame', 'btn', 'seg', 'gallery', 'pane', 'turn']
 
 const VALUE = [
   { rx: new RegExp(`^--${FAMS(COLOUR_FAMILIES)}-\\d{1,2}$`), family: 'ступень цвета', by: 'tools/palette.mjs' },
@@ -115,6 +121,7 @@ const ROLE = [
      карту, снимки у товара одни; плотность — сколько карточек в ряд на
      полке каталога; место кнопки «в корзину» на карточке. Роли вида («Admin → Card»), читают узлы карточки,
      галереи и полки. */
+  { rx: /^--quick-look$/, family: 'окно быстрого заказа: мессенджеры плитками или строками (И470)', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--(drawer-look|cart-sign|cart-meta)$/, family: 'шапка: меню телефона, знак корзины, сумма у корзины', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--chip-sign$/, family: 'знак полки на фишке', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--pair-look$/, family: 'вид пары «поле и кнопка»', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
@@ -148,6 +155,9 @@ export const REQUIRED = {
   '--bad': 'текст сигнала «ошибка» (roles.md, «Текст и знаки»)',
   '--bad-fill': 'плашка сигнала (roles.md, «Заливки»)', '--on-bad': 'знак на плашке', '--bad-tint': 'тихая полоса сигнала', '--bad-line': 'граница ошибки (roles.md, «Линии»)',
   '--ok': 'текст сигнала «успех»', '--ok-fill': 'плашка «в наличии»', '--on-ok': 'знак на плашке', '--ok-tint': 'тихая полоса',
+  '--quiet-tint': 'тихая марка органа — тихая кнопка в варианте «Brand tint» каталога кнопок (styles/buttons.json; И462, И472)', '--on-quiet-tint': 'знак на тихой марке органа — тот же вариант кнопки (И462)',
+  '--mark-viber': 'чужая марка: знак Viber краской своей марки — окно быстрого заказа (templates/storefront, QuickOrder.module.css; И471)', '--mark-telegram': 'чужая марка: знак Telegram (И471)', '--mark-whatsapp': 'чужая марка: знак WhatsApp (И471)', '--mark-instagram': 'чужая марка: знак Instagram (И471)',
+  '--info': 'текст сведения: обещания у кнопки заказа, ТГК, производитель (roles.md; templates/storefront, Cart.module.css; И472)', '--info-tint': 'тихая полоса сведения (roles.md; templates/storefront, Cart.module.css; И472)',
   '--warn': 'текст сигнала «внимание»', '--warn-fill': 'плашка «осталось 2»', '--on-warn': 'знак на плашке', '--warn-tint': 'тихая полоса',
   '--sale': 'текст скидки', '--sale-fill': 'плашка «−20 %»', '--on-sale': 'знак на плашке', '--sale-tint': 'тихая полоса скидки',
   '--pop-press': 'кнопка покупки под пальцем (roles.md, «Заливки»)',

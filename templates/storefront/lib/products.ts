@@ -1,3 +1,4 @@
+import type { Form } from './source/details.ts'
 import { LOCALES, type Lang } from './locale.ts'
 import { BIND, percent } from './format.ts'
 import type { Pack, Strength } from './source/contract.ts'
@@ -6,7 +7,9 @@ type T = Record<Lang, string>
 /** Одна строка на каждый язык страницы — числом, которое пишет запись языка
  *  (lib/format.ts, И347), а не набранным рукой по-румынски на всех трёх. */
 const each = (write: (lang: Lang) => string): T => Object.fromEntries(LOCALES.map((l) => [l, write(l)])) as T
-export type SampleCategory = { slug: string; name: T; description: T; sign: string }
+/** `form` — вид товара полки: по нему витрина берёт стандартные состав и
+ *  применение (lib/source/details.ts, И482). */
+export type SampleCategory = { slug: string; name: T; description: T; sign: string; form: Form }
 /** `price` — в минорных единицах валюты рынка (у образца — евроцентах);
  *  `was` — цена до скидки, если вариант продаётся со скидкой; `pack` — CBD
  *  в упаковке и её мера (contract.ts, `Pack`). */
@@ -19,6 +22,8 @@ export type SampleProduct = {
   id: string; cat: string; family?: string; label: string; hue: number; popular: number; strength: Strength
   /** Марка производителя — данные образца: настоящую даёт каталог магазина. */
   brand: string | null
+  /** Вариант, выбранный на карте сам (И468); нет — первый в наличии. */
+  standard?: string
   name: T; summary: T; description: T
   facets: Record<string, string[]>
   groups: { code: string; name: T; options: { code: string; name: T }[] }[]
@@ -26,10 +31,10 @@ export type SampleProduct = {
 }
 
 export const CATEGORIES: SampleCategory[] = [
-  { slug: 'uleiuri', name: { ro: 'Uleiuri CBD', en: 'CBD oils', hu: 'CBD olajok' }, description: { ro: 'Uleiuri cu CBD în mai multe concentrații.', en: 'CBD oils in several strengths.', hu: 'CBD olajok több erősségben.' }, sign: 'pipette' },
-  { slug: 'capsule', name: { ro: 'Capsule', en: 'Capsules', hu: 'Kapszulák' }, description: { ro: 'Doză fixă în fiecare capsulă.', en: 'A fixed dose in every capsule.', hu: 'Minden kapszulában azonos adag.' }, sign: 'pill' },
-  { slug: 'cosmetice', name: { ro: 'Cosmetice', en: 'Cosmetics', hu: 'Kozmetikumok' }, description: { ro: 'Creme și balsamuri cu CBD.', en: 'Creams and balms with CBD.', hu: 'CBD-s krémek és balzsamok.' }, sign: 'soap-dispenser-droplet' },
-  { slug: 'animale', name: { ro: 'Pentru animale', en: 'For pets', hu: 'Háziállatoknak' }, description: { ro: 'Uleiuri pentru câini și pisici.', en: 'Oils for dogs and cats.', hu: 'Olajok kutyáknak és macskáknak.' }, sign: 'paw-print' },
+  { slug: 'uleiuri', name: { ro: 'Uleiuri CBD', en: 'CBD oils', hu: 'CBD olajok' }, description: { ro: 'Uleiuri cu CBD în mai multe concentrații.', en: 'CBD oils in several strengths.', hu: 'CBD olajok több erősségben.' }, sign: 'pipette', form: 'oil' },
+  { slug: 'capsule', name: { ro: 'Capsule', en: 'Capsules', hu: 'Kapszulák' }, description: { ro: 'Doză fixă în fiecare capsulă.', en: 'A fixed dose in every capsule.', hu: 'Minden kapszulában azonos adag.' }, sign: 'pill', form: 'capsules' },
+  { slug: 'cosmetice', name: { ro: 'Cosmetice', en: 'Cosmetics', hu: 'Kozmetikumok' }, description: { ro: 'Creme și balsamuri cu CBD.', en: 'Creams and balms with CBD.', hu: 'CBD-s krémek és balzsamok.' }, sign: 'soap-dispenser-droplet', form: 'cosmetics' },
+  { slug: 'animale', name: { ro: 'Pentru animale', en: 'For pets', hu: 'Háziállatoknak' }, description: { ro: 'Uleiuri pentru câini și pisici.', en: 'Oils for dogs and cats.', hu: 'Olajok kutyáknak és macskáknak.' }, sign: 'paw-print', form: 'pets' },
 ]
 
 export const FACETS: { code: string; name: T; values: { code: string; name: T }[] }[] = [
@@ -55,7 +60,7 @@ const count = (codes: string[]) => ({ code: 'bucati', name: { ro: 'Bucăți', en
    (tools/routes.mjs) берёт в дорогие проверки первую семью и первый товар
    без семьи. */
 export const PRODUCTS: SampleProduct[] = [
-  { id:'ulei-cbd-full-spectrum', cat:'uleiuri', family:'ulei-full', label: 'CBD', hue: 145, popular: 1, brand: 'Câmpia', strength: 'percent',
+  { id:'ulei-cbd-full-spectrum', cat:'uleiuri', family:'ulei-full', label: 'CBD', hue: 145, popular: 1, brand: 'Câmpia', strength: 'percent', standard: 'uf-10-10',
     name: { ro: 'Ulei CBD full spectrum', en: 'Full-spectrum CBD oil', hu: 'Teljes spektrumú CBD olaj' },
     summary: { ro: 'Extract de cânepă în ulei MCT, cu picurător.', en: 'Hemp extract in MCT oil, with dropper.', hu: 'Kenderkivonat MCT olajban, cseppentővel.' },
     description: { ro: 'Extract din flori de cânepă din soiuri înscrise în catalogul comun al UE, în ulei MCT. Fiecare lot are buletin de analiză.', en: 'Extract of hemp flowers from varieties in the EU common catalogue, in MCT oil. Every batch has a lab report.', hu: 'Az EU közös fajtajegyzékében szereplő kenderfajták virágkivonata MCT olajban. Minden tételhez laborjegyzőkönyv tartozik.' },
@@ -82,7 +87,7 @@ export const PRODUCTS: SampleProduct[] = [
     facets: { forma: ['ulei'] },
     groups: [],
     variants: [{ id: 'us-5-10', sku: 'US-5-10', options: {}, price: 2990, stock: 'in', batch: 'RO-2409-S05', pack: { mg: 500, size: 10, unit: 'ml' } }] },
-  { id:'ulei-cbd-20-seara', cat:'uleiuri', family:'ulei-seara', label: '20 %', hue: 250, popular: 6, brand: 'Câmpia', strength: 'percent',
+  { id:'ulei-cbd-20-seara', cat:'uleiuri', family:'ulei-seara', label: '20 %', hue: 250, popular: 6, brand: 'Câmpia', strength: 'percent', standard: 'ul-20-10',
     name: { ro: 'Ulei CBD 20 % cu lavandă', en: 'CBD oil 20 % with lavender', hu: 'CBD olaj 20 % levendulával' },
     summary: { ro: 'Cu ulei esențial de lavandă.', en: 'With lavender essential oil.', hu: 'Levendula illóolajjal.' },
     description: { ro: 'Ulei CBD 20 % cu ulei esențial de lavandă.', en: 'CBD oil 20 % with lavender essential oil.', hu: '20 %-os CBD olaj levendula illóolajjal.' },
@@ -99,7 +104,7 @@ export const PRODUCTS: SampleProduct[] = [
     facets: { forma: ['ulei'] },
     groups: [],
     variants: [{ id: 'uf30-10', sku: 'UF30-10', options: {}, price: 8990, was: 10490, stock: 'in', batch: 'RO-2409-F30', pack: { mg: 3000, size: 10, unit: 'ml' } }] },
-  { id:'capsule-cbd-25', cat:'capsule', family:'capsule', label: '25 mg', hue: 30, popular: 2, brand: 'Floare Verde', strength: 'mg',
+  { id:'capsule-cbd-25', cat:'capsule', family:'capsule', label: '25 mg', hue: 30, popular: 2, brand: 'Floare Verde', strength: 'mg', standard: 'cc-30',
     name: { ro: 'Capsule CBD 25 mg', en: 'CBD capsules 25 mg', hu: 'CBD kapszula 25 mg' },
     summary: { ro: 'Capsule vegane, 25 mg CBD fiecare.', en: 'Vegan capsules, 25 mg CBD each.', hu: 'Vegán kapszulák, egyenként 25 mg CBD.' },
     description: { ro: 'Fiecare capsulă conține 25 mg CBD.', en: 'Each capsule contains 25 mg CBD.', hu: 'Minden kapszula 25 mg CBD-t tartalmaz.' },
@@ -137,7 +142,7 @@ export const PRODUCTS: SampleProduct[] = [
     facets: { forma: ['crema'] },
     groups: [],
     variants: [{ id: 'sf-30', sku: 'SF-30', options: {}, price: 3290, stock: 'out', batch: 'RO-2407-SF', pack: { mg: null, size: 30, unit: 'ml' } }] },
-  { id:'ulei-caini-cbd', cat:'animale', family:'animale-caini', label: 'dog', hue: 90, popular: 7, brand: 'Câmpia', strength: 'percent',
+  { id:'ulei-caini-cbd', cat:'animale', family:'animale-caini', label: 'dog', hue: 90, popular: 7, brand: 'Câmpia', strength: 'percent', standard: 'ac-10',
     name: { ro: 'Ulei CBD pentru câini', en: 'CBD oil for dogs', hu: 'CBD olaj kutyáknak' },
     summary: { ro: 'Cu ulei de somon.', en: 'With salmon oil.', hu: 'Lazacolajjal.' },
     description: { ro: 'Ulei CBD 5 % cu ulei de somon, pentru câini.', en: 'CBD oil 5 % with salmon oil, for dogs.', hu: '5 %-os CBD olaj lazacolajjal, kutyáknak.' },
@@ -156,6 +161,8 @@ export const PRODUCTS: SampleProduct[] = [
     variants: [{ id: 'ap-10', sku: 'AP-10', options: {}, price: 1990, stock: 'low', batch: 'RO-2409-AP', pack: { mg: 250, size: 10, unit: 'ml' } }] },
 ]
 
+/** Состав и способ применения — образец данных по полке (И466): настоящий
+ *  текст у каждого товара даёт каталог магазина. */
 export const LAB_REPORTS: Record<string, { lab: string; date: string; cbdPercent: number; thcPercent: number }> = {
   'RO-2409-05': { lab: 'Laborator de exemplu', date: '2026-09-02', cbdPercent: 5.1, thcPercent: 0.12 },
   'RO-2409-10': { lab: 'Laborator de exemplu', date: '2026-09-02', cbdPercent: 10.2, thcPercent: 0.15 },

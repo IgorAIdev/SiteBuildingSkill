@@ -5,6 +5,8 @@ import type { ShelfCard } from '@/lib/view.ts'
 import type { Outcome } from '@/lib/cart-ops.ts'
 import { lookNow } from '@/lib/look.ts'
 import { CartForm } from './CartForm.tsx'
+import { AddLabel } from './AddLabel.tsx'
+import { Price } from './Price.tsx'
 import { Icon } from './Icon.tsx'
 import { shot } from '@/lib/shot.ts'
 
@@ -60,17 +62,14 @@ export async function ProductCard({ card, eager = false, cart }: { card: ShelfCa
           {card.facts ? <p className={p.note}>{card.facts}</p> : null}
         </div>
         <div className={s.foot}>
-          <p className={s.price}>
-            {card.was ? <><s className={s.was} aria-hidden="true">{card.was.text}</s><span className={p.said}>{card.was.said}</span></> : null}
-            <span>{card.price}</span>
-          </p>
+          <Price now={card.price} was={card.was} />
           {card.buy.variant ? (
             <CartForm lang={card.lang} className={s.buy} refresh={false} quiet submit={cart.submit} call={cart.call} initial={null} timeout={card.buy.timeout} failed={card.buy.failed}>
               <input type="hidden" name="op" value="add" />
               <input type="hidden" name="variant" value={card.buy.variant} />
               <input type="hidden" name="quantity" value="1" />
               <button className={`${b.btn} ${s.add}`} data-voice="loud" type="submit" aria-label={card.buy.name}>
-                <Icon id="shopping-cart" /><span className={s.word}>{card.buy.add}</span><span className={s.done}>{card.buy.added}</span>
+                <Icon id="shopping-cart" /><AddLabel add={card.buy.add} added={card.buy.added} />
               </button>
             </CartForm>
           ) : (

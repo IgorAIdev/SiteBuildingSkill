@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import p from '@/styles/primitives.module.css'
+import f from '@/styles/form.module.css'
 import b from '@/styles/btn.module.css'
 import go from '@/styles/go.module.css'
 import s from './Catalog.module.css'
@@ -11,6 +12,7 @@ import { Filters } from './Filters.tsx'
 import { SortMenu } from './SortMenu.tsx'
 import { Pagination } from './Pagination.tsx'
 import { Icon } from './Icon.tsx'
+import { Shelf } from './Shelf.tsx'
 
 /* Снимки первого экрана не ленивые: полка на ноутбуке держит в нём два ряда
    по четыре (Catalog.module.css, `--cols:4`). Снимок первого экрана, стоящий
@@ -21,7 +23,7 @@ const FIRST_SCREEN = 8
 /* Полка товаров — договор товарного каталога (shop, «Каталог и полка»):
    `data-catalog-grid` без панели сбоку — 4–5 карточек по 260–325px; меряет
    отрисованная семья `catalogueColumns`. */
-function Shelf({ cards, eager, cart }: { cards: ShelfCard[]; eager: number; cart: CartActions }) {
+function Grid({ cards, eager, cart }: { cards: ShelfCard[]; eager: number; cart: CartActions }) {
   return (
     <ul className={`${p.grid} ${s.shelf}`} data-catalog-grid="">
       {cards.map((c, i) => <li key={c.id}><ProductCard card={c} eager={i < eager} cart={cart} /></li>)}
@@ -70,7 +72,7 @@ export function Catalog({ view, search, cart }: { view: CatalogView; search?: Re
                 {view.clear ? <a className={b.btn} data-size="sm" href={view.clear.href}>{view.clear.label}</a> : null}
               </div>
             ) : null}
-            {view.invalid ? <p className={p.muted} role="status">{view.invalid}</p> : null}
+            {view.invalid ? <p className={f.say} role="status">{view.invalid}</p> : null /* строка сообщения — одна на сайт (f.say, И476) */}
           </div>
         ) : null}
         {/* Полку подписывает заголовок страницы, второй на экране не нужен, но
@@ -79,16 +81,13 @@ export function Catalog({ view, search, cart }: { view: CatalogView; search?: Re
             коробкой со списком — чтобы ритм `stack` не лёг между невидимым
             заголовком и полкой. */}
         {view.cards.length
-          ? <div><h2 className={p.said}>{view.shelf}</h2><Shelf cards={view.cards} eager={FIRST_SCREEN} cart={cart} /></div>
+          ? <div><h2 className={p.said}>{view.shelf}</h2><Grid cards={view.cards} eager={FIRST_SCREEN} cart={cart} /></div>
           : view.empty.title
             ? <StateScreen level={2} kind="none" title={view.empty.title} step={view.empty.step} href={view.empty.href} />
-            : <p><a className={go.go} href={view.empty.href}>{view.empty.step}<Icon id="arrow-right" /></a></p>}
+            : <div>{view.empty.hint ? <p className={p.muted}>{view.empty.hint}</p> : null}<p><a className={go.go} href={view.empty.href}>{view.empty.step}<Icon id="arrow-right" /></a></p></div>}
         {view.pages ? <Pagination pages={view.pages} /> : null}
         {view.more ? (
-          <section className={s.more} aria-labelledby="shelf-more">
-            <div className={p.sectionHead}><h2 id="shelf-more">{view.more.title}</h2></div>
-            <Shelf cards={view.more.cards} eager={0} cart={cart} />
-          </section>
+          <Shelf title={view.more.title} id="shelf-more" all={view.more.all} cards={view.more.cards} cart={cart} className={s.more} />
         ) : null}
       </div>
     </main>

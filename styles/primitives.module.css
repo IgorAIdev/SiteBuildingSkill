@@ -403,6 +403,29 @@
 .rail::-webkit-scrollbar{display:none}
 .rail > *{flex:none;scroll-snap-align:start}
 
+/* Рельса товаров (`data-rail="goods"`, И475) — товары, которые листают
+   вбок: «похожие» на карте товара, полка главной, полка пустой корзины.
+   Это не полка каталога: в сетке ячейка делит ряд, в рельсе карточка
+   крупнее и СОСЕДНЯЯ ВЫГЛЯДЫВАЕТ — край следующей карточки и есть знак, что
+   ряд едет (слово заказчика 27.09.2026 со снимком cbdin.bg: «размер больше,
+   чем в магазине, т. к. тут скроллинг горизонтальный, и нужно, чтоб
+   соседняя карточка выглядывала»). Ширина карточки — доля рельсы
+   (`--rail-cell`: замер снимка cbdin.bg, карточка ≈ 480 из 720 px
+   экрана — две трети с запасом), но не шире предела простой карточки
+   (`--rail-cell-max`: закон craft, «максимум простой карточки — 340px»,
+   tools/thresholds.mjs `catalogue.full.maxCard`). Полоса уходит под край
+   страницы (`--rail-bleed`) — карточка обрезается краем экрана, а не полем;
+   начало стоит на линии текста. Под мышью — тонкая полоса прокрутки:
+   без неё рельсу с мышью не сдвинуть. */
+:where(.rail[data-rail='goods']){--rail-cell:75%;--rail-cell-max:340px}
+.rail[data-rail='goods']{
+  --rail-bleed:calc(var(--page-edge) + var(--page-line));
+  margin-inline:calc(var(--rail-bleed) * -1);padding-inline:var(--rail-bleed);scroll-padding-inline:var(--rail-bleed);
+  list-style:none
+}
+.rail[data-rail='goods'] > *{inline-size:min(var(--rail-cell), var(--rail-cell-max))}
+@media (pointer:fine){ .rail[data-rail='goods']{overflow-x:auto;overflow-y:hidden;scrollbar-width:thin} }
+
 /* Grid — полка, у которой число колонок ВЫЧИСЛЯЕТСЯ, девятый примитив.
 
    Правило 5 стоит в CLAUDE.md с первого дня: `repeat(auto-fit, minmax(...))`
@@ -539,6 +562,12 @@
    занимает свою колонку; примитив оставляет за собой только набор. */
 .prose{max-inline-size:none}
 .prose p{text-wrap:pretty}
+/* Ссылка в тексте — марочный текст a11, под рукой a12 (palette, roles.md,
+   «Текст и знаки»; И472): ссылка в абзаце читалась чернилами — отличить её
+   было нечем, кроме черты. */
+.prose a{color:var(--pop-ink);text-underline-offset:.2em}
+@media (hover:hover){ .prose a:hover{color:var(--pop-ink-hover)} }
+.prose a:active{color:var(--pop-ink-hover)}
 
 /* Tap — запас нажатия вокруг мелкого органа.
    Палец это 44×44: столько просят и Apple, и Material, и WCAG 2.5.8. Но
@@ -840,7 +869,7 @@
     background:var(--tray-act-bg, var(--quiet-on));color:var(--tray-act-fg, var(--ink))
   }
 }
-.tray > :where(button, a):not(:disabled):active{transform:scale(.97)}
+.tray > :where(button, a):not(:disabled):active{transform:var(--press-move)}
 /* Выключенный орган стоит на месте и молчит: по нему видно, есть ли чему
    работать. Отклика у него нет — орган, который отвечает и не делает,
    хуже неподвижного. */
@@ -963,7 +992,7 @@
 }
 @media (hover:hover){ .qty button:hover{color:var(--ink);background:var(--surface);box-shadow:var(--sh-raised)} }
 .qty button:active{color:var(--ink);background:var(--surface);box-shadow:var(--sh-raised)}
-.qty button:active{transform:scale(.92)}
+.qty button:active{transform:var(--press-move)}
 .qty button svg{
   width:calc(var(--qty-h, var(--ctrl-h-lg)) * .33);height:calc(var(--qty-h, var(--ctrl-h-lg)) * .33);
   fill:none;stroke:currentColor
@@ -1047,6 +1076,7 @@
    которого не купить (опции варианта), берёт рост кнопки. Поле по бокам —
    доля роста (правило 2). */
 .seg{display:flex;flex-wrap:wrap;gap:var(--sp-1)}
+:where(ul.seg){list-style:none;padding:0;margin:0}
 .seg :is(button, a){
   display:inline-flex;align-items:center;
   height:var(--seg-h, var(--ctrl-h-sm));padding:0 calc(var(--seg-h, var(--ctrl-h-sm)) * .4);border-radius:var(--r-ctrl);background:var(--plate-quiet);
@@ -1063,7 +1093,7 @@
 @media (hover:hover){
   .seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):hover{background:var(--hover-ctrl);color:var(--ink)}
 }
-.seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):active{background:var(--press-ctrl);color:var(--ink)}
+.seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):active{background:var(--press-ctrl);color:var(--ink);transform:var(--press-move)}
 .seg :is([aria-pressed="true"], [aria-current="true"]){background:var(--pop);color:var(--on-pop);font-weight:600;box-shadow:none}
 .seg [aria-disabled="true"]{opacity:var(--state-off);cursor:not-allowed}
 /* Вид сегментов — роль вида `--seg-look` (И396): `chips` (умолчание,
@@ -1273,7 +1303,7 @@
    цвет фирмы, а сам крестик — он и есть действие. */
 @media (hover:hover){ .chip:hover{background:var(--hover-ctrl)} }
 @media (hover:hover){ .chip:hover svg{color:var(--ink)} }
-.chip:active{background:var(--press-ctrl);transform:scale(.97)}
+.chip:active{background:var(--press-ctrl);transform:var(--press-move)}
 .chip:active svg{color:var(--ink)}
 /* МЕТКА — та же пилюля, одетая иначе: не «сними меня», а «вот что это».
    Поэтому атрибут на том же узле, а не второй класс: вес `.chip[data-chip]`
