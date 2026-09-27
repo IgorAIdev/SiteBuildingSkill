@@ -71,7 +71,7 @@ export const EN: Record<keyof typeof RO, string> = {
   'search.prompt': 'Type what you are looking for',
   'search.results': 'Results for “{q}”',
   'search.none': 'No results for “{q}”',
-  'search.noneStep': 'Check the spelling or see all products',
+  'search.noneHint': 'Check the spelling or try a shorter word.',
   'unavailable.title': 'The shop is not responding right now',
   'unavailable.step': 'Try again in a minute',
   'notFound.title': 'Page not found',

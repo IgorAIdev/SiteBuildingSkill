@@ -18,15 +18,14 @@ const FIRST = new RegExp(`^/(${LOCALES.join('|')})(?=/|$)`)
 
    Ссылка ведёт на ту же страницу на другом языке (язык — первый сегмент
    адреса). Видимо — код, вслух — код и имя языка на нём самом («EN
-   English»): видимое слово входит в имя (WCAG 2.5.3). `title` — подпись над
-   блоком (подвал); без неё блок назван для чтения вслух. */
-export function LangSwitch({ lang, label, title = false }: { lang: Lang; label: string; title?: boolean }) {
+   English»): видимое слово входит в имя (WCAG 2.5.3). Блок назван для
+   чтения вслух (`aria-label`). */
+export function LangSwitch({ lang, label }: { lang: Lang; label: string }) {
   const path = usePathname()
   return (
     /* Группа, а не меню: переключатель — орган (как выбор варианта), не
        навигация по разделам. */
-    <div className={s.lang} role="group" aria-label={title ? undefined : label} aria-labelledby={title ? 'lang-title' : undefined}>
-      {title ? <p className={p.eyebrow} id="lang-title">{label}</p> : null}
+    <div className={s.lang} role="group" aria-label={label}>
       <ul className={p.seg}>
         {LOCALES.map((l) => (
           <li key={l}>

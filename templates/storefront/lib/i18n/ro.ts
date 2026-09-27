@@ -69,7 +69,7 @@ export const RO = {
   'search.prompt': 'Scrieți ce căutați',
   'search.results': 'Rezultate pentru „{q}”',
   'search.none': 'Niciun rezultat pentru „{q}”',
-  'search.noneStep': 'Verificați ortografia sau vedeți toate produsele',
+  'search.noneHint': 'Verificați ortografia sau încercați un cuvânt mai scurt.',
   'unavailable.title': 'Magazinul nu răspunde momentan',
   'unavailable.step': 'Încercați din nou peste un minut',
   'notFound.title': 'Pagina nu a fost găsită',
