@@ -41,7 +41,8 @@ test('the button reads every role the catalog may declare, each with a fallback;
   for (const role of Object.keys(ROLES)) assert.ok(btn.includes(`var(${role},`), `btn.module.css не читает ${role}`)
   assert.doesNotMatch(btn, /--ctrl-btn-(r|r-pop|press|sh)\b/, 'угол, нажатие и тень — не роли каталога')
   assert.match(btn, /--btn-r:var\(--r-ctrl\)/, 'угол органа — из Shape')
-  assert.match(btn, /\.press:not\(:disabled\):not\(\[aria-disabled='true'\]\):active\{[^}]*transform:translateY\(1px\) scale\(\.97\)/, 'нажатие: чуть меньше и на пиксель ниже')
+  assert.match(btn, /\.press:not\(:disabled\):not\(\[aria-disabled='true'\]\):active\{[^}]*transform:var\(--press-move\)/, 'нажатие — одна роль движения (И477)')
+  assert.match(readFileSync(join(KIT, 'styles/tokens.css'), 'utf8'), /--press-move:translateY\(1px\) scale\(\.97\)/, 'нажатие: чуть меньше и на пиксель ниже')
   assert.match(btn, /\.btn\{\s*composes:press;/, 'кнопка берёт нажатие, а не рисует своё')
   assert.match(btn, /prefers-reduced-motion:reduce[\s\S]*transform:none/, 'меньше движения — только цвет')
   /* Форма главной (И276): режется подложка, а не кнопка — кольцо фокуса и
