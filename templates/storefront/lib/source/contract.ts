@@ -47,7 +47,7 @@ export type Strength = 'percent' | 'mg'
  *  «в корзину» с полки, его цену и упаковку карточка печатает; всё
  *  распродано — null. `variant` — его id. */
 export type CardPick = { id: string; price: Money; was: Money | null; stock: Stock; pack: Pack | null }
-export type Card = { id: string; category: string; name: string; image: Image; price: Price; was: Money | null; variant: string | null; pick: CardPick | null; stock: Stock; strength: Strength; packs: Pack[] }
+export type Card = { id: string; category: string; brand: string | null; name: string; image: Image; price: Price; was: Money | null; variant: string | null; pick: CardPick | null; stock: Stock; strength: Strength; packs: Pack[] }
 /** Грань фильтра. `count` — сколько товаров даст значение ПРИ ВСЕХ ДРУГИХ
  *  гранях (cbd-facet, §3): счёт по текущей выборке гасил соседние значения
  *  той же грани, и выбрать «масло ИЛИ капсулы» было нечем. */
@@ -69,7 +69,9 @@ export type Block =
    *  слайд — сам блок; вариантам главной без слайдера нужен только он. */
   | { type: 'hero'; title: string; lede: string; cta: string; image: Image; more?: HeroSlide[] }
   | { type: 'categories'; title: string }
-  | { type: 'featured'; title: string; ids: string[] }
+  /** Полка товаров. `to` — полка каталога, куда ведёт «смотреть всё»
+   *  (слаг категории); нет — весь каталог. */
+  | { type: 'featured'; title: string; ids: string[]; to?: string }
   /** `report` — образец протокола рядом с текстом: партия, лаборатория, замер. */
   | { type: 'lab'; title: string; body: string; report: LabReport | null }
   | { type: 'delivery'; title: string; items: { title: string; body: string }[] }

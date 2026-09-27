@@ -22,5 +22,6 @@ export function Featured({ block, ctx, place }: { block: Extract<Block, { type: 
   if (!cards.length) return null
   const eager = EAGER[ctx.home] ?? 0
   /* Полка — общая (components/Shelf.tsx, И481); выход — ко всему каталогу. */
-  return <Shelf title={block.title} id={`shelf-${block.ids[0] ?? 'top'}`} all={{ label: t(ctx.lang, 'nav.catalog'), href: hrefFor(ctx.lang, { catalog: true }) }} cards={cards} cart={ctx.cart} eager={eager} className={p.wrap} air={place.air ?? undefined} />
+  const all = block.to ? { label: t(ctx.lang, 'shelf.all'), href: hrefFor(ctx.lang, { category: block.to }) } : { label: t(ctx.lang, 'nav.catalog'), href: hrefFor(ctx.lang, { catalog: true }) }
+  return <Shelf title={block.title} id={`shelf-${block.to ?? block.ids[0] ?? 'top'}`} all={all} cards={cards} cart={ctx.cart} eager={eager} className={p.wrap} air={place.air ?? undefined} />
 }

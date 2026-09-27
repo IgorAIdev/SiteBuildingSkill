@@ -416,14 +416,29 @@
    tools/thresholds.mjs `catalogue.full.maxCard`). Полоса уходит под край
    страницы (`--rail-bleed`) — карточка обрезается краем экрана, а не полем;
    начало стоит на линии текста. Под мышью — тонкая полоса прокрутки:
-   без неё рельсу с мышью не сдвинуть. */
-:where(.rail[data-rail='goods']){--rail-cell:75%;--rail-cell-max:340px}
+   без неё рельсу с мышью не сдвинуть.
+
+   Ширина карточки СЧИТАЕТСЯ от ширины рельсы, а не стоит пределом (слово
+   заказчика 27.09.2026: «в ширине экрана не 3 карточки, а 4–5, и это должно
+   под контейнер подстраиваться»). Стояла `min(75%, 340px)` — и на ноутбуке
+   13" (≈ 1280px окна) рельса показывала три с половиной карточки по 340,
+   крупнее сетки каталога. Теперь карточка — доля ряда при плотности полки
+   вида (`--shelf-cols`, 4 или 5) плюс половина следующей — она и
+   выглядывает; но не уже пола (`--rail-cell-min`, ≈ ячейка каталога) и не
+   шире предела простой карточки. На телефоне пол больше доли — карточка
+   берёт 75 % рельсы, как было. Порогов ширины нет: всё решает формула. */
+:where(.rail[data-rail='goods']){--rail-cell:75%;--rail-cell-min:240px;--rail-cell-max:340px}
 .rail[data-rail='goods']{
   --rail-bleed:calc(var(--page-edge) + var(--page-line));
   margin-inline:calc(var(--rail-bleed) * -1);padding-inline:var(--rail-bleed);scroll-padding-inline:var(--rail-bleed);
   list-style:none
 }
-.rail[data-rail='goods'] > *{inline-size:min(var(--rail-cell), var(--rail-cell-max))}
+.rail[data-rail='goods'] > *{
+  inline-size:min(var(--rail-cell-max), max(
+    min(var(--rail-cell), var(--rail-cell-min)),
+    calc((100% - var(--shelf-cols, 4) * var(--rail-gap, var(--gap-grid))) / (var(--shelf-cols, 4) + .5))
+  ))
+}
 @media (pointer:fine){ .rail[data-rail='goods']{overflow-x:auto;overflow-y:hidden;scrollbar-width:thin} }
 
 /* Grid — полка, у которой число колонок ВЫЧИСЛЯЕТСЯ, девятый примитив.

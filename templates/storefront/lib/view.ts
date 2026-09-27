@@ -25,7 +25,7 @@ export type ShelfBuy = { variant: string | null; ask: string; add: string; added
  *  `facts` — сила, мера и мг одной строкой (lib/facts.ts); нечего сказать —
  *  null. `was` и `sale` — прежняя цена и плашка «−15 %» (скидки нет — null);
  *  `lang` — язык формы корзины. */
-export type ShelfCard = { id: string; lang: Lang; href: string; name: string; image: Image; price: string; was: WasView | null; sale: string | null; facts: string | null; flag: StockFlag | null; buy: ShelfBuy }
+export type ShelfCard = { id: string; lang: Lang; href: string; brand: string | null; name: string; image: Image; price: string; was: WasView | null; sale: string | null; facts: string | null; flag: StockFlag | null; buy: ShelfBuy }
 
 const STOCK = { in: 'product.inStock', low: 'product.lowStock', out: 'product.outOfStock' } as const
 export const stockText = (lang: Lang, stock: Stock): string => t(lang, STOCK[stock])
@@ -58,7 +58,7 @@ export const shelfCard = (lang: Lang, c: Card): ShelfCard => {
   const out = stock === 'out'
   const direct = out ? null : c.variant
   return {
-    id: c.id, lang, href: hrefFor(lang, { product: c.id }), name, image: c.image,
+    id: c.id, lang, href: hrefFor(lang, { product: c.id }), brand: c.brand, name, image: c.image,
     price: pick ? money(pick.price, lang) : priceText(lang, c.price), was: sale?.was ?? null, sale: sale?.badge ?? null,
     facts: factsLine(lang, pick?.pack ? { ...c, packs: [pick.pack] } : c),
     flag: stock === 'in' ? null : { level: stock, text: stockText(lang, stock) },

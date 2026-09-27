@@ -40,7 +40,7 @@ function card(p: SampleProduct, lang: Lang): Card {
   const [min, max] = [Math.min(...prices), Math.max(...prices)]
   const pick = standardOf(p.variants, p.standard ?? null)
   return {
-    id: p.id, category: p.cat, name: p.name[lang], image: image(p, lang),
+    id: p.id, category: p.cat, brand: p.brand, name: p.name[lang], image: image(p, lang),
     price: min === max ? { kind: 'single', value: money(min) } : { kind: 'range', min: money(min), max: money(max) },
     was: min === max && p.variants.length === 1 && p.variants[0].was ? money(p.variants[0].was) : null,
     variant: pick?.id ?? null,
