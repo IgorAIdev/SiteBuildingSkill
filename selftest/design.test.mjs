@@ -225,6 +225,27 @@ test('check:design · ритм группы и карточки «значок +
 )`, `.point{--stack:${inner}}`)
   only(measure(list('var(--air-row)')), 'flatRhythm')
   only(measure(list('8px')), null, 0)
+  /* И489: шаг, переобъявленный на шве, и примитив, подключённый через
+     `composes`, — тот же ритм. На cbdshop.bg оба пути проходили мимо семьи. */
+  only(measure({ ...list('8px'), 'components/X.module.css': '.point{--stack:8px}\n@media (max-width: 560px){ .point{--stack:var(--air-row)} }\n' }), 'flatRhythm')
+  const composed = (inner, tail = '') => ({
+    'components/X.tsx': `import s from './X.module.css'
+export const A = ({ items }: { items: string[] }) => (
+  <ul className={s.points}>
+    {items.map((t) => (
+      <li key={t} className={s.point}>
+        <span>{t}</span>
+        <p>{t}</p>
+      </li>
+    ))}
+  </ul>
+)\n`,
+    'components/X.module.css': `.points{composes: grid from '../styles/primitives.module.css'}
+.point{composes: stack from '../styles/primitives.module.css'; --stack:${inner}}\n${tail}`,
+  })
+  only(measure(composed('var(--air-row)')), 'flatRhythm')
+  only(measure(composed('8px')), null, 0)
+  only(measure(composed('8px', '@media (max-width: 560px){ .point{--stack:var(--air-row)} }\n')), 'flatRhythm')
   only(measure(component(`export const A = ({ items }: { items: string[] }) => (
   <ul className={s.points}>
     {items.map((t) => (

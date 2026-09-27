@@ -239,6 +239,48 @@ test('the quiet plate on a fill: visible on the button, its number reads — inv
   assert.equal(dark['--on-quiet-pop-deck'], dark['--chrome-fg'], 'надпись вывернутой плашки — пол пилюли')
 })
 
+/* Тихое слово не у знака палубы (И486). Дефект: у cbdin три места стояли
+   `color-mix(… var(--dim) …)` в стилях — строитель выпускал долю 78 % только
+   к знаку палубы (`--chrome-fg-2`): полоса настроек на бумаге, метка полной
+   корзины на палубе и подсказка в светлом поле подвала. Жёлтая метка на
+   бирюзе тёмной темы cbdin не видна и целиком (2.80 : 1). */
+test('the quiet word off the deck sign: ink on paper, word on a fill, sale mark on the deck — each holds its norm (И486)', () => {
+  for (const [name, set] of Object.entries({ ...shipped, cbdin: CBDIN })) {
+    for (const [mode, paints] of themes(set)) {
+      const r = roles(paints, mode)
+      const at = `${name} · ${mode}`
+      for (const k of ['--ink-dim-paper', '--on-pop-dim-paper', '--on-pop-dim-deck', '--chrome-sale-2']) assert.match(r[k], /^#[0-9A-F]{8}$/, `${at}: ${k} — доля строителя #RRGGBBAA`)
+      for (let i = 1; i <= 5; i += 1) assert.ok(ratio(over(r['--ink-dim-paper'], r[`--n-${i}`]), r[`--n-${i}`]) >= NEED.text, `${at}: тихие чернила на n${i}`)
+      assert.equal(r['--ink-dim-deck'], r['--chrome-fg-2'], `${at}: на палубе тихие чернила — знак палубы в покое`)
+      assert.ok(ratio(over(r['--on-pop-dim-paper'], r['--a-9']), r['--a-9']) >= NEED.text, `${at}: тихое слово на заливке`)
+      assert.ok(ratio(over(r['--on-pop-dim-deck'], r['--chrome-fg']), r['--chrome-fg']) >= NEED.text, `${at}: тихое слово на пилюле палубы`)
+      assert.ok(ratio(over(r['--chrome-sale-2'], r['--chrome-bg']), r['--chrome-bg']) >= NEED.control, `${at}: метка скидки на палубе в покое`)
+      assert.equal(r['--chrome-sale-2'].slice(0, 7), r['--chrome-sale'], `${at}: метка в покое — та же краска долей`)
+      assert.deepEqual(auditPalette(paints, mode), [], at)
+    }
+  }
+  const [light, dark] = [roles(CBDIN.light, 'light'), roles(CBDIN.dark, 'dark')]
+  assert.equal(light['--chrome-sale'], light['--sale-9'], 'светлая cbdin: жёлтая на бирюзе видна — краска скидки как есть')
+  assert.equal(light['--chrome-sale-2'], `${light['--sale-9']}C7`, 'светлая cbdin: доля 78 % держит')
+  /* Обратный ход: жёлтая целиком на палубе тёмной темы — та находка. */
+  assert.ok(ratio(dark['--sale-9'], dark['--chrome-bg']) < NEED.control, 'жёлтая держала 3 : 1 на бирюзе — дефект не воспроизведён')
+  assert.notEqual(dark['--chrome-sale'], dark['--sale-9'], 'тёмная cbdin: невидимая метка выпущена как есть')
+})
+
+/* Тихая плашка на плашке скидки (И488). Дефект: чип листа набора cbdin —
+   `color-mix(currentColor 18 %, transparent)`: у пары «метка шапки» (заливка
+   скидки и знак на ней) своей тихой плашки у строителя не было. */
+test('the quiet plate on the sale fill: visible, its word reads (И488)', () => {
+  for (const [name, set] of Object.entries({ ...shipped, cbdin: CBDIN })) {
+    for (const [mode, paints] of themes(set)) {
+      const r = roles(paints, mode)
+      const plate = over(r['--quiet-sale'], r['--sale-9'])
+      assert.ok(ratio(plate, r['--sale-9']) >= 1.15, `${name} · ${mode}: тихая плашка на скидке не видна`)
+      assert.ok(ratio(r['--on-quiet-sale'], plate) >= NEED.text, `${name} · ${mode}: слово на тихой плашке скидки`)
+    }
+  }
+})
+
 /* Тихая марка (И462) и красная семья (И463): у латуни тихая кнопка — вуаль
    марки, у терракоты «Тёплого листа» — вуаль чернил: розовый тон на трети
    экрана читался тревогой (снимок заказчика 27.09.2026). */

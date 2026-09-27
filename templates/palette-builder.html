@@ -1101,12 +1101,13 @@ function scrimOf(deck) {
  *  палубе марки знак держит 4.5 : 1 впритык, и 78 % роняли тихое слово шапки
  *  cbdin в тёмной теме до 3.1 : 1. Не держит и сплошной — знак целиком
  *  (`inkOn` гарантирует 4.5 : 1). */
-function dimShare(sign, grounds) {
+function dimShare(sign, grounds, need = NEED.text) {
   for (let k = Math.round(VEIL.dim * 100); k <= 100; k += 1) {
-    if (Math.min(...grounds.map((bg) => ratio(veil(sign, bg, seen(k / 100)), bg))) >= NEED.text) return k / 100
+    if (dimGot(sign, grounds, k / 100) >= need) return k / 100
   }
   return 1
 }
+const dimGot = (sign, grounds, share) => Math.min(...grounds.map((bg) => ratio(veil(sign, bg, seen(share)), bg)))
 
 /** Поверхность на цветном полу со своим знаком (И450, И452): орган и
  *  плашка на палубе, тихая плашка на заливке кнопки. Сначала — к знаку на
@@ -1316,6 +1317,54 @@ function groundRoles(n, a, mode, set = {}) {
   check('quiet-pop-text', 'знак кнопки читается на тихой плашке', qp.text, NEED.text)
   check('quiet-pop-deck', 'тихая плашка видна на пилюле палубы', qd.seen, STATE.visible)
   check('quiet-pop-deck-text', 'надпись пилюли читается на тихой плашке', qd.text, NEED.text)
+
+  /* Тихое слово не у знака палубы (И486): доля `VEIL.dim` — ступень ответа
+     «покой → под рукой» всего сайта, — а строитель выпускал её только к
+     знаку палубы (`--chrome-fg-2`). У cbdin ещё три места стояли смесью
+     `color-mix(… var(--dim) …)` в стилях: полоса настроек на бумаге, метка
+     полной корзины на палубе и подсказка в светлом поле подвала. Каждая —
+     та же доля от 78 % и выше, пока держит свою норму на своём полу:
+       чернила на бумаге (`--ink-dim-paper`, на палубе — знак палубы, то же
+       значение, что `--chrome-fg-2`) — 4.5 : 1 на полах 1–5;
+       тихое слово на заливке (`--on-pop-dim-*`, подсказка в поле-пилюле) —
+       знак заливки на ней, 4.5 : 1; на палубе заливка — светлая пилюля, её
+       знак — пол палубы;
+       метка скидки на палубе (`--chrome-sale`, знак полной корзины; в покое
+       — `--chrome-sale-2`) — знак, не текст: 3 : 1 (WCAG 1.4.11) на каждом
+       полу палубы уже в покое. Краска — ступень лестницы скидки: девятая,
+       а где она на палубе не видна (жёлтая на бирюзе тёмной темы cbdin —
+       2.80 : 1 даже целиком), ближайшая к ней со стороны знака палубы;
+       нет и такой — знак палубы. */
+  const dimRole = (name, sign, grounds, need, id, rule) => {
+    const share = dimShare(sign, grounds, need)
+    out[name] = translucent(sign, share)
+    check(id, rule, dimGot(sign, grounds, share), need)
+  }
+  dimRole('--ink-dim-paper', ink, G, NEED.text, 'ink-dim', 'тихие чернила читаются на всех поверхностях')
+  out['--ink-dim-deck'] = out['--chrome-fg-2']
+  dimRole('--on-pop-dim-paper', inkOn(a[8]), [a[8]], NEED.text, 'on-pop-dim', 'тихое слово читается на заливке')
+  dimRole('--on-pop-dim-deck', deck.bg, [deck.ink], NEED.text, 'on-pop-dim-deck', 'тихое слово читается на пилюле палубы')
+  /* Лестница скидки; выпуск ролей без набора (лист палитры берёт одни
+     имена) — лестница марки на её месте. */
+  const saleRow = set.paper && set.sale ? scale(set.paper, set.ink, set.sale, mode, n[1]) : a
+  const saleFill = saleRow[8]
+  const signSide = lightness(deck.ink) > lightness(deck.bg)
+  const toSign = saleRow.filter((c, i) => i !== 8 && lightness(c) > lightness(saleFill) === signSide)
+    .sort((x, y) => Math.abs(lightness(x) - lightness(saleFill)) - Math.abs(lightness(y) - lightness(saleFill)))
+  const atRest = (c, bg) => ratio(veil(c, bg, seen(VEIL.dim)), bg)
+  out['--chrome-sale'] = firstReaching([saleFill, ...toSign, deck.ink], deck.grounds, NEED.control, 0, atRest)
+  dimRole('--chrome-sale-2', out['--chrome-sale'], deck.grounds, NEED.control, 'chrome-sale-2', 'метка скидки на палубе в покое видна')
+
+  /* Тихая плашка на плашке скидки (И488): вуаль знака скидки на её заливке —
+     чип и счётчик на метке, где пол — `--sale-9`, а слово — `--on-sale-9`.
+     Та же поверхность, что тихая плашка на заливке кнопки: у каждой пары
+     «заливка и знак» своя тихая плашка, и собирать её в стилях из
+     `currentColor` долей — цвет мимо палитры. */
+  const qs = quietPop(inkOn(saleFill), saleFill)
+  out['--quiet-sale'] = qs.fill
+  out['--on-quiet-sale'] = qs.ink
+  check('quiet-sale', 'тихая плашка видна на плашке скидки', qs.seen, STATE.visible)
+  check('quiet-sale-text', 'знак скидки читается на тихой плашке', qs.text, NEED.text)
 
   /* Хвост — ступени марки на обоих полах: заливка главной кнопки и на
      палубе — марка (роль кнопки из каталога посчитана на корне), меняется

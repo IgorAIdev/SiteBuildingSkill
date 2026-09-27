@@ -49,6 +49,25 @@ export const num = (n, dp = 2) => {
   return s
 }
 
+/** Межстрочье так, чтобы его не сдвинула сборка (И491). Сборщик стилей
+ *  Next (Lightning CSS) пишет число в переменной пятью знаками после
+ *  запятой: `1.28571429` уезжает как `1.28571`, и строка 36/28 рисуется
+ *  35.99988 вместо 36 — на 1/64 пикселя ниже (cbdshop.bg, роли текста).
+ *  Поэтому доля выпускается уже пятью знаками и округляется ВВЕРХ: сборка
+ *  её не трогает, а строка не опускается ниже задуманной. Межстрочье можно
+ *  назвать и парой пикселей — `"36/28"`: строка на кегль, как их пишет
+ *  макет; доля считается здесь, а не калькулятором владельца. */
+export const LEAD_DP = 5
+export const leadOf = (value) => {
+  const pair = typeof value === 'string' && value.match(/^\s*(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*$/)
+  const x = pair ? Number(pair[1]) / Number(pair[2]) : Number(value)
+  if (!Number.isFinite(x) || x <= 0) return NaN
+  const k = 10 ** LEAD_DP
+  let r = Math.round(x * k)
+  if (r / k < x - 1e-12) r += 1
+  return r / k
+}
+
 const write = (px, unit) => (unit === 'rem' ? `${num(px / ROOT_FS, 4)}rem` : `${num(px)}px`)
 
 /**
@@ -898,7 +917,7 @@ const roleBlock = (sets, name, indent = '  ') => {
     if (Array.isArray(r.размер) || r.размер !== `--${role}-size`) {
       lines.push(`${indent}--${role}-size: ${size};`)
     }
-    lines.push(`${indent}--${role}-lead: ${r.межстрочье};`)
+    lines.push(`${indent}--${role}-lead: ${leadOf(r.межстрочье)};`)
     lines.push(`${indent}--${role}-weight: ${r.вес};`)
     lines.push(`${indent}--${role}-track: ${r.разрядка};`)
     if (r.мера && r.мера !== 'нет') lines.push(`${indent}--${role}-measure: var(${r.мера});`)
@@ -932,7 +951,12 @@ export const auditRoles = (sets, name) => {
     }
     const head = r.род === 'заголовок'
     const [lo, hi] = head ? HEAD_LEAD : TEXT_LEAD
-    if (r.межстрочье < lo || r.межстрочье > hi) {
+    const lead = leadOf(r.межстрочье)
+    if (Number.isNaN(lead)) {
+      findings.push({ rule: 'межстрочье не число', got: `${role}: ${JSON.stringify(r.межстрочье)}`, need: 'доля (1.45) или строка на кегль пикселями ("36/28")' })
+      continue
+    }
+    if (lead < lo || lead > hi) {
       findings.push({
         rule: `межстрочье ${head ? 'заголовка' : 'текста'}`,
         got: `${role}: ${r.межстрочье}`,
