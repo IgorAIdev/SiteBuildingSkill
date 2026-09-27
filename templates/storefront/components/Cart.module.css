@@ -94,4 +94,4 @@
 .pledges svg{inline-size:1.35em;block-size:1.35em;flex:none}
 
 /* Полка пустой корзины — та же плотность, что полка главной. */
-.shelf{list-style:none;padding:0;margin:0;--cols:4;--cell-min:200px}
+

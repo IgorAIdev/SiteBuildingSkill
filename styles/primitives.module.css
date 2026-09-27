@@ -403,6 +403,29 @@
 .rail::-webkit-scrollbar{display:none}
 .rail > *{flex:none;scroll-snap-align:start}
 
+/* Рельса товаров (`data-rail="goods"`, И475) — товары, которые листают
+   вбок: «похожие» на карте товара, полка главной, полка пустой корзины.
+   Это не полка каталога: в сетке ячейка делит ряд, в рельсе карточка
+   крупнее и СОСЕДНЯЯ ВЫГЛЯДЫВАЕТ — край следующей карточки и есть знак, что
+   ряд едет (слово заказчика 27.09.2026 со снимком cbdin.bg: «размер больше,
+   чем в магазине, т. к. тут скроллинг горизонтальный, и нужно, чтоб
+   соседняя карточка выглядывала»). Ширина карточки — доля рельсы
+   (`--rail-cell`: замер снимка cbdin.bg, карточка ≈ 480 из 720 px
+   экрана — две трети с запасом), но не шире предела простой карточки
+   (`--rail-cell-max`: закон craft, «максимум простой карточки — 340px»,
+   tools/thresholds.mjs `catalogue.full.maxCard`). Полоса уходит под край
+   страницы (`--rail-bleed`) — карточка обрезается краем экрана, а не полем;
+   начало стоит на линии текста. Под мышью — тонкая полоса прокрутки:
+   без неё рельсу с мышью не сдвинуть. */
+:where(.rail[data-rail='goods']){--rail-cell:75%;--rail-cell-max:340px}
+.rail[data-rail='goods']{
+  --rail-bleed:calc(var(--page-edge) + var(--page-line));
+  margin-inline:calc(var(--rail-bleed) * -1);padding-inline:var(--rail-bleed);scroll-padding-inline:var(--rail-bleed);
+  list-style:none
+}
+.rail[data-rail='goods'] > *{inline-size:min(var(--rail-cell), var(--rail-cell-max))}
+@media (pointer:fine){ .rail[data-rail='goods']{overflow-x:auto;overflow-y:hidden;scrollbar-width:thin} }
+
 /* Grid — полка, у которой число колонок ВЫЧИСЛЯЕТСЯ, девятый примитив.
 
    Правило 5 стоит в CLAUDE.md с первого дня: `repeat(auto-fit, minmax(...))`

@@ -7,10 +7,9 @@
    look-home:* Пока вид выбирается, здесь стоят все варианты; `npm run
    look-home:* look:remove` оставляет правила выбранного.
    Краска — роли палитры, размер — роли шкал, раскладка — примитивы. */
-.shelf,.rows{list-style:none;padding:0;margin:0}
+.rows{list-style:none;padding:0;margin:0}
 /* Ходовые — четыре в ряд на широком, две на телефоне; число колонок считает
    сетка (`grid`: `--cols` сверху, пол ряда — две). */
-.shelf{--cols:4;--cell-min:200px}
 
 /* look-home:scene,proof,cabinet:start */
 .tiles{list-style:none;padding:0;margin:0}

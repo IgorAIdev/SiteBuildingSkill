@@ -26,7 +26,7 @@ function Popular({ shelf, cart }: { shelf: ShelfView; cart: Actions }) {
         <h2 id="cart-popular">{shelf.title}</h2>
         <a className={go.go} href={shelf.all.href}>{shelf.all.label}<Icon id="arrow-right" /></a>
       </div>
-      <ul className={`${p.grid} ${s.shelf}`}>{shelf.cards.map((c) => <li key={c.id}><ProductCard card={c} cart={cart} /></li>)}</ul>
+      <ul className={p.rail} data-rail="goods">{shelf.cards.map((c) => <li key={c.id}><ProductCard card={c} cart={cart} /></li>)}</ul>
     </section>
   )
 }

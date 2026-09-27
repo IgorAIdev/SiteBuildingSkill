@@ -1,6 +1,5 @@
 import p from '@/styles/primitives.module.css'
 import go from '@/styles/go.module.css'
-import s from './blocks.module.css'
 import type { Block } from '@/lib/source/contract.ts'
 import type { ShelfCard } from '@/lib/view.ts'
 import type { HomeVariant } from '@/lib/homes.ts'
@@ -29,7 +28,7 @@ export function Featured({ block, ctx, place }: { block: Extract<Block, { type: 
         <h2>{block.title}</h2>
         <a className={go.go} href={hrefFor(ctx.lang, { catalog: true })}>{t(ctx.lang, 'nav.catalog')}<Icon id="arrow-right" /></a>
       </div>
-      <ul className={`${p.grid} ${s.shelf}`}>{cards.map((c, i) => <li key={c.id}><ProductCard card={c} eager={i < eager} cart={ctx.cart} /></li>)}</ul>
+      <ul className={p.rail} data-rail="goods">{cards.map((c, i) => <li key={c.id}><ProductCard card={c} eager={i < eager} cart={ctx.cart} /></li>)}</ul>
     </section>
   )
 }
