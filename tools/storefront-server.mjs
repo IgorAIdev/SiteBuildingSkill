@@ -4,8 +4,8 @@
  * Это витрина скилла, не магазин: своё приложение в своём проекте Coolify
  * («skill»), к cbdin и cbdshop, их репозиторию и приложениям отношения не
  * имеет. Команда для сессии, у которой есть ключ сервера — облачной
- * (переменные окружения сессии COOLIFY_URL и COOLIFY_TOKEN); на машине
- * заказчика ключа нет.
+ * (переменные окружения сессии COOLIFY_URL и COOLIFY_TOKEN) или на машине
+ * заказчика, где с 27.09.2026 они в переменных Windows пользователя.
  *
  *   1. нет COOLIFY_URL или COOLIFY_TOKEN — сказать, откуда их взять, и выйти;
  *   2. приложение витрины уже есть (по репозиторию набора) — выкатить заново;
@@ -40,7 +40,8 @@ const say = (line) => console.log(`[storefront:server] ${line}`)
 const args = process.argv.slice(2)
 const opt = (flag) => { const i = args.indexOf(flag); return i >= 0 ? args[i + 1] : undefined }
 
-const BASE = process.env.COOLIFY_URL?.replace(/\/+$/, '')
+/* Адрес панели записывают и без схемы («coolify.example.com») — тогда https (И458). */
+const BASE = process.env.COOLIFY_URL?.trim().replace(/\/+$/, '').replace(/^(?!https?:\/\/)/, 'https://')
 const TOKEN = process.env.COOLIFY_TOKEN
 if (!BASE || !TOKEN) {
   console.error('✗ Нет COOLIFY_URL или COOLIFY_TOKEN. Они заданы в окружении облачной сессии магазина')
@@ -65,6 +66,9 @@ async function api(method, path, body) {
 /** Адреса списком: `https://a,https://b` → ['https://a', 'https://b']. */
 const urls = (list) => String(list ?? '').split(',').map((u) => u.trim()).filter(Boolean)
 const hostOf = (url) => url.replace(/^https?:\/\//, '').split(/[/:]/)[0]
+/** Описание для Coolify: он принимает только буквы, цифры, пробел и - _ . , ! ? ( ) ' " + = * / @ &
+ *  (422 на тире «—» и двоеточии, И458) — прочее становится пробелом. */
+const plain = (text) => text.replace(/[^\p{L}\p{N} \-_.,!?()'"+=*/@&]/gu, ' ').replace(/ {2,}/g, ' ').trim()
 /** Адреса служб приложения из docker compose: строка JSON или объект → [{ name, domain }]. */
 function services(app) {
   let c = app.docker_compose_domains
@@ -87,7 +91,7 @@ async function create(domains) {
   const server = servers.length === 1 ? servers[0] : servers.find((s) => s.uuid === process.env.COOLIFY_SERVER)
   if (!server) throw new Error(`серверов несколько (${servers.map((s) => `${s.name} ${s.uuid}`).join(', ')}) — назовите нужный: COOLIFY_SERVER=<uuid>`)
   const projects = await api('GET', '/projects')
-  const project = projects.find((p) => p.name === PROJECT) ?? await api('POST', '/projects', { name: PROJECT, description: 'Витрина скилла SiteBuildingSkill — шаблон, не магазин' })
+  const project = projects.find((p) => p.name === PROJECT) ?? await api('POST', '/projects', { name: PROJECT, description: plain('Витрина скилла SiteBuildingSkill — шаблон, не магазин') })
   const ip = await publicIp(server)
   const common = {
     project_uuid: project.uuid,
@@ -99,7 +103,7 @@ async function create(domains) {
     ports_exposes: '3000',
     domains: domains ?? `https://skill.${ip.replaceAll('.', '-')}.sslip.io`,
     name: NAME,
-    description: 'Витрина скилла из templates/storefront (npm run storefront:server)',
+    description: plain('Витрина скилла из templates/storefront (npm run storefront:server)'),
     watch_paths: WATCH.join('\n'),
     limits_memory: '1g',
     limits_cpus: '1',
@@ -152,6 +156,17 @@ async function release(app, hosts) {
   if (holds(await api('GET', `/applications/${app.uuid}`), hosts)) throw new Error(`адрес не снялся с «${app.name}» — снимите его в панели Coolify (${BASE}) и повторите`)
 }
 
+/** SITE_URL — свой адрес витрины: без него canonical, hreflang и карта сайта
+ *  ведут на localhost:3020 (lib/seo.ts). Нужен и сборке (robots и карта
+ *  собираются заранее — ARG в deploy/storefront.Dockerfile), и серверу (И459). */
+async function siteUrl(uuid, url) {
+  if (!url) return
+  /* Значений переменных список не отдаёт — пишется каждый раз, запись та же. */
+  const envs = await api('GET', `/applications/${uuid}/envs`)
+  await api(envs.some((e) => e.key === 'SITE_URL' && !e.is_preview) ? 'PATCH' : 'POST', `/applications/${uuid}/envs`, { key: 'SITE_URL', value: url, is_buildtime: true, is_runtime: true, is_preview: false })
+  say(`SITE_URL = ${url}`)
+}
+
 const domain = opt('--domain')?.replace(/^https?:\/\//, '').split('/')[0]
 const hosts = domain ? (domain.startsWith('www.') ? [domain] : [domain, `www.${domain}`]) : []
 /* Адреса служб docker compose список приложений может не отдавать — такие читаются целиком. */
@@ -171,6 +186,7 @@ if (args.includes('--status')) {
     await api('PATCH', `/applications/${uuid}`, { domains, redirect: 'non-www' })
     say(`адрес витрины: ${hosts[0]} (www ведёт туда же)`)
   }
+  await siteUrl(uuid, urls((await api('GET', `/applications/${uuid}`)).fqdn)[0])
   const ok = await deploy(uuid)
   const app = await api('GET', `/applications/${uuid}`)
   say(ok ? `готово: ${app.fqdn}` : `выкат не удался — журнал в панели Coolify: ${BASE}`)
