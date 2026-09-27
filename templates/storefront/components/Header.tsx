@@ -2,6 +2,8 @@ import type { ReactNode } from 'react'
 import p from '@/styles/primitives.module.css'
 import f from '@/styles/form.module.css' // look-header:search
 import go from '@/styles/go.module.css'
+import b from '@/styles/btn.module.css'
+import pn from '@/styles/pane.module.css'
 import s from './Header.module.css'
 import type { Lang } from '@/lib/locale.ts'
 import type { NavGroup, NavLink } from '@/lib/shell.ts'
@@ -41,25 +43,30 @@ const menu = (lang: Lang) => <button className={`${s.glyph} ${s.menu}`} type="bu
    выбирают поводом, а не местом. Без этого вида групп не видно; разметка
    одна на оба вида. */
 const shelves = (lang: Lang, nav: Menu, title: string) => (
-  <nav id="site-menu" popover="auto" className={s.nav} aria-label={t(lang, 'nav.categories')}>
-    <div className={s.sheetHead}>
-      <span className={s.sheetTitle}>{title}</span>
-      <button className={s.glyph} type="button" popoverTarget="site-menu" popoverTargetAction="hide" aria-label={t(lang, 'nav.close')}><Icon id="x" /></button>
+  <nav id="site-menu" popover="auto" className={`${pn.pane} ${s.nav}`} aria-label={t(lang, 'nav.categories')}>
+    {/* Шторка — окно общего модуля (styles/pane.module.css, И460): шапка
+        стоит, прокручиваются полки. В строке шапки тело свёрнуто
+        (`display:contents`), и полки стоят в ней как стояли. */}
+    <div className={`${pn.bar} ${s.sheetHead}`}>
+      <h2 className={pn.title}>{title}</h2>
+      <button className={`${b.btn} ${pn.close}`} type="button" popoverTarget="site-menu" popoverTargetAction="hide" aria-label={t(lang, 'nav.close')}><Icon id="x" /></button>
     </div>
-    <NavLinks links={nav.links} className={s.links} />
-    {nav.groups.length ? (
-      <div className={s.sheetGroups}>
-        {nav.groups.map((g, i) => (
-          <div key={g.name} className={s.sheetGroup}>
-            <p className={s.groupName} id={`menu-group-${i}`}>{g.name}</p>
-            <ul className={`${p.cluster} ${s.pills}`} aria-labelledby={`menu-group-${i}`}>
-              {g.links.map((l) => <li key={l.href}><a className={p.chip} href={l.href}><span className={s.pillName}>{l.label}</span></a></li>)}
-            </ul>
-          </div>
-        ))}
-      </div>
-    ) : null}
-    <div className={s.sheetLang}><LangMenu lang={lang} label={t(lang, 'nav.lang')} id="lang-sheet" list /></div>
+    <div className={`${pn.body} ${s.sheetBody}`}>
+      <NavLinks links={nav.links} className={s.links} />
+      {nav.groups.length ? (
+        <div className={s.sheetGroups}>
+          {nav.groups.map((g, i) => (
+            <div key={g.name} className={s.sheetGroup}>
+              <p className={s.groupName} id={`menu-group-${i}`}>{g.name}</p>
+              <ul className={`${p.cluster} ${s.pills}`} aria-labelledby={`menu-group-${i}`}>
+                {g.links.map((l) => <li key={l.href}><a className={p.chip} href={l.href}><span className={s.pillName}>{l.label}</span></a></li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      ) : null}
+      <div className={s.sheetLang}><LangMenu lang={lang} label={t(lang, 'nav.lang')} id="lang-sheet" list /></div>
+    </div>
   </nav>
 )
 

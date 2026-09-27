@@ -82,6 +82,10 @@
   --ctrl-hand-deck: light-dark(#FCFBF91F, #EDEBE81F);
   --ctrl-in-deck: light-dark(#FCFBF924, #EDEBE824);
   --ctrl-in-hand-deck: light-dark(#FCFBF933, #EDEBE833);
+  --quiet-tint-paper: light-dark(#9A7B3F29, #B8955A29);
+  --on-quiet-tint-paper: light-dark(#2A1E08, #CBB593);
+  --quiet-tint-deck: light-dark(#FCFBF91F, #EDEBE81F);
+  --on-quiet-tint-deck: light-dark(#FCFBF9, #EDEBE8);
   --sh-ring-paper: light-dark(#9A7B3F2E, #FFFFFF0D);
   --sh-ring-deck: light-dark(#FFFFFF0D, #FFFFFF0D);
   --sh-near-paper: light-dark(#9A7B3F2E, #00000080);
@@ -193,6 +197,10 @@
   --ctrl-hand-deck: light-dark(#FCFBF91F, #EDEBE81F);
   --ctrl-in-deck: light-dark(#FCFBF924, #EDEBE824);
   --ctrl-in-hand-deck: light-dark(#FCFBF933, #EDEBE833);
+  --quiet-tint-paper: light-dark(#9A7B3F29, #B8955A29);
+  --on-quiet-tint-paper: light-dark(#2A1E08, #CBB593);
+  --quiet-tint-deck: light-dark(#FCFBF91F, #EDEBE81F);
+  --on-quiet-tint-deck: light-dark(#FCFBF9, #EDEBE8);
   --sh-ring-paper: light-dark(#9A7B3F2E, #FFFFFF0D);
   --sh-ring-deck: light-dark(#FFFFFF0D, #FFFFFF0D);
   --sh-near-paper: light-dark(#9A7B3F2E, #00000080);

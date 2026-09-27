@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import b from '@/styles/btn.module.css'
 import f from '@/styles/form.module.css'
+import pn from '@/styles/pane.module.css'
+import p from '@/styles/primitives.module.css'
 import s from './QuickOrder.module.css'
 import type { QuickView } from '@/lib/product-view.ts'
 import { chatHref, type Messenger } from '@/lib/contacts.ts'
@@ -57,35 +59,46 @@ export function QuickOrder({ view }: { view: QuickView }) {
   return (
     <>
       <button className={`${b.btn} ${s.trigger}`} data-size="lg" type="button" aria-haspopup="dialog" onClick={open}>{view.open}</button>
-      <dialog ref={ref} className={s.dialog} aria-labelledby="quick-title">
-        <div className={s.intro}>
-          <div className={s.head}>
-            <h2 className={s.title} id="quick-title">{view.title}</h2>
-            <button className={`${b.btn} ${s.close}`} type="button" aria-label={view.close} onClick={() => ref.current?.close()}><Icon id="x" /></button>
-          </div>
-          <p className={s.lead}>{view.lead}</p>
-          {/* Что заказывают — видно в окне, а не только в набранном сообщении:
-              у Viber и Instagram текста в ссылке нет, и человеку нужно, что
-              написать. */}
-          <p className={s.what}>{what}</p>
+      {/* Окно — тройка общего модуля (styles/pane.module.css, И460): шапка
+          стоит, прокручивается только тело. */}
+      <dialog ref={ref} className={`${pn.pane} ${s.dialog}`} aria-labelledby="quick-title">
+        <div className={pn.bar}>
+          <h2 className={pn.title} id="quick-title">{view.title}</h2>
+          <button className={`${b.btn} ${pn.close}`} type="button" aria-label={view.close} onClick={() => ref.current?.close()}><Icon id="x" /></button>
         </div>
-        <ul className={s.rows}>
-          {rows.map((r) => (
-            <li key={r.key}>
-              {r.href
-                ? <a className={`${b.btn} ${s.row}`} data-size="lg" href={r.href} target="_blank" rel="noopener noreferrer"><Icon id={MARK[r.key]} />{r.label}</a>
-                : <span className={`${b.btn} ${s.row}`} data-size="lg" aria-disabled="true"><Icon id={MARK[r.key]} />{r.label}</span>}
-            </li>
-          ))}
-        </ul>
-        <div className={s.phone}>
+        <div className={`${pn.body} ${s.body}`}>
+          <div className={s.intro}>
+            <p className={s.lead}>{view.lead}</p>
+            {/* Что заказывают — видно в окне, а не только в набранном
+                сообщении: у Viber и Instagram текста в ссылке нет, и человеку
+                нужно, что написать. */}
+            <p className={s.what}>{what}</p>
+          </div>
+          {/* Мессенджеры — плитками: знак над именем, по две в ряд; число
+              колонок считает примитив по коробке. Надпись плитки — имя
+              мессенджера, полное «Order via …» — имя ссылки для чтеца
+              (видимое слово в нём есть — WCAG 2.5.3). */}
+          <ul className={`${p.grid} ${s.rows}`}>
+            {rows.map((r) => (
+              <li key={r.key}>
+                {r.href
+                  ? <a className={`${b.btn} ${s.row}`} data-size="lg" href={r.href} target="_blank" rel="noopener noreferrer" aria-label={r.label}><Icon id={MARK[r.key]} />{r.name}</a>
+                  : <span className={`${b.btn} ${s.row}`} data-size="lg" aria-disabled="true" aria-label={r.label}><Icon id={MARK[r.key]} />{r.name}</span>}
+              </li>
+            ))}
+          </ul>
           <div className={f.field}>
             <label className={f.label} htmlFor="quick-phone">{view.phone.label}</label>
-            <input className={f.box} id="quick-phone" type="tel" inputMode="tel" autoComplete="tel" placeholder={view.phone.hint} value={phone} onChange={(e) => setPhone(e.target.value)} />
+            {/* Номер и «перезвоните» — одной парой в строку (color.md, «Место,
+                куда пишут»: поле и его кнопка — пара); не помещаются —
+                кнопка встаёт под полем. */}
+            <div className={`${p.sidebar} ${s.pair}`}>
+              <input className={f.box} id="quick-phone" type="tel" inputMode="tel" autoComplete="tel" placeholder={view.phone.hint} value={phone} onChange={(e) => setPhone(e.target.value)} />
+              {call
+                ? <a className={`${b.btn} ${p.aside}`} data-voice="loud" href={call} target="_blank" rel="noopener noreferrer"><Icon id="arrow-right" />{view.call}</a>
+                : <span className={`${b.btn} ${p.aside}`} data-voice="loud" aria-disabled="true"><Icon id="arrow-right" />{view.call}</span>}
+            </div>
           </div>
-          {call
-            ? <a className={b.btn} data-voice="loud" href={call} target="_blank" rel="noopener noreferrer"><Icon id="arrow-right" />{view.call}</a>
-            : <span className={b.btn} data-voice="loud" aria-disabled="true"><Icon id="arrow-right" />{view.call}</span>}
         </div>
       </dialog>
     </>

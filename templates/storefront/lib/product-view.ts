@@ -42,7 +42,7 @@ export type BuyView = { variant: string | null; ask: AskView | null; add: string
 export type QuickView = {
   open: string; title: string; lead: string; close: string; what: string
   greet: string; qty: string; myPhone: string
-  rows: { key: Messenger; label: string; value: string }[]
+  rows: { key: Messenger; name: string; label: string; value: string }[]
   phone: { label: string; hint: string }; call: string
 }
 /** Снимок галереи: `id` — якорь слайда (ссылка миниатюры ведёт на него и
@@ -110,7 +110,7 @@ function quickView(lang: Lang, product: Product, variant: Product['variants'][nu
     open: t(lang, 'quick.open'), title: t(lang, 'quick.open'), lead: t(lang, 'quick.lead'), close: t(lang, 'quick.close'),
     what: pack ? `${name} · ${pack}` : name,
     greet: t(lang, 'quick.greet'), qty: t(lang, 'quick.qty'), myPhone: t(lang, 'quick.myPhone'),
-    rows: MESSENGERS.map((m) => ({ key: m.key, label: t(lang, 'quick.via', { name: m.label }), value: m.value })),
+    rows: MESSENGERS.map((m) => ({ key: m.key, name: m.label, label: t(lang, 'quick.via', { name: m.label }), value: m.value })),
     phone: { label: t(lang, 'quick.phone'), hint: MARKET.phone.example }, call: t(lang, 'quick.call'),
   }
 }

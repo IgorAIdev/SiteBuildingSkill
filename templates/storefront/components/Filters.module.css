@@ -30,8 +30,12 @@
 }
 
 /* Шапка шторки и её низ («применить», «сбросить») есть только у шторки: в
-   строке закрывать нечего, а применяет каждое раскрытие своей кнопкой. */
-.head,.actions{display:none}
+   строке закрывать нечего, а применяет каждое раскрытие своей кнопкой. Сила
+   — местом: `bar` окна (styles/pane.module.css) объявляет `flex` тем же
+   весом, что голый класс. Тело окна в строке свёрнуто — раскрытия стоят в
+   строке примитива `cluster`, как стояли. */
+.filters:not(:popover-open) > :is(.head, .actions){display:none}
+.filters:not(:popover-open) > .list{display:contents}
 
 /* Кнопка раскрытия — створка: пока грань открыта, кнопка стоит нажатой и
    стрелка смотрит вверх (craft, controls.md, «Лоток»: у створки «включено»
@@ -87,19 +91,17 @@
    минус 56»). Правила не спрятаны под шов: открытая шторка остаётся
    шторкой, даже если окно раздвинули, пока она открыта. */
 .filters:popover-open{
-  --cluster:var(--air-group);
+  --cluster:0px;--pane-pad:var(--pad-sheet);
   position:fixed;inset-block:0;inset-inline:0 auto;
   flex-direction:column;flex-wrap:nowrap;align-items:stretch;
   inline-size:min(22.5rem, 100% - var(--ctrl-h-lg));
   max-block-size:100dvh;
-  padding:var(--pad-sheet) var(--pad-sheet) 0;
   background:var(--surface);
   border-radius:0;border-start-end-radius:var(--r-sheet);border-end-end-radius:var(--r-sheet);
-  box-shadow:var(--sh-overlay);
-  overflow:auto;overscroll-behavior:contain
+  box-shadow:var(--sh-overlay)
 }
 .filters::backdrop{background:var(--scrim)}
-.filters:popover-open > .head{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row)}
+.filters:popover-open > .list{display:flex;flex-direction:column;gap:var(--air-group)}
 /* В шторке грани — разделы столбиком, без раскрытий: кнопки раскрытий и
    их «применить» уходят, бумага всплывающего снята. Сила — местом
    (потомок открытой шторки, 0,3,0), а не порядком: `menu` взят классом. */
@@ -110,11 +112,6 @@
   position:static;inline-size:auto;block-size:auto;padding:0;overflow:visible;
   background:none;box-shadow:none;border-radius:0
 }
-/* Низ шторки: «применить» и «сбросить» приклеены к низу окна шторки —
-   палец находит их, не докручивая. */
-.filters:popover-open > .actions{
-  display:flex;flex-direction:column;gap:var(--gap-targets);
-  position:sticky;inset-block-end:0;margin-block-start:auto;
-  padding-block:var(--pad-inner) var(--pad-sheet);
-  background:var(--surface)
-}
+/* Низ шторки: «применить» и «сбросить» — низ окна (`foot`), он стоит, пока
+   грани прокручиваются: палец находит их, не докручивая. */
+.filters:popover-open > .actions{display:flex;flex-direction:column;gap:var(--gap-targets)}

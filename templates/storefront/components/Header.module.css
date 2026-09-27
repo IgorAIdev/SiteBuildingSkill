@@ -136,7 +136,10 @@
   background-size:calc(var(--ring-w) * var(--menu-mark-side, 0)) 50%
 }
 /* Кадр, строка о полке и стрелка — у шторки и у панели полок, не у строки. */
-.thumb,.line,.chev,.sheetHead,.sheetLang{display:none}
+.thumb,.line,.chev,.sheetLang{display:none}
+/* Шапка шторки — только у открытой шторки; сила — местом, а не порядком:
+   `bar` окна (styles/pane.module.css) объявляет `flex` тем же весом. */
+.nav:not(:popover-open) > .sheetHead{display:none}
 
 /* ── Язык: «EN ▾» и список ───────────────────────────────────────────────
    Список — верхний слой браузера, без номера (правило 8); встаёт под своей
@@ -254,18 +257,20 @@
    полужирным; язык — внизу. Открытая шторка остаётся шторкой, даже если
    окно раздвинули, пока она открыта. */
 .nav:popover-open{
+  --pane-pad:var(--pad-sheet);
   position:fixed;inset-block:0;inset-inline:auto 0;
   inline-size:min(22.5rem, 100% - var(--ctrl-h-lg));block-size:100dvh;
-  flex-direction:column;align-items:stretch;gap:var(--air-group);
-  padding:var(--pad-sheet);
+  align-items:stretch;
   background:var(--surface);color:var(--ink);
   border-start-start-radius:var(--r-sheet);border-end-start-radius:var(--r-sheet);
-  box-shadow:var(--sh-overlay);
-  overflow:auto;overscroll-behavior:contain
+  box-shadow:var(--sh-overlay)
 }
+/* Тело шторки — окно общего модуля (styles/pane.module.css, И460): шапка
+   стоит, прокручиваются полки, группы и язык. В строке шапки тела нет —
+   полки стоят прямо в ней. */
+.nav:not(:popover-open) > .sheetBody{display:contents}
+.nav:popover-open > .sheetBody{display:flex;flex-direction:column;gap:var(--air-group)}
 .nav::backdrop{background:var(--scrim)}
-.nav:popover-open .sheetHead{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row)}
-.sheetTitle{font-size:var(--h3-size);line-height:var(--h3-lead);font-weight:var(--h3-weight);letter-spacing:var(--h3-track)}
 .nav:popover-open .links{flex-direction:column;align-items:stretch;flex-wrap:nowrap;column-gap:0}
 .nav:popover-open .links li + li{border-block-start:var(--line-w) solid var(--rule)}
 .nav:popover-open .links a{display:flex;min-block-size:var(--ctrl-h-lg);padding:var(--sp-2) var(--pad-inner);border-radius:var(--r-ctrl);font-size:var(--body-size);text-decoration-line:none}
@@ -294,6 +299,10 @@
 .sheetGroup{display:flex;flex-direction:column;gap:var(--sp-2)}
 .groupName{font-size:var(--body-size);font-weight:700;color:var(--ink)}
 .pills{--cluster:var(--gap-targets);list-style:none;padding:0;margin:0}
+/* Пилюля повода в шторке — пункт меню, и кегль у неё тела, а не органа
+   (`check:design`, `navSmall`: меню не мельче тела; И286). Фишка набора
+   набрана ступенью органа — у фильтра она примечание, здесь — меню. */
+.pills a{font-size:var(--body-size)}
 
 /* look-header:boutique:start */
 /* Шторка «boutique» — та же шторка, от того края, где кнопка «Shop»:

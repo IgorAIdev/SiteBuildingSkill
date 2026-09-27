@@ -344,7 +344,7 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
    `<style id="look">` ПОСЛЕ стилей сайта (И270) и объявляет `--border`
    палитры на `:root` — равная сила и позднее место перебили бы усиление. */
 @media (prefers-contrast:more){
-  :root:root{ --rule:var(--ink); --ink-soft:var(--ink); --border:var(--ink); --quiet:var(--ctrl); --quiet-on:var(--ctrl) }
+  :root:root{ --rule:var(--ink); --ink-soft:var(--ink); --border:var(--ink); --quiet:var(--ctrl); --quiet-on:var(--ctrl); --quiet-tint:var(--ctrl) }
 }
 /* Принудительные цвета (Windows High Contrast): тени, заливки и градиенты
    стираются, выживают обводки и outline; единственные имена цвета —
@@ -425,6 +425,8 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
   --rule:var(--rule-deck);
   --quiet:var(--quiet-deck);
   --quiet-on:var(--quiet-on-deck);
+  --quiet-tint:var(--quiet-tint-deck);
+  --on-quiet-tint:var(--on-quiet-tint-deck);
   --hover-row:var(--hover-row-deck);
   --press-row:var(--press-row-deck);
   --ctrl-hand:var(--ctrl-hand-deck);
@@ -567,6 +569,8 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
   --rule:var(--rule-paper);
   --quiet:var(--quiet-paper);
   --quiet-on:var(--quiet-on-paper);
+  --quiet-tint:var(--quiet-tint-paper);
+  --on-quiet-tint:var(--on-quiet-tint-paper);
   --ctrl-hand:var(--ctrl-hand-paper);
   --ctrl-in:var(--ctrl-in-paper);
   --ctrl-in-hand:var(--ctrl-in-hand-paper);
