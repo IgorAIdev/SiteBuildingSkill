@@ -86,6 +86,12 @@ export const TYPE = {
   floor: { base: 16, sm: 14, xs: 12, h2: 24 },
   ratio: [1.067, 1.5],
   headContrast: 1.5,
+  /* Заголовок страницы к заголовку раздела — не меньше 1.25 : 1 на обоих
+     концах: Material 3 — Headline Large 32 к Headline Small 24 (1.33), Apple
+     HIG — Large Title 34 к Title 1 28 (1.21). Ближе — два заголовка одного
+     веса, и страница читается без главного (разбор impeccable 27.09.2026:
+     h1 30 и h2 25.5 на телефоне, 42 и 35.3 на макете — 1.18). И498. */
+  pageToSection: 1.25,
   /* Мера строки в знаках: Butterick 45…90, Refactoring UI 40…80, Spectrum
      50…120 «лучше ~70», Every Layout «не больше 60». Коридор — где сходятся. */
   measure: [45, 80],

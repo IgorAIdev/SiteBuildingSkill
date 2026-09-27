@@ -45,15 +45,16 @@ test('display sizes are emitted in every set block, rem at both ends and a non-n
 
 test('the approved set keeps its sizes; the intro is not smaller than body text', () => {
   const r = resolve(sets['Нынешний'])
-  assert.deepEqual([r.крупные.заголовок.низ, r.крупные.заголовок.верх], [30, 42])
+  /* 30 → 42 до И498: к разделу 1.18 : 1, два заголовка одним голосом. */
+  assert.deepEqual([r.крупные.заголовок.низ, r.крупные.заголовок.верх], [32, 48])
   assert.deepEqual([r.крупные.герой.низ, r.крупные.герой.верх], [26, 56])
   assert.ok(r.крупные.ввод.низ >= r.размер.base[1])
 })
 
-test('in every set the page title is larger than a section heading at both ends', () => {
+test('in every set the page title stands 1.25 : 1 over a section heading at both ends (И498)', () => {
   for (const [name, set] of Object.entries(sets)) {
     const r = resolve(set)
-    assert.ok(r.крупные.заголовок.низ > r.размер.h2[0] && r.крупные.заголовок.верх > r.размер.h2[1], name)
+    assert.ok(r.крупные.заголовок.низ / r.размер.h2[0] >= 1.25 && r.крупные.заголовок.верх / r.размер.h2[1] >= 1.25, name)
   }
 })
 
@@ -65,6 +66,7 @@ const broken = (patch) => {
 
 test('audit refuses display sizes out of order, shrinking with zoom or too spread', () => {
   assert.match(broken({ role: 'заголовок', value: { верх: 36 } }), /заголовок страницы/)
+  assert.match(broken({ role: 'заголовок', value: { низ: 30, верх: 42 } }), /отделён от заголовка раздела/)
   assert.match(broken({ role: 'ввод', value: { низ: 17 } }), /вводный абзац/)
   assert.match(broken({ role: 'герой', value: { верх: 40 } }), /герой/)
   assert.match(broken({ role: 'герой', value: { основа: -2 } }), /увеличени/)
