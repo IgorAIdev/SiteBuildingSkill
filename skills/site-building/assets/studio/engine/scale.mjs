@@ -525,6 +525,9 @@ export const auditScale = (set) => {
     if (page && h2 && !(page.низ > h2[0] && page.верх > h2[1])) {
       findings.push({ rule: 'заголовок страницы крупнее заголовка раздела', got: `${page.низ}…${page.верх} против h2 ${h2[0]}…${h2[1]}`, need: 'оба конца выше' })
     }
+    if (page && h2 && (page.низ / h2[0] < TYPE.pageToSection || page.верх / h2[1] < TYPE.pageToSection)) {
+      findings.push({ rule: 'заголовок страницы отделён от заголовка раздела', got: `${page.низ} : ${h2[0]} = ${(page.низ / h2[0]).toFixed(2)} на телефоне, ${page.верх} : ${h2[1]} = ${(page.верх / h2[1]).toFixed(2)} на макете`, need: `не меньше ${TYPE.pageToSection} : 1 на обоих концах` })
+    }
     if (hero && page && hero.верх < page.верх) {
       findings.push({ rule: 'герой не мельче заголовка страницы', got: `верх ${hero.верх} против ${page.верх}`, need: 'не меньше' })
     }

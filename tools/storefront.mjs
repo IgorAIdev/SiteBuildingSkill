@@ -45,6 +45,7 @@ import { existsSync, rmSync, watch, mkdirSync, copyFileSync, statSync, readdirSy
 import { join, dirname, relative, sep } from 'node:path'
 import { spawn, spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
+import { randomUUID } from 'node:crypto'
 
 const args = process.argv.slice(2)
 const opt = (flag) => { const i = args.indexOf(flag); return i >= 0 ? args[i + 1] : undefined }
@@ -153,7 +154,16 @@ function start() {
   /* Next — прямо этим же node, без оболочки: через `npx` в оболочке Windows
      остановка команды убивала оболочку, а сервер оставался сиротой — держал
      порт и файлы `.storefront/`, и следующая постановка падала с EPERM. */
-  const dev = spawn(process.execPath, [join(SITE, 'node_modules', 'next', 'dist', 'bin', 'next'), 'dev', '--port', PORT], { cwd: SITE, stdio: 'inherit', env: { ...process.env, LOOK_PICKER: process.env.LOOK_PICKER ?? 'on' } })
+  /* Опубликованный вид сайт держит в кэше данных (`unstable_cache`, метка
+     «look»): переустановка поверх пишет новый look.json, а страница рисует
+     прежний — и после перезапуска тоже, кэш лежит в `.next/`. Поэтому
+     серверу даётся ключ сброса, а переустановка зовёт /api/revalidate тем же
+     путём, что админка живого магазина (И498). */
+  const secret = process.env.REVALIDATE_SECRET || randomUUID()
+  const refresh = () => Promise.all(['look', 'catalog'].map((tag) => fetch(`http://localhost:${PORT}/api/revalidate`, {
+    method: 'POST', headers: { 'content-type': 'application/json', 'x-revalidate-secret': secret }, body: JSON.stringify({ tag }),
+  }))).then(() => say('кэш вида и каталога сброшен'), (e) => say(`кэш не сброшен: ${e.message}`))
+  const dev = spawn(process.execPath, [join(SITE, 'node_modules', 'next', 'dist', 'bin', 'next'), 'dev', '--port', PORT], { cwd: SITE, stdio: 'inherit', env: { ...process.env, LOOK_PICKER: process.env.LOOK_PICKER ?? 'on', REVALIDATE_SECRET: secret } })
   dev.on('exit', (code) => process.exit(code ?? 0))
   for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => { dev.kill(sig); process.exit(0) })
 
@@ -176,6 +186,7 @@ function start() {
         if (reinstall) {
           say('правка набора — ставлю витрину поверх заново')
           install(true)
+          void refresh()
           say('готово')
         } else {
           for (const rel of direct) {
