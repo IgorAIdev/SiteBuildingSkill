@@ -69,7 +69,7 @@ export function Footer({ lang, docs, variant = 'full' }: { lang: Lang; docs: Doc
           </address>
           {COMPANY_IS_REAL ? null : <p className={p.note}>{t(lang, 'sample')}</p>}
         </div>
-        <LangSwitch lang={lang} label={t(lang, 'nav.lang')} />
+        <div className={`${p.stack} ${s.col}`}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} title /></div>
       </div>
     </footer>
   )

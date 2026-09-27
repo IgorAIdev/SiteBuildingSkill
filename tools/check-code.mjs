@@ -285,7 +285,9 @@ for (const path of files) {
      так, и `Link`-правило выше их не видело. */
   if (/\b\w+\.seg\b/.test(src)) {
     for (const m of src.matchAll(/<a\b[^>]*>/g)) {
-      if (/aria-current/.test(m[0]) && /href=/.test(m[0])) found.jumpBack.push(`${at(m.index)}  переключатель варианта простой ссылкой — страница грузится заново и уезжает в начало`)
+      /* Ссылка на язык (`hrefLang`) — другая версия документа: её полная
+         загрузка верна, это не переключатель варианта. */
+      if (/aria-current/.test(m[0]) && /href=/.test(m[0]) && !/hrefLang/.test(m[0])) found.jumpBack.push(`${at(m.index)}  переключатель варианта простой ссылкой — страница грузится заново и уезжает в начало`)
     }
   }
 

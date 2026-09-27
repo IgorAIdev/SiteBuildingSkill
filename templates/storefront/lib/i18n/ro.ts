@@ -7,6 +7,7 @@ export const RO = {
   'nav.close': 'Închide meniul',
   'nav.shop': 'Magazin',
   'nav.categories': 'Categorii',
+  'nav.params': 'Filtrează: {name}',
   'header.promise': 'Buletin de analiză pentru fiecare lot · Livrare în 1–3 zile lucrătoare · Plata ramburs',
   'crumb.label': 'Navigare',
   'crumb.home': 'Acasă',

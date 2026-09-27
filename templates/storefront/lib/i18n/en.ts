@@ -9,6 +9,7 @@ export const EN: Record<keyof typeof RO, string> = {
   'nav.close': 'Close menu',
   'nav.shop': 'Shop',
   'nav.categories': 'Categories',
+  'nav.params': 'Filter {name}',
   'header.promise': 'A lab report for every batch · Delivery in 1–3 working days · Cash on delivery',
   'crumb.label': 'Breadcrumb',
   'crumb.home': 'Home',

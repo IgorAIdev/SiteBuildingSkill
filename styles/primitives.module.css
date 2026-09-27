@@ -1076,6 +1076,7 @@
    которого не купить (опции варианта), берёт рост кнопки. Поле по бокам —
    доля роста (правило 2). */
 .seg{display:flex;flex-wrap:wrap;gap:var(--sp-1)}
+:where(ul.seg){list-style:none;padding:0;margin:0}
 .seg :is(button, a){
   display:inline-flex;align-items:center;
   height:var(--seg-h, var(--ctrl-h-sm));padding:0 calc(var(--seg-h, var(--ctrl-h-sm)) * .4);border-radius:var(--r-ctrl);background:var(--plate-quiet);
