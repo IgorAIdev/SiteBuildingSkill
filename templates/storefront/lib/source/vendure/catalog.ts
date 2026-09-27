@@ -5,6 +5,7 @@ import { facetValueFilters, pageVariables, pageCount } from './core/search.mjs'
 import { assetImage, type Asset } from './image.ts'
 import { displayOptionGroups } from './core/product.mjs'
 import { overallStock, standardOf } from '../stock.ts'
+import { formOf, standardDetails } from '../details.ts'
 
 /* Торговля из Vendure Shop API (план 4, торговая половина): каталог — этим
    файлом, покупка — commerce.ts рядом. Переходник превращает ответы движка в
@@ -269,10 +270,11 @@ export function vendureSource(env: VendureEnv, fetchImpl: typeof fetch = globalT
         id: nativeSlug(c, p), category: p.collections[0] ? nativeSlug(c, p.collections[0]) : '', brand: p.customFields?.brand?.trim() || null, name: p.name,
         summary: p.customFields?.seoDescription?.trim() || text.split(/(?<=[.!?])\s/)[0] || '',
         description: text,
-        /* Состава и способа применения в полях движка пока нет: запрос с
-           неизвестным полем Vendure отклоняет целиком — поля встанут в запрос
-           вместе с настройкой движка (И466). */
-        ingredients: null, usage: null, standard: null,
+        /* Состав и применение — стандартные тексты вида товара (И482): текст
+           один на полку, а не поле на каждом товаре; вид — по грани полки
+           движка (`category`: oil, capsules…) или по самой полке. */
+        ...standardDetails(formOf([...p.facetValues.filter((v) => v.facet.code === 'category').map((v) => v.code), ...p.collections.map((one) => one.slug)]), lang),
+        standard: null,
         images: [p.featuredAsset, ...p.assets.filter((a) => a.preview !== p.featuredAsset?.preview)].flatMap((a) => (a ? [image(a, p.name)!] : [])),
         optionGroups: shown.map((g): OptionGroup => ({ code: g.code, name: g.name, options: g.options.map((o) => ({ code: o.code, name: o.name })) })),
         variants: p.variants.map((v): Variant => ({

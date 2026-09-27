@@ -1,3 +1,4 @@
+import type { Form } from './source/details.ts'
 import { LOCALES, type Lang } from './locale.ts'
 import { BIND, percent } from './format.ts'
 import type { Pack, Strength } from './source/contract.ts'
@@ -6,7 +7,9 @@ type T = Record<Lang, string>
 /** Одна строка на каждый язык страницы — числом, которое пишет запись языка
  *  (lib/format.ts, И347), а не набранным рукой по-румынски на всех трёх. */
 const each = (write: (lang: Lang) => string): T => Object.fromEntries(LOCALES.map((l) => [l, write(l)])) as T
-export type SampleCategory = { slug: string; name: T; description: T; sign: string }
+/** `form` — вид товара полки: по нему витрина берёт стандартные состав и
+ *  применение (lib/source/details.ts, И482). */
+export type SampleCategory = { slug: string; name: T; description: T; sign: string; form: Form }
 /** `price` — в минорных единицах валюты рынка (у образца — евроцентах);
  *  `was` — цена до скидки, если вариант продаётся со скидкой; `pack` — CBD
  *  в упаковке и её мера (contract.ts, `Pack`). */
@@ -28,10 +31,10 @@ export type SampleProduct = {
 }
 
 export const CATEGORIES: SampleCategory[] = [
-  { slug: 'uleiuri', name: { ro: 'Uleiuri CBD', en: 'CBD oils', hu: 'CBD olajok' }, description: { ro: 'Uleiuri cu CBD în mai multe concentrații.', en: 'CBD oils in several strengths.', hu: 'CBD olajok több erősségben.' }, sign: 'pipette' },
-  { slug: 'capsule', name: { ro: 'Capsule', en: 'Capsules', hu: 'Kapszulák' }, description: { ro: 'Doză fixă în fiecare capsulă.', en: 'A fixed dose in every capsule.', hu: 'Minden kapszulában azonos adag.' }, sign: 'pill' },
-  { slug: 'cosmetice', name: { ro: 'Cosmetice', en: 'Cosmetics', hu: 'Kozmetikumok' }, description: { ro: 'Creme și balsamuri cu CBD.', en: 'Creams and balms with CBD.', hu: 'CBD-s krémek és balzsamok.' }, sign: 'soap-dispenser-droplet' },
-  { slug: 'animale', name: { ro: 'Pentru animale', en: 'For pets', hu: 'Háziállatoknak' }, description: { ro: 'Uleiuri pentru câini și pisici.', en: 'Oils for dogs and cats.', hu: 'Olajok kutyáknak és macskáknak.' }, sign: 'paw-print' },
+  { slug: 'uleiuri', name: { ro: 'Uleiuri CBD', en: 'CBD oils', hu: 'CBD olajok' }, description: { ro: 'Uleiuri cu CBD în mai multe concentrații.', en: 'CBD oils in several strengths.', hu: 'CBD olajok több erősségben.' }, sign: 'pipette', form: 'oil' },
+  { slug: 'capsule', name: { ro: 'Capsule', en: 'Capsules', hu: 'Kapszulák' }, description: { ro: 'Doză fixă în fiecare capsulă.', en: 'A fixed dose in every capsule.', hu: 'Minden kapszulában azonos adag.' }, sign: 'pill', form: 'capsules' },
+  { slug: 'cosmetice', name: { ro: 'Cosmetice', en: 'Cosmetics', hu: 'Kozmetikumok' }, description: { ro: 'Creme și balsamuri cu CBD.', en: 'Creams and balms with CBD.', hu: 'CBD-s krémek és balzsamok.' }, sign: 'soap-dispenser-droplet', form: 'cosmetics' },
+  { slug: 'animale', name: { ro: 'Pentru animale', en: 'For pets', hu: 'Háziállatoknak' }, description: { ro: 'Uleiuri pentru câini și pisici.', en: 'Oils for dogs and cats.', hu: 'Olajok kutyáknak és macskáknak.' }, sign: 'paw-print', form: 'pets' },
 ]
 
 export const FACETS: { code: string; name: T; values: { code: string; name: T }[] }[] = [
@@ -160,25 +163,6 @@ export const PRODUCTS: SampleProduct[] = [
 
 /** Состав и способ применения — образец данных по полке (И466): настоящий
  *  текст у каждого товара даёт каталог магазина. */
-export const DETAILS: Record<string, { ingredients: T; usage: T }> = {
-  uleiuri: {
-    ingredients: { ro: 'Ulei MCT (din nucă de cocos), extract de cânepă (Cannabis sativa L.) din soiuri din catalogul comun al UE.', en: 'MCT oil (from coconut), hemp extract (Cannabis sativa L.) from varieties in the EU common catalogue.', hu: 'MCT-olaj (kókuszból), kenderkivonat (Cannabis sativa L.) az uniós közös fajtajegyzék fajtáiból.' },
-    usage: { ro: 'Agitați înainte de utilizare. Puneți picăturile sub limbă și țineți-le 60 de secunde. Începeți cu 2–3 picături o dată pe zi.', en: 'Shake before use. Place the drops under the tongue and hold for 60 seconds. Start with 2–3 drops once a day.', hu: 'Használat előtt rázza fel. Cseppentse a nyelve alá, és tartsa ott 60 másodpercig. Kezdje napi egyszer 2–3 cseppel.' },
-  },
-  capsule: {
-    ingredients: { ro: 'Extract de cânepă (Cannabis sativa L.), ulei MCT; învelișul capsulei: gelatină.', en: 'Hemp extract (Cannabis sativa L.), MCT oil; capsule shell: gelatine.', hu: 'Kenderkivonat (Cannabis sativa L.), MCT-olaj; kapszulahéj: zselatin.' },
-    usage: { ro: 'O capsulă pe zi, cu apă, în timpul mesei. Nu depășiți doza zilnică indicată.', en: 'One capsule a day with water, with a meal. Do not exceed the stated daily amount.', hu: 'Naponta egy kapszula vízzel, étkezés közben. Ne lépje túl a feltüntetett napi mennyiséget.' },
-  },
-  cosmetice: {
-    ingredients: { ro: 'Unt de shea, ulei de floarea-soarelui, extract de cânepă (Cannabis sativa L.), ceară de albine, vitamina E.', en: 'Shea butter, sunflower oil, hemp extract (Cannabis sativa L.), beeswax, vitamin E.', hu: 'Sheavaj, napraforgóolaj, kenderkivonat (Cannabis sativa L.), méhviasz, E-vitamin.' },
-    usage: { ro: 'Aplicați un strat subțire pe pielea curată și masați. Doar pentru uz extern.', en: 'Apply a thin layer to clean skin and massage in. For external use only.', hu: 'Vigyen fel vékony réteget a tiszta bőrre, és masszírozza be. Csak külsőleg.' },
-  },
-  animale: {
-    ingredients: { ro: 'Ulei de somon, ulei din semințe de cânepă, extract de cânepă (Cannabis sativa L.).', en: 'Salmon oil, hemp seed oil, hemp extract (Cannabis sativa L.).', hu: 'Lazacolaj, kendermagolaj, kenderkivonat (Cannabis sativa L.).' },
-    usage: { ro: 'Adăugați picăturile în hrană o dată pe zi; doza după greutatea animalului — tabelul de pe etichetă.', en: 'Add the drops to food once a day; the amount depends on the weight of the animal — see the table on the label.', hu: 'Naponta egyszer csepegtesse az eledelre; a mennyiség az állat testsúlyától függ — lásd a címkén lévő táblázatot.' },
-  },
-}
-
 export const LAB_REPORTS: Record<string, { lab: string; date: string; cbdPercent: number; thcPercent: number }> = {
   'RO-2409-05': { lab: 'Laborator de exemplu', date: '2026-09-02', cbdPercent: 5.1, thcPercent: 0.12 },
   'RO-2409-10': { lab: 'Laborator de exemplu', date: '2026-09-02', cbdPercent: 10.2, thcPercent: 0.15 },
