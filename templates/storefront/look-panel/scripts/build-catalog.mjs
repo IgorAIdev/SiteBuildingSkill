@@ -246,6 +246,12 @@ export const PRODUCT_PAGE = {
     { id: 'inset', name: 'Within the margins', line: 'The picture keeps the page margins and rounded corners', vars: { '--pdp-edge': 'inset' } },
     { id: 'bleed', name: 'Full width', line: 'On phones the picture runs edge to edge; with dots on the picture the details slide over it', vars: { '--pdp-edge': 'bleed' } },
   ],
+  /* Окно быстрого заказа (И470): мессенджеры плитками 2 × 2 (окно в один
+     экран телефона, И461) или строками во всю ширину, как у cbdin.bg. */
+  'quick-look': [
+    { id: 'tiles', name: 'Tiles', line: 'Messengers as tiles, two in a row: the window fits a phone screen', vars: { '--quick-look': 'tiles' } },
+    { id: 'rows', name: 'Rows', line: 'Messengers as full-width rows, «Order via …» (cbdin.bg)', vars: { '--quick-look': 'rows' } },
+  ],
   /* Выбор варианта (И396): пилюли, встык (элемент 49) или в подложке (50). */
   'seg-look': [
     { id: 'chips', name: 'Chips', line: 'Separate chips; the chosen one in the brand colour', vars: { '--seg-look': 'chips' } },

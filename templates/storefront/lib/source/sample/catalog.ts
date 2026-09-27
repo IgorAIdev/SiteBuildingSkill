@@ -3,7 +3,7 @@ import type { Card, Collection, Facet, Listing, Product, Result, SortKey, Source
 import { CATEGORIES, DETAILS, FACETS, LAB_REPORTS, PRODUCTS, type SampleProduct } from '../../products.ts'
 import { facetValueFilters, pageVariables, pageCount } from '../vendure/core/search.mjs'
 import { MARKET } from '../../market.ts'
-import { overallStock } from '../stock.ts'
+import { overallStock, standardOf } from '../stock.ts'
 import { percentOf } from '../../facts.ts'
 import { categoryArt, productArt, productImages, type ArtView } from './art.ts'
 
@@ -37,11 +37,13 @@ const low = (p: SampleProduct) => Math.min(...p.variants.map((v) => v.price))
 function card(p: SampleProduct, lang: Lang): Card {
   const prices = p.variants.map((v) => v.price)
   const [min, max] = [Math.min(...prices), Math.max(...prices)]
+  const pick = standardOf(p.variants, p.standard ?? null)
   return {
     id: p.id, category: p.cat, name: p.name[lang], image: image(p, lang),
     price: min === max ? { kind: 'single', value: money(min) } : { kind: 'range', min: money(min), max: money(max) },
     was: min === max && p.variants.length === 1 && p.variants[0].was ? money(p.variants[0].was) : null,
-    variant: p.variants.length === 1 ? p.variants[0].id : null,
+    variant: pick?.id ?? null,
+    pick: pick ? { id: pick.id, price: money(pick.price), was: pick.was ? money(pick.was) : null, stock: pick.stock, pack: pick.pack } : null,
     stock: overallStock(p.variants.map((v) => v.stock)),
     strength: p.strength, packs: p.variants.map((v) => v.pack),
   }

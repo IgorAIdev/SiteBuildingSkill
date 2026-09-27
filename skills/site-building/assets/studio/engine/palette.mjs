@@ -522,6 +522,16 @@ export const SHADE = {
  *  обеих темах тёмное (из чернил вышла бы белая вуаль в тёмной), в тёмной
  *  гуще: у тёмной страницы меньше своего контраста. */
 export const SCRIM = { light: 0.55, dark: 0.72 }
+/** Чужие марки (И471): знаки мессенджеров в окне заказа — краской своей
+ *  марки, а не нашей: так их узнают (cbdin.bg: строка нейтральная, знак —
+ *  Viber #7360F2, Telegram #26A5E4, WhatsApp #25D366, Instagram #E4405F;
+ *  WhatsApp Brand Guidelines — «green on white or white on green», знак не
+ *  перекрашивать). Роль «чужие марки» — palette/references/roles.md (у
+ *  кошельков та же). Краска чужой марки — факт о ней, а не ступень палитры:
+ *  одна на обе темы, контраст не меряется — знак стоит рядом со словом,
+ *  которое и несёт смысл (WCAG 1.4.11 требует его от знака, без которого не
+ *  понять орган). */
+export const MARKS = { viber: '#7360F2', telegram: '#26A5E4', whatsapp: '#25D366', instagram: '#E4405F' }
 /** Стекло главной кнопки (И427): доля краски стекла — от 0.6 (Fluent
  *  Acrylic: «tint opacity» 0.6…0.8 у светлой и тёмной темы; ниже стекло
  *  читается пустым местом) и выше, пока надпись не держит 4.5 : 1 над
@@ -731,6 +741,8 @@ export function groundRoles(n, a, mode, set = {}) {
      розовое поле параметров на карте товара было той же тревогой на трети
      экрана. */
   out['--pop-tint-paper'] = redFamily(a[8]) ? n[2] : a[2]
+  /* Чужие марки (И471) — не по полу, но краски строителя: лист их показывает. */
+  for (const [name, hex] of Object.entries(MARKS)) out[`--mark-${name}`] = hex
   out['--on-quiet-tint-paper'] = tint.ink
   out['--quiet-tint-deck'] = translucent(deck.ink, VEIL.deck.quiet)
   out['--on-quiet-tint-deck'] = deck.ink

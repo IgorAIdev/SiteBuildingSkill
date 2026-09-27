@@ -43,7 +43,11 @@ export type Strength = 'percent' | 'mg'
  *  (у диапазона «от» прежней цены нет: неясно, чья она); `variant` — вариант,
  *  который кладётся в корзину прямо с полки, когда он у товара один;
  *  вариантов несколько — null, и кнопка полки ведёт к выбору (И284). */
-export type Card = { id: string; category: string; name: string; image: Image; price: Price; was: Money | null; variant: string | null; stock: Stock; strength: Strength; packs: Pack[] }
+/** `pick` — стандартный вариант товара (И473, `standardOf`): его кладёт
+ *  «в корзину» с полки, его цену и упаковку карточка печатает; всё
+ *  распродано — null. `variant` — его id. */
+export type CardPick = { id: string; price: Money; was: Money | null; stock: Stock; pack: Pack | null }
+export type Card = { id: string; category: string; name: string; image: Image; price: Price; was: Money | null; variant: string | null; pick: CardPick | null; stock: Stock; strength: Strength; packs: Pack[] }
 /** Грань фильтра. `count` — сколько товаров даст значение ПРИ ВСЕХ ДРУГИХ
  *  гранях (cbd-facet, §3): счёт по текущей выборке гасил соседние значения
  *  той же грани, и выбрать «масло ИЛИ капсулы» было нечем. */

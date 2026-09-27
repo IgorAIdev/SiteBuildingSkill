@@ -40,7 +40,7 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
             <p className={s.price}>
               <span className={s.now}>{view.price}</span>
               {view.was ? <><s className={s.was} aria-hidden="true">{view.was.text}</s><span className={p.said}>{view.was.said}</span></> : null}
-              {view.stock ? <span className={s.stock}>{view.stock}</span> : null}
+              {view.stock ? <span className={s.stock} data-level={view.stockLevel ?? undefined}>{view.stock}</span> : null}
             </p>
           </div>
           <div className={s.part}>

@@ -29,8 +29,10 @@
    высоты и ещё одну серую площадь). */
 .what{margin:0;font-size:var(--body-size);line-height:var(--body-lead);font-weight:700;font-variant-numeric:tabular-nums}
 
-/* Плитки — две колонки всегда: ячейка без пола, ряд — ровно две
-   (ручки примитива `grid`). Геометрия плитки — от роста кнопки (правило 2). */
+/* Мессенджеры — вид панели `--quick-look` (И470). Плитки (умолчание) — две
+   колонки всегда: ячейка без пола, ряд — ровно две (ручки примитива
+   `grid`); знак над именем. Строки — одна колонка, знак слева, надпись
+   «Order via …», как у cbdin.bg. Геометрия — от роста кнопки (правило 2). */
 .rows{--cols:2;--cols-min:2;--cell-min:0px;--grid-gap:var(--gap-targets);list-style:none;margin:0;padding:0}
 .row{
   inline-size:100%;block-size:100%;
@@ -38,6 +40,20 @@
   padding:calc(var(--btn-h) * .22) calc(var(--btn-h) * .2)
 }
 .row svg{inline-size:1.5em;block-size:1.5em;flex:none}
+.via{display:none}
+@container style(--quick-look: rows){
+  .rows{--cols:1;--cols-min:1}
+  .row{flex-direction:row;justify-content:flex-start;gap:calc(var(--btn-h) * .25);padding-block:0;padding-inline:calc(var(--btn-h) * .4)}
+  .name{display:none}
+  .via{display:inline}
+}
+/* Знак — краской своей марки (роли `--mark-*` строителя палитры, И471): так
+   мессенджер узнают; фон строки — тихая кнопка сайта, без своей краски
+   («фон у иконок мессенджеров не красят» — слово заказчика 27.09.2026). */
+.row[data-mark='viber'] svg{color:var(--mark-viber)}
+.row[data-mark='telegram'] svg{color:var(--mark-telegram)}
+.row[data-mark='whatsapp'] svg{color:var(--mark-whatsapp)}
+.row[data-mark='instagram'] svg{color:var(--mark-instagram)}
 
 /* Поле номера и кнопка — пара `sidebar`: кнопка — узкая колонка шириной
    своей надписи; не помещаются рядом — встают столбиком. */

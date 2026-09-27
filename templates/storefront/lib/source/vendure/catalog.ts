@@ -4,7 +4,7 @@ import { shopFetch } from './core/request.mjs'
 import { facetValueFilters, pageVariables, pageCount } from './core/search.mjs'
 import { assetImage, type Asset } from './image.ts'
 import { displayOptionGroups } from './core/product.mjs'
-import { overallStock } from '../stock.ts'
+import { overallStock, standardOf } from '../stock.ts'
 
 /* Торговля из Vendure Shop API (план 4, торговая половина): каталог — этим
    файлом, покупка — commerce.ts рядом. Переходник превращает ответы движка в
@@ -136,12 +136,15 @@ export function vendureSource(env: VendureEnv, fetchImpl: typeof fetch = globalT
     const [min, max] = [Math.min(...prices), Math.max(...prices)]
     const pack = packOf(p.customFields?.volume, p.customFields?.strength)
     const was = p.customFields?.wasPrice
+    /* Стандартного варианта у движка пока нет — первый в наличии (И473). */
+    const pick = standardOf(p.variants.map((v) => ({ ...v, stock: stockOf(v.stockLevel) })), null)
     return {
       id: nativeSlug(c, p), category: p.collections[0] ? nativeSlug(c, p.collections[0]) : '', name: p.name,
       image: image(p.featuredAsset, p.name) ?? NO_IMAGE,
       price: min === max ? { kind: 'single', value: money(c, min) } : { kind: 'range', min: money(c, min), max: money(c, max) },
       was: min === max && typeof was === 'number' && was > min ? money(c, was) : null,
-      variant: p.variants.length === 1 ? p.variants[0].id : null,
+      variant: pick?.id ?? null,
+      pick: pick ? { id: pick.id, price: money(c, pick.priceWithTax), was: typeof was === 'number' && was > pick.priceWithTax ? money(c, was) : null, stock: pick.stock, pack } : null,
       stock: overallStock(p.variants.map((v) => stockOf(v.stockLevel))),
       strength: strengthOf(p, pack), packs: pack ? p.variants.map(() => pack) : [],
     }

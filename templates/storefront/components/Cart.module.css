@@ -44,7 +44,7 @@
   color:var(--ink-soft)
 }
 /* «Удалить» — тихая ссылка словом, а не третий серый квадрат со знаком. */
-.act [data-remove]{text-decoration-line:underline;text-underline-offset:.2em}
+.act [data-remove]{text-decoration-line:underline;text-underline-offset:.2em;--go-hover:var(--bad)} /* под рукой — действие-удаление e11 (roles.md; И472) */
 
 /* СВОДКА — единственный поднятый лист страницы. Порядок решения: код скидки
    свёрнут, итоги, кнопка, под ней обещания. Между группами — воздух группы,
@@ -83,9 +83,12 @@
 .grand dd{font-size:var(--h3-size);font-weight:var(--h3-weight);white-space:nowrap}
 
 /* ОБЕЩАНИЯ у кнопки — справка при ней: роль сноски, знак из листа. */
+/* Тихая полоса сведения (roles.md: «полоса „доставка 3–5 дней“» — info2 и
+   текст info11; И472): обещания — факт, не беда и не успех. */
 .pledges{
-  list-style:none;padding:0;margin:0;display:grid;gap:var(--gap-targets);
-  font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft)
+  list-style:none;margin:0;display:grid;gap:var(--gap-targets);
+  padding:var(--pad-inner);border-radius:var(--r-card);background:var(--info-tint);
+  font-size:var(--note-size);line-height:var(--note-lead);color:var(--info)
 }
 .pledges li{display:flex;align-items:flex-start;gap:var(--gap-row)}
 .pledges svg{inline-size:1.35em;block-size:1.35em;flex:none}

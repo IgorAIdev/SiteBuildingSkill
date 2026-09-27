@@ -1,5 +1,6 @@
 import type { Lang } from './locale.ts'
 import type { Card, Collection, Image, LabReport, Product } from './source/contract.ts'
+import { standardOf } from './source/stock.ts'
 import { t } from './i18n/index.ts'
 import { money } from './money.ts'
 import { hrefFor } from './href.ts'
@@ -64,7 +65,7 @@ export type { WasView }
  *  `message` — строка под кнопкой, когда купить нельзя: сочетания нет. */
 export type ProductPageView = {
   crumbs: { name: string; href?: string }[]; crumbLabel: string
-  brand: string | null; name: string; price: string; was: WasView | null; stock: string | null; message: string | null; choose: string | null
+  brand: string | null; name: string; price: string; was: WasView | null; stock: string | null; stockLevel: 'in' | 'low' | 'out' | null; message: string | null; choose: string | null
   gallery: GalleryView; groups: OptionGroupLinks[]; facts: FactsView | null; details: DetailsView
   related: ShelfCard[]; relatedTitle: string
   buy: BuyView
@@ -105,7 +106,7 @@ export function labView(lang: Lang, r: LabReport): LabView {
  *  нажал «в корзину» без выбора (`choose=1`) — решает его выбор. */
 export function withStandard(product: Product, selected: Record<string, string>, asked: boolean): Record<string, string> {
   if (asked || Object.keys(selected).length || product.variants.length < 2) return selected
-  const standard = product.variants.find((v) => v.id === product.standard && v.stock !== 'out') ?? product.variants.find((v) => v.stock !== 'out')
+  const standard = standardOf(product.variants, product.standard)
   return standard ? { ...standard.options } : selected
 }
 
@@ -190,6 +191,7 @@ export function productView(lang: Lang, product: Product, chosen0: Record<string
     name: product.name,
     price, was: sale?.was ?? null,
     stock: chosen ? stockText(lang, chosen.stock) : null,
+    stockLevel: chosen?.stock ?? null,
     message,
     choose: ask && ctx.asked ? t(lang, 'product.choose') : null,
     gallery: galleryView(lang, product.images, sale?.badge ?? null),

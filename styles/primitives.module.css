@@ -539,6 +539,12 @@
    занимает свою колонку; примитив оставляет за собой только набор. */
 .prose{max-inline-size:none}
 .prose p{text-wrap:pretty}
+/* Ссылка в тексте — марочный текст a11, под рукой a12 (palette, roles.md,
+   «Текст и знаки»; И472): ссылка в абзаце читалась чернилами — отличить её
+   было нечем, кроме черты. */
+.prose a{color:var(--pop-ink);text-underline-offset:.2em}
+@media (hover:hover){ .prose a:hover{color:var(--pop-ink-hover)} }
+.prose a:active{color:var(--pop-ink-hover)}
 
 /* Tap — запас нажатия вокруг мелкого органа.
    Палец это 44×44: столько просят и Apple, и Material, и WCAG 2.5.8. Но

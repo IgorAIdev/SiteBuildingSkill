@@ -74,16 +74,18 @@ export function QuickOrder({ view }: { view: QuickView }) {
                 нужно, что написать. */}
             <p className={s.what}>{what}</p>
           </div>
-          {/* Мессенджеры — плитками: знак над именем, по две в ряд; число
-              колонок считает примитив по коробке. Надпись плитки — имя
-              мессенджера, полное «Order via …» — имя ссылки для чтеца
-              (видимое слово в нём есть — WCAG 2.5.3). */}
+          {/* Мессенджеры — вид панели (`--quick-look`, И470): плитками по две
+              в ряд — знак над именем — или строками «Order via …». Строка —
+              тихая кнопка сайта, знак — краской своей марки (`data-mark`,
+              И471: cbdin.bg, WhatsApp Brand Guidelines). Имя ссылки для
+              чтеца — полное «Order via …», видимое слово в нём есть
+              (WCAG 2.5.3). */}
           <ul className={`${p.grid} ${s.rows}`}>
             {rows.map((r) => (
               <li key={r.key}>
                 {r.href
-                  ? <a className={`${b.btn} ${s.row}`} data-size="lg" href={r.href} target="_blank" rel="noopener noreferrer" aria-label={r.label}><Icon id={MARK[r.key]} />{r.name}</a>
-                  : <span className={`${b.btn} ${s.row}`} data-size="lg" aria-disabled="true" aria-label={r.label}><Icon id={MARK[r.key]} />{r.name}</span>}
+                  ? <a className={`${b.btn} ${s.row}`} data-size="lg" data-mark={r.key} href={r.href} target="_blank" rel="noopener noreferrer" aria-label={r.label}><Icon id={MARK[r.key]} /><span className={s.name}>{r.name}</span><span className={s.via}>{r.label}</span></a>
+                  : <span className={`${b.btn} ${s.row}`} data-size="lg" data-mark={r.key} aria-disabled="true" aria-label={r.label}><Icon id={MARK[r.key]} /><span className={s.name}>{r.name}</span><span className={s.via}>{r.label}</span></span>}
               </li>
             ))}
           </ul>
