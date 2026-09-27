@@ -9,6 +9,7 @@ export const HU: Record<keyof typeof RO, string> = {
   'nav.close': 'Menü bezárása',
   'nav.shop': 'Bolt',
   'nav.categories': 'Kategóriák',
+  'nav.params': 'Szűrés: {name}',
   'header.promise': 'Laborjegyzőkönyv minden tételhez · Kiszállítás 1–3 munkanapon belül · Utánvétes fizetés',
   'crumb.label': 'Morzsamenü',
   'crumb.home': 'Főoldal',

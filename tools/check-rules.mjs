@@ -200,7 +200,8 @@ for (const dir of SKILL_DIRS) {
       bad.push(`${refs}/${n}: ${lines.length} строк без оглавления в первых сорока`)
     }
   }
-  for (const m of law.matchAll(/references\/([\w-]+\.md)/g)) {
+  /* Ссылка на разбор ЧУЖОГО скилла (`site-building/references/…`) — не своя. */
+  for (const m of law.matchAll(/(?<![\w-]\/)references\/([\w-]+\.md)/g)) {
     if (!files.includes(m[1])) bad.push(`${skill} ссылается на ${refs}/${m[1]}, которого нет`)
   }
 }

@@ -13,7 +13,7 @@ import { hrefFor } from '@/lib/href.ts'
 import { Icon } from './Icon.tsx'
 import { CartLink } from './CartLink.tsx'
 import { NavLinks } from './NavLinks.tsx'
-import { LangMenu } from './LangMenu.tsx'
+import { LangSwitch } from './LangSwitch.tsx'
 
 /** Меню шапки: полки и группы шторки («по поводу» — грани каталога, И430). */
 type Menu = { links: NavLink[]; groups: NavGroup[] }
@@ -53,7 +53,7 @@ const shelves = (lang: Lang, nav: Menu, title: string, from: 'start' | 'end' = '
       <button className={`${b.btn} ${pn.close}`} type="button" popoverTarget="site-menu" popoverTargetAction="hide" aria-label={t(lang, 'nav.close')}><Icon id="x" /></button>
     </div>
     <div className={`${pn.body} ${s.sheetBody}`}>
-      <NavLinks links={nav.links} className={s.links} />
+      <NavLinks links={nav.links} className={s.links} more={t(lang, 'nav.params', { name: '{name}' })} />
       {nav.groups.length ? (
         <div className={s.sheetGroups}>
           {nav.groups.map((g, i) => (
@@ -66,7 +66,7 @@ const shelves = (lang: Lang, nav: Menu, title: string, from: 'start' | 'end' = '
           ))}
         </div>
       ) : null}
-      <div className={s.sheetLang}><LangMenu lang={lang} label={t(lang, 'nav.lang')} id="lang-sheet" list /></div>
+      <div className={s.sheetLang}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} /></div>
     </div>
   </nav>
 )
@@ -79,7 +79,7 @@ const classic = (lang: Lang, nav: Menu) => (
       {logo(lang)}
       {shelves(lang, nav, t(lang, 'nav.menu'))}
       <div className={s.actions}>
-        <div className={s.lang}><LangMenu lang={lang} label={t(lang, 'nav.lang')} id="lang-bar" /></div>
+        <div className={s.lang}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} /></div>
         {find(lang)}{cart(lang, false)}{menu(lang)}
       </div>
     </div>
@@ -95,7 +95,7 @@ const search = (lang: Lang, nav: Menu) => (
     <div className={s.strip} data-ground="deck">
       <div className={`${p.wrap} ${s.stripRow}`}>
         <p className={s.promise}>{t(lang, 'header.promise')}</p>
-        <div className={s.lang}><LangMenu lang={lang} label={t(lang, 'nav.lang')} id="lang-strip" /></div>
+        <div className={s.lang}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} /></div>
       </div>
     </div>
     <div className={`${p.wrap} ${s.bar}`}>
@@ -121,7 +121,7 @@ const boutique = (lang: Lang, nav: Menu) => (
   <header className={s.head} data-variant="boutique">
     <div className={`${p.wrap} ${s.bar}`}>
       <button className={`${s.glyph} ${s.shop}`} type="button" popoverTarget="site-menu"><Icon id="menu" />{t(lang, 'nav.shop')}</button>
-      <div className={`${s.lang} ${s.side}`}><LangMenu lang={lang} label={t(lang, 'nav.lang')} id="lang-bar" /></div>
+      <div className={`${s.lang} ${s.side}`}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} /></div>
       {logo(lang)}
       <div className={s.actions}>{find(lang)}{cart(lang, false)}</div>
     </div>
@@ -144,7 +144,7 @@ const board = (lang: Lang, nav: Menu) => (
     <div className={s.board}>
       <div className={s.util}>
         <p className={s.promise}>{t(lang, 'header.promise')}</p>
-        <div className={s.lang}><LangMenu lang={lang} label={t(lang, 'nav.lang')} id="lang-util" /></div>
+        <div className={s.lang}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} /></div>
       </div>
       <div className={`${s.bar} ${s.row}`} data-ground="deck">
         {menu(lang)}

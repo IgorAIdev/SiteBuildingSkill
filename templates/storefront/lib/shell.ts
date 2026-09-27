@@ -10,7 +10,10 @@ const NONE: never[] = []
 
 /** Полка в шапке: адрес, имя, кадр полки и строка о ней (у «всех товаров»
  *  кадра и строки нет). Строкой, плиткой или рядом в шторке её рисует шапка. */
-export type NavLink = { href: string; label: string; image: Image | null; line: string | null }
+/** `facets` — общие параметры полки (И478): её грани значениями со ссылкой в
+ *  полку сразу с фильтром — «Концентрация 5 % · 10 % …» у масел (меню
+ *  cbdshop.bg). У «всех товаров» и у полки без своих граней — пусто. */
+export type NavLink = { href: string; label: string; image: Image | null; line: string | null; facets: NavGroup[] }
 /** Группа «по поводу» в шторке полок (И430; меню телефона пилюлями cbdin.bg):
  *  грань всего каталога и её значения ссылками на каталог с этой гранью. */
 export type NavGroup = { name: string; links: { label: string; href: string }[] }
@@ -36,18 +39,25 @@ export async function shellData(lang: Lang): Promise<ShellData> {
     source().collections(lang), content().docs(lang), source().listing(lang, { facets: {}, sort: 'popular', page: null }),
   ])
   const shelves = cols.ok ? cols.value : NONE
+  /* Общие параметры каждой полки — её грани по её товарам (И478): значения
+     с товарами, у грани больше одного значения, повторяющие полки — прочь.
+     Не ответил источник по полке — полка стоит без параметров. */
+  const facetsOf = await Promise.all(shelves.map((c) => source().listing(lang, { category: c.slug, facets: {}, sort: 'popular', page: null })))
+  const groupsOf = (facets: Facet[], to: (code: string, value: string) => string): NavGroup[] => facets
+    .map((f): Facet => ({ code: f.code, name: f.name, values: f.values.filter((v) => v.count > 0) }))
+    .filter((f) => f.values.length > 1 && !mirrorsShelves(f, shelves))
+    .map((f) => ({ name: f.name, links: f.values.map((v) => ({ label: v.name, href: to(f.code, v.code) })) }))
   const nav = [
-    { href: hrefFor(lang, { catalog: true }), label: t(lang, 'nav.catalog'), image: null, line: null },
-    ...shelves.map((c) => ({ href: hrefFor(lang, { category: c.slug }), label: c.name, image: c.image, line: c.description })),
+    { href: hrefFor(lang, { catalog: true }), label: t(lang, 'nav.catalog'), image: null, line: null, facets: NONE },
+    ...shelves.map((c, i) => {
+      const r = facetsOf[i]
+      const facets = r.ok ? groupsOf(r.value.facets, (code, value) => hrefFor(lang, { category: c.slug, facets: { [code]: [value] } })) : NONE
+      return { href: hrefFor(lang, { category: c.slug }), label: c.name, image: c.image, line: c.description, facets }
+    }),
   ]
   /* Группы шторки — грани всего каталога: значения с товарами, у грани
      больше одного значения; повторяющие полки — прочь. Молчит источник —
      групп нет, шторка остаётся полками. */
-  const groups = all.ok
-    ? all.value.facets
-      .map((f): Facet => ({ code: f.code, name: f.name, values: f.values.filter((v) => v.count > 0) }))
-      .filter((f) => f.values.length > 1 && !mirrorsShelves(f, shelves))
-      .map((f) => ({ name: f.name, links: f.values.map((v) => ({ label: v.name, href: hrefFor(lang, { catalog: true, facets: { [f.code]: [v.code] } }) })) }))
-    : NONE
+  const groups = all.ok ? groupsOf(all.value.facets, (code, value) => hrefFor(lang, { catalog: true, facets: { [code]: [value] } })) : NONE
   return { nav, groups, docs: docs.ok ? docs.value : NONE }
 }
