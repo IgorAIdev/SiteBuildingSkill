@@ -94,7 +94,7 @@ test('scale-css refuses to write a set the audit rejects, and leaves the old fil
   } finally { rmSync(dir, { recursive: true, force: true }) }
 })
 
-/* Межстрочье переживает сборку (И465). Дефект — роли текста cbdshop.bg:
+/* Межстрочье переживает сборку (И491). Дефект — роли текста cbdshop.bg:
    строитель выпускал `--h3-lead: 1.28571429`, сборщик Next писал `1.28571`,
    и строка 36/28 рисовалась 35.99988 — на 1/64 пикселя ниже задуманной. */
 test('a role lead is emitted with five decimals, rounded up, and can be named as a pixel pair', async () => {

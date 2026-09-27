@@ -239,12 +239,12 @@ test('the quiet plate on a fill: visible on the button, its number reads — inv
   assert.equal(dark['--on-quiet-pop-deck'], dark['--chrome-fg'], 'надпись вывернутой плашки — пол пилюли')
 })
 
-/* Тихое слово не у знака палубы (И460). Дефект: у cbdin три места стояли
+/* Тихое слово не у знака палубы (И486). Дефект: у cbdin три места стояли
    `color-mix(… var(--dim) …)` в стилях — строитель выпускал долю 78 % только
    к знаку палубы (`--chrome-fg-2`): полоса настроек на бумаге, метка полной
    корзины на палубе и подсказка в светлом поле подвала. Жёлтая метка на
    бирюзе тёмной темы cbdin не видна и целиком (2.80 : 1). */
-test('the quiet word off the deck sign: ink on paper, word on a fill, sale mark on the deck — each holds its norm (И460)', () => {
+test('the quiet word off the deck sign: ink on paper, word on a fill, sale mark on the deck — each holds its norm (И486)', () => {
   for (const [name, set] of Object.entries({ ...shipped, cbdin: CBDIN })) {
     for (const [mode, paints] of themes(set)) {
       const r = roles(paints, mode)
@@ -267,10 +267,10 @@ test('the quiet word off the deck sign: ink on paper, word on a fill, sale mark 
   assert.notEqual(dark['--chrome-sale'], dark['--sale-9'], 'тёмная cbdin: невидимая метка выпущена как есть')
 })
 
-/* Тихая плашка на плашке скидки (И462). Дефект: чип листа набора cbdin —
+/* Тихая плашка на плашке скидки (И488). Дефект: чип листа набора cbdin —
    `color-mix(currentColor 18 %, transparent)`: у пары «метка шапки» (заливка
    скидки и знак на ней) своей тихой плашки у строителя не было. */
-test('the quiet plate on the sale fill: visible, its word reads (И462)', () => {
+test('the quiet plate on the sale fill: visible, its word reads (И488)', () => {
   for (const [name, set] of Object.entries({ ...shipped, cbdin: CBDIN })) {
     for (const [mode, paints] of themes(set)) {
       const r = roles(paints, mode)

@@ -158,7 +158,7 @@ test('contactScheme: «tel:» внутри слова после не-латин
    styles/palette.css; стили его только читают. Дефект — тона хвоста главной
    кнопки, смешанные прямо в её стилях (`color-mix(… 60% …)`), кромка
    выключенной и вуаль героя: проверки были зелёные, нарушение не мерилось. */
-test('colorOut: литерал и доля числом в стилях — находка; роль, доля состояния, ход 0/1 между ролями, маска, файл палитры и панель вида — нет (И295, И461)', () => {
+test('colorOut: литерал и доля числом в стилях — находка; роль, доля состояния, ход 0/1 между ролями, маска, файл палитры и панель вида — нет (И295, И487)', () => {
   const dir = project({
     'kit.config.json': JSON.stringify({ styles: ['app', 'components', 'styles', 'look-panel'] }),
     'tools/css-baseline.json': '{}',
@@ -193,7 +193,7 @@ test('colorOut: литерал и доля числом в стилях — на
     for (const [line, why] of bad) {
       assert.ok(out.split('\n').some((l) => l.includes(`Bad.module.css:${line} `) && l.includes(why)), `строка ${line}: ${why}\n${out}`)
     }
-    assert.doesNotMatch(out, /Good\.module\.css/, 'роль, доля состояния, ход состояния 0/1 (И461), слова, маска, системная краска и ссылка url(#) — не находка')
+    assert.doesNotMatch(out, /Good\.module\.css/, 'роль, доля состояния, ход состояния 0/1 (И487), слова, маска, системная краска и ссылка url(#) — не находка')
     assert.doesNotMatch(out, /palette\.css/, 'файл палитры выпускает строитель — там цвет и рождается')
     assert.doesNotMatch(out, /look-panel/, 'панель вида вне сайта')
   } finally { rmSync(dir, { recursive: true, force: true }) }
@@ -303,11 +303,11 @@ test('varMissing: имя, объявленное кодом проекта из 
   } finally { rmSync(dir, { recursive: true, force: true }) }
 })
 
-/* И464: роли объявляет выпуск строителей — `ladder` и `palette` из
+/* И490: роли объявляет выпуск строителей — `ladder` и `palette` из
    kit.config.json, — а у монорепозитория он лежит вне папок стилей
    приложения; туда же ведёт `@import` (путём и именем пакета). cbdshop.bg:
    1441 ложная находка — каждое прочитанное имя роли ритма. */
-test('varMissing: имя из выпуска строителей и из файла по @import объявлено (И464)', () => {
+test('varMissing: имя из выпуска строителей и из файла по @import объявлено (И490)', () => {
   const dir = project({
     'kit.config.json': JSON.stringify({
       styles: ['apps/shop'], ladder: 'packages/ui/styles/scale.css', palette: 'packages/ui/styles/palette.css',
@@ -332,12 +332,12 @@ test('varMissing: имя из выпуска строителей и из фай
   } finally { rmSync(dir, { recursive: true, force: true }) }
 })
 
-/* И463: шаг на шве, записанный переменными. Блок медиазапроса, в котором
+/* И489: шаг на шве, записанный переменными. Блок медиазапроса, в котором
    только `--pad: 24px` и `--air: var(--sp-7)`, — та же ступенька величины,
    что `padding: 24px`; до 27.09.2026 переменные в нём не считались вовсе,
    и на cbdshop.bg число семьи было занижено. Переменная со значением
    раскладки (`--cols: 1`, `--side: none`) — смысл, не величина. */
-test('seamStep: ступенька величины переменными в медиазапросе — находка, переменная раскладки — нет (И463)', () => {
+test('seamStep: ступенька величины переменными в медиазапросе — находка, переменная раскладки — нет (И489)', () => {
   const dir = project({
     'kit.config.json': JSON.stringify({ styles: ['app'] }),
     'app/page.module.css': [

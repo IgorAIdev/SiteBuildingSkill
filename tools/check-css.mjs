@@ -433,7 +433,7 @@ for (const path of files) {
    * СМЫСЛ раскладки; «меняется величина — это шкала». Блок медиазапроса, в
    * котором нет ни одного свойства раскладки, а только кегль, поле, зазор,
    * ширина, — та самая ступенька, которую рампа не дописала (cbdshop: 23
-   * таких блока из 173). Переменная на шве — по значению (И463): величина
+   * таких блока из 173). Переменная на шве — по значению (И489): величина
    * (`--pad: 24px`, `--air: var(--sp-7)`) — та же ступенька, решение
    * раскладки (`--cols: 1`) — смысл. */
   const LAYOUT_PROP = /^(display|grid-template[a-z-]*|grid-area|grid-column|grid-row|grid-auto[a-z-]*|flex-direction|flex-wrap|flex-basis|flex-flow|flex|order|position|inset[a-z-]*|top|left|right|bottom|visibility|place-[a-z]+|align-[a-z]+|justify-[a-z]+|overflow[a-z-]*|columns|column-count|container[a-z-]*|float|content|transform|translate|rotate|scale|clip-path|pointer-events|z-index|list-style[a-z-]*|writing-mode|direction|white-space|text-wrap|object-fit|object-position|scroll[a-z-]*|touch-action|cursor|appearance)$/
@@ -448,7 +448,7 @@ for (const path of files) {
     const from = i
     while (i < css.length && depth) { if (css[i] === '{') depth++; else if (css[i] === '}') depth--; i++ }
     const body = css.slice(from, i - 1)
-    /* Переменная на шве (И463) читается по значению: величина (длина,
+    /* Переменная на шве (И489) читается по значению: величина (длина,
        рампа, ступень ритма или размера, роль поля, воздуха, зазора) — та же
        ступенька, что свойство величины; всё прочее (`--cols: 1`,
        `--side: none`) — решение раскладки. До 27.09.2026 переменные не
@@ -1400,7 +1400,7 @@ for (const path of files) {
     for (const { css } of sheets) {
       for (const d of css.matchAll(/(?:^|[;{])\s*(--[a-z][a-z0-9-]*)\s*:/g)) declared.add(d[1])
     }
-    /* Выпуск строителей (И464): шкалы и палитра объявляют роли в своих
+    /* Выпуск строителей (И490): шкалы и палитра объявляют роли в своих
        файлах — `ladder` и `palette` из kit.config.json, — и эти файлы у
        монорепозитория лежат вне папок стилей приложения (cbdshop.bg:
        `packages/ui/styles/scale.css`). Их имена объявлены так же, как
@@ -1609,7 +1609,7 @@ for (const path of files) {
         const colours = topArgs(body).slice(1)
         let shares = 0
         for (const arg of colours) {
-          /* Ход состояния (И461): доля `calc(var(--ход) * 100%)`, где ход в
+          /* Ход состояния (И487): доля `calc(var(--ход) * 100%)`, где ход в
              стилях сайта принимает только 0 и 1, — не краска, а кадр
              перехода между двумя ролями: в покое и под рукой смесь равна
              одной из них, и обе меряет строитель. Число, которое бывает

@@ -223,7 +223,7 @@ test('check:design · ритм группы и карточки «значок +
 )`, `.point{--stack:${inner}}`)
   only(measure(list('var(--air-row)')), 'flatRhythm')
   only(measure(list('8px')), null, 0)
-  /* И463: шаг, переобъявленный на шве, и примитив, подключённый через
+  /* И489: шаг, переобъявленный на шве, и примитив, подключённый через
      `composes`, — тот же ритм. На cbdshop.bg оба пути проходили мимо семьи. */
   only(measure({ ...list('8px'), 'components/X.module.css': '.point{--stack:8px}\n@media (max-width: 560px){ .point{--stack:var(--air-row)} }\n' }), 'flatRhythm')
   const composed = (inner, tail = '') => ({
