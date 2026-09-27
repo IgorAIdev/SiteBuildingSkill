@@ -1,7 +1,11 @@
 'use client'
+import { useId } from 'react'
 import { usePathname } from 'next/navigation'
 import p from '@/styles/primitives.module.css'
+import b from '@/styles/btn.module.css'
+import fs from './Filters.module.css'
 import s from './LangSwitch.module.css'
+import { Turn } from './Turn.tsx'
 import { LANG_NAMES, LOCALES, type Lang } from '@/lib/locale.ts'
 
 const FIRST = new RegExp(`^/(${LOCALES.join('|')})(?=/|$)`)
@@ -19,9 +23,40 @@ const FIRST = new RegExp(`^/(${LOCALES.join('|')})(?=/|$)`)
    Ссылка ведёт на ту же страницу на другом языке (язык — первый сегмент
    адреса). Видимо — код, вслух — код и имя языка на нём самом («EN
    English»): видимое слово входит в имя (WCAG 2.5.3). Блок назван для
-   чтения вслух (`aria-label`). */
-export function LangSwitch({ lang, label }: { lang: Lang; label: string }) {
+   чтения вслух (`aria-label`).
+
+   Правило шапки (слово заказчика 27.09.2026): языков больше двух — в
+   строке шапки выбор выпадающим меню, а не сегментами. Три кода рядом
+   занимали в строке место полок и поиска; два — пара, и переключатель
+   читается одним жестом. Раскрытие — то же, что у порядка полки
+   (SortMenu.tsx): кнопка с текущим кодом и стрелкой, список ссылок в
+   верхнем слое (`popover`), Escape и щелчок мимо — от браузера. В шторке
+   меню и в подвале места хватает — там сегменты при любом числе языков;
+   какое место — говорит `drop`. */
+export const DROP_FROM = 3
+
+export function LangSwitch({ lang, label, drop = false }: { lang: Lang; label: string; drop?: boolean }) {
   const path = usePathname()
+  const id = useId()
+  if (drop && LOCALES.length >= DROP_FROM) {
+    const list = `lang-${id.replace(/:/g, '')}`
+    return (
+      <div className={`${fs.facet} ${s.drop}`}>
+        <button className={`${b.btn} ${fs.trigger}`} type="button" popoverTarget={list} aria-label={`${label}: ${lang.toUpperCase()} ${LANG_NAMES[lang]}`}>
+          {lang.toUpperCase()}<Turn />
+        </button>
+        <ul id={list} popover="auto" className={`${p.menu} ${fs.drop} ${fs.options}`} data-align="end" aria-label={label}>
+          {LOCALES.map((l) => (
+            <li key={l}>
+              <a href={path.replace(FIRST, `/${l}`)} hrefLang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>
+                {l.toUpperCase()}<span className={s.name}>{LANG_NAMES[l]}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
   return (
     /* Группа, а не меню: переключатель — орган (как выбор варианта), не
        навигация по разделам. */

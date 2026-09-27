@@ -16,6 +16,9 @@ const HERO_CARE: Image = { src: scene('care'), alt: '', width: 1600, height: 100
 const LOT = 'RO-2409-10'
 const REPORT: LabReport = { batch: LOT, ...LAB_REPORTS[LOT], url: `/sample/lab-${LOT}.pdf` }
 const FEATURED = ['ulei-cbd-full-spectrum', 'capsule-cbd-25', 'crema-cbd', 'ulei-caini-cbd']
+/* Первая полка после категорий — масла (слово заказчика 27.09.2026:
+   «первый блок после категорий — CBD Oil»). */
+const OILS = ['ulei-cbd-full-spectrum', 'ulei-cbd-izolat-10', 'ulei-cbd-5-incepatori', 'ulei-cbd-20-seara', 'ulei-cbd-30-forte']
 /* МЕСТО ЗАКАЗЧИКА — «слово магазина» (docs/design/home.md, «Пустые места»):
    заголовок, два-три предложения о магазине своими словами и снимок с
    подписью. Нужно варианту главной Journal (стоит сразу за ходовыми), в
@@ -43,6 +46,7 @@ export const PAGES: Record<string, SamplePage> = {
       ro: [
         { type: 'hero', title: 'Produse CBD cu buletin de analiză pentru fiecare lot', lede: 'Uleiuri, capsule și cosmetice din cânepă. Numărul lotului de pe etichetă este același cu cel din buletinul laboratorului.', cta: 'Vedeți produsele', image: HERO, more: [{ title: 'Uleiuri CBD de la 5 % la 30 %', lede: 'Spectru complet sau izolat, picurător dozat. Buletin de analiză pentru fiecare lot.', cta: 'Vedeți uleiurile', to: 'uleiuri', image: HERO_OILS }, { title: 'Cosmetice cu CBD', lede: 'Cremă, ser și balsam de buze. Lista completă a ingredientelor pe fiecare ambalaj.', cta: 'Vedeți cosmeticele', to: 'cosmetice', image: HERO_CARE }] },
         { type: 'categories', title: 'Categorii' },
+        { type: 'featured', title: 'Uleiuri CBD', ids: OILS, to: 'uleiuri' },
         { type: 'featured', title: 'Cele mai vândute', ids: FEATURED },
         { type: 'lab', title: 'Buletin de analiză pentru fiecare lot', body: 'Laboratorul măsoară CBD, THC, metale grele, pesticide și solvenți. Buletinul fiecărui lot este pe pagina produsului.', report: REPORT },
         STORY,
@@ -59,6 +63,7 @@ export const PAGES: Record<string, SamplePage> = {
       en: [
         { type: 'hero', title: 'CBD products with a lab report for every batch', lede: 'Oils, capsules and cosmetics made from hemp. The batch number on the label is the same as in the lab report.', cta: 'See the products', image: HERO, more: [{ title: 'CBD oils from 5 % to 30 %', lede: 'Full spectrum or isolate, a measured dropper. A lab report for every batch.', cta: 'See the oils', to: 'uleiuri', image: HERO_OILS }, { title: 'CBD cosmetics', lede: 'Cream, serum and lip balm. The full ingredient list on every pack.', cta: 'See the cosmetics', to: 'cosmetice', image: HERO_CARE }] },
         { type: 'categories', title: 'Categories' },
+        { type: 'featured', title: 'CBD oils', ids: OILS, to: 'uleiuri' },
         { type: 'featured', title: 'Best sellers', ids: FEATURED },
         { type: 'lab', title: 'A lab report for every batch', body: 'The lab measures CBD, THC, heavy metals, pesticides and solvents. Every batch report is on the product page.', report: REPORT },
         STORY,
@@ -75,6 +80,7 @@ export const PAGES: Record<string, SamplePage> = {
       hu: [
         { type: 'hero', title: 'CBD termékek minden tételhez laborjegyzőkönyvvel', lede: 'Kenderből készült olajok, kapszulák és kozmetikumok. A címkén lévő tételszám megegyezik a laborjegyzőkönyvben szereplővel.', cta: 'Termékek megtekintése', image: HERO, more: [{ title: 'CBD olajok 5 %-tól 30 %-ig', lede: 'Teljes spektrum vagy izolátum, adagoló pipetta. Minden tételhez laborjegyzőkönyv.', cta: 'Olajok megtekintése', to: 'uleiuri', image: HERO_OILS }, { title: 'CBD kozmetikumok', lede: 'Krém, szérum és ajakbalzsam. A teljes összetevőlista minden csomagoláson.', cta: 'Kozmetikumok megtekintése', to: 'cosmetice', image: HERO_CARE }] },
         { type: 'categories', title: 'Kategóriák' },
+        { type: 'featured', title: 'CBD olajok', ids: OILS, to: 'uleiuri' },
         { type: 'featured', title: 'Legnépszerűbb termékek', ids: FEATURED },
         { type: 'lab', title: 'Minden tételhez laborjegyzőkönyv', body: 'A labor méri a CBD- és THC-tartalmat, a nehézfémeket, a növényvédő szereket és az oldószereket. Minden tétel jegyzőkönyve a termékoldalon található.', report: REPORT },
         STORY,

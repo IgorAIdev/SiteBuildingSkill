@@ -27,7 +27,7 @@ export function SortMenu({ sort }: { sort: SortView }) {
     <div className={`${fs.facet} ${s.sort}`}>
       <span className={s.sortLabel} aria-hidden="true">{sort.label}</span>
       <button className={`${b.btn} ${fs.trigger}`} type="button" popoverTarget="sort-list" aria-label={sort.said}><span className={s.byLine}><Icon id="list-filter" /><span className={s.byWord}>{sort.label}:</span></span>{sort.current}<Turn /></button>
-      <ul id="sort-list" popover="auto" className={`${p.menu} ${fs.drop} ${s.sortList}`} data-align="end">
+      <ul id="sort-list" popover="auto" className={`${p.menu} ${fs.drop} ${fs.options} ${s.sortList}`} data-align="end">
         {sort.options.map((o) => <li key={o.value}><a href={o.href} aria-current={o.on ? 'true' : undefined}>{o.label}{o.on ? <Icon id="check" /> : null}</a></li>)}
       </ul>
     </div>

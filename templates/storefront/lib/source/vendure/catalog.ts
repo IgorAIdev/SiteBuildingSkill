@@ -140,7 +140,7 @@ export function vendureSource(env: VendureEnv, fetchImpl: typeof fetch = globalT
     /* Стандартного варианта у движка пока нет — первый в наличии (И473). */
     const pick = standardOf(p.variants.map((v) => ({ ...v, stock: stockOf(v.stockLevel) })), null)
     return {
-      id: nativeSlug(c, p), category: p.collections[0] ? nativeSlug(c, p.collections[0]) : '', name: p.name,
+      id: nativeSlug(c, p), category: p.collections[0] ? nativeSlug(c, p.collections[0]) : '', brand: p.customFields?.brand?.trim() || null, name: p.name,
       image: image(p.featuredAsset, p.name) ?? NO_IMAGE,
       price: min === max ? { kind: 'single', value: money(c, min) } : { kind: 'range', min: money(c, min), max: money(c, max) },
       was: min === max && typeof was === 'number' && was > min ? money(c, was) : null,

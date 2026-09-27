@@ -65,6 +65,19 @@
 @supports not (position-area:block-end){
   .drop:popover-open{inset:0;margin:auto}
 }
+/* Строки раскрытия-списка — одна одежда на порядок полки (SortMenu.tsx) и
+   язык в шапке (LangSwitch.tsx): пункт ростом с цель пальца, выбранный —
+   весом и подложкой. Стояли в модуле каталога под именем порядка, и второй
+   список нарисовал бы их второй раз (правило 10). */
+.options{list-style:none}
+.options a{
+  display:flex;align-items:center;min-block-size:var(--ctrl-target);padding-inline:var(--pad-inner);
+  border-radius:var(--r-ctrl);font-size:var(--ctrl-fs-sm);color:var(--ink);white-space:nowrap
+}
+@media (hover:hover){ .options a:hover{background:var(--hover-row)} }
+.options a:active{background:var(--press-row)}
+.options a[aria-current='true']{font-weight:600;background:var(--quiet)}
+
 /* Раскрытие грани: имя, галочки, «применить» столбиком. Имя грани —
    `legend`, и браузер кладёт его НА верхнюю кромку набора: в раскрытии оно
    висело над бумагой. Плавающий `legend` становится обычным ребёнком

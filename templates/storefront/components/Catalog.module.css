@@ -43,14 +43,6 @@
 .sortLabel{font-size:var(--ctrl-fs-sm);color:var(--ink-soft);white-space:nowrap}
 /* Строки порядка — пункты меню: цель ростом пальца, надпись органа;
    текущий — вуалью «вы здесь», как у списка языков в шапке. */
-.sortList{list-style:none}
-.sortList a{
-  display:flex;align-items:center;min-block-size:var(--ctrl-target);padding-inline:var(--pad-inner);
-  border-radius:var(--r-ctrl);font-size:var(--ctrl-fs-sm);color:var(--ink);white-space:nowrap
-}
-@media (hover:hover){ .sortList a:hover{background:var(--hover-row)} }
-.sortList a:active{background:var(--press-row)}
-.sortList a[aria-current='true']{font-weight:600;background:var(--quiet)}
 /* Подпись порядка — снаружи кнопки (умолчание) или внутри, со знаком
    порядка, и галка у выбранного (`--sort-label: inside`, элемент 63, И395). */
 .byLine,.sortList a svg{display:none}

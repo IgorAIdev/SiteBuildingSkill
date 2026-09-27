@@ -34,9 +34,13 @@ function standIn(catalog: Source): Content {
     async page(lang, slug) {
       const r = await sampleContent.page(lang, slug)
       if (!r.ok || !r.value.blocks.some((b) => b.type === 'featured')) return r
-      const top = await catalog.listing(lang, { facets: {}, sort: 'popular', page: null })
-      const ids = top.ok ? top.value.items.slice(0, 4).map((c) => c.id) : []
-      const blocks: Block[] = r.value.blocks.map((b) => (b.type === 'featured' ? { type: 'featured', title: b.title, ids } : b))
+      /* Полка категории (`to`) — первые товары той же полки движка; такой
+         полки у движка нет — полка пуста и молча не стоит. */
+      const firstOf = async (category?: string) => {
+        const top = await catalog.listing(lang, { category, facets: {}, sort: 'popular', page: null })
+        return top.ok ? top.value.items.slice(0, category ? 5 : 4).map((c) => c.id) : []
+      }
+      const blocks: Block[] = await Promise.all(r.value.blocks.map(async (b): Promise<Block> => (b.type === 'featured' ? { ...b, ids: await firstOf(b.to) } : b)))
       return { ok: true, value: { ...r.value, blocks } }
     },
   }
