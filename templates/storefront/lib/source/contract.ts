@@ -60,9 +60,14 @@ export type SortKey = 'popular' | 'price-asc' | 'price-desc'
 export type ListingQuery = { category?: string; q?: string; facets: Record<string, string[]>; sort: SortKey; page: string | null }
 export type Listing = { items: Card[]; total: number; page: number; pages: number; facets: Facet[]; invalid: string[] }
 export type Doc = { slug: string; title: string; summary: string; sections: { heading: string; body: string }[]; table: 'delivery' | null }
+/** Слайд героя после первого (И493). */
+export type HeroSlide = { title: string; lede: string; cta: string; to: string | null; image: Image }
 export type Block =
-  /** Герой — заголовок, абзац и кнопка ПОВЕРХ широкого снимка (`image`, ≈ 16:10). */
-  | { type: 'hero'; title: string; lede: string; cta: string; image: Image }
+  /** Герой — заголовок, абзац и кнопка ПОВЕРХ широкого снимка (`image`, ≈ 16:10).
+   *  `more` — следующие слайды героя (И493): свой снимок, слова и полка,
+   *  куда ведёт кнопка (`to` — адрес полки; нет — весь каталог). Первый
+   *  слайд — сам блок; вариантам главной без слайдера нужен только он. */
+  | { type: 'hero'; title: string; lede: string; cta: string; image: Image; more?: HeroSlide[] }
   | { type: 'categories'; title: string }
   | { type: 'featured'; title: string; ids: string[] }
   /** `report` — образец протокола рядом с текстом: партия, лаборатория, замер. */

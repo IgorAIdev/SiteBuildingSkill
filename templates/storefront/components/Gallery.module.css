@@ -21,14 +21,9 @@
 .gallery .stage{--frame:var(--shot-frame);--frame-cap:var(--gallery-fold);grid-area:stage;position:relative;border-radius:var(--r-card)}
 @container pdp (min-width:820px){ .gallery .stage{--frame-cap:var(--pin-fit)} }
 
-.strip{
-  display:flex;inline-size:100%;block-size:100%;
-  overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;
-  scroll-snap-type:x mandatory;scrollbar-width:none
-}
-.strip::-webkit-scrollbar{display:none}
-.strip:focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:calc(var(--ring-w) * -1)}
-.slide{flex:none;inline-size:100%;block-size:100%;scroll-snap-align:start;scroll-snap-stop:always}
+/* Лента и слайд — общее устройство (styles/slides.module.css, И493);
+   здесь только рост: во всю высоту кадра. */
+.strip,.slide{block-size:100%}
 
 /* Плашка скидки — примитив `cut` (верхний левый угол кадра). */
 .badge{pointer-events:none}
@@ -63,19 +58,12 @@
 @media (hover:hover){ .thumb:not([aria-current='true']):hover::after{box-shadow:inset 0 0 0 var(--line-w) var(--border)} }
 /* Выбранный кадр — кольцо марки (roles.md, «граница выбранного у кадра»:
    a9; И472) и под ним кольцо пола: на светлом снимке иначе не видно. */
-.thumb[aria-current='true']::after{box-shadow:inset 0 0 0 var(--ring-w) var(--pop),inset 0 0 0 calc(var(--ring-w) * 2) var(--page)}
+.thumb[aria-current='true']::after{box-shadow:inset 0 0 0 var(--ring-w) var(--ink),inset 0 0 0 calc(var(--ring-w) * 2) var(--page)}
 .thumb:focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:calc(var(--ring-w) * -1)}
 
-/* Точки вместо миниатюр (`--pdp-thumbs: dots`): строка целей по середине
-   под кадром, рисунок точки — треть цели. */
-.dots{display:none;grid-area:thumbs;justify-content:center;gap:var(--sp-1);list-style:none;margin:0;padding:0}
-.dot{display:grid;place-items:center;inline-size:var(--ctrl-target);block-size:var(--ctrl-target)}
-.dot::before{
-  content:'';inline-size:calc(var(--ctrl-target) * .33);aspect-ratio:1;max-block-size:100%;border-radius:50%;
-  background:var(--border);transition:background-color var(--hover-t) var(--ease)
-}
-.dot[aria-current='true']::before{background:var(--pop)}
-.dot:focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:calc(var(--ring-w) * -1);border-radius:50%}
+/* Точки вместо миниатюр (`--pdp-thumbs: dots`): общий указатель
+   (styles/slides.module.css, И493) под кадром; здесь только место. */
+.dots{display:none;grid-area:thumbs}
 
 @container style(--pdp-thumbs: dots){
   .thumbs{display:none}
@@ -94,15 +82,17 @@
   .gallery{grid-template-areas:'stage'}
   .thumbs{display:none}
   .dots{display:flex;grid-area:stage;align-self:end;position:relative;z-index:1;margin-block-end:var(--sp-1)}
-  .dot::before{background:var(--page);box-shadow:0 0 0 var(--line-w) var(--border)}
-  .dot[aria-current='true']::before{
-    inline-size:calc(var(--ctrl-target) * .8);block-size:calc(var(--ctrl-target) * .33);aspect-ratio:auto;
-    border-radius:calc(var(--ctrl-target) * .165);background:var(--ink);box-shadow:0 0 0 var(--line-w) var(--page)
-  }
+  /* Под точкой любой снимок: точка — пол страницы с волоском кромки,
+     текущая — чернила с кольцом пола. */
+  .dots a::before{background:var(--page);opacity:1;box-shadow:0 0 0 var(--line-w) var(--border)}
+  .dots a[aria-current='true']::before{background:var(--ink);box-shadow:0 0 0 var(--line-w) var(--page)}
 }
 /* Сила места (0,2,0): стрелка — орган `go`, и его `display` весом голого
    класса иначе решал бы порядок кусков сборки. */
-@container pdp (max-width:819px) and style(--pdp-thumbs: over){
+/* В одну колонку стрелок нет ни в каком виде (И497): кадр листает палец,
+   стрелки-плашки на середине кадра — мимо большого пальца и лишние коробки
+   на снимке (разбор impeccable 27.09.2026). */
+@container pdp (max-width:819px){
   .gallery .arrow{display:none}
 }
 /* Снимок во всю ширину (`--pdp-edge: bleed`, ширину даёт колонка —
@@ -133,5 +123,5 @@
 }
 
 @media (prefers-reduced-motion:reduce){
-  .thumb::after,.dot::before{transition:none}
+  .thumb::after{transition:none}
 }

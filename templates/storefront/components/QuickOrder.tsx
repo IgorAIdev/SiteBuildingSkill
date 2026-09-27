@@ -64,7 +64,7 @@ export function QuickOrder({ view }: { view: QuickView }) {
       <dialog ref={ref} className={pn.pane} data-pane="dialog" aria-labelledby="quick-title">
         <div className={pn.bar}>
           <h2 className={pn.title} id="quick-title">{view.title}</h2>
-          <button className={`${b.btn} ${pn.close}`} type="button" aria-label={view.close} onClick={() => ref.current?.close()}><Icon id="x" /></button>
+          <button className={`${b.btn} ${pn.close}`} data-voice="bare" type="button" aria-label={view.close} onClick={() => ref.current?.close()}><Icon id="x" /></button>
         </div>
         <div className={`${pn.body} ${s.body}`}>
           <div className={s.intro}>

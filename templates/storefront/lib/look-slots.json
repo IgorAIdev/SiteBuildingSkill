@@ -634,7 +634,7 @@
     "--ctrl-btn-fill": {
       "type": "colour",
       "group": "button",
-      "value": "var(--quiet)"
+      "value": "transparent"
     },
     "--ctrl-btn-ink": {
       "type": "colour",
@@ -644,7 +644,7 @@
     "--ctrl-btn-edge": {
       "type": "colour",
       "group": "button",
-      "value": "transparent"
+      "value": "var(--edge)"
     },
     "--ctrl-btn-tip": {
       "type": "number",

@@ -977,7 +977,10 @@
      место, — и ручка перестаёт быть ручкой. Проверено замером: с объявлением
      `--qty-pad:0` из корзины не доезжало вовсе. */
   padding:var(--qty-pad, calc(var(--qty-h, var(--ctrl-h-lg)) * .074));
-  background:var(--qty-bg,var(--ctrl));border-radius:var(--r-ctrl)
+  /* Жёлоб одет, как тихая кнопка (И495): заливка и кромка — роли каталога
+     кнопок; счётчик рядом с «в корзину» и «быстрым заказом» не серая
+     плита среди контуров. */
+  background:var(--qty-bg, var(--ctrl-btn-fill, var(--ctrl)));box-shadow:inset 0 0 0 var(--line-w) var(--ctrl-btn-edge, transparent);border-radius:var(--r-ctrl)
 }
 /* Кнопка «−» / «+» — форма жёлоба, а не круг: угол жёлоба минус его поле
    (концентрически; у набора с углом меньше поля браузер держит радиус не
@@ -1094,7 +1097,10 @@
   .seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):hover{background:var(--hover-ctrl);color:var(--ink)}
 }
 .seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):active{background:var(--press-ctrl);color:var(--ink);transform:var(--press-move)}
-.seg :is([aria-pressed="true"], [aria-current="true"]){background:var(--pop);color:var(--on-pop);font-weight:600;box-shadow:none}
+/* Выбранное — чернилами, не маркой (И497, разбор impeccable 27.09.2026):
+   марка на экране одна — у главного действия; выбранный вариант, залитый
+   той же краской, спорил с «в корзину». */
+.seg :is([aria-pressed="true"], [aria-current="true"]){background:var(--ink);color:var(--on-ink);font-weight:600;box-shadow:none}
 .seg [aria-disabled="true"]{opacity:var(--state-off);cursor:not-allowed}
 /* Вид сегментов — роль вида `--seg-look` (И396): `chips` (умолчание,
    выше), `joined` — встык в волоске края, угол у крайних, выбранный — тон
@@ -1279,14 +1285,16 @@
   display:inline-flex;align-items:center;gap:calc(var(--ctrl-h-sm) * .21);
   block-size:var(--ctrl-h-sm);padding-inline:calc(var(--ctrl-h-sm) * .38);
   border-radius:var(--r-ctrl);white-space:nowrap;
-  background:var(--ctrl);color:var(--ink);
+  /* Без плиты, кромкой (И495): фишка одета, как тихая кнопка, — заливка и
+     кромка из каталога кнопок; серой плитки под каждой фишкой больше нет. */
+  background:var(--ctrl-btn-fill, var(--ctrl));color:var(--ink);
   /* Кромка, а не только заливка. Пилюля стоит на ПОЛУ СТРАНИЦЫ, а ступень
      `--ctrl` над ним — 1.10 при норме 1.15: заливка одна не отделяет орган
      от того, на чём он лежит (семья `sunk` в отрисованной проверке). Та же
      причина, по которой кромку носят плитки галереи товара. Кромка — черта
      (`--rule`, роль палитры по полу): до 24.09.2026 здесь стояли 10 %
      чернил числом (И295). */
-  box-shadow:inset 0 0 0 var(--line-w) var(--rule);
+  box-shadow:inset 0 0 0 var(--line-w) var(--ctrl-btn-edge, var(--rule));
   font-size:var(--ctrl-fs-sm);font-weight:500;
   transition:background var(--hover-t) var(--ease),color var(--hover-t) var(--ease),
              transform var(--press-t) var(--ease)

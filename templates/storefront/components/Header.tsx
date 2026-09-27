@@ -16,8 +16,8 @@ import { NavLinks } from './NavLinks.tsx'
 import { LangSwitch } from './LangSwitch.tsx'
 
 /** Меню шапки: полки и группы шторки («по поводу» — грани каталога, И430). */
-type Menu = { links: NavLink[]; groups: NavGroup[] }
-type Props = { lang: Lang; nav: NavLink[]; groups: NavGroup[]; variant: HeaderVariant }
+type Menu = { links: NavLink[]; groups: NavGroup[]; service: { href: string; label: string }[] }
+type Props = { lang: Lang; nav: NavLink[]; groups: NavGroup[]; service: Menu['service']; variant: HeaderVariant }
 
 /* Шапка — своя полоса поверхности с волоском снизу, на голом полу страницы
    она не лежит никогда. Вариант приходит значением вида (lib/look.ts):
@@ -50,7 +50,7 @@ const shelves = (lang: Lang, nav: Menu, title: string, from: 'start' | 'end' = '
         тело свёрнуто (`display:contents`), и полки стоят в ней как стояли. */}
     <div className={`${pn.bar} ${s.sheetHead}`}>
       <h2 className={pn.title}>{title}</h2>
-      <button className={`${b.btn} ${pn.close}`} type="button" popoverTarget="site-menu" popoverTargetAction="hide" aria-label={t(lang, 'nav.close')}><Icon id="x" /></button>
+      <button className={`${b.btn} ${pn.close}`} data-voice="bare" type="button" popoverTarget="site-menu" popoverTargetAction="hide" aria-label={t(lang, 'nav.close')}><Icon id="x" /></button>
     </div>
     <div className={`${pn.body} ${s.sheetBody}`}>
       <NavLinks links={nav.links} className={s.links} more={t(lang, 'nav.params', { name: '{name}' })} />
@@ -66,7 +66,10 @@ const shelves = (lang: Lang, nav: Menu, title: string, from: 'start' | 'end' = '
           ))}
         </div>
       ) : null}
-      <div className={s.sheetLang}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} /></div>
+      <div className={s.sheetLang}>
+        {nav.service.length ? <ul className={s.service}>{nav.service.map((l) => <li key={l.href}><a href={l.href}>{l.label}</a></li>)}</ul> : null}
+        <LangSwitch lang={lang} label={t(lang, 'nav.lang')} />
+      </div>
     </div>
   </nav>
 )
@@ -172,8 +175,8 @@ const DRAW: Record<HeaderVariant, (lang: Lang, nav: Menu) => ReactNode> = {
   step, // look-header:step
 }
 
-export function Header({ lang, nav, groups, variant }: Props) {
-  return DRAW[variant](lang, { links: nav, groups })
+export function Header({ lang, nav, groups, service, variant }: Props) {
+  return DRAW[variant](lang, { links: nav, groups, service })
 }
 
 /* Шапка кассы — закрытая (разбор 24.09.2026, S2 и X5; Baymard «enclosed

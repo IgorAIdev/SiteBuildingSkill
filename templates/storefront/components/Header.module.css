@@ -239,7 +239,6 @@
 .nav:not(:popover-open) > .sheetBody{display:contents}
 .nav:popover-open > .sheetBody{display:flex;flex-direction:column;gap:var(--air-group)}
 .nav:popover-open .links{flex-direction:column;align-items:stretch;flex-wrap:nowrap;column-gap:0}
-.nav:popover-open .links > li + li{border-block-start:var(--line-w) solid var(--rule)}
 .nav:popover-open .links a{display:flex;min-block-size:var(--ctrl-h-lg);padding:var(--sp-2) var(--pad-inner);border-radius:var(--r-ctrl);font-size:var(--body-size);text-decoration-line:none}
 .nav:popover-open .thumb{display:grid;place-items:center;flex:none;inline-size:calc(var(--ctrl-h-lg) * .8);block-size:calc(var(--ctrl-h-lg) * .8);border-radius:var(--r-ctrl);object-fit:cover;background:var(--quiet);color:var(--ink-soft)}
 .nav:popover-open .thumb svg{inline-size:50%;block-size:50%}
@@ -253,7 +252,11 @@
 .nav:popover-open .chev{display:grid;color:var(--ink-soft)}
 .nav:popover-open .chev svg{inline-size:1.25em;block-size:1.25em}
 .nav:popover-open .links a[aria-current='page']{background-color:var(--quiet);font-weight:600}
-.nav:popover-open .sheetLang{display:block;margin-block-start:auto;padding-block-start:var(--air-row);border-block-start:var(--line-w) solid var(--rule)}
+.nav:popover-open .sheetLang{display:flex;flex-direction:column;gap:var(--air-row);margin-block-start:auto;padding-block-start:var(--air-row);border-block-start:var(--line-w) solid var(--rule)}
+/* Служебное шторки — строками текста над языком (И497): доставка и контакты,
+   без знаков и плит. Цель — строка ростом пальца. */
+.service{list-style:none;margin:0;padding:0}
+.service a{display:flex;align-items:center;min-block-size:var(--ctrl-target);color:var(--ink-soft);text-decoration:none}
 /* Группы «по поводу» — пилюлями под полками, только в шторке и только
    при виде `--drawer-look: pills` (меню телефона cbdin.bg, И430): полки
    остаются строками — там выбирают место; пилюли — там, где выбирают

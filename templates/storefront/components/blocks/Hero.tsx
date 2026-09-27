@@ -1,15 +1,16 @@
 import type { ReactNode } from 'react'
 import p from '@/styles/primitives.module.css'
-import b from '@/styles/btn.module.css' // look-home:scene,proof,journal,cabinet,showroom,poster
+import b from '@/styles/btn.module.css' // look-home:proof,journal,cabinet,showroom,poster
 import go from '@/styles/go.module.css' // look-home:showroom
 import s from './blocks.module.css'
 import type { Block } from '@/lib/source/contract.ts'
 import type { HomeVariant } from '@/lib/homes.ts'
 import { hrefFor } from '@/lib/href.ts' // look-home:scene,proof,journal,cabinet,showroom,poster
-import { t } from '@/lib/i18n/index.ts' // look-home:showroom
+import { t } from '@/lib/i18n/index.ts' // look-home:scene,showroom
 import { Icon } from '../Icon.tsx' // look-home:showroom
 import { Price } from '../Price.tsx' // look-home:showroom
 import { Pledges } from '../Pledges.tsx' // look-home:counter
+import { HeroSlides } from './HeroSlides.tsx' // look-home:scene
 import type { BlockCtx, Place } from './types.ts'
 import { shot } from '@/lib/shot.ts'
 
@@ -21,11 +22,11 @@ type Props = { block: Extract<Block, { type: 'hero' }>; ctx: BlockCtx; place: Pl
    look-home:* `npm run look:remove` оставляет выбранный.
    Кнопка героя — одна громкая на экран: главное действие первого экрана. */
 
-/* look-home:scene,proof,journal,cabinet,showroom,poster:start */
+/* look-home:proof,journal,cabinet,showroom,poster:start */
 const cta = (block: Props['block'], ctx: BlockCtx) => (
   <a className={b.btn} data-voice="loud" data-size="lg" href={hrefFor(ctx.lang, { catalog: true })}>{block.cta}</a>
 )
-/* look-home:scene,proof,journal,cabinet,showroom,poster:end */
+/* look-home:proof,journal,cabinet,showroom,poster:end */
 
 /* look-home:scene:start */
 /* scene — единственное место, где снимок бывает большим, и одна тёмная
@@ -36,20 +37,18 @@ const cta = (block: Props['block'], ctx: BlockCtx) => (
    заголовок больше не ложится на этикетку флакона (разбор главной
    24.09.2026, И280). Вуаль живёт на коробке снимка, поэтому у текста нет
    второго фона и нет шва. */
-const scene = ({ block, ctx }: Props) => (
-  <section className={`${p.wrap} ${p.flush} ${s.heroBand}`}>
-    <div className={s.hero}>
-      <div className={s.heroShot}>
-        <img {...shot(block.image, 'wide')} alt={block.image.alt} fetchPriority="high" />
-      </div>
-      <div className={s.heroText} data-ground="deck">
-        <h1>{block.title}</h1>
-        <p>{block.lede}</p>
-        <div className={p.cluster}>{cta(block, ctx)}</div>
-      </div>
-    </div>
-  </section>
-)
+/* Слайды — блок и его `more` (И493); первый ведёт в каталог, следующие —
+   в свою полку. Снимки после первого — ленивые: их не видно до листания. */
+const slidesOf = ({ block, ctx }: Props) => {
+  const all = [{ ...block, to: null }, ...(block.more ?? [])]
+  return all.map((x, i) => ({
+    id: `hero-${i + 1}`, show: t(ctx.lang, 'hero.show', { n: String(i + 1), total: String(all.length) }),
+    title: x.title, lede: x.lede, cta: x.cta, alt: x.image.alt,
+    href: x.to ? hrefFor(ctx.lang, { category: x.to }) : hrefFor(ctx.lang, { catalog: true }),
+    image: shot(x.image, 'wide', i !== 0),
+  }))
+}
+const scene = (props: Props) => <HeroSlides slides={slidesOf(props)} label={t(props.ctx.lang, 'hero.label')} />
 /* look-home:scene:end */
 
 /* look-home:counter:start */

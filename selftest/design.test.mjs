@@ -59,7 +59,7 @@ test('хук на слова про дизайн называет скиллы �
    строками `DESIGN.order` (его печатают хук и брифинг). Разойтись им нельзя:
    шагов столько же, первый читает PRODUCT.md и DESIGN.md, а не запускатель,
    которого набор не везёт. */
-test('порядок дизайна: список в CLAUDE.md и DESIGN.order — одни шаги, шаг 1 читает файлы', () => {
+test('порядок дизайна: список в CLAUDE.md и DESIGN.order — одни шаги, шаг 1 — контекст', () => {
   const law = readFileSync(join(KIT, 'CLAUDE.md'), 'utf8').replace(/\r\n/g, '\n')
   const at = law.indexOf('**Дизайн делается дизайнерскими скиллами.**')
   assert.ok(at >= 0, 'правила нет в CLAUDE.md')
@@ -67,7 +67,9 @@ test('порядок дизайна: список в CLAUDE.md и DESIGN.order �
   const steps = [...section.matchAll(/^(\d+)\. /gm)].map((m) => Number(m[1]))
   assert.deepEqual(steps, DESIGN.order.map((_, i) => i + 1), 'шагов в CLAUDE.md не столько, сколько в DESIGN.order')
   assert.match(DESIGN.order[0], /PRODUCT\.md и DESIGN\.md/)
-  assert.doesNotMatch(DESIGN.order.join(' '), /impeccable context/, 'шаг, зовущий запускатель, которого нет')
+  /* Шаг зовёт запускатель — запускатель обязан лежать в наборе (И496; до
+     27.09.2026 его не было, и шаг ссылался в пустоту, И300). */
+  if (/impeccable context/.test(DESIGN.order.join(' '))) assert.ok(existsSync(join(KIT, '.claude/skills/impeccable/scripts/impeccable')), 'шаг, зовущий запускатель, которого нет')
   for (const word of ['PRODUCT.md', 'DESIGN.md', 'референсы и замок', 'docs/design/', 'одна вещь, которую запомнят']) {
     assert.ok(section.includes(word) || DESIGN.order.join(' ').includes(word), `«${word}» нет ни в правиле, ни в реестре`)
   }

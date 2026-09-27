@@ -30,3 +30,6 @@ export const shot = (image: Image, place: Place, lazy = false) => ({
   ...(lazy ? { loading: 'lazy' as const } : {}),
   ...(image.srcset ? { srcSet: image.srcset, sizes: lazy ? `auto, ${SIZES[place]}` : SIZES[place] } : {}),
 })
+
+/** Атрибуты снимка, готовые к `<img>` — их передают клиентскому узлу. */
+export type ImageAttrs = ReturnType<typeof shot>
