@@ -38,7 +38,7 @@ export function Filters({ f: view }: { f: FiltersView }) {
       <form id="filters" popover="auto" className={`${p.cluster} ${pn.pane} ${s.filters}`} data-pane="start" action={view.action} method="get" aria-label={view.title}>
         <div className={`${pn.bar} ${s.head}`}>
           <h2 className={pn.title}>{view.title}</h2>
-          <button className={`${b.btn} ${pn.close}`} type="button" popoverTarget="filters" popoverTargetAction="hide" aria-label={view.close}><Icon id="x" /></button>
+          <button className={`${b.btn} ${pn.close}`} data-voice="bare" type="button" popoverTarget="filters" popoverTargetAction="hide" aria-label={view.close}><Icon id="x" /></button>
         </div>
         <div className={`${pn.body} ${s.list}`}>
           {view.facets.map((facet) => (

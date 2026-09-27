@@ -239,7 +239,6 @@
 .nav:not(:popover-open) > .sheetBody{display:contents}
 .nav:popover-open > .sheetBody{display:flex;flex-direction:column;gap:var(--air-group)}
 .nav:popover-open .links{flex-direction:column;align-items:stretch;flex-wrap:nowrap;column-gap:0}
-.nav:popover-open .links > li + li{border-block-start:var(--line-w) solid var(--rule)}
 .nav:popover-open .links a{display:flex;min-block-size:var(--ctrl-h-lg);padding:var(--sp-2) var(--pad-inner);border-radius:var(--r-ctrl);font-size:var(--body-size);text-decoration-line:none}
 .nav:popover-open .thumb{display:grid;place-items:center;flex:none;inline-size:calc(var(--ctrl-h-lg) * .8);block-size:calc(var(--ctrl-h-lg) * .8);border-radius:var(--r-ctrl);object-fit:cover;background:var(--quiet);color:var(--ink-soft)}
 .nav:popover-open .thumb svg{inline-size:50%;block-size:50%}

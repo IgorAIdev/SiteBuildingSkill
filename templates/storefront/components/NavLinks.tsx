@@ -43,7 +43,7 @@ export function NavLinks({ links, className, more }: { links: NavLink[]; classNa
             </a>
             {l.facets.length ? (
               <>
-                <button className={`${b.btn} ${s.params}`} type="button" aria-expanded={shown} aria-controls={id} aria-label={more.replace('{name}', l.label)} onClick={() => setOpen(shown ? null : l.href)}>
+                <button className={`${b.btn} ${s.params}`} data-voice="bare" type="button" aria-expanded={shown} aria-controls={id} aria-label={more.replace('{name}', l.label)} onClick={() => setOpen(shown ? null : l.href)}>
                   <Turn />
                 </button>
                 <div className={s.paramsPanel} id={id} hidden={!shown}>

@@ -50,7 +50,7 @@ const shelves = (lang: Lang, nav: Menu, title: string, from: 'start' | 'end' = '
         тело свёрнуто (`display:contents`), и полки стоят в ней как стояли. */}
     <div className={`${pn.bar} ${s.sheetHead}`}>
       <h2 className={pn.title}>{title}</h2>
-      <button className={`${b.btn} ${pn.close}`} type="button" popoverTarget="site-menu" popoverTargetAction="hide" aria-label={t(lang, 'nav.close')}><Icon id="x" /></button>
+      <button className={`${b.btn} ${pn.close}`} data-voice="bare" type="button" popoverTarget="site-menu" popoverTargetAction="hide" aria-label={t(lang, 'nav.close')}><Icon id="x" /></button>
     </div>
     <div className={`${pn.body} ${s.sheetBody}`}>
       <NavLinks links={nav.links} className={s.links} more={t(lang, 'nav.params', { name: '{name}' })} />
