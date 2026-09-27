@@ -1,10 +1,13 @@
 'use client'
-import { useRef, useState, useSyncExternalStore, type MouseEvent } from 'react'
+import { useSyncExternalStore } from 'react'
 import p from '@/styles/primitives.module.css'
 import go from '@/styles/go.module.css'
+import sl from '@/styles/slides.module.css'
 import s from './Gallery.module.css'
 import type { GalleryView } from '@/lib/product-view.ts'
 import { Icon } from './Icon.tsx'
+import { Dots } from './Dots.tsx'
+import { useSlides } from './useSlides.ts'
 import { shot } from '@/lib/shot.ts'
 
 const never = () => () => {}
@@ -18,40 +21,21 @@ const never = () => () => {}
    Размер — не здесь: блок целиком (кадр, зазор, ряд) помещается в экран
    правилом Gallery.module.css (И278), разметка о высоте окна не знает. */
 export function Gallery({ view }: { view: GalleryView }) {
-  const strip = useRef<HTMLDivElement>(null)
-  const [current, setCurrent] = useState(0)
+  /* Лента и точки — общее устройство (useSlides, Dots; И487). */
+  const { strip, current, show, pick, onScroll } = useSlides(view.slides.length)
   /* Стрелки — только со скриптом: без него они ничего не умеют. Снимок
      сервера — «скрипта нет», после гидратации — «есть». */
   const live = useSyncExternalStore(never, () => true, () => false)
   const many = view.slides.length > 1
-
-  function show(i: number) {
-    const el = strip.current
-    if (!el) return
-    const to = (i + view.slides.length) % view.slides.length
-    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    el.scrollTo({ left: to * el.clientWidth, behavior: still ? 'instant' : 'smooth' })
-    setCurrent(to)
-  }
-  /* Миниатюра со скриптом листает ленту на месте: без скрипта тот же адрес
-     `#shot-2` довозит слайд браузер, но вместе с ним двигает и страницу. */
-  function pick(e: MouseEvent<HTMLAnchorElement>, i: number) {
-    e.preventDefault()
-    show(i)
-  }
-  function onScroll() {
-    const el = strip.current
-    if (el && el.clientWidth) setCurrent(Math.round(el.scrollLeft / el.clientWidth))
-  }
 
   return (
     <div className={s.gallery} data-gallery="" data-many={many ? '' : undefined}>
       <div className={`${p.frame} ${s.stage}`}>
         {/* Ленту клавиатура берёт и без tabIndex: прокручиваемая коробка без
             фокусируемых детей сама становится целью Tab (Chrome 130+, Firefox). */}
-        <div ref={strip} className={s.strip} role="region" aria-label={view.label} onScroll={many ? onScroll : undefined}>
+        <div ref={strip} className={`${sl.strip} ${s.strip}`} role="region" aria-label={view.label} onScroll={onScroll}>
           {view.slides.map((slide, i) => (
-            <div key={slide.id} id={slide.id} className={s.slide}>
+            <div key={slide.id} id={slide.id} className={`${sl.slide} ${s.slide}`}>
               <img
                 {...shot(slide, 'stage', i !== 0)} alt={slide.alt} decoding="async"
                 fetchPriority={i === 0 ? 'high' : undefined}
@@ -82,13 +66,7 @@ export function Gallery({ view }: { view: GalleryView }) {
               </li>
             ))}
           </ol>
-          <ol className={s.dots}>
-            {view.slides.map((slide, i) => (
-              <li key={slide.id}>
-                <a className={s.dot} href={`#${slide.id}`} aria-label={slide.show} aria-current={i === current ? 'true' : undefined} onClick={(e) => pick(e, i)} />
-              </li>
-            ))}
-          </ol>
+          <Dots slides={view.slides} current={current} pick={pick} className={s.dots} />
         </>
       ) : null}
     </div>

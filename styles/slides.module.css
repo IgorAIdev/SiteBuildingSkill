@@ -1,0 +1,37 @@
+/* ═══ ЛЕНТА СЛАЙДОВ И УКАЗАТЕЛЬ — одно устройство на сайт ════════════════
+ *
+ *  Заведено 27.09.2026 (И487): слайдер героя главной (слово заказчика:
+ *  «герой делай слайдер, тогда указатель слайдера должен быть») и галерея
+ *  товара листаются одинаково — лента с прилипанием, палец и колесо, у
+ *  каждого слайда якорь, точка — ссылка на него. Механика — хук
+ *  `components/useSlides.ts`, рисунок указателя — здесь. Галерея ставит
+ *  точки в разные места (ручка `--pdp-thumbs`), рисунок у них этот.
+ *
+ *    .strip   лента: прокрутка вбок с прилипанием, полосы не видно;
+ *    .slide   слайд во всю ленту;
+ *    .dots    строка точек по середине;
+ *    .dot     цель ростом цели пальца, рисунок — треть её; текущая —
+ *             вытянутая черта: длина читается без цвета.
+ *
+ *  Краски — чернила пола (`--ink`, `--ink-soft`): на палубе героя они
+ *  светлые, на странице — тёмные, и точка видна на обоих без своей краски.
+ */
+.strip{
+  display:flex;inline-size:100%;
+  overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;
+  scroll-snap-type:x mandatory;scrollbar-width:none
+}
+.strip::-webkit-scrollbar{display:none}
+.strip:focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:calc(var(--ring-w) * -1)}
+.slide{flex:none;inline-size:100%;scroll-snap-align:start;scroll-snap-stop:always}
+
+.dots{display:flex;justify-content:center;list-style:none;margin:0;padding:0}
+.dot{display:grid;place-items:center;inline-size:calc(var(--ctrl-target) * .6);block-size:var(--ctrl-target)}
+.dot::before{
+  content:'';inline-size:calc(var(--ctrl-target) * .16);block-size:calc(var(--ctrl-target) * .16);border-radius:calc(var(--ctrl-target) * .08);
+  background:var(--ink-soft);opacity:.45;
+  transition:opacity var(--hover-t) var(--ease)
+}
+.dot[aria-current='true']::before{inline-size:calc(var(--ctrl-target) * .5);background:var(--ink);opacity:1}
+.dot:focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:calc(var(--ring-w) * -1);border-radius:var(--r-ctrl)}
+@media (prefers-reduced-motion:reduce){ .dot::before{transition:none} }

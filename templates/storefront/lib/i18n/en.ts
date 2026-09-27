@@ -52,6 +52,8 @@ export const EN: Record<keyof typeof RO, string> = {
   'product.tab.lab': 'Lab report (COA)',
   'product.was': 'Was {price}',
   'product.off': '−{pct}',
+  'hero.label': 'Featured',
+  'hero.show': 'Slide {n} of {total}',
   'gallery.label': 'Product images',
   'gallery.prev': 'Previous image',
   'gallery.next': 'Next image',

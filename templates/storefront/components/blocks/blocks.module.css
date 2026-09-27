@@ -65,22 +65,37 @@
    строка проваливала порог. Воздух под героем платит раздел ниже
    (`.section`), снизу у полосы ноль (twoAir). */
 .heroBand{padding-block-start:var(--air-group)}
+/* ПЕРВЫЙ ЭКРАН (И486). Сцена целиком — снимок, заголовок, абзац, кнопка и
+   точки — стоит в окне под прилипшей шапкой и над нижней полосой, без
+   прокрутки. До 27.09.2026 потолок был только у снимка (4 : 3, не выше
+   48svh), а текст под ним рос сам: на телефоне 360 × 670 кнопка уходила под
+   край (снимок заказчика). Теперь рост задаёт сцена — `--hero-fit` (окно
+   минус шапка, нижняя полоса и воздух над и под сценой), снимок забирает
+   остаток, текст стоит своим ростом. На высоком узком окне сцена не
+   вытягивается выше полутора своих ширин. */
 .hero{
   --hero-w:calc(36rem + var(--pad-sheet) * 2);
+  --hero-fit:calc(100svh - var(--chrome-stuck) - var(--dock) - var(--air-group) * 2);
   position:relative;overflow:hidden;
   border-radius:var(--r-sheet);background:var(--scrim-deck);
   container-type:inline-size
 }
-.heroShot img{inline-size:100%;block-size:auto;aspect-ratio:4 / 3;max-block-size:48svh;object-fit:cover;object-position:72% 50%}
+.heroSlide{display:flex;flex-direction:column;block-size:min(var(--hero-fit), 150cqi)}
+.heroShot{flex:1 1 auto;min-block-size:0}
+.heroShot img{inline-size:100%;block-size:100%;object-fit:cover;object-position:72% 50%}
 .heroText{
-  display:flex;flex-direction:column;align-items:flex-start;gap:var(--air-group);
+  flex:none;display:flex;flex-direction:column;align-items:flex-start;gap:var(--air-row);
   padding:var(--pad-sheet)
 }
-.heroText h1{font-size:var(--hero-size);line-height:var(--hero-lead);font-weight:var(--hero-weight);letter-spacing:var(--hero-track);text-wrap:pretty}
-.heroText p{font-size:var(--intro-size);line-height:var(--intro-lead);font-weight:var(--intro-weight);letter-spacing:var(--intro-track);color:var(--ink-soft);max-inline-size:var(--measure-lede);text-wrap:pretty}
+/* Под точками текст отдаёт им строку: точки лежат у низа сцены. */
+.hero[data-many] .heroText{padding-block-end:calc(var(--pad-sheet) + var(--ctrl-target) * .6)}
+.heroText .heroTitle{margin:0;font-size:var(--hero-size);line-height:var(--hero-lead);font-weight:var(--hero-weight);letter-spacing:var(--hero-track);color:var(--ink);text-wrap:pretty}
+.heroText p{margin:0;font-size:var(--intro-size);line-height:var(--intro-lead);font-weight:var(--intro-weight);letter-spacing:var(--intro-track);color:var(--ink-soft);max-inline-size:var(--measure-lede);text-wrap:pretty}
+.heroText > :last-child{margin-block-start:var(--air-row)}
+.heroDots{position:absolute;inset-inline:0;inset-block-end:0;padding-block-end:calc(var(--pad-sheet) * .25)}
 @container (min-width:820px){
+  .heroSlide{position:relative;display:block;block-size:auto}
   .heroShot{position:absolute;inset:0}
-  .heroShot img{block-size:100%;aspect-ratio:auto;max-block-size:none}
   .heroShot::after{
     content:'';position:absolute;inset:0;
     background:linear-gradient(to right,
@@ -88,7 +103,7 @@
       var(--scrim-far) var(--hero-w),
       transparent calc(var(--hero-w) + 35%))
   }
-  .heroText{position:relative;inline-size:min(100%, var(--hero-w));min-block-size:72svh;justify-content:flex-end}
+  .heroText{position:relative;inline-size:min(100%, var(--hero-w));min-block-size:min(72svh, var(--hero-fit));justify-content:flex-end}
 }
 /* look-home:scene:end */
 

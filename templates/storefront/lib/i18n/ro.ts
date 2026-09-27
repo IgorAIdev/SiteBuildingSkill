@@ -50,6 +50,8 @@ export const RO = {
   'product.tab.lab': 'Buletin de analiză (COA)',
   'product.was': 'Preț vechi {price}',
   'product.off': '−{pct}',
+  'hero.label': 'Recomandate',
+  'hero.show': 'Diapozitivul {n} din {total}',
   'gallery.label': 'Imaginile produsului',
   'gallery.prev': 'Imaginea anterioară',
   'gallery.next': 'Imaginea următoare',

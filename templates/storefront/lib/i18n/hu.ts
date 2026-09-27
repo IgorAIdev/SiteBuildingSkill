@@ -52,6 +52,8 @@ export const HU: Record<keyof typeof RO, string> = {
   'product.tab.lab': 'Laborvizsgálat (COA)',
   'product.was': 'Korábbi ár: {price}',
   'product.off': '−{pct}',
+  'hero.label': 'Kiemelt',
+  'hero.show': '{n}. dia / {total}',
   'gallery.label': 'Termékképek',
   'gallery.prev': 'Előző kép',
   'gallery.next': 'Következő kép',

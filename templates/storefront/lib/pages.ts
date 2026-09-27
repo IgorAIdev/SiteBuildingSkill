@@ -7,6 +7,8 @@ type SamplePage = { title: Record<Lang, string>; description: Record<Lang, strin
 /* Снимок героя — сцена-образец (art.ts): текст героя лежит поверх него, поэтому
    подпись пустая — смысл несут заголовок и абзац, картинка их не повторяет. */
 const HERO: Image = { src: scene(), alt: '', width: 1600, height: 1000 }
+const HERO_OILS: Image = { src: scene('oils'), alt: '', width: 1600, height: 1000 }
+const HERO_CARE: Image = { src: scene('care'), alt: '', width: 1600, height: 1000 }
 /* Протокол рядом с текстом блока «лаборатория» — образец партии из данных
    образца (products.ts), тот же, что стоит на карте товара. `url` — сам
    документ: блок ведёт к нему ссылкой. У образца это заглушка, помеченная
@@ -39,7 +41,7 @@ export const PAGES: Record<string, SamplePage> = {
     },
     blocks: {
       ro: [
-        { type: 'hero', title: 'Produse CBD cu buletin de analiză pentru fiecare lot', lede: 'Uleiuri, capsule și cosmetice din cânepă. Numărul lotului de pe etichetă este același cu cel din buletinul laboratorului.', cta: 'Vedeți produsele', image: HERO },
+        { type: 'hero', title: 'Produse CBD cu buletin de analiză pentru fiecare lot', lede: 'Uleiuri, capsule și cosmetice din cânepă. Numărul lotului de pe etichetă este același cu cel din buletinul laboratorului.', cta: 'Vedeți produsele', image: HERO, more: [{ title: 'Uleiuri CBD de la 5 % la 30 %', lede: 'Spectru complet sau izolat, picurător dozat. Buletin de analiză pentru fiecare lot.', cta: 'Vedeți uleiurile', to: 'uleiuri', image: HERO_OILS }, { title: 'Cosmetice cu CBD', lede: 'Cremă, ser și balsam de buze. Lista completă a ingredientelor pe fiecare ambalaj.', cta: 'Vedeți cosmeticele', to: 'cosmetice', image: HERO_CARE }] },
         { type: 'categories', title: 'Categorii' },
         { type: 'featured', title: 'Cele mai vândute', ids: FEATURED },
         { type: 'lab', title: 'Buletin de analiză pentru fiecare lot', body: 'Laboratorul măsoară CBD, THC, metale grele, pesticide și solvenți. Buletinul fiecărui lot este pe pagina produsului.', report: REPORT },
@@ -55,7 +57,7 @@ export const PAGES: Record<string, SamplePage> = {
         ] },
       ],
       en: [
-        { type: 'hero', title: 'CBD products with a lab report for every batch', lede: 'Oils, capsules and cosmetics made from hemp. The batch number on the label is the same as in the lab report.', cta: 'See the products', image: HERO },
+        { type: 'hero', title: 'CBD products with a lab report for every batch', lede: 'Oils, capsules and cosmetics made from hemp. The batch number on the label is the same as in the lab report.', cta: 'See the products', image: HERO, more: [{ title: 'CBD oils from 5 % to 30 %', lede: 'Full spectrum or isolate, a measured dropper. A lab report for every batch.', cta: 'See the oils', to: 'uleiuri', image: HERO_OILS }, { title: 'CBD cosmetics', lede: 'Cream, serum and lip balm. The full ingredient list on every pack.', cta: 'See the cosmetics', to: 'cosmetice', image: HERO_CARE }] },
         { type: 'categories', title: 'Categories' },
         { type: 'featured', title: 'Best sellers', ids: FEATURED },
         { type: 'lab', title: 'A lab report for every batch', body: 'The lab measures CBD, THC, heavy metals, pesticides and solvents. Every batch report is on the product page.', report: REPORT },
@@ -71,7 +73,7 @@ export const PAGES: Record<string, SamplePage> = {
         ] },
       ],
       hu: [
-        { type: 'hero', title: 'CBD termékek minden tételhez laborjegyzőkönyvvel', lede: 'Kenderből készült olajok, kapszulák és kozmetikumok. A címkén lévő tételszám megegyezik a laborjegyzőkönyvben szereplővel.', cta: 'Termékek megtekintése', image: HERO },
+        { type: 'hero', title: 'CBD termékek minden tételhez laborjegyzőkönyvvel', lede: 'Kenderből készült olajok, kapszulák és kozmetikumok. A címkén lévő tételszám megegyezik a laborjegyzőkönyvben szereplővel.', cta: 'Termékek megtekintése', image: HERO, more: [{ title: 'CBD olajok 5 %-tól 30 %-ig', lede: 'Teljes spektrum vagy izolátum, adagoló pipetta. Minden tételhez laborjegyzőkönyv.', cta: 'Olajok megtekintése', to: 'uleiuri', image: HERO_OILS }, { title: 'CBD kozmetikumok', lede: 'Krém, szérum és ajakbalzsam. A teljes összetevőlista minden csomagoláson.', cta: 'Kozmetikumok megtekintése', to: 'cosmetice', image: HERO_CARE }] },
         { type: 'categories', title: 'Kategóriák' },
         { type: 'featured', title: 'Legnépszerűbb termékek', ids: FEATURED },
         { type: 'lab', title: 'Minden tételhez laborjegyzőkönyv', body: 'A labor méri a CBD- és THC-tartalmat, a nehézfémeket, a növényvédő szereket és az oldószereket. Minden tétel jegyzőkönyve a termékoldalon található.', report: REPORT },

@@ -86,7 +86,7 @@ is»; Curtis (Purposeful vs Aesthetic) — перекраска марки пе�
 | motion | `--ease`, `--rise`, `--nudge`, `--creep`, `--open` | роль |
 | state | `--state` | роль |
 | layer | `--layer` | роль |
-| control | `--ctrl`, `--chan`, `--chip`, `--tab`, `--dock`, `--edge` | роль |
+| control | `--ctrl`, `--chan`, `--chip`, `--tab`, `--dock`, `--edge`, `--grab` | роль |
 | layout | `--wrap`, `--gut`, `--head`, `--anchor`, `--float`, `--chrome`, `--tile` | роль |
 | ручки примитивов | `--stack-*`, `--cluster-*`, `--switch-*`, `--rail-*`, `--section-*`, `--sheet-*`, `--lede-*`, `--hero-*`, `--grid-*`, `--cols-*`, `--cell-*`, `--pin-*`, `--tray-*`, `--leaf-*`, `--chip-*`, `--qty-*`, `--chan-*`, `--side-*`, `--prose-*`, `--pinned-*`, `--sidebar-*`, `--frame-*`, `--btn-*`, `--seg-*`, `--gallery-*`, `--pane-*`, `--turn-*` | узел |
 | сырьё | `--n-N`, `--a-N`, `--e-N`, `--sale-N`, `--warn-N`, `--ok-N`, `--info-N`, `--on-*-N`, `--sp-N`, `--fs-*` | сырьё |

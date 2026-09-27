@@ -267,13 +267,28 @@ const piece = ({ x, w, h, hue, label, lidded }: Piece): string => {
    (`object-position` героя). Пометка «sample» — как у флаконов, под
    предметами, где её не срезает кадрирование: это рисунок, а не
    фотография; настоящий снимок героя — от заказчика. */
-export function scene(): string {
-  const items: Piece[] = [
+/* Наборы предметов сцены — по слайду героя (И487): вся линейка, масла,
+   косметика. Кадр и свет те же — слайды одной сцены. */
+const SCENES: Record<'range' | 'oils' | 'care', Piece[]> = {
+  range: [
     { x: 960, w: 150, h: 330, hue: 190, label: '10 %' },
     { x: 1130, w: 190, h: 430, hue: 145, label: 'CBD' },
     { x: 1300, w: 150, h: 300, hue: 30, label: '25 mg' },
     { x: 1420, w: 190, h: 120, hue: 20, label: 'crema', lidded: true },
-  ]
+  ],
+  oils: [
+    { x: 980, w: 150, h: 300, hue: 145, label: '5 %' },
+    { x: 1150, w: 170, h: 380, hue: 190, label: '10 %' },
+    { x: 1330, w: 160, h: 340, hue: 260, label: '20 %' },
+  ],
+  care: [
+    { x: 1000, w: 220, h: 130, hue: 20, label: 'crema', lidded: true },
+    { x: 1200, w: 130, h: 320, hue: 290, label: 'ser' },
+    { x: 1360, w: 170, h: 110, hue: 340, label: 'balsam', lidded: true },
+  ],
+}
+export function scene(kind: keyof typeof SCENES = 'range'): string {
+  const items = SCENES[kind]
   const body = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000">`
     + `<defs><linearGradient id="w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="hsl(160 22% 14%)"/><stop offset=".55" stop-color="hsl(150 20% 26%)"/><stop offset="1" stop-color="hsl(140 24% 40%)"/></linearGradient>`
     + `<linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="hsl(150 18% 30%)"/><stop offset="1" stop-color="hsl(160 22% 12%)"/></linearGradient>`
