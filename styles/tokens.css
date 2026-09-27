@@ -92,7 +92,8 @@
      листе — их пол (base.css). Плашка чернил с этим словом читается на любом
      полу; «поверхность» на палубе — вуаль, и слово на ней пропадало (И426). */
   --on-ink:      var(--surface);
-  --plate-quiet: var(--n-3);   /* тихая плашка: фишка, сегмент, код */
+  --plate-quiet-paper: var(--n-3);   /* тихая плашка бумаги: лист на палубе возвращает её (И483) */
+  --plate-quiet: var(--plate-quiet-paper);   /* тихая плашка: фишка, сегмент, код */
   --tick-edge:   var(--border);   /* рамка галочки и точки выбора — замером, ≥ 3:1 */
 
   /* cyan-12 had two jobs and could only flip one way. As a deep surface it
