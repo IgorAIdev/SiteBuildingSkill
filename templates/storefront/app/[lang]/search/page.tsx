@@ -42,7 +42,7 @@ export default async function SearchPage({ params, searchParams }: Props) {
   const best = listing.total ? null : await source().listing(lang, { facets: {}, sort: 'popular', page: null })
   const at = (query: Query) => hrefFor(lang, { search: q, page: query.page })
   const title = !q ? t(lang, 'nav.search') : listing.total ? t(lang, 'search.results', { q }) : t(lang, 'search.none', { q })
-  const empty = { title: null, step: t(lang, q ? 'search.noneStep' : 'catalog.emptyStep'), href: hrefFor(lang, { catalog: true }) }
+  const empty = { title: null, hint: q ? t(lang, 'search.noneHint') : null, step: t(lang, 'catalog.emptyStep'), href: hrefFor(lang, { catalog: true }) }
   const more = best?.ok ? { title: t(lang, 'shelf.popular'), cards: best.value.items.slice(0, BEST) } : null
   const view = catalogView(lang, { title, lede: q ? null : t(lang, 'search.prompt'), listing, asked, at, filters: false, empty, more })
   return <Catalog view={view} search={<SearchForm action={hrefFor(lang, { search: '' })} q={q} label={t(lang, 'search.label')} submit={t(lang, 'search.submit')} />} cart={{ submit: cartSubmit, call: cartCall }} />

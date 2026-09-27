@@ -71,7 +71,7 @@ export const HU: Record<keyof typeof RO, string> = {
   'search.prompt': 'Írja be, mit keres',
   'search.results': 'Találatok: „{q}”',
   'search.none': 'Nincs találat: „{q}”',
-  'search.noneStep': 'Ellenőrizze a helyesírást, vagy nézze meg az összes terméket',
+  'search.noneHint': 'Ellenőrizze a helyesírást, vagy próbáljon rövidebb szót.',
   'unavailable.title': 'A bolt jelenleg nem válaszol',
   'unavailable.step': 'Próbálja újra egy perc múlva',
   'notFound.title': 'Az oldal nem található',

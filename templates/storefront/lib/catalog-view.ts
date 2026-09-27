@@ -10,7 +10,9 @@ export type Empty = { title: string; step: string; href: string }
 /** Пустая полка: `title` null — заголовка «пусто» не нужно, пустоту уже
  *  назвал заголовок страницы («No results for…»), и второй повторял бы
  *  первый (разбор 24.09.2026, Q4). */
-export type ShelfEmpty = { title: string | null; step: string; href: string }
+/** `hint` — совет тихой строкой над выходом (пустой поиск: «проверьте
+ *  написание»); выход — коротким словом, как у «не найдено» (И485). */
+export type ShelfEmpty = { title: string | null; hint?: string | null; step: string; href: string }
 /** Грань, готовая к показу: `id` — адрес её раскрытия на широком (кнопка
  *  `popovertarget` ведёт на него), `label` — имя с числом выбранного. */
 export type FacetView = { code: string; id: string; name: string; label: string; values: Facet['values'] }
@@ -32,7 +34,9 @@ export type ChipView = { label: string; said: string; href: string }
 export type PageItem = { n: number; href: string | null; gap: boolean }
 export type PagesView = { label: string; prev: string | null; next: string | null; prevLabel: string; nextLabel: string; items: PageItem[] }
 /** Полка «куда дальше» под пустым поиском: лучшее магазина. */
-export type MoreView = { title: string; cards: ShelfCard[] }
+/** Полка «ходовых» под пустым итогом — общая полка (`Shelf`, И481) с
+ *  выходом ко всему каталогу. */
+export type MoreView = { title: string; all: { label: string; href: string }; cards: ShelfCard[] }
 export type CatalogView = {
   title: string; lede: string | null; count: string | null; shelf: string; cards: ShelfCard[]
   filters: FiltersView | null; sort: SortView | null; chips: ChipView[]; clear: Link | null
@@ -111,7 +115,7 @@ export function catalogView(lang: Lang, a: {
       prevLabel: t(lang, 'catalog.prev'), nextLabel: t(lang, 'catalog.next'),
       items: pageItems(listing.page, listing.pages, (n) => at({ ...keep, page: n })),
     } : null,
-    more: a.more?.cards.length ? { title: a.more.title, cards: a.more.cards.map((c) => shelfCard(lang, c)) } : null,
+    more: a.more?.cards.length ? { title: a.more.title, all: { label: t(lang, 'nav.catalog'), href: hrefFor(lang, { catalog: true }) }, cards: a.more.cards.map((c) => shelfCard(lang, c)) } : null,
   }
 }
 
