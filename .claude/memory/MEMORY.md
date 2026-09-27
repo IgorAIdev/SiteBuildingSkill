@@ -13,4 +13,4 @@
 - [One writer in the shared tree](one-writer-shared-tree.md) — elements/ has one owning session; others check for repeats and forward, never write
 - [Scope: skill, not shop](skill-scope-not-shop.md) — asked about the skill → stay in the kit and upstream repos, not their CBD shop projects
 - [Shared working tree](shared-working-tree.md) — several sessions write in one tree/branch; git add own paths only, message before committing; never switch its branch — own worktree
-- [PDP typography pending](pdp-typography-pending.md) — owner's font-ratio/spacing review of product page not done yet; start there
+- [PDP pending](pdp-typography-pending.md) — product page: 4 items deferred by owner 27.09.2026 (disclosures, sticky buy bar, tab row, label weight); start there
