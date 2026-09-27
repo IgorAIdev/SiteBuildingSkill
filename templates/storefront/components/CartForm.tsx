@@ -5,9 +5,10 @@ import f from '@/styles/form.module.css'
 import p from '@/styles/primitives.module.css'
 import s from './Cart.module.css'
 import { cartLane, isTimeout } from '@/lib/cart-lane.ts'
+import { SaidContext } from './AddLabel.tsx'
 import type { Outcome } from '@/lib/cart-ops.ts'
 
-type Said = Pick<Outcome, 'kind' | 'message'>
+type Said = Pick<Outcome, 'kind' | 'message'> & { inCart?: number | null }
 type Props = {
   lang: string; className?: string; refresh?: boolean; quiet?: boolean
   submit: (form: FormData) => Promise<void>
@@ -61,7 +62,9 @@ export function CartForm({ lang, className, refresh = true, quiet = false, submi
   return (
     <form className={className} action={submit} onSubmit={onSubmit} aria-busy={busy} data-said={said?.kind}>
       <input type="hidden" name="lang" value={lang} />
-      <fieldset className={s.bare} disabled={busy}>{children}</fieldset>
+      <SaidContext.Provider value={said}>
+        <fieldset className={s.bare} disabled={busy}>{children}</fieldset>
+      </SaidContext.Provider>
       <p className={quiet && said?.kind !== 'error' ? `${f.say} ${p.said}` : f.say} data-state={said?.kind === 'error' ? 'error' : undefined} role="status">{said?.message}</p>
       {said && said.kind !== 'error' ? after : null}
     </form>

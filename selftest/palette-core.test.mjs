@@ -17,7 +17,7 @@ import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import { roles, ratio, apca, auditPalette, lightness, groundChecks, deckOf, SOLID_GAP, NEED } from '../tools/palette.mjs'
+import { roles, ratio, apca, auditPalette, lightness, groundChecks, deckOf, SOLID_GAP, NEED, redFamily } from '../tools/palette.mjs'
 
 const KIT = fileURLToPath(new URL('..', import.meta.url))
 const shipped = {
@@ -237,4 +237,22 @@ test('the quiet plate on a fill: visible on the button, its number reads — inv
   assert.ok(ratio(dark['--chrome-bg'], veil22) < NEED.text, 'вуаль 22 % на белой пилюле держала надпись — дефект не воспроизведён')
   assert.equal(dark['--quiet-pop-deck'], `${dark['--chrome-bg']}FF`, 'плашка вывернута: заливка — знак пилюли')
   assert.equal(dark['--on-quiet-pop-deck'], dark['--chrome-fg'], 'надпись вывернутой плашки — пол пилюли')
+})
+
+/* Тихая марка (И462) и красная семья (И463): у латуни тихая кнопка — вуаль
+   марки, у терракоты «Тёплого листа» — вуаль чернил: розовый тон на трети
+   экрана читался тревогой (снимок заказчика 27.09.2026). */
+test('quiet tint is the brand veil, except for a red-family brand', () => {
+  for (const hex of ['#A34627', '#800020', '#722F37', '#E5484D']) assert.ok(redFamily(hex), `${hex} — красная семья`)
+  for (const hex of ['#9A7B3F', '#B79339', '#5F6B34', '#0C3A46', '#3A6EA5', '#4E8C7A', '#8A7F76']) assert.ok(!redFamily(hex), `${hex} — не красная`)
+  for (const [name, set] of Object.entries(shipped)) {
+    for (const mode of ['light', 'dark']) {
+      const r = roles(set[mode], mode)
+      const brand = set[mode].accent.toUpperCase()
+      const tint = r['--quiet-tint-paper'].slice(0, 7)
+      if (redFamily(set[mode].accent)) assert.equal(tint, r['--n-12'].toUpperCase(), `${name} ${mode}: красная марка — вуаль чернил`)
+      else assert.equal(tint, r['--a-9'].toUpperCase(), `${name} ${mode}: тихая марка — вуаль марки ${brand}`)
+      assert.equal(r['--pop-tint-paper'], redFamily(set[mode].accent) ? r['--n-3'] : r['--a-3'], `${name} ${mode}: поле тихой марки`)
+    }
+  }
 })

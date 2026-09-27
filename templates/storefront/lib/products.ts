@@ -19,6 +19,8 @@ export type SampleProduct = {
   id: string; cat: string; family?: string; label: string; hue: number; popular: number; strength: Strength
   /** Марка производителя — данные образца: настоящую даёт каталог магазина. */
   brand: string | null
+  /** Вариант, выбранный на карте сам (И468); нет — первый в наличии. */
+  standard?: string
   name: T; summary: T; description: T
   facets: Record<string, string[]>
   groups: { code: string; name: T; options: { code: string; name: T }[] }[]
@@ -55,7 +57,7 @@ const count = (codes: string[]) => ({ code: 'bucati', name: { ro: 'Bucăți', en
    (tools/routes.mjs) берёт в дорогие проверки первую семью и первый товар
    без семьи. */
 export const PRODUCTS: SampleProduct[] = [
-  { id:'ulei-cbd-full-spectrum', cat:'uleiuri', family:'ulei-full', label: 'CBD', hue: 145, popular: 1, brand: 'Câmpia', strength: 'percent',
+  { id:'ulei-cbd-full-spectrum', cat:'uleiuri', family:'ulei-full', label: 'CBD', hue: 145, popular: 1, brand: 'Câmpia', strength: 'percent', standard: 'uf-10-10',
     name: { ro: 'Ulei CBD full spectrum', en: 'Full-spectrum CBD oil', hu: 'Teljes spektrumú CBD olaj' },
     summary: { ro: 'Extract de cânepă în ulei MCT, cu picurător.', en: 'Hemp extract in MCT oil, with dropper.', hu: 'Kenderkivonat MCT olajban, cseppentővel.' },
     description: { ro: 'Extract din flori de cânepă din soiuri înscrise în catalogul comun al UE, în ulei MCT. Fiecare lot are buletin de analiză.', en: 'Extract of hemp flowers from varieties in the EU common catalogue, in MCT oil. Every batch has a lab report.', hu: 'Az EU közös fajtajegyzékében szereplő kenderfajták virágkivonata MCT olajban. Minden tételhez laborjegyzőkönyv tartozik.' },
@@ -82,7 +84,7 @@ export const PRODUCTS: SampleProduct[] = [
     facets: { forma: ['ulei'] },
     groups: [],
     variants: [{ id: 'us-5-10', sku: 'US-5-10', options: {}, price: 2990, stock: 'in', batch: 'RO-2409-S05', pack: { mg: 500, size: 10, unit: 'ml' } }] },
-  { id:'ulei-cbd-20-seara', cat:'uleiuri', family:'ulei-seara', label: '20 %', hue: 250, popular: 6, brand: 'Câmpia', strength: 'percent',
+  { id:'ulei-cbd-20-seara', cat:'uleiuri', family:'ulei-seara', label: '20 %', hue: 250, popular: 6, brand: 'Câmpia', strength: 'percent', standard: 'ul-20-10',
     name: { ro: 'Ulei CBD 20 % cu lavandă', en: 'CBD oil 20 % with lavender', hu: 'CBD olaj 20 % levendulával' },
     summary: { ro: 'Cu ulei esențial de lavandă.', en: 'With lavender essential oil.', hu: 'Levendula illóolajjal.' },
     description: { ro: 'Ulei CBD 20 % cu ulei esențial de lavandă.', en: 'CBD oil 20 % with lavender essential oil.', hu: '20 %-os CBD olaj levendula illóolajjal.' },
@@ -99,7 +101,7 @@ export const PRODUCTS: SampleProduct[] = [
     facets: { forma: ['ulei'] },
     groups: [],
     variants: [{ id: 'uf30-10', sku: 'UF30-10', options: {}, price: 8990, was: 10490, stock: 'in', batch: 'RO-2409-F30', pack: { mg: 3000, size: 10, unit: 'ml' } }] },
-  { id:'capsule-cbd-25', cat:'capsule', family:'capsule', label: '25 mg', hue: 30, popular: 2, brand: 'Floare Verde', strength: 'mg',
+  { id:'capsule-cbd-25', cat:'capsule', family:'capsule', label: '25 mg', hue: 30, popular: 2, brand: 'Floare Verde', strength: 'mg', standard: 'cc-30',
     name: { ro: 'Capsule CBD 25 mg', en: 'CBD capsules 25 mg', hu: 'CBD kapszula 25 mg' },
     summary: { ro: 'Capsule vegane, 25 mg CBD fiecare.', en: 'Vegan capsules, 25 mg CBD each.', hu: 'Vegán kapszulák, egyenként 25 mg CBD.' },
     description: { ro: 'Fiecare capsulă conține 25 mg CBD.', en: 'Each capsule contains 25 mg CBD.', hu: 'Minden kapszula 25 mg CBD-t tartalmaz.' },
@@ -137,7 +139,7 @@ export const PRODUCTS: SampleProduct[] = [
     facets: { forma: ['crema'] },
     groups: [],
     variants: [{ id: 'sf-30', sku: 'SF-30', options: {}, price: 3290, stock: 'out', batch: 'RO-2407-SF', pack: { mg: null, size: 30, unit: 'ml' } }] },
-  { id:'ulei-caini-cbd', cat:'animale', family:'animale-caini', label: 'dog', hue: 90, popular: 7, brand: 'Câmpia', strength: 'percent',
+  { id:'ulei-caini-cbd', cat:'animale', family:'animale-caini', label: 'dog', hue: 90, popular: 7, brand: 'Câmpia', strength: 'percent', standard: 'ac-10',
     name: { ro: 'Ulei CBD pentru câini', en: 'CBD oil for dogs', hu: 'CBD olaj kutyáknak' },
     summary: { ro: 'Cu ulei de somon.', en: 'With salmon oil.', hu: 'Lazacolajjal.' },
     description: { ro: 'Ulei CBD 5 % cu ulei de somon, pentru câini.', en: 'CBD oil 5 % with salmon oil, for dogs.', hu: '5 %-os CBD olaj lazacolajjal, kutyáknak.' },
@@ -155,6 +157,27 @@ export const PRODUCTS: SampleProduct[] = [
     groups: [],
     variants: [{ id: 'ap-10', sku: 'AP-10', options: {}, price: 1990, stock: 'low', batch: 'RO-2409-AP', pack: { mg: 250, size: 10, unit: 'ml' } }] },
 ]
+
+/** Состав и способ применения — образец данных по полке (И466): настоящий
+ *  текст у каждого товара даёт каталог магазина. */
+export const DETAILS: Record<string, { ingredients: T; usage: T }> = {
+  uleiuri: {
+    ingredients: { ro: 'Ulei MCT (din nucă de cocos), extract de cânepă (Cannabis sativa L.) din soiuri din catalogul comun al UE.', en: 'MCT oil (from coconut), hemp extract (Cannabis sativa L.) from varieties in the EU common catalogue.', hu: 'MCT-olaj (kókuszból), kenderkivonat (Cannabis sativa L.) az uniós közös fajtajegyzék fajtáiból.' },
+    usage: { ro: 'Agitați înainte de utilizare. Puneți picăturile sub limbă și țineți-le 60 de secunde. Începeți cu 2–3 picături o dată pe zi.', en: 'Shake before use. Place the drops under the tongue and hold for 60 seconds. Start with 2–3 drops once a day.', hu: 'Használat előtt rázza fel. Cseppentse a nyelve alá, és tartsa ott 60 másodpercig. Kezdje napi egyszer 2–3 cseppel.' },
+  },
+  capsule: {
+    ingredients: { ro: 'Extract de cânepă (Cannabis sativa L.), ulei MCT; învelișul capsulei: gelatină.', en: 'Hemp extract (Cannabis sativa L.), MCT oil; capsule shell: gelatine.', hu: 'Kenderkivonat (Cannabis sativa L.), MCT-olaj; kapszulahéj: zselatin.' },
+    usage: { ro: 'O capsulă pe zi, cu apă, în timpul mesei. Nu depășiți doza zilnică indicată.', en: 'One capsule a day with water, with a meal. Do not exceed the stated daily amount.', hu: 'Naponta egy kapszula vízzel, étkezés közben. Ne lépje túl a feltüntetett napi mennyiséget.' },
+  },
+  cosmetice: {
+    ingredients: { ro: 'Unt de shea, ulei de floarea-soarelui, extract de cânepă (Cannabis sativa L.), ceară de albine, vitamina E.', en: 'Shea butter, sunflower oil, hemp extract (Cannabis sativa L.), beeswax, vitamin E.', hu: 'Sheavaj, napraforgóolaj, kenderkivonat (Cannabis sativa L.), méhviasz, E-vitamin.' },
+    usage: { ro: 'Aplicați un strat subțire pe pielea curată și masați. Doar pentru uz extern.', en: 'Apply a thin layer to clean skin and massage in. For external use only.', hu: 'Vigyen fel vékony réteget a tiszta bőrre, és masszírozza be. Csak külsőleg.' },
+  },
+  animale: {
+    ingredients: { ro: 'Ulei de somon, ulei din semințe de cânepă, extract de cânepă (Cannabis sativa L.).', en: 'Salmon oil, hemp seed oil, hemp extract (Cannabis sativa L.).', hu: 'Lazacolaj, kendermagolaj, kenderkivonat (Cannabis sativa L.).' },
+    usage: { ro: 'Adăugați picăturile în hrană o dată pe zi; doza după greutatea animalului — tabelul de pe etichetă.', en: 'Add the drops to food once a day; the amount depends on the weight of the animal — see the table on the label.', hu: 'Naponta egyszer csepegtesse az eledelre; a mennyiség az állat testsúlyától függ — lásd a címkén lévő táblázatot.' },
+  },
+}
 
 export const LAB_REPORTS: Record<string, { lab: string; date: string; cbdPercent: number; thcPercent: number }> = {
   'RO-2409-05': { lab: 'Laborator de exemplu', date: '2026-09-02', cbdPercent: 5.1, thcPercent: 0.12 },

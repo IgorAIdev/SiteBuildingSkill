@@ -46,18 +46,25 @@ export function saleOf(lang: Lang, price: Money, was: Money | null): { was: WasV
 
 export const shelfCard = (lang: Lang, c: Card): ShelfCard => {
   const name = bindUnits(c.name)
-  const sale = c.price.kind === 'single' ? saleOf(lang, c.price.value, c.was) : null
+  /* Карточка стоит на стандартном варианте (`pick`, И473): его цена, скидка,
+     упаковка и наличие — и его же кладёт «в корзину». Напечатанное совпадает
+     с тем, что уйдёт в корзину. Всё распродано — вся полка товара: «от»,
+     диапазон упаковок, «нет в наличии». */
+  const pick = c.pick
+  const sale = pick ? saleOf(lang, pick.price, pick.was) : c.price.kind === 'single' ? saleOf(lang, c.price.value, c.was) : null
+  const stock = pick?.stock ?? c.stock
   /* Распродано — купить с полки нечего: кнопка ведёт на карту словом «View»,
      а не «Choose» — выбирать там нечего (плашка «нет» уже на снимке). */
-  const out = c.stock === 'out'
+  const out = stock === 'out'
   const direct = out ? null : c.variant
   return {
     id: c.id, lang, href: hrefFor(lang, { product: c.id }), name, image: c.image,
-    price: priceText(lang, c.price), was: sale?.was ?? null, sale: sale?.badge ?? null, facts: factsLine(lang, c),
-    flag: c.stock === 'in' ? null : { level: c.stock, text: stockText(lang, c.stock) },
+    price: pick ? money(pick.price, lang) : priceText(lang, c.price), was: sale?.was ?? null, sale: sale?.badge ?? null,
+    facts: factsLine(lang, pick?.pack ? { ...c, packs: [pick.pack] } : c),
+    flag: stock === 'in' ? null : { level: stock, text: stockText(lang, stock) },
     buy: {
       variant: direct, ask: out ? hrefFor(lang, { product: c.id }) : hrefFor(lang, { product: c.id, choose: true }),
-      add: t(lang, 'shelf.add'), added: t(lang, 'shelf.added'), choose: t(lang, out ? 'shelf.view' : 'shelf.choose'),
+      add: t(lang, 'shelf.add'), added: t(lang, 'shelf.added', { n: '{n}' }) /* шаблон: число ставит надпись после записи (AddLabel, И469) */, choose: t(lang, out ? 'shelf.view' : 'shelf.choose'),
       name: t(lang, direct ? 'shelf.addName' : out ? 'shelf.viewName' : 'shelf.chooseName', { name }),
       timeout: t(lang, 'cart.error.timeout'), failed: t(lang, 'cart.error.unavailable'),
     },

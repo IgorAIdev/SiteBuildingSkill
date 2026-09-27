@@ -22,7 +22,11 @@ export type LabReport = { batch: string; lab: string; date: string; cbdPercent: 
  *  `brand` — марка производителя; карта печатает её первой строкой имени
  *  (слово заказчика 25.09.2026: «вверху должен быть бренд указан»);
  *  `null` — марка не заявлена. У Vendure — поле товара `brand`. */
-export type Product = { id: string; category: string; brand: string | null; name: string; summary: string; description: string; images: Image[]; optionGroups: OptionGroup[]; variants: Variant[]; labReports: LabReport[]; strength: Strength }
+/** Товар. `ingredients` и `usage` — состав и способ применения, текстом
+ *  магазина (разделы карты товара, И466); нет у движка — `null`, раздела нет.
+ *  `standard` — вариант, выбранный на карте сам, пока покупатель не выбрал
+ *  другой (И468): решение магазина; `null` — первый вариант в наличии. */
+export type Product = { id: string; category: string; brand: string | null; name: string; summary: string; description: string; ingredients: string | null; usage: string | null; standard: string | null; images: Image[]; optionGroups: OptionGroup[]; variants: Variant[]; labReports: LabReport[]; strength: Strength }
 export type Price = { kind: 'single'; value: Money } | { kind: 'range'; min: Money; max: Money }
 /** Упаковка варианта — то, что покупатель CBD сравнивает на полке (shop,
  *  «Сила — две шкалы, проценты и миллиграммы»): CBD во всей упаковке, мг, и
@@ -39,7 +43,11 @@ export type Strength = 'percent' | 'mg'
  *  (у диапазона «от» прежней цены нет: неясно, чья она); `variant` — вариант,
  *  который кладётся в корзину прямо с полки, когда он у товара один;
  *  вариантов несколько — null, и кнопка полки ведёт к выбору (И284). */
-export type Card = { id: string; category: string; name: string; image: Image; price: Price; was: Money | null; variant: string | null; stock: Stock; strength: Strength; packs: Pack[] }
+/** `pick` — стандартный вариант товара (И473, `standardOf`): его кладёт
+ *  «в корзину» с полки, его цену и упаковку карточка печатает; всё
+ *  распродано — null. `variant` — его id. */
+export type CardPick = { id: string; price: Money; was: Money | null; stock: Stock; pack: Pack | null }
+export type Card = { id: string; category: string; name: string; image: Image; price: Price; was: Money | null; variant: string | null; pick: CardPick | null; stock: Stock; strength: Strength; packs: Pack[] }
 /** Грань фильтра. `count` — сколько товаров даст значение ПРИ ВСЕХ ДРУГИХ
  *  гранях (cbd-facet, §3): счёт по текущей выборке гасил соседние значения
  *  той же грани, и выбрать «масло ИЛИ капсулы» было нечем. */

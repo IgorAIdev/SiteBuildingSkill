@@ -5,7 +5,7 @@ import { langOf } from '@/lib/route.ts'
 import { source } from '@/lib/source/index.ts'
 import type { Params } from '@/lib/listing.ts'
 import { readSelection, pickState, askedToChoose } from '@/lib/variant.ts'
-import { productView } from '@/lib/product-view.ts'
+import { productView, withStandard } from '@/lib/product-view.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { toMetadata } from '@/lib/seo.ts'
 import { productLd, breadcrumbLd } from '@/lib/ld.ts'
@@ -39,7 +39,9 @@ export default async function ProductPage({ params, searchParams }: Props) {
   const view = productView(lang, product, selected, { category: col.ok ? col.value : null, related: related.ok ? related.value : [], asked: askedToChoose(query) })
   return (
     <main id="main" className={`${p.wrap} ${p.section}`} data-air="head">
-      <JsonLd data={productLd(product, pickState(product, selected).variant ?? (product.variants.length === 1 ? product.variants[0] : null))} />
+      {/* Разметка — о том же варианте, что показан: адрес без выбора стоит на
+          стандартном (И468), и предложение в разметке — его. */}
+      <JsonLd data={productLd(product, pickState(product, withStandard(product, selected, askedToChoose(query))).variant ?? (product.variants.length === 1 ? product.variants[0] : null))} />
       <JsonLd data={breadcrumbLd(view.crumbs.map((c) => ({ name: c.name, href: c.href ?? hrefFor(lang, { product: id }) })))} />
       <ProductView view={view} lang={lang} submit={cartSubmit} call={cartCall} />
     </main>

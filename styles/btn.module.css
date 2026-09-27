@@ -42,7 +42,7 @@
 }
 .press:not(:disabled):not([aria-disabled='true']):active{
   --press-fill:color-mix(in oklab, var(--press-bg), var(--press-ink) var(--state-press));
-  transform:translateY(1px) scale(.97);
+  transform:var(--press-move);
 }
 @media (prefers-reduced-motion:reduce){
   .press{transition:background-color var(--hover-t) var(--ease)}
@@ -212,4 +212,8 @@
    тоном. Кромка — роль палитры `--edge-off` (И295): ступень нейтрали, видная
    на каждом полу и под прозрачностью выключенного. */
 .btn:disabled,
-.btn[aria-disabled='true']{opacity:var(--state-off);cursor:not-allowed;--btn-edge:var(--edge-off)}
+.btn[aria-disabled='true']{opacity:var(--state-off);cursor:not-allowed}
+/* Кромка выключенной — не у занятой формы (base.css, «Занятая форма — не
+   выключенная», И464): там орган вида не меняет. */
+.btn:disabled:not([aria-busy='true'] *),
+.btn[aria-disabled='true']{--btn-edge:var(--edge-off)}

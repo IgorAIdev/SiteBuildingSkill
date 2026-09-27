@@ -11,7 +11,10 @@ export type CartOp =
 type Op = CartOp['op']
 /** Исход записи в корзину. `code` — короткий и ходит в адресе корзины без
  *  скрипта (`?r=`), `message` — те же слова для страницы со скриптом. */
-export type Outcome = { kind: 'ok' | 'partial' | 'error'; code: string; message: string; count: number | null }
+/** Исход записи. `count` — штук в корзине всего (счётчик шапки); `inCart` —
+ *  штук этого варианта в корзине после добавления (надпись кнопки «Added ·
+ *  3 in cart», И469); у прочих записей — null. */
+export type Outcome = { kind: 'ok' | 'partial' | 'error'; code: string; message: string; count: number | null; inCart: number | null }
 /* `variant` — добавляли вариант, которого нет: у добавления «not-found»
    значит не строку корзины, а сам товар. */
 type Failure = CommerceError | 'request' | 'coupon-empty' | 'timeout' | 'variant'
@@ -62,23 +65,24 @@ export function readCartOp(form: FormData): CartOp | null {
   return null
 }
 
-function codeOf(op: Op, change: Change<Cart>): { code: string; count: number | null } {
-  if (!change.ok) return { code: `e:${change.error}`, count: null }
+function codeOf(op: Op, change: Change<Cart>, variantId: string | null = null): { code: string; count: number | null; inCart: number | null } {
+  if (!change.ok) return { code: `e:${change.error}`, count: null, inCart: null }
   const count = change.value.quantity
-  return change.added === undefined ? { code: `ok:${op}`, count } : { code: `partial:${change.added}`, count }
+  const inCart = variantId ? change.value.lines.filter((l) => l.variantId === variantId).reduce((n, l) => n + l.quantity, 0) : null
+  return change.added === undefined ? { code: `ok:${op}`, count, inCart } : { code: `partial:${change.added}`, count, inCart }
 }
 
 /** Выполнить запись. Добавление заводит сессию, если её нет; остальное без
  *  сессии — «товара уже нет в корзине». */
-export async function runCartOp(c: Commerce, session: string | null, lang: Lang, op: CartOp | null): Promise<{ session: string | null; code: string; count: number | null }> {
-  if (!op) return { session, code: 'e:request', count: null }
-  if (op.op === 'coupon' && !op.code) return { session, code: 'e:coupon-empty', count: null }
+export async function runCartOp(c: Commerce, session: string | null, lang: Lang, op: CartOp | null): Promise<{ session: string | null; code: string; count: number | null; inCart: number | null }> {
+  if (!op) return { session, code: 'e:request', count: null, inCart: null }
+  if (op.op === 'coupon' && !op.code) return { session, code: 'e:coupon-empty', count: null, inCart: null }
   if (op.op === 'add') {
     const r = await c.add(session, lang, op.variantId, op.quantity)
-    if (!r.change.ok && r.change.error === 'not-found') return { session: r.session ?? session, code: 'e:variant', count: null }
-    return { session: r.session ?? session, ...codeOf(op.op, r.change) }
+    if (!r.change.ok && r.change.error === 'not-found') return { session: r.session ?? session, code: 'e:variant', count: null, inCart: null }
+    return { session: r.session ?? session, ...codeOf(op.op, r.change, op.variantId) }
   }
-  if (!session) return { session, code: 'e:not-found', count: null }
+  if (!session) return { session, code: 'e:not-found', count: null, inCart: null }
   const change =
     op.op === 'set' ? await c.setQuantity(session, lang, op.lineId, op.quantity)
     : op.op === 'remove' ? await c.remove(session, lang, op.lineId)
@@ -89,10 +93,10 @@ export async function runCartOp(c: Commerce, session: string | null, lang: Lang,
 
 /** Исход по коду — только из закрытого списка: код приходит адресом, и
  *  чужой код не показывается вовсе. */
-export function outcomeOf(lang: Lang, code: string, count: number | null = null): Outcome | null {
+export function outcomeOf(lang: Lang, code: string, count: number | null = null, inCart: number | null = null): Outcome | null {
   const [kind = '', name = ''] = code.split(':')
-  if (kind === 'ok' && Object.hasOwn(DONE, name)) return { kind: 'ok', code, message: t(lang, DONE[name as Op]), count }
-  if (kind === 'partial' && /^\d{1,3}$/.test(name)) return { kind: 'partial', code, message: t(lang, 'cart.partial', { n: Number(name) }), count }
-  if (kind === 'e' && Object.hasOwn(FAILED, name)) return { kind: 'error', code, message: t(lang, FAILED[name as Failure]), count }
+  if (kind === 'ok' && Object.hasOwn(DONE, name)) return { kind: 'ok', code, message: t(lang, DONE[name as Op]), count, inCart }
+  if (kind === 'partial' && /^\d{1,3}$/.test(name)) return { kind: 'partial', code, message: t(lang, 'cart.partial', { n: Number(name) }), count, inCart }
+  if (kind === 'e' && Object.hasOwn(FAILED, name)) return { kind: 'error', code, message: t(lang, FAILED[name as Failure]), count, inCart: null }
   return null
 }

@@ -8,6 +8,7 @@ import type { HomeVariant } from '@/lib/homes.ts'
 import { hrefFor } from '@/lib/href.ts' // look-home:scene,proof,journal,cabinet,showroom,poster
 import { t } from '@/lib/i18n/index.ts' // look-home:showroom
 import { Icon } from '../Icon.tsx' // look-home:showroom
+import { Price } from '../Price.tsx' // look-home:showroom
 import { Pledges } from '../Pledges.tsx' // look-home:counter
 import type { BlockCtx, Place } from './types.ts'
 import { shot } from '@/lib/shot.ts'
@@ -161,10 +162,7 @@ const showroom = ({ block, ctx }: Props) => {
                 </div>
                 <div className={s.showCardText}>
                   <p className={s.showCardName}>{spot.name}</p>
-                  <p className={s.showCardPrice}>
-                    {spot.was ? <><s aria-hidden="true">{spot.was.text}</s><span className={p.said}>{spot.was.said}</span></> : null}
-                    <span>{spot.price}</span>
-                  </p>
+                  <Price now={spot.price} was={spot.was} />
                   <a className={`${go.go} ${s.showCardGo}`} href={spot.href} aria-label={t(ctx.lang, 'shelf.viewName', { name: spot.name })}>
                     {t(ctx.lang, 'home.spotlight')}<Icon id="arrow-right" />
                   </a>

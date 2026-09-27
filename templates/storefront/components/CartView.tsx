@@ -26,7 +26,7 @@ function Popular({ shelf, cart }: { shelf: ShelfView; cart: Actions }) {
         <h2 id="cart-popular">{shelf.title}</h2>
         <a className={go.go} href={shelf.all.href}>{shelf.all.label}<Icon id="arrow-right" /></a>
       </div>
-      <ul className={`${p.grid} ${s.shelf}`}>{shelf.cards.map((c) => <li key={c.id}><ProductCard card={c} cart={cart} /></li>)}</ul>
+      <ul className={p.rail} data-rail="goods">{shelf.cards.map((c) => <li key={c.id}><ProductCard card={c} cart={cart} /></li>)}</ul>
     </section>
   )
 }
@@ -48,7 +48,8 @@ export function CartView({ lang, view, submit, call }: { lang: string; view: Car
   if (!view.lines.length) {
     return (
       <main id="main" className={`${p.wrap} ${p.section}`} data-air="head">
-        {view.notice ? <p className={p.muted} role="status">{view.notice.message}</p> : null}
+        {/* Строка исхода — та же, что у формы корзины (`f.say`, И476): одна на сайт. */}
+        {view.notice ? <p className={f.say} data-state={view.notice.kind === 'error' ? 'error' : undefined} role="status">{view.notice.message}</p> : null}
         <StateScreen level={1} kind="empty" title={view.empty.title} step={view.empty.step} href={view.empty.href} icon="shopping-cart" loud />
         {view.empty.shelf ? <Popular shelf={view.empty.shelf} cart={{ submit, call }} /> : null}
       </main>

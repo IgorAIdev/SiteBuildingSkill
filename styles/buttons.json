@@ -107,6 +107,17 @@
           "--ctrl-btn-edge": "transparent"
         }
       },
+      "tint": {
+        "имя": "Тон марки",
+        "name": "Brand tint",
+        "line": "A veil of the brand colour, label in brand ink",
+        "что": "вуаль марки на полу, надпись марочным текстом — тоновая кнопка Material 3 (filled tonal); выбор заказчика, не умолчание: по ролям палитры орган в покое — нейтраль (И462, И472)",
+        "роли": {
+          "--ctrl-btn-fill": "var(--quiet-tint)",
+          "--ctrl-btn-ink": "var(--on-quiet-tint)",
+          "--ctrl-btn-edge": "transparent"
+        }
+      },
       "outline": {
         "имя": "Контур",
         "name": "Outline",

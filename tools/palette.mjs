@@ -17,7 +17,7 @@
  */
 
 import { readFileSync } from 'node:fs'
-import { CONTRAST, COLOUR, STATE } from './thresholds.mjs'
+import { CONTRAST, COLOUR, STATE, RED } from './thresholds.mjs'
 
 /* Профиль светлоты ступеней — L* эталонной шкалы `sand` пакета
    @radix-ui/colors 3.0.0. Числа снятые, а не назначенные. */
@@ -506,6 +506,9 @@ export const VEIL = {
      такой же цветной пол со своим знаком. */
   plate: 0.14,
   pop: 0.22,
+  /* Тихая марка органа (И462): нижняя доля вуали марки на полу — та же,
+     что у выбранной тихой вуали чернил; растёт, пока вуаль не видна. */
+  tint: 2 * STATE.quiet,
 }
 /** Тени: в светлой теме — марка долями (волосок, ближний слой, три дальних
  *  по высоте), в тёмной и на палубе — белый волосок и чёрные слои: тень
@@ -519,6 +522,16 @@ export const SHADE = {
  *  обеих темах тёмное (из чернил вышла бы белая вуаль в тёмной), в тёмной
  *  гуще: у тёмной страницы меньше своего контраста. */
 export const SCRIM = { light: 0.55, dark: 0.72 }
+/** Чужие марки (И471): знаки мессенджеров в окне заказа — краской своей
+ *  марки, а не нашей: так их узнают (cbdin.bg: строка нейтральная, знак —
+ *  Viber #7360F2, Telegram #26A5E4, WhatsApp #25D366, Instagram #E4405F;
+ *  WhatsApp Brand Guidelines — «green on white or white on green», знак не
+ *  перекрашивать). Роль «чужие марки» — palette/references/roles.md (у
+ *  кошельков та же). Краска чужой марки — факт о ней, а не ступень палитры:
+ *  одна на обе темы, контраст не меряется — знак стоит рядом со словом,
+ *  которое и несёт смысл (WCAG 1.4.11 требует его от знака, без которого не
+ *  понять орган). */
+export const MARKS = { viber: '#7360F2', telegram: '#26A5E4', whatsapp: '#25D366', instagram: '#E4405F' }
 /** Стекло главной кнопки (И427): доля краски стекла — от 0.6 (Fluent
  *  Acrylic: «tint opacity» 0.6…0.8 у светлой и тёмной темы; ниже стекло
  *  читается пустым местом) и выше, пока надпись не держит 4.5 : 1 над
@@ -622,6 +635,29 @@ function surfaceOn(sign, grounds, share, invert = false) {
   return { paint: sign, s: share, ...holds(sign, share) }
 }
 
+/** Красная семья (И463): тон и насыщенность краски в секторе красного
+ *  (`RED` в tools/thresholds.mjs). Сектор переходит через 0°. */
+export const redFamily = (hex) => {
+  const [, C, H] = oklch(hex)
+  const [from, to] = RED.hue
+  return C >= RED.chroma && (from > to ? H >= from || H <= to : H >= from && H <= to)
+}
+
+/** Тихая марка (И462): доля вуали марки `paint` — первая от `VEIL.tint`
+ *  вверх, при которой вуаль видна на каждом полу (STATE.visible); знак —
+ *  первый из `inks`, который читается на ней на всех полах. */
+function tintOn(paint, inks, grounds, from = VEIL.tint) {
+  for (let k = Math.round(from * 100); k <= 100; k += 1) {
+    const under = grounds.map((bg) => veil(paint, bg, seen(k / 100)))
+    const seenMin = Math.min(...under.map((u, i) => ratio(u, grounds[i])))
+    if (seenMin < STATE.visible) continue
+    const text = (ink) => Math.min(...under.map((u) => ratio(ink, u)))
+    const ink = inks.find((c) => text(c) >= NEED.text) ?? inks[inks.length - 1]
+    return { s: k / 100, seen: seenMin, ink, text: text(ink) }
+  }
+  return { s: 1, seen: 0, ink: inks[0], text: 0 }
+}
+
 /** Подпись на снимке у края буквы (И451): оба слоя тени под подписью
  *  складываются на белом снимке — худшем для светлой подписи. Норма —
  *  3 : 1 крупного текста (WCAG 1.4.3): подпись без вуали бывает только
@@ -685,6 +721,33 @@ export function groundRoles(n, a, mode, set = {}) {
   for (const [job, share] of Object.entries(VEIL.deck)) out[`--${job}-deck`] = translucent(deck.ink, share)
   check('quiet', 'тихая вуаль видна на всех поверхностях', Math.min(...G.map((bg) => ratio(veil(ink, bg, seen(VEIL.paper.quiet)), bg))), STATE.visible)
   check('quiet-deck', 'тихая вуаль видна на палубе', Math.min(...deck.grounds.map((bg) => ratio(veil(deck.ink, bg, seen(VEIL.deck.quiet)), bg))), STATE.visible)
+
+  /* Тихая марка органа (И462): вуаль марки (a9) на полу — заливка тихой
+     кнопки тоном марки, надпись и знак на ней — марочный текст (a11). Доля
+     — от `VEIL.tint` вверх, пока вуаль не видна на каждом полу; надпись
+     меряется на самой светлой из них. Не держит a11 — a12. Слово заказчика
+     27.09.2026: «сайт и форма слишком серые… только кнопка имеет цвет»:
+     тихий орган был только вуалью чернил, и марка на экране жила в одной
+     кнопке. На палубе тон марки не читается (палуба сама бывает маркой) —
+     там тихая марка та же, что тихая вуаль палубы, со знаком палубы. */
+  /* Марка красной семьи (терракота, бордо, вино; И463) тоном на тихие органы
+     не идёт: красное — краска беды, и треть экрана розовым читается
+     тревогой. Её место — одно главное действие; тихая марка такой палитры —
+     тихая вуаль чернил. */
+  const tint = redFamily(a[8]) ? { ...tintOn(ink, [ink], G, VEIL.paper.quiet), paint: ink } : { ...tintOn(a[8], [a[10], a[11]], G), paint: a[8] }
+  out['--quiet-tint-paper'] = translucent(tint.paint, tint.s)
+  /* Тихая марка поля (`--pop-tint`: поле параметров, выбранный сегмент,
+     тонированная карточка) — ступень a3; у марки красной семьи — n3 (И463):
+     розовое поле параметров на карте товара было той же тревогой на трети
+     экрана. */
+  out['--pop-tint-paper'] = redFamily(a[8]) ? n[2] : a[2]
+  /* Чужие марки (И471) — не по полу, но краски строителя: лист их показывает. */
+  for (const [name, hex] of Object.entries(MARKS)) out[`--mark-${name}`] = hex
+  out['--on-quiet-tint-paper'] = tint.ink
+  out['--quiet-tint-deck'] = translucent(deck.ink, VEIL.deck.quiet)
+  out['--on-quiet-tint-deck'] = deck.ink
+  check('tint', 'тихая марка видна на всех поверхностях', tint.seen, STATE.visible)
+  check('tint-text', 'марочный текст читается на тихой марке', tint.text, NEED.text)
 
   /* Тени обоих полов. */
   SHADE.names.forEach((job, i) => {

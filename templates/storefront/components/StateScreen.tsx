@@ -24,7 +24,10 @@ type Kind = 'empty' | 'none' | 'unavailable' | 'not-found'
    (поле поиска у «не найдено») и шаг. Экран, который и есть вся страница
    (пустая корзина), стоит по центру со знаком в круге (`icon`), а шаг —
    громкой кнопкой (`loud`): на экране это единственное действие. */
-export function StateScreen({ level, kind, title, step, href, icon, loud = false, children }: { level: 1 | 2; kind: Kind; title: string; step: string; href: string; icon?: string; loud?: boolean; children?: ReactNode }) {
+/* Экран сбоя (app/[lang]/error.tsx) — тот же экран: путь дальше у него —
+   кнопка повтора (`retry`), а не ссылка. Своя разметка сбоя повторяла
+   раскладку этого экрана вручную (разбор 27.09.2026; И476). */
+export function StateScreen({ level, kind, title, step, href, icon, loud = false, retry, children }: { level: 1 | 2; kind: Kind; title: string; step: string; href?: string; icon?: string; loud?: boolean; retry?: () => void; children?: ReactNode }) {
   const H = level === 1 ? 'h1' : 'h2'
   return (
     <section className={s.state} data-kind={kind} data-center={icon ? '' : undefined} role={kind === 'unavailable' ? 'alert' : undefined}>
@@ -32,9 +35,11 @@ export function StateScreen({ level, kind, title, step, href, icon, loud = false
       <H>{title}</H>
       <div className={`${p.stack} ${s.ways}`}>
         {children}
-        {loud
-          ? <a className={b.btn} data-voice="loud" data-size="lg" href={href}>{step}</a>
-          : <a className={go.go} href={href}>{step}<Icon id="arrow-right" /></a>}
+        {retry
+          ? <button className={b.btn} data-voice={loud ? 'loud' : undefined} data-size={loud ? 'lg' : undefined} type="button" onClick={retry}>{step}</button>
+          : loud
+            ? <a className={b.btn} data-voice="loud" data-size="lg" href={href}>{step}</a>
+            : <a className={go.go} href={href}>{step}<Icon id="arrow-right" /></a>}
       </div>
     </section>
   )

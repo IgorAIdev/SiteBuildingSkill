@@ -1,9 +1,9 @@
 import type { Lang } from '../../locale.ts'
 import type { Card, Collection, Facet, Listing, Product, Result, SortKey, Source } from '../contract.ts'
-import { CATEGORIES, FACETS, LAB_REPORTS, PRODUCTS, type SampleProduct } from '../../products.ts'
+import { CATEGORIES, DETAILS, FACETS, LAB_REPORTS, PRODUCTS, type SampleProduct } from '../../products.ts'
 import { facetValueFilters, pageVariables, pageCount } from '../vendure/core/search.mjs'
 import { MARKET } from '../../market.ts'
-import { overallStock } from '../stock.ts'
+import { overallStock, standardOf } from '../stock.ts'
 import { percentOf } from '../../facts.ts'
 import { categoryArt, productArt, productImages, type ArtView } from './art.ts'
 
@@ -37,11 +37,13 @@ const low = (p: SampleProduct) => Math.min(...p.variants.map((v) => v.price))
 function card(p: SampleProduct, lang: Lang): Card {
   const prices = p.variants.map((v) => v.price)
   const [min, max] = [Math.min(...prices), Math.max(...prices)]
+  const pick = standardOf(p.variants, p.standard ?? null)
   return {
     id: p.id, category: p.cat, name: p.name[lang], image: image(p, lang),
     price: min === max ? { kind: 'single', value: money(min) } : { kind: 'range', min: money(min), max: money(max) },
     was: min === max && p.variants.length === 1 && p.variants[0].was ? money(p.variants[0].was) : null,
-    variant: p.variants.length === 1 ? p.variants[0].id : null,
+    variant: pick?.id ?? null,
+    pick: pick ? { id: pick.id, price: money(pick.price), was: pick.was ? money(pick.was) : null, stock: pick.stock, pack: pick.pack } : null,
     stock: overallStock(p.variants.map((v) => v.stock)),
     strength: p.strength, packs: p.variants.map((v) => v.pack),
   }
@@ -129,6 +131,7 @@ export function sampleSource(pageSize = PAGE): Source {
       const batches = [...new Set(p.variants.map((v) => v.batch))].filter((b) => LAB_REPORTS[b])
       const product: Product = {
         id: p.id, category: p.cat, brand: p.brand, name: p.name[lang], summary: p.summary[lang], description: p.description[lang],
+        ingredients: DETAILS[p.cat]?.ingredients[lang] ?? null, usage: DETAILS[p.cat]?.usage[lang] ?? null, standard: p.standard ?? null,
         images: images(p, lang),
         optionGroups: p.groups.map((g) => ({ code: g.code, name: g.name[lang], options: g.options.map((o) => ({ code: o.code, name: o.name[lang] })) })),
         variants: p.variants.map((v) => ({ id: v.id, sku: v.sku, name: p.name[lang], price: money(v.price), was: v.was ? money(v.was) : null, stock: v.stock, options: v.options, batch: v.batch, pack: v.pack })),

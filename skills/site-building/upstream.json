@@ -717,12 +717,12 @@
     },
     {
       "local": "assets/studio/engine/palette.mjs",
-      "sha256": "e9d4a99889caea4a2ff6ed00dd173089101ec7a1fe09b70a8a3ee71cf2c5894d",
+      "sha256": "8b9a42f6504c52aef7d7c5a01399577506572f58898f957d6569a4b8611d0348",
       "origin": "Generated from the canonical SiteBuildingSkill tools; Node I/O replaced for browser portability. Not imported from a commerce repository."
     },
     {
       "local": "assets/studio/engine/thresholds.mjs",
-      "sha256": "6b8691b48b6f8305c2a8e036926cde5d687cd0399e9ccb7f2a3ebdb467b52c73",
+      "sha256": "f1350df37b3e4185fe8ec537eb6392547cb7e68edd9707c4ccb9d5fae2f65aab",
       "origin": "Generated from the canonical SiteBuildingSkill tools; Node I/O replaced for browser portability. Not imported from a commerce repository."
     },
     {

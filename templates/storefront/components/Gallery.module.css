@@ -61,9 +61,9 @@
   transition:box-shadow var(--hover-t) var(--ease)
 }
 @media (hover:hover){ .thumb:not([aria-current='true']):hover::after{box-shadow:inset 0 0 0 var(--line-w) var(--border)} }
-/* Кольцо чернил и под ним кольцо пола: светлое чернило тёмной темы на
-   светлом снимке иначе не видно. */
-.thumb[aria-current='true']::after{box-shadow:inset 0 0 0 var(--ring-w) var(--ink),inset 0 0 0 calc(var(--ring-w) * 2) var(--page)}
+/* Выбранный кадр — кольцо марки (roles.md, «граница выбранного у кадра»:
+   a9; И472) и под ним кольцо пола: на светлом снимке иначе не видно. */
+.thumb[aria-current='true']::after{box-shadow:inset 0 0 0 var(--ring-w) var(--pop),inset 0 0 0 calc(var(--ring-w) * 2) var(--page)}
 .thumb:focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:calc(var(--ring-w) * -1)}
 
 /* Точки вместо миниатюр (`--pdp-thumbs: dots`): строка целей по середине
@@ -74,7 +74,7 @@
   content:'';inline-size:calc(var(--ctrl-target) * .33);aspect-ratio:1;max-block-size:100%;border-radius:50%;
   background:var(--border);transition:background-color var(--hover-t) var(--ease)
 }
-.dot[aria-current='true']::before{background:var(--ink)}
+.dot[aria-current='true']::before{background:var(--pop)}
 .dot:focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:calc(var(--ring-w) * -1);border-radius:50%}
 
 @container style(--pdp-thumbs: dots){

@@ -16,7 +16,7 @@ type Action = (prev: FormState, form: FormData) => Promise<FormState>
 export function ContactForm({ view, action, permalink }: { view: ContactView; action: Action; permalink: string }) {
   const [state, formAction, pending] = useActionState(action, null, permalink)
   return (
-    <form className={s.form} action={formAction} noValidate aria-labelledby="step-title">
+    <form aria-busy={pending} className={s.form} action={formAction} noValidate aria-labelledby="step-title">
       {state?.message ? <p className={f.say} data-state="error" role="alert">{state.message}</p> : null}
       <fieldset className={`${f.rows} ${s.plain}`} disabled={pending}>
         <Fields rows={view.rows} state={state} />

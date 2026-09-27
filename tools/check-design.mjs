@@ -340,6 +340,13 @@ for (const view of views) {
         const marks = [...sel.matchAll(/\[([\w-]+)=['"]?([\w-]+)['"]?\]/g)]
         return !marks.length || links.some((l) => marks.some((m) => new RegExp(m[1] + '=[{"\'`\\s]*' + m[2] + '\\b').test(l.attrs)))
       }
+      /* Кегль ссылки, перебитый местом (И460): правило узла вида
+         `.pills a` с кеглем тела сильнее голого класса фишки примитива —
+         у ссылки кегль тела, и голый класс в этом меню мелким не числится.
+         Перебивка — правило из двух и более частей, у которого первая
+         часть — класс этого меню, а кегль не мельче тела. */
+      const small = []
+      const bigBy = []
       for (const file of new Set(refs.map((c) => c.file).filter(Boolean))) {
         const names = new Set(refs.filter((c) => c.file === file).map((c) => c.name))
         for (const r of css.get(file)?.rules ?? []) {
@@ -348,8 +355,23 @@ for (const view of views) {
           if (!aimsLink || !r.parts.some((p) => classesOf(p).some((c) => names.has(c)))) continue
           const size = sizeOf(r.decl)
           const px = size && range(size)
-          if (px && px[1] < 16) add('navSmall', `${rel(file)}:${r.line}`, `${r.sel} — ${size} (до ${+px[1].toFixed(1)}px) мельче тела`)
+          if (px && px[1] < 16) small.push({ file, r, size, px })
+          else if (px && r.parts.length > 1 && classesOf(r.parts[0]).some((c) => names.has(c))) bigBy.push(r)
         }
+      }
+      /* Перебита ли голая фишка: каждая ссылка с её классом попадает в
+         какую-то перебивку — классы её частей до последней есть у предков
+         ссылки, классы последней — у самой ссылки. */
+      const overridden = (r) => {
+        const own = classesOf(r.parts[0])
+        const hit = links.filter((l) => l.classes.some((c) => own.includes(c.name)))
+        const up = (l, part) => classesOf(part).every((n) => ancestors(l).some((a) => a.classes.some((c) => c.name === n)))
+        const self = (l, part) => classesOf(part).every((n) => l.classes.some((c) => c.name === n))
+        return hit.length > 0 && hit.every((l) => bigBy.some((b) => b.parts.slice(0, -1).every((part) => up(l, part)) && self(l, b.parts.at(-1))))
+      }
+      for (const { file, r, size, px } of small) {
+        if (r.parts.length === 1 && overridden(r)) continue
+        add('navSmall', `${rel(file)}:${r.line}`, `${r.sel} — ${size} (до ${+px[1].toFixed(1)}px) мельче тела`)
       }
     }
   }
@@ -508,6 +530,25 @@ if (docPath && existsSync(docPath)) {
       if (!alive) add('docDead', `${at} ${name}${wild ?? ''}`, `${name}${wild ?? ''} — такой роли не объявляет ни один файл стилей`)
     }
   })
+}
+
+/* ── бриф поверхности: сверено с живыми решениями (И474) ──────────────────
+ *
+ * Шаг 3 порядка дизайна — три-пять живых референсов на поверхность — стоял
+ * в CLAUDE.md словами, и исполнитель его пропустил: фон значков мессенджеров
+ * покрасил тоном марки, «не сверившись с лучшими существующими решениями»
+ * (заказчик, 27.09.2026), хотя образец лежал рядом — окно cbdin.bg. Бриф без
+ * адресов живых решений — решение из головы. Меряется так: в разделе
+ * «## 2. Референсы» каждого брифа `docs/design/*.md` (кроме образца
+ * `_brief.md`) — не меньше трёх адресов РАЗНЫХ сайтов. */
+const BRIEFS = join(ROOT, 'docs/design')
+if (existsSync(BRIEFS)) {
+  for (const f of readdirSync(BRIEFS).filter((x) => x.endsWith('.md') && !x.startsWith('_'))) {
+    const text = readFileSync(join(BRIEFS, f), 'utf8')
+    const part = text.match(/^## 2\.[^\n]*\n([\s\S]*?)(?=^## )/m)?.[1] ?? ''
+    const hosts = new Set([...part.matchAll(/https?:\/\/([^/\s)|>]+)/g)].map((m) => m[1].replace(/^www\./, '')))
+    if (hosts.size < 3) add('briefRefs', `docs/design/${f}`, `в «2. Референсы» адресов разных сайтов: ${hosts.size} из трёх`)
+  }
 }
 
 /* ── вердикт ───────────────────────────────────────────────────────────── */
