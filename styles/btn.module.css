@@ -42,7 +42,7 @@
 }
 .press:not(:disabled):not([aria-disabled='true']):active{
   --press-fill:color-mix(in oklab, var(--press-bg), var(--press-ink) var(--state-press));
-  transform:translateY(1px) scale(.97);
+  transform:var(--press-move);
 }
 @media (prefers-reduced-motion:reduce){
   .press{transition:background-color var(--hover-t) var(--ease)}

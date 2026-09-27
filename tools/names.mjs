@@ -83,6 +83,8 @@ export const MODIFIERS = new Set([
   /* стекло главной кнопки: краска долей, блик кромки, размытие под ней
      (`--pop-glass`, `--pop-rim`, `--frost-*`, `--ctrl-btn-frost-pop`; И427) */
   'glass', 'rim', 'frost', 'blur', 'sat',
+  /* движение нажатия — одно на всё, что нажимают (`--press-move`, И477) */
+  'move',
   /* чужие марки (И471) */
   'viber', 'telegram', 'whatsapp', 'instagram',
 ])

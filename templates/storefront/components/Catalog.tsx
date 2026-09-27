@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import p from '@/styles/primitives.module.css'
+import f from '@/styles/form.module.css'
 import b from '@/styles/btn.module.css'
 import go from '@/styles/go.module.css'
 import s from './Catalog.module.css'
@@ -70,7 +71,7 @@ export function Catalog({ view, search, cart }: { view: CatalogView; search?: Re
                 {view.clear ? <a className={b.btn} data-size="sm" href={view.clear.href}>{view.clear.label}</a> : null}
               </div>
             ) : null}
-            {view.invalid ? <p className={p.muted} role="status">{view.invalid}</p> : null}
+            {view.invalid ? <p className={f.say} role="status">{view.invalid}</p> : null /* строка сообщения — одна на сайт (f.say, И476) */}
           </div>
         ) : null}
         {/* Полку подписывает заголовок страницы, второй на экране не нужен, но

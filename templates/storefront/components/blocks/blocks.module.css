@@ -305,8 +305,6 @@
 .showCardShot{--frame:1 / 1;inline-size:calc(var(--ctrl-h-lg) * 1.75);border-radius:var(--r-xs)}
 .showCardText{display:grid;justify-items:start}
 .showCardName{font-weight:600;text-wrap:pretty}
-.showCardPrice{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:var(--gap-row);font-variant-numeric:tabular-nums}
-.showCardPrice s{color:var(--ink-soft)}
 .showCardGo{color:var(--ink-soft)}
 .showCardGo::after{content:'';position:absolute;inset:0;border-radius:inherit}
 @media (hover:hover){ .showCard:hover .showCardGo{color:var(--ink);text-decoration-line:underline} }

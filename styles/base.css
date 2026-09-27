@@ -375,6 +375,7 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
   :focus-visible{outline:var(--ring-w) solid Highlight}
 }
 @media (prefers-reduced-motion:reduce){
+  :root{--press-move:none} /* нажатие без движения — только цвет (И477) */
   *,*::before,*::after{
     animation-duration:.01ms !important;
     animation-iteration-count:1 !important;

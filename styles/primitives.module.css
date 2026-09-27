@@ -869,7 +869,7 @@
     background:var(--tray-act-bg, var(--quiet-on));color:var(--tray-act-fg, var(--ink))
   }
 }
-.tray > :where(button, a):not(:disabled):active{transform:scale(.97)}
+.tray > :where(button, a):not(:disabled):active{transform:var(--press-move)}
 /* Выключенный орган стоит на месте и молчит: по нему видно, есть ли чему
    работать. Отклика у него нет — орган, который отвечает и не делает,
    хуже неподвижного. */
@@ -992,7 +992,7 @@
 }
 @media (hover:hover){ .qty button:hover{color:var(--ink);background:var(--surface);box-shadow:var(--sh-raised)} }
 .qty button:active{color:var(--ink);background:var(--surface);box-shadow:var(--sh-raised)}
-.qty button:active{transform:scale(.92)}
+.qty button:active{transform:var(--press-move)}
 .qty button svg{
   width:calc(var(--qty-h, var(--ctrl-h-lg)) * .33);height:calc(var(--qty-h, var(--ctrl-h-lg)) * .33);
   fill:none;stroke:currentColor
@@ -1092,7 +1092,7 @@
 @media (hover:hover){
   .seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):hover{background:var(--hover-ctrl);color:var(--ink)}
 }
-.seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):active{background:var(--press-ctrl);color:var(--ink)}
+.seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):active{background:var(--press-ctrl);color:var(--ink);transform:var(--press-move)}
 .seg :is([aria-pressed="true"], [aria-current="true"]){background:var(--pop);color:var(--on-pop);font-weight:600;box-shadow:none}
 .seg [aria-disabled="true"]{opacity:var(--state-off);cursor:not-allowed}
 /* Вид сегментов — роль вида `--seg-look` (И396): `chips` (умолчание,
@@ -1302,7 +1302,7 @@
    цвет фирмы, а сам крестик — он и есть действие. */
 @media (hover:hover){ .chip:hover{background:var(--hover-ctrl)} }
 @media (hover:hover){ .chip:hover svg{color:var(--ink)} }
-.chip:active{background:var(--press-ctrl);transform:scale(.97)}
+.chip:active{background:var(--press-ctrl);transform:var(--press-move)}
 .chip:active svg{color:var(--ink)}
 /* МЕТКА — та же пилюля, одетая иначе: не «сними меня», а «вот что это».
    Поэтому атрибут на том же узле, а не второй класс: вес `.chip[data-chip]`

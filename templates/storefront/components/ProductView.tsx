@@ -9,6 +9,7 @@ import { VariantPicker } from './VariantPicker.tsx'
 import { KeyFacts } from './KeyFacts.tsx'
 import { AddToCart } from './AddToCart.tsx'
 import { ProductDetails } from './ProductDetails.tsx'
+import { Price } from './Price.tsx'
 
 /* Карта товара. Колонка покупки — группы, и воздух между группами крупнее
    воздуха внутри (И278, И444; бриф docs/design/карта-товара.md, §7): что
@@ -37,11 +38,9 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
         <div className={`${p.stack} ${s.offer}`}>
           <div className={s.identity}>
             <h1 className={s.name}>{view.brand ? <span className={s.brand} translate="no">{view.brand} </span> : null}{view.name}</h1>
-            <p className={s.price}>
-              <span className={s.now}>{view.price}</span>
-              {view.was ? <><s className={s.was} aria-hidden="true">{view.was.text}</s><span className={p.said}>{view.was.said}</span></> : null}
+            <Price now={view.price} was={view.was} size="lead">
               {view.stock ? <span className={s.stock} data-level={view.stockLevel ?? undefined}>{view.stock}</span> : null}
-            </p>
+            </Price>
           </div>
           <div className={s.part}>
             {view.groups.length ? <div className={s.choice}><VariantPicker groups={view.groups} error={view.choose} /></div> : null}

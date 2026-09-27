@@ -65,17 +65,7 @@
   min-block-size:var(--ctrl-target)
 }
 
-/* Цена — одна фраза: «from €34.90» не рвётся на «from» и сумму. Строка
-   тела, жирнее имени — этим и отличается от него; цифры табличные, чтобы
-   цены ряда читались столбцом. Сноска фактов между ними — роль `note`
-   (primitives.module.css). */
-.price{font-size:var(--body-size);line-height:var(--body-lead);font-weight:700;white-space:nowrap;color:var(--ink);font-variant-numeric:tabular-nums}
-/* Прежняя цена — над ценой, мельче и краской подписи: рядом с новой в одну
-   строку две цены читались диапазоном, над ней зачёркнутая — ясно «было».
-   Для чтения вслух — словами рядом (`p.said`): зачёркивание голосом не
-   читается. */
-.price{display:flex;flex-direction:column;margin:0}
-.was{font-size:var(--note-size);line-height:var(--note-lead);font-weight:400;color:var(--ink-soft)}
+/* Цена — Price.tsx, одна на сайт (И476): ростом тела, жирнее имени. */
 
 /* «За сколько» — цена и «в корзину» одной группой внизу карточки (слово
    заказчика 25.09.2026). Кнопка — главная кнопка сайта (`b.btn`
