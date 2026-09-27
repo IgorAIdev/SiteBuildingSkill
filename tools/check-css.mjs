@@ -433,10 +433,12 @@ for (const path of files) {
    * СМЫСЛ раскладки; «меняется величина — это шкала». Блок медиазапроса, в
    * котором нет ни одного свойства раскладки, а только кегль, поле, зазор,
    * ширина, — та самая ступенька, которую рампа не дописала (cbdshop: 23
-   * таких блока из 173). Переменные (`--x:`) не считаются: переобъявить
-   * роль на шве — законный способ сказать «здесь линия одна». */
+   * таких блока из 173). Переменная на шве — по значению (И489): величина
+   * (`--pad: 24px`, `--air: var(--sp-7)`) — та же ступенька, решение
+   * раскладки (`--cols: 1`) — смысл. */
   const LAYOUT_PROP = /^(display|grid-template[a-z-]*|grid-area|grid-column|grid-row|grid-auto[a-z-]*|flex-direction|flex-wrap|flex-basis|flex-flow|flex|order|position|inset[a-z-]*|top|left|right|bottom|visibility|place-[a-z]+|align-[a-z]+|justify-[a-z]+|overflow[a-z-]*|columns|column-count|container[a-z-]*|float|content|transform|translate|rotate|scale|clip-path|pointer-events|z-index|list-style[a-z-]*|writing-mode|direction|white-space|text-wrap|object-fit|object-position|scroll[a-z-]*|touch-action|cursor|appearance)$/
   const SIZE_PROP = /^(font-size|line-height|letter-spacing|padding[a-z-]*|margin[a-z-]*|gap|row-gap|column-gap|inline-size|block-size|width|height|min-inline-size|max-inline-size|min-width|max-width|min-block-size|max-block-size|min-height|max-height|border-radius|border[a-z-]*width|inset-[a-z]+|font-weight)$/
+  const SIZE_VALUE = new RegExp(`^(?:-?[\\d.]+(?:px|rem|em|ch|ex|lh|vw|vh|vi|vb|svh|dvh|lvh|cqi|cqw|cqh|%)|(?:clamp|calc|min|max)\\(|var\\(\\s*(?:${RX.space}|${RX.font}|--(?:pad|air|gap|ctrl-h|r)-))`)
   for (const m of css.matchAll(/@media[^{]*\((?:min|max)-width:\s*\d+px\)[^{]*\{/g)) {
     if (inContainer(m.index)) continue
     if (rel.endsWith('.module.css') && inDirs(rel, COMPONENT_DIRS)) {
@@ -446,9 +448,15 @@ for (const path of files) {
     const from = i
     while (i < css.length && depth) { if (css[i] === '{') depth++; else if (css[i] === '}') depth--; i++ }
     const body = css.slice(from, i - 1)
-    const props = [...body.matchAll(/(?:^|[;{])\s*([a-z-]+)\s*:/g)].map((d) => d[1])
-    if (!props.length || props.some((p) => LAYOUT_PROP.test(p))) continue
-    const sizes = props.filter((p) => SIZE_PROP.test(p))
+    /* Переменная на шве (И489) читается по значению: величина (длина,
+       рампа, ступень ритма или размера, роль поля, воздуха, зазора) — та же
+       ступенька, что свойство величины; всё прочее (`--cols: 1`,
+       `--side: none`) — решение раскладки. До 27.09.2026 переменные не
+       считались вовсе, и блок из одних `--pad: 24px` проходил чистым. */
+    const decls = [...body.matchAll(/(?:^|[;{])\s*([a-z-]+)\s*:([^;{}]*)/g)].map((d) => [d[1], d[2].trim()])
+    const props = decls.map(([p, v]) => (p.startsWith('--') ? (SIZE_VALUE.test(v) ? `${p} (величина)` : `${p} (раскладка)`) : p))
+    if (!props.length || props.some((p) => LAYOUT_PROP.test(p) || p.endsWith('(раскладка)'))) continue
+    const sizes = props.filter((p) => SIZE_PROP.test(p) || p.endsWith('(величина)'))
     if (sizes.length) add('seamStep', `${at(m.index)}  ${m[0].replace(/\s+/g, ' ').trim().slice(0, 40)} меняет только ${[...new Set(sizes)].slice(0, 3).join(', ')} — величина, не смысл`)
   }
 
@@ -1392,6 +1400,29 @@ for (const path of files) {
     for (const { css } of sheets) {
       for (const d of css.matchAll(/(?:^|[;{])\s*(--[a-z][a-z0-9-]*)\s*:/g)) declared.add(d[1])
     }
+    /* Выпуск строителей (И490): шкалы и палитра объявляют роли в своих
+       файлах — `ladder` и `palette` из kit.config.json, — и эти файлы у
+       монорепозитория лежат вне папок стилей приложения (cbdshop.bg:
+       `packages/ui/styles/scale.css`). Их имена объявлены так же, как
+       имена стилей; туда же — всё, что стили берут `@import` (путь от
+       файла или имя пакета по `aliases`), на любую глубину. Не видя их,
+       проверка звала «не объявленным» каждое прочитанное имя роли ритма —
+       1441 ложная находка на cbdshop.bg. */
+    const imported = new Set()
+    const importsOf = (css, from) => [...css.matchAll(/@import\s+(?:url\(\s*)?['"]([^'"]+)['"]/g)].map((m) => {
+      const spec = m[1]
+      const alias = Object.entries(ALIASES).find(([k]) => (k.endsWith('/') ? spec.startsWith(k) : spec === k))
+      return spec.startsWith('.') ? join(dirname(from), spec) : alias ? join(ROOT, alias[1] + spec.slice(alias[0].length)) : null
+    }).filter(Boolean)
+    const queue = [...[LADDER, PALETTE].filter(Boolean).map((f) => join(ROOT, f)), ...sheets.flatMap(({ rel, css }) => importsOf(css, join(ROOT, rel)))]
+    while (queue.length) {
+      const file = queue.shift()
+      if (imported.has(file) || !existsSync(file)) continue
+      imported.add(file)
+      const css = strip(readFileSync(file, 'utf8'))
+      for (const d of css.matchAll(/(?:^|[;{])\s*(--[a-z][a-z0-9-]*)\s*:/g)) declared.add(d[1])
+      queue.push(...importsOf(css, file))
+    }
     for (const { rel, css, at } of sheets) {
       if (EXEMPT.includes(rel) && rel !== TOKENS && rel !== LADDER) continue
       for (const m of css.matchAll(/var\(\s*(--[a-z][a-z0-9-]*)\s*\)/g)) {
@@ -1536,6 +1567,9 @@ for (const path of files) {
     const NAMED = new Set(('aliceblue antiquewhite aqua aquamarine azure beige bisque black blanchedalmond blue blueviolet brown burlywood cadetblue chartreuse chocolate coral cornflowerblue cornsilk crimson cyan darkblue darkcyan darkgoldenrod darkgray darkgreen darkgrey darkkhaki darkmagenta darkolivegreen darkorange darkorchid darkred darksalmon darkseagreen darkslateblue darkslategray darkslategrey darkturquoise darkviolet deeppink deepskyblue dimgray dimgrey dodgerblue firebrick floralwhite forestgreen fuchsia gainsboro ghostwhite gold goldenrod gray green greenyellow grey honeydew hotpink indianred indigo ivory khaki lavender lavenderblush lawngreen lemonchiffon lightblue lightcoral lightcyan lightgoldenrodyellow lightgray lightgreen lightgrey lightpink lightsalmon lightseagreen lightskyblue lightslategray lightslategrey lightsteelblue lightyellow lime limegreen linen magenta maroon mediumaquamarine mediumblue mediumorchid mediumpurple mediumseagreen mediumslateblue mediumspringgreen mediumturquoise mediumvioletred midnightblue mintcream mistyrose moccasin navajowhite navy oldlace olive olivedrab orange orangered orchid palegoldenrod palegreen paleturquoise palevioletred papayawhip peachpuff peru pink plum powderblue purple rebeccapurple red rosybrown royalblue saddlebrown salmon sandybrown seagreen seashell sienna silver skyblue slateblue slategray slategrey snow springgreen steelblue tan teal thistle tomato turquoise violet wheat white whitesmoke yellow yellowgreen').split(' '))
     /* Свойства, в значениях которых имя — не краска: гарнитура, имя
        анимации, область сетки, имя контейнера, текст. Маска — см. выше. */
+    /* Аргумент смеси «роль долей хода»: `var(--роль) calc(var(--ход) * 100%)`
+       (или доля впереди). Ход — первая группа. */
+    const STEP_SHARE = /^(?:var\(\s*--[\w-]+\s*\)\s+calc\(\s*var\(\s*(--[\w-]+)\s*\)\s*\*\s*100%\s*\)|calc\(\s*var\(\s*(--[\w-]+)\s*\)\s*\*\s*100%\s*\)\s+var\(\s*--[\w-]+\s*\))$/
     const NOT_PAINT = /^(?:font|animation|transition|grid-area|grid-template|grid-row|grid-column|container|content|quotes|counter-|view-transition|will-change|list-style-type|mask|-webkit-mask)/
     /** Тело вызова `name(` с уравновешенными скобками: [начало тела, конец]. */
     const callsOf = (text, name) => {
@@ -1575,6 +1609,13 @@ for (const path of files) {
         const colours = topArgs(body).slice(1)
         let shares = 0
         for (const arg of colours) {
+          /* Ход состояния (И487): доля `calc(var(--ход) * 100%)`, где ход в
+             стилях сайта принимает только 0 и 1, — не краска, а кадр
+             перехода между двумя ролями: в покое и под рукой смесь равна
+             одной из них, и обе меряет строитель. Число, которое бывает
+             чем-то ещё, — ручка узла, то есть литерал. */
+          const step = arg.match(STEP_SHARE)
+          if (step && PROGRESS.has(step[1] ?? step[2])) { shares++; continue }
           const plain = arg.replace(/var\([^()]*(?:\([^()]*\)[^()]*)*\)/g, (r) => r.replace(/[\d%]/g, ' '))
           const pct = plain.match(/(\d*\.?\d+)%/)
           if (pct) return `color-mix с долей числом ${pct[0]}`
@@ -1611,6 +1652,22 @@ for (const path of files) {
       }
       return out
     }
+    /* Ходы состояния — имена, которым стили сайта присваивают только 0 и 1
+       (`--btn-on:0` в покое, `--btn-on:1` под рукой). Зарегистрированный
+       через `@property` ход тянется переходом, незарегистрированный
+       переворачивается сразу — в обоих случаях покой и рука стоят на
+       концах, то есть на ролях. */
+    const values = new Map()
+    for (const { rel, css } of sheets) {
+      if (rel === PALETTE || rel.split('/').includes('look-panel')) continue
+      for (const { text } of declsOf(css)) {
+        const m = text.match(/^\s*(--[\w-]+)\s*:([\s\S]*)$/)
+        if (!m) continue
+        if (!values.has(m[1])) values.set(m[1], new Set())
+        values.get(m[1]).add(m[2].replace(/!important/, '').trim())
+      }
+    }
+    const PROGRESS = new Set([...values].filter(([, vs]) => [...vs].every((x) => x === '0' || x === '1')).map(([name]) => name))
     for (const { rel, css, at } of sheets) {
       if (rel === PALETTE || rel.split('/').includes('look-panel')) continue
       for (const { text, at: here } of declsOf(css)) {
