@@ -20,6 +20,9 @@ WORKDIR /kit
 COPY . .
 RUN node tools/storefront.mjs --prepare && rm -rf /root/.npm
 WORKDIR /kit/.storefront
+# Свой адрес витрины (SITE_URL) задаёт приложению `npm run storefront:server`;
+# robots и карта сайта собираются заранее — без него они ведут на localhost (И459).
+ARG SITE_URL
 # Панель входит в страницы, собранные заранее, — флаг нужен уже сборке.
 ENV NEXT_TELEMETRY_DISABLED=1 \
     LOOK_PICKER=on
