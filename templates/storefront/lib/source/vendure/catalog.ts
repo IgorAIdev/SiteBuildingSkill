@@ -6,6 +6,8 @@ import { assetImage, type Asset } from './image.ts'
 import { displayOptionGroups } from './core/product.mjs'
 import { overallStock, standardOf } from '../stock.ts'
 import { formOf, standardDetails } from '../details.ts'
+import { lineOf } from '../line.ts'
+import { t } from '../../i18n/index.ts'
 
 /* Торговля из Vendure Shop API (план 4, торговая половина): каталог — этим
    файлом, покупка — commerce.ts рядом. Переходник превращает ответы движка в
@@ -159,6 +161,19 @@ export function vendureSource(env: VendureEnv, fetchImpl: typeof fetch = globalT
     const byId = new Map(r.data.products.items.map((p) => [p.id, p]))
     return ids.flatMap((id) => byId.get(id) ?? [])
   }
+  /** Товары линейки (И503) — соседи по полке: у магазина отдельный товар
+   *  на каждую силу и меру, и сила стоит в имени («CBD масло 10% …»), так
+   *  что имя линейки считает `lineOf`, а движок отдаёт полку целиком. Молчит
+   *  движок — линейки нет, страница стоит одна, а не падает. */
+  type VMate = { id: string; name: string; slug: string; translations: Translation[]; customFields: VProduct['customFields']; variants: { stockLevel: string }[] }
+  const shelfMates = async (languageCode: string, collectionId: string): Promise<VMate[]> => {
+    const found = await ask<SearchData>(SEARCH, { input: { groupByProduct: true, collectionId, take: 100 } }, languageCode)
+    if (!found.ok) return []
+    const ids = found.data.search.items.map((h) => h.productId)
+    if (!ids.length) return []
+    const r = await ask<{ products: { items: VMate[] } }>(`query ($ids: [String!]!, $take: Int) { products(options: { filter: { id: { in: $ids } }, take: $take }) { items { id name slug translations { languageCode slug } customFields { brand volume strength } variants { stockLevel } } } }`, { ids, take: ids.length }, languageCode)
+    return r.ok ? r.data.products.items : []
+  }
   const bySlug = async (languageCode: string, slug: string): Promise<Result<VProduct>> => {
     const r = await ask<{ product: VProduct | null }>(`query ($slug: String!) { product(slug: $slug) { ${PRODUCT} } }`, { slug }, languageCode)
     if (!r.ok) return { ok: false, reason: 'unavailable' }
@@ -266,6 +281,10 @@ export function vendureSource(env: VendureEnv, fetchImpl: typeof fetch = globalT
       /* Упаковка — поле товара движка, одна на все его варианты, как у
          карточки полки (`packs` выше). */
       const pack = packOf(p.customFields?.volume, p.customFields?.strength)
+      const mateOf = (m: VMate | VProduct) => ({ id: nativeSlug(c, m), name: m.name, brand: m.customFields?.brand?.trim() || null, strength: m.customFields?.strength ?? null, volume: m.customFields?.volume ?? null, stock: overallStock(m.variants.map((v) => stockOf(v.stockLevel))) })
+      const shelf = p.variants.length === 1 && p.collections[0] ? await shelfMates(languageCode, p.collections[0].id) : []
+      const line = shelf.length ? lineOf(mateOf(p), shelf.map(mateOf), { strength: t(lang, 'line.strength'), volume: t(lang, 'line.volume') }) : null
+      const own = line ? line.members.find((m) => m.id === nativeSlug(c, p)) : undefined
       const product: Product = {
         id: nativeSlug(c, p), category: p.collections[0] ? nativeSlug(c, p.collections[0]) : '', brand: p.customFields?.brand?.trim() || null, name: p.name,
         summary: p.customFields?.seoDescription?.trim() || text.split(/(?<=[.!?])\s/)[0] || '',
@@ -276,13 +295,13 @@ export function vendureSource(env: VendureEnv, fetchImpl: typeof fetch = globalT
         ...standardDetails(formOf([...p.facetValues.filter((v) => v.facet.code === 'category').map((v) => v.code), ...p.collections.map((one) => one.slug)]), lang),
         standard: null,
         images: [p.featuredAsset, ...p.assets.filter((a) => a.preview !== p.featuredAsset?.preview)].flatMap((a) => (a ? [image(a, p.name)!] : [])),
-        optionGroups: shown.map((g): OptionGroup => ({ code: g.code, name: g.name, options: g.options.map((o) => ({ code: o.code, name: o.name })) })),
+        optionGroups: line && own ? line.axes : shown.map((g): OptionGroup => ({ code: g.code, name: g.name, options: g.options.map((o) => ({ code: o.code, name: o.name })) })),
         variants: p.variants.map((v): Variant => ({
           id: v.id, sku: v.sku, name: p.name, price: money(c, v.priceWithTax),
           was: typeof was === 'number' && was > v.priceWithTax ? money(c, was) : null,
-          stock: stockOf(v.stockLevel), options: Object.fromEntries(v.options.map((o) => [o.group.code, o.code])), batch: null, pack,
+          stock: stockOf(v.stockLevel), options: line && own ? own.options : Object.fromEntries(v.options.map((o) => [o.group.code, o.code])), batch: null, pack,
         })),
-        labReports: [], strength: strengthOf(p, pack),
+        labReports: [], strength: strengthOf(p, pack), line: line && own ? line.members : [],
       }
       return { ok: true, value: product }
     },

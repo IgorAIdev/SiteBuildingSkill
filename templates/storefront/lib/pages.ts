@@ -1,7 +1,6 @@
 import type { Lang } from './locale.ts'
-import type { Block, Image, LabReport } from './source/contract.ts'
+import type { Block, Image } from './source/contract.ts'
 import { scene } from './source/sample/art.ts'
-import { LAB_REPORTS } from './products.ts'
 
 type SamplePage = { title: Record<Lang, string>; description: Record<Lang, string>; blocks: Record<Lang, Block[]> }
 /* Снимок героя — сцена-образец (art.ts): текст героя лежит поверх него, поэтому
@@ -13,11 +12,11 @@ const HERO_CARE: Image = { src: scene('care'), alt: '', width: 1600, height: 100
    образца (products.ts), тот же, что стоит на карте товара. `url` — сам
    документ: блок ведёт к нему ссылкой. У образца это заглушка, помеченная
    «SAMPLE» (public/sample/), — настоящий протокол лаборатории даёт магазин. */
-const LOT = 'RO-2409-10'
-const REPORT: LabReport = { batch: LOT, ...LAB_REPORTS[LOT], url: `/sample/lab-${LOT}.pdf` }
 const FEATURED = ['ulei-cbd-full-spectrum', 'capsule-cbd-25', 'crema-cbd', 'ulei-caini-cbd']
 /* Первая полка после категорий — масла (слово заказчика 27.09.2026:
-   «первый блок после категорий — CBD Oil»). */
+   «первый блок после категорий — CBD Oil»). Разделов протокола и
+   доставки на главной нет (слово заказчика 28.09.2026: «разделы лаб репорт,
+   деливери убирай»): протокол — на карте товара, доставка — своей страницей. */
 const OILS = ['ulei-cbd-full-spectrum', 'ulei-cbd-izolat-10', 'ulei-cbd-5-incepatori', 'ulei-cbd-20-seara', 'ulei-cbd-30-forte']
 /* МЕСТО ЗАКАЗЧИКА — «слово магазина» (docs/design/home.md, «Пустые места»):
    заголовок, два-три предложения о магазине своими словами и снимок с
@@ -48,11 +47,7 @@ export const PAGES: Record<string, SamplePage> = {
         { type: 'categories', title: 'Categorii' },
         { type: 'featured', title: 'Uleiuri CBD', ids: OILS, to: 'uleiuri' },
         { type: 'featured', title: 'Cele mai vândute', ids: FEATURED },
-        { type: 'lab', title: 'Buletin de analiză pentru fiecare lot', body: 'Laboratorul măsoară CBD, THC, metale grele, pesticide și solvenți. Buletinul fiecărui lot este pe pagina produsului.', report: REPORT },
         STORY,
-        { type: 'delivery', title: 'Livrare și plată', items: [
-          { title: 'Plata ramburs', body: 'Plătiți la primirea coletului.' },
-        ] },
         { type: 'faq', title: 'Întrebări frecvente', items: [
           { q: 'Ce conține buletinul de analiză?', a: 'Concentrația de CBD și THC, metalele grele, pesticidele și solvenții reziduali ai lotului.' },
           { q: 'Unde găsesc numărul lotului?', a: 'Pe eticheta produsului; același număr apare în buletinul laboratorului.' },
@@ -65,11 +60,7 @@ export const PAGES: Record<string, SamplePage> = {
         { type: 'categories', title: 'Categories' },
         { type: 'featured', title: 'CBD oils', ids: OILS, to: 'uleiuri' },
         { type: 'featured', title: 'Best sellers', ids: FEATURED },
-        { type: 'lab', title: 'A lab report for every batch', body: 'The lab measures CBD, THC, heavy metals, pesticides and solvents. Every batch report is on the product page.', report: REPORT },
         STORY,
-        { type: 'delivery', title: 'Delivery and payment', items: [
-          { title: 'Cash on delivery', body: 'Pay when the parcel arrives.' },
-        ] },
         { type: 'faq', title: 'Frequently asked questions', items: [
           { q: 'What does the lab report contain?', a: 'The CBD and THC content, heavy metals, pesticides and residual solvents of the batch.' },
           { q: 'Where do I find the batch number?', a: 'On the product label; the same number appears in the lab report.' },
@@ -82,11 +73,7 @@ export const PAGES: Record<string, SamplePage> = {
         { type: 'categories', title: 'Kategóriák' },
         { type: 'featured', title: 'CBD olajok', ids: OILS, to: 'uleiuri' },
         { type: 'featured', title: 'Legnépszerűbb termékek', ids: FEATURED },
-        { type: 'lab', title: 'Minden tételhez laborjegyzőkönyv', body: 'A labor méri a CBD- és THC-tartalmat, a nehézfémeket, a növényvédő szereket és az oldószereket. Minden tétel jegyzőkönyve a termékoldalon található.', report: REPORT },
         STORY,
-        { type: 'delivery', title: 'Szállítás és fizetés', items: [
-          { title: 'Utánvét', body: 'Fizessen a csomag átvételekor.' },
-        ] },
         { type: 'faq', title: 'Gyakori kérdések', items: [
           { q: 'Mit tartalmaz a laborjegyzőkönyv?', a: 'A tétel CBD- és THC-tartalmát, nehézfém-, növényvédőszer- és oldószer-maradványait.' },
           { q: 'Hol találom a tételszámot?', a: 'A termék címkéjén; ugyanez a szám szerepel a laborjegyzőkönyvben.' },

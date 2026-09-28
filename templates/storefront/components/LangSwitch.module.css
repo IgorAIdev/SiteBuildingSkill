@@ -8,4 +8,6 @@
    кнопка раскрытия, как у порядка полки; в списке рядом с кодом — имя языка
    на нём самом, тоном вторичного текста. */
 .drop{--btn-h:var(--ctrl-h-sm)}
+/* Стрелка раскрытия — ростом строки, а не значка: значок шапки 1.43em. */
+.drop button svg{inline-size:1em;block-size:1em}
 .name{margin-inline-start:var(--gap-row);font-weight:var(--body-weight);color:var(--ink-soft)}

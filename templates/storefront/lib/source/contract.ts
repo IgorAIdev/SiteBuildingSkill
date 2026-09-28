@@ -26,7 +26,11 @@ export type LabReport = { batch: string; lab: string; date: string; cbdPercent: 
  *  магазина (разделы карты товара, И466); нет у движка — `null`, раздела нет.
  *  `standard` — вариант, выбранный на карте сам, пока покупатель не выбрал
  *  другой (И468): решение магазина; `null` — первый вариант в наличии. */
-export type Product = { id: string; category: string; brand: string | null; name: string; summary: string; description: string; ingredients: string | null; usage: string | null; standard: string | null; images: Image[]; optionGroups: OptionGroup[]; variants: Variant[]; labReports: LabReport[]; strength: Strength }
+/** Сосед по линейке (И503): товар той же марки и того же имени с другой
+ *  силой или мерой — свой адрес, свои значения выбора (`options` по кодам
+ *  `optionGroups`). */
+export type LineMember = { id: string; options: Record<string, string>; stock: Stock }
+export type Product = { id: string; category: string; brand: string | null; name: string; summary: string; description: string; ingredients: string | null; usage: string | null; standard: string | null; images: Image[]; optionGroups: OptionGroup[]; variants: Variant[]; labReports: LabReport[]; strength: Strength; line: LineMember[] }
 export type Price = { kind: 'single'; value: Money } | { kind: 'range'; min: Money; max: Money }
 /** Упаковка варианта — то, что покупатель CBD сравнивает на полке (shop,
  *  «Сила — две шкалы, проценты и миллиграммы»): CBD во всей упаковке, мг, и
@@ -73,8 +77,6 @@ export type Block =
    *  (слаг категории); нет — весь каталог. */
   | { type: 'featured'; title: string; ids: string[]; to?: string }
   /** `report` — образец протокола рядом с текстом: партия, лаборатория, замер. */
-  | { type: 'lab'; title: string; body: string; report: LabReport | null }
-  | { type: 'delivery'; title: string; items: { title: string; body: string }[] }
   | { type: 'faq'; title: string; items: { q: string; a: string }[] }
   /** Слово магазина — заголовок, несколько предложений своими словами и
    *  снимок с подписью. Место заказчика (docs/design/home.md, «Пустые

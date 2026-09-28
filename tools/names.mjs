@@ -46,7 +46,7 @@ export const CONCEPTS = {
     /* чужие марки: знак мессенджера краской своей марки (`--mark-viber`, И471) */
     'mark'],
   rhythm: ['pad', 'air', 'gap'],
-  text: ['hero', 'pagehead', 'h2', 'h3', 'intro', 'lede', 'body', 'note', 'eyebrow', 'measure', 'face', 'fs', 'page'],
+  text: ['hero', 'pagehead', 'prodhead', 'h2', 'h3', 'intro', 'lede', 'body', 'note', 'eyebrow', 'measure', 'face', 'fs', 'page'],
   shape: ['r'],
   depth: ['sh', 'frost'],
   motion: ['ease', 'rise', 'nudge', 'creep', 'open'],
@@ -92,7 +92,9 @@ export const MODIFIERS = new Set([
 ])
 /** Ручки примитивов — узлы. Объявляются на примитиве, не на корне. */
 export const HOOKS = ['stack', 'cluster', 'switch', 'rail', 'section', 'sheet', 'lede', 'hero', 'grid', 'cols', 'cell',
-  'pin', 'tray', 'leaf', 'chip', 'qty', 'chan', 'side', 'prose', 'pinned', 'sidebar', 'frame', 'btn', 'seg', 'gallery', 'pane', 'turn']
+  'pin', 'tray', 'leaf', 'chip', 'qty', 'chan', 'side', 'prose', 'pinned', 'sidebar', 'frame', 'btn', 'seg', 'gallery', 'pane', 'turn',
+  /* размер точки указателя слайдов (`--dot`, styles/slides.module.css, И502) */
+  'dot']
 
 const VALUE = [
   { rx: new RegExp(`^--${FAMS(COLOUR_FAMILIES)}-\\d{1,2}$`), family: 'ступень цвета', by: 'tools/palette.mjs' },
@@ -104,7 +106,7 @@ const VALUE = [
 const ROLE = [
   { rx: /^--(pad|air|gap)-[a-z]+$/, family: 'поле / воздух / зазор', by: 'tools/scale.mjs' },
   { rx: /^--ctrl-fs-[a-z0-9]+$/, family: 'надпись органа', by: 'tools/scale.mjs' },
-  { rx: /^--(hero|pagehead|h2|h3|intro|lede|body|note|eyebrow)-(size|lead|weight|track|measure)$/, family: 'роль текста', by: 'tools/scale.mjs' },
+  { rx: /^--(hero|pagehead|prodhead|h2|h3|intro|lede|body|note|eyebrow)-(size|lead|weight|track|measure)$/, family: 'роль текста', by: 'tools/scale.mjs' },
   { rx: /^--(r-[a-z]+|round)$/, family: 'скругление', by: 'styles/tokens.css' },
   { rx: /^--sh-[a-z0-9-]+$/, family: 'тень', by: 'styles/look.css (роли), styles/tokens.css (ингредиенты)' },
   { rx: /^--(ease|hover-t|rise|nudge|creep)$/, family: 'движение и ответ на руку', by: 'styles/tokens.css' },
@@ -175,6 +177,8 @@ export const REQUIRED = {
   '--air-set': 'воздух между группами опций выбора — карта товара, придёт с магазином (templates/storefront, ProductView.module.css; И448)',
   '--quiet-pop': 'тихая плашка на заливке кнопки — счётчик «в корзине: 2» на кнопке покупки; первый читатель — магазин (cbdin, BuyBtn; И452)',
   '--on-quiet-pop': 'надпись на тихой плашке заливки — число счётчика на кнопке покупки (И452)',
+  '--prodhead-size': 'имя товара — заголовок первого уровня ростом ступени h3, карта товара (templates/storefront, ProductView.module.css; И503)',
+  '--prodhead-lead': 'межстрочье имени товара (И503)', '--prodhead-weight': 'вес имени товара (И503)', '--prodhead-track': 'разрядка имени товара (И503)',
   '--layer-helper': 'слой кружка помощника (FLOATING)', '--layer-toast': 'слой всплывающего сообщения (FLOATING)',
 }
 

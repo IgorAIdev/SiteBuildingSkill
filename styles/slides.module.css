@@ -25,13 +25,23 @@
 .strip:focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:calc(var(--ring-w) * -1)}
 .slide{flex:none;inline-size:100%;scroll-snap-align:start;scroll-snap-stop:always}
 
-.dots{display:flex;justify-content:center;list-style:none;margin:0;padding:0}
-.dot{display:grid;place-items:center;inline-size:calc(var(--ctrl-target) * .6);block-size:var(--ctrl-target)}
+/* Размер точки — ручка `--dot` от высоты контрола, а не от цели пальца.
+   Цель пальца под мышью сжимается до 24px (WCAG 2.5.8), и точка от неё
+   выходила 5.75px на столе — меньше, чем на телефоне (слово заказчика
+   28.09.2026: «иконка слайдера чрезмерно крошечная, как для телефона»).
+   Норма — 8–12px, текущая — вытянутой полосой втрое (Apple, Nike,
+   Material 3 carousel): от высоты контрола это ≈ 10px и на столе, и на
+   телефоне. */
+.dots{--dot:calc(var(--ctrl-h) * .22);display:flex;justify-content:center;list-style:none;margin:0;padding:0}
+.dot{display:grid;place-items:center;inline-size:max(calc(var(--ctrl-target) * .6), var(--dot) * 2);block-size:var(--ctrl-target)}
 .dot::before{
-  content:'';inline-size:calc(var(--ctrl-target) * .16);block-size:calc(var(--ctrl-target) * .16);border-radius:calc(var(--ctrl-target) * .08);
+  content:'';inline-size:var(--dot);block-size:var(--dot);border-radius:calc(var(--dot) / 2);
   background:var(--ink-soft);opacity:.45;
   transition:opacity var(--hover-t) var(--ease)
 }
-.dot[aria-current='true']::before{inline-size:calc(var(--ctrl-target) * .5);background:var(--ink);opacity:1}
+/* Текущая точка — полосой втрое шире; её клетка растёт вместе с ней, иначе
+   полоса налезала бы на соседок. */
+.dot[aria-current='true']{inline-size:calc(var(--dot) * 4)}
+.dot[aria-current='true']::before{inline-size:calc(var(--dot) * 3);background:var(--ink);opacity:1}
 .dot:focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:calc(var(--ring-w) * -1);border-radius:var(--r-ctrl)}
 @media (prefers-reduced-motion:reduce){ .dot::before{transition:none} }

@@ -6,7 +6,7 @@ import { money } from './money.ts'
 import { hrefFor } from './href.ts'
 import { intlLocale } from './market.ts'
 import { percent } from './format.ts'
-import { pickState, optionLinks, type OptionGroupLinks } from './variant.ts'
+import { pickState, optionLinks, titleOf, type OptionGroupLinks } from './variant.ts'
 import { saleOf, shelfCard, stockText, type ShelfCard, type WasView } from './view.ts'
 import { QTY_MAX } from './cart-view.ts'
 import { factsLine, packFacts, type FactsView } from './facts.ts'
@@ -26,7 +26,7 @@ import { MARKET } from './market.ts'
  *  данных нет. */
 export type DetailPart = { id: string; title: string; text: string | null; lab: LabView | null }
 export type DetailsView = { label: string; parts: DetailPart[] }
-export type LabView = { title: string; batch: string; code: string; rows: [string, string][]; open: { label: string; href: string } | null }
+export type LabView = { title: string; batch: string; rows: [string, string][]; open: { label: string; href: string } | null }
 /** `add` — надпись кнопки, одно действие без цены: цена стоит под именем,
  *  второй раз на кнопке она не нужна (слово заказчика 25.09.2026: «цену два
  *  раза указывать не нужно, с кнопки убирай цену», И441). `ask` — варианта ещё не выбрали: кнопка
@@ -65,7 +65,7 @@ export type { WasView }
  *  `message` — строка под кнопкой, когда купить нельзя: сочетания нет. */
 export type ProductPageView = {
   crumbs: { name: string; href?: string }[]; crumbLabel: string
-  brand: string | null; name: string; price: string; was: WasView | null; stock: string | null; stockLevel: 'in' | 'low' | 'out' | null; message: string | null; choose: string | null
+  brand: string | null; name: string; summary: string | null; price: string; was: WasView | null; stock: string | null; stockLevel: 'in' | 'low' | 'out' | null; message: string | null; choose: string | null
   gallery: GalleryView; groups: OptionGroupLinks[]; facts: FactsView | null; details: DetailsView
   related: ShelfCard[]; relatedTitle: string
   /** Выход ко всей полке товара у «похожих» — та же строка, что у полки
@@ -90,7 +90,6 @@ export function labView(lang: Lang, r: LabReport): LabView {
   return {
     title: t(lang, 'product.lab'),
     batch: t(lang, 'product.batch', { batch: r.batch }),
-    code: r.batch,
     rows: [
       [t(lang, 'lab.lab'), r.lab],
       [t(lang, 'lab.date'), date.format(new Date(r.date))],
@@ -187,11 +186,12 @@ export function productView(lang: Lang, product: Product, chosen0: Record<string
     crumbs: [
       { name: t(lang, 'crumb.home'), href: hrefFor(lang, { home: true }) },
       ...(ctx.category ? [{ name: ctx.category.name, href: hrefFor(lang, { category: ctx.category.slug }) }] : []),
-      { name: product.name },
+      { name: titleOf(product) },
     ],
     crumbLabel: t(lang, 'crumb.label'),
     brand: product.brand,
-    name: product.name,
+    name: titleOf(product),
+    summary: product.summary.trim() || null,
     price, was: sale?.was ?? null,
     stock: chosen ? stockText(lang, chosen.stock) : null,
     stockLevel: chosen?.stock ?? null,

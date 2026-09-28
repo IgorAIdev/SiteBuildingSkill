@@ -82,7 +82,7 @@ const classic = (lang: Lang, nav: Menu) => (
       {logo(lang)}
       {shelves(lang, nav, t(lang, 'nav.menu'))}
       <div className={s.actions}>
-        <div className={s.lang}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop /></div>
+        <div className={s.lang}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop trigger={s.glyph} /></div>
         {find(lang)}{cart(lang, false)}{menu(lang)}
       </div>
     </div>
@@ -98,7 +98,7 @@ const search = (lang: Lang, nav: Menu) => (
     <div className={s.strip} data-ground="deck">
       <div className={`${p.wrap} ${s.stripRow}`}>
         <p className={s.promise}>{t(lang, 'header.promise')}</p>
-        <div className={s.lang}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop /></div>
+        <div className={s.lang}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop trigger={s.glyph} /></div>
       </div>
     </div>
     <div className={`${p.wrap} ${s.bar}`}>
@@ -121,7 +121,7 @@ const boutique = (lang: Lang, nav: Menu) => (
   <header className={s.head} data-variant="boutique">
     <div className={`${p.wrap} ${s.bar}`}>
       <button className={`${s.glyph} ${s.shop}`} type="button" popoverTarget="site-menu"><Icon id="menu" />{t(lang, 'nav.shop')}</button>
-      <div className={`${s.lang} ${s.side}`}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop /></div>
+      <div className={`${s.lang} ${s.side}`}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop trigger={s.glyph} /></div>
       {logo(lang)}
       <div className={s.actions}>{find(lang)}{cart(lang, false)}</div>
     </div>
@@ -144,7 +144,7 @@ const board = (lang: Lang, nav: Menu) => (
     <div className={s.board}>
       <div className={s.util}>
         <p className={s.promise}>{t(lang, 'header.promise')}</p>
-        <div className={s.lang}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop /></div>
+        <div className={s.lang}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop trigger={s.glyph} /></div>
       </div>
       <div className={`${s.bar} ${s.row}`} data-ground="deck">
         {menu(lang)}

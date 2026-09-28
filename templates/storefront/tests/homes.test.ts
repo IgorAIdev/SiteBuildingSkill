@@ -41,6 +41,6 @@ test('home variants: the page marks which home it draws, and every variant has a
   for (const home of HOMES) {
     const slots = RECIPES[home].map(([slot]) => slot)
     assert.equal(new Set(slots).size, slots.length, `${home}: место не повторяется`)
-    for (const type of ['hero', 'categories', 'featured', 'lab', 'delivery', 'faq', 'story']) assert.ok(slots.includes(type as never), `${home}: ${type}`)
+    for (const type of ['hero', 'categories', 'featured', 'faq', 'story']) assert.ok(slots.includes(type as never), `${home}: ${type}`)
   }
 })

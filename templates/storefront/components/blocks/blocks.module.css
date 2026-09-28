@@ -89,12 +89,19 @@
   flex:none;display:flex;flex-direction:column;align-items:flex-start;gap:var(--air-row);
   padding:var(--pad-sheet)
 }
-/* Под точками текст отдаёт им строку: точки лежат у низа сцены. */
-.hero[data-many] .heroText{padding-block-end:calc(var(--pad-sheet) + var(--ctrl-target) * .6)}
+/* Под точками и стрелками текст отдаёт им строку: они лежат у низа сцены. */
+.hero[data-many] .heroText{padding-block-end:calc(var(--pad-sheet) + var(--ctrl-target))}
 .heroText .heroTitle{margin:0;font-size:var(--hero-size);line-height:var(--hero-lead);font-weight:var(--hero-weight);letter-spacing:var(--hero-track);color:var(--ink);text-wrap:pretty}
 .heroText p{margin:0;font-size:var(--intro-size);line-height:var(--intro-lead);font-weight:var(--intro-weight);letter-spacing:var(--intro-track);color:var(--ink-soft);max-inline-size:var(--measure-lede);text-wrap:pretty}
 .heroText > :last-child{margin-block-start:var(--air-row)}
 .heroDots{position:absolute;inset-inline:0;inset-block-end:0;padding-block-end:calc(var(--pad-sheet) * .25)}
+/* Стрелки (И502) — парой у правого края строки точек, на одной с ними
+   линии: стоят в разметке после точек, чтобы строка точек во всю ширину
+   не легла поверх них. */
+.heroNav{
+  position:absolute;inset-inline-end:var(--pad-sheet);inset-block-end:0;padding-block-end:calc(var(--pad-sheet) * .25);
+  display:flex;align-items:center;gap:var(--sp-2);min-block-size:calc(var(--ctrl-target) + var(--pad-sheet) * .25)
+}
 @container (min-width:820px){
   .heroSlide{position:relative;display:block;max-block-size:none}
   .heroShot{position:absolute;inset:0;aspect-ratio:auto;max-block-size:none}
@@ -109,44 +116,12 @@
 }
 /* look-home:scene:end */
 
-/* look-home:scene,counter,proof,showroom,poster:start */
-/* ЛАБОРАТОРИЯ — единственный лист страницы: `--surface` и пол
-   (`data-plate`), а не тон марки — тон в тёмной теме становился ржавым и
-   читался тревогой. Слова стоят по середине высоты протокола; протокол
-   держит свою меру (30rem), чтобы подпись и значение не разъезжались на
-   полстраницы. Колонки — `switcher` по ширине листа; в узком одна. */
-.labBand{--switch-at:820px;--switch-gap:var(--air-block);align-items:center;background:var(--surface)}
-/* Шапка слов — не последний ребёнок листа, и отбивка `sectionHead`
-   легла бы вторым просветом поверх просвета колонок: снимается силой
-   места, а не порядком файлов. */
-.labBand .labText{margin-block-end:0}
-/* look-home:scene,counter,proof,showroom,poster:end */
-/* look-home:scene,counter,showroom,poster:start */
-.labDoc{max-inline-size:30rem}
-/* look-home:scene,counter,showroom,poster:end */
-
-/* СПРАВОЧНЫЕ РАЗДЕЛЫ — доставка и вопросы: заголовок своей колонкой слева,
-   строки справа через волосок (`sidebar`); в узкой коробке — столбиком, и
-   от заголовка до строк тот же воздух, что у любой шапки блока. Колонки у
-   двух разделов одни и те же, и они стоят друг под другом одной сеткой. */
+/* СПРАВОЧНЫЙ РАЗДЕЛ — вопросы: заголовок своей колонкой слева, строки
+   справа через волосок (`sidebar`); в узкой коробке — столбиком, и от
+   заголовка до строк тот же воздух, что у любой шапки блока. */
 .split{--side-w:22rem;--side-gap:var(--air-head)}
 .splitBody{--stack:var(--air-group)}
 .rows{border-block-start:var(--line-w) solid var(--rule)}
-/* Способ доставки — строка: имя и под ним вид, служба и срок тихой строкой;
-   цена справа, по середине строки. Всё — готовыми словами из вида
-   оформления (`deliveryView`): «Бесплатно», а не «0,00». */
-.rate{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:var(--gap-row);padding-block:var(--pad-inner);border-block-end:var(--line-w) solid var(--rule)}
-.rateName{font-weight:600}
-.rateMeta{grid-column:1;font-size:var(--note-size);line-height:var(--note-lead);font-weight:var(--note-weight);letter-spacing:var(--note-track);color:var(--ink-soft)}
-.ratePrice{grid-column:2;grid-row:1 / span 2;align-self:center;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
-/* Заметки об оплате — слова владельца: имя полужирным, пояснение тише.
-   Воздух над ними ставит колонка (`stack`); свои поля списка браузера
-   снимаются все, кроме верхнего, — иначе `margin:0` тем же весом отменял
-   просвет колонки, и заметка липла к последней строке способа. */
-.notes{display:grid;gap:var(--air-row);margin-inline:0;margin-block-end:0}
-.notes:first-child{margin-block-start:0}
-.notes dt{font-weight:600}
-.notes dd{margin:0;color:var(--ink-soft)}
 /* Вопрос — строка во всю колонку, цель нажатия — вся строка (у `summary`
    рост цели уже в styles/base.css). Знак раскрытия поворачивается ролью
    раскрытия. Ответ — в мере строки тела. */
@@ -198,13 +173,11 @@
 /* look-home:counter:end */
 
 /* look-home:proof:start */
-/* ПРОТОКОЛ СРАЗУ — обещание столбиком и кнопка к товару; лист протокола
-   следующим, воздухом группы. В листе колонка протокола вдвое шире
-   колонки слов (`bias`), слова — по верху, а не по середине: крупный номер
-   партии тянет высоту, и слова на середине повисали бы. */
+/* ПРОТОКОЛ СРАЗУ — обещание столбиком и кнопка к товару. Листа протокола
+   на главной больше нет (слово заказчика 28.09.2026): протокол — на карте
+   товара. */
 .claim{--stack:var(--air-group)}
 .claimLede{font-size:var(--intro-size);line-height:var(--intro-lead);font-weight:var(--intro-weight);letter-spacing:var(--intro-track);color:var(--ink-soft);max-inline-size:var(--measure-lede)}
-.certificate{--switch-bias:2;align-items:flex-start}
 /* look-home:proof:end */
 
 /* look-home:journal:start */
@@ -256,11 +229,6 @@
 /* Пауза — снимок героя без слов во всю коробку страницы (Hero.tsx,
    `Still`): кадр `frame` с потолком от малого окна, угол листа. */
 .still{--frame:16 / 9;inline-size:100%;border-radius:var(--r-sheet)}
-/* Этикетка — узкий лист по середине: слова над протоколом одной колонкой.
-   Шапка слов встаёт по середине силой места: у `sectionHead` своё
-   выравнивание по краю. */
-.label{--stack:var(--air-block);max-inline-size:var(--measure);margin-inline:auto;text-align:center}
-.label > :first-child{align-items:center;margin-block-end:0}
 /* look-home:cabinet:end */
 
 /* look-home:showroom:start */

@@ -1,11 +1,10 @@
 'use client'
 import { useSyncExternalStore } from 'react'
 import p from '@/styles/primitives.module.css'
-import go from '@/styles/go.module.css'
 import sl from '@/styles/slides.module.css'
 import s from './Gallery.module.css'
 import type { GalleryView } from '@/lib/product-view.ts'
-import { Icon } from './Icon.tsx'
+import { Arrows } from './Arrows.tsx'
 import { Dots } from './Dots.tsx'
 import { useSlides } from './useSlides.ts'
 import { shot } from '@/lib/shot.ts'
@@ -44,16 +43,7 @@ export function Gallery({ view }: { view: GalleryView }) {
           ))}
         </div>
         {view.badge ? <span className={`${p.cut} ${s.badge}`}>{view.badge}</span> : null}
-        {many && live ? (
-          <>
-            <button type="button" className={`${go.go} ${s.arrow}`} data-around="edge" data-to="back" aria-label={view.prev} onClick={() => show(current - 1)}>
-              <Icon id="chevron-left" />
-            </button>
-            <button type="button" className={`${go.go} ${s.arrow}`} data-around="edge" aria-label={view.next} onClick={() => show(current + 1)}>
-              <Icon id="chevron-right" />
-            </button>
-          </>
-        ) : null}
+        {many && live ? <Arrows back={view.prev} next={view.next} onBack={() => show(current - 1)} onNext={() => show(current + 1)} className={s.arrow} /> : null}
       </div>
       {many ? (
         <>

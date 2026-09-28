@@ -140,14 +140,15 @@ export function sampleSource(pageSize = PAGE): Source {
           const r = LAB_REPORTS[b]
           return { batch: b, lab: r.lab, date: r.date, cbdPercent: r.cbdPercent, thcPercent: r.thcPercent, url: `#lab-${b}` }
         }),
-        strength: p.strength,
+        strength: p.strength, line: p.line ?? [],
       }
       return ok(product)
     },
     async related(lang, id, limit) {
       const p = PRODUCTS.find((x) => x.id === id)
       if (!p) return { ok: false, reason: 'not-found' }
-      return ok(PRODUCTS.filter((x) => x.cat === p.cat && x.id !== id).slice(0, limit).map((x) => card(x, lang)))
+      /* Соседи по линейке — не «похожие»: к ним ведёт выбор на карте. */
+      return ok(PRODUCTS.filter((x) => x.cat === p.cat && x.id !== id && !(p.line ?? []).some((m) => m.id === x.id)).slice(0, limit).map((x) => card(x, lang)))
     },
     async productIds() {
       return ok(PRODUCTS.map((p) => p.id))

@@ -5,6 +5,8 @@ import type { ShelfCard } from '@/lib/view.ts'
 import type { Outcome } from '@/lib/cart-ops.ts'
 import { ProductCard } from './ProductCard.tsx'
 import { Icon } from './Icon.tsx'
+import { RailArrows } from './RailArrows.tsx'
+import { t } from '@/lib/i18n/index.ts'
 
 type Cart = { submit: (form: FormData) => Promise<void>; call: (form: FormData) => Promise<Outcome> }
 
@@ -26,9 +28,14 @@ export function Shelf({ title, id, all, cards, cart, eager = 0, className = '', 
     <section className={`${p.section} ${className}`} aria-labelledby={id} data-air={air}>
       <div className={p.sectionHead} data-row>
         <h2 id={id}>{title}</h2>
-        {all ? <a className={go.go} href={all.href}>{all.label}<Icon id="arrow-right" /></a> : null}
+        {/* Выход ко всей полке и стрелки листания — одной группой у правого
+            края (И502). */}
+        <div className={p.cluster}>
+          {all ? <a className={go.go} href={all.href}>{all.label}<Icon id="arrow-right" /></a> : null}
+          <RailArrows rail={`${id}-rail`} back={t(cards[0].lang, 'shelf.prev')} next={t(cards[0].lang, 'shelf.next')} />
+        </div>
       </div>
-      <ul className={p.rail} data-rail="goods">{cards.map((c, i) => <li key={c.id}><ProductCard card={c} eager={i < eager} cart={cart} /></li>)}</ul>
+      <ul id={`${id}-rail`} className={p.rail} data-rail="goods">{cards.map((c, i) => <li key={c.id}><ProductCard card={c} eager={i < eager} cart={cart} /></li>)}</ul>
     </section>
   )
 }

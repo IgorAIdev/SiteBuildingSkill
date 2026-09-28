@@ -120,7 +120,7 @@ const CODE = /^(x-default|[a-z]{2,3}(-[A-Za-z]{4})?(-[A-Z]{2})?)$/
 
 const found = {
   lang: [], title: [], description: [], canonical: [], hreflang: [], viewport: [], og: [],
-  ld: [], alt: [], sample: [], robots: [], market: [], faqPage: [],
+  ld: [], alt: [], sample: [], robots: [], market: [], faqPage: [], h1: [],
 }
 
 /* ── сито для семьи `market` ───────────────────────────────────────────────
@@ -190,6 +190,11 @@ for (const [url, html] of [...pages].sort()) {
     sheets: links.filter((l) => /\bstylesheet\b/i.test(l.rel ?? '') && /^\/(?!\/)/.test(l.href ?? '')).map((l) => decode(l.href)),
     inline: [...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)].map((m) => m[1]).join('\n'),
     imgs: tags(html, 'img'),
+    /* Главный заголовок — то, что поиск и нейросеть берут именем страницы
+       вместе с <title> (И504): один на страницу, не пустой и свой у каждой
+       страницы языка. У соседей по линейке товара имя одно — без меры в h1
+       шесть страниц звались бы одинаково. */
+    h1s: [...html.matchAll(/<h1\b[^>]*>([\s\S]*?)<\/h1>/gi)].map((m) => decode(m[1].replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim()),
     /* Сколько вопросов НАРИСОВАНО. Сравнивается с числом вопросов в
        разметке: расхождение значит, что кто-то вернул `.slice()` в компонент
        и страница обещает поиску ответы, которых на ней нет.
@@ -221,7 +226,7 @@ const viewportKeys = (content) => Object.fromEntries(String(content).split(/[,;]
   .map((part) => part.split('=').map((s) => s.trim().toLowerCase())).filter(([k]) => k))
 
 /* ── второй проход: проверки ───────────────────────────────────────────── */
-const dupTitle = new Map(), dupDesc = new Map()
+const dupTitle = new Map(), dupDesc = new Map(), dupH1 = new Map()
 for (const [url, p] of info) {
   const lang = langOf(url)
 
@@ -244,7 +249,9 @@ for (const [url, p] of info) {
   /* Повторы считаются среди страниц ДЛЯ ПОИСКА одного языка: два одинаковых
      заголовка на bg и en — это перевод, а не двойник. */
   if (!p.noindex) {
-    for (const [map, key, fam] of [[dupTitle, p.title, 'title'], [dupDesc, p.description, 'description']]) {
+    if (p.h1s.length !== 1) found.h1.push(`${url} — h1 на странице: ${p.h1s.length}, нужен ровно один`)
+    else if (!p.h1s[0]) found.h1.push(`${url} — h1 пустой`)
+    for (const [map, key, fam] of [[dupTitle, p.title, 'title'], [dupDesc, p.description, 'description'], [dupH1, p.h1s.length === 1 ? p.h1s[0] : '', 'h1']]) {
       if (!key) continue
       const k = `${lang}\n${key}`
       if (map.has(k)) found[fam].push(`${url} — ${fam} тот же, что у ${map.get(k)}: «${key.slice(0, 60)}»`)
@@ -372,6 +379,7 @@ const NAMES = {
   sample: 'заглушка в том, что читает машина: title, description, og, JSON-LD',
   robots: 'robots.txt / sitemap.xml не собраны или не связаны',
   faqPage: 'FAQPage: их больше одной или обещано ответов больше, чем нарисовано',
+  h1: 'h1: не один на странице, пустой или повторяет h1 другой страницы того же языка',
   market: `страница языка рынка (${DEFAULT_LANG}) отдаёт машине английский источник — перевод не сработал`,
 }
 

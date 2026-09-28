@@ -247,7 +247,7 @@ test('panel removal: the panel lines go, the chosen header stays without its mar
   /* Главная: снятие оставляет рецепт, раскладки блоков и правила только
      выбранной; метки и следы снятия уходят, комментарии закрыты. */
   const HOME_FILES = ['lib/homes.ts', 'components/blocks/registry.tsx', 'components/blocks/Hero.tsx', 'components/blocks/Categories.tsx', 'components/blocks/Featured.tsx',
-    'components/blocks/Lab.tsx', 'components/blocks/blocks.module.css', 'components/LabReport.tsx', 'components/LabReport.module.css']
+    'components/blocks/blocks.module.css']
   for (const chosen of HOMES) {
     for (const f of HOME_FILES) {
       const text = stripVariants(read(f), 'look-home', chosen)

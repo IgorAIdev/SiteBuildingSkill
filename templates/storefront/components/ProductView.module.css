@@ -46,7 +46,12 @@
   container-type:inline-size;container-name:pdp;
   align-items:start
 }
-.pin{--switch-bias:999}
+/* Галерея прилипает к верхней кромке окна (слово заказчика 28.09.2026 со
+   снимком: «изображение должно подниматься к верхней кромке экрана,
+   прилипать», как на cbdin.bg). Шапка витрины не прилипает — уезжает с
+   прокруткой, — и отступ примитива под прилипшую шапку (`--anchor-top`,
+   ≈ 110px) стоял над галереей пустотой. Отступ — зазор строки. */
+.pin{--switch-bias:999;--pin-top:var(--gap-row)}
 
 @container pdp (min-width:820px){
   .pin{
@@ -127,13 +132,26 @@
 .offer{--stack:var(--air-group)}
 .part{display:grid;gap:var(--air-row)}
 .identity{display:grid;gap:var(--sp-2)}
+/* Короткое описание под именем — роль тела, краской подписи, в мере строки. */
+.summary{margin:0;max-inline-size:var(--measure);color:var(--ink-soft)}
 /* Марка — первая строка заголовка (ProductView.tsx, И441): ростом и
    межстрочьем тела, краской подписи — имя остаётся главным, марка читается
    раньше него. */
-/* Марка — подпись над именем: сноской и чернилами (И497); марочная краска
-   здесь спорила с главной кнопкой. */
-.brand{display:block;font-size:var(--note-size);line-height:var(--note-lead);font-weight:600;letter-spacing:normal;color:var(--ink-soft)}
-.name{font-size:var(--pagehead-size);line-height:var(--pagehead-lead);font-weight:var(--pagehead-weight);letter-spacing:var(--pagehead-track);text-wrap:balance;overflow-wrap:anywhere}
+/* Марка — подпись над именем чернилами (И497); марочная краска здесь
+   спорила с главной кнопкой. Ростом вводного абзаца — ступенью над телом
+   (слово заказчика 28.09.2026: марка стояла ростом наличия и крошек —
+   служебной строкой, затем «на шаг больше» тела; марка — часть имени
+   товара, И502). */
+.brand{display:block;font-size:var(--intro-size);line-height:var(--intro-lead);font-weight:600;letter-spacing:normal;color:var(--ink-soft)}
+.name{font-size:var(--prodhead-size);line-height:var(--prodhead-lead);font-weight:var(--prodhead-weight);letter-spacing:var(--prodhead-track);text-wrap:balance;overflow-wrap:anywhere}
+/* Имя товара — на две ступени ниже заголовка страницы: своя роль
+   заголовка первого уровня `--prodhead-*` ростом ступени h3 (строитель
+   шкал, styles/scale.json), а не `--pagehead-*` (слово заказчика
+   28.09.2026: «название товара размер шрифта на 2 шага меньше»; И503). Лестница страницы сдвигается вместе с
+   ним: заголовки разделов и полки похожих — ступенью ниже имени (роль
+   ввода полужирным), иначе раздел звучал бы громче h1 (check:craft,
+   ladder). */
+.related h2{font-size:var(--intro-size);line-height:var(--intro-lead);font-weight:600;letter-spacing:var(--intro-track)}
 /* Цена у имени (Baymard) — Price.tsx ростом `lead` (И476); наличие — в той
    же строке, по базовой линии. */
 .stock{font-size:var(--note-size);line-height:var(--note-lead);font-weight:600;color:var(--ink-soft)}

@@ -38,12 +38,19 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
         <div className={`${p.stack} ${s.offer}`}>
           <div className={s.identity}>
             <h1 className={s.name}>{view.brand ? <span className={s.brand} translate="no">{view.brand} </span> : null}{view.name}</h1>
-            <Price now={view.price} was={view.was} size="lead">
-              {view.stock ? <span className={s.stock} data-level={view.stockLevel ?? undefined}>{view.stock}</span> : null}
-            </Price>
+            {/* Описание — между именем и выбором (слово заказчика 28.09.2026:
+                «описание на всех карточках, между названием и ценой»):
+                короткое «что это» из данных товара; полное — в разделах ниже. */}
+            {view.summary ? <p className={s.summary}>{view.summary}</p> : null}
           </div>
           <div className={s.part}>
             {view.groups.length ? <div className={s.choice}><VariantPicker groups={view.groups} error={view.choose} /></div> : null}
+            {/* Цена — у количества и кнопок заказа (слово заказчика
+                28.09.2026): читается вместе с тем, что её меняет (выбор
+                выше), и с тем, что по ней покупает (кнопка ниже). */}
+            <Price now={view.price} was={view.was} size="lead">
+              {view.stock ? <span className={s.stock} data-level={view.stockLevel ?? undefined}>{view.stock}</span> : null}
+            </Price>
             <AddToCart lang={lang} buy={view.buy} hint={view.message} submit={submit} call={call} />
           </div>
           {view.facts ? <KeyFacts facts={view.facts} /> : null}
@@ -51,7 +58,7 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
         </div>
       </section>
       {view.related.length ? (
-        <Shelf title={view.relatedTitle} id="related-title" all={view.relatedAll} cards={view.related} cart={{ submit, call }} />
+        <Shelf title={view.relatedTitle} id="related-title" all={view.relatedAll} cards={view.related} cart={{ submit, call }} className={s.related} />
       ) : null}
     </>
   )
