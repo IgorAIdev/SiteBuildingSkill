@@ -34,32 +34,32 @@ export type Step = readonly [Slot, Air?]
 export const RECIPES: Record<HomeVariant, readonly Step[]> = {
   /* look-home:scene:start */
   /* Сцена со снимком, полки, ходовые, лист протокола, справка. */
-  scene: [['hero'], ['categories'], ['featured'], ['lab'], ['story'], ['delivery'], ['faq']],
+  scene: [['hero'], ['categories'], ['featured'], ['story'], ['faq']],
   /* look-home:scene:end */
   /* look-home:counter:start */
   /* Магазин сразу: обещание, полки и ходовые — одна группа первого экрана. */
-  counter: [['hero', 'head'], ['categories', 'head'], ['featured', 'head'], ['lab'], ['story'], ['delivery'], ['faq']],
+  counter: [['hero', 'head'], ['categories', 'head'], ['featured', 'head'], ['story'], ['faq']],
   /* look-home:counter:end */
   /* look-home:proof:start */
   /* Протокол сразу: обещание и лист протокола — пара первого экрана. */
-  proof: [['hero', 'head'], ['lab', 'head'], ['featured'], ['categories'], ['story'], ['delivery'], ['faq']],
+  proof: [['hero', 'head'], ['featured'], ['categories'], ['story'], ['faq']],
   /* look-home:proof:end */
   /* look-home:journal:start */
   /* Заголовок сразу, полки оглавлением, слово магазина за ходовыми. */
-  journal: [['hero', 'band'], ['categories'], ['featured'], ['story'], ['lab'], ['delivery'], ['faq']],
+  journal: [['hero', 'band'], ['categories'], ['featured'], ['story'], ['faq']],
   /* look-home:journal:end */
   /* look-home:cabinet:start */
   /* Тихая аптека: заголовок по середине, ящики полок, товар, пауза снимком. */
-  cabinet: [['hero', 'band'], ['categories', 'head'], ['featured'], ['still'], ['lab'], ['story'], ['delivery'], ['faq']],
+  cabinet: [['hero', 'band'], ['categories', 'head'], ['featured'], ['still'], ['story'], ['faq']],
   /* look-home:cabinet:end */
   /* look-home:showroom:start */
   /* Витрина салона: снимок со скруглением и заголовком на нём, кнопка в
      вырезе угла, товар карточкой на снимке; полки — одной крупной строкой. */
-  showroom: [['hero'], ['categories'], ['featured'], ['lab'], ['story'], ['delivery'], ['faq']],
+  showroom: [['hero'], ['categories'], ['featured'], ['story'], ['faq']],
   /* look-home:showroom:end */
   /* look-home:poster:start */
   /* Афиша: снимок во всю ширину с крупным словом, полки высокими снимками. */
-  poster: [['hero'], ['categories'], ['featured'], ['lab'], ['story'], ['delivery'], ['faq']],
+  poster: [['hero'], ['categories'], ['featured'], ['story'], ['faq']],
   /* look-home:poster:end */
 }
 

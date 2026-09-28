@@ -48,7 +48,7 @@ const slidesOf = ({ block, ctx }: Props) => {
     image: shot(x.image, 'wide', i !== 0),
   }))
 }
-const scene = (props: Props) => <HeroSlides slides={slidesOf(props)} label={t(props.ctx.lang, 'hero.label')} />
+const scene = (props: Props) => <HeroSlides slides={slidesOf(props)} label={t(props.ctx.lang, 'hero.label')} prev={t(props.ctx.lang, 'hero.prev')} next={t(props.ctx.lang, 'hero.next')} />
 /* look-home:scene:end */
 
 /* look-home:counter:start */

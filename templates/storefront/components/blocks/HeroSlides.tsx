@@ -5,6 +5,7 @@ import sl from '@/styles/slides.module.css'
 import s from './blocks.module.css'
 import type { ImageAttrs } from '@/lib/shot.ts'
 import { Dots } from '../Dots.tsx'
+import { Arrows } from '../Arrows.tsx'
 import { useSlides } from '../useSlides.ts'
 
 /** `show` — имя слайда вслух («Слайд 2 из 3»), оно же у его точки. */
@@ -14,14 +15,14 @@ export type HeroSlideView = { id: string; show: string; title: string; lede: str
    слайдер, тогда указатель слайдера должен быть». Лента и точки — общее
    устройство с галереей товара (useSlides, Dots); сам не листается
    (Material 3, NN/g: автоповорот уводит слайд из-под пальца и глаза), листает
-   палец, колесо и точка. Имя страницы (h1) — у первого слайда; у следующих
+   палец, колесо, точка и стрелка. Имя страницы (h1) — у первого слайда; у следующих
    заголовок тем же рисунком, но не вторым h1.
 
    Сцена целиком — первый экран (И492): высота слайда — `--hero-fit` (окно
    за вычетом прилипшей шапки и нижней полосы), снимок забирает остаток,
    текст и кнопка видны без прокрутки. Точки лежат у низа сцены. */
-export function HeroSlides({ slides, label }: { slides: HeroSlideView[]; label: string }) {
-  const { strip, current, pick, onScroll } = useSlides(slides.length)
+export function HeroSlides({ slides, label, prev, next }: { slides: HeroSlideView[]; label: string; prev: string; next: string }) {
+  const { strip, current, show, pick, onScroll } = useSlides(slides.length)
   const many = slides.length > 1
   return (
     <section className={`${p.wrap} ${p.flush} ${s.heroBand}`}>
@@ -41,6 +42,9 @@ export function HeroSlides({ slides, label }: { slides: HeroSlideView[]; label: 
           ))}
         </div>
         {many ? <Dots slides={slides} current={current} pick={pick} className={s.heroDots} /> : null}
+        {/* Стрелки — у низа сцены по бокам точек (И502): без них мышь не
+            знала, что сцена листается. */}
+        {many ? <div className={s.heroNav}><Arrows back={prev} next={next} onBack={() => show(current - 1)} onNext={() => show(current + 1)} atStart={current === 0} atEnd={current === slides.length - 1} /></div> : null}
       </div>
     </section>
   )

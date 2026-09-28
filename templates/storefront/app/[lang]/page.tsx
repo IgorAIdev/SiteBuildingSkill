@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { langOf } from '@/lib/route.ts'
 import { source, content, commerce } from '@/lib/source/index.ts'
 import { shelfCard } from '@/lib/view.ts'
-import { deliveryView } from '@/lib/checkout-view.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { toMetadata } from '@/lib/seo.ts'
 import { organizationLd, websiteLd } from '@/lib/ld.ts'
@@ -30,15 +29,14 @@ export default async function Home({ params }: Props) {
   const page = await content().page(lang, 'home')
   if (!page.ok) return <Unavailable lang={lang} />
   const ids = page.value.blocks.flatMap((b) => (b.type === 'featured' ? b.ids : []))
-  /* Способы доставки — тот же список, что выбор на оформлении (И95); и
-     страница условий доставки — та, что просит таблицу способов. Молчит
-     источник покупки — блок стоит без строк способов, а не падает. */
-  const [cols, cards, methods, docs, facts, look] = await Promise.all([
+  /* Способы доставки — тот же список, что выбор на оформлении (И95): из
+     него обещание «доставка от» героя. Молчит источник покупки — обещание
+     стоит без цены, а не падает. */
+  const [cols, cards, methods, facts, look] = await Promise.all([
     source().collections(lang), source().cards(lang, ids),
-    commerce().deliveryMethods(null, lang), content().docs(lang), content().facts(), lookNow(),
+    commerce().deliveryMethods(null, lang), content().facts(), lookNow(),
   ])
   if (!cols.ok || !cards.ok) return <Unavailable lang={lang} />
-  const terms = docs.ok ? docs.value.find((d) => d.table === 'delivery') : undefined
   /* Обещания покупки — из данных магазина, как у кнопки заказа (И332):
      доставка «от» из того же списка способов и срок возврата. Оплату при
      получении главная не обещает: её допустимость зависит от суммы корзины,
@@ -48,10 +46,6 @@ export default async function Home({ params }: Props) {
   const ctx: BlockCtx = {
     lang, home: look.home, collections: cols.value, pledges, cart: { submit: cartSubmit, call: cartCall }, cards: shelf,
     spotlight: ids.map((id) => shelf[id]).find(Boolean) ?? null,
-    delivery: {
-      methods: methods.ok ? deliveryView(lang, { methods: methods.value, delivery: null, pickup: null }).methods : [],
-      terms: terms ? hrefFor(lang, { doc: terms.slug }) : null,
-    },
   }
   return (
     /* Вариант главной — разметкой (lib/homes.ts): порядок и раскладка блоков

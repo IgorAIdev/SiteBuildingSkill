@@ -35,14 +35,18 @@ const FIRST = new RegExp(`^/(${LOCALES.join('|')})(?=/|$)`)
    какое место — говорит `drop`. */
 export const DROP_FROM = 3
 
-export function LangSwitch({ lang, label, drop = false }: { lang: Lang; label: string; drop?: boolean }) {
+/* Кнопка раскрытия в шапке — тихая, как значки поиска и корзины рядом
+   (`trigger` — их класс из шапки): слово заказчика 28.09.2026 «не должна
+   быть кнопка языка более кричащей, чем корзина». В рамке кнопки она
+   перекрикивала значки без рамки. */
+export function LangSwitch({ lang, label, drop = false, trigger = b.btn }: { lang: Lang; label: string; drop?: boolean; trigger?: string }) {
   const path = usePathname()
   const id = useId()
   if (drop && LOCALES.length >= DROP_FROM) {
     const list = `lang-${id.replace(/:/g, '')}`
     return (
       <div className={`${fs.facet} ${s.drop}`}>
-        <button className={`${b.btn} ${fs.trigger}`} type="button" popoverTarget={list} aria-label={`${label}: ${lang.toUpperCase()} ${LANG_NAMES[lang]}`}>
+        <button className={`${trigger} ${fs.trigger}`} type="button" popoverTarget={list} aria-label={`${label}: ${lang.toUpperCase()} ${LANG_NAMES[lang]}`}>
           {lang.toUpperCase()}<Turn />
         </button>
         <ul id={list} popover="auto" className={`${p.menu} ${fs.drop} ${fs.options}`} data-align="end" aria-label={label}>

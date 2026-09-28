@@ -73,8 +73,6 @@ export type Block =
    *  (слаг категории); нет — весь каталог. */
   | { type: 'featured'; title: string; ids: string[]; to?: string }
   /** `report` — образец протокола рядом с текстом: партия, лаборатория, замер. */
-  | { type: 'lab'; title: string; body: string; report: LabReport | null }
-  | { type: 'delivery'; title: string; items: { title: string; body: string }[] }
   | { type: 'faq'; title: string; items: { q: string; a: string }[] }
   /** Слово магазина — заголовок, несколько предложений своими словами и
    *  снимок с подписью. Место заказчика (docs/design/home.md, «Пустые

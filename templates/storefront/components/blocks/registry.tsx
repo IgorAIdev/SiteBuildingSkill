@@ -6,8 +6,6 @@ import { Hero } from './Hero.tsx'
 import { Still } from './Hero.tsx' // look-home:cabinet
 import { Categories } from './Categories.tsx'
 import { Featured } from './Featured.tsx'
-import { Lab } from './Lab.tsx'
-import { Delivery } from './Delivery.tsx'
 import { Faq } from './Faq.tsx'
 import { Story } from './Story.tsx'
 
@@ -20,8 +18,6 @@ export const RENDERERS = {
   hero: Hero,
   categories: Categories,
   featured: Featured,
-  lab: Lab,
-  delivery: Delivery,
   faq: Faq,
   story: Story,
 } satisfies Renderers

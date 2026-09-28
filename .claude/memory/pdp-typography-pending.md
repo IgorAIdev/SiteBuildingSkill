@@ -15,7 +15,7 @@ Done: structure (И440–И442); impeccable critique 27.09.2026 (26/40, detector
 Deferred by the owner on 27.09.2026 («давай пока отложим, но запомни»), in this order:
 1. PDP detail sections always expanded — «Descriere» set at h2 (35px wide) repeats the tab row above it → make them disclosures.
 2. Sticky buy bar on phone («в корзину» pinned at the bottom).
-3. Tab row of the PDP clips on narrow phones.
+3. ~~Tab row of the PDP clips on narrow phones.~~ Removed 28.09.2026 by the owner's word (И502).
 4. Control label weight (maybe lighter).
 Owner's content (not mine, in docs/open.md): Hungarian hero title 4 lines at 320 («laborjegyzőkönyvvel»); sample lab-report link is `#`.
 
