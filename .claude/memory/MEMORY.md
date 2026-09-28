@@ -15,3 +15,4 @@
 - [Shared working tree](shared-working-tree.md) — several sessions write in one tree/branch; git add own paths only, message before committing; never switch its branch — own worktree
 - [PDP pending](pdp-typography-pending.md) — product page: 4 items deferred by owner 27.09.2026 (disclosures, sticky buy bar, tab row, label weight); start there
 - [No screenshots, batched PRs](no-screenshots-batch-prs.md) — save tokens: accept edits, do them in one pass, one PR; merge on the owner's word; no screenshots, no PR subscription
+- [Measure before styling](measure-before-styling.md) — type/spacing only from kit research + owner's built storefronts + 3 live shops (И507); think phone-first unprompted

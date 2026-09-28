@@ -62,3 +62,11 @@
 .go:disabled,.go[aria-disabled='true']{opacity:var(--state-off);cursor:not-allowed}
 
 @media (prefers-reduced-motion:reduce){ .go svg{transition:none} }
+
+/* Пара стрелок листания — одной обёрткой (И133, И506): под пальцем её нет
+   ни у полки, ни у героя, ни у галереи — ленту листают свайпом. Условие —
+   указатель, не ширина окна; прячется обёртка, а не каждая стрелка, и
+   спорить с `display` самой `.go` нечему. Обёртка без места (`data-place`)
+   раскладку не меняет; с местом — это блок того, кто её поставил. */
+.pair:not([data-place]){display:contents}
+@media (hover:none) and (pointer:coarse){ .pair[data-hand='mouse']{display:none} }
