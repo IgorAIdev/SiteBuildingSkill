@@ -26,7 +26,7 @@ export function HeroSlides({ slides, label, prev, next }: { slides: HeroSlideVie
   const many = slides.length > 1
   return (
     <section className={`${p.wrap} ${p.flush} ${s.heroBand}`}>
-      <div className={s.hero} data-ground="deck" data-many={many ? '' : undefined} role="region" aria-roledescription={many ? 'carousel' : undefined} aria-label={many ? label : undefined}>
+      <div className={s.hero} data-hero="" data-ground="deck" data-many={many ? '' : undefined} role="region" aria-roledescription={many ? 'carousel' : undefined} aria-label={many ? label : undefined}>
         <div ref={strip} className={sl.strip} onScroll={onScroll}>
           {slides.map((x, i) => (
             <div key={x.id} id={x.id} className={`${sl.slide} ${s.heroSlide}`} role={many ? 'group' : undefined} aria-roledescription={many ? 'slide' : undefined} aria-label={many ? x.show : undefined}>

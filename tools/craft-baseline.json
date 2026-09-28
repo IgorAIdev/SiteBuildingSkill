@@ -40,5 +40,8 @@
   "sheetSize": 0,
   "autofill": 0,
   "fieldZoom": 0,
-  "h1Lines": 0
+  "h1Lines": 0,
+  "cardFold": 0,
+  "heroFold": 0,
+  "wasPrice": 0
 }
