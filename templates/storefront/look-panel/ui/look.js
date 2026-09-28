@@ -332,7 +332,10 @@
     function group(field, label, extra) {
       var id = 'lp-why-' + field
       var line = el('p', { class: 'lp-why', id: id })
-      var chips = catalog.groups[field].map(function (o) {
+      /* Ритм — лестницей от плотного к воздушному (`rung` каталога). */
+      var list = catalog.groups[field].slice()
+      if (list.every(function (o) { return typeof o.rung === 'number' })) list.sort(function (a, b) { return a.rung - b.rung })
+      var chips = list.map(function (o) {
         var attrs = { type: 'button', class: 'lp-chip', 'data-id': o.id, title: o.line || null }
         if (field === 'face') attrs.style = 'font-family:' + o.stack /* образец — своим шрифтом; у пары — шрифтом заголовков */
         var mini = sample(field, o)

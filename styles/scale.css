@@ -1,6 +1,6 @@
 /* Собран tools/scale-css.mjs из styles/scale.json. Руками не правят:
    первый же выпуск сотрёт правку. Числа владельца — в scale.json, здесь
-   они СЧИТАНЫ по одной формуле (шкал: 4).
+   они СЧИТАНЫ по одной формуле (шкал: 7).
 
    Рампа каждой ступени проходит через две названные ширины: на узкой
    даёт свой низ, на широкой — свой верх. Концы — швы раскладки. */
@@ -42,11 +42,12 @@
   --air-group: clamp(24px, 11.08px + 2.31vw, 36px); /* между группами внутри части — ступени 5 → 6 */
   --air-row: var(--sp-4);                          /* между строками одной группы */
   --air-set: var(--sp-3);                          /* между наборами внутри одной строки: группы опций выбора */
+  --air-line: var(--sp-3);                         /* между строками одной мысли: имя товара → описание (И509) */
   --gap-targets: 8px;                              /* между соседними целями в ряду */
   --gap-row: clamp(12px, 9.85px + .38vw, 14px);    /* между вещами в ряду: фишки, пилюли, крошки */
   --gap-grid: clamp(16px, 11.69px + .77vw, 20px);  /* между карточками в сетке и в ленте */
   --wrap: 1440px;                                  /* холст: ширина коробки страницы */
-  --gut: clamp(12px, -5.23px + 3.08vw, 28px);      /* край страницы: от окна до предмета — ступени 3 → 5 */
+  --gut: clamp(16px, 3.08px + 2.31vw, 28px);       /* край страницы: от окна до предмета — ступени 4 → 5 */
   --ctrl-fs-xs: .875rem;                           /* надпись органа — не течёт */
   --ctrl-fs-sm: 1rem;                              /* надпись органа — не течёт */
   --ctrl-fs-base: 1.125rem;                        /* надпись органа — не течёт */
@@ -75,9 +76,13 @@
   --pagehead-weight: 700;
   --pagehead-track: -.03em;
   --prodhead-size: var(--fs-h3);
-  --prodhead-lead: 1.15;
-  --prodhead-weight: 700;
+  --prodhead-lead: 1.2;
+  --prodhead-weight: 600;
   --prodhead-track: -.025em;
+  --byline-size: var(--fs-sm);
+  --byline-lead: 1.4;
+  --byline-weight: 600;
+  --byline-track: 0;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
   --h2-weight: 600;
@@ -149,11 +154,12 @@
   --air-group: clamp(24px, 11.08px + 2.31vw, 36px); /* между группами внутри части — ступени 5 → 6 */
   --air-row: var(--sp-4);                          /* между строками одной группы */
   --air-set: var(--sp-3);                          /* между наборами внутри одной строки: группы опций выбора */
+  --air-line: var(--sp-3);                         /* между строками одной мысли: имя товара → описание (И509) */
   --gap-targets: 8px;                              /* между соседними целями в ряду */
   --gap-row: clamp(12px, 9.85px + .38vw, 14px);    /* между вещами в ряду: фишки, пилюли, крошки */
   --gap-grid: clamp(16px, 11.69px + .77vw, 20px);  /* между карточками в сетке и в ленте */
   --wrap: 1440px;                                  /* холст: ширина коробки страницы */
-  --gut: clamp(12px, -5.23px + 3.08vw, 28px);      /* край страницы: от окна до предмета — ступени 3 → 5 */
+  --gut: clamp(16px, 3.08px + 2.31vw, 28px);       /* край страницы: от окна до предмета — ступени 4 → 5 */
   --ctrl-fs-xs: .875rem;                           /* надпись органа — не течёт */
   --ctrl-fs-sm: 1rem;                              /* надпись органа — не течёт */
   --ctrl-fs-base: 1.125rem;                        /* надпись органа — не течёт */
@@ -182,9 +188,13 @@
   --pagehead-weight: 700;
   --pagehead-track: -.03em;
   --prodhead-size: var(--fs-h3);
-  --prodhead-lead: 1.15;
-  --prodhead-weight: 700;
+  --prodhead-lead: 1.2;
+  --prodhead-weight: 600;
   --prodhead-track: -.025em;
+  --byline-size: var(--fs-sm);
+  --byline-lead: 1.4;
+  --byline-weight: 600;
+  --byline-track: 0;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
   --h2-weight: 600;
@@ -256,6 +266,7 @@
   --air-group: clamp(24px, 11.08px + 2.31vw, 36px); /* между группами внутри части — ступени 5 → 6 */
   --air-row: var(--sp-4);                          /* между строками одной группы */
   --air-set: var(--sp-3);                          /* между наборами внутри одной строки: группы опций выбора */
+  --air-line: var(--sp-3);                         /* между строками одной мысли: имя товара → описание (И509) */
   --gap-targets: 8px;                              /* между соседними целями в ряду */
   --gap-row: 12px;                                 /* между вещами в ряду: фишки, пилюли, крошки */
   --gap-grid: 16px;                                /* между карточками в сетке и в ленте */
@@ -289,9 +300,13 @@
   --pagehead-weight: 700;
   --pagehead-track: -.03em;
   --prodhead-size: var(--fs-h3);
-  --prodhead-lead: 1.15;
-  --prodhead-weight: 700;
+  --prodhead-lead: 1.2;
+  --prodhead-weight: 600;
   --prodhead-track: -.025em;
+  --byline-size: var(--fs-sm);
+  --byline-lead: 1.4;
+  --byline-weight: 600;
+  --byline-track: 0;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
   --h2-weight: 600;
@@ -363,6 +378,7 @@
   --air-group: clamp(24px, 6.77px + 3.08vw, 40px); /* между группами внутри части — ступени 5 → 6 */
   --air-row: var(--sp-4);                          /* между строками одной группы */
   --air-set: var(--sp-3);                          /* между наборами внутри одной строки: группы опций выбора */
+  --air-line: var(--sp-3);                         /* между строками одной мысли: имя товара → описание (И509) */
   --gap-targets: 8px;                              /* между соседними целями в ряду */
   --gap-row: clamp(12px, 7.69px + .77vw, 16px);    /* между вещами в ряду: фишки, пилюли, крошки */
   --gap-grid: clamp(16px, 11.69px + .77vw, 20px);  /* между карточками в сетке и в ленте */
@@ -396,9 +412,13 @@
   --pagehead-weight: 700;
   --pagehead-track: -.03em;
   --prodhead-size: var(--fs-h3);
-  --prodhead-lead: 1.15;
-  --prodhead-weight: 700;
+  --prodhead-lead: 1.2;
+  --prodhead-weight: 600;
   --prodhead-track: -.025em;
+  --byline-size: var(--fs-sm);
+  --byline-lead: 1.4;
+  --byline-weight: 600;
+  --byline-track: 0;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
   --h2-weight: 600;
@@ -470,11 +490,12 @@
   --air-group: clamp(24px, 11.08px + 2.31vw, 36px); /* между группами внутри части — ступени 5 → 6 */
   --air-row: var(--sp-4);                          /* между строками одной группы */
   --air-set: var(--sp-3);                          /* между наборами внутри одной строки: группы опций выбора */
+  --air-line: var(--sp-3);                         /* между строками одной мысли: имя товара → описание (И509) */
   --gap-targets: 8px;                              /* между соседними целями в ряду */
   --gap-row: clamp(12px, 9.85px + .38vw, 14px);    /* между вещами в ряду: фишки, пилюли, крошки */
   --gap-grid: clamp(16px, 11.69px + .77vw, 20px);  /* между карточками в сетке и в ленте */
   --wrap: 1440px;                                  /* холст: ширина коробки страницы */
-  --gut: clamp(12px, -5.23px + 3.08vw, 28px);      /* край страницы: от окна до предмета — ступени 3 → 5 */
+  --gut: clamp(16px, 3.08px + 2.31vw, 28px);       /* край страницы: от окна до предмета — ступени 4 → 5 */
   --ctrl-fs-xs: .875rem;                           /* надпись органа — не течёт */
   --ctrl-fs-sm: 1rem;                              /* надпись органа — не течёт */
   --ctrl-fs-base: 1.125rem;                        /* надпись органа — не течёт */
@@ -503,9 +524,13 @@
   --pagehead-weight: 700;
   --pagehead-track: -.03em;
   --prodhead-size: var(--fs-h3);
-  --prodhead-lead: 1.15;
-  --prodhead-weight: 700;
+  --prodhead-lead: 1.2;
+  --prodhead-weight: 600;
   --prodhead-track: -.025em;
+  --byline-size: var(--fs-sm);
+  --byline-lead: 1.4;
+  --byline-weight: 600;
+  --byline-track: 0;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
   --h2-weight: 600;
@@ -539,3 +564,339 @@
 }
 
 @media (pointer:coarse){ [data-scale="Тихий"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px } }
+
+[data-scale="Плотный"]{
+  --fs-xs: clamp(.7813rem, .68rem + .29vw, .875rem); /* подпись, надзаголовок */
+  --fs-sm: clamp(.875rem, .7406rem + .38vw, 1rem); /* надпись органа, вторичный текст */
+  --fs-base: clamp(1rem, .8656rem + .38vw, 1.125rem); /* тело */
+  --fs-h3: clamp(1.4375rem, .8988rem + 1.54vw, 1.9375rem); /* подзаголовок */
+  --fs-h2: clamp(1.5938rem, .7863rem + 2.31vw, 2.3438rem); /* заголовок раздела */
+  --hero-max: 3.5rem;
+  --hero-base: .25rem;
+  --hero-slope: 8;
+  --hero-size: clamp(1.625rem, .25rem + 8cqi, 3.5rem); /* герой: мерит свою колонку */
+  --pagehead-size: clamp(2rem, .75rem + 5.5cqi, 3rem); /* заголовок: мерит свою колонку */
+  --intro-min: 1.125rem;
+  --intro-max: 1.3125rem;
+  --intro-base: .125rem;
+  --intro-slope: 3;
+  --intro-size: clamp(1.125rem, .125rem + 3cqi, 1.3125rem); /* ввод: мерит свою колонку */
+  --sp-1: 4px;                                     /* оптика: под скруглением */
+  --sp-2: 8px;                                     /* внутри органа */
+  --sp-3: clamp(12px, 9.85px + .38vw, 14px);       /* между строк группы */
+  --sp-4: clamp(16px, 11.69px + .77vw, 20px);      /* поле карточки */
+  --sp-5: clamp(24px, 19.69px + .77vw, 28px);      /* поле крупной карточки */
+  --sp-6: clamp(32px, 27.69px + .77vw, 36px);      /* между частями блока */
+  --sp-7: clamp(40px, 35.69px + .77vw, 44px);      /* между частями блока, макет */
+  --sp-8: clamp(48px, 39.38px + 1.54vw, 56px);     /* между полками */
+  --sp-9: clamp(64px, 55.38px + 1.54vw, 72px);     /* между полками, макет */
+  --sp-10: clamp(80px, 71.38px + 1.54vw, 88px);    /* между разделами */
+  --sp-11: clamp(96px, 78.77px + 3.08vw, 112px);   /* между разделами, макет */
+  --pad-sheet: clamp(1rem, .7306rem + .77vw, 1.25rem); /* поле листа: пол, угол, содержимое внутри */
+  --pad-card: clamp(.75rem, .6156rem + .38vw, .875rem); /* поле карточки */
+  --pad-inner: .5rem;                              /* поле внутри карточки — концентрическое */
+  --air-page: clamp(40px, 22.77px + 3.08vw, 56px); /* между разделами страницы — ступени 7 → 8 */
+  --air-band: clamp(32px, 19.08px + 2.31vw, 44px); /* между полками внутри раздела — ступени 6 → 7 */
+  --air-block: clamp(24px, 11.08px + 2.31vw, 36px); /* между частями одного блока — ступени 5 → 6 */
+  --air-head: clamp(24px, 11.08px + 2.31vw, 36px); /* от шапки блока до его содержимого — ступени 5 → 6 */
+  --air-group: clamp(16px, 3.08px + 2.31vw, 28px); /* между группами внутри части — ступени 4 → 5 */
+  --air-row: var(--sp-3);                          /* между строками одной группы */
+  --air-set: var(--sp-2);                          /* между наборами внутри одной строки: группы опций выбора */
+  --air-line: var(--sp-2);                         /* между строками одной мысли: имя товара → описание (И509) */
+  --gap-targets: 8px;                              /* между соседними целями в ряду */
+  --gap-row: clamp(12px, 9.85px + .38vw, 14px);    /* между вещами в ряду: фишки, пилюли, крошки */
+  --gap-grid: clamp(12px, 9.85px + .38vw, 14px);   /* между карточками в сетке и в ленте */
+  --wrap: 1440px;                                  /* холст: ширина коробки страницы */
+  --gut: clamp(12px, 3.38px + 1.54vw, 20px);       /* край страницы: от окна до предмета — ступени 3 → 4 */
+  --ctrl-fs-xs: .875rem;                           /* надпись органа — не течёт */
+  --ctrl-fs-sm: 1rem;                              /* надпись органа — не течёт */
+  --ctrl-fs-base: 1.125rem;                        /* надпись органа — не течёт */
+  --ctrl-fs-h3: 1.9375rem;                         /* надпись органа — не течёт */
+  --ctrl-fs-h2: 2.3438rem;                         /* надпись органа — не течёт */
+  --ctrl-h-sm: 32px;                               /* орган малый: фишка, сегмент */
+  --ctrl-h: 40px;                                  /* орган средний: кнопка, поле, лоток — текущий размер */
+  --ctrl-h-lg: 48px;                               /* орган крупный: кнопка покупки, счётчик, строка меню */
+  --ctrl-target: 24px;                             /* цель у знака мельче органа (WCAG 2.5.8) */
+  --ctrl-fs: var(--ctrl-fs-sm);                    /* надпись текущего размера */
+  --r-xs: 8px;                                     /* радиус: xs */
+  --r-ctrl: 8px;                                   /* радиус: ctrl */
+  --r-card: 24px;                                  /* радиус: card */
+  --r-sheet: 28px;                                 /* радиус: sheet */
+  --r-pop: 999px;                                  /* главное действие — единственный полный круг */
+  --line-w: 1px;                                   /* линия: поле, разделитель, тег — не течёт */
+  --ring-w: 2px;                                   /* кольцо фокуса (WCAG 2.4.13) */
+  --ring-off: 3px;                                 /* отступ кольца от органа */
+  --frost-blur: 20px;                              /* стекло: размытие того, что под органом — не течёт */
+  --frost-sat: 1.8;                                /* стекло: насыщенность размытого */
+
+  --hero-lead: 1.1;
+  --hero-weight: 700;
+  --hero-track: -.04em;
+  --pagehead-lead: 1.1;
+  --pagehead-weight: 700;
+  --pagehead-track: -.03em;
+  --prodhead-size: var(--fs-h3);
+  --prodhead-lead: 1.2;
+  --prodhead-weight: 600;
+  --prodhead-track: -.025em;
+  --byline-size: var(--fs-sm);
+  --byline-lead: 1.4;
+  --byline-weight: 600;
+  --byline-track: 0;
+  --h2-size: var(--fs-h2);
+  --h2-lead: 1.15;
+  --h2-weight: 600;
+  --h2-track: -.025em;
+  --h3-size: var(--fs-h3);
+  --h3-lead: 1.2;
+  --h3-weight: 600;
+  --h3-track: -.02em;
+  --intro-lead: 1.4;
+  --intro-weight: 400;
+  --intro-track: 0;
+  --lede-size: var(--fs-base);
+  --lede-lead: 1.5;
+  --lede-weight: 400;
+  --lede-track: 0;
+  --lede-measure: var(--measure-lede);
+  --body-size: var(--fs-base);
+  --body-lead: 1.45;
+  --body-weight: 400;
+  --body-track: 0;
+  --body-measure: var(--measure);
+  --note-size: var(--fs-xs);
+  --note-lead: 1.45;
+  --note-weight: 400;
+  --note-track: 0;
+  --note-measure: var(--measure-note);
+  --eyebrow-size: var(--fs-xs);
+  --eyebrow-lead: 1.35;
+  --eyebrow-weight: 600;
+  --eyebrow-track: .01em;
+}
+
+@media (pointer:coarse){ [data-scale="Плотный"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px } }
+
+[data-scale="Воздушный"]{
+  --fs-xs: clamp(.7813rem, .68rem + .29vw, .875rem); /* подпись, надзаголовок */
+  --fs-sm: clamp(.875rem, .7406rem + .38vw, 1rem); /* надпись органа, вторичный текст */
+  --fs-base: clamp(1rem, .8656rem + .38vw, 1.125rem); /* тело */
+  --fs-h3: clamp(1.4375rem, .8988rem + 1.54vw, 1.9375rem); /* подзаголовок */
+  --fs-h2: clamp(1.5938rem, .7863rem + 2.31vw, 2.3438rem); /* заголовок раздела */
+  --hero-max: 3.5rem;
+  --hero-base: .25rem;
+  --hero-slope: 8;
+  --hero-size: clamp(1.625rem, .25rem + 8cqi, 3.5rem); /* герой: мерит свою колонку */
+  --pagehead-size: clamp(2rem, .75rem + 5.5cqi, 3rem); /* заголовок: мерит свою колонку */
+  --intro-min: 1.125rem;
+  --intro-max: 1.3125rem;
+  --intro-base: .125rem;
+  --intro-slope: 3;
+  --intro-size: clamp(1.125rem, .125rem + 3cqi, 1.3125rem); /* ввод: мерит свою колонку */
+  --sp-1: 4px;                                     /* оптика: под скруглением */
+  --sp-2: 8px;                                     /* внутри органа */
+  --sp-3: clamp(12px, 9.85px + .38vw, 14px);       /* между строк группы */
+  --sp-4: clamp(16px, 11.69px + .77vw, 20px);      /* поле карточки */
+  --sp-5: clamp(24px, 19.69px + .77vw, 28px);      /* поле крупной карточки */
+  --sp-6: clamp(32px, 27.69px + .77vw, 36px);      /* между частями блока */
+  --sp-7: clamp(40px, 35.69px + .77vw, 44px);      /* между частями блока, макет */
+  --sp-8: clamp(48px, 39.38px + 1.54vw, 56px);     /* между полками */
+  --sp-9: clamp(64px, 55.38px + 1.54vw, 72px);     /* между полками, макет */
+  --sp-10: clamp(80px, 71.38px + 1.54vw, 88px);    /* между разделами */
+  --sp-11: clamp(96px, 78.77px + 3.08vw, 112px);   /* между разделами, макет */
+  --pad-sheet: clamp(1.5rem, 1.2306rem + .77vw, 1.75rem); /* поле листа: пол, угол, содержимое внутри */
+  --pad-card: clamp(1rem, .7306rem + .77vw, 1.25rem); /* поле карточки */
+  --pad-inner: clamp(.75rem, .6156rem + .38vw, .875rem); /* поле внутри карточки — концентрическое */
+  --air-page: clamp(64px, 38.15px + 4.62vw, 88px); /* между разделами страницы — ступени 9 → 10 */
+  --air-band: clamp(48px, 22.15px + 4.62vw, 72px); /* между полками внутри раздела — ступени 8 → 9 */
+  --air-block: clamp(40px, 22.77px + 3.08vw, 56px); /* между частями одного блока — ступени 7 → 8 */
+  --air-head: clamp(40px, 22.77px + 3.08vw, 56px); /* от шапки блока до его содержимого — ступени 7 → 8 */
+  --air-group: clamp(24px, 11.08px + 2.31vw, 36px); /* между группами внутри части — ступени 5 → 6 */
+  --air-row: var(--sp-4);                          /* между строками одной группы */
+  --air-set: var(--sp-3);                          /* между наборами внутри одной строки: группы опций выбора */
+  --air-line: var(--sp-3);                         /* между строками одной мысли: имя товара → описание (И509) */
+  --gap-targets: 8px;                              /* между соседними целями в ряду */
+  --gap-row: clamp(12px, 9.85px + .38vw, 14px);    /* между вещами в ряду: фишки, пилюли, крошки */
+  --gap-grid: clamp(16px, 11.69px + .77vw, 20px);  /* между карточками в сетке и в ленте */
+  --wrap: 1440px;                                  /* холст: ширина коробки страницы */
+  --gut: clamp(16px, 3.08px + 2.31vw, 28px);       /* край страницы: от окна до предмета — ступени 4 → 5 */
+  --ctrl-fs-xs: .875rem;                           /* надпись органа — не течёт */
+  --ctrl-fs-sm: 1rem;                              /* надпись органа — не течёт */
+  --ctrl-fs-base: 1.125rem;                        /* надпись органа — не течёт */
+  --ctrl-fs-h3: 1.9375rem;                         /* надпись органа — не течёт */
+  --ctrl-fs-h2: 2.3438rem;                         /* надпись органа — не течёт */
+  --ctrl-h-sm: 32px;                               /* орган малый: фишка, сегмент */
+  --ctrl-h: 40px;                                  /* орган средний: кнопка, поле, лоток — текущий размер */
+  --ctrl-h-lg: 48px;                               /* орган крупный: кнопка покупки, счётчик, строка меню */
+  --ctrl-target: 24px;                             /* цель у знака мельче органа (WCAG 2.5.8) */
+  --ctrl-fs: var(--ctrl-fs-sm);                    /* надпись текущего размера */
+  --r-xs: 8px;                                     /* радиус: xs */
+  --r-ctrl: 8px;                                   /* радиус: ctrl */
+  --r-card: 24px;                                  /* радиус: card */
+  --r-sheet: 28px;                                 /* радиус: sheet */
+  --r-pop: 999px;                                  /* главное действие — единственный полный круг */
+  --line-w: 1px;                                   /* линия: поле, разделитель, тег — не течёт */
+  --ring-w: 2px;                                   /* кольцо фокуса (WCAG 2.4.13) */
+  --ring-off: 3px;                                 /* отступ кольца от органа */
+  --frost-blur: 20px;                              /* стекло: размытие того, что под органом — не течёт */
+  --frost-sat: 1.8;                                /* стекло: насыщенность размытого */
+
+  --hero-lead: 1.1;
+  --hero-weight: 700;
+  --hero-track: -.04em;
+  --pagehead-lead: 1.1;
+  --pagehead-weight: 700;
+  --pagehead-track: -.03em;
+  --prodhead-size: var(--fs-h3);
+  --prodhead-lead: 1.2;
+  --prodhead-weight: 600;
+  --prodhead-track: -.025em;
+  --byline-size: var(--fs-sm);
+  --byline-lead: 1.4;
+  --byline-weight: 600;
+  --byline-track: 0;
+  --h2-size: var(--fs-h2);
+  --h2-lead: 1.15;
+  --h2-weight: 600;
+  --h2-track: -.025em;
+  --h3-size: var(--fs-h3);
+  --h3-lead: 1.2;
+  --h3-weight: 600;
+  --h3-track: -.02em;
+  --intro-lead: 1.4;
+  --intro-weight: 400;
+  --intro-track: 0;
+  --lede-size: var(--fs-base);
+  --lede-lead: 1.5;
+  --lede-weight: 400;
+  --lede-track: 0;
+  --lede-measure: var(--measure-lede);
+  --body-size: var(--fs-base);
+  --body-lead: 1.45;
+  --body-weight: 400;
+  --body-track: 0;
+  --body-measure: var(--measure);
+  --note-size: var(--fs-xs);
+  --note-lead: 1.45;
+  --note-weight: 400;
+  --note-track: 0;
+  --note-measure: var(--measure-note);
+  --eyebrow-size: var(--fs-xs);
+  --eyebrow-lead: 1.35;
+  --eyebrow-weight: 600;
+  --eyebrow-track: .01em;
+}
+
+@media (pointer:coarse){ [data-scale="Воздушный"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px } }
+
+[data-scale="Галерея"]{
+  --fs-xs: clamp(.7813rem, .68rem + .29vw, .875rem); /* подпись, надзаголовок */
+  --fs-sm: clamp(.875rem, .7406rem + .38vw, 1rem); /* надпись органа, вторичный текст */
+  --fs-base: clamp(1rem, .8656rem + .38vw, 1.125rem); /* тело */
+  --fs-h3: clamp(1.4375rem, .8988rem + 1.54vw, 1.9375rem); /* подзаголовок */
+  --fs-h2: clamp(1.5938rem, .7863rem + 2.31vw, 2.3438rem); /* заголовок раздела */
+  --hero-max: 3.5rem;
+  --hero-base: .25rem;
+  --hero-slope: 8;
+  --hero-size: clamp(1.625rem, .25rem + 8cqi, 3.5rem); /* герой: мерит свою колонку */
+  --pagehead-size: clamp(2rem, .75rem + 5.5cqi, 3rem); /* заголовок: мерит свою колонку */
+  --intro-min: 1.125rem;
+  --intro-max: 1.3125rem;
+  --intro-base: .125rem;
+  --intro-slope: 3;
+  --intro-size: clamp(1.125rem, .125rem + 3cqi, 1.3125rem); /* ввод: мерит свою колонку */
+  --sp-1: 4px;                                     /* оптика: под скруглением */
+  --sp-2: 8px;                                     /* внутри органа */
+  --sp-3: clamp(12px, 9.85px + .38vw, 14px);       /* между строк группы */
+  --sp-4: clamp(16px, 11.69px + .77vw, 20px);      /* поле карточки */
+  --sp-5: clamp(24px, 19.69px + .77vw, 28px);      /* поле крупной карточки */
+  --sp-6: clamp(32px, 27.69px + .77vw, 36px);      /* между частями блока */
+  --sp-7: clamp(40px, 35.69px + .77vw, 44px);      /* между частями блока, макет */
+  --sp-8: clamp(48px, 39.38px + 1.54vw, 56px);     /* между полками */
+  --sp-9: clamp(64px, 55.38px + 1.54vw, 72px);     /* между полками, макет */
+  --sp-10: clamp(80px, 71.38px + 1.54vw, 88px);    /* между разделами */
+  --sp-11: clamp(96px, 78.77px + 3.08vw, 112px);   /* между разделами, макет */
+  --pad-sheet: clamp(2rem, 1.7306rem + .77vw, 2.25rem); /* поле листа: пол, угол, содержимое внутри */
+  --pad-card: clamp(1.5rem, 1.2306rem + .77vw, 1.75rem); /* поле карточки */
+  --pad-inner: clamp(1rem, .7306rem + .77vw, 1.25rem); /* поле внутри карточки — концентрическое */
+  --air-page: clamp(80px, 45.54px + 6.15vw, 112px); /* между разделами страницы — ступени 10 → 11 */
+  --air-band: clamp(64px, 38.15px + 4.62vw, 88px); /* между полками внутри раздела — ступени 9 → 10 */
+  --air-block: clamp(48px, 22.15px + 4.62vw, 72px); /* между частями одного блока — ступени 8 → 9 */
+  --air-head: clamp(48px, 22.15px + 4.62vw, 72px); /* от шапки блока до его содержимого — ступени 8 → 9 */
+  --air-group: clamp(32px, 19.08px + 2.31vw, 44px); /* между группами внутри части — ступени 6 → 7 */
+  --air-row: var(--sp-5);                          /* между строками одной группы */
+  --air-set: var(--sp-4);                          /* между наборами внутри одной строки: группы опций выбора */
+  --air-line: var(--sp-4);                         /* между строками одной мысли: имя товара → описание (И509) */
+  --gap-targets: 8px;                              /* между соседними целями в ряду */
+  --gap-row: clamp(12px, 9.85px + .38vw, 14px);    /* между вещами в ряду: фишки, пилюли, крошки */
+  --gap-grid: clamp(24px, 19.69px + .77vw, 28px);  /* между карточками в сетке и в ленте */
+  --wrap: 1440px;                                  /* холст: ширина коробки страницы */
+  --gut: clamp(24px, 2.46px + 3.85vw, 44px);       /* край страницы: от окна до предмета — ступени 5 → 7 */
+  --ctrl-fs-xs: .875rem;                           /* надпись органа — не течёт */
+  --ctrl-fs-sm: 1rem;                              /* надпись органа — не течёт */
+  --ctrl-fs-base: 1.125rem;                        /* надпись органа — не течёт */
+  --ctrl-fs-h3: 1.9375rem;                         /* надпись органа — не течёт */
+  --ctrl-fs-h2: 2.3438rem;                         /* надпись органа — не течёт */
+  --ctrl-h-sm: 32px;                               /* орган малый: фишка, сегмент */
+  --ctrl-h: 40px;                                  /* орган средний: кнопка, поле, лоток — текущий размер */
+  --ctrl-h-lg: 48px;                               /* орган крупный: кнопка покупки, счётчик, строка меню */
+  --ctrl-target: 24px;                             /* цель у знака мельче органа (WCAG 2.5.8) */
+  --ctrl-fs: var(--ctrl-fs-sm);                    /* надпись текущего размера */
+  --r-xs: 8px;                                     /* радиус: xs */
+  --r-ctrl: 8px;                                   /* радиус: ctrl */
+  --r-card: 24px;                                  /* радиус: card */
+  --r-sheet: 28px;                                 /* радиус: sheet */
+  --r-pop: 999px;                                  /* главное действие — единственный полный круг */
+  --line-w: 1px;                                   /* линия: поле, разделитель, тег — не течёт */
+  --ring-w: 2px;                                   /* кольцо фокуса (WCAG 2.4.13) */
+  --ring-off: 3px;                                 /* отступ кольца от органа */
+  --frost-blur: 20px;                              /* стекло: размытие того, что под органом — не течёт */
+  --frost-sat: 1.8;                                /* стекло: насыщенность размытого */
+
+  --hero-lead: 1.1;
+  --hero-weight: 700;
+  --hero-track: -.04em;
+  --pagehead-lead: 1.1;
+  --pagehead-weight: 700;
+  --pagehead-track: -.03em;
+  --prodhead-size: var(--fs-h3);
+  --prodhead-lead: 1.2;
+  --prodhead-weight: 600;
+  --prodhead-track: -.025em;
+  --byline-size: var(--fs-sm);
+  --byline-lead: 1.4;
+  --byline-weight: 600;
+  --byline-track: 0;
+  --h2-size: var(--fs-h2);
+  --h2-lead: 1.15;
+  --h2-weight: 600;
+  --h2-track: -.025em;
+  --h3-size: var(--fs-h3);
+  --h3-lead: 1.2;
+  --h3-weight: 600;
+  --h3-track: -.02em;
+  --intro-lead: 1.4;
+  --intro-weight: 400;
+  --intro-track: 0;
+  --lede-size: var(--fs-base);
+  --lede-lead: 1.5;
+  --lede-weight: 400;
+  --lede-track: 0;
+  --lede-measure: var(--measure-lede);
+  --body-size: var(--fs-base);
+  --body-lead: 1.45;
+  --body-weight: 400;
+  --body-track: 0;
+  --body-measure: var(--measure);
+  --note-size: var(--fs-xs);
+  --note-lead: 1.45;
+  --note-weight: 400;
+  --note-track: 0;
+  --note-measure: var(--measure-note);
+  --eyebrow-size: var(--fs-xs);
+  --eyebrow-lead: 1.35;
+  --eyebrow-weight: 600;
+  --eyebrow-track: .01em;
+}
+
+@media (pointer:coarse){ [data-scale="Галерея"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px } }

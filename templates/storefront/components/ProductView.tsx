@@ -10,6 +10,7 @@ import { KeyFacts } from './KeyFacts.tsx'
 import { AddToCart } from './AddToCart.tsx'
 import { ProductDetails } from './ProductDetails.tsx'
 import { Price } from './Price.tsx'
+import { StickyBuy } from './StickyBuy.tsx'
 
 /* Карта товара. Колонка покупки — группы, и воздух между группами крупнее
    воздуха внутри (И278, И444; бриф docs/design/карта-товара.md, §7): что
@@ -43,7 +44,7 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
                 короткое «что это» из данных товара; полное — в разделах ниже. */}
             {view.summary ? <p className={s.summary}>{view.summary}</p> : null}
           </div>
-          <div className={s.part}>
+          <div className={s.part} id="buy">
             {view.groups.length ? <div className={s.choice}><VariantPicker groups={view.groups} error={view.choose} /></div> : null}
             {/* Цена — у количества и кнопок заказа (слово заказчика
                 28.09.2026): читается вместе с тем, что её меняет (выбор
@@ -56,6 +57,7 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
           {view.facts ? <KeyFacts facts={view.facts} /> : null}
           <ProductDetails details={view.details} />
         </div>
+        <StickyBuy buy="buy" label={view.buy.add}><Price now={view.price} was={view.was} /></StickyBuy>
       </section>
       {view.related.length ? (
         <Shelf title={view.relatedTitle} id="related-title" all={view.relatedAll} cards={view.related} cart={{ submit, call }} className={s.related} />

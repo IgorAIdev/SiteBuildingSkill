@@ -91,7 +91,7 @@
 | --- | --- | --- | --- | --- |
 | System | Color | Palette | краски обеих тем: семь семей по двенадцать ступеней, роли | семь наборов; своя палитра из строителя |
 | System | Type | Typeface | `--face`, `--face-head` и шрифты со своего адреса | System, Manrope, IBM Plex Sans, Inter, Source Serif + Plex |
-| System | Spacing | Rhythm | кегль, ритм, поле, воздух (`--fs-*`, `--sp-*`, `--air-*`, `--pad-*`) — углов не меняет | Standard, Compact, Spacious, Quiet |
+| System | Spacing | Rhythm | кегль, ритм, поле, воздух (`--fs-*`, `--sp-*`, `--air-*`, `--pad-*`) — углов не меняет | лестницей от плотного к воздушному (И509): Dense, Compact, Standard, Standard · larger type, Airy, Very airy, Gallery; по умолчанию — Standard |
 | System | Layout | Width | холст `--wrap` | 1440 (умолчание), 1280, 1600 |
 | System | Shape | Corners | `--r-xs`, `--r-ctrl`, `--r-card`, `--r-sheet`; вложенность «орган ≤ карточка ≤ лист» держит каждый набор | Standard 8/8/24/28, Round 8/8/28/32, Crisp 4/4/12/16 |
 | System | Shape | Shadows | роли тени `--sh-raised`, `--sh-lift`, `--sh-overlay`, `--sh-in` | Soft (роли набора), Flat (линия, тень — только у всплывающего), Lifted (на ступень выше) |

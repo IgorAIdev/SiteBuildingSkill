@@ -52,10 +52,19 @@ const TITLES = {
     'Латунь на угле': 'Brass on charcoal', 'Аптека': 'Apothecary', 'Олива': 'Olive', 'Мек остров': 'Soft island',
     'Тёплый лист': 'Warm leaf', 'Ледяной шалфей': 'Icy sage', 'Аптечный синий': 'Pharmacy blue',
   },
-  scale: { 'Нынешний': 'Standard', 'Тесный': 'Compact', 'Просторный': 'Spacious', 'Тихий': 'Quiet' },
+  /* Ритм — лестницей от плотного к воздушному (слово заказчика 28.09.2026:
+     «ритм — давай больше вариантов»; имена «Standard» и «Quiet» были
+     непонятны): имя говорит место на лестнице. Просторный — тот же воздух,
+     что у обычного, но крупнее текст. Опоры ступеней — бриф карты товара,
+     «Замеры» (И509). */
+  scale: { 'Плотный': 'Dense', 'Тесный': 'Compact', 'Нынешний': 'Standard', 'Просторный': 'Standard · larger type', 'Воздушный': 'Airy', 'Тихий': 'Very airy', 'Галерея': 'Gallery' },
 }
 
 /** Движок набора: файлы и откуда (И247: одна математика для панели, сайта и проверок). */
+/** Место ступени ритма на лестнице панели (`rung`); набор вне списка — в конце.
+ *  Каталог держит умолчание первым, лестницей их ставит панель. */
+const LADDER = Object.keys(TITLES.scale)
+const rung = (id) => (LADDER.includes(id) ? LADDER.indexOf(id) : LADDER.length)
 export const ENGINE = ['palette.mjs', 'thresholds.mjs', 'palette-profile.json']
 export const ENGINE_FROM = 'skills/site-building/assets/studio/engine'
 /** Положить копию движка набора в ui/engine/. */
@@ -401,7 +410,7 @@ export async function buildCatalog({ site, kit }) {
       const vars = ofGroup('scale', Object.fromEntries(Object.entries(variables(set)).filter(([k]) => !coarse.has(k))))
       const r = resolveScale(set)
       const line = `Text ${r.тело[0]}–${r.тело[1]} px · sections ${r.воздух.page.pair[0]}–${r.воздух.page.pair[1]} px apart`
-      return { id, name: TITLES.scale[id] ?? id, line, vars: check('scale', id, vars) }
+      return { id, name: TITLES.scale[id] ?? id, line, rung: rung(id), vars: check('scale', id, vars) }
     }),
     width: siteFirst(WIDTHS.map((w) => ({ id: String(w), name: String(w), line: `Canvas ${w} px wide`, vars: check('width', String(w), { '--wrap': `${w}px` }) }))),
     corners: siteFirst(Object.values(Object.fromEntries(Object.values(scales).map((set) => {

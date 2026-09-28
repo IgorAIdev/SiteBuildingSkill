@@ -74,6 +74,6 @@ export const DESIGN_SOURCES = {
   monoCostume: 'craft-floor.md:38 — «Monospace as a costume for "technical"»',
   docValue: 'document.md:46 — «Never split the source of truth without explicit reason»; спецификация google-labs-code/design.md: «The frontmatter is optional»; CLAUDE.md, «Делается только правильно» — краска → строитель палитры → роль',
   docDead: 'doctor.md:11 — «Truth drift. The code moved on and the document no longer describes it»',
-  briefMeasured: 'CLAUDE.md, порядок дизайна, шаг 3 — «референсы и замок — три-пять живых магазинов»; слово заказчика 28.09.2026: «у тебя исследования есть, есть другие витрины, уже сделанные, посмотри там соотношения размеров, и на других ведущих лучших сайтах»',
+  briefMeasured: 'layout.md:49 — «Use a documented spacing scale rather than one-off values»; CLAUDE.md, порядок дизайна, шаг 3 — «референсы и замок — три-пять живых магазинов»; слово заказчика 28.09.2026: «у тебя исследования есть, есть другие витрины, уже сделанные, посмотри там соотношения размеров, и на других ведущих лучших сайтах»',
   briefRefs: 'document.md:62 — «rather than filling them with invented rules»; CLAUDE.md, порядок дизайна, шаг 3 — «три-пять живых магазинов для этой поверхности»; слово заказчика 27.09.2026: «не сверился с лучшими существующими решениями»',
 }
