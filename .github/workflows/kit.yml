@@ -1,0 +1,120 @@
+# Проверки самого набора. Не путать с `templates/check.yml` — тот едет в
+# проекты и гоняет их сборку; этот гоняет набор: сходимость правил и
+# проверок, инструменты на пустом проекте, ставщик в трёх режимах.
+#
+# Заведено по дефекту (docs/rules.md, И170): заготовка проекта лежала в
+# `.github/workflows/` самого набора, GitHub исполнял её на каждом PR в
+# набор и падал на `npm ci` — у набора нет ни package-lock, ни сборки.
+#
+# Репозиторий открытый — минуты GitHub на нём не считаются.
+name: kit
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: kit-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  self:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '24' }
+      # Замок: проверка не живёт без правила, правило — без дефекта.
+      - run: node tools/check-rules.mjs
+      - run: node skills/site-building/scripts/check-resources.mjs
+      - run: node tools/sync-studio-assets.mjs --check
+      - run: node tools/pro-check.mjs
+      # Инструменты на самом наборе: у него есть только `styles/`, и всё
+      # обязано молчать нулём — иначе новый проект начинается красным.
+      - run: node tools/check-css.mjs
+      - run: node tools/check-scale.mjs && node tools/scale-css.mjs --check
+      # Цвет — тем же замком, что и ритм: краски мерятся, выпущенное с ними
+      # сходится. Без этой строки расхождение palette.json и palette.css
+      # доезжало до проекта незамеченным — тот же шов, что в И213.
+      - run: node tools/check-palette.mjs && node tools/palette-css.mjs --check
+      # Лист знаков собран из знаков набора и не отстал (И249).
+      - run: node tools/icons.mjs --check
+      # Каталог кнопок: замер на палитре набора и выпуск не отстал (И252).
+      - run: node tools/buttons.mjs --check
+      - run: node tools/check-code.mjs
+      - run: node tools/check-port.mjs
+      - run: node tools/check-test.mjs
+      # Ставщик: новый сайт, обновление, аудит чужого — и что он НЕ трогает.
+      - run: node --test "selftest/**/*.test.mjs"
+
+  components:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: selftest/component-preview
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '24' }
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npx --no-install playwright install --with-deps chromium
+      - run: npm run verify
+      - name: Lighthouse CI on the production component fixture
+        run: |
+          # Use the runner's installed Chrome with its supported Linux sandbox.
+          # Do not disable AppArmor or pass --no-sandbox for Lighthouse.
+          export CHROME_PATH="$(command -v google-chrome)"
+          test -n "$CHROME_PATH"
+          npm run lighthouse
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: component-review
+          retention-days: 7
+          path: |
+            dist/component-review
+            selftest/component-preview/dist/lighthouse-reports
+
+  studio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '24' }
+      - run: node selftest/prepare-studio-pilot.mjs "$RUNNER_TEMP/north-studio"
+      - run: npm ci --no-audit --no-fund
+        working-directory: ${{ runner.temp }}/north-studio
+      - run: npx --no-install playwright install --with-deps chromium
+        working-directory: ${{ runner.temp }}/north-studio
+      - name: Verify a separately installed studio and its clean export
+        working-directory: ${{ runner.temp }}/north-studio
+        run: |
+          node server.mjs > server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:3066/ > /dev/null; then break; fi
+            sleep 1
+          done
+          npm run verify
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: studio-review
+          retention-days: 7
+          path: |
+            ${{ runner.temp }}/north-studio/review
+            ${{ runner.temp }}/north-studio/server.log

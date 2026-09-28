@@ -1,0 +1,19 @@
+# Generated text and parsers use LF on both Windows and Linux.
+*.mjs text eol=lf
+*.kit text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.svg text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+*.css text eol=lf
+*.json text eol=lf
+*.html text eol=lf
+*.yml text eol=lf
+# A PDF can be pure ASCII and still carry byte offsets (xref): never convert.
+*.pdf binary
+# Research is an immutable snapshot, including original line endings.
+research/** !text !eol
+# Vendored third-party files are pinned by SHA-256 of their bytes
+# (tools/vendor/*/SOURCE.md): git must not touch line endings.
+tools/vendor/** -text

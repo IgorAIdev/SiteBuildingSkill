@@ -1,0 +1,11 @@
+/* Цена (Price.tsx, И476): одна строка по базовой линии, переносится, если
+   тесно. Сейчас — полужирно, ростом тела на полке и ролью ввода на карте
+   товара (громкое слово у колонки покупки одно — имя, И444); прежняя —
+   сноской, зачёркнутой, краской подписи. */
+.price{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:var(--gap-row);row-gap:var(--sp-1);margin:0;font-variant-numeric:tabular-nums}
+.now{font-size:var(--body-size);line-height:var(--body-lead);font-weight:700;white-space:nowrap;color:var(--ink)}
+/* На карте товара — ролью ввода: имя товара теперь ростом ступени h3 (`--prodhead-*`, И503), и
+   цена ростом h3 спорила бы с ним. */
+.price[data-size='lead'] .now{font-size:var(--intro-size);line-height:var(--intro-lead)}
+.was{font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft);white-space:nowrap;text-decoration-thickness:var(--line-w)}
+.price[data-size='lead'] .was{font-size:var(--body-size)}

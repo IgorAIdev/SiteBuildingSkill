@@ -1,0 +1,145 @@
+/* ═══ ОКНО ПОВЕРХ СТРАНИЦЫ — шапка стоит, тело прокручивается ════════════
+ *
+ *  Заведено по дефекту 27.09.2026 (И460). Окно быстрого заказа на телефоне
+ *  не помещалось в экран и прокручивалось ЦЕЛИКОМ: заголовок и крестик
+ *  уезжали вверх вместе с содержимым, и человек в середине списка не видел
+ *  ни что это за окно, ни как его закрыть. Шторка меню и шторка фильтров
+ *  были устроены так же, каждая своим куском: три окна — три решения одной
+ *  вещи (правило 10: «Контрол живёт в одном месте»). Слово заказчика:
+ *  «делай единый источник формы… название должно оставаться, даже если
+ *  скролится содержание, например и в меню и в корзине».
+ *
+ *  Окно — тройка, как поле (form.module.css): шапка, тело, низ.
+ *    .pane   само окно — `<dialog>` или `popover`; открытое — столбик, и
+ *            само оно НЕ прокручивается никогда;
+ *    .bar    шапка: заголовок и крестик одной строкой; стоит;
+ *    .title  заголовок окна — роль раздела (`--h2-*`: в разметке окна это
+ *            h2, чужая роль уровню запрещена — семья `headRole`);
+ *    .close  крестик — кнопка сайта (`btn`) квадратом ростом цели;
+ *    .body   тело: прокручивается только оно, остаток прокрутки не уходит
+ *            на страницу;
+ *    .foot   низ (по желанию): действия, которые палец находит, не
+ *            докручивая, — «применить», «сбросить».
+ *
+ *  Поле окна — у частей, а не у окна: полоса прокрутки идёт у самого края
+ *  окна, а кольцо фокуса крайней строки не срезается краем прокрутки — у
+ *  него есть поле тела. Ручка — `--pane-pad`.
+ *
+ *  Где окно стоит — тоже здесь, атрибутом `data-pane` на самом окне (И467):
+ *    dialog  посреди экрана, шириной в меру строки, не выше окна за вычетом
+ *            края страницы; поле карточки;
+ *    start   шторка от начального края во всю высоту окна; поле листа;
+ *    end     шторка от конечного края.
+ *  До 27.09.2026 коробку шторки (край, ширина, высота, угол, тень,
+ *  затемнение) писали меню и фильтры каждый у себя — две копии одного
+ *  решения, и заказчик увидел это глазом: «формы подобные у нас что все
+ *  разные? Не единый источник имеют?». Узел теперь говорит только, что в
+ *  окне.
+ *
+ *  Тело, свёрнутое в строку (шторка фильтров и меню на широкой коробке —
+ *  не окно, а строка в потоке), узел объявляет `display:contents`: разметка
+ *  одна на обе ширины.
+ */
+
+.pane:is([open], :popover-open){
+  --grab-size:calc(var(--ctrl-target) * .8);--grab-w:calc(var(--ctrl-target) * .1);
+  transition:translate var(--open-t) var(--ease),overlay var(--open-t) allow-discrete,display var(--open-t) allow-discrete;
+  display:flex;flex-direction:column;
+  overflow:hidden;padding:0;border:0;
+  background:var(--surface);color:var(--ink);
+  box-shadow:var(--sh-overlay)
+}
+/* Затемнение гаснет по мере того, как окно тянут пальцем (`--pull` от 0 до
+   1 ставит жест, components/PaneSwipe.tsx; ::backdrop наследует его от
+   окна). */
+.pane::backdrop{background:var(--scrim);opacity:calc(1 - var(--pull, 0))}
+
+/* ЗА ПАЛЬЦЕМ (И494). Окно въезжает от своего края и уезжает туда же — тем
+   же путём, каким его уводит палец (жест — components/PaneSwipe.tsx: один
+   на документ, ловит любое открытое окно). Слово заказчика 27.09.2026:
+   «должны свайпом закрываться и двигаться пальцем плавно, прилипать к
+   пальцу, как у Apple, и указатель, что форма свайпится». Выход держит
+   окно в верхнем слое на время хода (`overlay`, `display` дискретно).
+   Ручка — черта у свободного края: у шторки сбоку — вдоль края по
+   середине высоты, у нижней шторки — сверху по середине (Apple HIG,
+   «grabber»; Material 3, «drag handle»). Рисунок — волосок-кромка
+   (`--border`), толщина и длина — от цели пальца. */
+.pane::backdrop{transition:opacity var(--open-t) var(--ease)}
+.pane:is([data-pane='start'], [data-pane='end']):popover-open::after,
+.pane[data-pane='dialog']::after{
+  content:'';position:absolute;border-radius:var(--grab-w);background:var(--border);pointer-events:none
+}
+.pane[data-pane='start']:popover-open::after{inset-inline-end:var(--grab-w);inset-block-start:calc(50% - var(--grab-size) / 2);inline-size:var(--grab-w);block-size:var(--grab-size)}
+.pane[data-pane='end']:popover-open::after{inset-inline-start:var(--grab-w);inset-block-start:calc(50% - var(--grab-size) / 2);inline-size:var(--grab-w);block-size:var(--grab-size)}
+.pane[data-pane='dialog']::after{display:none}
+/* Закрытое положение — за своим краем: только на телефоне, где меню и
+   фильтры и есть шторки; на широком они — строка в шапке и над полкой
+   (тело `display:contents`, см. выше), и уводить их за край нельзя. */
+@media (max-width:820px){
+  /* Уход — тем же ходом, что приход: переход объявлен и закрытому. */
+  .pane:is([data-pane='start'], [data-pane='end']):not(:popover-open){transition:translate var(--open-t) var(--ease-exit),overlay var(--open-t) allow-discrete,display var(--open-t) allow-discrete}
+  .pane[data-pane='start']:not(:popover-open){translate:-100% 0}
+  .pane[data-pane='end']:not(:popover-open){translate:100% 0}
+}
+@starting-style{
+  .pane[data-pane='start']:popover-open{translate:-100% 0}
+  .pane[data-pane='end']:popover-open{translate:100% 0}
+  .pane:is([open], :popover-open)::backdrop{opacity:0}
+}
+
+/* Окно посреди экрана. */
+.pane[data-pane='dialog']{
+  --pane-pad:var(--pad-card);
+  inline-size:min(calc(100% - var(--gut) * 2), var(--measure));
+  max-block-size:calc(100dvh - var(--gut) * 2);
+  margin:auto;border-radius:var(--r-sheet)
+}
+/* На телефоне окно — нижняя шторка под большой палец (шов «телефон»,
+   И494): во всю ширину, от низа, с ручкой сверху, уходит вниз пальцем.
+   `--pane-sheet` читает жест: у окна посреди экрана вниз тянуть нечего. */
+@media (max-width:820px){
+  .pane[data-pane='dialog']{
+    --pane-sheet:1;
+    inline-size:100%;max-inline-size:none;
+    max-block-size:calc(100dvh - var(--chrome-stuck));
+    margin:auto 0 0;border-radius:var(--r-sheet) var(--r-sheet) 0 0;
+    padding-block-end:env(safe-area-inset-bottom)
+  }
+  .pane[data-pane='dialog']::after{display:block;inset-block-start:var(--grab-w);inset-inline-start:calc(50% - var(--grab-size) / 2);inline-size:var(--grab-size);block-size:var(--grab-w)}
+  .pane[data-pane='dialog']:not([open]){translate:0 100%;transition:translate var(--open-t) var(--ease-exit),overlay var(--open-t) allow-discrete,display var(--open-t) allow-discrete}
+  @starting-style{ .pane[data-pane='dialog'][open]{translate:0 100%} }
+}
+/* Шторка от края: во всю высоту окна (`dvh`, правило 9), шириной не больше
+   окна за вычетом полосы под палец — мимо шторки должно быть куда нажать
+   (M2, «ширина экрана минус 56»). Угол — у свободного края. Правила не
+   спрятаны под шов: открытая шторка остаётся шторкой, даже если окно
+   раздвинули, пока она открыта. */
+.pane:is([data-pane='start'], [data-pane='end']):popover-open{
+  --pane-pad:var(--pad-sheet);
+  position:fixed;inset-block:0;margin:0;
+  inline-size:min(22.5rem, 100% - var(--ctrl-h-lg));block-size:100dvh;max-block-size:none
+}
+.pane[data-pane='start']:popover-open{inset-inline:0 auto;border-radius:0;border-start-end-radius:var(--r-sheet);border-end-end-radius:var(--r-sheet)}
+.pane[data-pane='end']:popover-open{inset-inline:auto 0;border-radius:0;border-start-start-radius:var(--r-sheet);border-end-start-radius:var(--r-sheet)}
+
+.bar{
+  flex:none;
+  display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);
+  padding:var(--pane-pad, var(--pad-card)) var(--pane-pad, var(--pad-card)) var(--air-row)
+}
+.title{margin:0;font-size:var(--h2-size);line-height:var(--h2-lead);font-weight:var(--h2-weight);letter-spacing:var(--h2-track)}
+.close{--btn-h:var(--ctrl-target);flex:none;inline-size:var(--btn-h);padding:0}
+.close svg{inline-size:1.25em;block-size:1.25em}
+
+.body{
+  flex:1 1 auto;min-block-size:0;
+  overflow:auto;overscroll-behavior:contain;
+  padding:0 var(--pane-pad, var(--pad-card)) var(--pane-pad, var(--pad-card))
+}
+.body:has(+ .foot){padding-block-end:var(--air-row)}
+
+.foot{
+  flex:none;
+  padding:var(--pad-inner) var(--pane-pad, var(--pad-card)) var(--pane-pad, var(--pad-card));
+  border-block-start:var(--line-w) solid var(--rule)
+}
