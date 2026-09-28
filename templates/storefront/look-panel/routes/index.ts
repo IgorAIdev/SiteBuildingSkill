@@ -111,6 +111,14 @@ const sameOrigin = (request: Request) => {
   const host = (request.headers.get('x-forwarded-host') ?? request.headers.get('host'))?.split(',')[0].trim()
   return URL.canParse(origin) && (new URL(origin).host === host || origin === new URL(request.url).origin)
 }
+/** Адрес, по которому проверка зовёт этот же сервер: изнутри, обычным http
+ *  на его порту. Адрес запроса за прокси — `https://…` (Coolify снимает TLS
+ *  и отдаёт серверу `x-forwarded-proto: https`), а сервер в контейнере
+ *  говорит http на :3000 — и публикация на cbdin.ro падала «SSL wrong
+ *  version number» (слово заказчика со снимком 28.09.2026, И505). Локально
+ *  порт — из адреса запроса (3020), в контейнере — `PORT` или 3000
+ *  (deploy/storefront.Dockerfile). */
+const selfAddress = (request: Request) => `http://127.0.0.1:${process.env.PORT || new URL(request.url).port || '3000'}`
 /** Проверка выбранного — `check:choice` на черновике, отдельным процессом:
  *  он ходит в этот же сервер, и ждать его надо, не занимая сервер. */
 const checkDraft = (site: string) => new Promise<{ ok: boolean; out: string }>((done) => {
@@ -154,7 +162,7 @@ export async function handle(request: Request, path: string[]): Promise<Response
     writeFileSync(join(SAMPLE, 'look.draft.json'), JSON.stringify(built.look, null, 2) + '\n')
     ;(await draftMode()).enable()
     if (head === 'draft') return json({ ok: true })
-    const verdict = await checkDraft(new URL(request.url).origin)
+    const verdict = await checkDraft(selfAddress(request))
     if (!verdict.ok) return json({ ok: false, error: 'check', verdict: verdict.out.trim().split('\n').slice(-12) }, 409)
     writeFileSync(join(SAMPLE, 'look.json'), JSON.stringify(built.look, null, 2) + '\n')
     /* «Устарело, пересчитай» (app/api/revalidate/route.ts): сброс
