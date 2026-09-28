@@ -52,10 +52,19 @@ const TITLES = {
     'Латунь на угле': 'Brass on charcoal', 'Аптека': 'Apothecary', 'Олива': 'Olive', 'Мек остров': 'Soft island',
     'Тёплый лист': 'Warm leaf', 'Ледяной шалфей': 'Icy sage', 'Аптечный синий': 'Pharmacy blue',
   },
-  scale: { 'Нынешний': 'Standard', 'Тесный': 'Compact', 'Просторный': 'Spacious', 'Тихий': 'Quiet' },
+  /* Ритм — лестницей от плотного к воздушному (слово заказчика 28.09.2026:
+     «ритм — давай больше вариантов»; имена «Standard» и «Quiet» были
+     непонятны): имя говорит место на лестнице. Просторный — тот же воздух,
+     что у обычного, но крупнее текст. Опоры ступеней — бриф карты товара,
+     «Замеры» (И509). */
+  scale: { 'Плотный': 'Dense', 'Тесный': 'Compact', 'Нынешний': 'Standard', 'Просторный': 'Standard · larger type', 'Воздушный': 'Airy', 'Тихий': 'Very airy', 'Галерея': 'Gallery' },
 }
 
 /** Движок набора: файлы и откуда (И247: одна математика для панели, сайта и проверок). */
+/** Место ступени ритма на лестнице панели (`rung`); набор вне списка — в конце.
+ *  Каталог держит умолчание первым, лестницей их ставит панель. */
+const LADDER = Object.keys(TITLES.scale)
+const rung = (id) => (LADDER.includes(id) ? LADDER.indexOf(id) : LADDER.length)
 export const ENGINE = ['palette.mjs', 'thresholds.mjs', 'palette-profile.json']
 export const ENGINE_FROM = 'skills/site-building/assets/studio/engine'
 /** Положить копию движка набора в ui/engine/. */
@@ -305,8 +314,54 @@ function stepOf(tokens, palette, name, theme, depth = 0) {
 }
 
 /** Каталог: группы вариантов значениями, умолчания, пары. */
+/* Нарисованные элементы набора — в панель (слово заказчика 28.09.2026:
+   «у нас собрано множество элементов, но они в панели не показываются,
+   выставляй их в панель»). Панель показывает каждую отрисовку живьём
+   (`ui/elements/NN/element.html`, стили набора рядом) и пишет, где элемент
+   уже стоит выбором панели: строка таблицы «Разделы и настройки» PANEL.md,
+   в которой назван его номер. Сайт эту папку не читает — она снимается с
+   панелью (И356: элемент без места на витрине остаётся каталогом). */
+export const ELEMENTS = 'look-panel/ui/elements'
+export function copyElements(kit, site) {
+  const from = join(kit, 'elements')
+  if (!existsSync(join(from, 'elements.json'))) return 0
+  const to = join(site, ELEMENTS)
+  mkdirSync(join(to, 'styles'), { recursive: true })
+  for (const f of ['base.css', 'palettes.css', 'stage.js']) copyFileSync(join(from, f), join(to, f))
+  const styles = new Set()
+  const { элементы } = JSON.parse(readFileSync(join(from, 'elements.json'), 'utf8'))
+  const panel = existsSync(join(site, 'look-panel/PANEL.md')) ? readFileSync(join(site, 'look-panel/PANEL.md'), 'utf8') : ''
+  const where = {}
+  for (const row of panel.split('\n').filter((l) => /^\| (System|Admin) \|/.test(l))) {
+    const cells = row.split('|').map((c) => c.trim())
+    const place = `${cells[2]} › ${/^Main button/.test(cells[3]) ? 'Main button' : cells[3]}`
+    for (const m of row.matchAll(/элемент[ыа]?\s+((?:\d{2}(?:,\s*|\s+и\s+)?)+)/g)) for (const n of m[1].match(/\d{2}/g)) where[n] ??= place
+  }
+  /* Оси кнопки называют свои элементы в каталоге кнопки (`что`). */
+  const axes = existsSync(join(kit, 'styles/buttons.json')) ? JSON.parse(readFileSync(join(kit, 'styles/buttons.json'), 'utf8')) : {}
+  for (const [id, a] of Object.entries(axes)) {
+    const place = `Buttons › ${id === 'loud' || id === 'shape' ? 'Main button' : a.name}`
+    for (const o of Object.values(a.варианты ?? {})) for (const m of `${o.что ?? ''} ${o.line ?? ''}`.matchAll(/элемент[ыа]?\s+((?:\d{2}(?:,\s*|\s+и\s+)?)+)/g)) for (const n of m[1].match(/\d{2}/g)) where[n] ??= place
+  }
+  const list = []
+  for (const e of элементы) {
+    const page = join(from, e.папка, 'element.html')
+    if (!existsSync(page)) continue
+    const html = readFileSync(page, 'utf8')
+    for (const m of html.matchAll(/href="\.\.\/\.\.\/styles\/([\w.-]+)"/g)) styles.add(m[1])
+    mkdirSync(join(to, e.папка), { recursive: true })
+    writeFileSync(join(to, e.папка, 'element.html'), html.replaceAll('../../styles/', '../styles/'))
+    const n = e.папка.slice(0, 2)
+    list.push({ n, dir: e.папка, name: e.имя, kind: e.род?.[0] ?? '', where: where[n] ?? '' })
+  }
+  for (const f of styles) copyFileSync(join(kit, 'styles', f), join(to, 'styles', f))
+  writeFileSync(join(to, 'list.json'), JSON.stringify(list, null, 1) + '\n')
+  return list.length
+}
+
 export async function buildCatalog({ site, kit }) {
   copyEngine(kit, site)
+  copyElements(kit, site)
   const { paletteVars, valuesOf } = await import(pathToFileURL(join(site, 'look-panel/ui/choice.mjs')).href)
   const { roles: paletteRoles } = await import(pathToFileURL(join(site, 'look-panel/ui/engine/palette.mjs')).href)
   const slotsFile = read(site, 'lib/look-slots.json')
@@ -355,7 +410,7 @@ export async function buildCatalog({ site, kit }) {
       const vars = ofGroup('scale', Object.fromEntries(Object.entries(variables(set)).filter(([k]) => !coarse.has(k))))
       const r = resolveScale(set)
       const line = `Text ${r.тело[0]}–${r.тело[1]} px · sections ${r.воздух.page.pair[0]}–${r.воздух.page.pair[1]} px apart`
-      return { id, name: TITLES.scale[id] ?? id, line, vars: check('scale', id, vars) }
+      return { id, name: TITLES.scale[id] ?? id, line, rung: rung(id), vars: check('scale', id, vars) }
     }),
     width: siteFirst(WIDTHS.map((w) => ({ id: String(w), name: String(w), line: `Canvas ${w} px wide`, vars: check('width', String(w), { '--wrap': `${w}px` }) }))),
     corners: siteFirst(Object.values(Object.fromEntries(Object.values(scales).map((set) => {

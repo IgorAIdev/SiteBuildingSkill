@@ -265,7 +265,7 @@
        рисует тот же модуль (styles/btn.module.css), что и сайт. На странице
        без кнопки — рисунок панели той же формулой. */
     var siteButton = (function () {
-      var found = document.querySelector('[data-voice]')
+      var found = document.querySelector('[data-voice="loud"]') || document.querySelector('[data-voice]')
       var cls = found && typeof found.className === 'string' ? found.className.split(/\s+/).filter(function (c) { return c && c.indexOf('lp-') !== 0 }).join(' ') : ''
       return cls
     })()
@@ -332,12 +332,15 @@
     function group(field, label, extra) {
       var id = 'lp-why-' + field
       var line = el('p', { class: 'lp-why', id: id })
-      var chips = catalog.groups[field].map(function (o) {
+      /* Ритм — лестницей от плотного к воздушному (`rung` каталога). */
+      var list = catalog.groups[field].slice()
+      if (list.every(function (o) { return typeof o.rung === 'number' })) list.sort(function (a, b) { return a.rung - b.rung })
+      var chips = list.map(function (o) {
         var attrs = { type: 'button', class: 'lp-chip', 'data-id': o.id, title: o.line || null }
         if (field === 'face') attrs.style = 'font-family:' + o.stack /* образец — своим шрифтом; у пары — шрифтом заголовков */
         var mini = sample(field, o)
         var cap = el('span', { class: 'lp-cap' }, [el('span', { class: 'lp-cap-name' }, [icon(TICK, 12), el('span', { text: o.name })]), o.line ? el('span', { class: 'lp-line', text: o.line }) : null])
-        var chip = el('button', attrs, [mini ? el('span', { class: 'lp-mini' }, [mini]) : null, el('span', { class: 'lp-label', text: o.name }), cap])
+        var chip = el('button', attrs, [mini ? el('span', { class: 'lp-mini' }, [mini]) : null, el('span', { class: 'lp-opt', 'data-text': o.name, text: o.name }), cap])
         chip.label = o.name
         /* Крупный образец — при первом развороте панели. */
         pendingBig.push(function () { chip.insertBefore(el('span', { class: 'lp-big' }, [big(field, o)]), cap) })
@@ -373,9 +376,112 @@
       } })
       return node
     }
-    /** Сегменты: один из нескольких, нажатый — залит. */
+    /* Главная кнопка — одна группа настоящих кнопок сайта (слово заказчика
+       28.09.2026: «удаляй настройки главной кнопки, это хуйня какая-то»;
+       «собрано множество элементов — выставляй их в панель»). Две оси
+       каталога — заливка (`btn-loud`) и форма (`btn-shape`) — заказчик видит
+       одним рядом кнопок: каждая форма — с заливкой марки, каждая заливка —
+       обычной формой. Выбор пишет обе оси; значения — из каталога, как у
+       любой группы. */
+    var MAIN = [['btn-loud', 'fill'], ['btn-shape', 'standard']]
+    function mainButton() {
+      var loud = catalog.groups['btn-loud'] || [], shape = catalog.groups['btn-shape'] || []
+      if (!loud.length || !shape.length) return null
+      var of = function (f, id) { return catalog.groups[f].find(function (o) { return o.id === id }) || catalog.groups[f][0] }
+      var list = shape.map(function (o) { return { name: o.name, line: o.line, set: { 'btn-loud': MAIN[0][1], 'btn-shape': o.id } } })
+        .concat(loud.filter(function (o) { return o.id !== MAIN[0][1] }).map(function (o) { return { name: o.name, line: o.line, set: { 'btn-loud': o.id, 'btn-shape': MAIN[1][1] } } }))
+      var line = el('p', { class: 'lp-why' })
+      var picks = list.map(function (x) {
+        var vars = Object.assign({}, of('btn-loud', x.set['btn-loud']).vars, of('btn-shape', x.set['btn-shape']).vars)
+        var style = Object.keys(vars).map(function (k) { return k + ':' + vars[k] }).join(';')
+        var real = siteButton ? el('span', { class: siteButton, 'data-voice': 'loud', 'data-size': 'sm', text: 'Add to cart' }) : el('span', { class: 'lp-opt', text: 'Add to cart' })
+        var b = el('button', { type: 'button', class: 'lp-pick-btn', title: x.line || null }, [el('span', { class: 'lp-pick-stage', style: style, 'aria-hidden': 'true' }, [real]), el('span', { class: 'lp-opt', 'data-text': x.name, text: x.name })])
+        b.addEventListener('click', function () {
+          var same = Object.keys(x.set).every(function (f) { return names[f] === x.set[f] })
+          if (same) return
+          Object.assign(names, x.set)
+          refresh(); preview(); draft(false)
+        })
+        b.update = function () {
+          b.setAttribute('aria-pressed', String(Object.keys(x.set).every(function (f) { return names[f] === x.set[f] })))
+          var hit = null
+          Object.keys(x.set).some(function (f) { hit = choice.blockedBy(f, x.set[f], names, pairs()); return hit })
+          if (hit) { b.setAttribute('aria-disabled', 'true'); b.title = 'not with ' + choice.title(catalog, hit.field, hit.id) + ' — ' + hit.why }
+          else { b.removeAttribute('aria-disabled'); b.title = x.line || '' }
+        }
+        return b
+      })
+      groups.push({ refresh: function () { picks.forEach(function (b) { b.update() }) } })
+      return el('div', { class: 'lp-group', 'data-field': 'main-button' }, [
+        el('span', { class: 'lp-legend', id: 'lp-main-l', text: 'Main button' }),
+        el('div', { class: 'lp-picks', role: 'group', 'aria-labelledby': 'lp-main-l' }, picks), line,
+      ])
+    }
+    /* Образец на свободном месте подраздела (слово заказчика 28.09.2026:
+       «в панели есть свободное место — покажи тут же примером этот ритм, и
+       шрифт можно в панели показать»). Кусок витрины — ролями сайта
+       (кегль, ритм, поле, воздух, шрифт, краски, углы, тень, кнопка сайта):
+       предпросмотр пишет роли на корень, и образец меняется вместе со
+       страницей, без своего расчёта. */
+    function demoButton(voice) {
+      return siteButton ? el('span', { class: siteButton, 'data-voice': voice, 'data-size': 'sm', text: 'Add to cart' }) : null
+    }
+    function demo(kind) {
+      var card = function (name, price, old, voice) {
+        return el('span', { class: 'lp-d-card' }, [
+          el('i', { class: 'lp-d-pic' }, old ? [el('b', { class: 'lp-d-sale', text: '−17%' })] : []),
+          el('span', { class: 'lp-d-brand', text: 'NatureCBD' }),
+          el('b', { class: 'lp-d-name', text: name }),
+          el('span', { class: 'lp-d-price' }, [el('b', { text: price }), old ? el('s', { text: old }) : null]),
+          demoButton(voice),
+        ])
+      }
+      if (kind === 'type') {
+        return el('div', { class: 'lp-demo lp-d-type', 'aria-hidden': 'true' }, [
+          el('span', { class: 'lp-d-brand', text: 'NatureCBD' }),
+          el('b', { class: 'lp-d-title', text: '10% CBD Oil Full Spectrum 10ml' }),
+          el('span', { class: 'lp-d-price' }, [el('b', { text: '€40.00' }), el('s', { text: '€48.00' })]),
+          el('p', { class: 'lp-d-body', text: 'Full spectrum CBD oil 10% (1000 mg) in a 10 ml bottle. A few drops under the tongue once a day.' }),
+          el('small', { class: 'lp-d-note', text: 'Lab report · batch 2409' }),
+          demoButton('loud'),
+        ])
+      }
+      return el('div', { class: 'lp-demo', 'aria-hidden': 'true' }, [
+        el('b', { class: 'lp-d-head', text: 'Similar products' }),
+        el('span', { class: 'lp-d-row' }, [card('20% CBD+CBN Oil', '€40.00', '€48.00', 'loud'), card('30% CBD Oil', '€50.00', null, 'quiet')]),
+        el('small', { class: 'lp-d-note', text: 'Free delivery from €50' }),
+      ])
+    }
+    /* Элементы набора — живыми отрисовками (ui/elements/). Страницы
+       грузятся, когда подраздел открыли впервые, и каждая — когда дошла до
+       окна (`loading=lazy`). Стоящий выбором ведёт к своему месту. */
+    function gallery() {
+      var node = el('div', { class: 'lp-els' })
+      var built = false
+      node.load = function () {
+        if (built) return
+        built = true
+        fetch(new URL('elements/list.json', base).href).then(function (r) { return r.json() }).then(function (list) {
+          node.replaceChildren.apply(node, list.map(function (e) {
+            var src = new URL('elements/' + e.dir + '/element.html', base).href
+            return el('figure', { class: 'lp-el' }, [
+              el('iframe', { class: 'lp-el-frame', src: src, loading: 'lazy', title: e.n + ' · ' + e.name, tabindex: '-1' }),
+              el('figcaption', {}, [
+                el('b', { text: e.n + ' · ' + e.name }),
+                el('span', { class: 'lp-line', text: e.where ? 'In the panel: ' + e.where : 'No place on the shop yet' }),
+                el('a', { class: 'lp-link', href: src, target: '_blank', rel: 'noopener', text: 'Open with hover and press' }),
+              ]),
+            ])
+          }))
+        }, function () { node.replaceChildren(el('p', { class: 'lp-hint', text: 'The elements are not built yet: run the panel catalog build.' })) })
+      }
+      return node
+    }
+    var elements = gallery()
+    var DEMO = { spacing: 'shelf', type: 'type', color: 'shelf', shape: 'shelf', buttons: 'shelf' }
+    /** Сегменты: один из нескольких, нажатый — жирным и подчёркнут. */
     function segments(label, list, get, set) {
-      var node = el('div', { class: 'lp-seg', role: 'group', 'aria-label': label })
+      var node = el('div', { class: 'lp-segs', role: 'group', 'aria-label': label })
       var buttons = list.map(function (x) {
         var b = el('button', { type: 'button', class: 'lp-segb', text: x[1] })
         b.addEventListener('click', function () { set(x[0]) })
@@ -402,7 +508,7 @@
       var fromSw = el('i', { class: 'lp-sw' })
       var toSw = el('i', { class: 'lp-sw' })
       var adjust = el('div', { class: 'lp-adjust', hidden: true }, [
-        el('span', { class: 'lp-pair' }, [fromSw, el('span', { class: 'lp-arrow' }, [icon(ARROW)]), toSw]),
+        el('span', { class: 'lp-shift' }, [fromSw, el('span', { class: 'lp-arrow' }, [icon(ARROW)]), toSw]),
         el('p', { class: 'lp-adjust-line' }),
       ])
       var paper = segments('Paper', [['warm', 'Warm'], ['neutral', 'Neutral'], ['cool', 'Cool']], function () { return intent.paper }, function (v) { intent.paper = v; changed() })
@@ -487,8 +593,12 @@
         showAdjust(); syncFine(); grid()
       }
       var row = function (label, kids, hint) { return el('div', { class: 'lp-brow' }, [el('span', { class: 'lp-blabel', text: label }), el('div', { class: 'lp-bctl' }, kids.concat(hint ? [el('p', { class: 'lp-bhint', text: hint })] : []))]) }
-      var node = el('div', { class: 'lp-builder', hidden: true }, [
-        el('span', { class: 'lp-legend', text: 'Your palette' }),
+      /* Строитель закрывается (слово заказчика 28.09.2026: «при создании
+         новой палитры я не могу её создание закрыть»): собранное уже в
+         черновике, закрытие только убирает строитель. */
+      var shut = el('button', { type: 'button', class: 'lp-x', 'aria-label': 'Close the palette builder', title: 'Close' }, [icon(CROSS, 14)])
+      var node = el('div', { class: 'lp-builder lp-desk', hidden: true }, [
+        el('div', { class: 'lp-row' }, [el('span', { class: 'lp-legend', text: 'Your palette' }), shut]),
         row('Name', [nameField]),
         row('Brand', [el('div', { class: 'lp-brand' }, [el('span', { class: 'lp-swatch' }, [brandPick]), brandHex]), hue, adjust]),
         row('Paper', [paper.node, tint.node]),
@@ -497,6 +607,7 @@
         el('details', { class: 'lp-more' }, [el('summary', { text: 'Scale · 7 families × 12 steps' }), scaleSeg.node, scaleGrid]),
       ])
       load()
+      shut.addEventListener('click', function () { node.hidden = true; edit.hidden = false; edit.focus() })
       return { node: node, load: load, open: function () { node.hidden = false; load(); fit() } }
     })()
     function hueOf(hex) {
@@ -516,7 +627,11 @@
       var f = function (n) { return l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1))) }
       return '#' + [f(0), f(8), f(4)].map(function (v) { return Math.round(v * 255).toString(16).padStart(2, '0') }).join('').toUpperCase()
     }
-    var edit = el('button', { type: 'button', class: 'lp-link', text: 'Build your own' })
+    /* Строитель палитры — только на компьютере (слово заказчика 28.09.2026:
+       «палитру создавать на телефоне не нужно»); на телефоне на его месте
+       строка, выбор готовых наборов остаётся (look.css, `.lp-desk`). */
+    var edit = el('button', { type: 'button', class: 'lp-link lp-desk', text: 'Build your own' })
+    var deskOnly = el('p', { class: 'lp-hint lp-phone', text: 'Building your own palette — on a computer.' })
     edit.addEventListener('click', function () { builder.open(); edit.hidden = true })
     if (custom()) { builder.node.hidden = false; edit.hidden = true }
 
@@ -595,8 +710,12 @@
 
     var content = function (sub) {
       return (sub.hint ? [el('p', { class: 'lp-hint', text: sub.hint })] : [])
-        .concat(sub.fields.map(function (f) { return group(f[0], f[1], f[0] === 'palette' ? edit : null) }))
-        .concat(sub.id === 'color' ? [builder.node, promises.node] : [])
+        .concat(sub.id === 'buttons' ? [mainButton()] : [])
+        .concat(sub.fields.filter(function (f) { return sub.id !== 'buttons' || !MAIN.some(function (m) { return m[0] === f[0] }) })
+          .map(function (f) { return group(f[0], f[1], f[0] === 'palette' ? edit : null) }))
+        .concat(sub.id === 'color' ? [deskOnly, builder.node, promises.node] : [])
+        .concat(sub.id === 'elements' ? [elements] : [])
+        .concat(DEMO[sub.id] ? [el('div', { class: 'lp-group' }, [el('span', { class: 'lp-legend', text: 'On the site' }), demo(DEMO[sub.id])])] : [])
     }
     /* Подразделы, не влезшие в ряд, уходят вбок; недоступный край растворён. */
     var fade = function (bar) {
@@ -638,6 +757,7 @@
         if (on && x.tab.scrollIntoView) x.tab.scrollIntoView({ block: 'nearest', inline: 'nearest' })
       })
       remember(SUB + section, id)
+      if (id === 'elements') elements.load()
       middle.scrollTop = 0
       fade(s.bar)
     }

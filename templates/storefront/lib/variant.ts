@@ -59,6 +59,9 @@ export function optionLinks(lang: Lang, product: Product, selected: Record<strin
   }))
 }
 
+/** Сосед линейки несёт все эти опции. */
+const has = (m: Product['line'][number], want: Record<string, string>) => Object.entries(want).every(([k, v]) => m.options[k] === v)
+
 /** Ссылки выбора товара линейки (И503): опция ведёт к соседу — товару той
  *  же марки и имени с этой силой или мерой, — с тем же выбором в остальных
  *  группах; такого нет — к любому соседу с этой опцией. Соседа нет вовсе —
@@ -66,7 +69,6 @@ export function optionLinks(lang: Lang, product: Product, selected: Record<strin
  *  поиск. */
 function lineLinks(lang: Lang, product: Product): OptionGroupLinks[] {
   const own = product.variants[0]?.options ?? {}
-  const has = (m: Product['line'][number], want: Record<string, string>) => Object.entries(want).every(([k, v]) => m.options[k] === v)
   return product.optionGroups.map((g) => ({
     code: g.code,
     name: g.name,
@@ -77,6 +79,9 @@ function lineLinks(lang: Lang, product: Product): OptionGroupLinks[] {
   }))
 }
 
+/** Строка без пробелов и регистра — для сравнения меры с именем. */
+const bare = (x: string) => x.replace(/[\s\u00a0]+/g, '').toLowerCase()
+
 /** Имя страницы товара линейки (И503): имя и его сила и мера — «Full-spectrum
  *  CBD oil 10 % · 10 ml». У соседей имя одно, и без меры их страницы
  *  звались бы одинаково: заголовок окна, h1 и крошка для поиска — дубли.
@@ -86,7 +91,6 @@ export function titleOf(product: Product): string {
   const own = product.variants[0]?.options ?? {}
   /* Мера, которую имя уже несёт («10% CBD Oil…» у движка cbdin), второй
      раз не пишется. */
-  const bare = (x: string) => x.replace(/[\s\u00a0]+/g, '').toLowerCase()
   const said = product.optionGroups.map((g) => g.options.find((o) => o.code === own[g.code])?.name)
     .filter((x): x is string => Boolean(x) && !bare(product.name).includes(bare(x!)))
   return said.length ? `${product.name} ${said.join(' · ')}` : product.name

@@ -2,7 +2,7 @@
    (PANEL.md, «Где что лежит»). Сайт их не знает и не ввозит; вход открыт,
    только пока LOOK_PICKER=on.
 
-     GET    /look-panel/look.js, look.css, choice.mjs, catalog.json, engine/* — сама панель
+     GET    /look-panel/look.js, look.css, choice.mjs, catalog.json, engine/*, elements/* — сама панель
      GET    /look-panel/state    опубликованные и черновые имена вариантов и краски палитры
      GET    /look-panel/published  опубликованный вид целиком — его забирает в скилл
                                  `npm run storefront -- --save-look --from <адрес>` (И434)
@@ -40,6 +40,9 @@ const FILES: Record<string, string> = {
   'engine/palette.mjs': 'text/javascript; charset=utf-8',
   'engine/thresholds.mjs': 'text/javascript; charset=utf-8',
   'engine/palette-profile.json': 'application/json; charset=utf-8',
+}
+const ELEMENT_TYPES: Record<string, string> = {
+  html: 'text/html; charset=utf-8', css: 'text/css; charset=utf-8', js: 'text/javascript; charset=utf-8', json: 'application/json; charset=utf-8',
 }
 type Pair = { x: { field: string; id: string }; y: { field: string; id: string }; why: string }
 type Option = { id: string; vars?: Record<string, string>; fonts?: { family: string; weights: number[] }[] }
@@ -135,6 +138,12 @@ export async function handle(request: Request, path: string[]): Promise<Response
   const method = request.method
   if (method === 'GET' && Object.hasOwn(FILES, file)) {
     return new Response(readFileSync(join(UI, file)), { headers: { 'content-type': FILES[file], 'cache-control': 'no-store' } })
+  }
+  /* Нарисованные элементы набора (ui/elements/, build-catalog.mjs): имя —
+     папка и файл без точек в начале, только свои типы. */
+  const shown = /^elements\/(?:[\w-]+\/)?[\w-]+\.(html|css|js|json)$/.exec(file)
+  if (method === 'GET' && shown && existsSync(join(UI, file))) {
+    return new Response(readFileSync(join(UI, file)), { headers: { 'content-type': ELEMENT_TYPES[shown[1]], 'cache-control': 'no-store' } })
   }
   if (method === 'GET' && head === 'state') {
     const previewing = (await draftMode()).isEnabled

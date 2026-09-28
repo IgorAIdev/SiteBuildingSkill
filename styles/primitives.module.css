@@ -1194,9 +1194,11 @@
 
    Заодно ушёл медиазапрос на 820: он складывал этот ряд в столбик, а
    столбик теперь один на все ширины. */
+/* Шапка — коробка (`inline-size`): её меряют органы в ней — пара стрелок
+   полки прячется в узкой шапке (go.module.css, И506). */
 .sectionHead{
   display:flex;flex-direction:column;align-items:flex-start;
-  gap:var(--sp-2);margin-bottom:var(--air-head)
+  gap:var(--sp-2);margin-bottom:var(--air-head);container-type:inline-size
 }
 /* Отбивка — до содержимого раздела, и только до него. У раздела из одной
    шапки (блок «лаборатория» на главной: заголовок и лид, больше ничего)
@@ -1345,11 +1347,13 @@
 .chip[data-chip='lab'] svg{color:inherit}
 
 .cut{
-  position:absolute;top:10px;left:10px;z-index:2;
-  block-size:calc(var(--ctrl-h-sm) * .8);padding:0 10px;border-radius:var(--r-ctrl);
+  /* Место и поле — от роли и высоты органа, не числом (И509); вес — в
+     пределах набора 400…700. */
+  position:absolute;inset-block-start:var(--pad-inner);inset-inline-start:var(--pad-inner);z-index:2;
+  block-size:calc(var(--ctrl-h-sm) * .8);padding-inline:calc(var(--ctrl-h-sm) * .35);border-radius:var(--r-ctrl);
   display:inline-flex;align-items:center;
   background:var(--sale-fill);color:var(--on-sale);
-  font-size:var(--ctrl-fs-xs);font-weight:800;font-variant-numeric:tabular-nums
+  font-size:var(--ctrl-fs-xs);font-weight:700;font-variant-numeric:tabular-nums
 }
 /* Наличие на кадре полки — та же метка, одетая иначе: атрибут на том же
    узле, а не второй класс (И230). Только исключение: «мало» — внимание,

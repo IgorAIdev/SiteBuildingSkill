@@ -37,6 +37,9 @@
   --gallery-r:calc(var(--shot-frame));
   --gallery-fold:58svh;
   --frame-max:620px;
+  /* Пол колонки на телефоне (И509): бюджет высоты галереи не сужает колонку
+     уже самого широкого телефона (430) — имя и снимок во всю ширину. */
+  --frame-min:440px;
   /* Сколько лист наезжает на снимок во всю ширину: ровно на свой угол —
      дуга угла ложится на снимок, а не на пол страницы. */
   --gallery-lap:var(--r-sheet);
@@ -97,7 +100,7 @@
    ряд 816, колонки по 322). */
 @container pdp (max-width:819px){
   .pin{--pin-pos:static;--pin-max:none}
-  .pin > *,.offer > *{max-inline-size:min(var(--frame-max), var(--gallery-w));margin-inline:auto}
+  .pin > *,.offer > *{max-inline-size:min(var(--frame-max), max(var(--gallery-w), min(100%, var(--frame-min))));margin-inline:auto}
 }
 /* Снимок во всю ширину (`--pdp-edge: bleed`), пока колонка одна: галерея
    пересекает край страницы до окна — край коробки `.wrap` и линию текста в
@@ -131,7 +134,9 @@
    колонки стоит на верхнем крае кадра. */
 .offer{--stack:var(--air-group)}
 .part{display:grid;gap:var(--air-row)}
-.identity{display:grid;gap:var(--sp-2)}
+/* Имя → описание — воздух строк одной мысли `--air-line` (И509; замер:
+   0.75 тела, docs/design/карта-товара.md «Замеры»). */
+.identity{display:grid;gap:var(--air-line)}
 /* Короткое описание под именем — роль тела, краской подписи, в мере строки. */
 .summary{margin:0;max-inline-size:var(--measure);color:var(--ink-soft)}
 /* Марка — первая строка заголовка (ProductView.tsx, И441): ростом и
@@ -141,9 +146,14 @@
    спорила с главной кнопкой. Ростом вводного абзаца — ступенью над телом
    (слово заказчика 28.09.2026: марка стояла ростом наличия и крошек —
    служебной строкой, затем «на шаг больше» тела; марка — часть имени
-   товара, И502). */
-.brand{display:block;font-size:var(--intro-size);line-height:var(--intro-lead);font-weight:600;letter-spacing:normal;color:var(--ink-soft)}
-.name{font-size:var(--prodhead-size);line-height:var(--prodhead-lead);font-weight:var(--prodhead-weight);letter-spacing:var(--prodhead-track);text-wrap:balance;overflow-wrap:anywhere}
+   товара, И502). 28.09.2026 со снимком телефона: «бренд и описание почти
+   того же размера, что название — иерархии нет» — марка своей ролью
+   `--byline-*` ступенью ниже тела, 0.6 имени, как у Byredo и cbd_ecommerce_eu
+   (И509, замеры в брифе карты товара). */
+.brand{display:block;font-size:var(--byline-size);line-height:var(--byline-lead);font-weight:var(--byline-weight);letter-spacing:var(--byline-track);color:var(--ink-soft)}
+.name{font-size:var(--prodhead-size);line-height:var(--prodhead-lead);font-weight:var(--prodhead-weight);letter-spacing:var(--prodhead-track);text-wrap:pretty;overflow-wrap:anywhere}
+/* Имя переносится как любой заголовок набора (`pretty`, base.css): `balance`
+   на узкой колонке резал имя в одну строку на две равные половины (И509). */
 /* Имя товара — на две ступени ниже заголовка страницы: своя роль
    заголовка первого уровня `--prodhead-*` ростом ступени h3 (строитель
    шкал, styles/scale.json), а не `--pagehead-*` (слово заказчика
@@ -186,4 +196,14 @@
 .buy > p:empty{display:none}
 .add{flex:1 1 auto;font-variant-numeric:tabular-nums}
 
-
+/* Строка покупки у низа окна (StickyBuy.tsx, И509): только пока колонка
+   одна и строка покупки ушла за верхний край; стоит над полосой низа
+   (`--dock`), слоем нижней полосы. Цена слева, главная кнопка справа — как
+   у Charlotte's Web (замер 28.09.2026, бриф карты товара). */
+.bar{
+  position:fixed;inset-inline:0;inset-block-end:var(--dock);z-index:var(--layer-tabbar);
+  display:none;align-items:center;justify-content:space-between;gap:var(--gap-row);
+  padding:var(--pad-inner) var(--gut);padding-block-end:max(var(--pad-inner), var(--edge-b));
+  background:var(--surface);box-shadow:var(--sh-overlay)
+}
+@container pdp (max-width:819px){ .bar[data-shown]{display:flex} }

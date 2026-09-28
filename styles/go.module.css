@@ -62,3 +62,13 @@
 .go:disabled,.go[aria-disabled='true']{opacity:var(--state-off);cursor:not-allowed}
 
 @media (prefers-reduced-motion:reduce){ .go svg{transition:none} }
+
+/* Пара стрелок листания — одной обёрткой (И133, И506): в узкой коробке её
+   нет ни у полки, ни у героя, ни у галереи — ленту там листают пальцем.
+   Условие — ширина коробки, не указатель: по указателю меняют цель и отклик,
+   не видимость (правило 17, `axisScope`); так уже прятались стрелки галереи
+   в одну колонку. Прячется обёртка, а не каждая стрелка, и спорить с
+   `display` самой `.go` нечему. Обёртка без места (`data-place`) раскладку
+   не меняет; с местом — это блок того, кто её поставил. */
+.pair:not([data-place]){display:contents}
+@container (max-width:559px){ .pair[data-swipe]{display:none} }

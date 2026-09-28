@@ -115,7 +115,7 @@ elevation»; Refactoring UI: набор фиксирован).
 <!-- families:shape -->
 | Факт | Значение | Откуда |
 | --- | --- | --- |
-| радиусы по наборам (px) | Нынешний: xs 8 / ctrl 8 / card 24 / sheet 28 · Тесный: xs 8 / ctrl 8 / card 24 / sheet 28 · Просторный: xs 8 / ctrl 8 / card 28 / sheet 32 · Тихий: xs 4 / ctrl 4 / card 12 / sheet 16; полный круг `--r-pop` — везде | `styles/scale.json`, ключ `радиус` |
+| радиусы по наборам (px) | Нынешний: xs 8 / ctrl 8 / card 24 / sheet 28 · Тесный: xs 8 / ctrl 8 / card 24 / sheet 28 · Просторный: xs 8 / ctrl 8 / card 28 / sheet 32 · Тихий: xs 4 / ctrl 4 / card 12 / sheet 16 · Плотный: xs 8 / ctrl 8 / card 24 / sheet 28 · Воздушный: xs 8 / ctrl 8 / card 24 / sheet 28 · Галерея: xs 8 / ctrl 8 / card 24 / sheet 28; полный круг `--r-pop` — везде | `styles/scale.json`, ключ `радиус` |
 | лестница радиусов | 0, 2, 4, 8, 12, 16, 20, 24, 28, 32, 48 (M3 ∪ Carbon) | `SHAPE.radii` в `tools/thresholds.mjs` |
 | линия и кольцо | линия 1px, сильная 2px; кольцо 2px с отступом 3px — не текут | `SHAPE.line`, `SHAPE.ring`; `--line-w`, `--ring-w`, `--ring-off` в `styles/scale.css` |
 | роли тени | `--sh-raised`, `--sh-lift`, `--sh-overlay`, `--sh-in` — по работе, одной записью на корне, палубе и листе; ингредиенты `--sh-ring`, `--sh-near`, `--sh-far-N`, `--sh-inset` несут light-dark() (`styles/tokens.css`) | `styles/look.css` |

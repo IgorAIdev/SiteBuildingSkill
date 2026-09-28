@@ -46,7 +46,7 @@ export const CONCEPTS = {
     /* чужие марки: знак мессенджера краской своей марки (`--mark-viber`, И471) */
     'mark'],
   rhythm: ['pad', 'air', 'gap'],
-  text: ['hero', 'pagehead', 'prodhead', 'h2', 'h3', 'intro', 'lede', 'body', 'note', 'eyebrow', 'measure', 'face', 'fs', 'page'],
+  text: ['hero', 'pagehead', 'prodhead', 'byline', 'h2', 'h3', 'intro', 'lede', 'body', 'note', 'eyebrow', 'measure', 'face', 'fs', 'page'],
   shape: ['r'],
   depth: ['sh', 'frost'],
   motion: ['ease', 'rise', 'nudge', 'creep', 'open'],
@@ -106,7 +106,7 @@ const VALUE = [
 const ROLE = [
   { rx: /^--(pad|air|gap)-[a-z]+$/, family: 'поле / воздух / зазор', by: 'tools/scale.mjs' },
   { rx: /^--ctrl-fs-[a-z0-9]+$/, family: 'надпись органа', by: 'tools/scale.mjs' },
-  { rx: /^--(hero|pagehead|prodhead|h2|h3|intro|lede|body|note|eyebrow)-(size|lead|weight|track|measure)$/, family: 'роль текста', by: 'tools/scale.mjs' },
+  { rx: /^--(hero|pagehead|prodhead|byline|h2|h3|intro|lede|body|note|eyebrow)-(size|lead|weight|track|measure)$/, family: 'роль текста', by: 'tools/scale.mjs' },
   { rx: /^--(r-[a-z]+|round)$/, family: 'скругление', by: 'styles/tokens.css' },
   { rx: /^--sh-[a-z0-9-]+$/, family: 'тень', by: 'styles/look.css (роли), styles/tokens.css (ингредиенты)' },
   { rx: /^--(ease|hover-t|rise|nudge|creep)$/, family: 'движение и ответ на руку', by: 'styles/tokens.css' },
@@ -174,10 +174,13 @@ export const REQUIRED = {
   '--scrim-deck': 'вуаль под текстом на снимке — герой витрины, текст поверх кадра (templates/storefront, blocks.module.css)',
   '--creep': 'наплыв снимка под рукой — карточка товара на полке (templates/storefront, ProductCard.module.css; controls.md, «рама стоит, движется снимок»)',
   '--on-ink': 'надпись на плашке чернил — пол своего пола (отметка текущего пункта «Ink pill», вид витрины; И426)',
+  '--air-line': 'воздух между строками одной мысли: имя товара → описание — карта товара (templates/storefront, ProductView.module.css; И509)',
   '--air-set': 'воздух между группами опций выбора — карта товара, придёт с магазином (templates/storefront, ProductView.module.css; И448)',
   '--quiet-pop': 'тихая плашка на заливке кнопки — счётчик «в корзине: 2» на кнопке покупки; первый читатель — магазин (cbdin, BuyBtn; И452)',
   '--on-quiet-pop': 'надпись на тихой плашке заливки — число счётчика на кнопке покупки (И452)',
   '--prodhead-size': 'имя товара — заголовок первого уровня ростом ступени h3, карта товара (templates/storefront, ProductView.module.css; И503)',
+  '--byline-size': 'строка марки над именем товара и «назад» на телефоне — ступенью ниже тела, 0.6 имени (И509)',
+  '--byline-lead': 'межстрочье строки марки (И509)', '--byline-weight': 'вес строки марки (И509)', '--byline-track': 'разрядка строки марки (И509)',
   '--prodhead-lead': 'межстрочье имени товара (И503)', '--prodhead-weight': 'вес имени товара (И503)', '--prodhead-track': 'разрядка имени товара (И503)',
   '--layer-helper': 'слой кружка помощника (FLOATING)', '--layer-toast': 'слой всплывающего сообщения (FLOATING)',
 }
