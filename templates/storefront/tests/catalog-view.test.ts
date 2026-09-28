@@ -12,7 +12,7 @@ const none = { title: '', step: '', href: '' }
 
 test('page links keep the chosen facets and sort; the first page carries no number', async () => {
   const asked: Asked = { facets: {}, sort: 'price-asc', page: '2' }
-  const r = await sampleSource(8).listing('ro', asked)
+  const r = await sampleSource(10).listing('ro', asked)
   assert.ok(r.ok)
   const at = (q: Query) => hrefFor('ro', { catalog: true, ...q })
   const v = catalogView('ro', { title: 'T', lede: null, listing: r.value, asked, at, filters: true, empty: emptyFor('ro', asked, at) })
@@ -20,8 +20,8 @@ test('page links keep the chosen facets and sort; the first page carries no numb
   assert.equal(v.pages?.next, null)
   assert.equal(v.pages?.label, 'Pagina 2 din 2')
   assert.deepEqual(v.pages?.items, [{ n: 1, href: '/ro/catalog?sort=price-asc', gap: false }, { n: 2, href: null, gap: false }])
-  assert.equal(v.count, '12 produse')
-  assert.equal(v.cards.length, 4)
+  assert.equal(v.count, '19 produse')
+  assert.equal(v.cards.length, 9)
   assert.equal(v.sort?.options.find((o) => o.on)?.value, 'price-asc')
 })
 
@@ -40,7 +40,7 @@ test('long page runs keep the first, the last and the neighbours of the current'
   const r = await sampleSource(1).listing('en', { facets: {}, sort: 'popular', page: '6' })
   assert.ok(r.ok)
   const v = catalogView('en', { title: 'T', lede: null, listing: r.value, asked: { facets: {}, sort: 'popular', page: '6' }, at: (q) => hrefFor('en', { catalog: true, ...q }), filters: true, empty: none })
-  assert.deepEqual(v.pages?.items.flatMap((x) => (x.gap ? ['…', x.n] : [x.n])), [1, '…', 5, 6, 7, '…', 12])
+  assert.deepEqual(v.pages?.items.flatMap((x) => (x.gap ? ['…', x.n] : [x.n])), [1, '…', 5, 6, 7, '…', 19])
 })
 
 test('empty: with facets — clear them; without — go to all products', () => {

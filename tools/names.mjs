@@ -46,7 +46,7 @@ export const CONCEPTS = {
     /* чужие марки: знак мессенджера краской своей марки (`--mark-viber`, И471) */
     'mark'],
   rhythm: ['pad', 'air', 'gap'],
-  text: ['hero', 'pagehead', 'h2', 'h3', 'intro', 'lede', 'body', 'note', 'eyebrow', 'measure', 'face', 'fs', 'page'],
+  text: ['hero', 'pagehead', 'prodhead', 'h2', 'h3', 'intro', 'lede', 'body', 'note', 'eyebrow', 'measure', 'face', 'fs', 'page'],
   shape: ['r'],
   depth: ['sh', 'frost'],
   motion: ['ease', 'rise', 'nudge', 'creep', 'open'],
@@ -106,7 +106,7 @@ const VALUE = [
 const ROLE = [
   { rx: /^--(pad|air|gap)-[a-z]+$/, family: 'поле / воздух / зазор', by: 'tools/scale.mjs' },
   { rx: /^--ctrl-fs-[a-z0-9]+$/, family: 'надпись органа', by: 'tools/scale.mjs' },
-  { rx: /^--(hero|pagehead|h2|h3|intro|lede|body|note|eyebrow)-(size|lead|weight|track|measure)$/, family: 'роль текста', by: 'tools/scale.mjs' },
+  { rx: /^--(hero|pagehead|prodhead|h2|h3|intro|lede|body|note|eyebrow)-(size|lead|weight|track|measure)$/, family: 'роль текста', by: 'tools/scale.mjs' },
   { rx: /^--(r-[a-z]+|round)$/, family: 'скругление', by: 'styles/tokens.css' },
   { rx: /^--sh-[a-z0-9-]+$/, family: 'тень', by: 'styles/look.css (роли), styles/tokens.css (ингредиенты)' },
   { rx: /^--(ease|hover-t|rise|nudge|creep)$/, family: 'движение и ответ на руку', by: 'styles/tokens.css' },

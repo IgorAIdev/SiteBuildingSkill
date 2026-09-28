@@ -1,12 +1,12 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { sample } from '../lib/source/sample/catalog.ts'
+import { withVariants } from './with-variants.ts'
 import { labView, productView } from '../lib/product-view.ts'
 
 const none = { category: null, related: [] }
 
 test('nothing chosen: a "from" price, an open button without a price that leads to the choice', async () => {
-  const r = await sample.product('ro', 'ulei-cbd-full-spectrum')
+  const r = await withVariants('ro', 'ulei-cbd-full-spectrum')
   assert.ok(r.ok)
   /* Адрес без выбора — стандартный вариант магазина выбран сам (И468):
      10 % · 10 ml, кнопка кладёт его. */
@@ -35,7 +35,7 @@ test('nothing chosen: a "from" price, an open button without a price that leads 
 })
 
 test('a chosen variant: its price, its stock and the key figures of its pack', async () => {
-  const r = await sample.product('ro', 'ulei-cbd-full-spectrum')
+  const r = await withVariants('ro', 'ulei-cbd-full-spectrum')
   assert.ok(r.ok)
   const v = productView('ro', r.value, { putere: '20', volum: '10' }, none)
   assert.equal(v.price, '64,90 €')
@@ -62,7 +62,7 @@ test('a chosen variant: its price, its stock and the key figures of its pack', a
 })
 
 test('a single product has its own price and no choice to make', async () => {
-  const r = await sample.product('hu', 'capsule-cbd-10')
+  const r = await withVariants('hu', 'capsule-cbd-10')
   assert.ok(r.ok)
   const v = productView('hu', r.value, {}, none)
   assert.equal(v.price, '34,90 €')
@@ -75,7 +75,7 @@ test('a single product has its own price and no choice to make', async () => {
 /* Цены в кнопке нет: она стоит под именем (слово заказчика 25.09.2026,
    И441). Окно быстрого заказа называет марку, имя и упаковку варианта. */
 test('buying: only a chosen variant in stock goes to the cart; the button carries no price', async () => {
-  const oil = await sample.product('en', 'ulei-cbd-full-spectrum')
+  const oil = await withVariants('en', 'ulei-cbd-full-spectrum')
   assert.ok(oil.ok)
   assert.equal(productView('en', oil.value, {}, { ...none, asked: true }).buy.variant, null)
   assert.equal(productView('en', oil.value, {}, none).buy.variant, 'uf-10-10', 'стандартный вариант (И468)')
@@ -88,7 +88,7 @@ test('buying: only a chosen variant in stock goes to the cart; the button carrie
   assert.equal(out.ask, null, 'распродано — выбирать нечего, кнопка выключена')
   assert.equal(productView('en', oil.value, { putere: '5', volum: '30' }, none).buy.ask, null, 'сочетания нет — кнопка выключена, почему — message')
   assert.equal(out.add, 'Add to cart')
-  const cream = await sample.product('ro', 'crema-cbd')
+  const cream = await withVariants('ro', 'crema-cbd')
   assert.ok(cream.ok)
   const buy = productView('ro', cream.value, {}, none).buy
   assert.equal(buy.variant, 'cr-50')
@@ -100,7 +100,7 @@ test('buying: only a chosen variant in stock goes to the cart; the button carrie
 /* Галерея: снимки по порядку, первый — главный; у каждого якорь и имя
    ссылки миниатюры. Плашка скидки — у той цены, что напечатана. */
 test('the gallery: every image with its anchor and name; the sale badge follows the shown price', async () => {
-  const caps = await sample.product('en', 'capsule-cbd-25')
+  const caps = await withVariants('en', 'capsule-cbd-25')
   assert.ok(caps.ok)
   const v = productView('en', caps.value, {}, none)
   assert.equal(v.gallery.slides.length, 4)
@@ -114,7 +114,7 @@ test('the gallery: every image with its anchor and name; the sale badge follows 
   assert.equal(sixty.gallery.badge, null)
   assert.equal(sixty.was, null)
   assert.equal(productView('ro', caps.value, { bucati: '30' }, none).gallery.badge, '−15 %')
-  const cream = await sample.product('hu', 'crema-cbd')
+  const cream = await withVariants('hu', 'crema-cbd')
   assert.ok(cream.ok)
   assert.equal(productView('hu', cream.value, {}, none).gallery.slides.length, 3, 'у косметики три снимка')
 })

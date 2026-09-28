@@ -23,8 +23,17 @@ WORKDIR /kit/.storefront
 # Свой адрес витрины (SITE_URL) задаёт приложению `npm run storefront:server`;
 # robots и карта сайта собираются заранее — без него они ведут на localhost (И459).
 ARG SITE_URL
+# Витрина скилла показывает товары настоящего каталога — движок Vendure
+# магазина cbdin (слово заказчика 28.09.2026: «к Vendure подключай, чтоб с
+# него товары показывались»; И503). Адрес Shop API и код канала — не ключи:
+# их отдаёт любой запрос витрины. Заказы выключены: VENDURE_PLACE_ORDERS не
+# задан, это действующий магазин. Переменные окружения Coolify важнее этих.
 # Панель входит в страницы, собранные заранее, — флаг нужен уже сборке.
 ENV NEXT_TELEMETRY_DISABLED=1 \
+    SOURCE=vendure \
+    VENDURE_SHOP_API_URL=https://vendure.cbdshop.bg/shop-api \
+    VENDURE_CHANNEL_TOKEN=cbdin \
+    VENDURE_FALLBACK_LANG=en \
     LOOK_PICKER=on
 RUN npm run build \
  && npm prune --omit=dev --no-audit --no-fund \
@@ -42,6 +51,10 @@ RUN npm i --no-audit --no-fund playwright@1.63.0 sharp@0.35.4 \
 ENV PLAYWRIGHT=/opt/check/node_modules/playwright/index.mjs \
     SHARP=/opt/check/node_modules/sharp/dist/index.mjs \
     NEXT_TELEMETRY_DISABLED=1 \
+    SOURCE=vendure \
+    VENDURE_SHOP_API_URL=https://vendure.cbdshop.bg/shop-api \
+    VENDURE_CHANNEL_TOKEN=cbdin \
+    VENDURE_FALLBACK_LANG=en \
     LOOK_PICKER=on
 
 WORKDIR /site

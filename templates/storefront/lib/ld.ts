@@ -1,4 +1,5 @@
 import type { Product, Variant } from './source/contract.ts'
+import { titleOf } from './variant.ts'
 import { PRICES_ARE_REAL } from './flags.ts'
 import { MARKET } from './market.ts'
 import { COMPANY } from './company.ts'
@@ -17,7 +18,11 @@ export const faqLd = (items: { q: string; a: string }[]) => ({
  *  для машины — точкой и без знака валюты, поэтому деление здесь своё:
  *  это сериализация в lib/, не вёрстка. */
 export function productLd(product: Product, variant: Variant | null): Record<string, unknown> {
-  const ld: Record<string, unknown> = { '@context': 'https://schema.org', '@type': 'Product', name: product.name, description: product.summary }
+  const ld: Record<string, unknown> = { '@context': 'https://schema.org', '@type': 'Product', name: titleOf(product), description: product.summary }
+  /* Товар линейки (И503) — вариант группы для поиска: общий ключ группы —
+     адрес её первого товара (schema.org `inProductGroupWithID`, Google
+     «Product variants»). Каждый сосед — своя страница со своей разметкой. */
+  if (product.line.length) ld.inProductGroupWithID = product.line[0].id
   if (product.brand) ld.brand = { '@type': 'Brand', name: product.brand }
   if (variant) ld.sku = variant.sku
   if (PRICES_ARE_REAL && variant) {

@@ -28,6 +28,10 @@ export type SampleProduct = {
   facets: Record<string, string[]>
   groups: { code: string; name: T; options: { code: string; name: T }[] }[]
   variants: SampleVariant[]
+  /** Товары одной линейки (та же марка и то же имя, И503): у каждой силы и
+   *  меры свой товар, свой адрес и своя карточка; выбор на карте ведёт к
+   *  соседу. Пусто — товар один. Заполняет `split`, не данные. */
+  line?: { id: string; options: Record<string, string>; stock: SampleVariant['stock'] }[]
 }
 
 export const CATEGORIES: SampleCategory[] = [
@@ -59,7 +63,7 @@ const count = (codes: string[]) => ({ code: 'bucati', name: { ro: 'Bucăți', en
 /* Первым стоит товар с самым большим выбором вариантов: дерево адресов
    (tools/routes.mjs) берёт в дорогие проверки первую семью и первый товар
    без семьи. */
-export const PRODUCTS: SampleProduct[] = [
+const LINES: SampleProduct[] = [
   { id:'ulei-cbd-full-spectrum', cat:'uleiuri', family:'ulei-full', label: 'CBD', hue: 145, popular: 1, brand: 'Câmpia', strength: 'percent', standard: 'uf-10-10',
     name: { ro: 'Ulei CBD full spectrum', en: 'Full-spectrum CBD oil', hu: 'Teljes spektrumú CBD olaj' },
     summary: { ro: 'Extract de cânepă în ulei MCT, cu picurător.', en: 'Hemp extract in MCT oil, with dropper.', hu: 'Kenderkivonat MCT olajban, cseppentővel.' },
@@ -160,6 +164,25 @@ export const PRODUCTS: SampleProduct[] = [
     groups: [],
     variants: [{ id: 'ap-10', sku: 'AP-10', options: {}, price: 1990, stock: 'low', batch: 'RO-2409-AP', pack: { mg: 250, size: 10, unit: 'ml' } }] },
 ]
+
+/* Отдельный товар на каждую силу и меру (слово заказчика 28.09.2026:
+   «отдельный товар на каждый процент и объём — это же СЕО, нужно, чтоб в
+   поиске индексировались все товары»; И503). Образец записан линейками —
+   товар с вариантами, как его удобно читать, — и здесь раскладывается так,
+   как его держит каталог магазина: вариант становится товаром со своим
+   адресом, а линейка — списком соседей (`line`) для выбора на карте.
+   Стандартный вариант линейки держит её прежний адрес (ходовые главной,
+   похожие и проверки ссылаются на него); остальные — адрес с мерой. */
+const UNIT: Record<string, string> = { putere: '', volum: 'ml', bucati: 'buc' }
+const slugOf = (base: string, v: SampleVariant) => `${base}-${Object.entries(v.options).map(([k, c]) => `${c.replace('.', '-')}${UNIT[k] ?? ''}`).join('-')}`
+function split(p: SampleProduct): SampleProduct[] {
+  if (p.variants.length < 2) return [p]
+  const main = p.standard ?? p.variants[0].id
+  const idOf = (v: SampleVariant) => (v.id === main ? p.id : slugOf(p.id, v))
+  const line = p.variants.map((v) => ({ id: idOf(v), options: v.options, stock: v.stock }))
+  return p.variants.map((v) => ({ ...p, id: idOf(v), standard: v.id, variants: [v], line }))
+}
+export const PRODUCTS: SampleProduct[] = LINES.flatMap(split)
 
 /** Состав и способ применения — образец данных по полке (И466): настоящий
  *  текст у каждого товара даёт каталог магазина. */

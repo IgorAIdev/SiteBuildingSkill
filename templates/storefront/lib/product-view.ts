@@ -6,7 +6,7 @@ import { money } from './money.ts'
 import { hrefFor } from './href.ts'
 import { intlLocale } from './market.ts'
 import { percent } from './format.ts'
-import { pickState, optionLinks, type OptionGroupLinks } from './variant.ts'
+import { pickState, optionLinks, titleOf, type OptionGroupLinks } from './variant.ts'
 import { saleOf, shelfCard, stockText, type ShelfCard, type WasView } from './view.ts'
 import { QTY_MAX } from './cart-view.ts'
 import { factsLine, packFacts, type FactsView } from './facts.ts'
@@ -65,7 +65,7 @@ export type { WasView }
  *  `message` — строка под кнопкой, когда купить нельзя: сочетания нет. */
 export type ProductPageView = {
   crumbs: { name: string; href?: string }[]; crumbLabel: string
-  brand: string | null; name: string; price: string; was: WasView | null; stock: string | null; stockLevel: 'in' | 'low' | 'out' | null; message: string | null; choose: string | null
+  brand: string | null; name: string; summary: string | null; price: string; was: WasView | null; stock: string | null; stockLevel: 'in' | 'low' | 'out' | null; message: string | null; choose: string | null
   gallery: GalleryView; groups: OptionGroupLinks[]; facts: FactsView | null; details: DetailsView
   related: ShelfCard[]; relatedTitle: string
   /** Выход ко всей полке товара у «похожих» — та же строка, что у полки
@@ -187,11 +187,12 @@ export function productView(lang: Lang, product: Product, chosen0: Record<string
     crumbs: [
       { name: t(lang, 'crumb.home'), href: hrefFor(lang, { home: true }) },
       ...(ctx.category ? [{ name: ctx.category.name, href: hrefFor(lang, { category: ctx.category.slug }) }] : []),
-      { name: product.name },
+      { name: titleOf(product) },
     ],
     crumbLabel: t(lang, 'crumb.label'),
     brand: product.brand,
-    name: product.name,
+    name: titleOf(product),
+    summary: product.summary.trim() || null,
     price, was: sale?.was ?? null,
     stock: chosen ? stockText(lang, chosen.stock) : null,
     stockLevel: chosen?.stock ?? null,

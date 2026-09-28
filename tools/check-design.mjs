@@ -181,7 +181,7 @@ const range = (value, seen = new Set()) => {
 }
 /** Уровень, которому принадлежит роль размера: --h2-size → 2. */
 const levelOfRole = (value) => {
-  const roles = [...String(value).matchAll(/--(hero|pagehead|h[1-6])-size\b|--(?:ctrl-)?fs-(h[1-6])\b/g)].map((m) => m[1] ?? m[2])
+  const roles = [...String(value).matchAll(/--(hero|pagehead|prodhead|h[1-6])-size\b|--(?:ctrl-)?fs-(h[1-6])\b/g)].map((m) => m[1] ?? m[2])
   const role = roles.at(-1)
   if (!role) return null
   return { role: `--${roles.at(-1)}`, level: /^h(\d)/.test(role) ? Number(role[1]) : 1 }

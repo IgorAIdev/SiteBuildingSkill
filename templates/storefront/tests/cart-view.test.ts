@@ -21,7 +21,7 @@ test('a cart line: link back to its variant, facts, unit price, one stepper, a w
   const v = cartView('ro', await fixtureCart(), null)
   assert.equal(v.count, '3 produse')
   const [oil, caps] = v.lines
-  assert.equal(oil.href, '/ro/product/ulei-cbd-full-spectrum?option.putere=20&option.volum=10')
+  assert.equal(oil.href, '/ro/product/ulei-cbd-full-spectrum-20-10ml?option.putere=20&option.volum=10')
   assert.equal(oil.facts, `20${NB}% · 10${NB}ml`, 'сила — записью языка страницы и неразрывно (И347)')
   assert.equal(oil.unit, `64,90${NB}€ / buc.`)
   assert.equal(oil.total, `64,90${NB}€`)

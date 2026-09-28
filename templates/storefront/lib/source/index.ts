@@ -4,6 +4,8 @@ import { sampleContent } from './sample/content.ts'
 import { sampleCommerce } from './sample/commerce.ts'
 import { vendureEnv, vendureSource } from './vendure/catalog.ts'
 import { vendureCommerce } from './vendure/commerce.ts'
+import { formOf } from './details.ts'
+import { CATEGORIES } from '../products.ts'
 
 /* Один выбор источника на всю витрину (`SOURCE` в .env):
    · `sample` — образец в lib/ (по умолчанию);
@@ -34,13 +36,20 @@ function standIn(catalog: Source): Content {
     async page(lang, slug) {
       const r = await sampleContent.page(lang, slug)
       if (!r.ok || !r.value.blocks.some((b) => b.type === 'featured')) return r
-      /* Полка категории (`to`) — первые товары той же полки движка; такой
-         полки у движка нет — полка пуста и молча не стоит. */
+      /* Полка категории (`to`) — первые товары полки движка того же вида:
+         у образца масла — `uleiuri`, у движка — `oil`; вид полки (`formOf`)
+         у них один. Такой полки у движка нет — полка пуста и молча не
+         стоит. */
+      const cols = await catalog.collections(lang)
+      const engineShelf = (to: string) => {
+        const form = CATEGORIES.find((c) => c.slug === to)?.form ?? formOf([to])
+        return cols.ok ? cols.value.find((c) => c.slug === to || (form && formOf([c.slug]) === form))?.slug : undefined
+      }
       const firstOf = async (category?: string) => {
         const top = await catalog.listing(lang, { category, facets: {}, sort: 'popular', page: null })
         return top.ok ? top.value.items.slice(0, category ? 5 : 4).map((c) => c.id) : []
       }
-      const blocks: Block[] = await Promise.all(r.value.blocks.map(async (b): Promise<Block> => (b.type === 'featured' ? { ...b, ids: await firstOf(b.to) } : b)))
+      const blocks: Block[] = await Promise.all(r.value.blocks.map(async (b): Promise<Block> => (b.type === 'featured' ? (b.to ? { ...b, to: engineShelf(b.to), ids: engineShelf(b.to) ? await firstOf(engineShelf(b.to)) : [] } : { ...b, ids: await firstOf() }) : b)))
       return { ok: true, value: { ...r.value, blocks } }
     },
   }

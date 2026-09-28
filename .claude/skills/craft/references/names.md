@@ -80,7 +80,7 @@ is»; Curtis (Purposeful vs Aesthetic) — перекраска марки пе�
 | --- | --- | --- |
 | colour | `--ink`, `--plate`, `--page`, `--surface`, `--pop`, `--select`, `--ctrl`, `--field`, `--rule`, `--border`, `--line`, `--ring`, `--scrim`, `--quiet`, `--thumb`, `--tile`, `--tick`, `--menu`, `--accent`, `--hover`, `--press`, `--chrome`, `--on`, `--bad`, `--ok`, `--warn`, `--sale`, `--info`, `--mark` | роль |
 | rhythm | `--pad`, `--air`, `--gap` | роль |
-| text | `--hero`, `--pagehead`, `--h2`, `--h3`, `--intro`, `--lede`, `--body`, `--note`, `--eyebrow`, `--measure`, `--face`, `--fs`, `--page` | роль |
+| text | `--hero`, `--pagehead`, `--prodhead`, `--h2`, `--h3`, `--intro`, `--lede`, `--body`, `--note`, `--eyebrow`, `--measure`, `--face`, `--fs`, `--page` | роль |
 | shape | `--r` | роль |
 | depth | `--sh`, `--frost` | роль |
 | motion | `--ease`, `--rise`, `--nudge`, `--creep`, `--open` | роль |
@@ -91,7 +91,7 @@ is»; Curtis (Purposeful vs Aesthetic) — перекраска марки пе�
 | ручки примитивов | `--stack-*`, `--cluster-*`, `--switch-*`, `--rail-*`, `--section-*`, `--sheet-*`, `--lede-*`, `--hero-*`, `--grid-*`, `--cols-*`, `--cell-*`, `--pin-*`, `--tray-*`, `--leaf-*`, `--chip-*`, `--qty-*`, `--chan-*`, `--side-*`, `--prose-*`, `--pinned-*`, `--sidebar-*`, `--frame-*`, `--btn-*`, `--seg-*`, `--gallery-*`, `--pane-*`, `--turn-*`, `--dot-*` | узел |
 | сырьё | `--n-N`, `--a-N`, `--e-N`, `--sale-N`, `--warn-N`, `--ok-N`, `--info-N`, `--on-*-N`, `--sp-N`, `--fs-*` | сырьё |
 | обязательные роли | `--bad`, `--bad-fill`, `--on-bad`, `--bad-tint`, `--bad-line`, `--ok`, `--ok-fill`, `--on-ok`, `--ok-tint`, `--quiet-tint`, `--on-quiet-tint`, `--pane-sheet`, `--mark-viber`, `--mark-telegram`, `--mark-whatsapp`, `--mark-instagram`, `--info`, `--info-tint`, `--warn`, `--warn-fill`, `--on-warn`, `--warn-tint`, `--sale`, `--sale-fill`, `--on-sale`, `--sale-tint`, `--pop-press`, `--pop-ink-hover`, `--r-pop`, `--ease-exit`, `--plate-2`, `--rule`, `--field`, `--scrim`, `--scrim-deck`, `--creep`, `--on-ink`, `--air-set`, `--quiet-pop`, `--on-quiet-pop`, `--layer-helper`, `--layer-toast` | роль |
-| объявлений в стилях набора | 991, по форме 991 | `tools/names.mjs`, `parse()` |
+| объявлений в стилях набора | 1011, по форме 1011 | `tools/names.mjs`, `parse()` |
 <!-- /families:names -->
 
 ## Роли, обязанные существовать

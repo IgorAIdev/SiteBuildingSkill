@@ -74,6 +74,10 @@
   --pagehead-lead: 1.1;
   --pagehead-weight: 700;
   --pagehead-track: -.03em;
+  --prodhead-size: var(--fs-h3);
+  --prodhead-lead: 1.15;
+  --prodhead-weight: 700;
+  --prodhead-track: -.025em;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
   --h2-weight: 600;
@@ -177,6 +181,10 @@
   --pagehead-lead: 1.1;
   --pagehead-weight: 700;
   --pagehead-track: -.03em;
+  --prodhead-size: var(--fs-h3);
+  --prodhead-lead: 1.15;
+  --prodhead-weight: 700;
+  --prodhead-track: -.025em;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
   --h2-weight: 600;
@@ -280,6 +288,10 @@
   --pagehead-lead: 1.1;
   --pagehead-weight: 700;
   --pagehead-track: -.03em;
+  --prodhead-size: var(--fs-h3);
+  --prodhead-lead: 1.15;
+  --prodhead-weight: 700;
+  --prodhead-track: -.025em;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
   --h2-weight: 600;
@@ -383,6 +395,10 @@
   --pagehead-lead: 1.1;
   --pagehead-weight: 700;
   --pagehead-track: -.03em;
+  --prodhead-size: var(--fs-h3);
+  --prodhead-lead: 1.15;
+  --prodhead-weight: 700;
+  --prodhead-track: -.025em;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
   --h2-weight: 600;
@@ -486,6 +502,10 @@
   --pagehead-lead: 1.1;
   --pagehead-weight: 700;
   --pagehead-track: -.03em;
+  --prodhead-size: var(--fs-h3);
+  --prodhead-lead: 1.15;
+  --prodhead-weight: 700;
+  --prodhead-track: -.025em;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
   --h2-weight: 600;

@@ -114,6 +114,8 @@ export const RO = {
   'shelf.addName': 'Adaugă în coș: {name}',
   'shelf.chooseName': 'Alegeți o variantă: {name}',
   'shelf.all': 'Vezi toate',
+  'line.strength': 'Concentrație',
+  'line.volume': 'Volum',
   'shelf.prev': 'Produsele anterioare',
   'shelf.next': 'Produsele următoare',
   'shelf.view': 'Vezi',

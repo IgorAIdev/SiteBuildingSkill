@@ -4,7 +4,7 @@ import p from '@/styles/primitives.module.css'
 import { langOf } from '@/lib/route.ts'
 import { source } from '@/lib/source/index.ts'
 import type { Params } from '@/lib/listing.ts'
-import { readSelection, pickState, askedToChoose } from '@/lib/variant.ts'
+import { readSelection, pickState, askedToChoose, titleOf } from '@/lib/variant.ts'
 import { productView, withStandard } from '@/lib/product-view.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { toMetadata } from '@/lib/seo.ts'
@@ -21,7 +21,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   const r = await source().product(lang, id)
   if (!r.ok) return {}
-  return toMetadata(lang, { title: r.value.name, description: r.value.summary, path: (l) => hrefFor(l, { product: id }) })
+  /* Соседи по линейке делят описание — описание страницы начинается с
+     её имени и меры, иначе поиск видит у шести страниц одно описание (И503). */
+  const description = r.value.line.length ? `${titleOf(r.value)}. ${r.value.summary}` : r.value.summary
+  return toMetadata(lang, { title: titleOf(r.value), description, path: (l) => hrefFor(l, { product: id }) })
 }
 
 export default async function ProductPage({ params, searchParams }: Props) {
