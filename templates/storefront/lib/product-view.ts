@@ -26,7 +26,7 @@ import { MARKET } from './market.ts'
  *  данных нет. */
 export type DetailPart = { id: string; title: string; text: string | null; lab: LabView | null }
 export type DetailsView = { label: string; parts: DetailPart[] }
-export type LabView = { title: string; batch: string; code: string; rows: [string, string][]; open: { label: string; href: string } | null }
+export type LabView = { title: string; batch: string; rows: [string, string][]; open: { label: string; href: string } | null }
 /** `add` — надпись кнопки, одно действие без цены: цена стоит под именем,
  *  второй раз на кнопке она не нужна (слово заказчика 25.09.2026: «цену два
  *  раза указывать не нужно, с кнопки убирай цену», И441). `ask` — варианта ещё не выбрали: кнопка
@@ -90,7 +90,6 @@ export function labView(lang: Lang, r: LabReport): LabView {
   return {
     title: t(lang, 'product.lab'),
     batch: t(lang, 'product.batch', { batch: r.batch }),
-    code: r.batch,
     rows: [
       [t(lang, 'lab.lab'), r.lab],
       [t(lang, 'lab.date'), date.format(new Date(r.date))],

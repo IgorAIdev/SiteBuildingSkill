@@ -148,7 +148,7 @@ if (flags.has('--look-panel')) {
   }))
   const MARKED = ['components/Shell.tsx', 'components/Header.tsx', 'components/Header.module.css', 'components/ProductCard.module.css', 'lib/headers.ts', 'lib/cards.ts',
     'lib/homes.ts', 'components/blocks/registry.tsx', 'components/blocks/Hero.tsx', 'components/blocks/Categories.tsx', 'components/blocks/Featured.tsx',
-    'components/blocks/Lab.tsx', 'components/blocks/blocks.module.css', 'components/LabReport.tsx', 'components/LabReport.module.css']
+    'components/blocks/blocks.module.css']
   const stripped = (text) => VARIANTS.reduce((t, v) => (t.includes(v.tag) ? stripVariants(t, v.tag, chosen[v.tag]) : t), text.includes('look-panel') ? stripPanel(text) : text)
   const touched = MARKED.filter((rel) => {
     if (!existsSync(join(OUT, rel))) return false
