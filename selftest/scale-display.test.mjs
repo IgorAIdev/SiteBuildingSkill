@@ -129,3 +129,27 @@ test('a role lead is emitted with five decimals, rounded up, and can be named as
   const { auditRoles } = await import('../tools/scale.mjs')
   assert.ok(auditRoles({ [first]: bad }, first).some((f) => f.rule === 'межстрочье не число'), 'кривое межстрочье прошло молча')
 })
+
+/* Окно (И511). Дефект — cbdshop.bg 28.09.2026: копия героя (заголовок 96,
+   слоган, кнопка) выше окна ноутбука 1366×657 под шапкой 200; кривая роли
+   мерила только колонку, и уступить окну было нечем, кроме числа в узле. */
+test('a display role may also be bounded by the window height: min of the column and the window line', () => {
+  const set = structuredClone(sets['Нынешний'])
+  set.крупные.герой = { ...set.крупные.герой, окно: { основа: -232, наклон: 42.4 } }
+  assert.deepEqual(auditScale(set), [])
+  const css = toCss({ probe: set })
+  assert.match(css, /--hero-size: clamp\(\d*\.?\d+rem, min\(\d*\.?\d+rem \+ \d*\.?\d+cqi, -14\.5rem \+ 42\.4svh\), \d*\.?\d+rem\)/)
+  /* Без окна роль — прежняя строка. */
+  assert.doesNotMatch(toCss({ probe: sets['Нынешний'] }), /svh/)
+})
+
+test('audit refuses a window line that shrinks tall windows or does not grow with the window', () => {
+  const probe = (окно) => {
+    const set = structuredClone(sets['Нынешний'])
+    set.крупные.герой = { ...set.крупные.герой, окно }
+    return auditScale(set).map((f) => f.rule).join(' | ')
+  }
+  assert.match(probe({ основа: -232, наклон: 20 }), /высокое окно/)
+  assert.match(probe({ основа: 400, наклон: -1 }), /растёт с высотой окна/)
+  assert.throws(() => resolve({ ...sets['Нынешний'], крупные: { герой: { ...sets['Нынешний'].крупные.герой, окно: { основа: 'x' } } } }), /окно: нужны числа/)
+})

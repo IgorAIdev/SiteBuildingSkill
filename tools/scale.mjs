@@ -238,7 +238,12 @@ export const resolve = (set) => {
      прямая по ширине колонки: низ и верх в px, наклон — px на 1cqi,
      основа — свободный член в px. Раньше эти три строки стояли в
      tokens.css одной на все наборы, и «Просторный» получал заголовок
-     страницы мельче заголовка раздела. */
+     страницы мельче заголовка раздела.
+
+     Окно (И511) — вторая прямая, по высоте малого окна: `основа` — px,
+     `наклон` — px на 1svh. Кегль берёт меньшую из двух: на низком окне
+     ноутбука заголовок героя уступает, чтобы первый экран с кнопкой встал
+     под шапку (И510). Необязательна: без неё роль мерит только колонку. */
   if (set.крупные !== undefined) {
     out.крупные = {}
     for (const [role, v] of Object.entries(set.крупные)) {
@@ -246,6 +251,12 @@ export const resolve = (set) => {
       const bad = ['низ', 'верх', 'наклон', 'основа'].filter((k) => typeof v?.[k] !== 'number' || !Number.isFinite(v[k]))
       if (bad.length) throw new Error(`крупные «${role}»: нужны числа ${bad.join(', ')}`)
       out.крупные[role] = { низ: v.низ, верх: v.верх, наклон: v.наклон, основа: v.основа }
+      if (v.окно !== undefined) {
+        const w = v.окно
+        const badW = ['основа', 'наклон'].filter((k) => typeof w?.[k] !== 'number' || !Number.isFinite(w[k]))
+        if (badW.length) throw new Error(`крупные «${role}», окно: нужны числа ${badW.join(', ')} (px и px на 1svh)`)
+        out.крупные[role].окно = { основа: w.основа, наклон: w.наклон }
+      }
     }
   }
   /* Радиусы — роли по узлу, числом из лестницы (слой 9, И228): Spectrum —
@@ -283,7 +294,12 @@ const block = (sets, name, indent = '  ') => {
     const en = DISPLAY[role]
     const knob = { min: write(d.низ, 'rem'), max: write(d.верх, 'rem'), base: write(d.основа, 'rem'), slope: num(d.наклон, 3) }
     for (const k of DISPLAY_KNOBS[en]) put(`--${en}-${k}`, knob[k])
-    put(`--${en}-size`, `clamp(${write(d.низ, 'rem')}, ${write(d.основа, 'rem')} + ${num(d.наклон, 3)}cqi, ${write(d.верх, 'rem')})`, `${role}: мерит свою колонку`)
+    const column = `${write(d.основа, 'rem')} + ${num(d.наклон, 3)}cqi`
+    /* Окно — меньшая из двух прямых (И511). Основа окна в rem, как у
+       колонки: поднял человек шрифт — выросли строки под заголовком, и
+       заголовок уступает им место, а пол роли (низ в rem) растёт с ним. */
+    const curve = d.окно ? `min(${column}, ${write(d.окно.основа, 'rem')} + ${num(d.окно.наклон, 3)}svh)` : column
+    put(`--${en}-size`, `clamp(${write(d.низ, 'rem')}, ${curve}, ${write(d.верх, 'rem')})`, d.окно ? `${role}: мерит свою колонку и высоту окна` : `${role}: мерит свою колонку`)
   }
   for (const [name, pair] of Object.entries(r.ритм)) {
     put(`${PREFIX.space}${name}`, ramp(pair, w), set.подписи?.ритм?.[name])
@@ -518,6 +534,13 @@ export const auditScale = (set) => {
       if (v.основа < 0) findings.push({ rule: `крупный текст не мельчает при увеличении шрифта (${role})`, got: `основа ${v.основа}px`, need: 'основа не меньше 0: при увеличении текста она растёт вместе с ним' })
       if (!(v.наклон > 0)) findings.push({ rule: `крупный текст растёт с колонкой (${role})`, got: `наклон ${v.наклон}`, need: 'больше 0' })
       if (v.верх / v.низ > TYPE.displaySpread) findings.push({ rule: `разброс крупного текста (${role})`, got: `×${(v.верх / v.низ).toFixed(2)}`, need: `не больше ×${TYPE.displaySpread}: масштаб страницы догоняет только низ` })
+      /* Окно (И511): кегль уступает низкому окну, а высокое не трогает —
+         на окне стола полной высоты роль та же, что без окна. */
+      if (v.окно) {
+        if (!(v.окно.наклон > 0)) findings.push({ rule: `крупный текст растёт с высотой окна (${role})`, got: `наклон окна ${v.окно.наклон}`, need: 'больше 0' })
+        const tall = v.окно.основа + v.окно.наклон * LAYOUT.tallWindow / 100
+        if (tall < v.верх) findings.push({ rule: `высокое окно не трогает крупный текст (${role})`, got: `в окне ${LAYOUT.tallWindow} прямая окна даёт ${num(tall)}px при верхе ${v.верх}`, need: `не меньше верха: окно уступает только низкому окну` })
+      }
     }
     const h2 = r.размер.h2, base = r.размер.base, h3 = r.размер.h3
     const { заголовок: page, герой: hero, ввод: intro } = d
