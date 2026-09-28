@@ -614,6 +614,32 @@ if (existsSync(BRIEFS)) {
   }
 }
 
+/* ── бриф поверхности: замерено, а не на глаз (И507) ─────────────────────
+ *
+ * Адреса референсов (briefRefs) не мешали ставить кегли и отступы на глаз:
+ * страница товара на телефоне вышла с названием крупнее меры, брендом и
+ * описанием почти того же кегля и разными расстояниями между блоками, хотя
+ * рядом лежали исследование набора, уже сделанные витрины и замеры люкс-
+ * магазинов (слово заказчика 28.09.2026: «почему ты изначально не
+ * посмотрел исследования, витрины, сайты — ты же делаешь плохо без
+ * этого»). Меряется так: в брифе раздел «## Замеры» — таблица, в которой
+ * есть строка из исследования набора (`research/`), строка с уже сделанной
+ * витрины (cbdin.bg, `storefronts`, `cbd_ecommerce_eu`) и строки трёх
+ * разных живых сайтов с числами. Нет раздела — решение вида не сверено
+ * числами. */
+if (existsSync(BRIEFS)) {
+  for (const f of readdirSync(BRIEFS).filter((x) => x.endsWith('.md') && !x.startsWith('_'))) {
+    const text = readFileSync(join(BRIEFS, f), 'utf8')
+    const part = text.match(/^## Замеры[^\n]*\n([\s\S]*?)(?=^## |(?![\s\S]))/m)?.[1] ?? ''
+    const rows = part.split('\n').filter((l) => /^\|/.test(l) && /\d/.test(l))
+    const research = rows.some((l) => /research\//.test(l))
+    const own = rows.some((l) => /cbdin\.(bg|ro)|storefronts|cbd_ecommerce_eu/.test(l))
+    const hosts = new Set(rows.flatMap((l) => [...l.matchAll(/https?:\/\/([^/\s)|>]+)/g)].map((m) => m[1].replace(/^www\./, ''))).filter((h) => !/cbdin\./.test(h)))
+    const miss = [!research && 'исследования набора', !own && 'сделанной витрины', hosts.size < 3 && `живых сайтов ${hosts.size} из трёх`].filter(Boolean)
+    if (miss.length) add('briefMeasured', `docs/design/${f}`, `в «## Замеры» нет чисел: ${miss.join(', ')}`)
+  }
+}
+
 /* ── вердикт ───────────────────────────────────────────────────────────── */
 
 const counts = Object.fromEntries(Object.entries(found).map(([k, v]) => [k, v.length]))

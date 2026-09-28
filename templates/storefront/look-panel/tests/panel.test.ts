@@ -61,7 +61,7 @@ test('panel sections: every field sits in exactly one sub-tab; System is colour,
   assert.deepEqual(catalog.groups['say-look'].map((o) => o.id), ['line', 'note'])
   /* Место подписи (И394): над полем — умолчание, на кромке — элемент 47. */
   assert.deepEqual(catalog.groups['field-label'].map((o) => o.id), ['above', 'edge'])
-  assert.deepEqual(SECTIONS[1].subs.map((s) => s.name), ['Header', 'Card', 'Home', 'Product page'])
+  assert.deepEqual(SECTIONS[1].subs.map((s) => s.name), ['Header', 'Card', 'Home', 'Elements', 'Product page'])
   /* Главная — разметка вида (lib/homes.ts): варианты каталога — все главные
      сайта, по порядку; первая, нынешняя, — умолчание. */
   assert.deepEqual(catalog.groups.home.map((o) => o.id), [...HOMES])

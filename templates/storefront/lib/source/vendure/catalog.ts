@@ -114,7 +114,7 @@ const strengthOf = (p: VProduct, pack: Pack | null): Strength =>
 
 /** Постоянный адрес — slug языка канала по умолчанию. */
 const nativeSlug = (c: Channel, item: { slug: string; translations: Translation[] }) =>
-  item.translations.find((t) => t.languageCode === c.defaultLanguageCode)?.slug ?? item.slug
+  item.translations.find((tr) => tr.languageCode === c.defaultLanguageCode)?.slug ?? item.slug
 const money = (c: Channel, minor: number): Money => ({ minor, currency: c.defaultCurrencyCode })
 /** Снимок товара и полки — сервером снимков движка (image.ts). */
 const image = (asset: Asset | null, alt: string): Image | null => (asset ? assetImage(asset, alt, 800) : null)

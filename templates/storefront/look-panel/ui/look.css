@@ -156,12 +156,21 @@
 .lp-group{display:flex;flex-direction:column;gap:var(--lp-s3)}
 .lp-row{display:flex;align-items:center;justify-content:space-between;gap:var(--lp-s3)}
 .lp-legend{margin:0;font-size:var(--lp-t1);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--lp-soft)}
-.lp-chips{display:flex;flex-wrap:wrap;gap:var(--lp-s2)}
-.lp-chip{display:inline-flex;align-items:center;gap:var(--lp-s2);min-block-size:var(--lp-target-lg);padding:0 var(--lp-s4);
-  border:1px solid var(--lp-line);border-radius:var(--lp-pill);background:var(--lp-chip);white-space:nowrap;font-weight:500}
-.lp-chip:hover{border-color:color-mix(in srgb, var(--lp-ink) 30%, transparent)}
-.lp-chip[aria-pressed='true']{background:var(--lp-on);border-color:var(--lp-on);color:var(--lp-on-ink)}
-.lp-chip[aria-disabled='true']{opacity:.45;cursor:not-allowed;text-decoration:line-through;text-decoration-thickness:1px}
+/* Вариант — слово, а не пилюля (слово заказчика 28.09.2026: «текст пилюль
+   не помещается в пилюлю, потому от пилюль отказываемся, выбор отмечаем
+   жирностью и подчёркиванием»). Рамки нет — слову нечего переполнять;
+   длинное имя переносится. Жирное место занято заранее невидимой копией
+   имени (`data-text`), и ряд не прыгает при выборе. */
+.lp-chips{display:flex;flex-wrap:wrap;gap:0 var(--lp-s5)}
+.lp-chip{display:inline-flex;align-items:center;gap:var(--lp-s2);min-block-size:var(--lp-target-lg);padding:0;
+  border:0;background:none;color:var(--lp-soft);text-align:start;font-weight:400}
+.lp-chip:hover{color:var(--lp-ink)}
+.lp-opt{display:inline-grid;text-underline-offset:5px;text-decoration-thickness:2px}
+.lp-opt::after{content:attr(data-text);block-size:0;overflow:hidden;visibility:hidden;font-weight:700}
+.lp-chip[aria-pressed='true']{color:var(--lp-ink)}
+.lp-chip[aria-pressed='true'] .lp-opt{font-weight:700;text-decoration-line:underline}
+.lp-chip[aria-disabled='true']{opacity:.45;cursor:not-allowed}
+.lp-chip[aria-disabled='true'] .lp-opt{text-decoration-line:line-through;text-decoration-thickness:1px}
 .lp-why{margin:0;color:var(--lp-soft);font-size:var(--lp-t2);overflow-wrap:anywhere}
 .lp-why:empty{display:none}
 /* Образцы на фишках. */
@@ -310,13 +319,13 @@
 .lp-hue::-moz-range-thumb{inline-size:18px;block-size:18px;border:0;border-radius:50%;background:var(--lp-bg);box-shadow:0 0 0 2px var(--lp-ink)}
 /* Что строитель подвинул: «ваш цвет → для кнопок» и одна строка почему. */
 .lp-adjust{display:flex;align-items:center;gap:var(--lp-s3);padding:var(--lp-s2) var(--lp-s3);border-radius:var(--lp-r1);background:var(--lp-bg)}
-.lp-pair{display:inline-flex;align-items:center;gap:var(--lp-s1);flex:none;color:var(--lp-soft)}
+.lp-shift{display:inline-flex;align-items:center;gap:var(--lp-s1);flex:none;color:var(--lp-soft)}
 .lp-sw{display:block;inline-size:18px;block-size:18px;border-radius:var(--lp-r1);box-shadow:0 0 0 1px var(--lp-line)}
 .lp-adjust-line{margin:0;font-size:var(--lp-t2);color:var(--lp-ink)}
-.lp-seg{display:inline-flex;align-self:flex-start;border:1px solid var(--lp-line);border-radius:var(--lp-pill);padding:2px;background:var(--lp-bg)}
-.lp-seg[data-off]{opacity:.45;pointer-events:none}
-.lp-segb{min-block-size:24px;padding:0 var(--lp-s3);border:0;border-radius:var(--lp-pill);background:none;font-size:var(--lp-t2);font-weight:600;color:var(--lp-soft)}
-.lp-segb[aria-pressed='true']{background:var(--lp-on);color:var(--lp-on-ink)}
+.lp-segs{display:inline-flex;flex-wrap:wrap;align-self:flex-start;gap:0 var(--lp-s4)}
+.lp-segs[data-off]{opacity:.45;pointer-events:none}
+.lp-segb{min-block-size:24px;padding:0;border:0;background:none;font-size:var(--lp-t2);color:var(--lp-soft);text-underline-offset:4px;text-decoration-thickness:2px}
+.lp-segb[aria-pressed='true']{color:var(--lp-ink);font-weight:700;text-decoration-line:underline}
 .lp-toggle{display:inline-flex;align-items:center;gap:var(--lp-s2);min-block-size:var(--lp-target);cursor:pointer}
 .lp-check{inline-size:16px;block-size:16px;margin:0;accent-color:var(--lp-on)}
 .lp-pname{font-weight:600}
@@ -374,7 +383,7 @@
 .lp-big{display:none}
 .lp-panel[data-wide] .lp-big{display:block}
 .lp-panel[data-wide]{inline-size:min(var(--lp-w-wide), 100% - 2 * var(--lp-edge))}
-.lp-cap,.lp-panel[data-wide] .lp-mini,.lp-panel[data-wide] .lp-label{display:none}
+.lp-cap,.lp-panel[data-wide] .lp-mini,.lp-panel[data-wide] .lp-opt{display:none}
 .lp-panel[data-wide] .lp-body{padding:var(--lp-s5) var(--lp-s6) var(--lp-s6)}
 .lp-panel[data-wide] .lp-pane{gap:calc(var(--lp-s6) + var(--lp-s2))}
 .lp-panel[data-wide] .lp-chips{display:grid;grid-template-columns:repeat(auto-fill, minmax(var(--lp-tile), 1fr));gap:var(--lp-s4)}
@@ -441,6 +450,42 @@
 .lp-panel[data-wide] #lp-pane-color > .lp-hint,
 .lp-panel[data-wide] #lp-pane-color > .lp-group[data-field='palette']{grid-column:1 / -1}
 
+/* Главная кнопка — ряд настоящих кнопок сайта (класс снят со страницы),
+   под каждой имя; выбранная — имя жирным и подчёркнуто, как у слов. */
+.lp-picks{display:grid;grid-template-columns:repeat(auto-fill, minmax(9.5rem, 1fr));gap:var(--lp-s3)}
+.lp-pick-btn{display:flex;flex-direction:column;align-items:flex-start;gap:var(--lp-s1);padding:0;border:0;background:none;color:var(--lp-soft);text-align:start}
+.lp-pick-btn:hover{color:var(--lp-ink)}
+.lp-pick-stage{display:flex;align-items:center;inline-size:100%;min-block-size:56px;padding:var(--lp-s3);border-radius:var(--lp-r2);background:var(--page, var(--lp-well));font-family:var(--face, inherit);pointer-events:none}
+.lp-pick-btn[aria-pressed='true']{color:var(--lp-ink)}
+.lp-pick-btn[aria-pressed='true'] .lp-opt{font-weight:700;text-decoration-line:underline}
+.lp-pick-btn[aria-disabled='true']{opacity:.45;cursor:not-allowed}
+/* Образец подраздела — кусок витрины ролями сайта: меняется вместе со
+   страницей при каждом щелчке. Числа — роли сайта, у панели своих нет. */
+.lp-demo{display:flex;flex-direction:column;gap:var(--air-group, 16px);padding:var(--pad-card, 16px);border-radius:var(--lp-r2);
+  background:var(--page, var(--lp-well));color:var(--ink, var(--lp-ink));font-family:var(--face, inherit);font-size:var(--body-size, 16px);line-height:var(--body-lead, 1.5)}
+.lp-d-head{font-family:var(--face-head, inherit);font-size:var(--h3-size, 20px);font-weight:var(--h3-weight, 600);line-height:var(--h3-lead, 1.3);letter-spacing:var(--h3-track, normal)}
+.lp-d-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-grid, 16px)}
+.lp-d-card{display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2, 6px);min-inline-size:0;padding:var(--pad-inner, 12px);
+  border-radius:var(--r-card, 12px);background:var(--plate, var(--lp-bg));box-shadow:var(--sh-raised, none)}
+.lp-d-pic{position:relative;display:block;inline-size:100%;aspect-ratio:var(--shot-frame, 1);border-radius:calc(var(--r-card, 12px) - var(--pad-inner, 12px) / 2);background:var(--plate-2, var(--lp-well))}
+.lp-d-sale{position:absolute;inset-block-start:var(--sp-2, 6px);inset-inline-start:var(--sp-2, 6px);padding:0 var(--sp-2, 6px);border-radius:var(--r-xs, 4px);
+  background:var(--sale-fill, #555);color:var(--on-sale, #fff);font-size:var(--fs-xs, 12px);font-weight:700}
+.lp-d-brand{color:var(--ink-soft, var(--lp-soft));font-size:var(--fs-xs, 12px)}
+.lp-d-name{font-size:var(--fs-sm, 14px);font-weight:600;line-height:1.3}
+.lp-d-price{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--sp-2, 6px);font-size:var(--fs-sm, 14px)}
+.lp-d-price s{color:var(--ink-soft, var(--lp-soft));font-size:var(--fs-xs, 12px)}
+.lp-d-note{color:var(--ink-soft, var(--lp-soft));font-size:var(--note-size, 12px)}
+.lp-d-type{gap:var(--sp-3, 10px);align-items:flex-start}
+.lp-d-title{font-family:var(--face-head, inherit);font-size:var(--prodhead-size, 24px);font-weight:var(--prodhead-weight, 600);line-height:var(--prodhead-lead, 1.2);letter-spacing:var(--prodhead-track, normal)}
+.lp-d-body{margin:0;max-inline-size:var(--body-measure, 65ch)}
+/* Элементы набора: отрисовка живьём и строка — где он в панели. */
+.lp-els{display:grid;grid-template-columns:repeat(auto-fill, minmax(15rem, 1fr));gap:var(--lp-s5)}
+.lp-el{display:flex;flex-direction:column;gap:var(--lp-s2);margin:0}
+.lp-el-frame{display:block;inline-size:100%;block-size:180px;border:0;border-radius:var(--lp-r2);background:var(--lp-well)}
+.lp-el figcaption{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+/* Только на компьютере — строитель палитры; на телефоне на его месте строка. */
+.lp-phone{display:none}
+@media (max-width:560px){ .lp .lp-desk{display:none} .lp-phone{display:block} }
 @media (pointer:coarse){
   .lp{--lp-target:44px;--lp-target-lg:44px}
   .lp-tab,.lp-sub,.lp-segb{min-block-size:44px}

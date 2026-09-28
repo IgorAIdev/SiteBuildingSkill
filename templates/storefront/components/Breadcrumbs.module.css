@@ -34,5 +34,7 @@
 .crumbs .back{display:none}
 @container (max-width:559px){
   .crumbs ol{display:none}
-  .crumbs .back{display:inline-flex}
+  /* «Назад» на телефоне — орган, а не подпись: ростом строки марки,
+     чернилами (И509; cbdin.bg 15, Le Labo 14). */
+  .crumbs .back{display:inline-flex;font-size:var(--byline-size);color:var(--ink)}
 }

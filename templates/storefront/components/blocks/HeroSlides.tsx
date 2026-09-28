@@ -44,7 +44,7 @@ export function HeroSlides({ slides, label, prev, next }: { slides: HeroSlideVie
         {many ? <Dots slides={slides} current={current} pick={pick} className={s.heroDots} /> : null}
         {/* Стрелки — у низа сцены по бокам точек (И502): без них мышь не
             знала, что сцена листается. */}
-        {many ? <div className={s.heroNav}><Arrows back={prev} next={next} onBack={() => show(current - 1)} onNext={() => show(current + 1)} atStart={current === 0} atEnd={current === slides.length - 1} /></div> : null}
+        {many ? <Arrows back={prev} next={next} onBack={() => show(current - 1)} onNext={() => show(current + 1)} atStart={current === 0} atEnd={current === slides.length - 1} place={s.heroNav} /> : null}
       </div>
     </section>
   )

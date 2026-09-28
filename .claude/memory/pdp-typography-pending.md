@@ -12,6 +12,8 @@ Owner (25.09.2026, screenshot of /en/product/…): «размеры шрифто
 
 Done: structure (И440–И442); impeccable critique 27.09.2026 (26/40, detector 0) and its fixes — one loud button per screen, brand as note, price in the h3 role (И497); page title vs section heading 1.25 : 1 in the scale builder (И498, PR #81).
 
+Items 1 and 2 done 28.09.2026 (И509: disclosures, sticky buy row); item 4 still open (needs a measurement first).
+
 Deferred by the owner on 27.09.2026 («давай пока отложим, но запомни»), in this order:
 1. PDP detail sections always expanded — «Descriere» set at h2 (35px wide) repeats the tab row above it → make them disclosures.
 2. Sticky buy bar on phone («в корзину» pinned at the bottom).

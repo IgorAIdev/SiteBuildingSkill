@@ -13,5 +13,6 @@
 - [One writer in the shared tree](one-writer-shared-tree.md) — elements/ has one owning session; others check for repeats and forward, never write
 - [Scope: skill, not shop](skill-scope-not-shop.md) — asked about the skill → stay in the kit and upstream repos, not their CBD shop projects
 - [Shared working tree](shared-working-tree.md) — several sessions write in one tree/branch; git add own paths only, message before committing; never switch its branch — own worktree
-- [PDP pending](pdp-typography-pending.md) — product page: 4 items deferred by owner 27.09.2026 (disclosures, sticky buy bar, tab row, label weight); start there
-- [No screenshots, batched PRs](no-screenshots-batch-prs.md) — save tokens: accept edits, do them in one pass, one PR; merge on the owner's word; no screenshots, no PR subscription
+- [PDP pending](pdp-typography-pending.md) — product page: disclosures and sticky buy row done 28.09.2026 (И509); control label weight still open
+- [No screenshots, batched PRs](no-screenshots-batch-prs.md) — save tokens: no images at all, not even for my own checking — verify with printed numbers; one PR per batch; merge on the owner's word; no PR subscription
+- [Measure before styling](measure-before-styling.md) — type/spacing only from kit research + owner's built storefronts + 3 live shops (И507); think phone-first unprompted

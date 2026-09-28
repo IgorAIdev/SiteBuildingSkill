@@ -48,6 +48,10 @@ export const SECTIONS = [
     /* Карта товара (И278): доля ряда под галерею, край снимка, место
        миниатюр — значения `--pdp-*`; галерея при любом выборе помещается в
        экран. Пропорция снимка — в Card: она одна с полкой (И400). */
+    /* Нарисованные элементы набора (build-catalog.mjs, copyElements): все
+       живьём; у стоящего выбором — где он в панели, у прочих — «места на
+       витрине пока нет». */
+    { id: 'elements', name: 'Elements', hint: 'Every element drawn for the kit, live in the kit palette. Where an element is already a choice in this panel, it says where; the rest have no place on the shop yet — name the number and it gets one.', fields: [] },
     { id: 'product', name: 'Product page', hint: 'How the product page shows its pictures. The gallery always fits the screen; open a product to see the change.', fields: [['pdp-gallery', 'Gallery width'], ['pdp-edge', 'Picture edge'], ['pdp-thumbs', 'Thumbnails'], ['seg-look', 'Options'], ['quick-look', 'Quick order']] },
   ] },
 ]
