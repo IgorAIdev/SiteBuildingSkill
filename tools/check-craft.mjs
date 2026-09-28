@@ -1985,7 +1985,8 @@ const found = { lane: [], placeholder: [], measure: [], target: [], contrast: []
                 covered: [],
                 ladder: [], wideCtrl: [], lopsided: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [],
                 twiceLift: [], sheetSize: [],
-                autofill: [], fieldZoom: [], h1Lines: [] }
+                autofill: [], fieldZoom: [], h1Lines: [],
+                cardFold: [], heroFold: [], wasPrice: [] }
 
 /** Открыть страницу на ширине и померить.
  *
@@ -2128,7 +2129,104 @@ async function visit(path, w, { finger, dark = false }) {
         }
         return out
       })
+
+      /* ── встаёт в окно ноутбука: карточка товара и первый экран (И510) ──
+         Заказчик 28.09.2026 с 13" ноутбука (окно ≈ 1536×730): герой главной
+         выше окна, у карточки полки цена и «Добави» под краем. Потолок
+         снимка (`60svh`, запрет 4) стоял, а блок целиком не мерил никто:
+         текст под снимком растёт сам. Меряется на ширинах стола в двух
+         низких окнах — 657 и 730 (`LAYOUT.laptopWindows`): карточку
+         подводят верхом под прилипшую шапку и смотрят, не ушёл ли низ
+         (кнопка) за край; первый экран (`data-hero`) — не выше окна за
+         вычетом шапки. Шапка — приклеенная или прибитая полоса у верха
+         шире половины окна; не прилипает — вычитать нечего. */
+      r.cardFold = []
+      r.heroFold = []
+      if (w >= LAYOUT.laptopFrom) {
+        for (const height of LAYOUT.laptopWindows) {
+          await page.setViewportSize({ width: w, height })
+          const got = await page.evaluate(async (height) => {
+            const wait = (ms) => new Promise((ok) => setTimeout(ok, ms))
+            const html = document.documentElement
+            const was = html.style.scrollBehavior
+            html.style.scrollBehavior = 'auto'
+            const chrome = () => {
+              let bottom = 0
+              for (const el of document.querySelectorAll('body *')) {
+                const cs = getComputedStyle(el)
+                if (cs.position !== 'sticky' && cs.position !== 'fixed') continue
+                const b = el.getBoundingClientRect()
+                if (b.height < 8 || b.top > 40 || b.top < -2 || b.width < innerWidth / 2 || b.bottom > innerHeight * 0.4) continue
+                bottom = Math.max(bottom, b.bottom)
+              }
+              return Math.round(bottom)
+            }
+            const label = (el) => {
+              const t = (el.querySelector('h1, h2, h3') || el).textContent.trim().replace(/\s+/g, ' ').slice(0, 28)
+              return t ? `«${t}»` : el.tagName.toLowerCase()
+            }
+            const out = { card: [], hero: [] }
+            /* Шапка меряется прилипшей: страница сдвинута с верха. */
+            scrollTo(0, 600)
+            await wait(120)
+            const head = chrome()
+            for (const el of document.querySelectorAll('[data-hero]')) {
+              const h = el.getBoundingClientRect().height
+              if (h && h > innerHeight - head + 1) {
+                out.hero.push(`первый экран ${label(el)} — ${Math.round(h)}px при шапке ${head}: в окне ${height} не помещается на ${Math.round(h - (innerHeight - head))}px`)
+              }
+            }
+            const seen = new Set()
+            for (const el of [...document.querySelectorAll('[data-product-card]')].slice(0, 24)) {
+              const b0 = el.getBoundingClientRect()
+              if (!b0.height || getComputedStyle(el).display === 'none') continue
+              const key = `${Math.round(b0.width)}x${Math.round(b0.height)}`
+              if (seen.has(key)) continue
+              seen.add(key)
+              el.scrollIntoView({ block: 'start', behavior: 'instant' })
+              await wait(60)
+              const top = chrome()
+              scrollBy(0, el.getBoundingClientRect().top - top)
+              await wait(60)
+              const b = el.getBoundingClientRect()
+              if (b.bottom > innerHeight + 1) {
+                out.card.push(`карточка ${label(el)} ${Math.round(b.width)}×${Math.round(b.height)} под шапкой ${top}: низ ниже окна ${height} на ${Math.round(b.bottom - innerHeight)}px — цена и кнопка за краем`)
+              }
+            }
+            scrollTo(0, 0)
+            html.style.scrollBehavior = was
+            return out
+          }, height)
+          r.cardFold.push(...got.card)
+          r.heroFold.push(...got.hero)
+        }
+      }
       await page.setViewportSize({ width: w, height: 900 })
+
+      /* ── строка цены: нынешняя первой, прежняя справа (И510) ─────────────
+         Прежняя цена своим этажом над нынешней отнимала у карточки строку
+         высоты; перед нынешней в строке — читается первой вместо той, что
+         платят. Заказчик: «зачеркнутую цену располагать правее от
+         незачеркнутой, чтоб она по высоте место не занимала». Прежняя —
+         `s` или `del`; нынешняя — ближайшее к ней число вне зачёркнутого. */
+      r.wasPrice = await page.evaluate(() => {
+        const out = new Set()
+        const shown = (el) => { const b = el.getBoundingClientRect(); return b.width > 1 && b.height > 1 }
+        for (const s of document.querySelectorAll('s, del')) {
+          if (!shown(s) || !/\d/.test(s.textContent)) continue
+          let box = s.parentElement, now = null
+          for (let i = 0; box && i < 4 && !now; i++, box = box.parentElement) {
+            now = [...box.querySelectorAll('*')].find((e) => e.children.length === 0 && !e.closest('s, del')
+              && !e.contains(s) && /\d/.test(e.textContent) && shown(e)) ?? null
+          }
+          if (!now) continue
+          const a = s.getBoundingClientRect(), b = now.getBoundingClientRect()
+          const txt = `«${s.textContent.trim()}» и «${now.textContent.trim()}»`
+          if (a.bottom <= b.top + 2) out.add(`прежняя цена ${txt} — своей строкой над нынешней`)
+          else if (a.top < b.bottom && b.top < a.bottom && a.right <= b.left + 2) out.add(`прежняя цена ${txt} — перед нынешней в строке`)
+        }
+        return [...out]
+      })
     }
 
     /* ── второй проход: дно, которое не прочитать стилями ──────────────────

@@ -722,7 +722,7 @@
     },
     {
       "local": "assets/studio/engine/thresholds.mjs",
-      "sha256": "fe827d1172cb1f320cc3f64bbc0aa0c5690b29b816682a6614347cfd7b68d2dd",
+      "sha256": "9c8a90e127f72326c981f289593192db06d5c7e5943e460f48145e6ae87f564f",
       "origin": "Generated from the canonical SiteBuildingSkill tools; Node I/O replaced for browser portability. Not imported from a commerce repository."
     },
     {

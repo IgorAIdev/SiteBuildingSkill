@@ -21,7 +21,7 @@ export const CRAFT_FAMILIES = [
   'marker', 'sticky', 'theme', 'coarse', 'calm', 'ladder', 'wideCtrl',
   'lopsided', 'sunk', 'stolen', 'inkDip', 'markInk', 'field', 'alone',
   'catalogueColumns', 'twoAir', 'twiceLift', 'sheetSize',
-  'autofill', 'fieldZoom', 'h1Lines',
+  'autofill', 'fieldZoom', 'h1Lines', 'cardFold', 'heroFold', 'wasPrice',
 ]
 
 /** Вектор — адрес SVG: файл `.svg` или `data:image/svg+xml`. Семья
@@ -88,4 +88,7 @@ export const CRAFT_LABELS = {
   autofill: 'поле оформления без autocomplete: браузер не подставит имя, телефон и адрес — покупатель набирает их пальцем (WCAG 1.3.5)',
   fieldZoom: 'поле мельче 16px на телефоне: iOS Safari увеличивает страницу при вводе и не возвращает',
   h1Lines: 'главный заголовок в четыре строки и больше: мера держится ролью заголовка, а не длиной текста',
+  cardFold: 'карточка товара не встаёт в окно ноутбука (657, 730) под прилипшей шапкой — цена и кнопка за краем',
+  heroFold: 'первый экран (data-hero) выше окна ноутбука за вычетом прилипшей шапки',
+  wasPrice: 'прежняя цена своей строкой над нынешней или перед ней: нынешняя первой, прежняя справа в той же строке',
 }
