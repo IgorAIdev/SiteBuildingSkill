@@ -1721,12 +1721,39 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
    * Занятый верх берётся из геометрии САМОЙ шапки — её отступа от края и
    * высоты в прилипшем виде, — а не из правила, которое мы же и проверяем.
    * Нет таких величин (чужой проект, другая шапка) — меряется высотой
-   * шапки как она есть. */
+   * шапки как она есть.
+   *
+   * И занят верх только там, где шапка В САМОМ ДЕЛЕ стоит у верха окна,
+   * когда цель приехала (И512). Шапка, которая уезжает со страницей
+   * (`position: relative`), не закрывает ничего; прилипшая к своей обёртке —
+   * только пока обёртка не кончилась. На cbdshop.bg проверка без этого
+   * вопроса дала 620 находок на шапке, которая не прилипает вовсе. Поэтому
+   * держатель ищется вверх от шапки — `fixed` стоит всегда, `sticky` с
+   * заданным `top` — до низа своего родителя, — и занятый верх в точке, куда
+   * браузер довезёт цель, не больше того, что от держателя там осталось. */
   {
     const head = document.querySelector('header')
     const px = (n) => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(n)) || 0
     const stuck = px('--float') + px('--chrome-stuck')
-    const occupied = stuck > 0 ? stuck : (head ? head.getBoundingClientRect().height : 0)
+    const holder = (() => {
+      for (let el = head; el && el !== document.documentElement; el = el.parentElement) {
+        const cs = getComputedStyle(el)
+        if (cs.position === 'fixed') return { el, top: parseFloat(cs.top) || 0, until: Infinity }
+        if (cs.position === 'sticky' && cs.top !== 'auto' && el.parentElement) {
+          return { el, top: parseFloat(cs.top) || 0, until: el.parentElement.getBoundingClientRect().bottom + scrollY }
+        }
+      }
+      return null
+    })()
+    const held = holder ? holder.el.getBoundingClientRect().height : 0
+    const occupied = !held ? 0 : stuck > 0 ? stuck : holder.top + held
+    /* Сколько верха занято, когда цель довезли до своего отступа: прилипшая
+       шапка едет вверх вместе с концом обёртки. */
+    const coveredAt = (target, margin) => {
+      if (!occupied) return 0
+      const at = target.getBoundingClientRect().top + scrollY - margin
+      return Math.max(0, Math.min(occupied, holder.until - at))
+    }
     for (const a of document.querySelectorAll('a[href^="#"]')) {
       const raw = (a.getAttribute('href') || '').slice(1)
       if (!raw) continue
@@ -1742,9 +1769,10 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
       }
       if (!occupied) continue
       const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0
-      if (margin + 1 >= occupied) continue
+      const covered = coveredAt(target, margin)
+      if (margin + 1 >= covered) continue
       seen.add(key)
-      out.anchor.push(`#${id} — отступ ${Math.round(margin)} при занятом верхе ${Math.round(occupied)}`)
+      out.anchor.push(`#${id} — отступ ${Math.round(margin)} при занятом верхе ${Math.round(covered)}`)
     }
   }
 
