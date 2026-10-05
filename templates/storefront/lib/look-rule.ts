@@ -19,7 +19,7 @@ import { acceptValues, loadedWeights, STRUCTURE, type Group, type Slots, type St
  *  пороги и какие роли текста — заголовки (шрифт заголовков). */
 export type Facts = {
   roles: Readonly<Record<string, string>>
-  need: { text: number; control: number; visible: number }
+  need: { text: number; control: number; visible: number; edge: number }
   headings: readonly string[]
 }
 /** Что не носится: две группы, причина словами и свойства, на которых
@@ -30,8 +30,8 @@ export type Fell = { group: Group; why: string }
 
 /** Старшинство: уступает младшая группа — ручки полки и карты товара раньше
  *  стиля кнопок, стиль кнопок раньше краски галочки, галочка раньше
- *  вида поля, вид поля раньше отметки пункта меню, шрифта, теней, углов, ширины, ритма и цвета. */
-export const ORDER: readonly Group[] = ['palette', 'scale', 'width', 'corners', 'shadow', 'face', 'marker', 'field', 'field-label', 'tick', 'button', 'pdp-gallery', 'pdp-thumbs', 'pdp-edge', 'seg-look', 'quick-look', 'go-hover', 'head-icons', 'say-look', 'pair-look', 'chip-sign', 'drawer-look', 'cart-sign', 'cart-meta', 'shot-frame', 'shelf-cols', 'card-buy', 'sort-label']
+ *  вида поля, вид поля раньше шрифта, теней, углов, ширины, ритма и цвета. */
+export const ORDER: readonly Group[] = ['palette', 'scale', 'text-size', 'head-size', 'width', 'corners', 'shadow', 'face', 'field', 'field-label', 'tick', 'button', 'pdp-gallery', 'pdp-thumbs', 'pdp-edge', 'seg-look', 'quick-look', 'go-hover', 'say-look', 'pair-look', 'cart-sign', 'cart-meta', 'door-case', 'logo', 'stock-look', 'pager-look', 'filter-look', 'filter-phone', 'save-look', 'nav-current']
 
 type Rgba = readonly [number, number, number, number]
 const THEMES = ['light', 'dark'] as const
@@ -131,9 +131,16 @@ export function problems(vars: Readonly<Record<string, string>>, fonts: readonly
           const r = contrast(under, floor)
           if (r < need.visible) add('button', 'palette', `the ${voice} button fades into the ${where}: ${say(r, need.visible)}`, [fillRole])
         }
+        /* Кромка органа с надписью в покое — тихая линия (И588): орган
+           опознаёт надпись; под рукой тихая кромка темнеет до 3 : 1. */
         if (edge && edge[3] > 0) {
           const r = contrast(over(edge, floor), floor)
-          if (r < need.control) add('button', 'palette', `the ${voice} button's edge is too faint on the ${where}: ${say(r, need.control)}`, [edgeRole])
+          if (r < need.edge) add('button', 'palette', `the ${voice} button's edge is too faint on the ${where}: ${say(r, need.edge)}`, [edgeRole])
+        }
+        const hand = voice === 'quiet' ? get('--ctrl-btn-edge-hand') : null
+        if (hand && hand[3] > 0) {
+          const r = contrast(over(hand, floor), floor)
+          if (r < need.control) add('button', 'palette', `the quiet button's edge under the hand is too faint on the ${where}: ${say(r, need.control)}`, ['--ctrl-btn-edge-hand'])
         }
         if (ink) {
           const t = contrast(over(ink, under), under)
@@ -147,19 +154,6 @@ export function problems(vars: Readonly<Record<string, string>>, fonts: readonly
           if (t < need.text) add('button', 'palette', `the main button's label is too faint on the gradient end on the ${where}: ${say(t, need.text)}`, ['--ctrl-btn-tint-pop'])
         }
       }
-    }
-    const plate = get('--plate')
-    const mark = get('--menu-mark-fill')
-    if (plate && mark && mark[3] > 0) {
-      const under = over(mark, plate)
-      const r = contrast(under, plate)
-      if (r < need.visible) add('marker', 'palette', `the current-item pill fades into the header: ${say(r, need.visible)}`)
-      const ink = get('--menu-mark-ink')
-      if (ink) { const t = contrast(over(ink, under), under); if (t < need.text) add('marker', 'palette', `the current item's label is too faint on its pill: ${say(t, need.text)}`) }
-      /* Черта у начала строки (И393) — краской марки для текста, 3 : 1 к
-         тону, на котором стоит: без неё отметка — только тон. */
-      const bar = Number(vars['--menu-mark-side']) > 0 ? get('--pop-ink') : null
-      if (bar) { const b = contrast(over(bar, under), under); if (b < need.control) add('marker', 'palette', `the current item's side bar is too faint on its pill: ${say(b, need.control)}`) }
     }
     /* Поле ввода (И390, styles/form.module.css) — на каждом полу, где поле
        стоит: страница (поиск, корзина), шапка, лист (касса). Кромка — вокруг
@@ -198,16 +192,20 @@ export function problems(vars: Readonly<Record<string, string>>, fonts: readonly
       }
     }
   }
+  /* Плоская тень — одна линия без размытия: поверхность в покое (`raised`) и
+     всплывающее (`overlay`) от пола отделяет только она, и она должна быть видна
+     не хуже вуали состояния. У «Без тени» поверхность в покое линии не несёт
+     (её отделяет своя кромка), всплывающее — кромку `--edge-near` (И726). */
   for (const theme of THEMES) {
-    /* Плоская тень — одна линия без размытия: карточку от пола отделяет
-       только она, и она должна быть видна не хуже вуали состояния. */
-    const flat = flatLine(vars['--sh-raised'])
-    if (!flat) continue
-    const get = painter(vars, facts.roles, theme)
-    const [line, floor] = [get(flat), get('--page')]
-    if (!line || !floor) continue
-    const r = contrast(over(line, floor), floor)
-    if (r < need.visible) add('shadow', 'palette', `the card's line fades into the page: ${shown(r)} : 1 in the ${theme} theme, needs ${need.visible}`)
+    for (const [role, what] of [['--sh-raised', "the card's line"], ['--sh-overlay', "the menu's edge"]] as const) {
+      const flat = flatLine(vars[role])
+      if (!flat) continue
+      const get = painter(vars, facts.roles, theme)
+      const [line, floor] = [get(flat), get('--page')]
+      if (!line || !floor) continue
+      const r = contrast(over(line, floor), floor)
+      if (r < need.visible) add('shadow', 'palette', `${what} fades into the page: ${shown(r)} : 1 in the ${theme} theme, needs ${need.visible}`)
+    }
   }
   const body = family(vars['--face'])
   const head = vars['--face-head'] === 'var(--face)' ? body : family(vars['--face-head'])
@@ -215,8 +213,9 @@ export function problems(vars: Readonly<Record<string, string>>, fonts: readonly
     const have = loadedWeights(fonts, fam)
     if (have && !have.includes(w)) add('face', g, `${what} is set at weight ${w}; ${fam} is loaded at ${have.join(', ')}`, roles)
   }
-  const btn = Number(vars['--ctrl-btn-weight'])
-  if (btn) weight(body, btn, 'button labels', 'button', ['--ctrl-btn-weight'])
+  /* Надпись кнопки — полужирная всегда (styles/btn.module.css, И586): у
+     шрифта сайта это начертание должно быть. */
+  weight(body, 600, 'button labels', 'button')
   for (const [name, value] of Object.entries(vars)) {
     const role = name.match(/^--([a-z0-9]+)-weight$/)?.[1]
     if (role && Number(value)) weight(facts.headings.includes(role) ? head : body, Number(value), `${role} text`, 'scale')
@@ -234,7 +233,8 @@ export function settle(vars: Readonly<Record<string, string>>, fonts: readonly L
   const keep = new Set<Group>(ORDER.filter((g) => Object.keys(vars).some((k) => groupOf(k) === g) || (g === 'face' && fonts.length > 0)))
   const fell: Fell[] = []
   for (;;) {
-    const kept = Object.fromEntries(Object.entries(vars).filter(([k]) => { const g = groupOf(k); return g !== undefined && keep.has(g) }))
+    /* Группа вне ORDER (подложка секции `band-<блок>`, И591) ни с чем не пара: носится всегда, судить нечего. */
+    const kept = Object.fromEntries(Object.entries(vars).filter(([k]) => { const g = groupOf(k); return g !== undefined && (keep.has(g) || !ORDER.includes(g)) }))
     const keptFonts = keep.has('face') ? [...fonts] : []
     const hit = problems({ ...defaults, ...kept }, keptFonts, facts).find((p) => p.groups.some((g) => keep.has(g)))
     if (!hit) return { vars: kept, fonts: keptFonts, fell }
@@ -249,10 +249,15 @@ export type Note = { what: string; why: string }
 /** Сохранённое → вид, которым рисуется страница, и что отброшено: свойства
  *  не из списка сайта или не того рода (lib/look-values.ts), группы, не
  *  носящиеся с остальными (`settle`). Значения, равные умолчанию стилей
- *  сайта, в блок вида не идут — их и так держат стили. */
+ *  сайта, в блок вида не идут — их и так держат стили. Исключение — слова,
+ *  которые читает сервер, чтобы решить разметку (`toneOf`, lib/bands.ts):
+ *  подложка секции. Вид сайта выпущен в styles/look.css (опубликованное
+ *  слово равно умолчанию стилей), и отброшенное как «равное умолчанию» оно
+ *  пропадало с главной после пересборки (разбор ритма 03.10.2026). */
+export const READ_BY_SERVER = /^--band-/
 export function acceptLook(raw: unknown, slots: Slots, facts: Facts, known: Structure = STRUCTURE): { look: Look; notes: Note[] } {
   const { look, dropped } = acceptValues(raw, slots, known)
   const kept = settle(look.vars, look.fonts, slots, facts)
-  const vars = Object.fromEntries(Object.entries(kept.vars).filter(([k, v]) => slots[k].value !== v))
+  const vars = Object.fromEntries(Object.entries(kept.vars).filter(([k, v]) => READ_BY_SERVER.test(k) || slots[k].value !== v))
   return { look: { ...look, vars, fonts: kept.fonts }, notes: [...dropped, ...kept.fell.map((f) => ({ what: f.group, why: f.why }))] }
 }

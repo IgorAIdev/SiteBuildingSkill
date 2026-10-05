@@ -32,7 +32,7 @@
 import { fileURLToPath } from 'node:url'
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs'
 import { basename, join, relative as nativeRelative } from 'node:path'
-import { CODE_FAMILIES, CODE_LABELS as NAMES, LONG_FILE, MANY_HOOKS } from './code-families.mjs'
+import { CODE_FAMILIES, CODE_LABELS as NAMES, LONG_FILE, NEAR_LONG, MANY_HOOKS } from './code-families.mjs'
 /* Где код, где стили, с каких папок спрашивают — `kit.config.json` проекта
    или соглашения набора (И168). */
 import { CODE_DIRS as DIRS, BLOCK_DIRS, STYLE_DIRS, ALIASES, STORES } from './kit-config.mjs'
@@ -52,6 +52,13 @@ const DATA = [
   'lib/studio/schema.ts', // описание полей панели
   'components/Icons.tsx', // набор значков: по функции на значок
 ]
+/* Словари языков витрины — `lib/i18n/<язык>.ts`, по файлу на язык рынка
+   (И771). В списке стоял только словарь прошлого магазина (`lib/dict.ts`), и
+   словари шаблона мерились как код: 373 строки переводов у сигнала 378 —
+   слова кабинета покупателя уже не влезали, и их пришлось бы делить по
+   второму файлу, то есть искать перевод в двух местах. */
+const DICTS = /^lib\/i18n\/(?!index\.ts$)[a-z-]+\.ts$/
+const isData = (rel) => DATA.includes(rel) || DICTS.test(rel)
 
 /** Длиннее этого файл перестаёт читаться целиком. */
 /** Больше этого хуков в одной функции — она держит не одно состояние, а много. */
@@ -155,9 +162,13 @@ for (const path of files) {
    *
    * Данные не считаются: длина словаря — это число переводов, а не
    * сложность. */
-  if (!DATA.includes(rel)) {
+  if (!isData(rel)) {
     const lines = src.split('\n').length
     if (lines > LONG_FILE) found.longFile.push(`${rel}  ${lines} строк (порог ${LONG_FILE})`)
+    /* У порога (И743): адаптер движка дорос до 419 из 420, и следующую работу
+       по каталогу пришлось бы класть случайным файлом рядом. Ранний сигнал —
+       раскладка по работам, пока место есть. */
+    else if (lines > NEAR_LONG) found.nearLong.push(`${rel}  ${lines} строк (порог ${LONG_FILE}, сигнал ${NEAR_LONG})`)
   }
 
   /* ── семья 3: компонент, держащий слишком много состояния ───────────────
@@ -356,6 +367,27 @@ for (const path of files) {
        \b в JavaScript без флага `u` считает «é» границей слова, и венгерское «Tétel:» читалось как схема `tel:`; граница теперь — любая буква или цифра Юникода (И254). */
     for (const m of src.matchAll(/(?<![\p{L}\p{N}_])(?:tel:|mailto:)(?!\|)|(?:https?:)?\/\/(?:t\.me|wa\.me)\/|viber:\/\//gu)) {
       found.contactScheme.push(`${at(m.index)}  ${m[0]} — адрес канала связи вне lib/contacts.ts`)
+    }
+  }
+
+  /* ── семья: запись пересобирает текущую страницу (И696) ─────────────────
+   *
+   * `revalidatePath` / `revalidateTag` (и обёртка `sessionChanged`) в действии
+   * сервера возвращают в том же ответе заново собранную ТЕКУЩУЮ страницу —
+   * ту, где стоит кнопка, а не ту, что изменилась. «+» в шторке корзины на
+   * главной ждал 962 мс, пока сервер собирал главную со всеми полками;
+   * заказчик: «это элементарно не допускать в программировании». Пересборка
+   * законна с переходом (`redirect` в той же функции: собирается страница, куда
+   * ведут) или когда действие отвечает своей же странице — тогда в теле
+   * функции стоит пометка `своя страница` словами. Остальное — находка. */
+  if (/^\s*['"]use server['"]/.test(raw)) {
+    for (const m of src.matchAll(/^export\s+async\s+function\s+([A-Za-z_$][\w$]*)[\s\S]*?\n\}/gm)) {
+      const body = m[0]
+      if (!/\b(?:revalidatePath|revalidateTag|sessionChanged)\s*\(/.test(body)) continue
+      if (/\bredirect\s*\(/.test(body)) continue
+      const rawBody = raw.slice(m.index, m.index + body.length)
+      if (/своя страница/.test(rawBody)) continue
+      found.actionRedraw.push(`${at(m.index)}  ${m[1]} — пересборка без перехода: ответ несёт заново собранную текущую страницу`)
     }
   }
 

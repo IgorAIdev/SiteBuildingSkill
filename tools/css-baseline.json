@@ -59,5 +59,12 @@
   "dressGrown": 0,
   "varMissing": 0,
   "colorOut": 0,
-  "knobTie": 0
+  "handOut": 0,
+  "rowShape": 0,
+  "knobTie": 0,
+  "captionRole": 0,
+  "turnFlip": 0,
+  "fingerTwin": 0,
+  "placeTie": 0,
+  "paneFill": 0
 }

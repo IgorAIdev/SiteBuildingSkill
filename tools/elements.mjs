@@ -47,6 +47,35 @@ export const stageJs = (svg) => `/* Собран tools/elements.mjs из styles/
   const root = document.documentElement
   if (q.get('palette')) root.dataset.palette = q.get('palette')
   if (q.get('theme')) root.dataset.theme = q.get('theme')
+  /* ?live — только живой элемент, без застывших состояний: состояния видны
+     наведением и нажатием (слово заказчика 01.10.2026, И620). */
+  if (q.has('live')) root.dataset.live = ''
+  /* Кадр внутри страницы дизайн-системы (?live) носит краски ВЫБРАННОЙ в
+     панели палитры, а не краски набора из palettes.css: иначе плитки кнопок
+     стояли в латуни набора, а рядом кнопки сайта — в палитре магазина (слово
+     заказчика 02.10.2026: «кнопки потеряли связь с палитрой из панели»).
+     Берутся имена красок из palettes.css, значения — вычисленные у страницы
+     (одна и та же палитра, а не вторая копия); тема страницы сменилась —
+     берутся заново. Сам по себе, без страницы, элемент остаётся в красках набора. */
+  if (q.has('live') && window.parent !== window) {
+    try {
+      const host = window.parent.document.documentElement
+      const names = new Set()
+      for (const sheet of document.styleSheets) {
+        if (!(sheet.href || '').endsWith('palettes.css')) continue
+        for (const rule of sheet.cssRules) for (const m of rule.cssText.matchAll(/(--[\\w-]+)\\s*:/g)) names.add(m[1])
+      }
+      const wear = () => {
+        const now = window.parent.getComputedStyle(host)
+        for (const n of names) {
+          const v = now.getPropertyValue(n).trim()
+          if (v) root.style.setProperty(n, v)
+        }
+      }
+      wear()
+      new MutationObserver(wear).observe(host, { attributes: true })
+    } catch { /* страница чужого происхождения: краски набора */ }
+  }
   const SIGNS = ${JSON.stringify(sheetSigns(svg))}
   const fill = () => {
     for (const el of document.querySelectorAll('svg[data-sign]')) {
@@ -145,7 +174,10 @@ export const byKind = (cat) => Object.keys(cat.метки?.род ?? {})
 
 /** Строки выдачи `--list [род]`: «род — сколько», под ним «NN · имя · семья». */
 export const listKinds = (cat, want = '') => byKind(cat).filter(([k]) => !want || k === want)
-  .flatMap(([k, list]) => [`${k} — ${list.length}`, ...list.map((e) => `  ${e.папка.slice(0, 2)} · ${e.имя} · ${cat.семьи?.[e.семья]?.имя ?? e.семья}`)])
+  .flatMap(([k, list]) => [`${k} — ${list.length}`, ...list.map((e) => `  ${numOf(e)} · ${e.имя} · ${cat.семьи?.[e.семья]?.имя ?? e.семья}`)])
+
+/** Имена свойств `--имя`, объявленных в тексте CSS (после двоеточия — значение). */
+export const declaredNames = (css) => new Set([...css.matchAll(/(--[\w-]+)\s*:/g)].map((m) => m[1]))
 
 /** Находки каталога строками «кто: что». `read(путь)` — текст файла из папки
  *  элементов или null; `icons` — имена значков листа набора. Единая форма
@@ -155,6 +187,15 @@ export const listKinds = (cat, want = '') => byKind(cat).filter(([k]) => !want |
 export function auditElements(cat, read, icons = []) {
   const found = []
   const bad = (who, what) => found.push(`${who}: ${what}`)
+  /* Кадр внутри страницы дизайн-системы носит краски палитры по ИМЕНИ (stage.js, `wear`:
+     встроенный стиль на корне кадра). Имя, которое основа объявила про своё, там затирается:
+     `--line` в основе был толщиной (1px), в палитре — цветом разделителя, и в кадре черта,
+     кромки и разделители пропали (И666). Основа называет своё иначе, чем палитра. */
+  const palette = read('palettes.css'), own = read('base.css')
+  if (palette != null && own != null) {
+    const mine = declaredNames(own)
+    for (const n of declaredNames(palette)) if (mine.has(n)) bad('base.css', `свойство ${n} объявлено и в палитре: в кадре страницы его затрёт значение палитры — основе нужно другое имя`)
+  }
   const vocab = cat.метки ?? {}
   const kinds = Object.keys(vocab.род ?? {})
   const facets = Object.keys(vocab).filter((k) => k !== 'род')
@@ -166,7 +207,7 @@ export function auditElements(cat, read, icons = []) {
   const names = new Set()
   for (const e of cat.элементы ?? []) {
     const who = e.папка ?? '?'
-    if (!/^\d{2}-[a-z0-9-]+$/.test(e.папка ?? '')) bad(who, 'папка — NN-имя латиницей')
+    if (!/^\d{2,3}-[a-z0-9-]+$/.test(e.папка ?? '')) bad(who, 'папка — NN-имя или NNN-имя латиницей')
     if (used.has(e.папка)) bad(who, 'папка названа дважды')
     used.add(e.папка)
     if (!e.имя || !e.что || !e.откуда) bad(who, 'нет имени, описания или происхождения')
@@ -186,7 +227,8 @@ export function auditElements(cat, read, icons = []) {
     for (const src of [e.источник].flat()) if (read(`${e.папка}/${src}`) == null) bad(who, `нет источника ${src}`)
     const page = read(`${e.папка}/element.html`)
     if (page == null) { bad(who, 'нет отрисовки element.html'); continue }
-    if (!drawings && frozen(e).some(([s]) => !page.includes(`data-state="${s}"`))) bad(who, `${frozen(e).map(([, n]) => n).join(' и ')} не показаны застывшими (data-state)`)
+    /* `живой`: образец без застывших состояний — наведение и нажатие пробуют рукой (слово заказчика 02.10.2026: «не рисовать в трёх состояниях, страница разрастётся»; И620). */
+    if (!drawings && !e.живой && frozen(e).some(([s]) => !page.includes(`data-state="${s}"`))) bad(who, `${frozen(e).map(([, n]) => n).join(' и ')} не показаны застывшими (data-state)`)
     if (!page.includes(BASE)) bad(who, 'отрисовка не на основе ../base.css')
     for (const link of LINKS.filter((l) => l !== BASE)) if (!page.includes(link)) bad(who, `нет подключения ${link.match(/(?:href|src)="([^"]+)"/)[1]}: краски — ролями палитры набора, значки — из листа`)
     const markup = page.replace(/<!--[\s\S]*?-->/g, '')
@@ -207,8 +249,8 @@ const chips = (list, cls = '') => list.map((x) => `<span class="chip${cls}">${es
 export function toHtml(cat, palettes = []) {
   const source = (e, src) => (/\.(png|jpe?g|webp)$/.test(src) ? `<img src="${esc(e.папка)}/${esc(src)}" alt="Источник: ${esc(e.имя)}">` : `<a href="${esc(e.папка)}/${esc(src)}">${esc(src)}</a>`)
   const card = (e) => `
-      <article id="e-${esc(e.папка.slice(0, 2))}" data-kind="${esc(e.род.join(' '))}">
-        <header><h3>${esc(e.папка.slice(0, 2))} · ${esc(e.имя)}</h3>${chips(e.род, ' kind')}</header>
+      <article id="e-${esc(numOf(e))}" data-kind="${esc(e.род.join(' '))}">
+        <header><h3>${esc(numOf(e))} · ${esc(e.имя)}</h3>${chips(e.род, ' kind')}</header>
         <p class="note">${esc(e.что)}</p>
         <div class="tags">${Object.entries(e.метки).map(([k, v]) => `<span class="chip"><i>${esc(k)}</i> ${esc([v].flat().join(', '))}</span>`).join('')}</div>
         <dl>${Object.entries(e.состояния).map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}${e.снято.length ? `<dt>снято</dt><dd>${esc(e.снято.join('; '))}</dd>` : ''}${e.приведено.length ? `<dt>приведено</dt><dd>${esc(e.приведено.join('; '))}</dd>` : ''}</dl>
@@ -228,7 +270,7 @@ export function toHtml(cat, palettes = []) {
   }).join('')
   const kinds = Object.keys(cat.метки.род)
   const toc = byKind(cat).map(([k, list]) => `
-    <p><b>${esc(k)}</b> <span>${list.map((e) => `<a href="#e-${esc(e.папка.slice(0, 2))}" title="${esc(e.имя)}">${esc(e.папка.slice(0, 2))}</a>`).join(' ')}</span></p>`).join('')
+    <p><b>${esc(k)}</b> <span>${list.map((e) => `<a href="#e-${esc(numOf(e))}" title="${esc(e.имя)}">${esc(numOf(e))}</a>`).join(' ')}</span></p>`).join('')
   return `<!doctype html>
 <html lang="ru">
 <head>
@@ -357,7 +399,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   writeFileSync(path.join(DIR, 'stage.js'), stageJs(sheet))
   writeFileSync(path.join(DIR, 'index.html'), toHtml(cat, Object.keys(paletteSets)))
   console.log(`✓ elements/index.html · ${cat.элементы.length} элементов, семей ${Object.keys(cat.семьи).length}`)
-  if (process.argv.includes('--shots')) await shots(DIR, cat, process.argv.slice(process.argv.indexOf('--shots') + 1).filter((a) => /^\d{2}$/.test(a)))
+  if (process.argv.includes('--shots')) await shots(DIR, cat, process.argv.slice(process.argv.indexOf('--shots') + 1).filter((a) => /^\d{2,3}$/.test(a)))
 }
 
 /** Снимки настоящих страниц элементов (И339): показывается заказчику то, что
@@ -374,7 +416,7 @@ async function shots(DIR, cat, only) {
   const OUT = path.join(tmpdir(), 'elements-shots')
   mkdirSync(OUT, { recursive: true })
   const theme = process.env.THEME === 'dark' ? 'dark' : 'light'
-  const list = cat.элементы.filter((e) => !only.length || only.includes(e.папка.slice(0, 2)))
+  const list = cat.элементы.filter((e) => !only.length || only.includes(numOf(e)))
   const browser = await chromium.launch(process.env.BROWSER_EXECUTABLE ? { executablePath: process.env.BROWSER_EXECUTABLE } : {})
   const page = await browser.newPage({ viewport: { width: 760, height: 900 }, deviceScaleFactor: 2 })
   const area = () => page.evaluate(() => {
@@ -394,3 +436,6 @@ async function shots(DIR, cat, only) {
   }
   await browser.close()
 }
+
+/** Номер элемента — цифры до первого дефиса в имени папки (две или три: 99, 100). */
+function numOf(e) { return e.папка.split('-')[0] }

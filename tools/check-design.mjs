@@ -176,15 +176,24 @@ const range = (value, seen = new Set()) => {
     const a = range(lo, seen), b = range(hi, seen)
     return a && b ? [a[0], b[1]] : null
   }
+  /* `max(1rem, var(--fs-sm))` — пол роли (меню, И633): меньший из концов
+     не ниже пола, больший — тоже. */
+  const pick = v.match(/^(max|min)\(([\s\S]+)\)$/)
+  if (pick) {
+    const all = splitTop(pick[2]).map((p) => range(p, seen))
+    if (all.some((r) => !r)) return null
+    return [Math[pick[1]](...all.map((r) => r[0])), Math[pick[1]](...all.map((r) => r[1]))]
+  }
   const px = toPx(v)
   return px === null ? null : [px, px]
 }
 /** Уровень, которому принадлежит роль размера: --h2-size → 2. */
 const levelOfRole = (value) => {
-  const roles = [...String(value).matchAll(/--(hero|pagehead|prodhead|h[1-6])-size\b|--(?:ctrl-)?fs-(h[1-6])\b/g)].map((m) => m[1] ?? m[2])
+  const roles = [...String(value).matchAll(/--(hero|pagehead|prodhead|panehead|h[1-6])-size\b|--(?:ctrl-)?fs-(h[1-6])\b/g)].map((m) => m[1] ?? m[2])
   const role = roles.at(-1)
   if (!role) return null
-  return { role: `--${roles.at(-1)}`, level: /^h(\d)/.test(role) ? Number(role[1]) : 1 }
+  /* Заголовок окна (`panehead`) — второй уровень: h2 шторки ступенью ниже (И551). */
+  return { role: `--${roles.at(-1)}`, level: /^h(\d)/.test(role) ? Number(role[1]) : role === 'panehead' ? 2 : 1 }
 }
 const sizeOf = (decl) => {
   if (decl.has('font-size')) return decl.get('font-size')
@@ -611,6 +620,25 @@ if (existsSync(BRIEFS)) {
     const part = text.match(/^## 2\.[^\n]*\n([\s\S]*?)(?=^## )/m)?.[1] ?? ''
     const hosts = new Set([...part.matchAll(/https?:\/\/([^/\s)|>]+)/g)].map((m) => m[1].replace(/^www\./, '')))
     if (hosts.size < 3) add('briefRefs', `docs/design/${f}`, `в «2. Референсы» адресов разных сайтов: ${hosts.size} из трёх`)
+  }
+}
+
+/* ── у поверхности есть бриф (И531) ────────────────────────────────────
+ *
+ * Шапку сверстали без брифа вообще, и ни одна проверка этого не видела:
+ * `briefRefs` и `briefMeasured` меряют только написанный бриф. Заказчик
+ * 28.09.2026: «возможно, чтоб ты изначально строил правильно, а не тогда,
+ * когда я скажу, что ты говно сделал?» Меряется так: модуль каждой
+ * поверхности витрины назван хотя бы в одном брифе `docs/design/*.md` —
+ * именем файла (`Header.module.css` или `Header.tsx`). Нет брифа —
+ * поверхность сверстана на глаз. */
+const SURFACES = ['Header', 'Footer', 'Catalog', 'Filters', 'ProductCard', 'ProductView', 'ProductDetails', 'Gallery', 'Cart', 'Checkout', 'Account', 'DocView', 'SearchForm', 'blocks/blocks']
+{
+  const dir = [join(ROOT, 'templates/storefront/components'), join(ROOT, 'components')].find((d) => existsSync(d))
+  const briefs = existsSync(BRIEFS) ? readdirSync(BRIEFS).filter((x) => x.endsWith('.md') && !x.startsWith('_')).map((x) => readFileSync(join(BRIEFS, x), 'utf8')).join('\n') : ''
+  for (const name of dir ? SURFACES.filter((n) => existsSync(join(dir, `${n}.module.css`))) : []) {
+    const base = name.split('/').pop()
+    if (!briefs.includes(`${base}.module.css`) && !briefs.includes(`${base}.tsx`)) add('briefMissing', `components/${name}.module.css`, 'поверхность без брифа в docs/design/ — сверстана без референсов и замеров')
   }
 }
 

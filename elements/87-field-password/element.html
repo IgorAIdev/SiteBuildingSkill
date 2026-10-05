@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>87 · Поле пароля с «показать»</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 87 — «Поле пароля с «показать»». Источники — HyperUI «Inputs», daisyUI «Input», shadcn/ui «Input» (MIT).
+  Замок слева, кнопка-глаз справа: «показать пароль» и обратно (`aria-pressed`). Три вида поля: контур, пилюля, черта снизу.
+  Кнопка — кнопка набора, как везде.
+-->
+</head>
+<body>
+  <div class="live">
+    <label class="field" data-voice="line"><svg data-sign="lock"></svg><input type="password" value="secret123" aria-label="Password"><button class="el" data-voice="ghost" data-icon data-size="sm" type="button" aria-label="Show password" aria-pressed="false"><svg data-sign="eye"></svg></button></label>
+    <label class="field" data-voice="line" data-shape="pill"><svg data-sign="lock"></svg><input type="password" value="secret123" aria-label="Password"><button class="el" data-voice="ghost" data-icon data-size="sm" type="button" aria-label="Show password" aria-pressed="false"><svg data-sign="eye"></svg></button></label>
+    <label class="field" data-voice="under"><svg data-sign="lock"></svg><input type="password" value="secret123" aria-label="Password"><button class="el" data-voice="ghost" data-icon data-size="sm" type="button" aria-label="Show password" aria-pressed="false"><svg data-sign="eye"></svg></button></label>
+  </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>86 · Поле с приставкой и окончанием</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 86 — «Поле с приставкой и окончанием». Источники — HyperUI «Inputs», daisyUI «Input» (с приставкой), shadcn/ui «Input Group» (MIT).
+  Знак или слово внутри поля, у края: валюта «€», единица «ml», а также приставка и окончание на своей плашке: «https://», «@mail.com».
+  Слово не вписывается и не стирается — оно часть поля, а не текста в нём.
+-->
+</head>
+<body>
+  <div class="live">
+    <label class="field" data-voice="line"><span class="add">€</span><input type="text" inputmode="decimal" placeholder="0.00" aria-label="Amount"></label>
+    <label class="field" data-voice="line"><input type="text" inputmode="numeric" placeholder="30" aria-label="Volume"><span class="add">ml</span></label>
+    <label class="field" data-voice="line"><span class="add" data-box>https://</span><input type="text" placeholder="shop.com" aria-label="Website"></label>
+    <label class="field" data-voice="line"><input type="text" placeholder="username" aria-label="Username"><span class="add" data-box>@mail.com</span></label>
+  </div>
+</body>
+</html>

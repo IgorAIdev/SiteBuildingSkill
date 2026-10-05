@@ -31,13 +31,14 @@
 /* Знак соизмерим со строкой рядом, а не своим числом (И-разбор стрелки 38 → 28). */
 .go svg{inline-size:1.15em;block-size:1.15em;flex:none;transition:translate var(--hover-t) var(--ease)}
 
-/* Сдвиг — только там, где есть наведение и движение не просили убрать. */
+/* Сдвиг — только там, где есть наведение и движение не просили убрать; знак,
+   который не «ведёт» (пауза и пуск самолистания, `data-still`), на месте. */
 /* Краска под рукой — роль вида `--go-hover` (И397): умолчание — своя
    краска ссылки; марка для текста — у элемента 11 набора. */
 @media (hover:hover){ .go:hover{color:var(--go-hover, currentColor)} }
 @media (hover:hover) and (prefers-reduced-motion:no-preference){
-  .go:hover svg{translate:var(--nudge) 0}
-  .go[data-to='back']:hover svg{translate:calc(var(--nudge) * -1) 0}
+  .go:not([data-still]):hover svg{translate:var(--nudge) 0}
+  .go[data-to='back']:not([data-still]):hover svg{translate:calc(var(--nudge) * -1) 0}
 }
 
 /* Вокруг — тихая плашка или кромка: органом становится вся площадь, от
@@ -47,12 +48,18 @@
   min-block-size:var(--ctrl-h-sm);min-inline-size:var(--ctrl-h-sm);
   padding-inline:calc(var(--ctrl-h-sm) * .3);
   border-radius:var(--r-ctrl);
-  font-size:var(--ctrl-fs-sm);font-weight:600;
+  font-size:var(--ctrl-fs-sm);font-weight:var(--label-weight);
   transition:background-color var(--hover-t) var(--ease)
 }
 .go[data-around='quiet']{background:var(--quiet)}
 .go[data-around='edge']{background:var(--surface);box-shadow:inset 0 0 0 var(--line-w) var(--border)}
 .go:is([data-around='quiet'], [data-around='edge']) svg{inline-size:calc(var(--ctrl-h-sm) * .5);block-size:calc(var(--ctrl-h-sm) * .5)}
+/* Знак «куда ведёт» в чужом органе (`.to` на самом знаке): плашка категории
+   с кнопкой — стрелка едет тем же `--nudge`, когда рука на органе, где бы
+   знак ни стоял (слово заказчика 01.10.2026: «смещение стрелки — это тоже
+   роль», И601). Движение одно — здесь. */
+.to{transition:translate var(--hover-t) var(--ease)}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){ :hover > .to{translate:var(--nudge) 0} }
 
 /* Нажатие — тон под знаком, сразу, без задержки (И229). */
 .go:active{color:var(--ink)}
@@ -62,13 +69,3 @@
 .go:disabled,.go[aria-disabled='true']{opacity:var(--state-off);cursor:not-allowed}
 
 @media (prefers-reduced-motion:reduce){ .go svg{transition:none} }
-
-/* Пара стрелок листания — одной обёрткой (И133, И506): в узкой коробке её
-   нет ни у полки, ни у героя, ни у галереи — ленту там листают пальцем.
-   Условие — ширина коробки, не указатель: по указателю меняют цель и отклик,
-   не видимость (правило 17, `axisScope`); так уже прятались стрелки галереи
-   в одну колонку. Прячется обёртка, а не каждая стрелка, и спорить с
-   `display` самой `.go` нечему. Обёртка без места (`data-place`) раскладку
-   не меняет; с местом — это блок того, кто её поставил. */
-.pair:not([data-place]){display:contents}
-@container (max-width:559px){ .pair[data-swipe]{display:none} }

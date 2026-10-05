@@ -9,9 +9,10 @@ import type { WasView } from '@/lib/view.ts'
    цена сейчас, рядом по базовой линии прежняя — мельче, зачёркнутая,
    краской подписи (palette, roles.md: «прежняя цена» n11); вслух — словами
    (`p.said`), зачёркивание голосом не читается. Рост — `size`: `lead` у
-   карты товара, `body` у полки. Рядом с ценой узел может поставить своё
+   карты товара, `card` у карточки товара (своя роль `--cardprice-*`, ростом
+   имени в карточке; заказчик 03.10.2026), `body` — у строки покупки. Рядом с ценой узел может поставить своё
    (наличие) — детьми. */
-export function Price({ now, was, size = 'body', children }: { now: string; was: WasView | null; size?: 'lead' | 'body'; children?: ReactNode }) {
+export function Price({ now, was, size = 'body', children }: { now: string; was: WasView | null; size?: 'lead' | 'card' | 'body'; children?: ReactNode }) {
   return (
     <p className={s.price} data-size={size}>
       <span className={s.now}>{now}</span>

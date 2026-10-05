@@ -38,3 +38,9 @@
      чернилами (И509; cbdin.bg 15, Le Labo 14). */
   .crumbs .back{display:inline-flex;font-size:var(--byline-size);color:var(--ink)}
 }
+/* Первая буква имени звена — заглавная всегда (слово заказчика 02.10.2026:
+   «Oil с маленькой — с большой должно быть»; И639). Данные не трогаем: имена
+   приходят из магазина строчными. `::first-letter` у флекса и строчного
+   узла не работает, поэтому имя — свой блок в строке (как `.name` шапки). */
+.name{display:inline-block}
+.name::first-letter{text-transform:uppercase}

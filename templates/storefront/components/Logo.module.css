@@ -1,0 +1,29 @@
+/* Знак магазина (Logo.tsx). Кегль и чернила — от места (шапка, подвал);
+   здесь только рисунок варианта в долях своего кегля. Голос — голос
+   заголовков сайта по разрядке (`--h3-track`); толщина — своя роль текста
+   знака `--logo-weight` (строитель шкал, роль `logo`): слово заказчика
+   01.10.2026 «логотип сделай чуть жирнее» — 600 → 700, одной правкой роли.
+   Своя толщина 800 и сжатие −0.04em были только у знака — он читался чужим
+   рядом с меню и заголовками (слово заказчика 29.09.2026: «логотип слишком
+   отличается от остального, нужно всё в единый дизайн привести», И587). Вариант — вид
+   `--logo` (styles/look.css, панель Header → Logo); умолчание — `pill`. */
+.logo{display:inline-flex;align-items:center;font-weight:var(--logo-weight);letter-spacing:calc(var(--h3-track) + .05em);white-space:nowrap}
+.pill,.word,.split,.leaf{display:none;align-items:center}
+.pill{display:inline-flex;gap:.28em}
+@container style(--logo: word){ .pill{display:none} .word{display:inline-flex} }
+@container style(--logo: split){ .pill{display:none} .split{display:inline-flex} }
+@container style(--logo: leaf){ .pill{display:none} .leaf{display:inline-flex} }
+/* Страна плашкой марки — как код страны на этикетке. Заливка и надпись —
+   одной пары пола (`--pop` / `--on-pop`): надпись от главной кнопки корня
+   на палубе давала белое по белому (слово заказчика 29.09.2026, «RO не
+   видно»; И549). */
+/* Плашка страны — доля знака, но не мельче доли надзаголовка (подпись капсом,
+   его же разрядка): в шапке знак — роль
+   `--logo-size` (21, И609), и .42 от него дали бы 9px. */
+.tag{font-size:max(.42em, calc(var(--eyebrow-size) * .8));font-weight:var(--logo-weight);letter-spacing:var(--eyebrow-track);padding:.22em .45em;border-radius:var(--r-xs);background:var(--pop);color:var(--on-pop)}
+/* «in» и «.ro» — той же толщины, что CBD (слово заказчика 30.09.2026: «in и ro одинаковой толщины»); отличает их только краска марки. */
+.end,.tail{color:var(--pop);font-weight:var(--logo-weight)}
+.sup{align-self:flex-start;margin-inline-start:.12em;font-size:.4em;font-weight:var(--logo-weight);letter-spacing:.08em;color:var(--ink)}
+/* Лист над безточечной «ı»: ставится по середине буквы, у её верха. */
+.i{position:relative;display:inline-block}
+.i svg{position:absolute;inset-inline-start:50%;inset-block-start:-.02em;inline-size:.46em;block-size:.46em;translate:-50% 0;fill:var(--pop);stroke:none}

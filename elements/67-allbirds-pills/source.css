@@ -1,0 +1,16 @@
+/* allbirds.com, theme.css (Shopify), снято 29.09.2026 — кнопки сайта.
+   Пилюля (border-radius: max), 12 px / 500 / uppercase / tracking .025em,
+   поле 8 × 16 px (.btn-small: 8 × 12, 11 px; .btn-large: 10 × 14, 14 px),
+   переход 0.2 s sine. Краски: black #212121, charcoal #575757, white #fff. */
+.btn.btn-primary{border:1px solid #fff;background:#fff}                    /* светлая: на снимке героя */
+.btn.btn-primary:hover{border-color:#212121;background:#212121;color:#fff}
+.btn.btn-secondary{border:1px solid #212121;background:#212121;color:#fff} /* тёмная */
+.btn.btn-secondary:hover{border-color:#575757;background:#575757}
+.btn.btn-outline-black{border:1px solid #212121;color:#212121;background:transparent}
+.btn.btn-outline-black:hover{background:#212121;color:#fff}                 /* контур: под рукой заливается */
+.btn.btn-outline-white{border:1px solid #fff;color:#fff;background:transparent}
+.btn.btn-outline-white:hover{background:#fff;color:#212121}
+.btn.btn-icon-black{border:1px solid #212121;padding:0;border-radius:max;justify-content:center;align-items:center;display:flex}
+.btn.btn-icon-black:hover{background:#212121;color:#fff}                    /* круг со знаком */
+.btn-add-to-cart{flex-grow:1;max-width:342px}
+.btn-size.btn-size--selected{border-color:#212121;background:#212121;color:#fff}

@@ -1,0 +1,14 @@
+{
+ "topics": [
+  { "slug": "incepatori", "name": { "ro": "Pentru începători", "en": "For beginners", "hu": "Kezdőknek" }, "description": { "ro": "Ce este CBD-ul, cum se citește o etichetă și de unde începi.", "en": "What CBD is, how to read a label and where to start.", "hu": "Mi a CBD, hogyan olvasd a címkét, és hol kezdd." } },
+  { "slug": "lege", "name": { "ro": "Lege", "en": "Law", "hu": "Jog" }, "description": { "ro": "Ce spune legea în România și în UE despre CBD și THC.", "en": "What Romanian and EU law say about CBD and THC.", "hu": "Mit mond a román és az uniós jog a CBD-ről és a THC-ről." } },
+  { "slug": "calitate", "name": { "ro": "Calitate și analize", "en": "Quality and lab tests", "hu": "Minőség és laborvizsgálat" }, "description": { "ro": "Buletine de analiză, loturi și ce verifici înainte să cumperi.", "en": "Lab reports, batches and what to check before you buy.", "hu": "Laborjegyzőkönyvek, tételek, és mit ellenőrizz vásárlás előtt." } },
+  { "slug": "canabinoizi", "name": { "ro": "Canabinoizi", "en": "Cannabinoids", "hu": "Kannabinoidok" }, "description": { "ro": "CBD, THC și spectrul extractului, explicate simplu.", "en": "CBD, THC and the extract spectrum, explained simply.", "hu": "CBD, THC és a kivonat spektruma egyszerűen." } },
+  { "slug": "concentratie", "name": { "ro": "Concentrație", "en": "Strength", "hu": "Erősség" }, "description": { "ro": "Ce înseamnă mg și % pe etichetă și cum compari produsele.", "en": "What mg and % on the label mean and how to compare products.", "hu": "Mit jelent a mg és a % a címkén, és hogyan hasonlítsd össze a termékeket." } }
+ ],
+ "author": {
+  "name": { "ro": "Redacția magazinului", "en": "The shop's editorial team", "hu": "A bolt szerkesztősége" },
+  "role": { "ro": "Texte verificate după sursele citate", "en": "Texts checked against the cited sources", "hu": "A hivatkozott forrásokkal ellenőrzött szövegek" },
+  "bio": { "ro": "Scriem despre compoziție, analize și lege, fără promisiuni de sănătate. Fiecare articol are sursele la final.", "en": "We write about composition, lab tests and the law, with no health promises. Every article lists its sources at the end.", "hu": "Összetételről, laborvizsgálatról és jogról írunk, egészségügyi ígéretek nélkül. Minden cikk végén ott vannak a források." }
+ }
+}

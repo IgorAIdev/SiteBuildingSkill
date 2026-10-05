@@ -2,7 +2,7 @@
    (PANEL.md, «Где что лежит»). Сайт их не знает и не ввозит; вход открыт,
    только пока LOOK_PICKER=on.
 
-     GET    /look-panel/look.js, look.css, choice.mjs, catalog.json, engine/*, elements/* — сама панель
+     GET    /look-panel/look.js, look.css, choice.mjs, studio.mjs, swatch.mjs, catalog.json, engine/*, elements/* — сама панель
      GET    /look-panel/state    опубликованные и черновые имена вариантов и краски палитры
      GET    /look-panel/published  опубликованный вид целиком — его забирает в скилл
                                  `npm run storefront -- --save-look --from <адрес>` (И434)
@@ -11,6 +11,8 @@
      POST   /look-panel/guard    своя палитра → с какими вариантами она не носится
      POST   /look-panel/draft    выбор → черновик вида (значения, шрифты скачаны)
      POST   /look-panel/publish  проверить черновик (check:choice) → опубликовать
+     GET    /look-panel/places?lang=  адреса мест вкладок из данных магазина
+     POST   /look-panel/sample-cart?lang=  пустой корзине этого браузера — товар образца
 
    Черновик и опубликованный вид — файлы источника образца
    (lib/source/sample/look.draft.json и look.json); у Payload — черновая и
@@ -22,7 +24,11 @@ import { draftMode } from 'next/headers'
 import { revalidateTag } from 'next/cache'
 import SLOTS from '@/lib/look-slots.json' with { type: 'json' }
 import { lookCss, type Slots } from '@/lib/look-values.ts'
-import { DEFAULT_LANG, LOCALES } from '@/lib/locale.ts'
+import { DEFAULT_LANG, LOCALES, isLang, type Lang } from '@/lib/locale.ts'
+import { commerce, source } from '@/lib/source/index.ts'
+import { hrefFor } from '@/lib/href.ts'
+import { readSession, writeSession } from '@/lib/session.ts'
+import { runCartOp } from '@/lib/cart-ops.ts'
 import { acceptLook, problems, type Facts } from '@/lib/look-rule.ts'
 import type { LookFont } from '@/lib/source/contract.ts'
 import { CUSTOM, clashes, compose, fieldsOf, paletteChecks, paletteVars, validPaints, valuesOf } from '../ui/choice.mjs'
@@ -36,6 +42,8 @@ const FILES: Record<string, string> = {
   'look.js': 'text/javascript; charset=utf-8',
   'look.css': 'text/css; charset=utf-8',
   'choice.mjs': 'text/javascript; charset=utf-8',
+  'studio.mjs': 'text/javascript; charset=utf-8',
+  'swatch.mjs': 'text/javascript; charset=utf-8',
   'catalog.json': 'application/json; charset=utf-8',
   'engine/palette.mjs': 'text/javascript; charset=utf-8',
   'engine/thresholds.mjs': 'text/javascript; charset=utf-8',
@@ -43,6 +51,7 @@ const FILES: Record<string, string> = {
 }
 const ELEMENT_TYPES: Record<string, string> = {
   html: 'text/html; charset=utf-8', css: 'text/css; charset=utf-8', js: 'text/javascript; charset=utf-8', json: 'application/json; charset=utf-8',
+  jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp',
 }
 type Pair = { x: { field: string; id: string }; y: { field: string; id: string }; why: string }
 type Option = { id: string; vars?: Record<string, string>; fonts?: { family: string; weights: number[] }[] }
@@ -57,6 +66,8 @@ const intentOf = (x: unknown): Intent | undefined => {
 }
 
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'cache-control': 'no-store' } })
+const langOf = (request: Request): Lang => { const l = new URL(request.url).searchParams.get('lang') ?? ''; return isLang(l) ? l : DEFAULT_LANG }
+const firstProduct = async (lang: Lang): Promise<string | null> => { const r = await source().listing(lang, { facets: {}, sort: 'popular', page: null }); return r.ok ? r.value.items[0]?.id ?? null : null }
 const catalog = (): Catalog => JSON.parse(readFileSync(join(UI, 'catalog.json'), 'utf8')) as Catalog
 const stateOf = (file: string): { names: Record<string, string> | null; paints: Paints | null } => {
   try {
@@ -98,7 +109,7 @@ async function build(chosen: Record<string, string>, paints: Paints | null, cat:
   const bad: Pair[] = clashes(chosen, paints ? [...cat.pairs, ...customPairs(paints, cat)] : cat.pairs)
   if (bad.length) return { error: bad.map((p) => `${p.x.field} «${p.x.id}» with ${p.y.field} «${p.y.id}»: ${p.why}`).join('; ') }
   const composed = compose(chosen, cat, paints)
-  const look = { ...composed.look, fonts: (await fetchFonts(composed.need, join(ROOT, 'public/fonts'))) as LookFont[] }
+  const look = { ...composed.look, fonts: (await fetchFonts(composed.need, join(ROOT, 'public/fonts'), ROOT)) as LookFont[] }
   const { notes } = acceptLook(look, SLOTS.slots as Slots, SLOTS.facts as Facts)
   if (notes.length) return { error: notes.map((n) => `${n.what} ${n.why}`).join('; ') }
   return { look }
@@ -124,8 +135,12 @@ const sameOrigin = (request: Request) => {
 const selfAddress = (request: Request) => `http://127.0.0.1:${process.env.PORT || new URL(request.url).port || '3000'}`
 /** Проверка выбранного — `check:choice` на черновике, отдельным процессом:
  *  он ходит в этот же сервер, и ждать его надо, не занимая сервер. */
+/* На сервере разработки — быстро, без обхода страниц: он собирает страницу
+   по первому запросу и обход не дожидается её (И573). Собранный сайт
+   (прод, `npm run serve`) проверяется целиком. */
+const QUICK = process.env.NODE_ENV !== 'production' ? ['--quick'] : []
 const checkDraft = (site: string) => new Promise<{ ok: boolean; out: string }>((done) => {
-  const run = spawn(process.execPath, [join(ROOT, 'look-panel/scripts/check-choice.mjs'), '--draft'], { cwd: ROOT, env: { ...process.env, SITE: site } })
+  const run = spawn(process.execPath, [join(ROOT, 'look-panel/scripts/check-choice.mjs'), '--draft', ...QUICK], { cwd: ROOT, env: { ...process.env, SITE: site } })
   let out = ''
   run.stdout.on('data', (d: Buffer) => { out += d.toString() })
   run.stderr.on('data', (d: Buffer) => { out += d.toString() })
@@ -141,7 +156,7 @@ export async function handle(request: Request, path: string[]): Promise<Response
   }
   /* Нарисованные элементы набора (ui/elements/, build-catalog.mjs): имя —
      папка и файл без точек в начале, только свои типы. */
-  const shown = /^elements\/(?:[\w-]+\/)?[\w-]+\.(html|css|js|json)$/.exec(file)
+  const shown = /^elements\/(?:[\w-]+\/){0,2}[\w-]+\.(html|css|js|json|jpg|png|webp)$/.exec(file)
   if (method === 'GET' && shown && existsSync(join(UI, file))) {
     return new Response(readFileSync(join(UI, file)), { headers: { 'content-type': ELEMENT_TYPES[shown[1]], 'cache-control': 'no-store' } })
   }
@@ -150,6 +165,38 @@ export async function handle(request: Request, path: string[]): Promise<Response
     const published = stateOf('look.json')
     const draft = existsSync(join(SAMPLE, 'look.draft.json')) ? stateOf('look.draft.json') : { names: null, paints: null }
     return json({ published: published.names, publishedPaints: published.paints, draft: draft.names, draftPaints: draft.paints, previewing })
+  }
+  /* Места вкладок (заказчик 28.09.2026: «открываешь вкладку в панели, и
+     сайт открывается на соответствующем блоке соответствующей страницы»):
+     адреса — из данных магазина, а не записью в панели: товар — первый
+     ходовой, полка — весь каталог. */
+  if (method === 'GET' && head === 'places') {
+    const lang = langOf(request)
+    const first = await firstProduct(lang)
+    return json({
+      home: hrefFor(lang, { home: true }), catalog: hrefFor(lang, { catalog: true }),
+      product: first ? hrefFor(lang, { product: first }) : hrefFor(lang, { catalog: true }),
+      cart: hrefFor(lang, { cart: true }), checkout: hrefFor(lang, { checkout: 'contact' }),
+    })
+  }
+  /* Оформление с пустой корзиной — «корзина пуста», полей нет: вкладке
+     оформления панель кладёт в корзину ЭТОГО браузера один товар образца,
+     первый в наличии, и только если корзина пуста. Чужих корзин не трогает. */
+  if (method === 'POST' && head === 'sample-cart') {
+    const lang = langOf(request)
+    const session = await readSession()
+    const now = await commerce().checkout(session, lang)
+    if (now.ok && (now.value?.cart?.quantity ?? 0) > 0) return json({ ok: true, added: false })
+    const top = await source().listing(lang, { facets: {}, sort: 'popular', page: null })
+    for (const card of top.ok ? top.value.items.slice(0, 6) : []) {
+      const p = await source().product(lang, card.id)
+      const v = p.ok ? p.value.variants.find((x) => x.stock !== 'out') : undefined
+      if (!v) continue
+      const done = await runCartOp(commerce(), session, lang, { op: 'add', variantId: v.id, quantity: 1 })
+      if (done.session && done.session !== session) await writeSession(done.session)
+      return json({ ok: !done.code.startsWith('e:'), added: true })
+    }
+    return json({ ok: false, error: 'no product in stock' }, 404)
   }
   if (method === 'GET' && head === 'published') {
     return new Response(readFileSync(join(SAMPLE, 'look.json')), { headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } })

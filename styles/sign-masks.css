@@ -1,0 +1,8 @@
+/* Собран tools/icons.mjs из знаков набора. Руками не правят. Маски знаков: картинка из
+   того же файла знака, что и лист (И630) — не фрагмент листа, который Safari не рисует. */
+:root {
+  --sign-mask-arrow-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14' vector-effect='non-scaling-stroke'/%3E%3Cpath d='m12 5 7 7-7 7' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --sign-mask-check-circle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10' vector-effect='non-scaling-stroke'/%3E%3Cpath d='m16 9-5.5 5.5L8 12' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --sign-mask-alert-triangle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M12 9v4' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M12 17h.01' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --sign-mask-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+}

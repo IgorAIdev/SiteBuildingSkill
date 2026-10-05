@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>84 · Поле с подписью: виды и состояния</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 84 — «Поле с подписью: виды и состояния». Источники — HyperUI «Forms», daisyUI «Input / Label / Validator», shadcn/ui «Field» (MIT).
+  Подпись стоит над полем, пояснение — под ним. Три вида поля: контуром, тоном и чертой снизу; обязательное (звёздочка у подписи),
+  ошибка (кромка и пояснение краской ошибки, знак), готово (краска успеха) и недоступное.
+  Всё, кроме атрибутов, — из основы (../base.css); краски — роли палитры набора.
+-->
+</head>
+<body>
+  <div class="live">
+    <div class="entry"><label class="label" for="f84a" data-req>Email</label><label class="field" data-voice="line"><input id="f84a" type="email" placeholder="name@example.com"></label><p class="hint">We send the order confirmation here.</p></div>
+    <div class="entry"><label class="label" for="f84b">Name</label><label class="field"><input id="f84b" type="text" placeholder="Your name"></label><p class="hint">As on the card.</p></div>
+    <div class="entry"><label class="label" for="f84c">City</label><label class="field" data-voice="under"><input id="f84c" type="text" placeholder="Bucharest"></label></div>
+    <div class="entry" data-tone="bad"><label class="label" for="f84d">Phone</label><label class="field" data-voice="line"><input id="f84d" type="tel" value="07" aria-invalid="true"><svg data-sign="alert-circle"></svg></label><p class="hint">The number is too short.</p></div>
+    <div class="entry" data-tone="ok"><label class="label" for="f84e">Promo code</label><label class="field" data-voice="line"><input id="f84e" type="text" value="WELCOME10"><svg data-sign="check-circle"></svg></label><p class="hint">Code applied: −10 %.</p></div>
+    <div class="entry"><label class="label" for="f84f">Country</label><label class="field" data-voice="line"><input id="f84f" type="text" value="Romania" disabled></label><p class="hint">It cannot be changed after the order.</p></div>
+  </div>
+</body>
+</html>

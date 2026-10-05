@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>67 · Пилюли allbirds</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 67 — «Пилюли allbirds». Источник — allbirds.com, theme.css, снято 29.09.2026 (source.css); слово заказчика: «кнопки как у allbirds.com добавляй».
+  В сайт не встроен. Всё, кроме атрибутов, — из основы (../base.css); краски —
+  роли палитры набора, поэтому элемент перекрашивается выбранной палитрой.
+  Снято: заглавные буквы и разрядка (регистр не ручка, И586); чёрный #212121 и уголь #575757 числами; свои переходы 0.2 с.
+  Приведено к единой форме: пилюля — data-shape="pill"; тёмная — чернила палитры, надпись — пол, под рукой на тон светлее; светлая — пол, под рукой заливается чернилами; контур — волосок, под рукой заливается чернилами (data-hover="ink", дописано в основу); круг со знаком — data-icon; надпись полужирная, как в предложении.
+  Наведение: у тёмной — тон светлее; у светлой и контурной — заливка чернилами, надпись — пол. Нажатие: заливка + 9 %, кнопка 0.97 и на пиксель ниже.
+-->
+</head>
+<body>
+  <div class="live one">
+    <button class="el" data-voice="ink" data-shape="pill" data-size="lg" type="button">Shop men</button>
+    <button class="el" data-voice="line" data-hover="ink" data-shape="pill" data-size="lg" type="button">Shop women</button>
+    <button class="el" data-voice="line" data-hover="ink" data-shape="pill" data-icon data-size="lg" type="button" aria-label="Добавить"><svg data-sign="plus"></svg></button>
+  </div>
+  <div class="live one">
+    <button class="el" data-voice="ink" data-shape="pill" data-size="lg" data-spread type="button">Add to cart<svg data-sign="shopping-cart"></svg></button>
+  </div>
+  <div class="live one">
+    <div class="tray" data-shape="pill"><button class="el" data-voice="paper" data-hover="ink" data-shape="pill" data-size="lg" type="button">Shop now</button></div>
+  </div>
+
+  <div class="states" aria-hidden="true">
+    <figure><span class="el" data-voice="ink" data-shape="pill" data-size="lg">Shop men</span><figcaption>тёмная · покой</figcaption></figure>
+    <figure><span class="el" data-voice="ink" data-shape="pill" data-size="lg" data-state="hover">Shop men</span><figcaption>наведение</figcaption></figure>
+    <figure><span class="el" data-voice="ink" data-shape="pill" data-size="lg" data-state="press">Shop men</span><figcaption>нажатие</figcaption></figure>
+    <figure><span class="el" data-voice="ink" data-shape="pill" data-size="lg" data-state="focus">Shop men</span><figcaption>фокус</figcaption></figure>
+    <figure><span class="el" data-voice="line" data-hover="ink" data-shape="pill" data-size="lg">Shop women</span><figcaption>контур · покой</figcaption></figure>
+    <figure><span class="el" data-voice="line" data-hover="ink" data-shape="pill" data-size="lg" data-state="hover">Shop women</span><figcaption>наведение</figcaption></figure>
+    <figure><span class="el" data-voice="line" data-hover="ink" data-shape="pill" data-size="lg" data-state="press">Shop women</span><figcaption>нажатие</figcaption></figure>
+    <figure><span class="el" data-voice="line" data-hover="ink" data-shape="pill" data-size="lg" data-state="focus">Shop women</span><figcaption>фокус</figcaption></figure>
+    <figure><div class="tray" data-shape="pill"><span class="el" data-voice="paper" data-hover="ink" data-shape="pill" data-size="lg">Shop now</span></div><figcaption>светлая · покой</figcaption></figure>
+    <figure><div class="tray" data-shape="pill"><span class="el" data-voice="paper" data-hover="ink" data-shape="pill" data-size="lg" data-state="hover">Shop now</span></div><figcaption>наведение</figcaption></figure>
+  </div>
+</body>
+</html>

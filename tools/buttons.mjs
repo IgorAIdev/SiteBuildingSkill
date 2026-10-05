@@ -22,8 +22,7 @@
  * Замер — на палитре сайта (`styles/palette.json`), обе темы, на тех полах,
  * где кнопка стоит (страница и карточка — ступени читаются из tokens.css):
  * надпись 4.5 : 1, кромка 3 : 1, заливка и вуаль видны на полу (1.15 : 1 —
- * замер набора, controls.md); вес и разрядка — из порогов TEXT; заглавные без
- * разрядки набора — находка. Наборов цвета бывает несколько (витрина, И270):
+ * замер набора, controls.md). Наборов цвета бывает несколько (витрина, И270):
  * вариант, не прошедший ни на одном, не выпускается (`off`); не прошедший на
  * части — выпускается, пара «вариант × набор» названа (`clash`). Вариант по
  * умолчанию — первый в оси — обязан пройти на наборе по умолчанию — первом.
@@ -33,14 +32,17 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { roles as paletteRoles, ratio } from './palette.mjs'
-import { TEXT, CONTRAST, STATE } from './thresholds.mjs'
+import { CONTRAST, STATE } from './thresholds.mjs'
 
 /** Роли одной кнопки основы, которые вариант оси может объявить, и их род.
  *  btn.module.css читает каждую с запасным значением. */
 export const ROLES = {
-  '--ctrl-btn-case': 'keyword', '--ctrl-btn-weight': 'number', '--ctrl-btn-track': 'length',
   '--ctrl-btn-fill': 'colour', '--ctrl-btn-ink': 'colour', '--ctrl-btn-edge': 'colour',
   '--ctrl-btn-fill-pop': 'colour', '--ctrl-btn-ink-pop': 'colour', '--ctrl-btn-edge-pop': 'colour',
+  /* Ответ кромки на руку (И588): куда темнеет кромка тихой под рукой
+     (`--ctrl-btn-edge-hand`, у тихой без кромки — прозрачно) и темнеет ли
+     она вовсе (`--ctrl-btn-hand-edge`, 0 или 1 — ось «Ответ на руку»). */
+  '--ctrl-btn-edge-hand': 'colour', '--ctrl-btn-hand-edge': 'number',
   /* Форма ГЛАВНОЙ кнопки (И276) — числами в долях её высоты: где начинается
      остриё и где его точка (от правого края), выемка слева, показ хвоста и
      сдвиги двух его шевронов. Контур собирает btn.module.css на самой кнопке:
@@ -53,8 +55,21 @@ export const ROLES = {
      он (0 или 1); форма с кружком — пилюля (угол кнопка выводит сама). Кружок — краской надписи, стрелка — вырез до заливки:
      их контраст — контраст надписи на заливке, его замер уже держит. */
   '--ctrl-btn-mark': 'number',
-  '--ctrl-btn-pill': 'number',
+  /* Пилюли у оси больше нет: угол кнопки — роль формы `--r-btn`, ручка
+     Shape → Corners (Pill — полный круг; слово заказчика 04.10.2026). Остриё и
+     выемка берут угол контрола сами (styles/btn.module.css, `--btn-cuts`). */
   '--ctrl-btn-glyph': 'number',
+  /* Нажатие без движения (0 или 1; И622): у форм со стрелкой и хвостом на
+     руку отвечает знак — стрелка едет, хвост отходит; сама кнопка не
+     сжимается и не опускается (слово заказчика 01.10.2026). 0 — нажатие
+     сайта (`--press-drop`, `--press-shrink`). */
+  '--ctrl-btn-still': 'number',
+  /* Ответ кружка на руку (И623): смена стрелки (`--ctrl-btn-swap`), 0 или 1;
+     без заливки (`--ctrl-btn-hollow`,
+     0 или 1) — кромка и кружок маркой, надпись `--pop-ink`. */
+  '--ctrl-btn-swap': 'number', '--ctrl-btn-hollow': 'number', '--ctrl-btn-draw': 'number',
+  /* Тихая — заливка маркой под рукой и черта перед словом (05, 67, 07; И626). */
+  '--ctrl-btn-hand-fill': 'number', '--ctrl-btn-dash': 'number',
   '--ctrl-btn-tint-pop': 'colour',
   /* Стекло главной (И427): матовость — 0 или 1, размытие и насыщенность
      под заливкой из порогов формы (`--frost-*`); блик кромки — краска
@@ -63,9 +78,6 @@ export const ROLES = {
   '--ctrl-btn-frost-pop': 'number',
   '--ctrl-btn-rim-pop': 'colour',
 }
-const CASES = ['none', 'uppercase']
-/** Разрядка заглавных — коридор набора (craft: заглавные без воздуха слипаются). */
-export const CAPS_TRACK = [0.04, TEXT.trackMax]
 
 /** Оси каталога списком: { id, имя, name, что, options: [{ id, имя, name, что, роли }] }. */
 export const axesOf = (catalog) => Object.entries(catalog).map(([id, a]) => ({ id, имя: a.имя, name: a.name, что: a.что, options: Object.entries(a.варианты ?? {}).map(([oid, o]) => ({ id: oid, ...o })) }))
@@ -160,23 +172,18 @@ export function auditButtons(catalog, palettes, tokens = null) {
         if (typeof v !== 'string' || /[;{}<>]/.test(v)) bad(style, `значение ${k}`, String(v), 'строка без ; { } < >')
       }
       const r = o.роли
-      if ('--ctrl-btn-weight' in r && !TEXT.weights.includes(Number(r['--ctrl-btn-weight']))) bad(style, 'толщина букв из порогов', r['--ctrl-btn-weight'], TEXT.weights.join(', '))
-      if ('--ctrl-btn-case' in r && !CASES.includes(r['--ctrl-btn-case'])) bad(style, 'регистр', r['--ctrl-btn-case'], CASES.join(', '))
-      const trackText = r['--ctrl-btn-track']
-      const track = trackText === 'normal' ? 0 : Number.parseFloat(trackText)
-      if ('--ctrl-btn-track' in r && !(trackText === 'normal' || (/^\d*\.?\d+em$/.test(trackText) && track <= TEXT.trackMax))) bad(style, 'разрядка в коридоре', trackText, `normal или 0…${TEXT.trackMax}em`)
-      if (r['--ctrl-btn-case'] === 'uppercase' && !(track >= CAPS_TRACK[0] && track <= CAPS_TRACK[1])) bad(style, 'заглавные с разрядкой набора', trackText, `${CAPS_TRACK[0]}…${CAPS_TRACK[1]}em: заглавные без воздуха слипаются`)
       for (const k of ['--ctrl-btn-tip', '--ctrl-btn-tip-at', '--ctrl-btn-notch']) if (k in r && !(Number(r[k]) >= 0 && Number(r[k]) <= 1.5)) bad(style, `${k}: доля высоты кнопки 0…1.5`, r[k], '0…1.5')
       if ('--ctrl-btn-tip' in r && Number(r['--ctrl-btn-tip-at']) > Number(r['--ctrl-btn-tip'])) bad(style, 'точка острия правее его начала', r['--ctrl-btn-tip-at'], `не больше ${r['--ctrl-btn-tip']}`)
       if ('--ctrl-btn-echo' in r && !['none', 'block'].includes(r['--ctrl-btn-echo'])) bad(style, 'эхо-шеврон — none или block', r['--ctrl-btn-echo'], 'none, block')
       if ('--ctrl-btn-mark' in r && !['0', '1'].includes(r['--ctrl-btn-mark'])) bad(style, 'кружок у конца — 0 или 1', r['--ctrl-btn-mark'], '0, 1')
-      if ('--ctrl-btn-pill' in r && !['0', '1'].includes(r['--ctrl-btn-pill'])) bad(style, 'пилюля — 0 или 1', r['--ctrl-btn-pill'], '0, 1')
-      if (r['--ctrl-btn-pill'] === '1' && (Number(r['--ctrl-btn-tip'] ?? 0) > 0 || Number(r['--ctrl-btn-notch'] ?? 0) > 0 || r['--ctrl-btn-echo'] === 'block')) bad(style, 'пилюля не носится с остриём, выемкой и хвостом', 'pill 1', 'tip 0, notch 0, echo none')
       if ('--ctrl-btn-glyph' in r && !['0', '1'].includes(r['--ctrl-btn-glyph'])) bad(style, 'стрелка у конца — 0 или 1', r['--ctrl-btn-glyph'], '0, 1')
+      if ('--ctrl-btn-hand-edge' in r && !['0', '1'].includes(r['--ctrl-btn-hand-edge'])) bad(style, 'кромка под рукой темнеет — 0 или 1', r['--ctrl-btn-hand-edge'], '0, 1')
+      if ('--ctrl-btn-edge-hand' in r && (r['--ctrl-btn-edge'] ?? 'transparent') === 'transparent' && r['--ctrl-btn-edge-hand'] !== 'transparent') bad(style, 'кромка под рукой — только у тихой с кромкой: без кромки в покое она выросла бы из ничего', r['--ctrl-btn-edge-hand'], 'transparent')
       if (r['--ctrl-btn-glyph'] === '1' && (Number(r['--ctrl-btn-tip'] ?? 0) > 0 || Number(r['--ctrl-btn-notch'] ?? 0) > 0 || r['--ctrl-btn-echo'] === 'block' || r['--ctrl-btn-mark'] === '1')) bad(style, 'стрелка у конца не носится с остриём, выемкой, хвостом и кружком', 'glyph 1', 'tip 0, notch 0, echo none, mark 0')
       if (r['--ctrl-btn-mark'] === '1' && (Number(r['--ctrl-btn-tip'] ?? 0) > 0 || Number(r['--ctrl-btn-notch'] ?? 0) > 0 || r['--ctrl-btn-echo'] === 'block')) bad(style, 'кружок у конца не носится с остриём, выемкой и хвостом', 'mark 1', 'tip 0, notch 0, echo none')
       for (const [fill, , edge, voice] of VOICES) {
-        if (fill in r && r[fill] === 'transparent' && (r[edge] ?? 'transparent') === 'transparent') bad(style, `${voice}: без заливки и кромки кнопка не видна как орган`, 'transparent', 'заливка, вуаль или кромка')
+        /* Черта перед словом (`--ctrl-btn-dash: 1`, И626) — признак органа, как кромка. */
+        if (fill in r && r[fill] === 'transparent' && (r[edge] ?? 'transparent') === 'transparent' && r['--ctrl-btn-dash'] !== '1') bad(style, `${voice}: без заливки и кромки кнопка не видна как орган`, 'transparent', 'заливка, вуаль или кромка')
       }
     }
   }
@@ -197,8 +204,12 @@ export function auditButtons(catalog, palettes, tokens = null) {
               if (!(fill in r)) continue
               const bg = over(r[fill], floor)
               if (bg) want(`${part}-fill`, at, `${voice} видна на полу (${where})`, ratio(bg, floor), STATE.visible)
+              /* Кромка органа с надписью в покое — тихая линия (`STATE.edge`,
+                 И588): орган опознаёт надпись; под рукой — 3 : 1. */
               const e = edge in r ? over(r[edge], floor) : null
-              if (e) want(`${part}-edge`, at, `кромка: ${voice} (${where})`, ratio(e, floor), CONTRAST.control)
+              if (e) want(`${part}-edge`, at, `кромка: ${voice} (${where})`, ratio(e, floor), STATE.edge)
+              const eh = part === 'quiet' && r['--ctrl-btn-edge-hand'] ? over(r['--ctrl-btn-edge-hand'], floor) : null
+              if (eh) want('quiet-edge-hand', at, `кромка тихой под рукой (${where})`, ratio(eh, floor), CONTRAST.control)
               if (ink in r) {
                 const under = bg ?? floor
                 const t = over(r[ink], under)

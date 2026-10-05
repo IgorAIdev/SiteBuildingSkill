@@ -33,6 +33,7 @@
 | Понятие | ro | en | hu | Заметка |
 | --- | --- | --- | --- | --- |
 | корзина | coș | cart | kosár | одно слово везде: шапка, страница, письмо |
+| штук в корзине | {n} articole | {n} items | {n} darab | счёт корзины — штуками, не «товаров»: полка считает товары, корзина — штуки |
 | оформление заказа | finalizarea comenzii | checkout | pénztár | |
 | в наличии | în stoc | in stock | raktáron | |
 | нет в наличии | stoc epuizat | out of stock | elfogyott | |
@@ -76,6 +77,8 @@
 | --- | --- | --- | --- |
 | положить в корзину | Adaugă în coș | Add to cart | Kosárba |
 | перейти к оформлению | Finalizează comanda | Continue to checkout | Tovább a pénztárhoz |
+| полоса до бесплатной доставки: сколько добрать | Mai adaugă {amount} pentru livrare gratuită | Add {amount} more for free delivery | Még {amount}, és a szállítás díjmentes |
+| полоса: порог взят | Livrare gratuită deblocată | Free delivery unlocked | A szállítás díjmentes |
 | подтвердить заказ | Comandă cu obligație de plată | Order with obligation to pay | Megrendelés fizetési kötelezettséggel |
 | открыть поле кода (свёрнуто под вопросом) | Aveți un cod de reducere? | Have a discount code? | Van kedvezménykódja? |
 | применить код | Aplică | Apply | Beváltás |

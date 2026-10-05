@@ -3,6 +3,8 @@ import type { Address, Cart, CartLine, Change, Checkout, Commerce, CommerceError
 import { shopFetch } from './core/request.mjs'
 import { assetImage, type Asset } from './image.ts'
 import type { VendureEnv } from './catalog.ts'
+import { packOf } from './shape.ts'
+import { vendureAccount } from './account.ts'
 
 /* Покупка через Vendure Shop API (план 4, торговая половина; references/
    vendure.md, «Корзина», «Оформление»). Итоги, скидки и доставку считает
@@ -27,7 +29,7 @@ type VOrder = {
   discounts: { description: string; amountWithTax: number }[]
   lines: {
     id: string; quantity: number; unitPriceWithTax: number; linePriceWithTax: number; featuredAsset: Asset | null
-    productVariant: { id: string; name: string; options: { code: string; name: string; group: { code: string; name: string } }[]; product: { slug: string; name: string; translations: Translation[]; featuredAsset: Asset | null } }
+    productVariant: { id: string; name: string; options: { code: string; name: string; group: { code: string; name: string } }[]; product: { slug: string; name: string; translations: Translation[]; featuredAsset: Asset | null; customFields: { volume: string | null; strength: string | null } | null } }
   }[]
   customer: { emailAddress: string; firstName: string; lastName: string; phoneNumber: string | null } | null
   shippingAddress: { streetLine1: string | null; city: string | null; province: string | null; postalCode: string | null; countryCode: string | null } | null
@@ -42,7 +44,7 @@ const ORDER = `
   id code state orderPlacedAt totalQuantity subTotalWithTax totalWithTax shippingWithTax currencyCode couponCodes
   discounts { description amountWithTax }
   lines { id quantity unitPriceWithTax linePriceWithTax featuredAsset { ${ASSET} }
-    productVariant { id name options { code name group { code name } } product { slug name translations { languageCode slug } featuredAsset { ${ASSET} } } } }
+    productVariant { id name options { code name group { code name } } product { slug name translations { languageCode slug } featuredAsset { ${ASSET} } customFields { volume strength } } } }
   customer { emailAddress firstName lastName phoneNumber }
   shippingAddress { streetLine1 city province postalCode countryCode }
   shippingLines { priceWithTax shippingMethod { id code name description } }
@@ -111,6 +113,8 @@ export function vendureCommerce(env: VendureEnv & { placeOrders: boolean }, fetc
       id: l.id, productId: await nativeSlug(l.productVariant.product), variantId: l.productVariant.id,
       name: l.productVariant.product.name,
       options: l.productVariant.options.map((x) => ({ group: x.group.code, code: x.code, name: x.name })),
+      /* Упаковка — поля товара движка, как у карточки полки (`packOf`). */
+      pack: packOf(l.productVariant.product.customFields?.volume, l.productVariant.product.customFields?.strength),
       image: image(l.featuredAsset ?? l.productVariant.product.featuredAsset, l.productVariant.product.name),
       unit: money(o, l.unitPriceWithTax), quantity: l.quantity, total: money(o, l.linePriceWithTax),
     })))
@@ -157,6 +161,8 @@ export function vendureCommerce(env: VendureEnv & { placeOrders: boolean }, fetc
   }
 
   return {
+    /* Кабинет — тем же запросом и той же сессией (vendure/account.ts, И771). */
+    ...vendureAccount<VOrder>({ ask, speak, order: ORDER, orderOf }),
     async checkout(session, lang) {
       const o = await activeOrder(session, lang)
       if (!o.ok) return o
@@ -254,6 +260,16 @@ export function vendureCommerce(env: VendureEnv & { placeOrders: boolean }, fetc
       const r = await ask<{ orderByCode: VOrder | null }>(`query ($code: String!) { orderByCode(code: $code) { ${ORDER} } }`, { code: last.code }, session, await speak(lang))
       if (!r.ok) return { ok: false, reason: 'unavailable' }
       return { ok: true, value: r.data.orderByCode ? await orderOf(r.data.orderByCode, lang) : null }
+    },
+    /* Заявление об отказе (И748) — мутация плагина сервера
+       (skills/site-building/assets/vendure/plugins/withdrawal): он записывает
+       заявление и шлёт подтверждение. Плагина в сервере нет или сервер молчит —
+       `unavailable`, и страница предлагает написать на почту магазина. */
+    async withdraw(lang, w) {
+      const r = await ask<{ submitWithdrawal: { receivedAt: string } }>(
+        `mutation ($input: SubmitWithdrawalInput!) { submitWithdrawal(input: $input) { receivedAt } }`,
+        { input: { name: w.name, orderCode: w.order, emailAddress: w.email } }, null, await speak(lang))
+      return r.ok && r.data.submitWithdrawal ? { ok: true, value: { at: r.data.submitWithdrawal.receivedAt } } : { ok: false, reason: 'unavailable' }
     },
   }
 

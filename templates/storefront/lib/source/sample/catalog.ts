@@ -1,22 +1,24 @@
 import type { Lang } from '../../locale.ts'
 import type { Card, Collection, Facet, Listing, Product, Result, SortKey, Source } from '../contract.ts'
-import { CATEGORIES, FACETS, LAB_REPORTS, PRODUCTS, type SampleProduct } from '../../products.ts'
+import { CATEGORIES, EFFECTS, FACETS, LAB_REPORTS, PRODUCTS, type SampleProduct } from '../../products.ts'
+import { EFFECT_FACET, onSite } from '../effect.ts'
 import { facetValueFilters, pageVariables, pageCount } from '../vendure/core/search.mjs'
+import { PAGE_SIZE } from '../page.ts'
 import { MARKET } from '../../market.ts'
 import { overallStock, standardOf } from '../stock.ts'
 import { standardDetails } from '../details.ts'
 import { percentOf } from '../../facts.ts'
-import { categoryArt, productArt, productImages, type ArtView } from './art.ts'
+import { productArt, productImages, type ArtView } from './art.ts'
+import { effectShot, shelfShot } from './shelf-shots.ts'
 
 /* Помощники набора — JavaScript; тип их ответа записан здесь один раз. */
 type Filter = { and: string } | { or: string[] }
 type Paging = { ok: true; page: number; take: number; skip: number } | { ok: false }
 
-/* Страница полки — 24 товара, как у стандартной темы Shopify: двенадцать
-   товаров образца стояли двумя страницами по восемь, и полка читалась
-   обрывком (разбор 24.09.2026, C4). Двадцать четыре делятся на две, три и
-   четыре колонки — последний ряд страницы полный на любой ширине. */
-const PAGE = 24
+/* Страница полки — одно число на оба источника (`PAGE_SIZE`, И732). */
+const PAGE = PAGE_SIZE
+/* Грань полок образца — форма товара: масло, капсулы, крем, для животных. */
+const SHELF_FACET = 'forma'
 const ok = <T,>(value: T): Result<T> => ({ ok: true, value })
 const money = (minor: number) => ({ minor, currency: MARKET.currency })
 const image = (p: SampleProduct, lang: Lang) => ({ src: productArt(p.cat, p.hue, p.label), alt: p.name[lang], width: 800, height: 800 })
@@ -70,13 +72,14 @@ const matches = (p: SampleProduct, filters: Filter[]) =>
 
 const ORDER: Record<SortKey, (a: SampleProduct, b: SampleProduct) => number> = {
   'popular': (a, b) => a.popular - b.popular,
+  'newest': (a, b) => b.added.localeCompare(a.added) || a.popular - b.popular,
   'price-asc': (a, b) => low(a) - low(b) || a.popular - b.popular,
   'price-desc': (a, b) => low(b) - low(a) || a.popular - b.popular,
 }
 
 const collection = (c: (typeof CATEGORIES)[number], lang: Lang): Collection => ({
   slug: c.slug, name: c.name[lang], description: c.description[lang],
-  image: { src: categoryArt(c.slug), alt: c.name[lang], width: 800, height: 600 }, sign: c.sign,
+  image: shelfShot(c.form, c.name[lang]), sign: c.sign, form: c.form,
 })
 
 type Filtered = { filters: Filter[]; invalid: string[] }
@@ -94,10 +97,17 @@ export function sampleSource(pageSize = PAGE): Source {
       const c = CATEGORIES.find((x) => x.slug === slug)
       return c ? ok(collection(c, lang)) : { ok: false, reason: 'not-found' }
     },
+    /* Эффект стоит, когда под ним есть товар: пустая страница эффекта —
+       обещание без полки. */
+    async effects(lang) {
+      const used = new Set(PRODUCTS.flatMap((p) => p.facets[EFFECT_FACET] ?? []))
+      return ok(EFFECTS.filter((e) => used.has(e.effect) && onSite(EFFECT_FACET, e.effect)).map((e) => ({ code: e.effect, name: e.name[lang], description: e.description[lang], image: effectShot(e.effect, e.name[lang]) })))
+    },
     async listing(lang, query) {
       const paging = pageVariables({ page: query.page ?? undefined }, { pageSize }) as Paging
       if (!paging.ok) return { ok: false, reason: 'bad-request' }
-      const { filters, invalid } = filtersOf(query.facets)
+      const asked = query.facets
+      const { filters, invalid } = filtersOf(asked)
       const words = (query.q ?? '').trim().toLocaleLowerCase(lang)
       const pool = PRODUCTS.filter((p) => (!query.category || p.cat === query.category) && (!words || p.name[lang].toLocaleLowerCase(lang).includes(words)))
       const found = pool.filter((p) => matches(p, filters)).sort(ORDER[query.sort])
@@ -105,18 +115,25 @@ export function sampleSource(pageSize = PAGE): Source {
       if (paging.page > pages) return { ok: false, reason: 'not-found' }
       /* Счёт значения — против всех граней, КРОМЕ своей (cbd-facet, §3): «Масло»
          выбрано — «Капсулы» считаются так, будто формы не выбирали, и остаются
-         выбором «или», а не нулём. */
+         выбором «или», а не нулём. Значения — те, что есть в рамке (`pool`:
+         полка без выбора покупателя); выбор их не находит — счёт ноль, и фильтр
+         гасит значение, а не прячет (И750). */
       const facets: Facet[] = FACETS.map((f) => {
-        const others = pool.filter((p) => matches(p, filtersOf(without(query.facets, f.code)).filters))
-        return {
+        const others = pool.filter((p) => matches(p, filtersOf(without(asked, f.code)).filters))
+        const here = new Set(pool.flatMap((p) => facetsOf(p)[f.code] ?? []))
+        const facet: Facet = {
           code: f.code, name: f.name[lang],
-          values: f.values.map((v) => ({
+          values: f.values.filter((v) => onSite(f.code, v.code) && (here.has(v.code) || (query.facets[f.code] ?? []).includes(v.code))).map((v) => ({
             code: v.code, name: v.name[lang],
             count: others.filter((p) => (facetsOf(p)[f.code] ?? []).includes(v.code)).length,
             selected: (query.facets[f.code] ?? []).includes(v.code),
           })),
         }
+        if (f.code === SHELF_FACET) facet.shelf = true
+        return facet
       })
+      /* Спрошен только счёт — без карточек: счёт выдачи и значений граней. */
+      if (query.count) return ok({ items: [], total: found.length, page: 1, pages: 1, facets, invalid })
       const listing: Listing = { items: found.slice(paging.skip, paging.skip + paging.take).map((p) => card(p, lang)), total: found.length, page: paging.page, pages, facets, invalid }
       return ok(listing)
     },
@@ -131,7 +148,7 @@ export function sampleSource(pageSize = PAGE): Source {
       if (!p) return { ok: false, reason: 'not-found' }
       const batches = [...new Set(p.variants.map((v) => v.batch))].filter((b) => LAB_REPORTS[b])
       const product: Product = {
-        id: p.id, category: p.cat, brand: p.brand, name: p.name[lang], summary: p.summary[lang], description: p.description[lang],
+        id: p.id, category: p.cat, brand: p.brand, rating: p.rating ?? null, name: p.name[lang], summary: p.summary[lang], description: p.description[lang],
         ...standardDetails(CATEGORIES.find((c) => c.slug === p.cat)?.form ?? null, lang), standard: p.standard ?? null,
         images: images(p, lang),
         optionGroups: p.groups.map((g) => ({ code: g.code, name: g.name[lang], options: g.options.map((o) => ({ code: o.code, name: o.name[lang] })) })),

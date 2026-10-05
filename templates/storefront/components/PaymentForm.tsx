@@ -26,11 +26,14 @@ type Action = (prev: FormState, form: FormData) => Promise<FormState>
 
    Итог, который покупатель видит над кнопкой, форма уносит с заказом
    (`total`, `currency`): другой у корзины — заказ не ставится (И262).
-   Скрытые поля — в конце формы: первыми в стопке они дали бы пустой зазор. */
-export function PaymentForm({ view, action, permalink, children }: { view: PaymentPageView; action: Action; permalink: string; children: ReactNode }) {
+   Скрытые поля — в конце формы: первыми в стопке они дали бы пустой зазор.
+
+   Имя форме даёт заголовок шага рамки (`step-title`); вне рамки (дизайн-
+   система) — свой заголовок, его адрес — `labelledBy`. */
+export function PaymentForm({ view, action, permalink, children, labelledBy = 'step-title' }: { view: PaymentPageView; action: Action; permalink: string; children: ReactNode; labelledBy?: string }) {
   const [state, formAction, pending] = useActionState(action, null, permalink)
   return (
-    <form aria-busy={pending} className={`${p.sidebar} ${s.frame}`} action={formAction} aria-labelledby="step-title">
+    <form aria-busy={pending} className={`${p.sidebar} ${s.frame}`} action={formAction} aria-labelledby={labelledBy}>
       <div className={`${p.stack} ${s.step} ${s.measure}`}>
         {state?.message ? <p className={f.say} data-state="error" role="alert">{state.message}</p> : null}
         <fieldset className={`${s.options} ${s.plain}`} disabled={pending}>

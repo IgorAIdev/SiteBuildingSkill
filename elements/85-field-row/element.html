@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>85 · Поле с подписью слева</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 85 — «Поле с подписью слева». Источники — HyperUI «Forms», daisyUI «Fieldset», shadcn/ui «Field» (MIT).
+  Подпись и поле в одной строке: подпись слева на своей ширине, поле занимает остаток. Для форм кабинета и настроек, где
+  полей много и подпись над каждым съедала бы высоту.
+-->
+</head>
+<body>
+  <div class="live">
+    <div class="entry" data-dir="row"><label class="label" for="f85a">Name</label><label class="field" data-voice="line"><input id="f85a" type="text" placeholder="Anna Popescu"></label></div>
+    <div class="entry" data-dir="row"><label class="label" for="f85b">Email</label><label class="field" data-voice="line"><input id="f85b" type="email" placeholder="name@example.com"></label></div>
+    <div class="entry" data-dir="row"><label class="label" for="f85c">City</label><label class="field"><input id="f85c" type="text" placeholder="Bucharest"></label></div>
+  </div>
+</body>
+</html>

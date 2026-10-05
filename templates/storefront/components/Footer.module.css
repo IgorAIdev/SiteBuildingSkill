@@ -14,36 +14,124 @@
 .foot{
   background:var(--page-deck);
   margin-block-start:var(--air-page);
-  --sheet-pad:var(--page-line);
-  --sheet-air:var(--air-band)
+  --sheet-pad:var(--page-line)
 }
-/* Столбцы — группы: между ними воздух блока, внутри столбца (подпись и её
-   строки) — воздух строки. Одним шагом на оба случая группы на телефоне
-   сливались в один список (разбор 24.09.2026, S5). Пол ячейки — чтобы при
-   воздухе блока на 375 оставалось два столбца, а не один. */
-.cols{--cols:3;--cell-min:144px;--cols-min:1;--grid-gap:var(--air-block)}
-.col{--stack:var(--air-row)}
-/* `margin:0` стоял позже примитива `stack` той же силы и гасил его ритм:
-   «Ajutor» лежал на своём списке вплотную, а «Companie» над адресом — с
-   воздухом (снимок приёмки). Верхнее поле — умолчанием нулевой силы: вне
-   столбца (выбор языка) оно ноль, в столбце его ставит `stack`. */
-.list{list-style:none;padding:0;margin-inline:0;margin-block-end:0}
-:where(.list){margin-block-start:0}
-/* Цель ссылки подвала — квадрат, а не только высота: «Retur» под пальцем
-   выходило 38×44 (check:craft, target и coarse). Одна запись на обе полосы —
-   подвал магазина и подвал кассы: у кассы стояла своя, с одной высотой, и
-   то же «Retur» там выходило 32×44 на 390 (финальный проход, И380). */
-.list a,.addr a,.legal a{display:inline-flex;align-items:center;min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target)}
-.list a[aria-current='true']{color:var(--ink);font-weight:600}
-.addr{font-style:normal;color:var(--ink-soft);line-height:var(--body-lead)}
+/* Страница кончается тёмным разделом (вопросы главной на палубе, И697) —
+   подвал продолжает тот же пол без отбивки: два блока одного пола рядом —
+   один пол, а полоса страницы между ними читалась щелью (слово заказчика
+   04.10.2026: «два блока рядом с одним фоном и между ними серая полоска»;
+   И703). Воздух между ними — их собственные поля. */
+main:has(> [data-ground='deck']:last-child) + .foot{margin-block-start:0}
+/* Подвал (бриф docs/design/подвал.md; разбор impeccable 28.09.2026). Ярусы:
+   подписка, знак и столбцы, основание с оговоркой. Весь подвал — одним
+   кеглем текста страницы (`--body-*`: 16 на телефоне, 18 на столе; И686):
+   подпись столбца отличает вес и чернила, а не размер. Замер 03.10.2026:
+   ссылки подвала у Gymshark 14 — как его меню и текст, у Glossier 14 — как
+   текст, у Allbirds 12 — как меню; мельче своего меню подвала нет ни у кого.
+   До 03.10.2026 подвал стоял кеглем подписи (`--blurb-*`), и когда
+   типографика голосами (И674) свела подпись к 14, подвал сел ступенью ниже
+   меню (16) и двумя — текста (заказчик: «текст размер не мелковат ли»).
+   Поле полосы — воздух блока, между ярусами — воздух группы. */
+/* Край подвала — смена пола (И738): от края до заглавных первой строки тот
+   же воздух раздела, что над краем; поле листа на палубе сверху молчит
+   (`--sheet-air`), низ подвала прежний — воздух блока и поле листа. */
+.foot{container-type:inline-size;--sheet-air:0px;padding-block:var(--air-page) calc(var(--air-block) + var(--sheet-pad, var(--pad-sheet)));display:grid;gap:var(--air-group);font-size:var(--body-size);line-height:var(--body-lead)}
+.top{display:flex;flex-wrap:wrap;gap:var(--air-group) var(--air-block)}
+.brand{flex:1 1 14rem;display:grid;align-content:start;gap:var(--air-line)}
+/* Знак марки — ссылка на главную, цель ростом цели органа (24 под мышью, 44
+   под пальцем; как у шапки): стоял 88 × 23 (check:craft target, 05.10.2026). */
+.logo{justify-self:start;display:inline-flex;align-items:center;min-block-size:var(--ctrl-target);font-size:var(--h3-size);line-height:var(--h3-lead);font-weight:var(--h3-weight);letter-spacing:var(--h3-track);color:var(--ink);text-decoration:none}
+.tagline{margin:0;max-inline-size:22rem;color:var(--ink-soft)}
+/* Соцсети — знаки без слова ростом органа (40; cbdin.bg 36, знак 22, шаг
+   44 — замер 29.09.2026), шагом почти вплотную; рамка цели мыши (24) со
+   знаком 13 читалась крошками (слово заказчика: «что за … с размерами»).
+   Оплата — пилюли меток одним рядом под ними, зазор — соседних целей. */
+.social,.pay{list-style:none;padding:0;margin:0}
+.social{--cluster:var(--sp-1)}
+.social a{--btn-h:var(--ctrl-h);inline-size:var(--btn-h);padding:0}
+.social svg{inline-size:calc(var(--btn-h) * .55);block-size:calc(var(--btn-h) * .55)}
+.pay{--cluster:var(--sp-2)}
+/* Столбцы берут остаток (втрое больше знака) и стоят каждый шириной своей
+   самой длинной строки: адрес почты, номер и имя полки не переносятся
+   никогда (слово заказчика 29.09.2026: «перенос недопустим» — почта
+   ломалась «contact@exemplu / .ro» в равной ячейке сетки). Тесно — столбец
+   встаёт на следующий ряд целиком; сколько их в ряду, решает ширина
+   (примитив `cluster`, правило 5), а не номер. */
+.cols{flex:3 1 36rem;--cluster:var(--air-group);justify-content:space-between;align-items:start}
+/* Телефон (шов 560): два ряда по два столбца поровну — связь и магазин, о нас и
+   помощь (заказчик 05.10.2026: «в две строки и два блока, а то на три строки
+   растянуто, в строке по одному блоку»; И760). Прежде связь стояла своим рядом во
+   всю ширину, остальные — сеткой по 8rem: три ряда. Ровные ячейки — каждый столбец
+   от своего края, лесенки нет. */
+@container (max-width:559px){
+  .cols{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr))}
+}
+.col{flex:0 1 auto;display:grid;align-content:start;gap:var(--sp-2)}
+.head{margin:0;font-weight:var(--label-weight);color:var(--ink)}
+.list{list-style:none;padding:0;margin:0}
+/* Строка — блочный ряд, а не строчный: у строчного знак ставил строку на
+   свою нижнюю кромку, и строки со знаком шли шагом выше строк без знака
+   (40 против 36 — ритм столбцов расходился, слово заказчика 29.09.2026).
+   Шаг у всех столбцов один — рост малого органа (`--ctrl-h-sm`: 32 под
+   мышью, 44 под пальцем). Шагом цели (24) — ровно межстрочье текста 15.7 ×
+   1.5, и столбец читался сплошным абзацем, а не ссылками (разбор
+   подвала 29.09.2026; И578). */
+/* Цель и по ширине: короткое слово («Blog») стояло 32 × 44 под пальцем (check:craft
+   target, 05.10.2026). */
+/* Высота строки — поле от роста малого органа, а не пол высоты (И760): одна
+   строка — ровно рост органа, перенесённая — растёт, и зазор до соседа остаётся.
+   С полом (`min-block-size`) две строки длинного имени шли вплотную к соседней
+   ссылке: шаг 24 внутри ссылки и 44 между ссылками — «чехарда интервалов».
+   Поле округляется вверх до пикселя: дробное межстрочье (25.69) давало поле
+   9.148, браузер клал его сеткой 1/64 вниз, и строка выходила 43.98 при цели 44 —
+   46 находок `coarse` на планшете под пальцем (check:part, 05.10.2026). */
+.list a{display:flex;inline-size:fit-content;min-inline-size:var(--ctrl-target);align-items:center;gap:var(--gap-row);padding-block:round(up, calc((var(--ctrl-h-sm) - 1lh) / 2), 1px);white-space:nowrap}
+/* В ячейке сетки телефона (шов 560 выше) строка ссылки переносится: длинные
+   имена документов («Returns and the right of withdrawal», И748) одной строкой
+   вылезали из ячейки третьего столбца, и на 480–561 страница уезжала вбок на
+   76–103 (sweep 05.10.2026). Правило — после строки выше: вес тот же. */
+@container (max-width:559px){ .list a{white-space:normal} }
+.list svg{flex:none;inline-size:1.15em;block-size:1.15em}
+/* Имя полки — с заглавной, как в меню шапки (слово заказчика 01.10.2026;
+   правило шапки — Header.module.css, «.name»): имена приходят из данных
+   строчными, данные не трогаем. Имя — элемент внутри ссылки-флекса: у флекса
+   своей первой буквы нет. */
+.shelf::first-letter{text-transform:uppercase}
+/* Под рукой ссылка подвала — полным словом, без подчёркивания (слово
+   заказчика 29.09.2026: «подчёркивание — архаика»; И578): вид «слово и знак»
+   (`word`, Footer.tsx; И685), тот же, что у соцсетей и шапки. */
+.list a[aria-current='true']{color:var(--ink);font-weight:var(--label-weight)}
+/* Основание — правила и продавец слева, оговорка о CBD справа у правого
+   края (слово заказчика 29.09.2026; И548): одна полоса вместо двух, отбита
+   волоском. Оговорка — в меру короткой строки, текст к правому краю;
+   тесно — встаёт под правила и читается от начала строки.
+   Полоса — `wrap` прямо на палубе, и примитив делает её листом (`sheet`,
+   styles/primitives.module.css): поле сверху и снизу — `--sheet-air`, угол —
+   `--sheet-r`. Своя набивка узла листу проигрывает, поэтому воздух над текстом
+   и прямой волосок — ручками листа: сверху воздух группы, снизу ноль (низ —
+   поле подвала), угол ноль. Без них подвал, обнуливший `--sheet-air` (И738),
+   ставил текст вплотную к волоску, а волосок загибался углом листа (слово
+   заказчика 04.10.2026: «текст внизу упирается в линию»). */
+.bottom{
+  --sheet-air:var(--air-group) 0px;--sheet-r:0px;
+  display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:var(--air-row) var(--air-block);
+  border-block-start:var(--line-w) solid var(--rule);
+  font-size:var(--blurb-size);line-height:var(--blurb-lead);color:var(--ink-soft)
+}
+.base{flex:1 1 20rem;display:grid;gap:var(--sp-2)}
+.notice{flex:0 1 26rem;margin:0;text-align:end}
+@container (max-width:819px){ .notice{flex-basis:100%;text-align:start} }
+.seller{font-style:normal}
+/* Цель — квадрат роста цели, как у ссылки списка выше (`.list a`): короткое
+   слово закона («ÁSZF», «Sütik» по-венгерски) стояло 33 × 44 на телефоне
+   (check:craft, target; замер кабинета 05.10.2026, И771). */
+.base a,.legal a{display:inline-flex;align-items:center;min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target)}
+.base .legalLinks{column-gap:var(--air-row)}
 
-/* Подвал кассы — строка на полу страницы под волоском: помощь, закон,
-   данные — кеглем сноски, группами через воздух блока, внутри группы —
-   зазор ряда. Цель у ссылки — та же запись, что у ссылок подвала (выше). */
+/* Подвал кассы — строка на полу страницы (Footer.tsx, ). */
 .legal{
   margin-block-start:var(--air-page);padding-block:var(--air-group);border-block-start:var(--line-w) solid var(--rule);
-  font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft)
+  font-size:var(--blurb-size);line-height:var(--blurb-lead);color:var(--ink-soft)
 }
 .legalRow{display:flex;flex-wrap:wrap;align-items:center;gap:var(--gap-row) var(--air-block)}
 .legalLinks{display:flex;flex-wrap:wrap;column-gap:var(--gap-row);list-style:none;padding:0;margin:0}
-.legal a{color:var(--ink);text-decoration-line:underline;text-underline-offset:.2em}

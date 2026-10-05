@@ -23,11 +23,35 @@
  */
 
 import { execSync } from 'node:child_process'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { partsOf, pendingOf } from './parts.mjs'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
+
+/* ── Часть сайта тронута — она померена (И765) ────────────────────────────
+   Слово заказчика 05.10.2026: «при делании любой части магазина — меню,
+   страницы — проверки проверяли, корректировали и делали результат
+   правильный». Хук правки запомнил, какие части тронуты; пока их страницы не
+   померены отрисованной и нажатием, работа не кончается: код 2 возвращает
+   агента к делу с готовой командой. Второй раз подряд (`stop_hook_active`) не
+   держит — сайт мог не подняться, и тогда «не проверено» говорится вслух. */
+let hook = {}
+try { hook = JSON.parse(readFileSync(0, 'utf8') || '{}') } catch { /* без входа — только напоминание о правиле */ }
+if (hook.session_id && existsSync(join(ROOT, 'tools/check-part.mjs'))) {
+  const parts = partsOf(pendingOf(hook.session_id))
+  if (parts.length && !hook.stop_hook_active) {
+    console.error(`Тронуты части сайта, и после правки их никто не мерил:
+${parts.map((p) => `  · ${p.name}${p.press ? ' (и нажатием)' : ''}: ${p.touched.join(', ')}`).join('\n')}
+
+Перед отчётом — их страницы отрисованной проверкой (и нажатием, где «в корзину»):
+  node tools/check-part.mjs --session ${hook.session_id}
+Находки чинить в этой же работе и мерить снова; сайт не поднят — сказать заказчику «не проверено».`)
+    process.exit(2)
+  }
+  if (parts.length) console.log(`Тронутые части не померены: ${parts.map((p) => p.name).join(', ')} — в отчёте сказать «не проверено» и почему.`)
+}
 
 const git = (cmd) => {
   try { return execSync(`git ${cmd}`, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], cwd: ROOT }) }

@@ -48,6 +48,7 @@ import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { CSS_FAMILIES, CSS_LABELS } from './css-families.mjs'
 import { CRAFT_FAMILIES, CRAFT_LABELS } from './craft-families.mjs'
+import { THEME_FAMILIES, THEME_LABELS } from './theme-families.mjs'
 import { CODE_FAMILIES, CODE_LABELS } from './code-families.mjs'
 import { DESIGN_FAMILIES, DESIGN_LABELS, DESIGN_SOURCES } from './design-families.mjs'
 import { DETECT_FAMILIES, DETECT_LABELS, DETECT_SOURCES, DETECT_RULES, fateOf } from './detect-families.mjs'
@@ -70,6 +71,8 @@ const has = (p) => existsSync(join(ROOT, p))
    процесс) сюда не входят — их текст не наш и не правится. */
 const SKILL_DIRS = ['.claude/skills/craft', '.claude/skills/palette', '.claude/skills/scale', '.claude/skills/code', '.claude/skills/shop', '.claude/skills/stages']
 const LEDGER = 'docs/rules.md'
+/** С этого номера правило журнала обязано назвать источник (И661). */
+const SOURCED_FROM = 661
 /* Набор или сайт. Стартовый образец красок лежит только у набора: сайту
    ставщик кладёт его уже как `styles/palette.json`, а `templates/` не везёт.
    README набора держит таблицы фактов и «что за чем» (И217, И219); README
@@ -85,6 +88,8 @@ const TABLES = {
      impeccable, у каждой семьи строка источника. Правила его детектора по
      отрисованной странице (И310) — рядом, из того же реестра. */
   '.claude/skills/craft/references/checks.md': ['css', 'craft', 'design', 'detect', 'detectFates'],
+  /* Цвет обеих тем (И766) — рядом с правилами тёмной темы, которые он мерит. */
+  '.claude/skills/craft/references/color.md': ['theme'],
   '.claude/skills/code/SKILL.md': ['code'],
   /* Факты о палитре — сколько красок называет заказчик, сколько семей,
      сколько выпускается, какие наборы и команды — собираются из кода в
@@ -129,7 +134,7 @@ const skillText = skillFiles.map((f) => read(f)).join('\n')
    (`name`, `focus`), и голое вхождение ничего не доказывает. */
 for (const [kind, fams, quoted] of [['вёрстки', CSS_FAMILIES, false], ['кода', CODE_FAMILIES, false],
                                     ['отрисованной страницы', CRAFT_FAMILIES, true], ['дизайна', DESIGN_FAMILIES, true],
-                                    ['детектора impeccable', DETECT_FAMILIES, true]]) {
+                                    ['детектора impeccable', DETECT_FAMILIES, true], ['цвета обеих тем', THEME_FAMILIES, true]]) {
   for (const fam of fams) {
     const hit = quoted ? skillText.includes('`' + fam + '`') : skillText.includes(fam)
     if (!hit) bad.push(`семья ${kind} «${fam}» не описана ни в одном скилле — проверка есть, правила нет`)
@@ -158,16 +163,72 @@ if (ledger && numbered.length === 0) {
 const dupes = numbered.filter((n, i) => numbered.indexOf(n) !== i)
 for (const d of new Set(dupes)) bad.push(`${LEDGER}: номер правила «${d}» занят дважды`)
 
+/* Ссылка на правило ведёт в журнал (И681). Номер берётся с хвоста журнала в
+   момент записи, и запись идёт РАНЬШЕ ссылки на неё в коде, стилях и скиллах.
+   Дефект 03.10.2026: в одном дереве работали несколько сессий; одна сослалась
+   на И678 в двух файлах, ещё не записав правило, другая тем временем записала
+   под этим номером своё — ссылки повели на чужое правило. Висячую ссылку
+   (номера в журнале нет) ловит эта строка; занятый номер ловить не нужно,
+   если запись идёт первой. */
+if (ledger) {
+  const known = new Set(numbered)
+  const ROOTS = ['tools', 'styles', 'templates/storefront', 'components', 'app', 'lib', '.claude/skills', 'elements',
+    'install.mjs', 'scripts.mjs', 'CLAUDE.md', 'docs/claude-full.md']
+  const SKIP = /(^|\/)(node_modules|\.next|\.git|research)(\/|$)/
+  const cited = new Map()
+  const scan = (p) => {
+    if (!has(p) || SKIP.test(p)) return
+    const st = statSync(join(ROOT, p))
+    if (st.isDirectory()) { for (const e of readdirSync(join(ROOT, p))) scan(`${p}/${e}`); return }
+    if (!/\.(mjs|js|ts|tsx|css|md|json)$/.test(p)) return
+    const text = read(p)
+    for (const m of text.matchAll(/И(\d{1,4})(?!\d)/g)) {
+      if (known.has(`И${m[1]}`) || cited.has(m[1])) continue
+      cited.set(m[1], `${p}:${text.slice(0, m.index).split('\n').length}`)
+    }
+  }
+  for (const r of ROOTS) scan(r)
+  for (const [n, where] of cited) bad.push(`${where}: ссылка на И${n}, а в ${LEDGER} такого правила нет — сначала запись в журнале с номером с его хвоста, потом ссылка (И681)`)
+}
+
 /* Каждое правило называет дефект. Формулировка вольная, но слово «дефект»,
    «стоило», «нашёл» или «заведено» должно быть: правило без причины через
    полгода читается вкусовщиной и его снимают — это записано в самом реестре
    в его шапке. */
 const sections = ledger.split(/^## /gm).slice(1)
+/* Заглушка влитого или снятого правила (И737): номер жив, текст — в записи, в
+   которую влито, история — docs/rules-archive/. Ни дефекта, ни источника
+   заглушка не повторяет. */
+const STUB = /^\s*[А-ЯA-Z]+\d+\s*·\s*(влито в [А-ЯA-Z]+\d+|снято\b)/
 for (const sec of sections) {
   const title = sec.split('\n')[0].trim()
+  if (STUB.test(title)) continue
   if (!/дефект|стоил|нашёл|нашел|заведен|заведён|по счёт|по счет|купил/i.test(sec)) {
     bad.push(`${LEDGER}: «${title}» не называет, каким дефектом заведено`)
   }
+  /* Как у профессионалов — по умолчанию (И661, CLAUDE.md): решение сверено
+     с источником своей области (docs/references.md) и живым образцом, и
+     правило это называет строкой «Источник:». С И661 — у каждого нового;
+     прежние правила свои источники носят в тексте, как писались. */
+  const no = Number(title.match(/^И(\d+)/)?.[1] ?? 0)
+  if (no >= SOURCED_FROM && !/^\*{0,2}Источник/m.test(sec)) {
+    bad.push(`${LEDGER}: «${title}» без строки «Источник:» — у кого сверено решение (docs/references.md, И661)`)
+  }
+}
+
+/* ── 3б · журнал не пухнет (И737) ──────────────────────────────────────────
+   Заказчик 04.10.2026: «как до финала дойдём — будет тысяча правил». Журнал
+   рос на 35 записей в день: один вопрос — цепочкой записей (листание под
+   полкой — три за день), история и замеры — в теле записи. Новый номер —
+   новому вопросу, поправка — в старую запись; запись не длиннее LONG строк.
+   Храповик по длинным: новая длинная запись — красное, ночное сжатие
+   опускает планку (`--update`). */
+const LONG = 30
+const entries = sections.filter((sec) => /^\s*[А-ЯA-Z]+\d+\s*·/.test(sec))
+const stubs = entries.filter((sec) => STUB.test(sec.split('\n')[0]))
+const longOnes = entries.filter((sec) => !STUB.test(sec.split('\n')[0]) && sec.trimEnd().split('\n').length > LONG)
+for (const sec of stubs) {
+  if (sec.trimEnd().split('\n').length > 4) bad.push(`${LEDGER}: заглушка «${sec.split('\n')[0].trim()}» длиннее трёх строк — текст живёт в записи, куда влито, история — в docs/rules-archive/ (И737)`)
 }
 
 /* ── 4 · закон не перерос чтение ───────────────────────────────────────────
@@ -381,6 +442,7 @@ const GEN = {
   detectFates: ['| Правило impeccable | Имя у автора | Судьба |', '| --- | --- | --- |',
     ...DETECT_RULES.map((r) => `| \`${r.id}\` | ${r.name} | ${fateOf(r.id)} |`)].join('\n'),
   craft: table(CRAFT_FAMILIES, CRAFT_LABELS, 'Что ловит'),
+  theme: table(THEME_FAMILIES, THEME_LABELS, 'Что ловит'),
   code: table(CODE_FAMILIES, CODE_LABELS, 'Что ловит'),
   palette: paletteFacts(),
   scale: scaleFacts(),
@@ -528,12 +590,21 @@ if (process.argv.includes('--list')) {
   process.exit(0)
 }
 const laws = SKILL_DIRS.filter((d) => has(`${d}/SKILL.md`)).map((d) => `${d.split('/').pop()} ${read(`${d}/SKILL.md`).split('\n').length}`).join(' · ')
-console.log(`· семей вёрстки: ${CSS_FAMILIES.length}, кода: ${CODE_FAMILIES.length}, отрисованной: ${CRAFT_FAMILIES.length}, дизайна: ${DESIGN_FAMILIES.length}, детектора impeccable: ${DETECT_FAMILIES.length} (правил сборки ${DETECT_RULES.length}), проверок: ${CHECKS.length}, правил в реестре: ${numbered.length}, законы (строк из ${CEILING}): ${laws}, справочных файлов: ${skillFiles.length - SKILL_DIRS.filter((d) => has(`${d}/SKILL.md`)).length}`)
+console.log(`· семей вёрстки: ${CSS_FAMILIES.length}, кода: ${CODE_FAMILIES.length}, отрисованной: ${CRAFT_FAMILIES.length}, цвета обеих тем: ${THEME_FAMILIES.length}, дизайна: ${DESIGN_FAMILIES.length}, детектора impeccable: ${DETECT_FAMILIES.length} (правил сборки ${DETECT_RULES.length}), проверок: ${CHECKS.length}, правил в реестре: ${numbered.length}, законы (строк из ${CEILING}): ${laws}, справочных файлов: ${skillFiles.length - SKILL_DIRS.filter((d) => has(`${d}/SKILL.md`)).length}`)
+
+console.log(`· журнал: живых ${entries.length - stubs.length}, влито и снято ${stubs.length}, длиннее ${LONG} строк ${longOnes.length} (планка ${base.long ?? '—'})`)
 
 if (process.argv.includes('--update')) {
-  writeFileSync(BASE, JSON.stringify({ drift: bad.length }, null, 2) + '\n')
-  console.log(`· база обновлена: ${bad.length}`)
+  writeFileSync(BASE, JSON.stringify({ drift: bad.length, long: longOnes.length }, null, 2) + '\n')
+  console.log(`· база обновлена: ${bad.length}, длинных записей ${longOnes.length}`)
   process.exit(0)
+}
+
+if (longOnes.length > (base.long ?? Infinity)) {
+  console.log(`\n✗ журнал правил распух: записей длиннее ${LONG} строк ${base.long} → ${longOnes.length} (И737)`)
+  for (const sec of longOnes.slice(base.long)) console.log(`    ${sec.split('\n')[0].trim()} — ${sec.trimEnd().split('\n').length} строк`)
+  console.log('\nДефект в 1–3 строках, правило, чем меряется, источник; замеры и разбор — в справочник скилла.')
+  process.exit(1)
 }
 
 if (bad.length > base.drift) {

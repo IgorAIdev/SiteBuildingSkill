@@ -16,6 +16,8 @@
      npm run check:choice -- '<скопированный выбор>'   этот выбор (черновиком;
                                                   прежний черновик вернётся)
      npm run check:choice -- --draft            текущий черновик как есть
+     … --quick                                  без отрисовки: правило, покрытие,
+                                                  сайт рисует этот вид (сервер разработки)
    Сервер — SITE (по умолчанию http://localhost:3020), с LOOK_PICKER=on. */
 import { existsSync, readFileSync, writeFileSync, rmSync, mkdtempSync } from 'node:fs'
 import { join } from 'node:path'
@@ -58,7 +60,7 @@ async function lookOfChoice(args) {
   const bad = clashes(chosen, catalog.pairs)
   if (bad.length) fail(bad.map((p) => `${title(catalog, p.x.field, p.x.id)} (${p.x.field}) не носится с ${title(catalog, p.y.field, p.y.id)} (${p.y.field}): ${p.why}`))
   const { look, need } = compose(chosen, catalog)
-  return { ...look, fonts: await fetchFonts(need, join(ROOT, 'public/fonts')) }
+  return { ...look, fonts: await fetchFonts(need, join(ROOT, 'public/fonts'), ROOT).catch((e) => fail([e.message])) }
 }
 
 /** Черновик → черновой режим: cookie, с которыми сайт рисует черновик. */
@@ -105,6 +107,18 @@ async function check(mode, args) {
     mode === 'published' ? 'пересчитать опубликованный вид из его имён: npm run look:catalog -- --from <папка набора> (И352)' : 'выбрать ещё раз в панели: черновик соберётся из имён нынешним каталогом'])
   console.log(`Проверяю вид: ${Object.entries(look.names).map(([f, id]) => `${f} ${title(catalog, f, id)}`).join(' · ') || '(имена не записаны)'}`)
 
+  /* Быстро (`--quick`) — без отрисовки: сервер разработки собирает страницу
+     по первому запросу, и check:craft не дожидался её 30 с — сохранение
+     палитры падало «fetch failed», хотя палитра ни при чём (слово заказчика
+     29.09.2026 со снимком: «проверка не пройдена… я просто выбор палитры
+     хотел закрепить»; И573). Обходы страниц — только на собранном сайте
+     (память набора: проверки обходом — не на сервере разработки). Правило
+     сайта и покрытие выше уже прошли; здесь — что сайт рисует этот вид. */
+  if (QUICK) {
+    await shows(look, mode === 'published' ? '' : await asDraft(mode === 'choice' ? raw : null))
+    console.log('\n✓ ГОДИТСЯ — правило сайта и покрытие чисты, сайт рисует этот вид. Отрисованная проверка (check:craft) — на собранном сайте: перед сдачей и на проде.')
+    return
+  }
   const { CATEGORIES, PRODUCTS } = await import('../../tools/routes.mjs')
   const shelf = CATEGORIES[0]
   const pages = [`/${LANG}`, `/${LANG}/catalog/${shelf}`, `/${LANG}/product/${PRODUCTS.find((p) => p.cat === shelf)?.id}`]
@@ -140,7 +154,8 @@ async function check(mode, args) {
   if (debt.length) console.log(`  Долг, который уже есть и выбором не вызван (чинится отдельно): ${debt.join('; ')}.`)
 }
 
-const args = process.argv.slice(2)
+const QUICK = process.argv.includes('--quick')
+const args = process.argv.slice(2).filter((a) => a !== '--quick')
 const mode = args.includes('--draft') ? 'draft' : args.length ? 'choice' : 'published'
 const before = existsSync(DRAFT) ? readFileSync(DRAFT, 'utf8') : null
 try {

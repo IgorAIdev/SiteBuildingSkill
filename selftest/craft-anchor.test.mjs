@@ -1,6 +1,6 @@
 /**
  * Семья `check:craft` `anchor` — «цель уедет под шапку» считается только там,
- * где шапка в самом деле держится у верха окна, когда цель приехала (И512).
+ * где шапка в самом деле держится у верха окна, когда цель приехала (И773).
  *
  * Дефект: 29.09.2026 на cbdshop.bg 620 находок «отступ 0 при занятом верхе
  * 132» — а шапка там не прилипает (`position: relative`), уезжает вместе со
@@ -84,6 +84,9 @@ test('craft: цель под шапкой — только когда шапка
   const dir = mkdtempSync(join(tmpdir(), 'kit-anchor-'))
   try {
     cpSync(join(KIT, 'tools'), join(dir, 'tools'), { recursive: true })
+    /* Проверка читает роли текста из styles/scale.css (typeRole, И674) — без файла падает до замера. */
+    mkdirSync(join(dir, 'styles'), { recursive: true })
+    cpSync(join(KIT, 'styles/scale.css'), join(dir, 'styles/scale.css'))
     writeFileSync(join(dir, 'package.json'), '{"name":"probe","private":true,"type":"module"}')
     for (const p of Object.keys(PAGES)) { mkdirSync(join(dir, 'app', p), { recursive: true }); writeFileSync(join(dir, 'app', p, 'page.tsx'), 'export default () => null\n') }
     const out = join(dir, 'found.json')

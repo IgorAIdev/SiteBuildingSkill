@@ -1,0 +1,66 @@
+/* ═══ КАБИНЕТ ПОКУПАТЕЛЯ (И771) ══════════════════════════════════════════
+ *
+ *  Бриф — docs/design/кабинет.md. Вход, создание, сброс, подтверждение и
+ *  адреса — одна колонка мерой строки формы (`--measure`), как касса и форма
+ *  отказа: у образцов колонка 320–446 (Gymshark, Allbirds, Dawn). Колонка —
+ *  контейнер, и кнопка формы в ней всегда во всю колонку (шов 560 кассы,
+ *  Checkout.module.css `.form`), как «Log In» у Gymshark. Кабинет — заказы
+ *  главной колонкой, сбоку лист с данными, адресом и выходом (`sidebar`;
+ *  Dawn, `customers/account.liquid`). Заказ и адрес — карточкой: лист на полу
+ *  страницы, как строки шторки корзины и лист итога (И671). Тени нет.
+ */
+.auth{max-inline-size:var(--measure);container-type:inline-size}
+.form{composes:form from './Checkout.module.css'}
+.plain{composes:plain from './Checkout.module.css'}
+/* «Забыли пароль» — под паролем у начала поля, тихим словом (3 из 3
+   образцов), своей шириной, а не полосой во всю меру. */
+.forgot{align-self:flex-start}
+
+/* Пути под формой — вопрос и ссылка одной строкой, переносятся вместе;
+   ссылка — словом полной краски и весом подписи, как «Sign up» у Gymshark. */
+.ways{display:flex;flex-direction:column;gap:var(--air-line)}
+.way{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:var(--gap-row)}
+.way > .wayLink{color:var(--ink);font-weight:var(--label-weight)}
+
+/* Часть кабинета — заголовок и его содержимое одной группой; ссылки — своей
+   шириной. */
+.part{display:flex;flex-direction:column;gap:var(--air-row)}
+.part > a{align-self:flex-start}
+
+/* Между карточками заказов — воздух строки одной мысли, меньше, чем от
+   заголовка части до списка: карточки — один список под своим заголовком
+   (check:design, flatRhythm). */
+.orders{list-style:none;margin:0;padding:0;display:grid;gap:var(--air-line)}
+/* Карточка заказа — сетка строки товара кассы (`.item`: колодец снимка,
+   слова, сумма). Ссылка — номер заказа, её область растянута на всю
+   карточку (И110), как имя в строке корзины (Cart.module.css, `.name`); что
+   карточка — ссылка, видно рукой тем же ответом, что у карточки строки в
+   шторке корзины: снимок подаётся вперёд (`--creep`), проступает кромка руки
+   (`--edge-hand`, И717). */
+.order{
+  position:relative;display:grid;grid-template-columns:calc(var(--ctrl-h-lg) * 1.1) minmax(0, 1fr) auto;column-gap:var(--gap-row);align-items:center;
+  padding:var(--pad-card);border-radius:var(--r-card);background:var(--surface);
+  box-shadow:inset 0 0 0 var(--line-w) var(--line-hand, transparent);transition:box-shadow var(--hover-t) var(--ease)
+}
+@media (hover:hover){ .order:has(.orderName:hover){--line-hand:var(--edge-hand)} }
+.order:has(.orderName:active){--line-hand:var(--edge-hand)}
+.order img{transition:scale var(--hover-t) var(--ease)}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){ .order:has(.orderName:hover) img{scale:var(--creep)} }
+@media (prefers-reduced-motion:no-preference){ .order:has(.orderName:active) img{scale:var(--creep)} }
+.orderWhat{display:flex;flex-direction:column;align-items:flex-start;gap:var(--air-line);min-inline-size:0}
+.orderName{font-weight:var(--cardname-weight);color:var(--ink);overflow-wrap:anywhere}
+.orderName::after{content:'';position:absolute;inset:0}
+.status{color:var(--ink);font-weight:var(--label-weight)}
+.orderSum{display:flex;flex-direction:column;align-items:flex-end;gap:var(--air-line);text-align:end}
+
+/* Лист сбоку — разделы с заголовком h2 подряд: между ними воздух части
+   блока, как между такими разделами по всему сайту (И524). */
+.side{display:flex;flex-direction:column;align-items:flex-start;gap:var(--air-block);padding:var(--pad-card);border-radius:var(--r-card);background:var(--surface)}
+.side > section{align-self:stretch}
+
+/* Адреса — столбиком карточек; «по умолчанию» — словом сноски весом
+   подписи; действия — тихими словами в ряд. */
+.cards{list-style:none;margin:0;padding:0;display:grid;gap:var(--air-row)}
+.card{display:flex;flex-direction:column;gap:var(--air-line);padding:var(--pad-card);border-radius:var(--r-card);background:var(--surface)}
+.mark{font-size:var(--note-size);line-height:var(--note-lead);font-weight:var(--label-weight);color:var(--ink)}
+.acts{display:flex;flex-wrap:wrap;align-items:center;gap:var(--gap-targets)}

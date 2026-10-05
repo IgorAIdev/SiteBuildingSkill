@@ -1,0 +1,25 @@
+/* Вкладка «Карточки» (Cards.tsx): карточка сайта в разных подачах
+   информации, одной строкой на ленте товаров сайта (примитив `rail`,
+   `data-rail="goods"`). Сама карточка — компонент сайта со своими стилями;
+   здесь только ячейка ленты. */
+
+/* Лента: каждая карточка своей высоты — по своему содержимому, без
+   растяжки до самой высокой соседки (слово заказчика 30.09.2026: «не нужно
+   растягивать высоту, чтоб сровняться с самой высокой карточкой»). */
+.row{--rail-gap:var(--gap-grid);align-items:flex-start}
+/* Ячейка: имя сверху, карточка, строка о подаче под ней. Под карточкой —
+   оптика: лента прокручивается вбок и режет по вертикали всё, что за её
+   краем, — без неё срезало бы тень одежды с тенью. */
+.cell{display:flex;flex-direction:column;gap:var(--ex-gap)}
+.cellName{font-size:var(--name-size);line-height:var(--name-lead);font-weight:var(--name-weight);margin:0}
+/* Переключатель тени над лентой дизайнов (Bench.tsx): подпись и варианты
+   одной строкой, лента — ниже, на воздухе строки. */
+.shadowName{font-size:var(--name-size);line-height:var(--name-lead);font-weight:var(--name-weight)}
+.shadow{display:flex;flex-direction:column;gap:var(--sp-1);margin-block-end:var(--air-row)}
+/* «Размеры и пропорции» (Cards.tsx, Sizes): место слева, как считается —
+   справа; на узкой колонке место встаёт над текстом (примитив не нужен:
+   строка определения — сетка из двух дорожек, вторая сжимается). */
+.sizes{margin:0;display:flex;flex-direction:column;gap:var(--gap-row)}
+.sizes > div{display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 16rem), 1fr));gap:var(--sp-1) var(--gap-row);padding-block-end:var(--gap-row);border-block-end:var(--line-w) solid var(--rule)}
+.sizes dt{font-size:var(--name-size);line-height:var(--name-lead);font-weight:var(--name-weight)}
+.sizes dd{margin:0;font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft)}

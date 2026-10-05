@@ -21,7 +21,7 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync, readdirSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { spawnSync } from 'node:child_process'
@@ -259,7 +259,7 @@ test('палитра: схлопнувшаяся лестница — наход
   writeFileSync(join(dir, 'styles', 'palette.json'), JSON.stringify({
     'краска светлее контролов': {
       light: { paper: '#FFFFFF', ink: '#222222', accent: '#F3EEDC', error: '#B3261E' },
-      dark: { paper: '#111111', ink: '#EEEEEE', accent: '#F7F7F2', error: '#E5484D' },
+      dark: { paper: '#111111', ink: '#EEEEEE', accent: '#F7F7F2', error: '#D83B43' },
     },
   }))
   const bad = spawnSync(process.execPath, [tool, '--json'], { cwd: dir, encoding: 'utf8' })
@@ -282,7 +282,7 @@ test('палитра: APCA ловит то, о чём WCAG молчит', () => 
   writeFileSync(join(dir, 'styles', 'palette.json'), JSON.stringify({
     'чернила без запаса': {
       light: { paper: '#FFFFFF', ink: '#6E6E6E', accent: '#5F6B34', error: '#B3261E' },
-      dark: { paper: '#111111', ink: '#EEEEEE', accent: '#5F6B34', error: '#E5484D' },
+      dark: { paper: '#111111', ink: '#EEEEEE', accent: '#5F6B34', error: '#D83B43' },
     },
   }))
   const run = spawnSync(process.execPath, [tool, '--json'], { cwd: dir, encoding: 'utf8' })
@@ -312,9 +312,9 @@ test('палитра выпускается в CSS, и выпущенное сх
   writeFileSync(join(dir, 'styles', 'palette.json'), JSON.stringify({
     'проба': {
       light: { paper: '#FFFFFF', ink: '#231F18', accent: '#0C3A46', error: '#B3261E',
-        sale: '#6A4CA8', warn: '#F76B15', ok: '#30A46C' },
-      dark: { paper: '#141310', ink: '#EFECE7', accent: '#2E7C8F', error: '#E5484D',
-        sale: '#6A4CA8', warn: '#F76B15', ok: '#30A46C' },
+        sale: '#6A4CA8', warn: '#FF925E', ok: '#008853' },
+      dark: { paper: '#141310', ink: '#EFECE7', accent: '#2E7C8F', error: '#D83B43',
+        sale: '#6A4CA8', warn: '#FF925E', ok: '#008853' },
     },
   }))
   const tool = fileURLToPath(new URL('../tools/palette-css.mjs', import.meta.url))
@@ -388,7 +388,7 @@ test('палитра: середина лестницы держит тон ма
   writeFileSync(join(dir, 'styles', 'palette.json'), JSON.stringify({
     'холодная марка': {
       light: { paper: '#FFFFFF', ink: '#231F18', accent, error: '#B3261E' },
-      dark: { paper: '#141310', ink: '#EFECE7', accent: '#2E7C8F', error: '#E5484D' },
+      dark: { paper: '#141310', ink: '#EFECE7', accent: '#2E7C8F', error: '#D83B43' },
     },
   }))
   spawnSync(process.execPath, [fileURLToPath(new URL('../tools/palette-css.mjs', import.meta.url))],
@@ -417,9 +417,9 @@ test('палитра: пять красок сигналов меряются п
   writeFileSync(join(dir, 'styles', 'palette.json'), JSON.stringify({
     'скидка цвета марки': {
       light: { paper: '#FFFFFF', ink: '#231F18', accent: '#0C3A46', error: '#B3261E',
-        sale: '#0E3E4A', warn: '#F76B15', ok: '#30A46C' },
-      dark: { paper: '#141310', ink: '#EFECE7', accent: '#2E7C8F', error: '#E5484D',
-        sale: '#6A4CA8', warn: '#F76B15', ok: '#30A46C' },
+        sale: '#0E3E4A', warn: '#FF925E', ok: '#008853' },
+      dark: { paper: '#141310', ink: '#EFECE7', accent: '#2E7C8F', error: '#D83B43',
+        sale: '#6A4CA8', warn: '#FF925E', ok: '#008853' },
     },
   }))
   const run = spawnSync(process.execPath, [tool, '--json'], { cwd: dir, encoding: 'utf8' })
@@ -522,8 +522,9 @@ test('набор по формуле: ступени от тела, на кле�
   }
   const r = resolve(set) as РазвёрнутаяШкала
   assert.deepEqual(r.размер.base, [16, 18])
-  assert.deepEqual(r.размер.h2, [25.5, 37.5], 'заголовок раздела не по отношению 1.125⁴ / 1.2⁴')
-  assert.deepEqual(r.размер.xs, [12.5, 14], 'мелкий текст считается телефонным отношением на обоих концах')
+  /* Концы кегля — целыми пикселями, вниз и не ниже пола (И516): 25.6 → 25, 37.3 → 37; 12.6 → 12. */
+  assert.deepEqual(r.размер.h2, [25, 37], 'заголовок раздела не по отношению 1.125⁴ / 1.2⁴')
+  assert.deepEqual(r.размер.xs, [12, 14], 'мелкий текст считается телефонным отношением на обоих концах')
   /* Клетка: 18 × 0.75 = 13.5 → 14 (клетка 2 до 16); 18 × 2.5 = 45 → 44 (клетка 4);
      18 × 5 = 90 → 88 (клетка 8 выше 64). Ступени не выше пола не текут. */
   assert.deepEqual(r.ритм['3'], [12, 14]); assert.deepEqual(r.ритм['7'], [40, 44]); assert.deepEqual(r.ритм['10'], [80, 88])
@@ -605,6 +606,18 @@ test('размеры органа: три роли из порогов, под �
     assert.ok(m && Number(m[1]) >= 44 && Number(m[1]) === CONTROL.heights.coarse[i], `${name} под пальцем не из порогов или ниже 44`)
   }
   assert.ok(CONTROL.heights.coarse.every((h) => h >= 44), 'под пальцем размер ниже 44')
+  /* Рисунок малого органа с целью наружу (И764) — одно число под мышью и под
+     пальцем: растёт запас, а не рисунок; парой в блоке пальца — не ручка вида. */
+  assert.match(ladderCss, new RegExp(`--ctrl-face: ${CONTROL.face}px;`), 'нет рисунка малого органа из порогов')
+  assert.match(coarse![1]!, new RegExp(`--ctrl-face:${CONTROL.face}px`), 'рисунок малого органа под пальцем не тот же')
+  /* Близнец блока пальца (И768): то же тело на рамке `data-pointer='coarse'` —
+     дизайн-система показывает по нему органы ростом телефона на ноутбуке. */
+  const twin = ladderCss.match(/\n:where\(\[data-pointer='coarse'\]\)\{([^}]*)\}/)
+  assert.ok(twin, 'у блока пальца нет близнеца на рамке data-pointer')
+  assert.equal(twin![1]!.trim(), coarse![1]!.trim(), 'близнец разошёлся с блоком пальца')
+  assert.match(ladderCss, new RegExp(`--ctrl-face-md: ${CONTROL.faceMd}px;`), 'нет рисунка кнопки карточки из порогов')
+  assert.match(coarse![1]!, new RegExp(`--ctrl-face-md:${CONTROL.faceMd}px`), 'рисунок кнопки карточки под пальцем не тот же')
+  assert.ok(CONTROL.faceMd + 4 >= CONTROL.target.coarse, 'рисунок кнопки карточки дальше 2 от цели пальца с каждой стороны')
   assert.ok(!/^\s*--ctrl-h\s*:\s*\d/m.test(tokens), 'высота органа числом в tokens.css — её выпускает строитель')
   /* Ни один орган в примитивах не задаёт высоту числом. */
   const prim = readFileSync(new URL('../styles/primitives.module.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
@@ -731,7 +744,9 @@ test('роли выпускаются целиком и берут размер,
   for (const en of ['hero', 'pagehead', 'intro']) {
     const decl = [...css.matchAll(new RegExp(String.raw`--${en}-size:\s*([^;]+);`, 'g'))].map((m) => m[1])
     assert.ok(decl.length > 0, `у ${en} нет кривой`)
-    for (const v of decl) assert.match(v, /^clamp\([^,]+rem, [^,]+rem \+ [^,]+cqi, [^,]+rem\)$/, `${en} потерял свою кривую: ${v}`)
+    /* Середина — кривая по колонке; у роли с потолком по высоте окна (И660)
+       она в `min(…, Nsvh)`, концы по-прежнему в rem. */
+    for (const v of decl) assert.match(v, /^clamp\([^,]+rem, (?:min\()?[^,]+rem \+ [^,]+cqi(?:, [\d.]+svh\))?, [^,]+rem\)$/, `${en} потерял свою кривую: ${v}`)
   }
   /* Роль, чьё имя совпадает с именем кривой, себя не переобъявляет: это
      ссылка на саму себя, и браузер погасит её вместе со всей ролью. */
@@ -770,12 +785,12 @@ test('узел, зовущий краску по оттенку, — наход�
 /* И211: плашка скидки стояла одним цветом во всех семи наборах — фиалка,
    выбранная для одного, скопирована во все как постоянная. */
 
-test('скидка выводится из марки, а названную заказчиком не трогает', async () => {
-  const { saleFrom, withSale, difference, NEED } = await import('../tools/palette.mjs')
+test('скидка выводится строителем (красной семьи, до читаемой надписи), а названную заказчиком не трогает', async () => {
+  const { saleFrom, solidFor, withSale, difference, NEED } = await import('../tools/palette.mjs')
   const марка = '#3A6EA5'
-  const статусы = ['#B3261E', '#F76B15', '#30A46C']
+  const статусы = ['#B3261E', '#FF925E', '#008853']
   const выведена = saleFrom(марка, [...статусы, марка])
-  /* Тон марки + 60°, как третья краска схемы у Material (TONAL_SPOT). */
+  /* Рубиновая красной семьи, разведённая с каждой краской на ΔE 25 (И554). */
   for (const другая of [марка, ...статусы]) {
     assert.ok(difference(выведена, другая) >= NEED.brandApart,
       `выведенная скидка ${выведена} ближе ${NEED.brandApart} ΔE к ${другая}`)
@@ -784,7 +799,8 @@ test('скидка выводится из марки, а названную з�
   const свой = { paper: '#FFF', ink: '#111', accent: марка, sale: '#6A4CA8' }
   assert.equal(withSale(свой).sale, '#6A4CA8', 'выбор заказчика перебит правилом')
   const без = { paper: '#FFF', ink: '#111', accent: марка }
-  assert.equal(withSale(без).sale, выведена, 'набор без скидки не получил выведенную')
+  /* Выведенная встаёт заливкой, на которой надпись держит обе меры (И557). */
+  assert.equal(withSale(без).sale, solidFor(выведена), 'набор без скидки не получил выведенную')
 })
 
 /* И212: кнопки «Светлая» и «Тёмная» на стенде не делали ничего —
@@ -795,8 +811,8 @@ test('стенд цвета переключает тему свойством, 
   mkdirSync(join(dir, 'styles'))
   writeFileSync(join(dir, 'styles', 'palette.json'), JSON.stringify({
     проба: {
-      light: { paper: '#FFFFFF', ink: '#231F18', accent: '#0C3A46', error: '#B3261E', warn: '#F76B15', ok: '#30A46C' },
-      dark: { paper: '#141310', ink: '#EFECE7', accent: '#2E7C8F', error: '#E5484D', warn: '#F76B15', ok: '#30A46C' },
+      light: { paper: '#FFFFFF', ink: '#231F18', accent: '#0C3A46', error: '#B3261E', warn: '#FF925E', ok: '#008853' },
+      dark: { paper: '#141310', ink: '#EFECE7', accent: '#2E7C8F', error: '#D83B43', warn: '#FF925E', ok: '#008853' },
     },
   }))
   const tool = fileURLToPath(new URL('../tools/palette-stand.mjs', import.meta.url))
@@ -971,7 +987,9 @@ test('утилиты и исключения: ярлыки на месте, ва
   /* Пилюля описана ОДИН раз, и высота у неё ролью, а не числом. */
   assert.equal((bare.match(/^\.chip\{/gm) ?? []).length, 1, 'пилюля нарисована дважды')
   assert.ok(!/--chip-h\s*:\s*\d/.test(bare), 'высота пилюли числом')
-  assert.match(bare, /\.chip\{[^}]*block-size:var\(--ctrl-h-sm\)/, 'пилюля не берёт роль размера')
+  /* Рост — ручка `--chip-h`, по умолчанию рисунок малого органа `--ctrl-face` (И764). */
+  assert.match(bare, /:where\(\.chip\)\{--chip-h:var\(--ctrl-face\)\}/, 'пилюля не берёт роль размера')
+  assert.match(bare, /\.chip\{[^}]*block-size:var\(--chip-h\)/, 'пилюля не берёт свою ручку роста')
   /* Состояния — атрибутами и ARIA, классов состояния в наборе нет. */
   assert.ok(!/^\.(is[-A-Z]|has[-A-Z]|active|open|selected|disabled|loading|error)\b/m.test(bare), 'состояние классом')
   /* Слоёв каскада набор не заводит — решает вес (И230). */
@@ -1033,6 +1051,37 @@ test('универсальные команды этапов приезжают,
   assert.equal(SCRIPTS['build:site'], 'npm run build')
   assert.equal(SCRIPTS['check:rules'], 'node tools/check-rules.mjs')
   assert.ok(STAGES.every((stage) => !stage.checks.includes('check:tokens')), 'нет команды, но этап её требует')
+})
+
+/* И765: проверка, которую называет реестр «по словам», едет в магазин
+   командой. `check:counters` 05.10.2026 ехал файлом, а команды не было ни в
+   scripts.mjs, ни в этапах — следующий сайт повторил бы «Added · 5» в две
+   строки. Исключения: команды панели вида помечены в реестре (`panel`) — панель
+   ставит их сама; имени команды панели тест не пишет, иначе после её снятия
+   в магазине оставался её след (проверка снятия панели, 05.10.2026); `check:tokens` —
+   команда самого проекта (И233). */
+test('каждая проверка реестра по словам ставится в магазин командой', async () => {
+  const { SCRIPTS } = await import('../scripts.mjs')
+  const { CHECKS } = await import('../tools/checks.mjs')
+  const { STAGES } = await import('../tools/stages.mjs')
+  const OWN = new Set([...CHECKS.filter((c) => c.panel).map((c) => c.cmd), 'check:tokens'])
+  const lost = CHECKS.map((c) => c.cmd).filter((cmd) => !(cmd in SCRIPTS) && !OWN.has(cmd))
+  assert.deepEqual(lost, [], `проверка в реестре, а команды у магазина нет: ${lost.join(', ')}`)
+  for (const n of [3, 5]) assert.ok(STAGES.find((s) => s.n === n)?.checks.includes('check:counters'), `этап ${n} не нажимает «в корзину»`)
+})
+
+/* И765: правка части сайта ведёт к её страницам и, где «в корзину», — к нажатию. */
+test('карта частей: файл → часть → страницы → нажатие', async () => {
+  const { partsOf, shopPath } = await import('../tools/parts.mjs')
+  const one = (file: string) => partsOf([file])[0]
+  assert.equal(one('templates/storefront/components/AddLabel.tsx')?.press, true)
+  assert.deepEqual(one('templates/storefront/components/AddLabel.tsx')?.kinds, ['shelf', 'home'])
+  assert.equal(one('components/Header.tsx')?.name, 'шапка, меню и подвал')
+  assert.equal(one('templates\\storefront\\app\\[lang]\\cart\\page.tsx')?.name, 'корзина')
+  assert.equal(one('styles/btn.module.css')?.press, true)
+  assert.equal(shopPath('tools/check-part.mjs'), null)
+  assert.equal(shopPath('templates/storefront/tests/cart-ops.test.ts'), null)
+  assert.equal(partsOf(['docs/rules.md']).length, 0)
 })
 
 /* И234: Windows исполняет npm.cmd через системный cmd.exe. */
@@ -1103,10 +1152,60 @@ test('выбранный сегмент под рукой остаётся вы�
      выбранный (0,2,0), и выбранная пилюля под рукой теряла заливку `--pop`.
      Ответ на руку исключает выбранный явно — как у лотка. */
   const hand = [...primitives.matchAll(/\.seg ([^{]*):(hover|active)\{/g)]
-  assert.equal(hand.length, 2, 'у сегмента два ответа на руку: наведение и нажатие')
+  /* Виды сегментов (`--seg-look`, плашки размера) могут вести руку по-своему,
+     но тем же исключением выбранного: в стандарте — два ответа, наведение и нажатие. */
+  const base = primitives.slice(primitives.indexOf('a segmented control'), primitives.indexOf('@container style(--seg-look'))
+  assert.equal([...base.matchAll(/\.seg ([^{]*):(hover|active)\{/g)].length, 2, 'у сегмента два ответа на руку: наведение и нажатие')
+  assert.ok(hand.length >= 2)
   for (const [, selector] of hand) {
     assert.match(selector, /^:where\(button, a\[href\]\):not\(\[aria-pressed="true"\], \[aria-current="true"\]\)$/)
   }
+})
+
+test('штрих знака в кнопке равен штриху буквы её надписи, а знак в кружке стоит по центру кружка', () => {
+  /* Заказчик 03.10.2026: «толщина начертания иконок и других элементов… для
+     целостности»; и «иконки в кружке стоят несимметрично». Штрих знака — от
+     кегля кнопки (`--btn-fs`) на долю голоса (`--icon-stem`); знак в кружке
+     отсчитывается от края подложки, а не от края рамки (разница — `--line-w`). */
+  const btn = read('styles/btn.module.css')
+  assert.match(btn, /stroke-width:calc\(var\(--btn-fs\) \* var\(--icon-stem\)\)/)
+  assert.match(btn, /\.signDot\{[^}]*inset-inline-end:calc\(var\(--btn-h\) \* \.29 - var\(--line-w\)\)/)
+})
+
+test('штрих знака в строке пути связи равен штриху буквы имени рядом', () => {
+  /* Заказчик 03.10.2026, меню трубки: «с этими иконками какой-то вопрос?» (И679).
+     Знак в строке брал штрих от кегля тела (1.59), буква имени (14 px, вес 500) —
+     1.26: считать надо от кегля имени. */
+  /* Тест едет в каждый новый сайт: меню трубки лежит в наборе под `templates/storefront/`, в магазине — в `components/`,
+     в пустом проекте его нет вовсе. */
+  const file = ['templates/storefront/components/ReachList.module.css', 'components/ReachList.module.css'].find((f) => existsSync(new URL(`../${f}`, import.meta.url)))
+  if (!file) return
+  assert.match(read(file), /\.row svg\{[^}]*(?:--icon-stroke|stroke-width):calc\(var\(--ctrl-fs\) \* var\(--icon-stem\)\)/)
+})
+
+test('кружок со знаком читается на плашке: цвет пола против --plate-sign в обеих темах на каждой шкале набора', () => {
+  /* Заказчик 03.10.2026: «чрезмерно маленький контраст серой и белой части»
+     (И675). Кружок — цвет пола (`--plate` = n-1 днём, n-4 ночью), плашка под
+     ним — `--plate-sign` (n-6 днём, n-7 ночью). На витрине с белым полом пара
+     даёт 1.42 / 1.55; на нейтральной шкале набора (пол — n-1) пол пары ниже,
+     и нижняя планка теста — 1.3: мельче этого плашка с кружком снова сливается. */
+  assert.match(read('styles/tokens.css'), /--plate-sign: light-dark\(var\(--n-6\), var\(--n-7\)\)/)
+  assert.match(read('styles/tokens.css'), /--plate: light-dark\(var\(--n-1\), var\(--n-4\)\)/)
+  const lum = (hex: string) => {
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+  }
+  const ratio = (a: string, b: string) => (Math.max(lum(a), lum(b)) + 0.05) / (Math.min(lum(a), lum(b)) + 0.05)
+  const step = (block: string, n: number) => block.match(new RegExp(`--n-${n}:\\s*light-dark\\((#[0-9A-Fa-f]{6}),\\s*(#[0-9A-Fa-f]{6})\\)`))
+  let sets = 0
+  for (const block of read('styles/palette.css').split('}')) {
+    const [n1, n4, n6, n7] = [1, 4, 6, 7].map((n) => step(block, n))
+    if (!n1 || !n4 || !n6 || !n7) continue
+    sets++
+    assert.ok(ratio(n1[1], n6[1]) >= 1.3, `днём кружок сливается с плашкой: ${ratio(n1[1], n6[1]).toFixed(2)}`)
+    assert.ok(ratio(n4[2], n7[2]) >= 1.3, `ночью кружок сливается с плашкой: ${ratio(n4[2], n7[2]).toFixed(2)}`)
+  }
+  assert.ok(sets >= 1, 'в palette.css не нашлось ни одной шкалы со ступенями n-1…n-7')
 })
 
 test('шапка раздела не выносит отбивку за конец раздела', () => {

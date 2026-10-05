@@ -6,18 +6,22 @@ import { isLang, type Lang } from '@/lib/locale.ts'
 import { shellData, type ShellData } from '@/lib/shell.ts'
 import { lookNow } from '@/lib/look.ts'
 import type { Look } from '@/lib/source/contract.ts'
-import { lookCss } from '@/lib/look-values.ts'
+import { fontPreloads, lookCss } from '@/lib/look-values.ts'
 import { t } from '@/lib/i18n/index.ts'
 import { CheckoutHeader, Header } from './Header.tsx'
 import { Footer } from './Footer.tsx'
 import '@/styles/palette.css'
 import '@/styles/scale.css'
+import '@/styles/sign-masks.css'
 import '@/styles/tokens.css'
 import '@/styles/base.css'
 import '@/styles/buttons.css'
 import '@/styles/storefront.css'
 import '@/styles/look.css'
 import { PaneSwipe } from './PaneSwipe.tsx'
+import { HelpDock } from './HelpDock.tsx'
+import { reachRows, supportHref, SUPPORT } from '@/lib/contacts.ts'
+import { THEME_BOOT } from '@/lib/theme.ts'
 
 /* Документ витрины: язык, вид, пропуск к содержимому, шапка, подвал и общие
    стили. Один на двоих — макет языка (app/[lang]/layout.tsx) и страницу
@@ -35,14 +39,28 @@ import { PaneSwipe } from './PaneSwipe.tsx'
    корневой макет группы `app/(checkout)/[lang]` (разбор 24.09.2026, S2):
    вложенный макет шапку родителя не снимает. */
 export function Shell({ lang, data, look, chrome = 'full', children }: { lang: Lang; data: ShellData; look: Look; chrome?: 'full' | 'checkout'; children: ReactNode }) {
+  /* `suppressHydrationWarning` — только на атрибуты самого <html>: скрипт
+     панели вида ставит `data-look-panel` до оживления страницы, и React в
+     разработке показывал «1 Issue» поверх витрины (28.09.2026). Так принято
+     для признаков, которые ставит скрипт до React (темы, next-themes); на
+     детей не распространяется. */
   return (
-    <html lang={lang}>
+    <html lang={lang} suppressHydrationWarning>
       <body>
+        {/* Выбранная тема — до первой отрисовки (lib/theme.ts). */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
         <style href="look" precedence="look">{lookCss(look)}</style>
+        {/* Шрифты вида — заранее (`fontPreloads`): React
+            поднимает `<link>` в `<head>`, и файл приходит до первой
+            отрисовки, а не после неё (подмена сдвигала слова). */}
+        {fontPreloads(look.fonts).map((href) => <link key={href} rel="preload" as="font" type="font/woff2" href={href} crossOrigin="" />)}
         <a className={p.skip} href="#main">{t(lang, 'skip')}</a>
-        {chrome === 'checkout' ? <CheckoutHeader lang={lang} /> : <Header lang={lang} nav={data.nav} groups={data.groups} service={data.service} variant={look.header} />}
+        {chrome === 'checkout' ? <CheckoutHeader lang={lang} /> : <Header lang={lang} nav={data.nav} service={data.service} top={data.top} variant={look.header} />}
         {children}
-        <Footer lang={lang} docs={data.docs} variant={chrome === 'checkout' ? 'legal' : 'full'} />
+        <Footer lang={lang} docs={data.docs} shelves={data.nav} variant={chrome === 'checkout' ? 'legal' : 'full'} />
+        {/* Окно помощи у края экрана (И547) — в магазине; касса закрыта, её
+            выход один — «назад в корзину». */}
+        {chrome === 'full' ? <HelpDock rows={reachRows({ phone: t(lang, 'reach.phone'), email: t(lang, 'reach.email') })} who={{ name: SUPPORT.name, href: supportHref() }} words={{ open: t(lang, 'reach.menu'), online: t(lang, 'reach.online'), top: t(lang, 'reach.top') }} /> : null}
         {/* Окна за пальцем — один жест на документ (И494). */}
         <PaneSwipe />
         {/* eslint-disable-next-line @next/next/no-css-tags -- look-panel: стили панели — ссылкой на её адрес, сайт файлы панели не импортирует (И413) */}

@@ -2,3 +2,24 @@
 Это чужие марки: рисунок не меняется, краску назначает место (currentColor).
 Telegram здесь не лежит: его знак — бумажный самолётик нашим пером
 (lucide/send.svg), решение заказчика «значок телеграм — тот, что без фона».
+
+Соцсети и платёжные системы подвала (И549): Facebook, YouTube, Visa,
+Mastercard, Apple Pay, Google Pay — те же силуэты Simple Icons (CC0 1.0),
+версия 13. Instagram — тот же знак, что у мессенджеров. Рисунок не
+меняется: плашку и краску назначает место.
+
+Вторые виды марок и новые марки (01.10.2026, «знак в двух видах», craft
+references/icons.md) — тоже Simple Icons, CC0 1.0:
+- facebook-square — «f» в скруглённом квадрате, Simple Icons 1.0.0
+  (https://cdn.jsdelivr.net/npm/simple-icons@1.0.0/icons/facebook.svg):
+  прежний знак Facebook; основной `facebook` (f в круге) не тронут;
+- telegram — самолётик в круге, Simple Icons 16.33.0; знак Telegram на
+  сайте по умолчанию по-прежнему `send` (без фона, решение заказчика);
+- tiktok, messenger — Simple Icons 16.33.0;
+- gmail — Simple Icons 16.33.0 (01.10.2026, И628: знак почты одной краской);
+- gmail-color — логотип Gmail в фирменных цветах, Wikimedia Commons
+  «File:Gmail icon (2020).svg» (public domain, товарный знак Google),
+  рисунок не меняется: свои краски, краска места на него не действует.
+Вид пером (контуром) у Facebook, Instagram, YouTube — в lucide/
+(facebook-line, instagram-line, youtube-line). Залитого квадрата Instagram,
+вторых видов WhatsApp и Viber в Simple Icons нет — не рисуются.

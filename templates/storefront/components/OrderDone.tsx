@@ -13,12 +13,16 @@ import { Icon } from './Icon.tsx'
    номера. Дальше — «что будет» из способов ЭТОГО заказа (как приедет, как
    платится), потом детали: кому, куда, что. Письма образец не шлёт — и не
    обещает его (план 4, сервер Vendure). Выход «продолжить покупки» — в
-   листе итога. */
-export function OrderDone({ view }: { view: DonePageView }) {
+   листе итога.
+
+   `landmark={false}` — «спасибо» образцом внутри чужой страницы (дизайн-
+   система): у той уже есть свой `main` и его адрес `#main`. */
+export function OrderDone({ view, landmark = true }: { view: DonePageView; landmark?: boolean }) {
+  const Main = landmark ? 'main' : 'div'
   return (
-    <main id="main" className={`${p.wrap} ${p.section}`} data-air="head">
+    <Main id={landmark ? 'main' : undefined} className={`${p.wrap} ${p.section}`} data-air="head">
       <div className={s.doneHead}>
-        <span className={s.ok}><Icon id="circle-check" /></span>
+        <span className={s.ok}><Icon id="check-circle" /></span>
         <h1>{view.title}</h1>
         <div className={s.code}><span className={p.note}>{view.code.label}</span><strong translate="no">{view.code.value}</strong></div>
         <p className={p.note}>{view.keep}</p>
@@ -48,6 +52,6 @@ export function OrderDone({ view }: { view: DonePageView }) {
           </div>
         </aside>
       </div>
-    </main>
+    </Main>
   )
 }

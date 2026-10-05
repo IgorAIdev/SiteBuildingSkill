@@ -1,0 +1,15 @@
+{{> header title=shopSubject }}
+
+<mj-section background-color="#fafafa">
+  <mj-column>
+    <mj-text color="#525252" font-weight="bold">{{ content }}</mj-text>
+    <mj-table>
+      {{#each rows}}
+      <tr><td style="padding:4px 12px 4px 0;color:#525252">{{ this.[0] }}</td><td style="padding:4px 0">{{ this.[1] }}</td></tr>
+      {{/each}}
+    </mj-table>
+    {{#if warning}}<mj-text color="#b42318">{{ warning }}</mj-text>{{/if}}
+  </mj-column>
+</mj-section>
+
+{{> footer }}

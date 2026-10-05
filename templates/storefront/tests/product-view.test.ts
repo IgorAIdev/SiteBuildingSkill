@@ -1,5 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { withVariants } from './with-variants.ts'
 import { labView, productView } from '../lib/product-view.ts'
 
@@ -117,4 +118,24 @@ test('the gallery: every image with its anchor and name; the sale badge follows 
   const cream = await withVariants('hu', 'crema-cbd')
   assert.ok(cream.ok)
   assert.equal(productView('hu', cream.value, {}, none).gallery.slides.length, 3, 'у косметики три снимка')
+})
+
+/* Артикул — выбранного варианта, словами языка страницы; без выбора — нет
+   (И589: «артикул нужно где-то разместить»). */
+test('the SKU of the chosen variant is shown in words; none without a choice', async () => {
+  const r = await withVariants('ro', 'ulei-cbd-full-spectrum')
+  assert.ok(r.ok)
+  assert.equal(productView('ro', r.value, { putere: '20', volum: '10' }, none).sku, 'Cod produs: UF-20-10')
+  assert.equal(productView('en', r.value, { putere: '10', volum: '30' }, none).sku, 'SKU: UF-10-30')
+  assert.equal(productView('ro', r.value, {}, { ...none, asked: true }).sku, null)
+})
+
+/* Сердце «в избранное» на карте товара — на главном кадре, как на карточке полки
+   (слово заказчика 04.10.2026: «избранное перенеси на изображение»): галерея ставит
+   его на снимок, в строке заказа сердца нет — два сердца у товара были бы повтором. */
+test('the product page heart sits on the main picture, not in the order row', () => {
+  const read = (f: string) => readFileSync(new URL(`../components/${f}`, import.meta.url), 'utf8')
+  assert.match(read('Gallery.tsx'), /<SaveToggle\b[^>]*over="picture"/)
+  assert.match(read('ProductView.tsx'), /<Gallery\b[^>]*\bsave=/)
+  assert.doesNotMatch(read('AddToCart.tsx'), /SaveToggle/)
 })

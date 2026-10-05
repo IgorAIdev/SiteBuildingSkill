@@ -20,6 +20,14 @@
    `format`, `fpx/fpy`) и тот же фокус в `object-position`.
 6. `product.mjs` — скрыть опции общих групп без варианта (Vendure 3.6+) и
    передать товар в `assets/commerce/variant-selection.mjs` по стабильным `code`.
+7. `plugins/withdrawal/` — плагин СЕРВЕРА Vendure (не витрины): заявление об
+   отказе от договора кнопкой (ст. 11a Директивы 2011/83, с 19.06.2026; И748) —
+   мутация `submitWithdrawal`, запись, заметка в истории заказа, письма
+   покупателю и магазину. Установка — `plugins/withdrawal/README.md`.
+8. Кабинет покупателя (И771) — в адаптере шаблона витрины
+   (`templates/storefront/lib/source/vendure/account.ts`); серверу Vendure — две
+   настройки: `authOptions.requireVerification` и адреса писем EmailPlugin
+   (references/vendure.md, «Кабинет покупателя»).
 
 `product.mjs` частично взят из vendurehq/nextjs-starter-vendure (MIT) —
 лицензия рядом, `VENDURE-STARTER-LICENSE.md`. Остальное — собственный код набора.

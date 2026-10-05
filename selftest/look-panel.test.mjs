@@ -34,7 +34,7 @@ const hash = (p) => createHash('sha256').update(readFileSync(p)).digest('hex')
 
 /** Варианты разметки, которые шаблон держит, — храповик: убыть им нельзя. */
 const HEADERS = ['classic', 'search', 'boutique', 'tray', 'nested', 'step']
-const CARDS = ['framed', 'bare', 'outlined', 'toned', 'tinted']
+const CARDS = ['inset', 'framed', 'sheet', 'edged']
 const PANEL = ['PANEL.md', 'ui/look.js', 'ui/look.css', 'ui/choice.mjs', 'routes/index.ts', 'scripts/build-catalog.mjs',
   'scripts/fonts.mjs', 'scripts/check-choice.mjs', 'scripts/remove.mjs', 'scripts/pairs.mjs', 'tests/panel.test.ts']
 
@@ -80,7 +80,8 @@ test('the panel entry is a slim bottom band with its own reserved place: the res
   const btn = css.match(/\.lp \.lp-band-btn\{([^}]*)\}/)?.[1] ?? ''
   assert.match(btn, /block-size:var\(--lp-band-h\)/, 'цель — полного роста полосы: 36 под курсором, 44 под пальцем')
   assert.doesNotMatch(btn, /(?<![-\w])inline-size:100%|flex:\s*1/, 'цель не растянута во всю ширину')
-  assert.match(css, /\.lp-panel\{[^}]*inset-block:var\(--anchor-top\) calc\(var\(--lp-band\) \+ var\(--lp-edge\)\)/, 'открытая панель стоит над полосой')
+  /* Во всю высоту окна — от края до полосы (слово заказчика 28.09.2026: «меню выше нужно сделать»). */
+  assert.match(css, /\.lp-panel\{[^}]*inset-block:var\(--lp-edge\) calc\(var\(--lp-band\) \+ var\(--lp-edge\)\)/, 'открытая панель — от края окна до полосы, над ней')
   const js = read(T, 'look-panel/ui/look.js')
   assert.match(js, /el\('button', \{ class: 'lp-band-btn', type: 'button', popovertarget: 'lp-panel'/, 'в полосе одна цель, открывает и закрывает панель')
   assert.match(js, /el\('div', \{ class: 'lp' \}, \[band, panel\]\)/)
@@ -174,7 +175,9 @@ test('install records the role; removal needs a shop and --yes, backs up first; 
     writeFileSync(join(shop, 'lib/source/sample/look.draft.json'), look)
     const dry = node(shop, 'look-panel/scripts/remove.mjs')
     assert.equal(dry.status, 0, dry.stderr)
-    assert.match(dry.stdout, /варианты карточки товара, кроме выбранного «framed»: bare, outlined/)
+    /* Выбранная карточка — из вида, который поставил установщик; остальные — по порядку CARDS. */
+    const card = JSON.parse(look).card
+    assert.ok(card && dry.stdout.includes(`варианты карточки товара, кроме выбранного «${card}»: ${CARDS.filter((c) => c !== card).join(', ')}`), dry.stdout)
     assert.match(dry.stdout, /Ничего не удалено\. Снять: npm run look:remove -- --yes/)
     assert.ok(existsSync(join(shop, 'look-panel')) && existsSync(join(shop, 'lib/source/sample/look.draft.json')), 'без --yes ничего не удалено')
     assert.deepEqual(readdirSync(root).filter((n) => n.includes('look-backup')), [], 'без --yes и копии нет')
@@ -190,7 +193,7 @@ test('install records the role; removal needs a shop and --yes, backs up first; 
     assert.match(read(bk, 'README.md'), /node install\.mjs --look-panel/)
     assert.match(yes.stdout, /сайт не в git — метки нет/)
     assert.ok(!existsSync(join(shop, 'look-panel')) && !existsSync(join(shop, 'app/look-panel')))
-    assert.deepEqual(listOf(read(shop, 'lib/cards.ts'), 'CARDS'), ['framed'])
+    assert.deepEqual(listOf(read(shop, 'lib/cards.ts'), 'CARDS'), [card])
     assert.equal(read(shop, 'lib/source/sample/look.json'), look, 'вид — тот же')
 
     /* Вернуть: панель, все варианты, флаг, команды; вид тот же. */
@@ -272,7 +275,7 @@ test('reinstall with --force keeps the site data: the published look, the draft,
   } finally { rmSync(root, { recursive: true, force: true }) }
 })
 
-test('the panel palette builder is the kit engine: same files, and the 7 kit sets come out as the kit palette writes them', async () => {
+test('the panel palette builder is the kit engine: same files, and the 8 kit sets come out as the kit palette writes them', async () => {
   const root = mkdtempSync(join(tmpdir(), 'look-engine-'))
   const dir = join(root, 'site')
   try {
@@ -281,7 +284,7 @@ test('the panel palette builder is the kit engine: same files, and the 7 kit set
     for (const f of ['palette.mjs', 'thresholds.mjs', 'palette-profile.json']) assert.equal(hash(join(dir, 'look-panel/ui/engine', f)), hash(join(from, f)), `ui/engine/${f} = движок набора`)
     const { paletteVars } = await import(pathToFileURL(join(dir, 'look-panel/ui/choice.mjs')).href)
     const sets = { ...JSON.parse(read(KIT, 'styles/palette.json')), ...JSON.parse(read(KIT, 'templates/palette.json')) }
-    assert.equal(Object.keys(sets).length, 7)
+    assert.equal(Object.keys(sets).length, 8)
     for (const [name, seed] of Object.entries(sets)) {
       const kit = Object.fromEntries([...toCss({ [name]: seed }).split('[data-palette=')[0].matchAll(/ {2}(--[\w-]+): ([^;]+);/g)].map((m) => [m[1], m[2]]))
       assert.deepEqual(paletteVars(seed), kit, `${name}: строитель панели = palette.css набора`)

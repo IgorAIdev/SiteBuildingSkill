@@ -4,8 +4,7 @@ import { standardOf } from './source/stock.ts'
 import { t } from './i18n/index.ts'
 import { money } from './money.ts'
 import { hrefFor } from './href.ts'
-import { intlLocale } from './market.ts'
-import { percent } from './format.ts'
+import { dayOf, num, percent } from './format.ts'
 import { pickState, optionLinks, titleOf, type OptionGroupLinks } from './variant.ts'
 import { saleOf, shelfCard, stockText, type ShelfCard, type WasView } from './view.ts'
 import { QTY_MAX } from './cart-view.ts'
@@ -24,9 +23,16 @@ import { MARKET } from './market.ts'
 /** Разделы о товаре под колонкой покупки (И466): меню-якоря и разделы
  *  подряд — описание, состав, способ применения, протокол партии. Раздела без
  *  данных нет. */
-export type DetailPart = { id: string; title: string; text: string | null; lab: LabView | null }
+export type DetailPart = { id: string; title: string; text: string }
 export type DetailsView = { label: string; parts: DetailPart[] }
 export type LabView = { title: string; batch: string; rows: [string, string][]; open: { label: string; href: string } | null }
+/** Оценка покупателей у имени (И512): пять звёзд — целая, половина или
+ *  пустая (средняя, округлённая до половины), число и счёт отзывов —
+ *  словами; `label` — всё одной фразой для чтеца. */
+export type Star = 'full' | 'half' | 'none'
+/** Отзывов нет — `value` и `count` пусты, звёзды пустые, `label` — «пока нет
+ *  отзывов» (И590). */
+export type RatingView = { value: string | null; count: string | null; stars: Star[]; label: string }
 /** `add` — надпись кнопки, одно действие без цены: цена стоит под именем,
  *  второй раз на кнопке она не нужна (слово заказчика 25.09.2026: «цену два
  *  раза указывать не нужно, с кнопки убирай цену», И441). `ask` — варианта ещё не выбрали: кнопка
@@ -56,7 +62,7 @@ export type QuickView = {
 export type Slide = Image & { id: string; show: string }
 /** Галерея готовыми строками: снимки по порядку (первый — главный), плашка
  *  скидки, имена стрелок и ленты. */
-export type GalleryView = { label: string; prev: string; next: string; slides: Slide[]; badge: string | null }
+export type GalleryView = { label: string; slides: Slide[]; badge: string | null }
 /* Прежняя цена (`WasView`) и скидка (`saleOf`) — одни на полку и карту,
    lib/view.ts. */
 export type { WasView }
@@ -66,33 +72,39 @@ export type { WasView }
 export type ProductPageView = {
   crumbs: { name: string; href?: string }[]; crumbLabel: string
   brand: string | null; name: string; summary: string | null; price: string; was: WasView | null; stock: string | null; stockLevel: 'in' | 'low' | 'out' | null; message: string | null; choose: string | null
+  /** Артикул выбранного варианта словами («SKU: UF-10-10»); не выбран — нет (И589). */
+  sku: string | null
   gallery: GalleryView; groups: OptionGroupLinks[]; facts: FactsView | null; details: DetailsView
+  /** Протокол партии — знаком и словом у наличия (И512), сам протокол — в окне. */
+  lab: (LabView & { chip: string; close: string }) | null
+  rating: RatingView | null
   related: ShelfCard[]; relatedTitle: string
   /** Выход ко всей полке товара у «похожих» — та же строка, что у полки
    *  главной (И481); нет полки — ко всему каталогу. */
-  relatedAll: { label: string; href: string }
+  relatedAll: string
+  /** Товар для сердца «в избранное» (SaveToggle) и слова кнопки. */
+  id: string; save: { add: string; remove: string }
   buy: BuyView
 }
 
 /** Галерея товара: якоря слайдов, имена ссылок миниатюр, плашка скидки. */
 export function galleryView(lang: Lang, images: Image[], badge: string | null): GalleryView {
   return {
-    label: t(lang, 'gallery.label'), prev: t(lang, 'gallery.prev'), next: t(lang, 'gallery.next'), badge,
+    label: t(lang, 'gallery.label'), badge,
     slides: images.map((image, i) => ({ ...image, id: `shot-${i + 1}`, show: t(lang, 'gallery.show', { n: i + 1, total: images.length }) })),
   }
 }
 
 
 /** Протокол партии: цифры анализа — записью языка страницы (`percent`,
- *  «10.2 %» / «10,2 %», И347); дата — порядком рынка (`intlLocale`). */
+ *  «10.2 %» / «10,2 %», И347); дата — порядком рынка (`dayOf`, И729). */
 export function labView(lang: Lang, r: LabReport): LabView {
-  const date = new Intl.DateTimeFormat(intlLocale(lang), { dateStyle: 'long', timeZone: 'UTC' })
   return {
     title: t(lang, 'product.lab'),
     batch: t(lang, 'product.batch', { batch: r.batch }),
     rows: [
       [t(lang, 'lab.lab'), r.lab],
-      [t(lang, 'lab.date'), date.format(new Date(r.date))],
+      [t(lang, 'lab.date'), dayOf(lang, r.date)],
       ['CBD', percent(lang, r.cbdPercent, 2)],
       ['THC', percent(lang, r.thcPercent, 2)],
     ],
@@ -112,21 +124,39 @@ export function withStandard(product: Product, selected: Record<string, string>,
   return standard ? { ...standard.options } : selected
 }
 
-/** Разделы о товаре (И466). Протокол — партии выбранного варианта; выбора
- *  нет — первой партии товара. */
-function detailsView(lang: Lang, product: Product, chosen: Product['variants'][number] | null): DetailsView {
-  const report = product.labReports.find((r) => r.batch === chosen?.batch) ?? product.labReports[0] ?? null
+/** Разделы о товаре (И466) — заголовок и текст; протокола среди них нет,
+ *  он у наличия (И512). */
+function detailsView(lang: Lang, product: Product): DetailsView {
   const text = (id: string, key: 'description' | 'ingredients' | 'usage', value: string | null): DetailPart[] =>
-    value?.trim() ? [{ id, title: t(lang, `product.tab.${key}`), text: value.trim(), lab: null }] : []
+    value?.trim() ? [{ id, title: t(lang, `product.tab.${key}`), text: value.trim() }] : []
   return {
     label: t(lang, 'product.details'),
     parts: [
       ...text('about', 'description', product.description),
       ...text('ingredients', 'ingredients', product.ingredients),
       ...text('usage', 'usage', product.usage),
-      ...(report ? [{ id: 'coa', title: t(lang, 'product.tab.lab'), text: null, lab: labView(lang, report) }] : []),
     ],
   }
+}
+
+/** Протокол — партии выбранного варианта; выбора нет — первой партии товара. */
+function labOf(lang: Lang, product: Product, chosen: Product['variants'][number] | null): ProductPageView['lab'] {
+  const report = product.labReports.find((r) => r.batch === chosen?.batch) ?? product.labReports[0] ?? null
+  return report ? { ...labView(lang, report), chip: t(lang, 'product.tab.lab'), close: t(lang, 'lab.close') } : null
+}
+
+/** Оценка — числом языка страницы (`num`: 4.7 у en, 4,7 у ro и hu), звёзды —
+ *  половинами из пяти. Отзывов нет — строка всё равно есть: пять пустых
+ *  звёзд и «пока нет отзывов» (слово заказчика 30.09.2026: «давай всем
+ *  ставь звёзды»; И590). Оценки не выдумываются: у Vendure отзывов в ядре
+ *  нет, а разметка для поиска берёт только настоящие (ld.ts). */
+function ratingView(lang: Lang, r: Product['rating']): RatingView {
+  if (!r || r.count < 1) return { value: null, count: null, stars: ['none', 'none', 'none', 'none', 'none'], label: t(lang, 'product.noReviews') }
+  const value = num(lang, Math.round(r.value * 10) / 10)
+  const count = num(lang, r.count, 0)
+  const halves = Math.round(Math.min(5, Math.max(0, r.value)) * 2)
+  const stars = [0, 1, 2, 3, 4].map((i): Star => (halves >= (i + 1) * 2 ? 'full' : halves === i * 2 + 1 ? 'half' : 'none'))
+  return { value, count, stars, label: t(lang, 'product.rating', { value, count }) }
 }
 
 /** Куда ведёт «в корзину» без выбора: адрес карты с тем, что уже выбрано, и
@@ -141,7 +171,7 @@ function askOf(lang: Lang, product: Product, selected: Record<string, string>): 
 /** Окно быстрого заказа готовыми строками. Упаковка — выбранного варианта
  *  (у товара с одним вариантом он выбран сам); без выбора — одно имя. */
 function quickView(lang: Lang, product: Product, variant: Product['variants'][number] | null): QuickView {
-  const pack = variant?.pack ? factsLine(lang, { strength: product.strength, packs: [variant.pack] }) : null
+  const pack = variant?.pack ? factsLine(lang, { packs: [variant.pack] }) : null
   const name = [product.brand, product.name].filter(Boolean).join(' ')
   return {
     open: t(lang, 'quick.open'), title: t(lang, 'quick.open'), lead: t(lang, 'quick.lead'), close: t(lang, 'quick.close'),
@@ -195,15 +225,20 @@ export function productView(lang: Lang, product: Product, chosen0: Record<string
     price, was: sale?.was ?? null,
     stock: chosen ? stockText(lang, chosen.stock) : null,
     stockLevel: chosen?.stock ?? null,
+    sku: buyable?.sku ? t(lang, 'product.sku', { sku: buyable.sku }) : null,
     message,
     choose: ask && ctx.asked ? t(lang, 'product.choose') : null,
     gallery: galleryView(lang, product.images, sale?.badge ?? null),
     groups: optionLinks(lang, product, selected),
     facts: buyable ? packFacts(lang, buyable.pack, product.strength, buyable.price) : null,
-    details: detailsView(lang, product, chosen),
+    details: detailsView(lang, product),
+    lab: labOf(lang, product, chosen),
+    rating: ratingView(lang, product.rating),
     related: ctx.related.map((c) => shelfCard(lang, c)),
     relatedTitle: t(lang, 'product.related'),
-    relatedAll: { label: t(lang, 'shelf.all'), href: ctx.category ? hrefFor(lang, { category: ctx.category.slug }) : hrefFor(lang, { catalog: true }) },
+    id: product.id,
+    save: { add: t(lang, 'save.add', { name: product.name }), remove: t(lang, 'save.remove', { name: product.name }) },
+    relatedAll: ctx.category ? hrefFor(lang, { category: ctx.category.slug }) : hrefFor(lang, { catalog: true }),
     buy: {
       variant: sellable?.id ?? null,
       ask,

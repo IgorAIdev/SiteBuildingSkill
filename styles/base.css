@@ -43,7 +43,12 @@
  * (`fill`, `stroke`) правило не трогает — её по-прежнему назначает место,
  * и это законно: чернила строки — свойство места, а вес пера — свойство
  * инструмента. */
-svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+/* Вес пера — роль `--icon-stroke` (styles/tokens.css): штрих знака равен
+   штриху буквы текста рядом. 1.4 на всех размерах было тоньше букв меню
+   (Manrope 500 при 20 — штрих 1.8) — «толщина линий начертания иконок и
+   текста сильно разная» (заказчик 28.09.2026; И543). Место с другим
+   кеглем переобъявляет роль своим кеглем (верхняя строка шапки). */
+svg{stroke-width:var(--icon-stroke);stroke-linecap:round;stroke-linejoin:round}
 svg *{vector-effect:non-scaling-stroke}
 
 /* Знак, у которого две стороны, показывает работающую сам: вторая гаснет.
@@ -203,9 +208,40 @@ h1,h2,h3{font-family:var(--face-head,var(--face))}
  *  каждого заголовка, не работает; роль, объявленная элементу, работает
  *  сама. Имя страницы меряет свою коробку (`cqi`) — у примитива `pagehead`
  *  и у экрана состояния она объявлена. */
-:where(h1){font-size:var(--pagehead-size);line-height:var(--pagehead-lead);font-weight:var(--pagehead-weight);letter-spacing:var(--pagehead-track)}
-:where(h2){font-size:var(--h2-size);line-height:var(--h2-lead);font-weight:var(--h2-weight);letter-spacing:var(--h2-track)}
+/* Заголовок страницы — ОДНА роль на все страницы (И521): каталог, корзина,
+   поиск, документ и имя товара стоят одним кеглем — ролью, которую
+   заказчик настроил у имени товара (`--prodhead-*`, И503, И513). Прежде
+   h1 читал `--pagehead-*` (48–54px на 1440), а имя товара — свою роль
+   (39px): переходя со страницы на страницу, заголовок прыгал. Слово
+   заказчика 28.09.2026: «почему на одних страницах одни размеры, а на
+   других другие совсем». Крупная кривая `--pagehead-*` осталась у вводного
+   блока главной (`introTitle`) — это витрина, а не имя страницы. Меряет
+   семья `h1Size` (check:craft). */
+:where(h1){font-size:var(--prodhead-size);line-height:var(--prodhead-lead);font-weight:var(--prodhead-weight);letter-spacing:var(--prodhead-track)}
+:where(h2){font-size:var(--h2-at, var(--h2-size));line-height:var(--h2-lead);font-weight:var(--h2-weight);letter-spacing:var(--h2-track)}
+/* На главной заголовок раздела — ярус имени страницы (И727; слово заказчика
+   04.10.2026: «размер названия товара и размер заголовков на главной должны быть
+   одним размером»): у главной нет имени, кроме героя, и её разделы — верхний ярус.
+   На прочих страницах раздел — ступенью ниже имени (И712). */
+:where([data-page='home']){--h2-at:var(--prodhead-size)}
+:where([data-page='home'] h2){line-height:var(--prodhead-lead);font-weight:var(--prodhead-weight);letter-spacing:var(--prodhead-track)}
 :where(h3){font-size:var(--h3-size);line-height:var(--h3-lead);font-weight:var(--h3-weight);letter-spacing:var(--h3-track)}
+/* Голосов толщины два (И674): то, что называет, — 500, то, что читают, — 400.
+   Браузер своё «жирное» даёт выделению в тексте, младшим заголовкам и шапке
+   таблицы — `bolder` / `bold`, то есть 700: третья толщина посреди текста
+   документа, ответа FAQ или описания товара. Здесь они берут голос «называет»;
+   сила нулевая (`:where`) — компонент, решивший своё, перебивает. Меряет семья
+   `typeRole` (check:craft): пара «кегль / толщина» каждого текста — от роли. */
+:where(b, strong, th, h4, h5, h6){font-weight:var(--h3-weight)}
+/* Любой заголовок — с заглавной буквы (И701; слово заказчика 04.10.2026: «с
+   заглавной всегда все заголовки»). Магазин отдаёт имена строчными
+   («capsules»), данные не трогаются: первая буква — экраном, одним правилом
+   на все уровни, а не узлом за узлом (меню И431, крошки И639 — так и
+   пропустили заголовок страницы категории). Только первая буква:
+   `capitalize` сделал бы «All Products». Сквозь флекс, сетку и строчный блок
+   `::first-letter` не доходит — такой заголовок держит имя в своём блоке со
+   своим правилом; меряет семья `headCase` (check:craft). */
+:where(h1, h2, h3, h4, h5, h6)::first-letter{text-transform:uppercase}
 /* `pretty`, а не `balance`, и это замер, а не вкус.
    `balance` делит заголовок на строки поровну — и на узкой колонке
    двухстрочный заголовок встаёт двумя короткими обрывками в половину
@@ -375,7 +411,7 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
   :focus-visible{outline:var(--ring-w) solid Highlight}
 }
 @media (prefers-reduced-motion:reduce){
-  :root{--press-move:none} /* нажатие без движения — только цвет (И477) */
+  :root{--press-move:none;--press-drop:0px;--press-shrink:1} /* нажатие без движения — только цвет (И477) */
   *,*::before,*::after{
     animation-duration:.01ms !important;
     animation-iteration-count:1 !important;
@@ -410,6 +446,7 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
   color:var(--chrome-fg);
   --ink:var(--chrome-fg);
   --ink-soft:var(--chrome-fg-2);
+  --ink-dim:var(--ink-dim-deck);
   --ctrl:var(--chrome-hover);
   /* Плашка на палубе — тоже палуба, только светлее.
 
@@ -420,6 +457,10 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
      фона. Заказчик нашёл это глазом на витрине. */
   --surface:var(--chrome-hover);
   --on-ink:var(--page-deck);
+  /* Выбранное на палубе — знак палубы со словом её пола (И706): заливка марки
+     здесь сама пол. */
+  --chosen:var(--chrome-fg);
+  --on-chosen:var(--page-deck);
   /* Тихая плашка (фишка, сегмент, подложка переключателя) — тоже пара:
      до 27.09.2026 она оставалась светлой ступенью нейтрали, а чернила на
      ней становились светлыми палубы — переключатель языка в подвале читался
@@ -512,6 +553,14 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
   --pop-trail-near:var(--pop-trail-near-deck);
   --pop-trail-far:var(--pop-trail-far-deck);
   --edge-off:var(--edge-off-deck);
+  /* Поле ввода — тоже пара (И549): светлая заливка поля бумаги с белыми
+     буквами палубы давала поле, в котором набранного не видно (подписка в
+     подвале, 29.09.2026). Заливка — плашка палубы, кромка — её замеренная
+     кромка органа (`--border-deck` строителя). Кромка поля и галочки —
+     `--tick-edge`: на корне она составлена из `--border` и за полом сама
+     не пошла бы. Лист ниже возвращает обе. */
+  --field:var(--field-deck);
+  --tick-edge:var(--border-deck);
 
   /* ── и ЖИВАЯ ЛЕСТНИЦА целиком, а не только серая ──────────────────────
      Третий раз одна и та же порода, и третий раз её нашёл заказчик глазом:
@@ -573,8 +622,11 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
   color:var(--on-plate);
   --ink:var(--on-plate);
   --ink-soft:var(--on-plate-2);
+  --ink-dim:var(--ink-dim-paper);
   --surface:var(--plate);
   --on-ink:var(--plate);
+  --chosen:var(--chosen-paper);
+  --on-chosen:var(--on-chosen-paper);
   --ctrl:var(--plate-3);
   --plate-quiet:var(--plate-quiet-paper);
 
@@ -593,9 +645,9 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
   --ctrl-hand:var(--ctrl-hand-paper);
   --ctrl-in:var(--ctrl-in-paper);
   --ctrl-in-hand:var(--ctrl-in-hand-paper);
-  --hover-row:color-mix(in oklab, var(--plate), var(--on-plate) var(--state-hover));
+  --hover-row:color-mix(in oklab, var(--on-plate) var(--state-hover), transparent);
   --hover-ctrl:color-mix(in oklab, var(--plate-3), var(--on-plate) var(--state-hover));
-  --press-row:color-mix(in oklab, var(--plate), var(--on-plate) var(--state-press));
+  --press-row:color-mix(in oklab, var(--on-plate) var(--state-press), transparent);
   --press-ctrl:color-mix(in oklab, var(--plate-3), var(--on-plate) var(--state-press));
 
   /* Пара состояния. На светлом полу контрол ТОНЕТ в фирменном цвете, на
@@ -611,6 +663,9 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
   --pop-trail-near:var(--pop-trail-near-paper);
   --pop-trail-far:var(--pop-trail-far-paper);
   --edge-off:var(--edge-off-paper);
+  /* Поле — бумаги (И549): заливка и кромка, как на корне. */
+  --field:var(--field-paper);
+  --tick-edge:var(--border);
 
   /* Живая лестница — к своим значениям (см. `--live-*` в tokens.css). */
 

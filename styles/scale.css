@@ -6,16 +6,17 @@
    даёт свой низ, на широкой — свой верх. Концы — швы раскладки. */
 
 :root{
-  --fs-xs: clamp(.7813rem, .68rem + .29vw, .875rem); /* подпись, надзаголовок */
-  --fs-sm: clamp(.875rem, .7406rem + .38vw, 1rem); /* надпись органа, вторичный текст */
+  --fs-xs: .75rem;                                 /* подпись, надзаголовок */
+  --fs-sm: .875rem;                                /* надпись органа, вторичный текст */
   --fs-base: clamp(1rem, .8656rem + .38vw, 1.125rem); /* тело */
-  --fs-h3: clamp(1.4375rem, .8988rem + 1.54vw, 1.9375rem); /* подзаголовок */
-  --fs-h2: clamp(1.5938rem, .7863rem + 2.31vw, 2.3438rem); /* заголовок раздела */
-  --hero-max: 3.5rem;
+  --fs-h3: clamp(1.1875rem, .9856rem + .58vw, 1.375rem); /* подзаголовок */
+  --fs-h2: clamp(1.5rem, 1.2306rem + .77vw, 1.75rem); /* заголовок раздела и полки */
+  --fs-h1: clamp(1.6875rem, 1.0819rem + 1.73vw, 2.25rem); /* имя страницы и товара */
+  --hero-max: 3.375rem;
   --hero-base: .25rem;
-  --hero-slope: 8;
-  --hero-size: clamp(1.625rem, .25rem + 8cqi, 3.5rem); /* герой: мерит свою колонку */
-  --pagehead-size: clamp(2rem, .75rem + 5.5cqi, 3rem); /* заголовок: мерит свою колонку */
+  --hero-slope: 7.1;
+  --hero-size: clamp(2rem, min(.25rem + 7.1cqi, 7.5svh), 3.375rem); /* герой: мерит свою колонку и не выше 7.5 % окна (И660) */
+  --pagehead-size: clamp(2.375rem, .875rem + 6.5cqi, 3.375rem); /* заголовок: мерит свою колонку */
   --intro-min: 1.125rem;
   --intro-max: 1.3125rem;
   --intro-base: .125rem;
@@ -43,26 +44,30 @@
   --air-row: var(--sp-4);                          /* между строками одной группы */
   --air-set: var(--sp-3);                          /* между наборами внутри одной строки: группы опций выбора */
   --air-line: var(--sp-3);                         /* между строками одной мысли: имя товара → описание (И509) */
+  --air-tight: var(--sp-2);                        /* подзаголовок части → её текст внутри одного описания (И581) */
   --gap-targets: 8px;                              /* между соседними целями в ряду */
   --gap-row: clamp(12px, 9.85px + .38vw, 14px);    /* между вещами в ряду: фишки, пилюли, крошки */
   --gap-grid: clamp(16px, 11.69px + .77vw, 20px);  /* между карточками в сетке и в ленте */
   --wrap: 1440px;                                  /* холст: ширина коробки страницы */
   --gut: clamp(16px, 3.08px + 2.31vw, 28px);       /* край страницы: от окна до предмета — ступени 4 → 5 */
-  --ctrl-fs-xs: .875rem;                           /* надпись органа — не течёт */
-  --ctrl-fs-sm: 1rem;                              /* надпись органа — не течёт */
+  --ctrl-fs-xs: .75rem;                            /* надпись органа — не течёт */
+  --ctrl-fs-sm: .875rem;                           /* надпись органа — не течёт */
   --ctrl-fs-base: 1.125rem;                        /* надпись органа — не течёт */
-  --ctrl-fs-h3: 1.9375rem;                         /* надпись органа — не течёт */
-  --ctrl-fs-h2: 2.3438rem;                         /* надпись органа — не течёт */
+  --ctrl-fs-h3: 1.375rem;                          /* надпись органа — не течёт */
+  --ctrl-fs-h2: 1.75rem;                           /* надпись органа — не течёт */
   --ctrl-h-sm: 32px;                               /* орган малый: фишка, сегмент */
   --ctrl-h: 40px;                                  /* орган средний: кнопка, поле, лоток — текущий размер */
   --ctrl-h-lg: 48px;                               /* орган крупный: кнопка покупки, счётчик, строка меню */
   --ctrl-target: 24px;                             /* цель у знака мельче органа (WCAG 2.5.8) */
+  --ctrl-face: 32px;                               /* рисунок малого органа с целью наружу — под пальцем не растёт */
+  --ctrl-face-md: 40px;                            /* рисунок кнопки в тесной ячейке (карточка полки) — под пальцем не растёт */
   --ctrl-fs: var(--ctrl-fs-sm);                    /* надпись текущего размера */
   --r-xs: 8px;                                     /* радиус: xs */
   --r-ctrl: 8px;                                   /* радиус: ctrl */
   --r-card: 24px;                                  /* радиус: card */
   --r-sheet: 28px;                                 /* радиус: sheet */
   --r-pop: 999px;                                  /* главное действие — единственный полный круг */
+  --r-btn: var(--r-ctrl);                          /* угол кнопки — угол контрола; Corners → Pill — полный круг */
   --line-w: 1px;                                   /* линия: поле, разделитель, тег — не течёт */
   --ring-w: 2px;                                   /* кольцо фокуса (WCAG 2.4.13) */
   --ring-off: 3px;                                 /* отступ кольца от органа */
@@ -70,27 +75,59 @@
   --frost-sat: 1.8;                                /* стекло: насыщенность размытого */
 
   --hero-lead: 1.1;
-  --hero-weight: 700;
-  --hero-track: -.04em;
+  --hero-weight: 500;
+  --hero-track: -.02em;
   --pagehead-lead: 1.1;
-  --pagehead-weight: 700;
-  --pagehead-track: -.03em;
-  --prodhead-size: var(--fs-h3);
+  --pagehead-weight: 500;
+  --pagehead-track: -.02em;
+  --prodhead-size: var(--fs-h1);
   --prodhead-lead: 1.2;
-  --prodhead-weight: 600;
-  --prodhead-track: -.025em;
-  --byline-size: var(--fs-sm);
+  --prodhead-weight: 500;
+  --prodhead-track: -.01em;
+  --price-size: var(--fs-h2);
+  --price-lead: 1.15;
+  --price-weight: 500;
+  --price-track: -.01em;
+  --byline-size: var(--fs-base);
   --byline-lead: 1.4;
-  --byline-weight: 600;
+  --byline-weight: 400;
   --byline-track: 0;
+  --maker-size: var(--fs-sm);
+  --maker-lead: 1.4;
+  --maker-weight: 400;
+  --maker-track: 0;
+  --cardname-size: var(--fs-base);
+  --cardname-lead: 1.45;
+  --cardname-weight: 500;
+  --cardname-track: 0;
+  --cardprice-size: var(--fs-base);
+  --cardprice-lead: 1.45;
+  --cardprice-weight: 500;
+  --cardprice-track: 0;
+  --cardbtn-size: max(1rem, var(--fs-sm));
+  --cardbtn-lead: 1.25;
+  --cardbtn-weight: 500;
+  --cardbtn-track: 0;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
-  --h2-weight: 600;
-  --h2-track: -.025em;
+  --h2-weight: 500;
+  --h2-track: -.01em;
   --h3-size: var(--fs-h3);
   --h3-lead: 1.2;
-  --h3-weight: 600;
-  --h3-track: -.02em;
+  --h3-weight: 500;
+  --h3-track: -.01em;
+  --parthead-size: clamp(1.1875rem, 1.0531rem + .38vw, 1.3125rem);
+  --parthead-lead: 1.3;
+  --parthead-weight: 500;
+  --parthead-track: 0;
+  --logo-size: clamp(1.1875rem, 1.0531rem + .38vw, 1.3125rem);
+  --logo-lead: 1.2;
+  --logo-weight: 700;
+  --logo-track: -.02em;
+  --panehead-size: var(--fs-h3);
+  --panehead-lead: 1.2;
+  --panehead-weight: 500;
+  --panehead-track: -.01em;
   --intro-lead: 1.4;
   --intro-weight: 400;
   --intro-track: 0;
@@ -99,11 +136,24 @@
   --lede-weight: 400;
   --lede-track: 0;
   --lede-measure: var(--measure-lede);
+  --menu-size: max(1rem, var(--fs-sm));
+  --menu-lead: 1.45;
+  --menu-weight: 500;
+  --menu-track: 0;
+  --label-size: var(--fs-sm);
+  --label-lead: 1.25;
+  --label-weight: 500;
+  --label-track: 0;
   --body-size: var(--fs-base);
   --body-lead: 1.45;
   --body-weight: 400;
   --body-track: 0;
   --body-measure: var(--measure);
+  --blurb-size: var(--fs-sm);
+  --blurb-lead: 1.5;
+  --blurb-weight: 400;
+  --blurb-track: 0;
+  --blurb-measure: var(--measure);
   --note-size: var(--fs-xs);
   --note-lead: 1.45;
   --note-weight: 400;
@@ -111,23 +161,25 @@
   --note-measure: var(--measure-note);
   --eyebrow-size: var(--fs-xs);
   --eyebrow-lead: 1.35;
-  --eyebrow-weight: 600;
+  --eyebrow-weight: 500;
   --eyebrow-track: .01em;
 }
 
-@media (pointer:coarse){ :root{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px } }
+@media (pointer:coarse){ :root{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px } }
+:where([data-pointer='coarse']){ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px }
 
 [data-scale="Нынешний"]{
-  --fs-xs: clamp(.7813rem, .68rem + .29vw, .875rem); /* подпись, надзаголовок */
-  --fs-sm: clamp(.875rem, .7406rem + .38vw, 1rem); /* надпись органа, вторичный текст */
+  --fs-xs: .75rem;                                 /* подпись, надзаголовок */
+  --fs-sm: .875rem;                                /* надпись органа, вторичный текст */
   --fs-base: clamp(1rem, .8656rem + .38vw, 1.125rem); /* тело */
-  --fs-h3: clamp(1.4375rem, .8988rem + 1.54vw, 1.9375rem); /* подзаголовок */
-  --fs-h2: clamp(1.5938rem, .7863rem + 2.31vw, 2.3438rem); /* заголовок раздела */
-  --hero-max: 3.5rem;
+  --fs-h3: clamp(1.1875rem, .9856rem + .58vw, 1.375rem); /* подзаголовок */
+  --fs-h2: clamp(1.5rem, 1.2306rem + .77vw, 1.75rem); /* заголовок раздела и полки */
+  --fs-h1: clamp(1.6875rem, 1.0819rem + 1.73vw, 2.25rem); /* имя страницы и товара */
+  --hero-max: 3.375rem;
   --hero-base: .25rem;
-  --hero-slope: 8;
-  --hero-size: clamp(1.625rem, .25rem + 8cqi, 3.5rem); /* герой: мерит свою колонку */
-  --pagehead-size: clamp(2rem, .75rem + 5.5cqi, 3rem); /* заголовок: мерит свою колонку */
+  --hero-slope: 7.1;
+  --hero-size: clamp(2rem, min(.25rem + 7.1cqi, 7.5svh), 3.375rem); /* герой: мерит свою колонку и не выше 7.5 % окна (И660) */
+  --pagehead-size: clamp(2.375rem, .875rem + 6.5cqi, 3.375rem); /* заголовок: мерит свою колонку */
   --intro-min: 1.125rem;
   --intro-max: 1.3125rem;
   --intro-base: .125rem;
@@ -155,26 +207,30 @@
   --air-row: var(--sp-4);                          /* между строками одной группы */
   --air-set: var(--sp-3);                          /* между наборами внутри одной строки: группы опций выбора */
   --air-line: var(--sp-3);                         /* между строками одной мысли: имя товара → описание (И509) */
+  --air-tight: var(--sp-2);                        /* подзаголовок части → её текст внутри одного описания (И581) */
   --gap-targets: 8px;                              /* между соседними целями в ряду */
   --gap-row: clamp(12px, 9.85px + .38vw, 14px);    /* между вещами в ряду: фишки, пилюли, крошки */
   --gap-grid: clamp(16px, 11.69px + .77vw, 20px);  /* между карточками в сетке и в ленте */
   --wrap: 1440px;                                  /* холст: ширина коробки страницы */
   --gut: clamp(16px, 3.08px + 2.31vw, 28px);       /* край страницы: от окна до предмета — ступени 4 → 5 */
-  --ctrl-fs-xs: .875rem;                           /* надпись органа — не течёт */
-  --ctrl-fs-sm: 1rem;                              /* надпись органа — не течёт */
+  --ctrl-fs-xs: .75rem;                            /* надпись органа — не течёт */
+  --ctrl-fs-sm: .875rem;                           /* надпись органа — не течёт */
   --ctrl-fs-base: 1.125rem;                        /* надпись органа — не течёт */
-  --ctrl-fs-h3: 1.9375rem;                         /* надпись органа — не течёт */
-  --ctrl-fs-h2: 2.3438rem;                         /* надпись органа — не течёт */
+  --ctrl-fs-h3: 1.375rem;                          /* надпись органа — не течёт */
+  --ctrl-fs-h2: 1.75rem;                           /* надпись органа — не течёт */
   --ctrl-h-sm: 32px;                               /* орган малый: фишка, сегмент */
   --ctrl-h: 40px;                                  /* орган средний: кнопка, поле, лоток — текущий размер */
   --ctrl-h-lg: 48px;                               /* орган крупный: кнопка покупки, счётчик, строка меню */
   --ctrl-target: 24px;                             /* цель у знака мельче органа (WCAG 2.5.8) */
+  --ctrl-face: 32px;                               /* рисунок малого органа с целью наружу — под пальцем не растёт */
+  --ctrl-face-md: 40px;                            /* рисунок кнопки в тесной ячейке (карточка полки) — под пальцем не растёт */
   --ctrl-fs: var(--ctrl-fs-sm);                    /* надпись текущего размера */
   --r-xs: 8px;                                     /* радиус: xs */
   --r-ctrl: 8px;                                   /* радиус: ctrl */
   --r-card: 24px;                                  /* радиус: card */
   --r-sheet: 28px;                                 /* радиус: sheet */
   --r-pop: 999px;                                  /* главное действие — единственный полный круг */
+  --r-btn: var(--r-ctrl);                          /* угол кнопки — угол контрола; Corners → Pill — полный круг */
   --line-w: 1px;                                   /* линия: поле, разделитель, тег — не течёт */
   --ring-w: 2px;                                   /* кольцо фокуса (WCAG 2.4.13) */
   --ring-off: 3px;                                 /* отступ кольца от органа */
@@ -182,27 +238,59 @@
   --frost-sat: 1.8;                                /* стекло: насыщенность размытого */
 
   --hero-lead: 1.1;
-  --hero-weight: 700;
-  --hero-track: -.04em;
+  --hero-weight: 500;
+  --hero-track: -.02em;
   --pagehead-lead: 1.1;
-  --pagehead-weight: 700;
-  --pagehead-track: -.03em;
-  --prodhead-size: var(--fs-h3);
+  --pagehead-weight: 500;
+  --pagehead-track: -.02em;
+  --prodhead-size: var(--fs-h1);
   --prodhead-lead: 1.2;
-  --prodhead-weight: 600;
-  --prodhead-track: -.025em;
-  --byline-size: var(--fs-sm);
+  --prodhead-weight: 500;
+  --prodhead-track: -.01em;
+  --price-size: var(--fs-h2);
+  --price-lead: 1.15;
+  --price-weight: 500;
+  --price-track: -.01em;
+  --byline-size: var(--fs-base);
   --byline-lead: 1.4;
-  --byline-weight: 600;
+  --byline-weight: 400;
   --byline-track: 0;
+  --maker-size: var(--fs-sm);
+  --maker-lead: 1.4;
+  --maker-weight: 400;
+  --maker-track: 0;
+  --cardname-size: var(--fs-base);
+  --cardname-lead: 1.45;
+  --cardname-weight: 500;
+  --cardname-track: 0;
+  --cardprice-size: var(--fs-base);
+  --cardprice-lead: 1.45;
+  --cardprice-weight: 500;
+  --cardprice-track: 0;
+  --cardbtn-size: max(1rem, var(--fs-sm));
+  --cardbtn-lead: 1.25;
+  --cardbtn-weight: 500;
+  --cardbtn-track: 0;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
-  --h2-weight: 600;
-  --h2-track: -.025em;
+  --h2-weight: 500;
+  --h2-track: -.01em;
   --h3-size: var(--fs-h3);
   --h3-lead: 1.2;
-  --h3-weight: 600;
-  --h3-track: -.02em;
+  --h3-weight: 500;
+  --h3-track: -.01em;
+  --parthead-size: clamp(1.1875rem, 1.0531rem + .38vw, 1.3125rem);
+  --parthead-lead: 1.3;
+  --parthead-weight: 500;
+  --parthead-track: 0;
+  --logo-size: clamp(1.1875rem, 1.0531rem + .38vw, 1.3125rem);
+  --logo-lead: 1.2;
+  --logo-weight: 700;
+  --logo-track: -.02em;
+  --panehead-size: var(--fs-h3);
+  --panehead-lead: 1.2;
+  --panehead-weight: 500;
+  --panehead-track: -.01em;
   --intro-lead: 1.4;
   --intro-weight: 400;
   --intro-track: 0;
@@ -211,11 +299,24 @@
   --lede-weight: 400;
   --lede-track: 0;
   --lede-measure: var(--measure-lede);
+  --menu-size: max(1rem, var(--fs-sm));
+  --menu-lead: 1.45;
+  --menu-weight: 500;
+  --menu-track: 0;
+  --label-size: var(--fs-sm);
+  --label-lead: 1.25;
+  --label-weight: 500;
+  --label-track: 0;
   --body-size: var(--fs-base);
   --body-lead: 1.45;
   --body-weight: 400;
   --body-track: 0;
   --body-measure: var(--measure);
+  --blurb-size: var(--fs-sm);
+  --blurb-lead: 1.5;
+  --blurb-weight: 400;
+  --blurb-track: 0;
+  --blurb-measure: var(--measure);
   --note-size: var(--fs-xs);
   --note-lead: 1.45;
   --note-weight: 400;
@@ -223,23 +324,25 @@
   --note-measure: var(--measure-note);
   --eyebrow-size: var(--fs-xs);
   --eyebrow-lead: 1.35;
-  --eyebrow-weight: 600;
+  --eyebrow-weight: 500;
   --eyebrow-track: .01em;
 }
 
-@media (pointer:coarse){ [data-scale="Нынешний"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px } }
+@media (pointer:coarse){ [data-scale="Нынешний"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px } }
+[data-scale="Нынешний"] :where([data-pointer='coarse']){ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px }
 
 [data-scale="Тесный"]{
-  --fs-xs: clamp(.7813rem, .7137rem + .19vw, .8438rem); /* подпись, надзаголовок */
-  --fs-sm: clamp(.875rem, .8075rem + .19vw, .9375rem); /* надпись органа, вторичный текст */
+  --fs-xs: .75rem;                                 /* подпись, надзаголовок */
+  --fs-sm: .875rem;                                /* надпись органа, вторичный текст */
   --fs-base: clamp(1rem, .9325rem + .19vw, 1.0625rem); /* тело */
-  --fs-h3: clamp(1.4375rem, 1rem + 1.25vw, 1.8438rem); /* подзаголовок */
-  --fs-h2: clamp(1.5938rem, .9206rem + 1.92vw, 2.2188rem); /* заголовок раздела */
-  --hero-max: 3.5rem;
+  --fs-h3: clamp(1.1875rem, 1.0531rem + .38vw, 1.3125rem); /* подзаголовок */
+  --fs-h2: clamp(1.5rem, 1.2981rem + .58vw, 1.6875rem); /* заголовок раздела и полки */
+  --fs-h1: clamp(1.625rem, 1.0862rem + 1.54vw, 2.125rem); /* имя страницы и товара */
+  --hero-max: 3.375rem;
   --hero-base: .25rem;
-  --hero-slope: 8;
-  --hero-size: clamp(1.625rem, .25rem + 8cqi, 3.5rem); /* герой: мерит свою колонку */
-  --pagehead-size: clamp(2rem, .75rem + 5.5cqi, 3rem); /* заголовок: мерит свою колонку */
+  --hero-slope: 7.1;
+  --hero-size: clamp(2rem, min(.25rem + 7.1cqi, 7.5svh), 3.375rem); /* герой: мерит свою колонку и не выше 7.5 % окна (И660) */
+  --pagehead-size: clamp(2.375rem, .875rem + 6.5cqi, 3.375rem); /* заголовок: мерит свою колонку */
   --intro-min: 1.125rem;
   --intro-max: 1.3125rem;
   --intro-base: .125rem;
@@ -267,26 +370,30 @@
   --air-row: var(--sp-4);                          /* между строками одной группы */
   --air-set: var(--sp-3);                          /* между наборами внутри одной строки: группы опций выбора */
   --air-line: var(--sp-3);                         /* между строками одной мысли: имя товара → описание (И509) */
+  --air-tight: var(--sp-2);                        /* подзаголовок части → её текст внутри одного описания (И581) */
   --gap-targets: 8px;                              /* между соседними целями в ряду */
   --gap-row: 12px;                                 /* между вещами в ряду: фишки, пилюли, крошки */
   --gap-grid: 16px;                                /* между карточками в сетке и в ленте */
   --wrap: 1440px;                                  /* холст: ширина коробки страницы */
   --gut: clamp(12px, -.92px + 2.31vw, 24px);       /* край страницы: от окна до предмета — ступени 3 → 5 */
-  --ctrl-fs-xs: .8438rem;                          /* надпись органа — не течёт */
-  --ctrl-fs-sm: .9375rem;                          /* надпись органа — не течёт */
+  --ctrl-fs-xs: .75rem;                            /* надпись органа — не течёт */
+  --ctrl-fs-sm: .875rem;                           /* надпись органа — не течёт */
   --ctrl-fs-base: 1.0625rem;                       /* надпись органа — не течёт */
-  --ctrl-fs-h3: 1.8438rem;                         /* надпись органа — не течёт */
-  --ctrl-fs-h2: 2.2188rem;                         /* надпись органа — не течёт */
+  --ctrl-fs-h3: 1.3125rem;                         /* надпись органа — не течёт */
+  --ctrl-fs-h2: 1.6875rem;                         /* надпись органа — не течёт */
   --ctrl-h-sm: 32px;                               /* орган малый: фишка, сегмент */
   --ctrl-h: 40px;                                  /* орган средний: кнопка, поле, лоток — текущий размер */
   --ctrl-h-lg: 48px;                               /* орган крупный: кнопка покупки, счётчик, строка меню */
   --ctrl-target: 24px;                             /* цель у знака мельче органа (WCAG 2.5.8) */
+  --ctrl-face: 32px;                               /* рисунок малого органа с целью наружу — под пальцем не растёт */
+  --ctrl-face-md: 40px;                            /* рисунок кнопки в тесной ячейке (карточка полки) — под пальцем не растёт */
   --ctrl-fs: var(--ctrl-fs-sm);                    /* надпись текущего размера */
   --r-xs: 8px;                                     /* радиус: xs */
   --r-ctrl: 8px;                                   /* радиус: ctrl */
   --r-card: 24px;                                  /* радиус: card */
   --r-sheet: 28px;                                 /* радиус: sheet */
   --r-pop: 999px;                                  /* главное действие — единственный полный круг */
+  --r-btn: var(--r-ctrl);                          /* угол кнопки — угол контрола; Corners → Pill — полный круг */
   --line-w: 1px;                                   /* линия: поле, разделитель, тег — не течёт */
   --ring-w: 2px;                                   /* кольцо фокуса (WCAG 2.4.13) */
   --ring-off: 3px;                                 /* отступ кольца от органа */
@@ -294,27 +401,59 @@
   --frost-sat: 1.8;                                /* стекло: насыщенность размытого */
 
   --hero-lead: 1.1;
-  --hero-weight: 700;
-  --hero-track: -.04em;
+  --hero-weight: 500;
+  --hero-track: -.02em;
   --pagehead-lead: 1.1;
-  --pagehead-weight: 700;
-  --pagehead-track: -.03em;
-  --prodhead-size: var(--fs-h3);
+  --pagehead-weight: 500;
+  --pagehead-track: -.02em;
+  --prodhead-size: var(--fs-h1);
   --prodhead-lead: 1.2;
-  --prodhead-weight: 600;
-  --prodhead-track: -.025em;
-  --byline-size: var(--fs-sm);
+  --prodhead-weight: 500;
+  --prodhead-track: -.01em;
+  --price-size: var(--fs-h2);
+  --price-lead: 1.15;
+  --price-weight: 500;
+  --price-track: -.01em;
+  --byline-size: var(--fs-base);
   --byline-lead: 1.4;
-  --byline-weight: 600;
+  --byline-weight: 400;
   --byline-track: 0;
+  --maker-size: var(--fs-sm);
+  --maker-lead: 1.4;
+  --maker-weight: 400;
+  --maker-track: 0;
+  --cardname-size: var(--fs-base);
+  --cardname-lead: 1.45;
+  --cardname-weight: 500;
+  --cardname-track: 0;
+  --cardprice-size: var(--fs-base);
+  --cardprice-lead: 1.45;
+  --cardprice-weight: 500;
+  --cardprice-track: 0;
+  --cardbtn-size: max(1rem, var(--fs-sm));
+  --cardbtn-lead: 1.25;
+  --cardbtn-weight: 500;
+  --cardbtn-track: 0;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
-  --h2-weight: 600;
-  --h2-track: -.025em;
+  --h2-weight: 500;
+  --h2-track: -.01em;
   --h3-size: var(--fs-h3);
   --h3-lead: 1.2;
-  --h3-weight: 600;
-  --h3-track: -.02em;
+  --h3-weight: 500;
+  --h3-track: -.01em;
+  --parthead-size: clamp(1.1875rem, 1.12rem + .19vw, 1.25rem);
+  --parthead-lead: 1.3;
+  --parthead-weight: 500;
+  --parthead-track: 0;
+  --logo-size: clamp(1.1875rem, 1.12rem + .19vw, 1.25rem);
+  --logo-lead: 1.2;
+  --logo-weight: 700;
+  --logo-track: -.02em;
+  --panehead-size: var(--fs-h3);
+  --panehead-lead: 1.2;
+  --panehead-weight: 500;
+  --panehead-track: -.01em;
   --intro-lead: 1.4;
   --intro-weight: 400;
   --intro-track: 0;
@@ -323,11 +462,24 @@
   --lede-weight: 400;
   --lede-track: 0;
   --lede-measure: var(--measure-lede);
+  --menu-size: max(1rem, var(--fs-sm));
+  --menu-lead: 1.45;
+  --menu-weight: 500;
+  --menu-track: 0;
+  --label-size: var(--fs-sm);
+  --label-lead: 1.25;
+  --label-weight: 500;
+  --label-track: 0;
   --body-size: var(--fs-base);
   --body-lead: 1.45;
   --body-weight: 400;
   --body-track: 0;
   --body-measure: var(--measure);
+  --blurb-size: var(--fs-sm);
+  --blurb-lead: 1.5;
+  --blurb-weight: 400;
+  --blurb-track: 0;
+  --blurb-measure: var(--measure);
   --note-size: var(--fs-xs);
   --note-lead: 1.45;
   --note-weight: 400;
@@ -335,22 +487,24 @@
   --note-measure: var(--measure-note);
   --eyebrow-size: var(--fs-xs);
   --eyebrow-lead: 1.35;
-  --eyebrow-weight: 600;
+  --eyebrow-weight: 500;
   --eyebrow-track: .01em;
 }
 
-@media (pointer:coarse){ [data-scale="Тесный"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px } }
+@media (pointer:coarse){ [data-scale="Тесный"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px } }
+[data-scale="Тесный"] :where([data-pointer='coarse']){ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px }
 
 [data-scale="Просторный"]{
   --fs-xs: clamp(.75rem, .6156rem + .38vw, .875rem); /* подпись, надзаголовок */
-  --fs-sm: clamp(.875rem, .7069rem + .48vw, 1.0313rem); /* надпись органа, вторичный текст */
+  --fs-sm: clamp(.875rem, .7406rem + .38vw, 1rem); /* надпись органа, вторичный текст */
   --fs-base: clamp(1.0625rem, .8606rem + .58vw, 1.25rem); /* тело */
-  --fs-h3: clamp(1.5313rem, 1.06rem + 1.35vw, 1.9688rem); /* подзаголовок */
-  --fs-h2: clamp(1.8438rem, 1.2044rem + 1.83vw, 2.4375rem); /* заголовок раздела */
-  --hero-max: 4rem;
+  --fs-h3: clamp(1.25rem, .9806rem + .77vw, 1.5rem); /* подзаголовок */
+  --fs-h2: clamp(1.5rem, 1.0288rem + 1.35vw, 1.9375rem); /* заголовок раздела и полки */
+  --fs-h1: clamp(1.8125rem, 1.1394rem + 1.92vw, 2.4375rem); /* имя страницы и товара */
+  --hero-max: 3.375rem;
   --hero-base: .25rem;
-  --hero-slope: 8.5;
-  --hero-size: clamp(2.25rem, .25rem + 8.5cqi, 4rem); /* герой: мерит свою колонку */
+  --hero-slope: 7.1;
+  --hero-size: clamp(2rem, min(.25rem + 7.1cqi, 7.5svh), 3.375rem); /* герой: мерит свою колонку и не выше 7.5 % окна (И660) */
   --pagehead-size: clamp(2.375rem, .875rem + 6.5cqi, 3.375rem); /* заголовок: мерит свою колонку */
   --intro-min: 1.25rem;
   --intro-max: 1.4375rem;
@@ -379,26 +533,30 @@
   --air-row: var(--sp-4);                          /* между строками одной группы */
   --air-set: var(--sp-3);                          /* между наборами внутри одной строки: группы опций выбора */
   --air-line: var(--sp-3);                         /* между строками одной мысли: имя товара → описание (И509) */
+  --air-tight: var(--sp-2);                        /* подзаголовок части → её текст внутри одного описания (И581) */
   --gap-targets: 8px;                              /* между соседними целями в ряду */
   --gap-row: clamp(12px, 7.69px + .77vw, 16px);    /* между вещами в ряду: фишки, пилюли, крошки */
   --gap-grid: clamp(16px, 11.69px + .77vw, 20px);  /* между карточками в сетке и в ленте */
   --wrap: 1440px;                                  /* холст: ширина коробки страницы */
   --gut: clamp(16px, -1.23px + 3.08vw, 32px);      /* край страницы: от окна до предмета — ступени 4 → 5 */
   --ctrl-fs-xs: .875rem;                           /* надпись органа — не течёт */
-  --ctrl-fs-sm: 1.0313rem;                         /* надпись органа — не течёт */
+  --ctrl-fs-sm: 1rem;                              /* надпись органа — не течёт */
   --ctrl-fs-base: 1.25rem;                         /* надпись органа — не течёт */
-  --ctrl-fs-h3: 1.9688rem;                         /* надпись органа — не течёт */
-  --ctrl-fs-h2: 2.4375rem;                         /* надпись органа — не течёт */
+  --ctrl-fs-h3: 1.5rem;                            /* надпись органа — не течёт */
+  --ctrl-fs-h2: 1.9375rem;                         /* надпись органа — не течёт */
   --ctrl-h-sm: 32px;                               /* орган малый: фишка, сегмент */
   --ctrl-h: 40px;                                  /* орган средний: кнопка, поле, лоток — текущий размер */
   --ctrl-h-lg: 48px;                               /* орган крупный: кнопка покупки, счётчик, строка меню */
   --ctrl-target: 24px;                             /* цель у знака мельче органа (WCAG 2.5.8) */
+  --ctrl-face: 32px;                               /* рисунок малого органа с целью наружу — под пальцем не растёт */
+  --ctrl-face-md: 40px;                            /* рисунок кнопки в тесной ячейке (карточка полки) — под пальцем не растёт */
   --ctrl-fs: var(--ctrl-fs-sm);                    /* надпись текущего размера */
   --r-xs: 8px;                                     /* радиус: xs */
   --r-ctrl: 8px;                                   /* радиус: ctrl */
   --r-card: 28px;                                  /* радиус: card */
   --r-sheet: 32px;                                 /* радиус: sheet */
   --r-pop: 999px;                                  /* главное действие — единственный полный круг */
+  --r-btn: var(--r-ctrl);                          /* угол кнопки — угол контрола; Corners → Pill — полный круг */
   --line-w: 1px;                                   /* линия: поле, разделитель, тег — не течёт */
   --ring-w: 2px;                                   /* кольцо фокуса (WCAG 2.4.13) */
   --ring-off: 3px;                                 /* отступ кольца от органа */
@@ -406,27 +564,59 @@
   --frost-sat: 1.8;                                /* стекло: насыщенность размытого */
 
   --hero-lead: 1.1;
-  --hero-weight: 700;
-  --hero-track: -.04em;
+  --hero-weight: 500;
+  --hero-track: -.02em;
   --pagehead-lead: 1.1;
-  --pagehead-weight: 700;
-  --pagehead-track: -.03em;
-  --prodhead-size: var(--fs-h3);
+  --pagehead-weight: 500;
+  --pagehead-track: -.02em;
+  --prodhead-size: var(--fs-h1);
   --prodhead-lead: 1.2;
-  --prodhead-weight: 600;
-  --prodhead-track: -.025em;
-  --byline-size: var(--fs-sm);
+  --prodhead-weight: 500;
+  --prodhead-track: -.01em;
+  --price-size: var(--fs-h2);
+  --price-lead: 1.15;
+  --price-weight: 500;
+  --price-track: -.01em;
+  --byline-size: var(--fs-base);
   --byline-lead: 1.4;
-  --byline-weight: 600;
+  --byline-weight: 400;
   --byline-track: 0;
+  --maker-size: var(--fs-sm);
+  --maker-lead: 1.4;
+  --maker-weight: 400;
+  --maker-track: 0;
+  --cardname-size: var(--fs-base);
+  --cardname-lead: 1.45;
+  --cardname-weight: 500;
+  --cardname-track: 0;
+  --cardprice-size: var(--fs-base);
+  --cardprice-lead: 1.45;
+  --cardprice-weight: 500;
+  --cardprice-track: 0;
+  --cardbtn-size: max(1rem, var(--fs-sm));
+  --cardbtn-lead: 1.25;
+  --cardbtn-weight: 500;
+  --cardbtn-track: 0;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
-  --h2-weight: 600;
-  --h2-track: -.025em;
+  --h2-weight: 500;
+  --h2-track: -.01em;
   --h3-size: var(--fs-h3);
   --h3-lead: 1.2;
-  --h3-weight: 600;
-  --h3-track: -.02em;
+  --h3-weight: 500;
+  --h3-track: -.01em;
+  --parthead-size: clamp(1.25rem, .9806rem + .77vw, 1.5rem);
+  --parthead-lead: 1.3;
+  --parthead-weight: 500;
+  --parthead-track: 0;
+  --logo-size: clamp(1.25rem, .9806rem + .77vw, 1.5rem);
+  --logo-lead: 1.2;
+  --logo-weight: 700;
+  --logo-track: -.02em;
+  --panehead-size: var(--fs-h3);
+  --panehead-lead: 1.2;
+  --panehead-weight: 500;
+  --panehead-track: -.01em;
   --intro-lead: 1.4;
   --intro-weight: 400;
   --intro-track: 0;
@@ -435,11 +625,24 @@
   --lede-weight: 400;
   --lede-track: 0;
   --lede-measure: var(--measure-lede);
+  --menu-size: max(1rem, var(--fs-sm));
+  --menu-lead: 1.45;
+  --menu-weight: 500;
+  --menu-track: 0;
+  --label-size: var(--fs-sm);
+  --label-lead: 1.25;
+  --label-weight: 500;
+  --label-track: 0;
   --body-size: var(--fs-base);
   --body-lead: 1.45;
   --body-weight: 400;
   --body-track: 0;
   --body-measure: var(--measure);
+  --blurb-size: var(--fs-sm);
+  --blurb-lead: 1.5;
+  --blurb-weight: 400;
+  --blurb-track: 0;
+  --blurb-measure: var(--measure);
   --note-size: var(--fs-xs);
   --note-lead: 1.45;
   --note-weight: 400;
@@ -447,23 +650,25 @@
   --note-measure: var(--measure-note);
   --eyebrow-size: var(--fs-xs);
   --eyebrow-lead: 1.35;
-  --eyebrow-weight: 600;
+  --eyebrow-weight: 500;
   --eyebrow-track: .01em;
 }
 
-@media (pointer:coarse){ [data-scale="Просторный"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px } }
+@media (pointer:coarse){ [data-scale="Просторный"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px } }
+[data-scale="Просторный"] :where([data-pointer='coarse']){ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px }
 
 [data-scale="Тихий"]{
-  --fs-xs: clamp(.7813rem, .68rem + .29vw, .875rem); /* подпись, надзаголовок */
-  --fs-sm: clamp(.875rem, .7406rem + .38vw, 1rem); /* надпись органа, вторичный текст */
+  --fs-xs: .75rem;                                 /* подпись, надзаголовок */
+  --fs-sm: .875rem;                                /* надпись органа, вторичный текст */
   --fs-base: clamp(1rem, .8656rem + .38vw, 1.125rem); /* тело */
-  --fs-h3: clamp(1.4375rem, .8988rem + 1.54vw, 1.9375rem); /* подзаголовок */
-  --fs-h2: clamp(1.5938rem, .7863rem + 2.31vw, 2.3438rem); /* заголовок раздела */
-  --hero-max: 3.5rem;
+  --fs-h3: clamp(1.1875rem, .9856rem + .58vw, 1.375rem); /* подзаголовок */
+  --fs-h2: clamp(1.5rem, 1.2306rem + .77vw, 1.75rem); /* заголовок раздела и полки */
+  --fs-h1: clamp(1.6875rem, 1.0819rem + 1.73vw, 2.25rem); /* имя страницы и товара */
+  --hero-max: 3.375rem;
   --hero-base: .25rem;
-  --hero-slope: 8;
-  --hero-size: clamp(1.625rem, .25rem + 8cqi, 3.5rem); /* герой: мерит свою колонку */
-  --pagehead-size: clamp(2rem, .75rem + 5.5cqi, 3rem); /* заголовок: мерит свою колонку */
+  --hero-slope: 7.1;
+  --hero-size: clamp(2rem, min(.25rem + 7.1cqi, 7.5svh), 3.375rem); /* герой: мерит свою колонку и не выше 7.5 % окна (И660) */
+  --pagehead-size: clamp(2.375rem, .875rem + 6.5cqi, 3.375rem); /* заголовок: мерит свою колонку */
   --intro-min: 1.125rem;
   --intro-max: 1.3125rem;
   --intro-base: .125rem;
@@ -491,26 +696,30 @@
   --air-row: var(--sp-4);                          /* между строками одной группы */
   --air-set: var(--sp-3);                          /* между наборами внутри одной строки: группы опций выбора */
   --air-line: var(--sp-3);                         /* между строками одной мысли: имя товара → описание (И509) */
+  --air-tight: var(--sp-2);                        /* подзаголовок части → её текст внутри одного описания (И581) */
   --gap-targets: 8px;                              /* между соседними целями в ряду */
   --gap-row: clamp(12px, 9.85px + .38vw, 14px);    /* между вещами в ряду: фишки, пилюли, крошки */
   --gap-grid: clamp(16px, 11.69px + .77vw, 20px);  /* между карточками в сетке и в ленте */
   --wrap: 1440px;                                  /* холст: ширина коробки страницы */
   --gut: clamp(16px, 3.08px + 2.31vw, 28px);       /* край страницы: от окна до предмета — ступени 4 → 5 */
-  --ctrl-fs-xs: .875rem;                           /* надпись органа — не течёт */
-  --ctrl-fs-sm: 1rem;                              /* надпись органа — не течёт */
+  --ctrl-fs-xs: .75rem;                            /* надпись органа — не течёт */
+  --ctrl-fs-sm: .875rem;                           /* надпись органа — не течёт */
   --ctrl-fs-base: 1.125rem;                        /* надпись органа — не течёт */
-  --ctrl-fs-h3: 1.9375rem;                         /* надпись органа — не течёт */
-  --ctrl-fs-h2: 2.3438rem;                         /* надпись органа — не течёт */
+  --ctrl-fs-h3: 1.375rem;                          /* надпись органа — не течёт */
+  --ctrl-fs-h2: 1.75rem;                           /* надпись органа — не течёт */
   --ctrl-h-sm: 32px;                               /* орган малый: фишка, сегмент */
   --ctrl-h: 40px;                                  /* орган средний: кнопка, поле, лоток — текущий размер */
   --ctrl-h-lg: 48px;                               /* орган крупный: кнопка покупки, счётчик, строка меню */
   --ctrl-target: 24px;                             /* цель у знака мельче органа (WCAG 2.5.8) */
+  --ctrl-face: 32px;                               /* рисунок малого органа с целью наружу — под пальцем не растёт */
+  --ctrl-face-md: 40px;                            /* рисунок кнопки в тесной ячейке (карточка полки) — под пальцем не растёт */
   --ctrl-fs: var(--ctrl-fs-sm);                    /* надпись текущего размера */
   --r-xs: 4px;                                     /* радиус: xs */
   --r-ctrl: 4px;                                   /* радиус: ctrl */
   --r-card: 12px;                                  /* радиус: card */
   --r-sheet: 16px;                                 /* радиус: sheet */
   --r-pop: 999px;                                  /* главное действие — единственный полный круг */
+  --r-btn: var(--r-ctrl);                          /* угол кнопки — угол контрола; Corners → Pill — полный круг */
   --line-w: 1px;                                   /* линия: поле, разделитель, тег — не течёт */
   --ring-w: 2px;                                   /* кольцо фокуса (WCAG 2.4.13) */
   --ring-off: 3px;                                 /* отступ кольца от органа */
@@ -518,27 +727,59 @@
   --frost-sat: 1.8;                                /* стекло: насыщенность размытого */
 
   --hero-lead: 1.1;
-  --hero-weight: 700;
-  --hero-track: -.04em;
+  --hero-weight: 500;
+  --hero-track: -.02em;
   --pagehead-lead: 1.1;
-  --pagehead-weight: 700;
-  --pagehead-track: -.03em;
-  --prodhead-size: var(--fs-h3);
+  --pagehead-weight: 500;
+  --pagehead-track: -.02em;
+  --prodhead-size: var(--fs-h1);
   --prodhead-lead: 1.2;
-  --prodhead-weight: 600;
-  --prodhead-track: -.025em;
-  --byline-size: var(--fs-sm);
+  --prodhead-weight: 500;
+  --prodhead-track: -.01em;
+  --price-size: var(--fs-h2);
+  --price-lead: 1.15;
+  --price-weight: 500;
+  --price-track: -.01em;
+  --byline-size: var(--fs-base);
   --byline-lead: 1.4;
-  --byline-weight: 600;
+  --byline-weight: 400;
   --byline-track: 0;
+  --maker-size: var(--fs-sm);
+  --maker-lead: 1.4;
+  --maker-weight: 400;
+  --maker-track: 0;
+  --cardname-size: var(--fs-base);
+  --cardname-lead: 1.45;
+  --cardname-weight: 500;
+  --cardname-track: 0;
+  --cardprice-size: var(--fs-base);
+  --cardprice-lead: 1.45;
+  --cardprice-weight: 500;
+  --cardprice-track: 0;
+  --cardbtn-size: max(1rem, var(--fs-sm));
+  --cardbtn-lead: 1.25;
+  --cardbtn-weight: 500;
+  --cardbtn-track: 0;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
-  --h2-weight: 600;
-  --h2-track: -.025em;
+  --h2-weight: 500;
+  --h2-track: -.01em;
   --h3-size: var(--fs-h3);
   --h3-lead: 1.2;
-  --h3-weight: 600;
-  --h3-track: -.02em;
+  --h3-weight: 500;
+  --h3-track: -.01em;
+  --parthead-size: clamp(1.1875rem, 1.0531rem + .38vw, 1.3125rem);
+  --parthead-lead: 1.3;
+  --parthead-weight: 500;
+  --parthead-track: 0;
+  --logo-size: clamp(1.1875rem, 1.0531rem + .38vw, 1.3125rem);
+  --logo-lead: 1.2;
+  --logo-weight: 700;
+  --logo-track: -.02em;
+  --panehead-size: var(--fs-h3);
+  --panehead-lead: 1.2;
+  --panehead-weight: 500;
+  --panehead-track: -.01em;
   --intro-lead: 1.4;
   --intro-weight: 400;
   --intro-track: 0;
@@ -547,11 +788,24 @@
   --lede-weight: 400;
   --lede-track: 0;
   --lede-measure: var(--measure-lede);
+  --menu-size: max(1rem, var(--fs-sm));
+  --menu-lead: 1.45;
+  --menu-weight: 500;
+  --menu-track: 0;
+  --label-size: var(--fs-sm);
+  --label-lead: 1.25;
+  --label-weight: 500;
+  --label-track: 0;
   --body-size: var(--fs-base);
   --body-lead: 1.45;
   --body-weight: 400;
   --body-track: 0;
   --body-measure: var(--measure);
+  --blurb-size: var(--fs-sm);
+  --blurb-lead: 1.5;
+  --blurb-weight: 400;
+  --blurb-track: 0;
+  --blurb-measure: var(--measure);
   --note-size: var(--fs-xs);
   --note-lead: 1.45;
   --note-weight: 400;
@@ -559,23 +813,25 @@
   --note-measure: var(--measure-note);
   --eyebrow-size: var(--fs-xs);
   --eyebrow-lead: 1.35;
-  --eyebrow-weight: 600;
+  --eyebrow-weight: 500;
   --eyebrow-track: .01em;
 }
 
-@media (pointer:coarse){ [data-scale="Тихий"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px } }
+@media (pointer:coarse){ [data-scale="Тихий"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px } }
+[data-scale="Тихий"] :where([data-pointer='coarse']){ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px }
 
 [data-scale="Плотный"]{
-  --fs-xs: clamp(.7813rem, .68rem + .29vw, .875rem); /* подпись, надзаголовок */
-  --fs-sm: clamp(.875rem, .7406rem + .38vw, 1rem); /* надпись органа, вторичный текст */
+  --fs-xs: .75rem;                                 /* подпись, надзаголовок */
+  --fs-sm: .875rem;                                /* надпись органа, вторичный текст */
   --fs-base: clamp(1rem, .8656rem + .38vw, 1.125rem); /* тело */
-  --fs-h3: clamp(1.4375rem, .8988rem + 1.54vw, 1.9375rem); /* подзаголовок */
-  --fs-h2: clamp(1.5938rem, .7863rem + 2.31vw, 2.3438rem); /* заголовок раздела */
-  --hero-max: 3.5rem;
+  --fs-h3: clamp(1.1875rem, .9856rem + .58vw, 1.375rem); /* подзаголовок */
+  --fs-h2: clamp(1.5rem, 1.2306rem + .77vw, 1.75rem); /* заголовок раздела и полки */
+  --fs-h1: clamp(1.6875rem, 1.0819rem + 1.73vw, 2.25rem); /* имя страницы и товара */
+  --hero-max: 3.375rem;
   --hero-base: .25rem;
-  --hero-slope: 8;
-  --hero-size: clamp(1.625rem, .25rem + 8cqi, 3.5rem); /* герой: мерит свою колонку */
-  --pagehead-size: clamp(2rem, .75rem + 5.5cqi, 3rem); /* заголовок: мерит свою колонку */
+  --hero-slope: 7.1;
+  --hero-size: clamp(2rem, min(.25rem + 7.1cqi, 7.5svh), 3.375rem); /* герой: мерит свою колонку и не выше 7.5 % окна (И660) */
+  --pagehead-size: clamp(2.375rem, .875rem + 6.5cqi, 3.375rem); /* заголовок: мерит свою колонку */
   --intro-min: 1.125rem;
   --intro-max: 1.3125rem;
   --intro-base: .125rem;
@@ -603,26 +859,30 @@
   --air-row: var(--sp-3);                          /* между строками одной группы */
   --air-set: var(--sp-2);                          /* между наборами внутри одной строки: группы опций выбора */
   --air-line: var(--sp-2);                         /* между строками одной мысли: имя товара → описание (И509) */
+  --air-tight: var(--sp-2);                        /* подзаголовок части → её текст внутри одного описания (И581) */
   --gap-targets: 8px;                              /* между соседними целями в ряду */
   --gap-row: clamp(12px, 9.85px + .38vw, 14px);    /* между вещами в ряду: фишки, пилюли, крошки */
   --gap-grid: clamp(12px, 9.85px + .38vw, 14px);   /* между карточками в сетке и в ленте */
   --wrap: 1440px;                                  /* холст: ширина коробки страницы */
   --gut: clamp(12px, 3.38px + 1.54vw, 20px);       /* край страницы: от окна до предмета — ступени 3 → 4 */
-  --ctrl-fs-xs: .875rem;                           /* надпись органа — не течёт */
-  --ctrl-fs-sm: 1rem;                              /* надпись органа — не течёт */
+  --ctrl-fs-xs: .75rem;                            /* надпись органа — не течёт */
+  --ctrl-fs-sm: .875rem;                           /* надпись органа — не течёт */
   --ctrl-fs-base: 1.125rem;                        /* надпись органа — не течёт */
-  --ctrl-fs-h3: 1.9375rem;                         /* надпись органа — не течёт */
-  --ctrl-fs-h2: 2.3438rem;                         /* надпись органа — не течёт */
+  --ctrl-fs-h3: 1.375rem;                          /* надпись органа — не течёт */
+  --ctrl-fs-h2: 1.75rem;                           /* надпись органа — не течёт */
   --ctrl-h-sm: 32px;                               /* орган малый: фишка, сегмент */
   --ctrl-h: 40px;                                  /* орган средний: кнопка, поле, лоток — текущий размер */
   --ctrl-h-lg: 48px;                               /* орган крупный: кнопка покупки, счётчик, строка меню */
   --ctrl-target: 24px;                             /* цель у знака мельче органа (WCAG 2.5.8) */
+  --ctrl-face: 32px;                               /* рисунок малого органа с целью наружу — под пальцем не растёт */
+  --ctrl-face-md: 40px;                            /* рисунок кнопки в тесной ячейке (карточка полки) — под пальцем не растёт */
   --ctrl-fs: var(--ctrl-fs-sm);                    /* надпись текущего размера */
   --r-xs: 8px;                                     /* радиус: xs */
   --r-ctrl: 8px;                                   /* радиус: ctrl */
   --r-card: 24px;                                  /* радиус: card */
   --r-sheet: 28px;                                 /* радиус: sheet */
   --r-pop: 999px;                                  /* главное действие — единственный полный круг */
+  --r-btn: var(--r-ctrl);                          /* угол кнопки — угол контрола; Corners → Pill — полный круг */
   --line-w: 1px;                                   /* линия: поле, разделитель, тег — не течёт */
   --ring-w: 2px;                                   /* кольцо фокуса (WCAG 2.4.13) */
   --ring-off: 3px;                                 /* отступ кольца от органа */
@@ -630,27 +890,59 @@
   --frost-sat: 1.8;                                /* стекло: насыщенность размытого */
 
   --hero-lead: 1.1;
-  --hero-weight: 700;
-  --hero-track: -.04em;
+  --hero-weight: 500;
+  --hero-track: -.02em;
   --pagehead-lead: 1.1;
-  --pagehead-weight: 700;
-  --pagehead-track: -.03em;
-  --prodhead-size: var(--fs-h3);
+  --pagehead-weight: 500;
+  --pagehead-track: -.02em;
+  --prodhead-size: var(--fs-h1);
   --prodhead-lead: 1.2;
-  --prodhead-weight: 600;
-  --prodhead-track: -.025em;
-  --byline-size: var(--fs-sm);
+  --prodhead-weight: 500;
+  --prodhead-track: -.01em;
+  --price-size: var(--fs-h2);
+  --price-lead: 1.15;
+  --price-weight: 500;
+  --price-track: -.01em;
+  --byline-size: var(--fs-base);
   --byline-lead: 1.4;
-  --byline-weight: 600;
+  --byline-weight: 400;
   --byline-track: 0;
+  --maker-size: var(--fs-sm);
+  --maker-lead: 1.4;
+  --maker-weight: 400;
+  --maker-track: 0;
+  --cardname-size: var(--fs-base);
+  --cardname-lead: 1.45;
+  --cardname-weight: 500;
+  --cardname-track: 0;
+  --cardprice-size: var(--fs-base);
+  --cardprice-lead: 1.45;
+  --cardprice-weight: 500;
+  --cardprice-track: 0;
+  --cardbtn-size: max(1rem, var(--fs-sm));
+  --cardbtn-lead: 1.25;
+  --cardbtn-weight: 500;
+  --cardbtn-track: 0;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
-  --h2-weight: 600;
-  --h2-track: -.025em;
+  --h2-weight: 500;
+  --h2-track: -.01em;
   --h3-size: var(--fs-h3);
   --h3-lead: 1.2;
-  --h3-weight: 600;
-  --h3-track: -.02em;
+  --h3-weight: 500;
+  --h3-track: -.01em;
+  --parthead-size: clamp(1.1875rem, 1.0531rem + .38vw, 1.3125rem);
+  --parthead-lead: 1.3;
+  --parthead-weight: 500;
+  --parthead-track: 0;
+  --logo-size: clamp(1.1875rem, 1.0531rem + .38vw, 1.3125rem);
+  --logo-lead: 1.2;
+  --logo-weight: 700;
+  --logo-track: -.02em;
+  --panehead-size: var(--fs-h3);
+  --panehead-lead: 1.2;
+  --panehead-weight: 500;
+  --panehead-track: -.01em;
   --intro-lead: 1.4;
   --intro-weight: 400;
   --intro-track: 0;
@@ -659,11 +951,24 @@
   --lede-weight: 400;
   --lede-track: 0;
   --lede-measure: var(--measure-lede);
+  --menu-size: max(1rem, var(--fs-sm));
+  --menu-lead: 1.45;
+  --menu-weight: 500;
+  --menu-track: 0;
+  --label-size: var(--fs-sm);
+  --label-lead: 1.25;
+  --label-weight: 500;
+  --label-track: 0;
   --body-size: var(--fs-base);
   --body-lead: 1.45;
   --body-weight: 400;
   --body-track: 0;
   --body-measure: var(--measure);
+  --blurb-size: var(--fs-sm);
+  --blurb-lead: 1.5;
+  --blurb-weight: 400;
+  --blurb-track: 0;
+  --blurb-measure: var(--measure);
   --note-size: var(--fs-xs);
   --note-lead: 1.45;
   --note-weight: 400;
@@ -671,23 +976,25 @@
   --note-measure: var(--measure-note);
   --eyebrow-size: var(--fs-xs);
   --eyebrow-lead: 1.35;
-  --eyebrow-weight: 600;
+  --eyebrow-weight: 500;
   --eyebrow-track: .01em;
 }
 
-@media (pointer:coarse){ [data-scale="Плотный"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px } }
+@media (pointer:coarse){ [data-scale="Плотный"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px } }
+[data-scale="Плотный"] :where([data-pointer='coarse']){ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px }
 
 [data-scale="Воздушный"]{
-  --fs-xs: clamp(.7813rem, .68rem + .29vw, .875rem); /* подпись, надзаголовок */
-  --fs-sm: clamp(.875rem, .7406rem + .38vw, 1rem); /* надпись органа, вторичный текст */
+  --fs-xs: .75rem;                                 /* подпись, надзаголовок */
+  --fs-sm: .875rem;                                /* надпись органа, вторичный текст */
   --fs-base: clamp(1rem, .8656rem + .38vw, 1.125rem); /* тело */
-  --fs-h3: clamp(1.4375rem, .8988rem + 1.54vw, 1.9375rem); /* подзаголовок */
-  --fs-h2: clamp(1.5938rem, .7863rem + 2.31vw, 2.3438rem); /* заголовок раздела */
-  --hero-max: 3.5rem;
+  --fs-h3: clamp(1.1875rem, .9856rem + .58vw, 1.375rem); /* подзаголовок */
+  --fs-h2: clamp(1.5rem, 1.2306rem + .77vw, 1.75rem); /* заголовок раздела и полки */
+  --fs-h1: clamp(1.6875rem, 1.0819rem + 1.73vw, 2.25rem); /* имя страницы и товара */
+  --hero-max: 3.375rem;
   --hero-base: .25rem;
-  --hero-slope: 8;
-  --hero-size: clamp(1.625rem, .25rem + 8cqi, 3.5rem); /* герой: мерит свою колонку */
-  --pagehead-size: clamp(2rem, .75rem + 5.5cqi, 3rem); /* заголовок: мерит свою колонку */
+  --hero-slope: 7.1;
+  --hero-size: clamp(2rem, min(.25rem + 7.1cqi, 7.5svh), 3.375rem); /* герой: мерит свою колонку и не выше 7.5 % окна (И660) */
+  --pagehead-size: clamp(2.375rem, .875rem + 6.5cqi, 3.375rem); /* заголовок: мерит свою колонку */
   --intro-min: 1.125rem;
   --intro-max: 1.3125rem;
   --intro-base: .125rem;
@@ -715,26 +1022,30 @@
   --air-row: var(--sp-4);                          /* между строками одной группы */
   --air-set: var(--sp-3);                          /* между наборами внутри одной строки: группы опций выбора */
   --air-line: var(--sp-3);                         /* между строками одной мысли: имя товара → описание (И509) */
+  --air-tight: var(--sp-2);                        /* подзаголовок части → её текст внутри одного описания (И581) */
   --gap-targets: 8px;                              /* между соседними целями в ряду */
   --gap-row: clamp(12px, 9.85px + .38vw, 14px);    /* между вещами в ряду: фишки, пилюли, крошки */
   --gap-grid: clamp(16px, 11.69px + .77vw, 20px);  /* между карточками в сетке и в ленте */
   --wrap: 1440px;                                  /* холст: ширина коробки страницы */
   --gut: clamp(16px, 3.08px + 2.31vw, 28px);       /* край страницы: от окна до предмета — ступени 4 → 5 */
-  --ctrl-fs-xs: .875rem;                           /* надпись органа — не течёт */
-  --ctrl-fs-sm: 1rem;                              /* надпись органа — не течёт */
+  --ctrl-fs-xs: .75rem;                            /* надпись органа — не течёт */
+  --ctrl-fs-sm: .875rem;                           /* надпись органа — не течёт */
   --ctrl-fs-base: 1.125rem;                        /* надпись органа — не течёт */
-  --ctrl-fs-h3: 1.9375rem;                         /* надпись органа — не течёт */
-  --ctrl-fs-h2: 2.3438rem;                         /* надпись органа — не течёт */
+  --ctrl-fs-h3: 1.375rem;                          /* надпись органа — не течёт */
+  --ctrl-fs-h2: 1.75rem;                           /* надпись органа — не течёт */
   --ctrl-h-sm: 32px;                               /* орган малый: фишка, сегмент */
   --ctrl-h: 40px;                                  /* орган средний: кнопка, поле, лоток — текущий размер */
   --ctrl-h-lg: 48px;                               /* орган крупный: кнопка покупки, счётчик, строка меню */
   --ctrl-target: 24px;                             /* цель у знака мельче органа (WCAG 2.5.8) */
+  --ctrl-face: 32px;                               /* рисунок малого органа с целью наружу — под пальцем не растёт */
+  --ctrl-face-md: 40px;                            /* рисунок кнопки в тесной ячейке (карточка полки) — под пальцем не растёт */
   --ctrl-fs: var(--ctrl-fs-sm);                    /* надпись текущего размера */
   --r-xs: 8px;                                     /* радиус: xs */
   --r-ctrl: 8px;                                   /* радиус: ctrl */
   --r-card: 24px;                                  /* радиус: card */
   --r-sheet: 28px;                                 /* радиус: sheet */
   --r-pop: 999px;                                  /* главное действие — единственный полный круг */
+  --r-btn: var(--r-ctrl);                          /* угол кнопки — угол контрола; Corners → Pill — полный круг */
   --line-w: 1px;                                   /* линия: поле, разделитель, тег — не течёт */
   --ring-w: 2px;                                   /* кольцо фокуса (WCAG 2.4.13) */
   --ring-off: 3px;                                 /* отступ кольца от органа */
@@ -742,27 +1053,59 @@
   --frost-sat: 1.8;                                /* стекло: насыщенность размытого */
 
   --hero-lead: 1.1;
-  --hero-weight: 700;
-  --hero-track: -.04em;
+  --hero-weight: 500;
+  --hero-track: -.02em;
   --pagehead-lead: 1.1;
-  --pagehead-weight: 700;
-  --pagehead-track: -.03em;
-  --prodhead-size: var(--fs-h3);
+  --pagehead-weight: 500;
+  --pagehead-track: -.02em;
+  --prodhead-size: var(--fs-h1);
   --prodhead-lead: 1.2;
-  --prodhead-weight: 600;
-  --prodhead-track: -.025em;
-  --byline-size: var(--fs-sm);
+  --prodhead-weight: 500;
+  --prodhead-track: -.01em;
+  --price-size: var(--fs-h2);
+  --price-lead: 1.15;
+  --price-weight: 500;
+  --price-track: -.01em;
+  --byline-size: var(--fs-base);
   --byline-lead: 1.4;
-  --byline-weight: 600;
+  --byline-weight: 400;
   --byline-track: 0;
+  --maker-size: var(--fs-sm);
+  --maker-lead: 1.4;
+  --maker-weight: 400;
+  --maker-track: 0;
+  --cardname-size: var(--fs-base);
+  --cardname-lead: 1.45;
+  --cardname-weight: 500;
+  --cardname-track: 0;
+  --cardprice-size: var(--fs-base);
+  --cardprice-lead: 1.45;
+  --cardprice-weight: 500;
+  --cardprice-track: 0;
+  --cardbtn-size: max(1rem, var(--fs-sm));
+  --cardbtn-lead: 1.25;
+  --cardbtn-weight: 500;
+  --cardbtn-track: 0;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
-  --h2-weight: 600;
-  --h2-track: -.025em;
+  --h2-weight: 500;
+  --h2-track: -.01em;
   --h3-size: var(--fs-h3);
   --h3-lead: 1.2;
-  --h3-weight: 600;
-  --h3-track: -.02em;
+  --h3-weight: 500;
+  --h3-track: -.01em;
+  --parthead-size: clamp(1.1875rem, 1.0531rem + .38vw, 1.3125rem);
+  --parthead-lead: 1.3;
+  --parthead-weight: 500;
+  --parthead-track: 0;
+  --logo-size: clamp(1.1875rem, 1.0531rem + .38vw, 1.3125rem);
+  --logo-lead: 1.2;
+  --logo-weight: 700;
+  --logo-track: -.02em;
+  --panehead-size: var(--fs-h3);
+  --panehead-lead: 1.2;
+  --panehead-weight: 500;
+  --panehead-track: -.01em;
   --intro-lead: 1.4;
   --intro-weight: 400;
   --intro-track: 0;
@@ -771,11 +1114,24 @@
   --lede-weight: 400;
   --lede-track: 0;
   --lede-measure: var(--measure-lede);
+  --menu-size: max(1rem, var(--fs-sm));
+  --menu-lead: 1.45;
+  --menu-weight: 500;
+  --menu-track: 0;
+  --label-size: var(--fs-sm);
+  --label-lead: 1.25;
+  --label-weight: 500;
+  --label-track: 0;
   --body-size: var(--fs-base);
   --body-lead: 1.45;
   --body-weight: 400;
   --body-track: 0;
   --body-measure: var(--measure);
+  --blurb-size: var(--fs-sm);
+  --blurb-lead: 1.5;
+  --blurb-weight: 400;
+  --blurb-track: 0;
+  --blurb-measure: var(--measure);
   --note-size: var(--fs-xs);
   --note-lead: 1.45;
   --note-weight: 400;
@@ -783,23 +1139,25 @@
   --note-measure: var(--measure-note);
   --eyebrow-size: var(--fs-xs);
   --eyebrow-lead: 1.35;
-  --eyebrow-weight: 600;
+  --eyebrow-weight: 500;
   --eyebrow-track: .01em;
 }
 
-@media (pointer:coarse){ [data-scale="Воздушный"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px } }
+@media (pointer:coarse){ [data-scale="Воздушный"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px } }
+[data-scale="Воздушный"] :where([data-pointer='coarse']){ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px }
 
 [data-scale="Галерея"]{
-  --fs-xs: clamp(.7813rem, .68rem + .29vw, .875rem); /* подпись, надзаголовок */
-  --fs-sm: clamp(.875rem, .7406rem + .38vw, 1rem); /* надпись органа, вторичный текст */
+  --fs-xs: .75rem;                                 /* подпись, надзаголовок */
+  --fs-sm: .875rem;                                /* надпись органа, вторичный текст */
   --fs-base: clamp(1rem, .8656rem + .38vw, 1.125rem); /* тело */
-  --fs-h3: clamp(1.4375rem, .8988rem + 1.54vw, 1.9375rem); /* подзаголовок */
-  --fs-h2: clamp(1.5938rem, .7863rem + 2.31vw, 2.3438rem); /* заголовок раздела */
-  --hero-max: 3.5rem;
+  --fs-h3: clamp(1.1875rem, .9856rem + .58vw, 1.375rem); /* подзаголовок */
+  --fs-h2: clamp(1.5rem, 1.2306rem + .77vw, 1.75rem); /* заголовок раздела и полки */
+  --fs-h1: clamp(1.6875rem, 1.0819rem + 1.73vw, 2.25rem); /* имя страницы и товара */
+  --hero-max: 3.375rem;
   --hero-base: .25rem;
-  --hero-slope: 8;
-  --hero-size: clamp(1.625rem, .25rem + 8cqi, 3.5rem); /* герой: мерит свою колонку */
-  --pagehead-size: clamp(2rem, .75rem + 5.5cqi, 3rem); /* заголовок: мерит свою колонку */
+  --hero-slope: 7.1;
+  --hero-size: clamp(2rem, min(.25rem + 7.1cqi, 7.5svh), 3.375rem); /* герой: мерит свою колонку и не выше 7.5 % окна (И660) */
+  --pagehead-size: clamp(2.375rem, .875rem + 6.5cqi, 3.375rem); /* заголовок: мерит свою колонку */
   --intro-min: 1.125rem;
   --intro-max: 1.3125rem;
   --intro-base: .125rem;
@@ -827,26 +1185,30 @@
   --air-row: var(--sp-5);                          /* между строками одной группы */
   --air-set: var(--sp-4);                          /* между наборами внутри одной строки: группы опций выбора */
   --air-line: var(--sp-4);                         /* между строками одной мысли: имя товара → описание (И509) */
+  --air-tight: var(--sp-2);                        /* подзаголовок части → её текст внутри одного описания (И581) */
   --gap-targets: 8px;                              /* между соседними целями в ряду */
   --gap-row: clamp(12px, 9.85px + .38vw, 14px);    /* между вещами в ряду: фишки, пилюли, крошки */
   --gap-grid: clamp(24px, 19.69px + .77vw, 28px);  /* между карточками в сетке и в ленте */
   --wrap: 1440px;                                  /* холст: ширина коробки страницы */
   --gut: clamp(24px, 2.46px + 3.85vw, 44px);       /* край страницы: от окна до предмета — ступени 5 → 7 */
-  --ctrl-fs-xs: .875rem;                           /* надпись органа — не течёт */
-  --ctrl-fs-sm: 1rem;                              /* надпись органа — не течёт */
+  --ctrl-fs-xs: .75rem;                            /* надпись органа — не течёт */
+  --ctrl-fs-sm: .875rem;                           /* надпись органа — не течёт */
   --ctrl-fs-base: 1.125rem;                        /* надпись органа — не течёт */
-  --ctrl-fs-h3: 1.9375rem;                         /* надпись органа — не течёт */
-  --ctrl-fs-h2: 2.3438rem;                         /* надпись органа — не течёт */
+  --ctrl-fs-h3: 1.375rem;                          /* надпись органа — не течёт */
+  --ctrl-fs-h2: 1.75rem;                           /* надпись органа — не течёт */
   --ctrl-h-sm: 32px;                               /* орган малый: фишка, сегмент */
   --ctrl-h: 40px;                                  /* орган средний: кнопка, поле, лоток — текущий размер */
   --ctrl-h-lg: 48px;                               /* орган крупный: кнопка покупки, счётчик, строка меню */
   --ctrl-target: 24px;                             /* цель у знака мельче органа (WCAG 2.5.8) */
+  --ctrl-face: 32px;                               /* рисунок малого органа с целью наружу — под пальцем не растёт */
+  --ctrl-face-md: 40px;                            /* рисунок кнопки в тесной ячейке (карточка полки) — под пальцем не растёт */
   --ctrl-fs: var(--ctrl-fs-sm);                    /* надпись текущего размера */
   --r-xs: 8px;                                     /* радиус: xs */
   --r-ctrl: 8px;                                   /* радиус: ctrl */
   --r-card: 24px;                                  /* радиус: card */
   --r-sheet: 28px;                                 /* радиус: sheet */
   --r-pop: 999px;                                  /* главное действие — единственный полный круг */
+  --r-btn: var(--r-ctrl);                          /* угол кнопки — угол контрола; Corners → Pill — полный круг */
   --line-w: 1px;                                   /* линия: поле, разделитель, тег — не течёт */
   --ring-w: 2px;                                   /* кольцо фокуса (WCAG 2.4.13) */
   --ring-off: 3px;                                 /* отступ кольца от органа */
@@ -854,27 +1216,59 @@
   --frost-sat: 1.8;                                /* стекло: насыщенность размытого */
 
   --hero-lead: 1.1;
-  --hero-weight: 700;
-  --hero-track: -.04em;
+  --hero-weight: 500;
+  --hero-track: -.02em;
   --pagehead-lead: 1.1;
-  --pagehead-weight: 700;
-  --pagehead-track: -.03em;
-  --prodhead-size: var(--fs-h3);
+  --pagehead-weight: 500;
+  --pagehead-track: -.02em;
+  --prodhead-size: var(--fs-h1);
   --prodhead-lead: 1.2;
-  --prodhead-weight: 600;
-  --prodhead-track: -.025em;
-  --byline-size: var(--fs-sm);
+  --prodhead-weight: 500;
+  --prodhead-track: -.01em;
+  --price-size: var(--fs-h2);
+  --price-lead: 1.15;
+  --price-weight: 500;
+  --price-track: -.01em;
+  --byline-size: var(--fs-base);
   --byline-lead: 1.4;
-  --byline-weight: 600;
+  --byline-weight: 400;
   --byline-track: 0;
+  --maker-size: var(--fs-sm);
+  --maker-lead: 1.4;
+  --maker-weight: 400;
+  --maker-track: 0;
+  --cardname-size: var(--fs-base);
+  --cardname-lead: 1.45;
+  --cardname-weight: 500;
+  --cardname-track: 0;
+  --cardprice-size: var(--fs-base);
+  --cardprice-lead: 1.45;
+  --cardprice-weight: 500;
+  --cardprice-track: 0;
+  --cardbtn-size: max(1rem, var(--fs-sm));
+  --cardbtn-lead: 1.25;
+  --cardbtn-weight: 500;
+  --cardbtn-track: 0;
   --h2-size: var(--fs-h2);
   --h2-lead: 1.15;
-  --h2-weight: 600;
-  --h2-track: -.025em;
+  --h2-weight: 500;
+  --h2-track: -.01em;
   --h3-size: var(--fs-h3);
   --h3-lead: 1.2;
-  --h3-weight: 600;
-  --h3-track: -.02em;
+  --h3-weight: 500;
+  --h3-track: -.01em;
+  --parthead-size: clamp(1.1875rem, 1.0531rem + .38vw, 1.3125rem);
+  --parthead-lead: 1.3;
+  --parthead-weight: 500;
+  --parthead-track: 0;
+  --logo-size: clamp(1.1875rem, 1.0531rem + .38vw, 1.3125rem);
+  --logo-lead: 1.2;
+  --logo-weight: 700;
+  --logo-track: -.02em;
+  --panehead-size: var(--fs-h3);
+  --panehead-lead: 1.2;
+  --panehead-weight: 500;
+  --panehead-track: -.01em;
   --intro-lead: 1.4;
   --intro-weight: 400;
   --intro-track: 0;
@@ -883,11 +1277,24 @@
   --lede-weight: 400;
   --lede-track: 0;
   --lede-measure: var(--measure-lede);
+  --menu-size: max(1rem, var(--fs-sm));
+  --menu-lead: 1.45;
+  --menu-weight: 500;
+  --menu-track: 0;
+  --label-size: var(--fs-sm);
+  --label-lead: 1.25;
+  --label-weight: 500;
+  --label-track: 0;
   --body-size: var(--fs-base);
   --body-lead: 1.45;
   --body-weight: 400;
   --body-track: 0;
   --body-measure: var(--measure);
+  --blurb-size: var(--fs-sm);
+  --blurb-lead: 1.5;
+  --blurb-weight: 400;
+  --blurb-track: 0;
+  --blurb-measure: var(--measure);
   --note-size: var(--fs-xs);
   --note-lead: 1.45;
   --note-weight: 400;
@@ -895,8 +1302,9 @@
   --note-measure: var(--measure-note);
   --eyebrow-size: var(--fs-xs);
   --eyebrow-lead: 1.35;
-  --eyebrow-weight: 600;
+  --eyebrow-weight: 500;
   --eyebrow-track: .01em;
 }
 
-@media (pointer:coarse){ [data-scale="Галерея"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px } }
+@media (pointer:coarse){ [data-scale="Галерея"]{ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px } }
+[data-scale="Галерея"] :where([data-pointer='coarse']){ --gap-targets:16px; --ctrl-h-sm:44px; --ctrl-h:48px; --ctrl-h-lg:56px; --ctrl-target:44px; --ctrl-face:32px; --ctrl-face-md:40px }

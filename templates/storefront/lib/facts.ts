@@ -37,12 +37,17 @@ function nums(lang: Lang, xs: number[]): string {
 }
 const span = (lang: Lang, xs: number[], unit: string): string | null => (xs.length ? `${nums(lang, xs)}${BIND}${unit}` : null)
 
-/** Строка фактов карточки: «10 % · 10 ml · 1 000 mg», «30 × 25 mg»,
- *  «500 mg · 50 ml». Порядок — по тому, чем товар продаётся (`strength`):
- *  концентрацией — процент первым, содержанием — мг первыми; у штучного —
- *  доза штуки. Всего мг у товара с разными упаковками не печатается: это
- *  был бы диапазон, который сравнивать нельзя. Не из чего собрать — null. */
-export function factsLine(lang: Lang, card: Pick<Card, 'strength' | 'packs'>): string | null {
+/** Строка фактов карточки: «1000 mg · 10 ml», «30 × 25 mg», «500 mg · 50 ml»;
+ *  у штучного — доза штуки. Всего мг у товара с разными упаковками не
+ *  печатается: это был бы диапазон, который сравнивать нельзя. Не из чего
+ *  собрать — null.
+ *  Процента в фактах нет нигде — ни на карточке, ни на странице товара:
+ *  он уже стоит в имени товара («10% CBD Oil»), и вторым разом строка
+ *  повторяла имя (слово заказчика 30.09.2026: «в названии уже написано
+ *  10%, потому в параметрах процент писать не нужно никогда… удаляй
+ *  отовсюду проценты из параметров, в названии оставляй»). Процент
+ *  остаётся гранью фильтра — там им выбирают, а не читают (`percentOf`). */
+export function factsLine(lang: Lang, card: Pick<Card, 'packs'>): string | null {
   const { packs } = card
   if (!packs.length || new Set(packs.map((p) => p.unit)).size !== 1) return null
   const unit = packs[0].unit
@@ -53,8 +58,6 @@ export function factsLine(lang: Lang, card: Pick<Card, 'strength' | 'packs'>): s
     /* «30 × 25 mg» — штук и доза одной; дозы разные — только счёт штук. */
     const each = distinct(packs.map(eachOf))
     parts = [each.length === 1 ? `${nums(lang, sizes)}${BIND}×${BIND}${span(lang, each, 'mg')}` : span(lang, sizes, t(lang, 'shelf.pcs'))]
-  } else if (card.strength === 'percent') {
-    parts = [span(lang, distinct(packs.map(percentOf)), '%'), span(lang, sizes, unit), mg.length === 1 ? span(lang, mg, 'mg') : null]
   } else {
     parts = [mg.length === 1 ? span(lang, mg, 'mg') : null, span(lang, sizes, unit)]
   }
@@ -102,4 +105,31 @@ export function packFacts(lang: Lang, pack: Pack | null, strength: Strength, pri
   }
   rows.push({ value: moneyPer(price, pack.mg, lang), label: t(lang, 'facts.perMg'), note: null })
   return { label: t(lang, 'facts.label'), rows }
+}
+
+/** Числа карточки порознь — для подачи фактов фишками, строками и цифрами с
+ *  подписями (образцы на странице дизайн-системы, вкладка «Карточки»; слово
+ *  заказчика 30.09.2026: «та же карточка, просто с другими вариантами
+ *  оформления информации»). Та же арифметика, что у строки фактов и поля
+ *  параметров: упаковка стандартного варианта, иначе единственная; у товара
+ *  с разными упаковками чисел порознь нет — это были бы диапазоны.
+ *  `dose` — мг в приёме: в капле у масла, в штуке у капсул, иначе в 1 мл или
+ *  1 г. Нет мг — только мера. Процента нет — он в имени (`factsLine`).
+ *  `per` — на что доза (капля, штука, мл, г): по нему плашка ставит знак
+ *  капли (слово заказчика 30.09.2026: «в плашку 5 mg добавь каплю, чтоб
+ *  было понятно, что 5 mg в капле»). */
+export type CardFigure = { key: 'total' | 'size' | 'dose'; value: string; label: string; per?: 'drop' | 'piece' | 'ml' | 'g' }
+export function cardFigures(lang: Lang, card: Pick<Card, 'strength' | 'packs' | 'pick'>): CardFigure[] {
+  const pack = card.pick?.pack ?? (card.packs.length === 1 ? card.packs[0] : null)
+  if (!pack) return []
+  const out: CardFigure[] = []
+  if (pack.mg) out.push({ key: 'total', value: mg(lang, pack.mg), label: t(lang, 'facts.total') })
+  out.push({ key: 'size', value: `${num(lang, pack.size)}${BIND}${pack.unit === 'pcs' ? t(lang, 'shelf.pcs') : pack.unit}`, label: t(lang, 'facts.pack') })
+  if (pack.mg && pack.size) {
+    const each = pack.mg / pack.size
+    const drop = pack.unit === 'ml' && card.strength === 'percent'
+    const per = drop ? 'drop' : pack.unit === 'pcs' ? 'piece' : pack.unit
+    out.push({ key: 'dose', per, value: mg(lang, drop ? each * DROP_ML : each), label: t(lang, drop ? 'facts.perDrop' : pack.unit === 'pcs' ? 'facts.perPiece' : pack.unit === 'ml' ? 'facts.perMl' : 'facts.perG') })
+  }
+  return out
 }

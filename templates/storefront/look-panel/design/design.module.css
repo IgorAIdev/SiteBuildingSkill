@@ -1,0 +1,240 @@
+/* Страница набора (DesignPage.tsx) — раскладка примитивами и роли сайта;
+   своего здесь только место образца. Замер — docs/design/дизайн-система.md:
+   образец заказчика cbdin.bg/bg/design держит вкладки строкой под именем
+   страницы, образец и подпись — одной строкой, плитки — сеткой. */
+
+/* Роли текста самой страницы — одни на все её модули (слово заказчика
+   01.10.2026: «веди дизайн-систему по дизайн-системе»; было — имя образца
+   то 18, то 16 px, жирность 600 и 700, код то 14, то 17). Имя образца —
+   тело 600; описание образца — `.note` (примитив); код — размер сноски. */
+.page{container-type:inline-size;--name-size:var(--body-size);--name-lead:var(--body-lead);--name-weight:600;--cap-size:var(--note-size);--cap-lead:var(--note-lead);--cap-weight:400;--code-size:var(--note-size);--ex-gap:var(--air-line);--ex-desc:var(--air-line)}
+/* Ритм образца — один на все вкладки: имя → образец → описание и строки самого
+   описания стоят на воздухе линии (`--ex-gap`, `--ex-desc`) — имя ближе к
+   своему образцу, чем к тому, что над ним (близость группирует); перед первым
+   образцом — воздух строки, между образцами — зазор сетки/ленты (`--gap-grid`). Было: в
+   «Карточках» 4 и 8 px, в «Плашках» 16, между плашками 70 (слово заказчика
+   01.10.2026). */
+.page > * + *{margin-block-start:var(--air-block)}
+
+/* Вкладки — ряд ссылок под именем страницы, текущая — чертой марки снизу,
+   как текущая полка шапки. Тесно — ряд листается, а не ломается. */
+.tabs{
+  display:flex;gap:var(--air-group);overflow-x:auto;scrollbar-width:none;
+  border-block-end:var(--line-w) solid var(--rule)
+}
+.tabs a{
+  display:inline-flex;align-items:center;min-block-size:var(--ctrl-h);flex:none;
+  font-size:var(--ctrl-fs-base);font-weight:600;color:var(--ink-soft);text-decoration:none;
+  box-shadow:inset 0 calc(var(--ring-w) * -1) 0 transparent;
+  transition:color var(--hover-t) var(--ease),box-shadow var(--hover-t) var(--ease)
+}
+@media (hover:hover){ .tabs a:hover{color:var(--ink)} }
+.tabs a[aria-current='page']{color:var(--ink);box-shadow:inset 0 calc(var(--ring-w) * -1) 0 var(--pop)}
+.tabs a:focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:var(--ring-off)}
+/* Вкладка-настройка помечена в самом меню (И571): где выбирается вид, видно
+   до того, как вкладку открыли. */
+.tabs a{gap:var(--sp-2)}
+.tabMark{padding:0 var(--sp-2);border-radius:var(--r-xs);background:var(--pop-tint);color:var(--pop-ink);font-size:var(--fs-xs);font-weight:600;line-height:1.6}
+
+.subtabs{display:flex;gap:var(--sp-2);flex-wrap:wrap}
+.subtabs :is(a, button){display:inline-flex;align-items:center;min-block-size:var(--ctrl-h);padding-inline:calc(var(--ctrl-h) * .45);border-radius:var(--r-pop);font-size:var(--ctrl-fs-base);font-weight:600;color:var(--ink-soft);text-decoration:none;box-shadow:inset 0 0 0 var(--line-w) var(--rule);transition:color var(--hover-t) var(--ease),background-color var(--hover-t) var(--ease)}
+.subtabs button{border:0;background:none;font-family:inherit;line-height:inherit;cursor:pointer}
+@media (hover:hover){ .subtabs :is(a, button):hover{color:var(--ink)} }
+.subtabs :is(a[aria-current='page'], button[aria-pressed='true']){color:var(--pop-ink);background:var(--pop-tint);box-shadow:none}
+.subtabs :is(a, button):focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:var(--ring-off)}
+
+/* Раздел — шапка и содержимое одним ритмом, прямо на полу страницы, без
+   белой плиты (слово заказчика 01.10.2026: «откуда белый фон и нахуй он
+   нужен? убирай»; плита раздела появилась в тот же день от слов «приведи
+   дизайн-систему к дизайн-системе» и только мешала). Подзаголовок раздела —
+   роль h3 (на шаг меньше заголовка страницы), описание — роль текста сайта. */
+.part{display:grid;gap:var(--air-row);color:var(--ink)}
+.part + .part,.subtabs + .part,.tabs + .part{margin-block-start:var(--air-group)}
+.part > :is(div,header){margin:0}
+.part > [class*='sectionHead'] h2{font-size:var(--h3-size);line-height:var(--h3-lead);font-weight:var(--h3-weight);letter-spacing:var(--h3-track)}
+.part > [class*='sectionHead'] p{font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--body-weight);letter-spacing:var(--body-track)}
+.part > [class*='sectionHead']{gap:var(--air-line);margin:0}
+/* Секция сайта, поставленная образцом, стоит на левой линии раздела и без
+   своего верхнего воздуха: коробка страницы («страница минус края» по центру)
+   и воздух между разделами страницы — дело страницы, а не образца. Ручка
+   воздуха у секции своя и вниз не наследуется (И520), поэтому нулится на
+   самой секции. */
+.part section[class*='__lede']{--lede-air:0px}
+.part section:is([class*='__wrap'],[class*='__section']){--section-air:0px;--page-box:100%;--page-line:0px;margin-inline:0}
+.group + .group{margin-block-start:var(--air-group)}
+/* Группа внутри раздела — на ступень ниже заголовка раздела (было — тот же
+   размер, что у «Роли», и «Поверхности» читалась равной ему): подпись
+   образца, роль текста сайта, 600 — как имя образца в `tiles.module.css`. */
+.group h3{font-size:var(--body-size);font-weight:600;line-height:var(--body-lead);letter-spacing:var(--body-track);margin-block-end:var(--air-row)}
+
+/* Строка «образец — подпись»: образец берёт остаток, подпись — свой столбец
+   справа; тесно — подпись встаёт под образец (примитив-переключатель по
+   ширине контейнера, не окна). */
+.rows{list-style:none;padding:0;margin:0}
+.row{
+  display:flex;flex-wrap:wrap;align-items:center;gap:var(--air-row) var(--air-group);
+  padding-block:var(--air-row);border-block-end:var(--line-w) solid var(--rule)
+}
+.sample{flex:999 1 20rem;min-inline-size:0;container-type:inline-size}
+.label{flex:1 1 14rem;display:flex;flex-direction:column;gap:var(--sp-1);font-size:var(--body-size);line-height:var(--body-lead);color:var(--ink-soft)}
+.label > span:first-child{color:var(--ink);font-size:var(--name-size);line-height:var(--name-lead);font-weight:var(--name-weight)}
+.label code,.tile code,.steps code,.icon code{font-size:var(--code-size);color:var(--ink-soft);overflow-wrap:anywhere}
+
+.face{font-family:var(--face);font-size:var(--h3-size);line-height:var(--h3-lead);margin:0}
+.face + .face{font-size:var(--body-size);color:var(--ink-soft);margin-block-start:var(--sp-2)}
+.type{font-size:var(--ts);font-weight:var(--tw);line-height:var(--tl);letter-spacing:var(--tt);margin:0}
+
+/* Ступень — полосой своей длины, рост органа — столбиком своей высоты. */
+.bar{display:block;inline-size:var(--x);block-size:var(--sp-3);border-radius:var(--r-xs);background:var(--pop)}
+.tall{display:block;block-size:var(--x);inline-size:calc(var(--x) * 2.5);border-radius:var(--r-ctrl);background:var(--ctrl);box-shadow:inset 0 0 0 var(--line-w) var(--rule)}
+.clock{display:block;inline-size:var(--sp-4);block-size:var(--sp-4);border-radius:var(--r-pop);background:var(--pop);transition:transform var(--x) var(--ease)}
+.row:hover .clock{transform:translateX(var(--sp-8))}
+
+/* Плитки — сеткой, число колонок считает ширина (правило 5). */
+.tiles{--cols:6;--cols-min:2;--cell-min:160px;--grid-gap:var(--gap-grid);list-style:none;padding:0;margin:0}
+.tiles + .tiles{margin-block-start:var(--air-group)}
+.tile{
+  display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--pad-inner);
+  border-radius:var(--r-card);background:var(--plate);color:var(--on-plate);box-shadow:var(--sh-raised);font-size:var(--note-size);line-height:var(--note-lead)
+}
+.tile > span:nth-child(2){font-size:var(--name-size);line-height:var(--name-lead);font-weight:var(--name-weight)}
+.corner{display:block;block-size:calc(var(--ctrl-h) * 1.6);border-radius:var(--x) 0 0 0;border:var(--ring-w) solid var(--pop);border-width:var(--ring-w) 0 0 var(--ring-w);margin-block-end:var(--sp-2)}
+.shadow{display:block;block-size:calc(var(--ctrl-h) * 1.6);border-radius:var(--r-ctrl);background:var(--plate);box-shadow:var(--x);margin:var(--sp-2) var(--sp-2) var(--sp-4)}
+.swatch{display:block;block-size:calc(var(--ctrl-h) * 1.4);border-radius:var(--r-ctrl);background:var(--x);box-shadow:inset 0 0 0 var(--line-w) var(--rule);margin-block-end:var(--sp-2)}
+
+/* Ступени семьи — полосой: двенадцать в ряд на широком, тесно — переносом. */
+.steps{--cols:12;--cols-min:3;--cell-min:72px;--grid-gap:var(--sp-2);list-style:none;padding:0;margin:0}
+.steps li{display:flex;flex-direction:column;gap:var(--sp-1)}
+.chipColor{display:block;block-size:calc(var(--ctrl-h) * 1.2);border-radius:var(--r-xs);background:var(--x);box-shadow:inset 0 0 0 var(--line-w) var(--rule)}
+
+.floors{--cols:3;--cols-min:1;--cell-min:260px;--grid-gap:var(--gap-grid)}
+.floor{display:flex;flex-direction:column;align-items:flex-start;gap:var(--air-row);padding:var(--pad-card);border-radius:var(--r-card);background:var(--page);color:var(--ink);box-shadow:inset 0 0 0 var(--line-w) var(--rule)}
+.floor[data-plate]{background:var(--plate);color:var(--on-plate);box-shadow:var(--sh-raised)}
+.floor[data-ground='deck']{background:var(--page-deck);color:var(--ink)}
+.floorName{font-size:var(--h3-size);font-weight:var(--h3-weight);line-height:var(--h3-lead);margin:0}
+.floor .rule{align-self:stretch;border:0;border-block-start:var(--line-w) solid var(--rule);margin:0}
+.stretch{align-self:stretch}
+
+/* Знаки — плиткой: крупный рост кнопки и мелкий рост строки рядом. */
+/* Ширина плитки — от имени знака, а не числом: самое длинное («mastercard»,
+   «shopping-cart») — десять-тринадцать знаков кода; при 112px оно рвалось
+   «mastercar | d» на экране заказчика (01.10.2026). */
+.icons{--cols:10;--cols-min:3;--cell-min:calc(var(--code-size) * 9 + var(--pad-inner) * 2);--grid-gap:var(--gap-grid);list-style:none;padding:0;margin:0}
+.icon{display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);padding:var(--pad-inner);border-radius:var(--r-card);background:var(--plate);color:var(--on-plate);box-shadow:var(--sh-raised)}
+.iconName{font-size:var(--cap-size);line-height:var(--cap-lead);font-weight:var(--cap-weight);text-align:center}
+.iconPair{display:flex;align-items:center;gap:var(--sp-3);block-size:var(--ctrl-h)}
+.iconPair svg{inline-size:calc(var(--ctrl-h) * .6);block-size:calc(var(--ctrl-h) * .6)}
+/* Знак в своей краске — роль палитры (`--x`); знак линией, который в этом
+   виде залит (отмеченное сердце), — заливкой той же краской. */
+.tinted{color:var(--x)}
+.tinted[data-fill]{--sign-fill:currentColor}
+.iconPair svg.small{inline-size:1em;block-size:1em}
+/* Неквадратному знаку Icon ставит окно (`viewBox`, Icon.tsx) — ширина идёт
+   от его пропорции, Visa не сплющивается в квадрат (И627). */
+.iconPair svg[viewBox]{inline-size:auto}
+
+.pay{list-style:none;padding:0;margin:0;--cluster:var(--sp-2)}
+/* Стили кнопки каталога — плитками, как знаки: кнопка, имя, что это, ключ.
+   Ширина плитки — от самой длинной кнопки (форма с хвостом стрелки шире
+   прочих): доля роста органа, не число. */
+.btnStyles{--cols:5;--cols-min:2;--cell-min:calc(var(--ctrl-h) * 5.5);--grid-gap:var(--gap-grid);list-style:none;padding:0;margin:0}
+/* Набор со словом «View all» справа от стрелок: две плитки в ряд — Outline и Veil, ниже Fill и Gradient; пара и слово — одной строкой, не переносятся. */
+.sources{--stack:var(--air-row);list-style:none;padding:0;margin:0}
+.sources a{font-weight:600;text-decoration:underline;text-underline-offset:.2em}
+.btnStyles[data-wide]{--cols:2;--cell-min:calc(var(--ctrl-h) * 6.4)}
+.btnStyles[data-wide] .famSample{flex-wrap:nowrap}
+/* Листание под полкой (И721) — по одному образцу в строку: под полкой оно стоит во всю
+   ширину холста, а в коробке уже шва 560 номера уходят в «1 / 4» (Pagination.module.css),
+   и все три вида выглядели бы одним. */
+.btnStyles[data-row]{--cols:1;--cols-min:1}
+.btnStyle{display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);padding:var(--pad-inner);border-radius:var(--r-card);background:var(--plate);color:var(--on-plate);box-shadow:var(--sh-raised);text-align:center}
+.famSample{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:var(--sp-2);min-block-size:calc(var(--ctrl-h) * 1.6);inline-size:100%}
+/* Две кнопки одной вещи — столбиком, у каждой плитки одинаково: короткое имя
+   («Oil») иначе ложилось рядом, а длинные — друг под другом. */
+.famStack{flex-direction:column}
+/* Сердце на снимке: кадр образца и знак в его углу, как на карточке полки (ProductCard `.save`). */
+.pagerSample{inline-size:100%}
+.heartShot{position:relative;inline-size:calc(var(--ctrl-face) * 4);max-block-size:calc(var(--ctrl-face) * 4);border-radius:var(--r-card)}
+.heartShot > button{position:absolute;z-index:1;inset-block-start:var(--sp-2);inset-inline-end:var(--sp-2)}
+@container style(--save-look: bare){ .heartShot > button{inset-block-start:var(--pad-inner);inset-inline-end:var(--pad-inner)} }
+/* Образец занимает всё поле плитки и стоит в нём по центру, имя — внизу: у плиток одной строки образцы и имена на одних линиях, как бы ни был высок соседний образец. */
+.btnStyle > .famSample{flex:1}
+.btnName{font-size:var(--cap-size);line-height:var(--cap-lead);font-weight:var(--cap-weight)}
+.btnStyle code{font-size:var(--code-size);color:var(--ink-soft)}
+.form{display:grid;gap:var(--air-row);max-inline-size:var(--measure)}
+
+.theme{--btn-h:var(--ctrl-h);inline-size:var(--btn-h);padding:0}
+
+/* ── Выбор палитры (PaletteStudio.tsx, И567) ─────────────────────────── */
+.studio > * + *{margin-block-start:var(--air-group)}
+.sets{--cols:3;--cols-min:1;--cell-min:340px;--grid-gap:var(--gap-grid);list-style:none;padding:0;margin:0}
+.set{
+  display:flex;flex-direction:column;gap:var(--air-row);padding:var(--pad-inner);
+  border-radius:var(--r-card);background:var(--plate);color:var(--on-plate);box-shadow:var(--sh-raised);
+  transition:box-shadow var(--hover-t) var(--ease)
+}
+.set[data-on='true']{box-shadow:0 0 0 var(--ring-w) var(--ink),var(--sh-raised)}
+.set[aria-disabled='true'] .setSample{opacity:var(--state-off);cursor:not-allowed}
+/* Образец нажимается целиком — щелчок выбирает вариант; сами элементы в
+   нём не отвечают (`inert`). */
+.setSample{cursor:pointer}
+@media (hover:hover){ .set:not([data-on='true'], [aria-disabled='true']):has(.setSample:hover){box-shadow:var(--sh-lift)} }
+/* Имя набора — всегда сверху (слово заказчика 29.09.2026: «названия пиши
+   сверху всегда»), под ним — кусок магазина красками набора. */
+.setHead{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row)}
+.setName{font-size:var(--name-size);line-height:var(--name-lead);font-weight:var(--name-weight)}
+.setLine{font-size:var(--note-size);line-height:var(--note-lead);color:var(--on-plate-2)}
+/* Образец набора рисует ui/swatch.mjs (стили — look.css, `lp-sw-*`). */
+.setSwatch{display:block}
+
+.builder{display:grid;gap:var(--air-row);max-inline-size:var(--measure);padding:var(--pad-card);border-radius:var(--r-card);background:var(--plate);color:var(--on-plate);box-shadow:var(--sh-raised)}
+.builderHead{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row)}
+.builderHead h3{font-size:var(--h3-size);font-weight:var(--h3-weight);line-height:var(--h3-lead);margin:0}
+.pick{inline-size:var(--ctrl-h);block-size:var(--ctrl-h);padding:0;border:var(--line-w) solid var(--rule);border-radius:var(--r-ctrl);background:none;cursor:pointer}
+.hex{inline-size:calc(var(--ctrl-h) * 3.5);font-family:ui-monospace,monospace}
+.hue{inline-size:100%;accent-color:var(--pop)}
+.dot{display:inline-block;inline-size:1em;block-size:1em;border-radius:var(--r-pop);vertical-align:middle;box-shadow:inset 0 0 0 var(--line-w) var(--rule)}
+.more{display:grid;gap:var(--air-row)}
+.more summary{cursor:pointer;font-size:var(--name-size);line-height:var(--name-lead);font-weight:var(--name-weight)}
+.studio b{font-weight:var(--name-weight)}
+.fine{display:grid;grid-template-columns:repeat(auto-fit,minmax(calc(var(--ctrl-h) * 3.5),1fr));gap:var(--air-row)}
+.scale{display:grid;gap:var(--sp-1)}
+.scaleRow{display:grid;grid-template-columns:calc(var(--ctrl-h) * 1.2) repeat(12,1fr);gap:var(--sp-1);align-items:center;font-size:var(--fs-xs);color:var(--ink-soft)}
+.scaleRow i{block-size:var(--sp-5);border-radius:var(--r-xs)}
+
+.promises h3{font-size:var(--h3-size);font-weight:var(--h3-weight);line-height:var(--h3-lead);margin:0 0 var(--air-row)}
+.promises ul{list-style:none;padding:0;margin:0 0 var(--air-row);display:grid;gap:var(--sp-2)}
+.promises li{display:flex;gap:var(--sp-2);align-items:center}
+.promises li svg{flex:none;inline-size:1em;block-size:1em;color:var(--ok)}
+.promises li[data-ok='false'] svg{color:var(--bad)}
+.actions{display:grid;gap:var(--air-row);padding-block-start:var(--air-row);border-block-start:var(--line-w) solid var(--rule)}
+.actions pre{white-space:pre-wrap;font-size:var(--fs-xs)}
+
+/* Описание варианта (parts.tsx, `States`): что это — сноской, и под ним
+   «Покой · Наведение · Нажатие» тремя строками той же сноски; имя состояния
+   — тоном текста и весом имени, чтобы строки читались списком (И602). */
+.desc{display:grid;gap:var(--ex-desc)}
+.states{margin:0;display:flex;flex-direction:column}
+.states dt{display:inline;font-weight:var(--name-weight);color:var(--ink)}
+.states dd{display:inline;margin:0}
+
+/* Окно помощи висит у края экрана (`fixed`). Коробка образца держит его у
+   своего края: раскладочная изоляция делает её опорой `fixed`, а якорь
+   окна (`--help`) — своим, и окно образца встаёт над своей кнопкой, а не
+   над кнопкой сайта. Рост — стопка «наверх» и кнопка с полем вокруг. */
+.dockSample{
+  inline-size:calc(var(--ctrl-h-lg) * 5);contain:layout;anchor-scope:--help;--dock:0px;--bottom-bar:0px;
+  min-block-size:calc(var(--ctrl-h-lg) * 2 + var(--gap-targets) + var(--gut) * 2)
+}
+
+/* Ноутбук и телефон (Pointers.tsx, И768): плитка — один орган двумя
+   половинами, под мышью и под пальцем. Рамка пальца — сама половина
+   (`data-pointer`): близнецы блока пальца ставят на неё роли и правила
+   телефона. Ширина половин одна — меняется только рука; поэтому всё, что
+   здесь задаёт место образца, считается от рисунка малого органа
+   (`--ctrl-face`, одно число под мышью и пальцем), а не от роста органа. */
+.hands{--cols:2;--cols-min:2;--cell-min:calc(var(--ctrl-face) * 4);inline-size:100%;flex:1}
+.hand{display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);min-inline-size:0}
+.handSample{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:var(--sp-2);flex:1;inline-size:100%;min-block-size:calc(var(--ctrl-face) * 2)}
+.hand .dockSample{inline-size:100%}
+.handCart{display:grid;gap:var(--air-row);justify-items:start;inline-size:100%;text-align:start}

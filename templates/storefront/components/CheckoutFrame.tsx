@@ -26,10 +26,14 @@ function Summary({ summary }: { summary: SummaryView }) {
    раскрывашкой над шагами, итог — в её строке («Sumarul comenzii · 130 €»),
    и сумма видна до кнопки, которой шаг продолжают. На шаге оплаты сводки у
    рамки нет (`summary={null}`): итог, условия и кнопку заказа ставит форма
-   оплаты своей колонкой — выбор способа и кнопка уходят одной отправкой. */
-export function CheckoutFrame({ steps, summary, children }: { steps: StepsView; summary: SummaryView | null; children: ReactNode }) {
+   оплаты своей колонкой — выбор способа и кнопка уходят одной отправкой.
+
+   `landmark={false}` — рамка образцом внутри чужой страницы (дизайн-
+   система): у той уже есть свой `main` и его адрес `#main`. */
+export function CheckoutFrame({ steps, summary, children, landmark = true }: { steps: StepsView; summary: SummaryView | null; children: ReactNode; landmark?: boolean }) {
+  const Main = landmark ? 'main' : 'div'
   return (
-    <main id="main" className={`${p.wrap} ${p.section} ${s.corridor}`} data-air="head">
+    <Main id={landmark ? 'main' : undefined} className={`${p.wrap} ${p.section} ${s.corridor}`} data-air="head">
       {summary ? (
         <details className={s.peek}>
           <summary><span className={s.peekName}>{summary.show}<Turn /></span><b>{summary.total}</b></summary>
@@ -49,7 +53,7 @@ export function CheckoutFrame({ steps, summary, children }: { steps: StepsView; 
           </aside>
         </div>
       ) : children}
-    </main>
+    </Main>
   )
 }
 

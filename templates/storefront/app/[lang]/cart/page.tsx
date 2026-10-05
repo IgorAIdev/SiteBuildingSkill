@@ -5,6 +5,7 @@ import { commerce, content, source } from '@/lib/source/index.ts'
 import { readSession } from '@/lib/session.ts'
 import { first, type Params } from '@/lib/listing.ts'
 import { cartView, type CartExtras } from '@/lib/cart-view.ts'
+import { mainShelves } from '@/lib/main-shelves.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { t } from '@/lib/i18n/index.ts'
 import { toMetadata } from '@/lib/seo.ts'
@@ -26,12 +27,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 /* Страница ходит за данными, вид их складывает: у полной корзины — способы
    оплаты ЭТОЙ корзины, способы доставки и срок возврата для обещаний у
-   кнопки; у пустой — ходовые товары для полки. Молчит источник чего-то из
+   кнопки; у пустой — главные полки кнопками (И689) и ходовые товары для полки. Молчит источник чего-то из
    этого — строки нет, корзина стоит. */
 async function extrasOf(lang: Lang, session: string | null, filled: boolean): Promise<CartExtras> {
   if (!filled) {
-    const shelf = await source().listing(lang, { facets: {}, sort: 'popular', page: null })
-    return { payments: null, methods: null, returnDays: null, popular: shelf.ok ? shelf.value.items.slice(0, POPULAR) : [] }
+    const [shelf, shelves] = await Promise.all([source().listing(lang, { facets: {}, sort: 'popular', page: null }), mainShelves(lang)])
+    return { payments: null, methods: null, returnDays: null, freeFrom: null, popular: shelf.ok ? shelf.value.items.slice(0, POPULAR) : [], shelves }
   }
   const [payments, methods, facts] = await Promise.all([
     session ? commerce().paymentMethods(session, lang) : null,
@@ -42,7 +43,9 @@ async function extrasOf(lang: Lang, session: string | null, filled: boolean): Pr
     payments: payments?.ok ? payments.value : null,
     methods: methods.ok ? methods.value : null,
     returnDays: facts.ok ? facts.value.returnDays : null,
+    freeFrom: facts.ok ? facts.value.freeDeliveryFrom : null,
     popular: [],
+    shelves: [],
   }
 }
 

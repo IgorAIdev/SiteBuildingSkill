@@ -65,10 +65,19 @@ export function readCartOp(form: FormData): CartOp | null {
   return null
 }
 
+/** Штук каждого варианта в корзине — одним списком: и исход добавления
+ *  (`inCart`), и список страницы для надписей «в корзину» (`/api/cart` →
+ *  `held`, lib/in-cart.ts, И469). Вариант в двух строках — сумма. */
+export function cartHeld(cart: Pick<Cart, 'lines'> | null): Record<string, number> {
+  const held: Record<string, number> = {}
+  for (const l of cart?.lines ?? []) held[l.variantId] = (held[l.variantId] ?? 0) + l.quantity
+  return held
+}
+
 function codeOf(op: Op, change: Change<Cart>, variantId: string | null = null): { code: string; count: number | null; inCart: number | null } {
   if (!change.ok) return { code: `e:${change.error}`, count: null, inCart: null }
   const count = change.value.quantity
-  const inCart = variantId ? change.value.lines.filter((l) => l.variantId === variantId).reduce((n, l) => n + l.quantity, 0) : null
+  const inCart = variantId ? cartHeld(change.value)[variantId] ?? 0 : null
   return change.added === undefined ? { code: `ok:${op}`, count, inCart } : { code: `partial:${change.added}`, count, inCart }
 }
 

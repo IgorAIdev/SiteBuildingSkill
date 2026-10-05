@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>68 · Кнопка листания: тон</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 68 — «Кнопка листания: тон». Вынут из элемента 01 «Пилюли шапки»
+  словом заказчика 01.10.2026: «слева это кнопка листания, её в кнопки,
+  остальное — лупа и корзина — у нас есть, этот подблок удаляй» (И624).
+  Круглая кнопка тоном, знак — стрелка из листа набора; назад и вперёд.
+  Всё, кроме атрибутов, — из основы (../base.css): тон 8 % чернил, как у 01.
+  Наведение: тон + 5 % чернил. Нажатие: тон + 9 %, кнопка 0.97 и на пиксель ниже.
+-->
+</head>
+<body>
+  <div class="live one">
+    <div class="group"><button class="el" data-shape="pill" data-icon type="button" aria-label="Назад"><svg data-sign="arrow-left"></svg></button><button class="el" data-shape="pill" data-icon type="button" aria-label="Дальше"><svg data-sign="arrow-right"></svg></button></div>
+  </div>
+  <div class="states" aria-hidden="true">
+    <figure><span class="el" data-shape="pill" data-icon><svg data-sign="arrow-right"></svg></span><figcaption>покой</figcaption></figure>
+    <figure><span class="el" data-shape="pill" data-icon data-state="hover"><svg data-sign="arrow-right"></svg></span><figcaption>наведение</figcaption></figure>
+    <figure><span class="el" data-shape="pill" data-icon data-state="press"><svg data-sign="arrow-right"></svg></span><figcaption>нажатие</figcaption></figure>
+    <figure><span class="el" data-shape="pill" data-icon data-state="focus"><svg data-sign="arrow-right"></svg></span><figcaption>фокус</figcaption></figure>
+  </div>
+</body>
+</html>

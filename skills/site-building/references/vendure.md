@@ -135,6 +135,37 @@ mutation Add($id: ID!, $qty: Int!) {
 
 Способы доставки и оплаты — общий механизм, службы по странам: [delivery.md](delivery.md).
 
+## Кабинет покупателя
+
+Код — адаптер шаблона витрины `templates/storefront/lib/source/vendure/account.ts`
+(И771). Сессия та же, что у корзины: один токен держит и заказ, и вход.
+
+1. Вход — `login(username, password, rememberMe)` С ТОКЕНОМ гостя: ответ несёт
+   НОВЫЙ `vendure-auth-token` — это новая сессия витрины, корзину гостя движок
+   сливает с заказом покупателя (`OrderMergeStrategy`). Union:
+   `CurrentUser | InvalidCredentialsError | NotVerifiedError |
+   NativeAuthStrategyError`.
+2. Создание — `registerCustomerAccount({ emailAddress, firstName, lastName,
+   password })`: `Success` и на новый, и на занятый адрес — движок не говорит,
+   есть ли кабинет. Дальше `login`: успех — подтверждение выключено, вход
+   сразу; `NotVerifiedError` или неверный пароль — «проверьте почту».
+3. Подтверждение — `verifyCustomerAccount(token)` кнопкой на странице, а не
+   открытием ссылки (ссылки из писем открывают проверщики почты); сброс —
+   `requestPasswordReset(emailAddress)` (ответ один) и `resetPassword(token,
+   password)`. Оба входят и отдают новый токен.
+4. Выход — `logout` с токеном, затем удалить cookie.
+5. Кабинет — `activeCustomer { addresses orders(options: { take, sort }) }`;
+   корзина вошедшего — тоже заказ, без `orderPlacedAt`: в истории её нет.
+   Заказ — `orderByCode` и сверка `customer.emailAddress` с вошедшим (гостю
+   стратегия по умолчанию открывает любой код два часа).
+6. Адреса — `createCustomerAddress`, `updateCustomerAddress`,
+   `deleteCustomerAddress`; «по умолчанию» — `defaultShippingAddress`.
+7. Настройки сервера (записать в `docs/decisions.md` витрины):
+   `authOptions.requireVerification` и адреса писем EmailPlugin —
+   `globalTemplateVars.verifyEmailAddressUrl` = `<сайт>/<язык>/account/verify`,
+   `passwordResetUrl` = `<сайт>/<язык>/account/password` (шаблоны писем
+   дописывают `?token=…`).
+
 ## Кэш (Next 16, `cacheComponents`)
 
 * Реестр тегов — один модуль: `vd:product:{id}`, `vd:collection:{id}`,

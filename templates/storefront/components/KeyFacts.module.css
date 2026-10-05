@@ -20,6 +20,6 @@
 .fact{font-size:var(--body-size);line-height:var(--body-lead);color:var(--ink-soft)}
 .value{
   font-size:var(--lede-size);line-height:var(--lede-lead);letter-spacing:var(--lede-track);
-  font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap
+  font-weight:var(--cardprice-weight);color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap
 }
 .note{display:block;font-size:var(--note-size);line-height:var(--note-lead)}

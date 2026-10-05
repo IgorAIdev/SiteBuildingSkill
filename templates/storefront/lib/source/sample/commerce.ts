@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto'
 import type { Lang } from '../../locale.ts'
 import type {
   Address, Cart, CartLine, Change, Checkout, Commerce, CommerceError, Contact, Delivery,
-  DeliveryChoice, DeliveryMethod, Money, Order, PaymentMethod, PickupPoint, Result,
+  DeliveryChoice, DeliveryMethod, Money, Order, OrderStatus, PaymentMethod, PickupPoint, Result,
 } from '../contract.ts'
 import { PRODUCTS, type SampleProduct, type SampleVariant } from '../../products.ts'
 import { METHODS, POINTS, PAYMENTS, COUPONS, type SampleMethod, type SamplePoint } from '../../shipping.ts'
@@ -10,12 +10,14 @@ import { MARKET } from '../../market.ts'
 import { money as moneyText } from '../../money.ts'
 import { deliveryReady } from '../../checkout-steps.ts'
 import { productArt } from './art.ts'
+import { accountOf, contactOf, HISTORY, sampleAccount, SAMPLE_EMAIL, type SampleAccount } from './account.ts'
 
 type Line = { id: string; variantId: string; quantity: number }
-type State = { lines: Line[]; coupons: string[]; contact: Contact | null; delivery: DeliveryChoice | null; lastOrder: string | null; seq: number }
-type Placed = { code: string; placedAt: string; session: string; lines: Line[]; coupons: string[]; contact: Contact; delivery: DeliveryChoice; payment: string }
+/* `customer` — ключ кабинета вошедшего (почта строчными), `null` — гость. */
+type State = { lines: Line[]; coupons: string[]; contact: Contact | null; delivery: DeliveryChoice | null; lastOrder: string | null; seq: number; customer: string | null }
+type Placed = { code: string; placedAt: string; session: string; lines: Line[]; coupons: string[]; contact: Contact; delivery: DeliveryChoice; payment: string; status: OrderStatus }
 /* `now` — часы хранилища: окно заказа меряется ими, тест ставит свои. */
-type Store = { sessions: Map<string, State>; orders: Map<string, Placed>; now: () => number }
+type Store = { sessions: Map<string, State>; orders: Map<string, Placed>; accounts: Map<string, SampleAccount>; now: () => number }
 
 const MAX = 99
 /* Окно заказа: «спасибо» показывает заказ сессии и второе нажатие узнаёт
@@ -44,6 +46,8 @@ const fold = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCas
 export const FIXTURES = {
   cart: 'sample-cart', contact: 'sample-contact', address: 'sample-address',
   pickup: 'sample-pickup', ready: 'sample-ready', placed: 'sample-placed',
+  /* Вошедшая покупательница с прошлыми заказами — кабинет полным (И771). */
+  account: 'sample-account',
 } as const
 const SAMPLE_CONTACT: Contact = { email: 'ana.popescu@example.com', firstName: 'Ana', lastName: 'Popescu', phone: '0722 123 456' }
 const SAMPLE_ADDRESS: Address = { street: 'Str. Exemplului 1', city: 'București', region: 'București', postalCode: '010011', country: MARKET.country }
@@ -51,7 +55,7 @@ const SAMPLE_ADDRESS: Address = { street: 'Str. Exemplului 1', city: 'București
 /* Не замыкания внутри fixture(): не берут ничего снаружи, и линтер
    (unicorn/consistent-function-scoping) просит держать их уровнем выше. */
 const seedLines = (): Line[] => [{ id: 'l1', variantId: 'uf-20-10', quantity: 1 }, { id: 'l2', variantId: 'cc-30', quantity: 2 }]
-const seeded = (over: Partial<State>): State => ({ lines: seedLines(), coupons: ['CBD10'], contact: null, delivery: null, lastOrder: null, seq: 2, ...over })
+const seeded = (over: Partial<State>): State => ({ lines: seedLines(), coupons: ['CBD10'], contact: null, delivery: null, lastOrder: null, seq: 2, customer: null, ...over })
 const door = (): DeliveryChoice => ({ methodId: 'curier', address: SAMPLE_ADDRESS, pointId: null })
 const FIXTURE: Record<string, () => State> = {
   [FIXTURES.cart]: () => seeded({}),
@@ -60,16 +64,28 @@ const FIXTURE: Record<string, () => State> = {
   [FIXTURES.pickup]: () => seeded({ contact: SAMPLE_CONTACT, delivery: { methodId: 'locker', address: null, pointId: null } }),
   [FIXTURES.ready]: () => seeded({ contact: SAMPLE_CONTACT, delivery: door() }),
   [FIXTURES.placed]: () => seeded({ lines: [], coupons: [], lastOrder: SAMPLE_ORDER }),
+  [FIXTURES.account]: () => seeded({ lines: [], coupons: [], customer: SAMPLE_EMAIL }),
 }
 /** Свежая копия заготовки или null — это не заготовка. */
 const fixture = (session: string): State | null => (Object.hasOwn(FIXTURE, session) ? FIXTURE[session]() : null)
 
 const sampleOrder = (now: number): Placed => ({
   code: SAMPLE_ORDER, placedAt: new Date(now - SAMPLE_AGO).toISOString(), session: FIXTURES.placed,
-  lines: seedLines(), coupons: ['CBD10'], contact: SAMPLE_CONTACT, delivery: door(), payment: 'ramburs',
+  lines: seedLines(), coupons: ['CBD10'], contact: SAMPLE_CONTACT, delivery: door(), payment: 'ramburs', status: 'placed',
 })
+/* Прошлые заказы покупательницы образца — по часам хранилища, как заказ
+   заготовки `placed`: при любом времени работы сервера им столько дней. */
+const DAY = 24 * 60 * 60 * 1000
+const pastOrder = (code: string, now: number): Placed | null => {
+  const h = HISTORY.find((x) => x.code === code)
+  return h ? {
+    code, placedAt: new Date(now - h.days * DAY).toISOString(), session: '', status: h.status,
+    lines: h.code === 'EXEMPLU2' ? [{ id: 'l1', variantId: 'cc-30', quantity: 1 }] : seedLines(), coupons: [],
+    contact: SAMPLE_CONTACT, delivery: door(), payment: 'ramburs',
+  } : null
+}
 
-const seed = (now: () => number): Store => ({ sessions: new Map<string, State>(), orders: new Map<string, Placed>(), now })
+const seed = (now: () => number): Store => ({ sessions: new Map<string, State>(), orders: new Map<string, Placed>(), accounts: new Map([[SAMPLE_EMAIL, sampleAccount()]]), now })
 
 /* Корзины образца живут в памяти процесса и пропадают при перезапуске — как
    сказано в замысле. Хранилище — на globalThis: перезагрузка модуля в
@@ -103,6 +119,7 @@ function lineOf(l: Line, lang: Lang): CartLine | null {
       const code = v.options[g.code] ?? ''
       return { group: g.code, code, name: g.options.find((o) => o.code === code)?.name[lang] ?? code }
     }),
+    pack: v.pack,
     image: { src: productArt(p.cat, p.hue, p.label), alt: p.name[lang], width: 800, height: 800 },
     unit: money(v.price), quantity: l.quantity, total: money(v.price * l.quantity),
   }
@@ -137,7 +154,14 @@ function deliveryOf(choice: DeliveryChoice | null, lang: Lang): Delivery | null 
   return { method: methodOf(m, lang), address: m.kind === 'address' ? choice.address : null, point: point ? pointOf(point, lang) : null }
 }
 
-const checkoutOf = (s: State, lang: Lang): Checkout => ({ cart: cartOf(s, lang), contact: s.contact, delivery: deliveryOf(s.delivery, lang) })
+/* Вошедший — уже клиент заказа (у Vendure `order.customer`): контакты
+   кассы — из кабинета, пока покупатель не вписал свои. */
+const accountIn = (s: State) => (s.customer ? store().accounts.get(s.customer) ?? null : null)
+const contactIn = (s: State): Contact | null => {
+  const a = accountIn(s)
+  return s.contact ?? (a ? contactOf(a) : null)
+}
+const checkoutOf = (s: State, lang: Lang): Checkout => ({ cart: cartOf(s, lang), contact: contactIn(s), delivery: deliveryOf(s.delivery, lang) })
 
 function paymentsOf(total: number, lang: Lang): PaymentMethod[] {
   return PAYMENTS.map((p) => {
@@ -151,7 +175,7 @@ function paymentsOf(total: number, lang: Lang): PaymentMethod[] {
 }
 
 function orderOf(o: Placed, lang: Lang): Order {
-  const cart = cartOf({ lines: o.lines, coupons: o.coupons, contact: o.contact, delivery: o.delivery, lastOrder: null, seq: 0 }, lang)
+  const cart = cartOf({ lines: o.lines, coupons: o.coupons, contact: o.contact, delivery: o.delivery, lastOrder: null, seq: 0, customer: null }, lang)
   const delivery = deliveryOf(o.delivery, lang)
   const payment = paymentsOf(cart.total.minor, lang).find((p) => p.code === o.payment)
   if (!delivery || !payment) throw new Error(`sample order ${o.code}: broken record`)
@@ -167,7 +191,27 @@ function recent(session: string, s: State): Placed | null {
   return placed && placed.session === session && now - Date.parse(placed.placedAt) < RECENT ? placed : null
 }
 
+const placedOf = (code: string): Placed | null =>
+  code === SAMPLE_ORDER ? sampleOrder(store().now()) : pastOrder(code, store().now()) ?? store().orders.get(code) ?? null
+
+/* Кабинет образца (sample/account.ts) — на том же хранилище: сессия, кабинеты
+   и заказы одни. */
+const account = accountOf({
+  state: (session) => live(session),
+  kept: (session) => !!session && store().sessions.has(session),
+  open(customer) {
+    const key = token()
+    store().sessions.set(key, { lines: [], coupons: [], contact: null, delivery: null, lastOrder: null, seq: 0, customer })
+    return key
+  },
+  close: (session) => { store().sessions.delete(session) },
+  accounts: () => store().accounts,
+  placed: placedOf,
+  order: (code, lang) => { const p = placedOf(code); return p ? orderOf(p, lang) : null },
+})
+
 export const sampleCommerce: Commerce = {
+  ...account,
   async checkout(session, lang) {
     const s = live(session)
     return ok(s ? checkoutOf(s, lang) : null)
@@ -185,7 +229,7 @@ export const sampleCommerce: Commerce = {
     let s = current
     if (!s || !key) {
       key = token()
-      s = { lines: [], coupons: [], contact: null, delivery: null, lastOrder: null, seq: 0 }
+      s = { lines: [], coupons: [], contact: null, delivery: null, lastOrder: null, seq: 0, customer: null }
       store().sessions.set(key, s)
     }
     if (line) line.quantity += added
@@ -273,7 +317,8 @@ export const sampleCommerce: Commerce = {
     const s = live(session)
     /* Пустая корзина в окне заказа — заказ уже поставлен (второе нажатие). */
     if (!s || !s.lines.length) return fail(s && recent(session, s) ? 'placed' : 'empty-cart')
-    if (!s.contact) return fail('no-contact')
+    const contact = contactIn(s)
+    if (!contact) return fail('no-contact')
     const checkout = checkoutOf(s, lang)
     if (!s.delivery || !deliveryReady(checkout.delivery)) return fail('no-delivery')
     const total = checkout.cart.total
@@ -286,9 +331,10 @@ export const sampleCommerce: Commerce = {
     }
     const placed: Placed = {
       code: orderCode(), placedAt: new Date(store().now()).toISOString(), session,
-      lines: s.lines, coupons: s.coupons, contact: s.contact, delivery: s.delivery, payment: pay.code,
+      lines: s.lines, coupons: s.coupons, contact, delivery: s.delivery, payment: pay.code, status: 'placed',
     }
     store().orders.set(placed.code, placed)
+    accountIn(s)?.orders.push(placed.code)
     Object.assign(s, { lines: [], coupons: [], contact: null, delivery: null, lastOrder: placed.code })
     return { ok: true, value: orderOf(placed, lang) }
   },
@@ -296,6 +342,10 @@ export const sampleCommerce: Commerce = {
     const s = live(session)
     const placed = s && session ? recent(session, s) : null
     return ok(placed ? orderOf(placed, lang) : null)
+  },
+  /* Образец заявление принимает и писем не шлёт: время приёма — сейчас. */
+  async withdraw() {
+    return ok({ at: new Date().toISOString() })
   },
 }
 

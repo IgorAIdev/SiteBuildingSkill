@@ -19,11 +19,12 @@ async function fixtureCart(lang: 'ro' | 'hu' = 'ro') {
 
 test('a cart line: link back to its variant, facts, unit price, one stepper, a worded remove', async () => {
   const v = cartView('ro', await fixtureCart(), null)
-  assert.equal(v.count, '3 produse')
+  assert.equal(v.count, '3 articole')
   const [oil, caps] = v.lines
   assert.equal(oil.href, '/ro/product/ulei-cbd-full-spectrum-20-10ml?option.putere=20&option.volum=10')
-  assert.equal(oil.facts, `20${NB}% · 10${NB}ml`, 'сила — записью языка страницы и неразрывно (И347)')
-  assert.equal(oil.unit, `64,90${NB}€ / buc.`)
+  assert.equal(oil.facts, `20${NB}% · 2000${NB}mg · 10${NB}ml`, 'опция силы, затем упаковка той же записью, что на карточке; «10 ml» из опции и из упаковки — один раз (И347, И671)')
+  assert.equal(oil.unit, `64,90${NB}€`, 'цена за штуку — одним числом, без слова')
+  assert.equal(oil.unitSay, `64,90${NB}€ / buc.`, 'слово — только чтецу экрана')
   assert.equal(oil.total, `64,90${NB}€`)
   assert.deepEqual([oil.stepper.less.op, oil.stepper.more.op, oil.remove.op], [null, 'set:l1:2', 'remove:l1'])
   assert.equal(oil.stepper.less.label, 'Scade cantitatea: Ulei CBD full spectrum', 'a step with nowhere to go is off, but still named')
@@ -39,10 +40,10 @@ test('totals are the source’s, as ready strings', async () => {
     { label: 'Livrare', value: 'Se alege la pasul următor' },
   ])
   assert.deepEqual(v.totals.total, { label: 'Total', value: `130,23${NB}€` })
-  assert.equal(v.totals.note, 'Prețurile includ TVA.')
+  assert.equal(v.totals.note, 'TVA inclus')
   assert.deepEqual(v.coupon.applied, [{ code: 'CBD10', op: 'uncoupon:CBD10', label: 'Elimină codul CBD10' }])
   assert.equal(v.checkout.href, '/ro/checkout/contact')
-  assert.equal(cartView('hu', await fixtureCart('hu'), null).count, '3 termék')
+  assert.equal(cartView('hu', await fixtureCart('hu'), null).count, '3 darab')
 })
 
 test('the notice comes from a known code only; an empty cart says what next', () => {
@@ -78,11 +79,11 @@ test('pledges by the button come from the shop data, not from words in code', as
   const methods = await sampleCommerce.deliveryMethods(null, 'en')
   const facts = await sampleContent.facts()
   assert.ok(pay.ok && methods.ok && facts.ok)
-  const v = cartView('en', await fixtureCart(), null, { payments: pay.value, methods: methods.value, returnDays: facts.value.returnDays, popular: [] })
+  const v = cartView('en', await fixtureCart(), null, { payments: pay.value, methods: methods.value, returnDays: facts.value.returnDays, freeFrom: facts.value.freeDeliveryFrom, popular: [], shelves: [] })
   assert.deepEqual(v.pledges.items, [
     { icon: 'package', text: 'Cash on delivery' },
     { icon: 'truck', text: 'Delivery from €3.49, pickup free' },
-    { icon: 'shield-check', text: '14-day returns' },
+    { icon: 'check-shield', text: '14-day returns' },
   ])
   const over = pay.value.map((m) => (m.kind === 'on-delivery' ? { ...m, eligible: false } : m))
   assert.deepEqual(pledgesView('en', { payments: over, methods: null, returnDays: null }).items, [], 'COD not allowed for this cart — no line; nothing known — nothing said')
@@ -96,15 +97,49 @@ test('one quantity control on the site: the cart and the product page take the s
   const dir = new URL('../components/', import.meta.url)
   const tsx = readdirSync(dir).filter((n) => n.endsWith('.tsx'))
   assert.deepEqual(tsx.filter((n) => /type="number"/.test(readFileSync(new URL(n, dir), 'utf8'))), ['QuantityStepper.tsx'])
-  for (const user of ['CartView.tsx', 'AddToCart.tsx']) assert.match(readFileSync(new URL(user, dir), 'utf8'), /<QuantityStepper /, user)
+  for (const user of ['CartLines.tsx', 'AddToCart.tsx']) assert.match(readFileSync(new URL(user, dir), 'utf8'), /<QuantityStepper /, user)
+  /* Строки корзины — одни на страницу и на шторку (CartLines). */
+  for (const user of ['CartView.tsx', 'CartPane.tsx']) assert.match(readFileSync(new URL(user, dir), 'utf8'), /<CartLines /, user)
 })
 
 test('the empty cart shows popular products from the source, as shelf cards', async () => {
   const shelf = await sample.listing('en', { facets: {}, sort: 'popular', page: null })
   assert.ok(shelf.ok)
-  const v = cartView('en', null, null, { payments: null, methods: null, returnDays: null, popular: shelf.value.items.slice(0, 4) })
+  const v = cartView('en', null, null, { payments: null, methods: null, returnDays: null, freeFrom: null, popular: shelf.value.items.slice(0, 4), shelves: [] })
   assert.equal(v.empty.shelf?.title, 'Popular products')
   assert.equal(v.empty.shelf?.cards.length, 4)
-  assert.equal(v.empty.shelf?.all.href, '/en/catalog')
+  assert.equal(v.empty.shelf?.all, '/en/catalog')
   assert.match(v.empty.shelf?.cards[0].href ?? '', /^\/en\/product\//)
+})
+
+/* Пустая корзина — не тупик (И689): главные полки кнопками категорий со знаком,
+   в шторке и на странице одной разметкой (CartShelves). Полок нет — нет и ряда. */
+test('the empty cart offers the main shelves as category buttons, in the pane and on the page', async () => {
+  const cols = await sample.collections('en')
+  assert.ok(cols.ok)
+  const v = cartView('en', null, null, { payments: null, methods: null, returnDays: null, freeFrom: null, popular: [], shelves: cols.value.slice(0, 3) })
+  assert.equal(v.empty.shelves?.label, 'Categories')
+  assert.equal(v.empty.shelves?.links.length, 3)
+  assert.match(v.empty.shelves?.links[0].href ?? '', /^\/en\//)
+  assert.equal(v.empty.shelves?.links[0].sign, cols.value[0].sign)
+  assert.equal(cartView('en', null, null).empty.shelves, null)
+  const dir = new URL('../components/', import.meta.url)
+  for (const user of ['CartView.tsx', 'CartPane.tsx']) assert.match(readFileSync(new URL(user, dir), 'utf8'), /<CartShelves /, user)
+})
+
+/* Полоса до бесплатной доставки: порог — из данных магазина, набрано — товары
+   за вычетом скидок и без доставки. Слова — тремя кусками, сумма отдельно (её
+   выделяют весом, порядок слов — языка). Нет порога или корзины — полосы нет. */
+test('the free-delivery strip says what is left, then that it is unlocked; no threshold, no strip', async () => {
+  const cart = await fixtureCart('ro')
+  const extras = (minor: number | null) => ({ payments: null, methods: null, returnDays: null, freeFrom: minor === null ? null : { minor, currency: 'EUR' as const }, popular: [], shelves: [] })
+  const far = cartView('en', cart, null, extras(20000)).goal
+  assert.deepEqual(far?.left, ['Add ', '€69.77', ' more for free delivery'])
+  assert.deepEqual([far?.value, far?.max], [13023, 20000], 'набрано — 144,70 минус код 14,47')
+  const done = cartView('en', cart, null, extras(10000)).goal
+  assert.equal(done?.left, null)
+  assert.deepEqual([done?.value, done?.max, done?.done], [10000, 10000, 'Free delivery unlocked'])
+  assert.deepEqual(cartView('hu', cart, null, extras(20000)).goal?.left, ['Még ', `69,77${NB}€`, ', és a szállítás díjmentes'])
+  assert.equal(cartView('en', cart, null).goal, null, 'порога у магазина нет')
+  assert.equal(cartView('en', null, null, extras(10000)).goal, null, 'пустой корзине полоса не нужна')
 })

@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import go from '@/styles/go.module.css'
 import p from '@/styles/primitives.module.css'
 import s from './LabReport.module.css'
@@ -13,9 +14,12 @@ import { Icon } from './Icon.tsx'
    рвётся на дефисе. */
 export function LabReport({ lab, level = 2 }: { lab: LabView; level?: 2 | 3 }) {
   const H = level === 2 ? 'h2' : 'h3'
+  /* Имя заголовка — своё у каждого протокола: на странице дизайн-системы он
+     стоит и в окне карты товара, и сам по себе. */
+  const id = `lab-${useId().replace(/:/g, '')}`
   return (
-    <section className={`${p.stack} ${s.report}`} aria-labelledby="lab-title">
-      <H id="lab-title" className={s.title}>{lab.title} · <span className={s.batch}>{lab.batch}</span></H>
+    <section className={`${p.stack} ${s.report}`} aria-labelledby={id}>
+      <H id={id} className={s.title}>{lab.title} · <span className={s.batch}>{lab.batch}</span></H>
       <dl className={s.facts}>
         {lab.rows.map(([k, v]) => <div key={k} className={s.fact}><dt>{k}</dt><dd>{v}</dd></div>)}
       </dl>

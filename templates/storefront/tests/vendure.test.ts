@@ -1,8 +1,10 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { packOf, vendureEnv, vendureSource } from '../lib/source/vendure/catalog.ts'
+import { vendureEnv, vendureSource } from '../lib/source/vendure/catalog.ts'
+import { packOf } from '../lib/source/vendure/shape.ts'
 import { vendureCommerce } from '../lib/source/vendure/commerce.ts'
 import { assetImage } from '../lib/source/vendure/image.ts'
+import { PAGE_SIZE } from '../lib/source/page.ts'
 
 /* Торговля из Vendure (SOURCE=vendure) — против подставного движка: форма
    ответов снята с движка cbdin (Vendure 3.7) 25.09.2026. Живой движок тесты
@@ -39,6 +41,9 @@ const FACETS = [
   { count: 2, facetValue: { id: '7', code: 'relax', name: 'relax', facet: { id: '1', code: 'effect', name: 'Effect' } } },
   { count: 1, facetValue: { id: '8', code: 'sleep', name: 'sleep', facet: { id: '1', code: 'effect', name: 'Effect' } } },
 ]
+/** Рамка полки — товары с их значениями граней (pool.ts, И750): по ней
+ *  переходник считает грани у себя. Те же числа, что у `FACETS`. */
+const POOL = { search: { totalItems: 2, items: [{ productId: '1', facetValueIds: ['7'] }, { productId: '2', facetValueIds: ['7', '8'] }] } }
 
 test('vendure: pack from the engine fields — measure from volume, CBD from strength, in either language', () => {
   assert.deepEqual(packOf('10ml', '1000mg'), { mg: 1000, size: 10, unit: 'ml' })
@@ -56,24 +61,26 @@ test('vendure: the listing pages, filters OR within a facet, counts each facet a
     if (query.includes('products(')) return { products: { items: [product('1'), product('2')] } }
     if (query.includes('collections(')) return { collections: { items: [{ id: '10', slug: 'oil-en', name: 'Oils', description: '', featuredAsset: null, translations: [{ languageCode: 'bg', slug: 'oil' }] }] } }
     const input = (variables as { input: { take: number } }).input
+    if (query.includes('facetValueIds')) return POOL
     if (input.take === 0) return { search: { facetValues: FACETS } }
-    return { search: { totalItems: 26, items: [{ productId: '1', productName: 'Oil 1', slug: 'oil-1-en', priceWithTax: { min: 3000, max: 3000 }, productAsset: null }, { productId: '2', productName: 'Oil 2', slug: 'oil-2-en', priceWithTax: { min: 3000, max: 3000 }, productAsset: null }], facetValues: FACETS } }
+    return { search: { totalItems: PAGE_SIZE + 2, items: [{ productId: '1', productName: 'Oil 1', slug: 'oil-1-en', priceWithTax: { min: 3000, max: 3000 }, productAsset: null }, { productId: '2', productName: 'Oil 2', slug: 'oil-2-en', priceWithTax: { min: 3000, max: 3000 }, productAsset: null }], facetValues: FACETS } }
   })
   const s = vendureSource(ENV, fetchImpl)
   const r = await s.listing('ro', { category: 'oil', facets: { effect: ['relax', 'sleep'], ghost: ['x'] }, sort: 'price-asc', page: '2' })
   assert.ok(r.ok)
   assert.equal(r.value.page, 2)
-  assert.equal(r.value.pages, 2, '26 товаров по 24 — две страницы')
+  assert.equal(r.value.pages, 2, 'на два товара больше страницы — две страницы')
   assert.deepEqual(r.value.invalid, ['ghost:x'], 'незнакомый фильтр назван, а не угадан')
   assert.equal(r.value.items[0].id, 'oil-1', 'адрес — slug языка канала: один на все языки')
   assert.equal(r.value.items[0].category, 'oil')
   assert.deepEqual(r.value.items[0].was, { minor: 3600, currency: 'EUR' })
   assert.equal(r.value.items[0].variant, 'v1', 'один вариант — кладётся с полки сразу')
   assert.equal(r.value.items[0].strength, 'percent', 'масло продаётся концентрацией')
-  const main = seen.find((x) => (x.body.variables as { input?: { take: number } }).input?.take === 24)!
+  assert.deepEqual(r.value.facets.find((f) => f.code === 'effect')?.values.map((v) => [v.code, v.count]), [['relax', 2], ['sleep', 1]], 'грань движка посчитана по рамке полки')
+  const main = seen.find((x) => (x.body.variables as { input?: { take: number } }).input?.take === PAGE_SIZE)!
   const input = (main.body.variables as { input: Record<string, unknown> }).input
   assert.deepEqual(input.facetValueFilters, [{ or: ['7', '8'] }], 'два значения одной грани — ИЛИ')
-  assert.equal(input.skip, 24)
+  assert.equal(input.skip, PAGE_SIZE)
   assert.equal(input.collectionId, '10')
   assert.deepEqual(input.sort, { price: 'ASC' })
   assert.match(main.url, /languageCode=en/, 'румынской страницы у канала нет — спрашиваем запасным языком, а не болгарским')
@@ -81,6 +88,27 @@ test('vendure: the listing pages, filters OR within a facet, counts each facet a
   const past = await s.listing('en', { facets: {}, sort: 'popular', page: '9' })
   assert.deepEqual(past, { ok: false, reason: 'not-found' }, 'страница за концом — «не найдено», а не пустая')
   assert.deepEqual(await s.listing('en', { facets: {}, sort: 'popular', page: '0' }), { ok: false, reason: 'bad-request' })
+})
+
+/* «Newest» (И709): поиск движка по дате не упорядочивает — место по новизне
+   берётся из товаров по дате создания, а страница режется в переходнике. */
+test('vendure: newest asks the engine for creation order and pages the shelf by it', async () => {
+  const { fetchImpl, seen } = engine(({ query, variables }) => {
+    if (query.includes('activeChannel')) return CHANNEL
+    if (query.includes('createdAt: DESC')) return { products: { items: query.includes('skip: 0') ? [{ id: '2' }, { id: '1' }] : [] } }
+    if (query.includes('products(')) return { products: { items: [product('1'), product('2')] } }
+    const input = (variables as { input: { take: number } }).input
+    if (query.includes('facetValueIds')) return POOL
+    if (input.take === 0) return { search: { facetValues: FACETS } }
+    return { search: { totalItems: 2, items: [{ productId: '1', productName: 'Oil 1', slug: 'oil-1-en', priceWithTax: { min: 3000, max: 3000 }, productAsset: null }, { productId: '2', productName: 'Oil 2', slug: 'oil-2-en', priceWithTax: { min: 3000, max: 3000 }, productAsset: null }], facetValues: FACETS } }
+  })
+  const r = await vendureSource(ENV, fetchImpl).listing('en', { facets: {}, sort: 'newest', page: null })
+  assert.ok(r.ok)
+  assert.deepEqual(r.value.items.map((c) => c.id), ['oil-2', 'oil-1'], 'новее — первым, хоть поиск отдал иначе')
+  const whole = seen.find((x) => (x.body.variables as { input?: { take: number } }).input?.take === 100 && !x.body.query.includes('facetValueIds'))!
+  assert.equal((whole.body.variables as { input: Record<string, unknown> }).input.sort, undefined, 'поиск спрошен без порядка цены')
+  const { fetchImpl: mute } = engine(({ query }) => (query.includes('activeChannel') ? CHANNEL : query.includes('createdAt') ? { errors: [{ message: 'down' }] } : { search: { facetValues: FACETS } }))
+  assert.deepEqual(await vendureSource(ENV, mute).listing('en', { facets: {}, sort: 'newest', page: null }), { ok: false, reason: 'unavailable' }, 'без даты движка — «недоступно», а не другой порядок')
 })
 
 test('vendure: a missing product is not found, a silent engine is unavailable — two different states', async () => {
@@ -155,4 +183,21 @@ test('vendure: a shot carries its widths from the asset server and is never aske
   assert.deepEqual(widths(assetImage({ preview, width: 1200, height: 1200 }, 'Oil', 800).srcset), [160, 400, 800, 1200])
   /* Размеров движок не сказал — просится весь ряд. */
   assert.deepEqual(widths(assetImage({ preview }, 'Oil', 200).srcset), [160, 400, 800, 1200])
+})
+
+/* Отказ от договора (И748): витрина шлёт мутацию плагина сервера
+   (skills/site-building/assets/vendure/plugins/withdrawal) ровно с тремя
+   полями и называет время приёма; плагина нет — ошибка GraphQL, и страница
+   предлагает письмо. */
+test('withdrawal goes to the server plugin with the three fields; no plugin — unavailable', async () => {
+  const at = '2026-10-04T19:00:00.000Z'
+  const withPlugin = engine((b) => (b.query.includes('activeChannel') ? CHANNEL : { submitWithdrawal: { receivedAt: at } }))
+  const c = vendureCommerce({ ...ENV, placeOrders: false }, withPlugin.fetchImpl)
+  assert.deepEqual(await c.withdraw('en', { name: 'Ana Pop', order: 'ABC123', email: 'ana@example.com' }), { ok: true, value: { at } })
+  const sent = withPlugin.seen.find((x) => x.body.query.includes('submitWithdrawal'))!
+  assert.deepEqual(sent.body.variables, { input: { name: 'Ana Pop', orderCode: 'ABC123', emailAddress: 'ana@example.com' } })
+  assert.ok(!sent.headers.authorization, 'заявление — без сессии покупателя: отказаться можно и с другого устройства')
+  const without = engine((b) => (b.query.includes('activeChannel') ? CHANNEL : { errors: [{ message: 'Cannot query field "submitWithdrawal" on type "Mutation".' }] }))
+  const bare = vendureCommerce({ ...ENV, placeOrders: false }, without.fetchImpl)
+  assert.deepEqual(await bare.withdraw('en', { name: 'Ana Pop', order: 'ABC123', email: 'ana@example.com' }), { ok: false, reason: 'unavailable' })
 })

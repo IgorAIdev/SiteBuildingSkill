@@ -1,0 +1,18 @@
+/* Вкладка «Элементы» (Elements.tsx): живые отрисовки, присланные заказчиком.
+   Сетка считается шириной контейнера (правило 5); рост кадра — от роста
+   органа, а не числом. */
+.kinds{margin-block-end:var(--air-group)}
+.grid{--cols:3;--cols-min:1;--cell-min:300px;--grid-gap:var(--gap-grid);list-style:none;padding:0;margin:0}
+/* Образец в плитке кнопки (И626): плитка уже белая — у кадра ни своей
+   подложки, ни кромки. */
+.frame[data-tile]{background:transparent;box-shadow:none}
+/* Кадр живой кнопки без застывших состояний (И620) — ниже. */
+.frame[data-live]{block-size:calc(var(--ctrl-h-lg) * 3)}
+/* Пара на одной плашке (И624): плашка — у пары, кадры внутри без своей. */
+.pair{justify-content:center;--cluster:0px;border-radius:var(--r-card);background:var(--plate);box-shadow:inset 0 0 0 var(--line-w) var(--rule);overflow:clip}
+.pair .frame{inline-size:calc(var(--ctrl-h-lg) * 4);border-radius:0;box-shadow:none}
+.el{display:flex;flex-direction:column;gap:var(--sp-2);margin:0}
+.frame{display:block;inline-size:100%;block-size:calc(var(--ctrl-h-lg) * 6);border:0;border-radius:var(--r-card);background:var(--plate);box-shadow:inset 0 0 0 var(--line-w) var(--rule)}
+.el figcaption{display:flex;flex-direction:column;gap:var(--sp-1);font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft)}
+.el figcaption b{color:var(--ink);font-size:var(--cap-size);line-height:var(--cap-lead);font-weight:var(--cap-weight)}
+.el figcaption code{font-size:var(--code-size);overflow-wrap:anywhere}

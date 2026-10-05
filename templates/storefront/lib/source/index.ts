@@ -1,11 +1,14 @@
-import type { Block, Commerce, Content, Source } from './contract.ts'
+import type { Block, Collection, Commerce, Content, Effect, Source } from './contract.ts'
 import { sample } from './sample/catalog.ts'
 import { sampleContent } from './sample/content.ts'
 import { sampleCommerce } from './sample/commerce.ts'
 import { vendureEnv, vendureSource } from './vendure/catalog.ts'
 import { vendureCommerce } from './vendure/commerce.ts'
 import { formOf } from './details.ts'
-import { CATEGORIES } from '../products.ts'
+import { effectShot, shelfShot } from './sample/shelf-shots.ts'
+import { CATEGORIES, EFFECTS } from '../products.ts'
+import type { Lang } from '../locale.ts'
+import { REVIEWS_ARE_REAL } from '../flags.ts'
 
 /* Один выбор источника на всю витрину (`SOURCE` в .env):
    · `sample` — образец в lib/ (по умолчанию);
@@ -15,11 +18,34 @@ import { CATEGORIES } from '../products.ts'
    · `live` (Vendure + Payload) — план 4, содержание из Payload. */
 const which = () => process.env.SOURCE ?? 'sample'
 
+/* Кадр полки — у движка; у полки без снимка — кадр полки образца её вида
+   (`formOf` по адресу, sample/shelf-shots.ts), пока свой кадр не даёт
+   Payload (план 4): плашка полки без снимка — пустая плашка. */
+const framed = (c: Collection): Collection => {
+  const form = c.image ? null : formOf([c.slug])
+  return form ? { ...c, image: shelfShot(form, c.name) } : c
+}
+
+/* Кадр эффекта — так же: у значения грани в движке снимка нет, и эффект
+   берёт кадр образца по своему коду (sample/shelf-shots.ts); кода там нет —
+   плитка без снимка. Описания у значения грани в движке тоже нет: эффект
+   берёт описание образца по тому же коду (lib/products.ts, EFFECTS) — его
+   читают строка плитки «Caption», вступление и описание страницы эффекта;
+   кода там нет — описание пустое, как было. Пока своё не даст Payload (план 4). */
+const told = (e: Effect, lang: Lang): string => e.description || (EFFECTS.find((x) => x.effect === e.code)?.description[lang] ?? '')
+const shotOf = (e: Effect, lang: Lang): Effect => ({ ...e, image: e.image ?? effectShot(e.code, e.name), description: told(e, lang) })
+
 let trade: { source: Source; commerce: Commerce; content: Content } | null = null
 function vendure() {
   if (!trade) {
     const env = vendureEnv()
-    const catalog = vendureSource(env)
+    const engine = vendureSource(env)
+    const catalog: Source = {
+      ...engine,
+      async collections(lang) { const r = await engine.collections(lang); return r.ok ? { ok: true, value: r.value.map(framed) } : r },
+      async collection(lang, slug) { const r = await engine.collection(lang, slug); return r.ok ? { ok: true, value: framed(r.value) } : r },
+      async effects(lang) { const r = await engine.effects(lang); return r.ok ? { ok: true, value: r.value.map((e) => shotOf(e, lang)) } : r },
+    }
     trade = { source: catalog, commerce: vendureCommerce({ ...env, placeOrders: process.env.VENDURE_PLACE_ORDERS === 'on' }), content: standIn(catalog) }
   }
   return trade
@@ -33,9 +59,22 @@ function vendure() {
 function standIn(catalog: Source): Content {
   return {
     ...sampleContent,
+    /* Отзывов у движка нет (в ядре Vendure их нет, приём — docs/open.md,
+       «Отзывы покупателей»; И728). Пока отзывы образцовые
+       (`REVIEWS_ARE_REAL = false`), шаблон на движке показывает образцы — с
+       отметкой «Sample review» у каждой карточки, — но без ссылки на товар:
+       товаров образца у движка нет, а образец о масле, приставленный к чужому
+       товару движка, был бы отзывом не о том товаре. Флаг настоящести поднят —
+       образцов нет вовсе, список пуст до приёма отзывов движком, и лента
+       молчит. */
+    async reviews(lang) {
+      if (REVIEWS_ARE_REAL) return { ok: true, value: [] }
+      const r = await sampleContent.reviews(lang)
+      return r.ok ? { ok: true, value: r.value.map((x) => ({ ...x, product: null })) } : r
+    },
     async page(lang, slug) {
       const r = await sampleContent.page(lang, slug)
-      if (!r.ok || !r.value.blocks.some((b) => b.type === 'featured')) return r
+      if (!r.ok || !r.value.blocks.some((b) => b.type === 'featured' || b.type === 'hero')) return r
       /* Полка категории (`to`) — первые товары полки движка того же вида:
          у образца масла — `uleiuri`, у движка — `oil`; вид полки (`formOf`)
          у них один. Такой полки у движка нет — полка пуста и молча не
@@ -49,7 +88,9 @@ function standIn(catalog: Source): Content {
         const top = await catalog.listing(lang, { category, facets: {}, sort: 'popular', page: null })
         return top.ok ? top.value.items.slice(0, category ? 5 : 4).map((c) => c.id) : []
       }
-      const blocks: Block[] = await Promise.all(r.value.blocks.map(async (b): Promise<Block> => (b.type === 'featured' ? (b.to ? { ...b, to: engineShelf(b.to), ids: engineShelf(b.to) ? await firstOf(engineShelf(b.to)) : [] } : { ...b, ids: await firstOf() }) : b)))
+      /* Полки кнопками героя — тем же ходом: полка движка того же вида. */
+      const blocks: Block[] = await Promise.all(r.value.blocks.map(async (b): Promise<Block> => (b.type === 'featured' ? (b.to ? { ...b, to: engineShelf(b.to), ids: engineShelf(b.to) ? await firstOf(engineShelf(b.to)) : [] } : { ...b, ids: await firstOf() })
+        : b.type === 'hero' && Array.isArray(b.shelves) ? { ...b, shelves: b.shelves.flatMap((s) => engineShelf(s) ?? []) } : b)))
       return { ok: true, value: { ...r.value, blocks } }
     },
   }

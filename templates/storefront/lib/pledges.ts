@@ -4,7 +4,7 @@ import { t, tn } from './i18n/index.ts'
 import { money } from './money.ts'
 
 /** Обещание у кнопки заказа: знак из листа и строка. */
-export type PledgeView = { icon: 'package' | 'truck' | 'shield-check'; text: string }
+export type PledgeView = { icon: 'package' | 'truck' | 'check-shield'; text: string }
 export type PledgesView = { label: string; items: PledgeView[] }
 
 /** Доставка одной строкой — из того же списка, что выбор на оформлении
@@ -32,7 +32,7 @@ export function pledgesView(lang: Lang, a: { payments: PaymentMethod[] | null; m
   const items: PledgeView[] = [
     ...(cod ? [{ icon: 'package' as const, text: cod.name }] : []),
     ...(delivery ? [{ icon: 'truck' as const, text: delivery }] : []),
-    ...(a.returnDays ? [{ icon: 'shield-check' as const, text: tn(lang, 'pledge.returns', a.returnDays) }] : []),
+    ...(a.returnDays ? [{ icon: 'check-shield' as const, text: tn(lang, 'pledge.returns', a.returnDays) }] : []),
   ]
   return { label: t(lang, 'pledge.label'), items }
 }

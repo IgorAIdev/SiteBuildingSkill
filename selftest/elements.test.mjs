@@ -52,10 +52,17 @@ test('an element with its own style, its own colour or a sign outside the kit sh
 
 /* Лист значков — рисунки, а не орган: состояний и меток органа у него нет,
    свои рисунки ему положены. */
+/* Листа значков в каталоге больше нет (элемент 15 снят 03.10.2026: все его
+   значки в листе знаков набора), поэтому правило проверяется на образце,
+   собранном из любого элемента: род «набор значков», без меток и состояний,
+   со своим рисунком. */
 test('an icon set carries its own drawings and needs no control states', () => {
-  const set = catalog.элементы.find((e) => e.род.includes('набор значков'))
-  assert.ok(set, 'в каталоге есть лист значков')
-  assert.deepEqual(auditElements({ ...catalog, элементы: [set] }, read, ids), [])
+  const set = { ...structuredClone(catalog.элементы.find((e) => e.папка === '02-explore-arrow')), род: ['набор значков'], метки: {}, состояния: {} }
+  const page = read('02-explore-arrow/element.html').replace('<svg data-sign="arrow-right"></svg>', '<svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg>')
+  const own = (p) => (p === '02-explore-arrow/element.html' ? page : read(p))
+  assert.deepEqual(auditElements({ ...catalog, элементы: [set] }, own, ids), [])
+  const asButton = { ...set, род: ['кнопка'] }
+  assert.match(auditElements({ ...catalog, элементы: [asButton] }, own, ids).join(' | '), /свой рисунок значка/)
 })
 
 test('the page lists every element under its family, with its tags', () => {
@@ -89,12 +96,12 @@ test('elements are found by kind: one table of contents for the page and for --l
   for (const k of both.род) assert.ok(byKind(catalog).find(([kind]) => kind === k)[1].includes(both), `${both.папка} стоит в роде «${k}»`)
   const lines = listKinds(catalog, 'поле')
   assert.match(lines[0], /^поле — \d+$/)
-  for (const e of catalog.элементы.filter((x) => x.род.includes('поле'))) assert.ok(lines.includes(`  ${e.папка.slice(0, 2)} · ${e.имя} · ${catalog.семьи[e.семья].имя}`))
+  for (const e of catalog.элементы.filter((x) => x.род.includes('поле'))) assert.ok(lines.includes(`  ${e.папка.split('-')[0]} · ${e.имя} · ${catalog.семьи[e.семья].имя}`))
   assert.deepEqual(listKinds(catalog, 'нет-такого'), [])
   const html = toHtml(catalog)
   for (const e of catalog.элементы) {
-    assert.ok(html.includes(`id="e-${e.папка.slice(0, 2)}"`), `у ${e.папка} есть якорь`)
-    assert.ok(html.includes(`href="#e-${e.папка.slice(0, 2)}"`), `${e.папка} есть в оглавлении`)
+    assert.ok(html.includes(`id="e-${e.папка.split('-')[0]}"`), `у ${e.папка} есть якорь`)
+    assert.ok(html.includes(`href="#e-${e.папка.split('-')[0]}"`), `${e.папка} есть в оглавлении`)
   }
 })
 
@@ -102,4 +109,11 @@ test('two elements with one name are named', () => {
   const twin = structuredClone(catalog)
   twin.элементы[1].имя = twin.элементы[0].имя
   assert.match(auditElements(twin, read, ids).join('\n'), /имя «.+» уже занято/)
+})
+
+test('a property the base declares and the palette declares too is named: the page frame overwrites it with the palette value (И666)', () => {
+  /* Основа, которая снова объявит `--line` толщиной, — а у палитры это цвет разделителя. */
+  const clash = (p) => (p === 'base.css' ? `${read(p)}\n:root{--line:1px}` : read(p))
+  assert.match(auditElements(catalog, clash, ids).join('\n'), /base\.css: свойство --line объявлено и в палитре/)
+  assert.ok(!/объявлено и в палитре/.test(auditElements(catalog, read, ids).join('\n')), 'основа набора своих имён у палитры не берёт')
 })

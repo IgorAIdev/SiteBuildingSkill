@@ -12,9 +12,9 @@
  */
 
 export const CODE_FAMILIES = [
-  'twice', 'longFile', 'manyHooks', 'keep',
+  'twice', 'longFile', 'nearLong', 'manyHooks', 'keep',
   'deadLink', 'translated', 'glued', 'mutSort', 'jumpBack', 'inkLiteral',
-  'deadStyle', 'deadSetting', 'contactScheme', 'deadGuard',
+  'deadStyle', 'deadSetting', 'contactScheme', 'deadGuard', 'actionRedraw',
 ]
 
 /** Пустая база: ноль по каждой семье. На новом проекте долга нет, и первое
@@ -28,11 +28,16 @@ export const emptyCodeBaseline = () =>
 /* Пороги двух семей живут рядом с их подписями: подпись называет число,
    и число обязано быть тем же, которым меряют. */
 export const LONG_FILE = 420
+/** Девять десятых порога (И743): файл, которому до порога меньше сорока
+ *  строк, следующую работу уже не вместит — его раскладывают по работам
+ *  сейчас, а не обходным файлом рядом, когда он упрётся. */
+export const NEAR_LONG = Math.floor(LONG_FILE * 0.9)
 export const MANY_HOOKS = 14
 
 export const CODE_LABELS = {
   twice: 'одно и то же написано дважды: тела совпадают, файлы разные',
   longFile: `файл длиннее ${LONG_FILE} строк — целиком уже не читается`,
+  nearLong: `файл у порога: длиннее ${NEAR_LONG} строк из ${LONG_FILE} — следующая работа в него не влезет; разложить по работам сейчас, а не обходным файлом рядом`,
   manyHooks: `функция держит больше ${MANY_HOOKS} хуков — это не один компонент, а несколько`,
   keep: 'localStorage мимо склада: без уведомления подписчиков и без защиты от приватного режима',
   deadLink: 'href="#" — обещает адрес, а уводит на верх страницы',
@@ -44,6 +49,7 @@ export const CODE_LABELS = {
   deadSetting: 'настройка, которая ничего не меняет: у поля панели есть провод, а того, к чему он ведёт, в коде нет',
   deadStyle: 'класс описан в стиле, но его никто не берёт — правило есть, а на странице его нет',
   contactScheme: 'адрес канала связи (tel/mailto/messenger) набран мимо lib/contacts.ts — второй источник правды об одном номере',
+  actionRedraw: 'действие сервера зовёт пересборку (revalidatePath, revalidateTag, sessionChanged) без перехода — его ответ несёт заново собранную ТЕКУЩУЮ страницу, где бы ни стояла кнопка (И696); пересборка — с redirect или с пометкой «своя страница»',
   deadGuard: 'сторож читает исходником файл, в котором остались одни перевывозы — он больше ничего не сторожит и молчит об этом',
 }
 

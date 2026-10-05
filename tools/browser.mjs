@@ -80,3 +80,19 @@ export async function still(page) {
     if (b.getAttribute('aria-label') === before) b.click()
   }).catch(() => {})
 }
+
+/** Дождаться, пока ДОЕДУТ анимации страницы, — только те, что кончаются:
+ *  на часах документа и с конечным числом повторов, и не дольше `cap` мс.
+ *  Заведено зависанием проверки (01.10.2026): ждали `finished` у ВСЕХ
+ *  анимаций, а у ленты полок шапки тень края идёт по прокрутке
+ *  (`animation-timeline: scroll()`, Header.module.css `shelf-edge`) — её
+ *  `finished` не наступает никогда, и `page.evaluate` без предела стоял, пока
+ *  прогон не снимали руками. Бесконечная по часам (пульс, вращение) — то же. */
+export async function settled(page, cap = 3000) {
+  await page.evaluate((ms) => Promise.race([
+    Promise.all(document.getAnimations()
+      .filter((a) => a.timeline === document.timeline && Number.isFinite(a.effect?.getComputedTiming?.().endTime))
+      .map((a) => a.finished.catch(() => {}))),
+    new Promise((r) => setTimeout(r, ms)),
+  ]), cap).catch(() => {})
+}

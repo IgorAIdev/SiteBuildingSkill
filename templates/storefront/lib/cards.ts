@@ -5,11 +5,26 @@
 // look-card:* `npm run look:remove` удаляет строки и блоки с меткой вариантов,
 // look-card:* которых вид не носит, — здесь и в ProductCard.module.css.
 export const CARDS = [
+  'inset', // look-card:inset
   'framed', // look-card:framed
-  'bare', // look-card:bare
-  'outlined', // look-card:outlined
-  'toned', // look-card:toned
-  'tinted', // look-card:tinted
+  'sheet', // look-card:sheet
+  'edged', // look-card:edged
 ] as const
 
 export type CardVariant = (typeof CARDS)[number]
+
+/* Подача фактов в карточке — от минимума к полноте (слово заказчика
+   30.09.2026: «идём от минимума к большей полноте карточки»). Разметка та
+   же, меняется только то, как сказаны факты: `min` — марка, имя и цена;
+   `line` — строка «1000 mg · 10 ml»; `lines` — строка и под ней доза
+   («5 mg · CBD in one drop»), как на cbdin.bg; `pills` — всего мг, мера и
+   доза плашками, всего мг краской марки. Порядок — заказчика. Выбирают глазами на странице дизайн-системы
+   (вкладка «Карточки»); что стоит на сайте — `SITE_INFO` ниже. */
+export const CARD_INFO = ['min', 'line', 'lines', 'pills'] as const
+export type CardInfo = (typeof CARD_INFO)[number]
+/* Подача сайта — выбор заказчика 30.09.2026 на странице дизайн-системы:
+   «дизайн 2, вид 1 делай на сайте» — марка, имя и цена; сила товара стоит
+   в имени («20% CBD+CBN Oil»), числа упаковки — на карте товара. Выбор не
+   значение панели Look: панель его не предлагает, подачи показывает
+   дизайн-система. Одежда карточки — значение вида (`card`, framed). */
+export const SITE_INFO: CardInfo = 'min'

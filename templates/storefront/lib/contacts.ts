@@ -22,17 +22,58 @@ export const MESSENGERS: readonly { key: Messenger; label: string; value: string
 const digits = (v: string) => v.replace(/[^\d+]/g, '')
 
 /** Ссылка на разговор с магазином; где мессенджер принимает текст в
- *  адресе (Telegram, WhatsApp) — с уже набранным сообщением. У Viber и
- *  Instagram такого параметра нет: добавленный, он сломал бы ссылку, —
- *  текст заказа окно показывает само. Значения нет — ссылки нет. */
-export function chatHref(m: { key: Messenger; value: string }, text: string): string | null {
+ *  адресе (Telegram, WhatsApp) — с уже набранным сообщением, если оно
+ *  есть. У Viber и Instagram такого параметра нет: добавленный, он сломал
+ *  бы ссылку, — текст заказа окно показывает само. Значения нет — ссылки
+ *  нет. */
+export function chatHref(m: { key: Messenger; value: string }, text = ''): string | null {
   const v = m.value.trim()
   if (!v) return null
-  const said = `text=${encodeURIComponent(text)}`
+  const said = text ? `?text=${encodeURIComponent(text)}` : ''
   switch (m.key) {
-    case 'telegram': return `https://t.me/${v.replace(/^@/, '')}?${said}`
-    case 'whatsapp': return `https://wa.me/${digits(v).replace(/^\+/, '')}?${said}`
+    case 'telegram': return `https://t.me/${v.replace(/^@/, '')}${said}`
+    case 'whatsapp': return `https://wa.me/${digits(v).replace(/^\+/, '')}${said}`
     case 'viber': return `viber://chat?number=${encodeURIComponent(digits(v))}`
     case 'instagram': return `https://ig.me/m/${v.replace(/^@/, '')}`
   }
+}
+
+/* Соцсети магазина — ряд знаков в подвале (слово заказчика 29.09.2026:
+   «соцсети ж нужны»; И549). Какие стоят и куда ведут — данные магазина:
+   образец держит заглушки, настоящие адреса вписывает заказчик; строки без
+   адреса в подвал не выходят. Порядок — порядок ряда. */
+export type Social = 'instagram' | 'facebook' | 'youtube' | 'telegram'
+export const SOCIALS: readonly { key: Social; label: string; href: string }[] = [
+  { key: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/exemplu' },
+  { key: 'facebook', label: 'Facebook', href: 'https://www.facebook.com/exemplu' },
+  { key: 'youtube', label: 'YouTube', href: 'https://www.youtube.com/@exemplu' },
+  { key: 'telegram', label: 'Telegram', href: 'https://t.me/exemplu' },
+]
+
+/* Кто отвечает — первая строка окна помощи, пункт меню «Онлайн-поддержка ·
+   имя» (слово заказчика 29.09.2026: «онлайн сапорт — это пункт меню, а не
+   название формы»; образец — окно cbdin). Нажатие ведёт в разговор с ним в
+   мессенджере `via`. Имя и мессенджер — данные магазина: образец держит имя
+   со снимка, настоящее вписывает заказчик. */
+export const SUPPORT: { name: string; via: Messenger } = { name: 'Igor', via: 'telegram' }
+export function supportHref(): string | null {
+  const m = MESSENGERS.find((x) => x.key === SUPPORT.via)
+  return m ? chatHref(m) : null
+}
+
+/** Пути к магазину одним списком — меню трубки в шапке и окно помощи
+ *  (И547): телефон, почта, затем мессенджеры в их порядке. Instagram — не
+ *  путь связи, а соцсеть: он в ряду соцсетей подвала (`SOCIALS`), в списке
+ *  его нет (слово заказчика 29.09.2026: «Instagram убрать»). Строка — ключ,
+ *  имя, показанное значение и ссылка из него; значения нет — нет и ссылки.
+ *  Имена телефона и почты — слова языка, мессенджеров — их марки. */
+export type Reach = 'phone' | 'email' | Exclude<Messenger, 'instagram'>
+export type ReachRow = { key: Reach; name: string; value: string; href: string | null }
+export function reachRows(words: { phone: string; email: string }): ReachRow[] {
+  const chats = MESSENGERS.flatMap((m) => (m.key === 'instagram' ? [] : [{ key: m.key, name: m.label, value: m.value, href: chatHref(m) }]))
+  return [
+    { key: 'phone', name: words.phone, value: CONTACTS.phone, href: CONTACTS.phone.trim() ? telHref() : null },
+    { key: 'email', name: words.email, value: CONTACTS.email, href: CONTACTS.email.trim() ? mailHref() : null },
+    ...chats,
+  ]
 }

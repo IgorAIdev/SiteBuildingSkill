@@ -29,15 +29,18 @@ import { existsSync, readFileSync } from 'node:fs'
 import { join, relative, isAbsolute } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { CODE_DIRS, BLOCK_DIRS, STYLE_DIRS, LIB, TOKENS, DESIGN_DOC, inDirs } from './kit-config.mjs'
+import { noteEdit } from './parts.mjs'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 
 let input = ''
 try { input = readFileSync(0, 'utf8') } catch { /* stdin пуст — нечего проверять */ }
 let file = ''
+let session = ''
 try {
   const data = JSON.parse(input || '{}')
   file = data.tool_response?.filePath ?? data.tool_input?.file_path ?? ''
+  session = data.session_id ?? ''
 } catch { /* не JSON — нечего проверять */ }
 if (!file) process.exit(0)
 
@@ -55,6 +58,10 @@ if (rel.startsWith('.storefront/')) {
   console.error(`✗ ${rel} — копия шаблона: правка в ней не попадёт ни в шаблон, ни в скилл и сотрётся следующей постановкой.\n  Правьте ${existsSync(join(ROOT, to)) ? to : 'шаблон — templates/storefront/'}: npm run storefront положит правку в витрину сам.`)
   process.exit(2)
 }
+
+/* Тронутая часть сайта запоминается (И765): конец работы не наступит, пока
+   её не померят отрисованной и нажатием (`check-part.mjs`, хук конца). */
+noteEdit(session, rel)
 
 const has = (p) => existsSync(join(ROOT, p))
 const scripts = (() => { try { return JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).scripts ?? {} } catch { return {} } })()
@@ -98,6 +105,14 @@ if (has('tools/check-rules.mjs') &&
      /^templates\/palette[\w-]*\.json$/.test(rel) || /^\.claude\/skills\/(palette|scale|craft)\//.test(rel))) {
   runs.push(['check:rules --tables', 'node', ['tools/check-rules.mjs', '--tables']])
   runs.push(['check:rules', 'node', ['tools/check-rules.mjs']])
+}
+/* Копия строителей для панели вида (skills/site-building/assets/studio/engine)
+   — выпуск из tools/, а не второй исходник: правка строителя палитры, шкал
+   или порогов выпускает её заново и сверяет вывод. 01.10.2026 копия
+   палитры отстала на две правки, панель не знала стекла, и опубликованный
+   вид не давал значения четырём свойствам сайта (И612). */
+if (has('tools/sync-studio-assets.mjs') && /^tools\/(scale|palette|thresholds)\.mjs$|^tools\/palette-profile\.json$/.test(rel)) {
+  runs.push(['studio:sync', 'node', ['tools/sync-studio-assets.mjs']])
 }
 if (!runs.length) process.exit(0)
 

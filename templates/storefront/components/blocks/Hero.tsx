@@ -1,216 +1,58 @@
-import type { ReactNode } from 'react'
 import p from '@/styles/primitives.module.css'
-import b from '@/styles/btn.module.css' // look-home:proof,journal,cabinet,showroom,poster
-import go from '@/styles/go.module.css' // look-home:showroom
 import s from './blocks.module.css'
 import type { Block } from '@/lib/source/contract.ts'
-import type { HomeVariant } from '@/lib/homes.ts'
-import { hrefFor } from '@/lib/href.ts' // look-home:scene,proof,journal,cabinet,showroom,poster
-import { t } from '@/lib/i18n/index.ts' // look-home:scene,showroom
-import { Icon } from '../Icon.tsx' // look-home:showroom
-import { Price } from '../Price.tsx' // look-home:showroom
-import { Pledges } from '../Pledges.tsx' // look-home:counter
-import { HeroSlides } from './HeroSlides.tsx' // look-home:scene
+import { hrefFor } from '@/lib/href.ts'
+import { t } from '@/lib/i18n/index.ts'
 import type { BlockCtx, Place } from './types.ts'
 import { shot } from '@/lib/shot.ts'
+import { CategoryButton } from '../CategoryButton.tsx'
+import { heroShelves } from '@/lib/hero-shelves.ts'
 
 type Props = { block: Extract<Block, { type: 'hero' }>; ctx: BlockCtx; place: Place }
 
-/* Герой по варианту главной (lib/homes.ts). Слова, кнопка и снимок — данные
-   блока, одни на все варианты; вариант решает, как они стоят.
-   look-home:* Пока вид выбирается, в коде стоят все варианты (lib/homes.ts);
-   look-home:* `npm run look:remove` оставляет выбранный.
-   Кнопка героя — одна громкая на экран: главное действие первого экрана. */
-
-/* look-home:proof,journal,cabinet,showroom,poster:start */
-const cta = (block: Props['block'], ctx: BlockCtx) => (
-  <a className={b.btn} data-voice="loud" data-size="lg" href={hrefFor(ctx.lang, { catalog: true })}>{block.cta}</a>
-)
-/* look-home:proof,journal,cabinet,showroom,poster:end */
-
-/* look-home:scene:start */
-/* scene — единственное место, где снимок бывает большим, и одна тёмная
-   сцена на странице. Устройство меняется по ширине СЦЕНЫ, а не окна
-   (blocks.module.css, `.hero`): на широкой текст лежит своей колонкой
-   поверх снимка, на вуали, которая сходит на нет к предметам; на узкой
-   снимок стоит кадром сверху, а текст — под ним на той же сцене, и
-   заголовок больше не ложится на этикетку флакона (разбор главной
-   24.09.2026, И280). Вуаль живёт на коробке снимка, поэтому у текста нет
-   второго фона и нет шва. */
-/* Слайды — блок и его `more` (И493); первый ведёт в каталог, следующие —
-   в свою полку. Снимки после первого — ленивые: их не видно до листания. */
-const slidesOf = ({ block, ctx }: Props) => {
-  const all = [{ ...block, to: null }, ...(block.more ?? [])]
-  return all.map((x, i) => ({
-    id: `hero-${i + 1}`, show: t(ctx.lang, 'hero.show', { n: String(i + 1), total: String(all.length) }),
-    title: x.title, lede: x.lede, cta: x.cta, alt: x.image.alt,
-    href: x.to ? hrefFor(ctx.lang, { category: x.to }) : hrefFor(ctx.lang, { catalog: true }),
-    image: shot(x.image, 'wide', i !== 0),
-  }))
-}
-const scene = (props: Props) => <HeroSlides slides={slidesOf(props)} label={t(props.ctx.lang, 'hero.label')} prev={t(props.ctx.lang, 'hero.prev')} next={t(props.ctx.lang, 'hero.next')} />
-/* look-home:scene:end */
-
-/* look-home:counter:start */
-/* counter — магазин сразу: обещание ролью заголовка страницы, рядом абзац и
-   обещания покупки из данных (доставка «от», срок возврата — lib/pledges.ts).
-   Снимка героя нет: картинки первого экрана — сами товары полки ниже. Кнопки
-   тоже нет: полки и ходовые стоят следующими в той же группе. */
-const counter = ({ block, ctx, place }: Props) => (
-  <section className={`${p.wrap} ${p.section}`} data-air={place.air ?? undefined}>
-    <div className={`${p.sidebar} ${s.intro}`}>
-      <h1 className={s.introTitle}>{block.title}</h1>
-      <div className={`${p.aside} ${p.stack} ${s.introText}`}>
-        <p>{block.lede}</p>
-        <Pledges pledges={ctx.pledges} />
-      </div>
-    </div>
-  </section>
-)
-/* look-home:counter:end */
-
-/* look-home:proof:start */
-/* proof — протокол сразу: обещание ролью заголовка страницы и кнопка к
-   товару; лист протокола стоит следующим, в той же группе первого экрана
-   (Lab.tsx, `certificate`). Снимка героя нет: главное здесь — документ. */
-const proof = ({ block, ctx, place }: Props) => (
-  <section className={`${p.wrap} ${p.section}`} data-air={place.air ?? undefined}>
-    <div className={`${p.stack} ${s.claim}`}>
-      <h1 className={s.introTitle}>{block.title}</h1>
-      <p className={s.claimLede}>{block.lede}</p>
-      <div className={p.cluster}>{cta(block, ctx)}</div>
-    </div>
-  </section>
-)
-/* look-home:proof:end */
-
-/* look-home:journal:start */
-/* journal — заголовок сразу: обещание ролью героя во всю ширину коробки на
-   чистом полу, без сцены и вуали; под ним строкой абзац и кнопка; снимок —
-   широким кадром ниже, отдельным предметом (примитив `frame`: пропорция с
-   потолком от малого окна). */
-const journal = ({ block, ctx, place }: Props) => (
-  <section className={`${p.wrap} ${p.section}`} data-air={place.air ?? undefined}>
-    <div className={`${p.stack} ${s.headline}`}>
-      <h1>{block.title}</h1>
-      <div className={`${p.cluster} ${s.headlineRow}`}>
-        <p>{block.lede}</p>
-        {cta(block, ctx)}
-      </div>
-      <div className={`${p.frame} ${s.plate}`}>
+/* Первый экран — светлая половина и снимок рядом (вариант C, слово заказчика
+   04.10.2026: «беру вариант C»; И710; образец Allbirds): заголовок, абзац и ряд
+   пути — на полу страницы чернилами страницы, снимок — кадром справа. Раскладка —
+   примитив `lede` (текст и кадр рядом; ряду тесно — столбиком), кадр — `frame`.
+   В разметке снимок первый: в столбике он стоит сверху — товар в первом окне
+   телефона (И553), а на широком ряд развёрнут (blocks.module.css, `.hero`). До
+   04.10.2026 — тёмная сцена во всю коробку и текст на вуали поверх снимка (И280,
+   И697): «по цветам, по расположению мне не нравится». */
+/* Один снимок, без слайдов. Слайдер (И493, самолистание И584) снят словом
+   заказчика 01.10.2026: «слайдер отменяем, вырезал его, удаляй, делаем херо
+   изображение»: второй и третий слайд почти никто не видит, а сам
+   сменяющийся слайд уводит строку из-под глаз (замер Notre Dame, Baymard,
+   NN/g). */
+/* Под абзацем — ряд пути: «В магазин» и кнопки главных полок (слово заказчика
+   03.10.2026: «херо блок синюю кнопку удаляй, вместо неё Shop большая кнопка, и
+   ниже в левой части… кнопки основных категорий… другие категории не
+   размещаем»; И673) одним рядом (И708); с 04.10.2026 — все полки, ряд переносится, а
+   на телефоне едет вбок (примитив `rail`, вид `wrap`; И735). Первая — «Shop all», та же
+   кнопка, что у полок: все кнопки ряда равные, весь каталог отличает слово (слово
+   заказчика 04.10.2026; прежде «Shop» — заливкой марки, И697). Кнопки — «Кнопки категорий»
+   вкладки «Кнопки» (CategoryButton): кружок со знаком товара. Какие полки —
+   данные блока (`shelves`): `'all'` — все полки магазина в порядке каталога (И735;
+   слово заказчика 04.10.2026: «размещай все категории кнопками»), лишнее
+   переносится вторым рядом; полки нет у магазина — нет кнопки. */
+export function Hero({ block, ctx }: Props) {
+  const shelves = heroShelves(block.shelves, ctx.collections)
+  return (
+    <section className={`${p.wrap} ${p.lede} ${s.hero}`}>
+      <div className={`${p.frame} ${s.heroShot}`}>
         <img {...shot(block.image, 'wide')} alt={block.image.alt} fetchPriority="high" />
       </div>
-    </div>
-  </section>
-)
-/* look-home:journal:end */
-
-/* look-home:cabinet:start */
-/* cabinet — тихая аптека: заголовок, абзац и кнопка по середине узкой
-   мерой, на чистом полу. Снимок героя стоит ниже отдельной паузой без слов
-   (`Still` ниже): здесь первыми идут ящики полок. */
-const cabinet = ({ block, ctx, place }: Props) => (
-  <section className={`${p.wrap} ${p.section}`} data-air={place.air ?? undefined}>
-    <div className={`${p.stack} ${s.calm}`}>
-      <h1>{block.title}</h1>
-      <p>{block.lede}</p>
-      <div className={`${p.cluster} ${s.calmAct}`}>{cta(block, ctx)}</div>
-    </div>
-  </section>
-)
-
-/* Пауза — снимок героя отдельным предметом без слов, во всю коробку
-   страницы между товаром и справкой (lib/homes.ts, место `still`): у аптеки
-   заголовок стоит без снимка, и снимок встаёт здесь, чтобы разбить плотное
-   спокойным. Кадр — `frame` с потолком от малого окна; подпись снимка — та
-   же, что у героя (слова героя стоят наверху, снимок их не повторяет). */
-export function Still({ block, place }: Props) {
-  return (
-    <section className={`${p.wrap} ${p.section}`} data-air={place.air ?? undefined}>
-      <div className={`${p.frame} ${s.still}`}>
-        <img {...shot(block.image, 'wide', true)} alt={block.image.alt} decoding="async" />
-      </div>
-    </section>
-  )
-}
-/* look-home:cabinet:end */
-
-/* look-home:showroom:start */
-/* showroom — витрина салона (docs/design/home.md, «Витрина салона»):
-   снимок со скруглением в полях страницы, заголовок лежит на нём сверху
-   слева; товар первого экрана (первый из ходовых, `ctx.spotlight`) лежит
-   на снимке карточкой справа снизу; абзац и кнопка — в вырезе нижнего
-   левого угла, на полу страницы, и край снимка обходит вырез одной линией.
-   Заголовок, карточка и вырез стоят каждый в своей строке общей сетки
-   (снимок — её подсеткой), поэтому длинный текст растит снимок, а не
-   налезает на соседа. Устройство решает ширина СЦЕНЫ (`.showroom`), шов
-   820: в узкой абзац и кнопка стоят на полу под снимком. */
-const showroom = ({ block, ctx }: Props) => {
-  const spot = ctx.spotlight
-  return (
-    <section className={`${p.wrap} ${s.showBand}`}>
-      <div className={s.showroom}>
-        <div className={s.show}>
-          <div className={s.showPhoto}>
-            <img className={s.showShot} {...shot(block.image, 'wide')} alt={block.image.alt} fetchPriority="high" />
-            <div className={s.showTitle} data-ground="deck"><h1>{block.title}</h1></div>
-            {spot ? (
-              <div className={s.showCard} data-plate>
-                <div className={`${p.frame} ${s.showCardShot}`}>
-                  <img {...shot(spot.image, 'thumb')} alt="" decoding="async" />
-                </div>
-                <div className={s.showCardText}>
-                  <p className={s.showCardName}>{spot.name}</p>
-                  <Price now={spot.price} was={spot.was} />
-                  <a className={`${go.go} ${s.showCardGo}`} href={spot.href} aria-label={t(ctx.lang, 'shelf.viewName', { name: spot.name })}>
-                    {t(ctx.lang, 'home.spotlight')}<Icon id="arrow-right" />
-                  </a>
-                </div>
-              </div>
-            ) : null}
-          </div>
-          <div className={`${p.stack} ${s.showNotch}`}>
-            <p>{block.lede}</p>
-            <div className={p.cluster}>{cta(block, ctx)}</div>
-          </div>
+      <div className={p.ledeText}>
+        <div className={`${p.stack} ${s.heroWords}`}>
+          <h1>{block.title}</h1>
+          <p>{block.lede}</p>
         </div>
+        <nav aria-label={t(ctx.lang, 'nav.categories')}>
+          <ul className={`${p.rail} ${s.heroShelves}`} data-rail="wrap">
+            <li><CategoryButton name={t(ctx.lang, 'nav.shopAll')} sign="shop-awning" href={hrefFor(ctx.lang, { catalog: true })} /></li>
+            {shelves.map((c) => <li key={c.slug}><CategoryButton name={c.name} sign={c.sign} href={hrefFor(ctx.lang, { category: c.slug })} /></li>)}
+          </ul>
+        </nav>
       </div>
     </section>
   )
-}
-/* look-home:showroom:end */
-
-/* look-home:poster:start */
-/* poster — афиша (docs/design/home.md, «Афиша»): снимок во всю ширину окна
-   сразу под шапкой, без полей и скругления; заголовок, абзац и кнопка —
-   колонкой на снимке, на вуали. Колонка стоит в коробке страницы, поэтому
-   её край совпадает с краем текста ниже. Высота снимка — нижняя граница от
-   окна и от своей ширины; снимок заполняет коробку (`cover`), и длинный
-   заголовок растит коробку, а не налезает на край. */
-const poster = ({ block, ctx }: Props) => (
-  <section className={s.poster}>
-    <img className={s.posterShot} {...shot(block.image, 'wide')} alt={block.image.alt} fetchPriority="high" />
-    <div className={`${p.wrap} ${s.posterBody}`}>
-      <div className={s.posterText} data-ground="deck">
-        <h1>{block.title}</h1>
-        <p>{block.lede}</p>
-        <div className={p.cluster}>{cta(block, ctx)}</div>
-      </div>
-    </div>
-  </section>
-)
-/* look-home:poster:end */
-
-const HEROES: Record<HomeVariant, (props: Props) => ReactNode> = {
-  scene, // look-home:scene
-  counter, // look-home:counter
-  proof, // look-home:proof
-  journal, // look-home:journal
-  cabinet, // look-home:cabinet
-  showroom, // look-home:showroom
-  poster, // look-home:poster
-}
-
-export function Hero(props: Props) {
-  return HEROES[props.ctx.home](props)
 }

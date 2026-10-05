@@ -1,0 +1,100 @@
+[
+  {
+    "id": "andreea-ulei-full-spectrum",
+    "product": "ulei-cbd-full-spectrum",
+    "rating": 5,
+    "author": "Andreea P.",
+    "date": "2026-09-28",
+    "verified": true,
+    "clip": "oil",
+    "body": {
+      "ro": "Picurătorul are gradații, așa că știu exact câte picături iau. Numărul lotului de pe cutie se potrivește cu buletinul de analiză de pe site.",
+      "en": "The dropper has markings, so I know exactly how many drops I take. The batch number on the box matches the lab report on the website.",
+      "hu": "A pipettán van beosztás, így pontosan tudom, hány cseppet veszek. A dobozon lévő tételszám egyezik a weboldalon lévő laborjegyzőkönyvvel."
+    }
+  },
+  {
+    "id": "mihai-crema",
+    "product": "crema-cbd",
+    "rating": 5,
+    "author": "Mihai D.",
+    "date": "2026-09-22",
+    "verified": true,
+    "clip": "cream",
+    "body": {
+      "ro": "Textură ușoară, fără miros puternic, iar tubul încape în orice geantă. Coletul a ajuns în două zile, bine ambalat.",
+      "en": "A light texture, no strong smell, and the tube fits in any bag. The parcel arrived in two days, well packed.",
+      "hu": "Könnyű állag, nincs erős illata, és a tubus bármelyik táskába belefér. A csomag két nap alatt megérkezett, gondosan becsomagolva."
+    }
+  },
+  {
+    "id": "ioana-capsule-25",
+    "product": "capsule-cbd-25",
+    "rating": 4,
+    "author": "Ioana S.",
+    "date": "2026-09-15",
+    "verified": true,
+    "clip": "capsules",
+    "body": {
+      "ro": "Capsulele se înghit ușor și nu au niciun gust. Aș vrea și o cutie mai mică, de încercare.",
+      "en": "The capsules are easy to swallow and have no taste at all. I would like a smaller box to try first.",
+      "hu": "A kapszulát könnyű lenyelni, és egyáltalán nincs íze. Jó lenne egy kisebb, kipróbáló doboz is."
+    }
+  },
+  {
+    "id": "elena-ulei-5",
+    "product": "ulei-cbd-5-incepatori",
+    "rating": 5,
+    "author": "Elena V.",
+    "date": "2026-09-25",
+    "verified": true,
+    "title": { "ro": "Etichetă clară", "en": "A clear label", "hu": "Átlátható címke" },
+    "body": {
+      "ro": "Pe etichetă găsesc tot ce caut: cât CBD are flaconul și cât are o picătură, plus numărul lotului. Am deschis buletinul de analiză pe telefon înainte să desfac flaconul.",
+      "en": "The label has everything I look for: how much CBD is in the bottle and in one drop, plus the batch number. I opened the lab report on my phone before I opened the bottle.",
+      "hu": "A címkén minden rajta van, amit keresek: mennyi CBD van az üvegben és egy cseppben, valamint a tételszám. A laborjegyzőkönyvet még az üveg kibontása előtt megnyitottam a telefonomon."
+    }
+  },
+  {
+    "id": "radu-ulei-20-lavanda",
+    "product": "ulei-cbd-20-seara",
+    "rating": 4,
+    "author": "Radu M.",
+    "date": "2026-09-18",
+    "verified": false,
+    "title": { "ro": "Gust plăcut", "en": "A pleasant taste", "hu": "Kellemes íz" },
+    "body": {
+      "ro": "Lavanda face gustul mult mai blând decât al uleiului simplu pe care îl aveam înainte. Patru stele doar pentru că flaconul mi se pare mic pentru preț.",
+      "en": "The lavender makes the taste much softer than the plain oil I had before. Four stars only because the bottle feels small for the price.",
+      "hu": "A levendula sokkal lágyabbá teszi az ízét, mint a sima olajé, amit korábban használtam. Csak azért négy csillag, mert az üveg kicsinek tűnik az árához képest."
+    }
+  },
+  {
+    "id": "gabriela-ulei-caini",
+    "product": "ulei-caini-cbd",
+    "rating": 5,
+    "author": "Gabriela T.",
+    "date": "2026-09-10",
+    "verified": true,
+    "title": { "ro": "Ușor de dat", "en": "Easy to give", "hu": "Könnyű adagolni" },
+    "body": {
+      "ro": "Cu picurătorul pun câteva picături direct în mâncare, iar câinele o mănâncă fără mofturi. La întrebarea despre concentrație mi-au răspuns în aceeași zi.",
+      "en": "With the dropper I put a few drops straight on the food, and my dog eats it without fuss. They answered my question about the strength the same day.",
+      "hu": "A pipettával néhány cseppet közvetlenül az ételre teszek, és a kutyám gond nélkül megeszi. Az erősségről feltett kérdésemre még aznap válaszoltak."
+    }
+  },
+  {
+    "id": "zsofia-livrare",
+    "product": null,
+    "rating": 5,
+    "author": "Zsófia K.",
+    "date": "2026-09-05",
+    "verified": true,
+    "title": { "ro": "Livrare rapidă", "en": "Quick delivery", "hu": "Gyors szállítás" },
+    "body": {
+      "ro": "Am comandat luni, iar miercuri coletul era deja la punctul de ridicare. Plata la livrare a mers fără nicio problemă.",
+      "en": "I ordered on Monday and on Wednesday the parcel was already at the pickup point. Paying on delivery worked without any problem.",
+      "hu": "Hétfőn rendeltem, és szerdán a csomag már az átvételi ponton volt. Az utánvétes fizetés gond nélkül ment."
+    }
+  }
+]

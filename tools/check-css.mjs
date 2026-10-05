@@ -16,7 +16,7 @@
 import { fileURLToPath } from 'node:url'
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs'
 import { RHYTHM, MOTION, STATE } from './thresholds.mjs'
-import { join, relative as nativeRelative, dirname, basename } from 'node:path'
+import { join, relative as nativeRelative, dirname, basename, resolve } from 'node:path'
 import { CSS_FAMILIES, CSS_LABELS as NAMES, hueRx } from './css-families.mjs'
 import { parse as parseName, REQUIRED, optics, declarations, reads } from './names.mjs'
 import { axisOf, POINTER_FORBIDDEN } from './axes.mjs'
@@ -460,6 +460,36 @@ for (const path of files) {
     if (sizes.length) add('seamStep', `${at(m.index)}  ${m[0].replace(/\s+/g, ' ').trim().slice(0, 40)} меняет только ${[...new Set(sizes)].slice(0, 3).join(', ')} — величина, не смысл`)
   }
 
+  /* Ответ на руку — видом предмета, а не узлом (И685).
+   *
+   * Слово заказчика 03.10.2026: «наведение мыши на соцсети… квадратным
+   * фоном, наведение на меню в футере изменением цвета текста… как с
+   * типографикой — недоработка с ролями». Каждый узел писал свой `:hover`:
+   * шапка красила слова маркой (на палубе — тёмно-бирюзовой, не видно),
+   * подвал — полными чернилами, фильтры — своей смесью, поиск — тихой
+   * плашкой. Ответ живёт в модуле по виду предмета (styles/btn.module.css:
+   * `word` — слово и знак, `row` — строка, `press` — плита); узел берёт вид
+   * классом. Краска или подложка под рукой и при нажатии в стилях узла —
+   * находка; подложка строки ролью строки (`--hover-row`, `--press-row`,
+   * `--hover-ctrl`, `--press-ctrl`, выбранное `--quiet-tint`) — нет: строки
+   * меню стоят в разметке чужих списков, и роль у них та же. */
+  if (rel.endsWith('.module.css') && inDirs(rel, COMPONENT_DIRS)) {
+    for (const rule of css.matchAll(/([^{}]*:(?:hover|active)\b[^{}]*)\{([^{}]*)\}/g)) {
+      for (const d of rule[2].matchAll(/(?:^|;)\s*(color|background(?:-color)?|text-decoration(?:-line)?)\s*:\s*([^;]+)/g)) {
+        const v = d[2].trim()
+        /* Подчёркивание под рукой — тоже ответ узла (И717): у слова ответ краской
+           (`word`), черта — только у ссылки в тексте (`prose`). Снять — можно. */
+        if (d[1].startsWith('text-decoration') && /^none\b/.test(v)) continue
+        if (d[1] !== 'color' && /^var\(--(?:(?:hover|press)-(?:row|ctrl)|quiet-tint)\)$/.test(v)) continue
+        /* Своя краска, оставленная как была (`inherit`, `currentColor`, `--press-ink`
+           кнопки), — не ответ, а его отмена: дверь полки отвечает целиком, кнопка
+           имени внутри неё молчит. */
+        if (d[1] === 'color' && /^(?:inherit|currentColor|var\(--press-ink\))$/.test(v)) continue
+        add('handOut', `${at(rule.index + rule[1].length)}  ${rule[1].trim().replace(/\s+/g, ' ').slice(0, 48)} { ${d[1]}: ${v} } — ответ на руку берётся видом (btn.module.css: word, row, press), узел его не пишет`)
+      }
+    }
+  }
+
   /* Верхний слой браузера вместо номеров.
    *
    * Номер получает только то, что висит на экране ВСЕГДА: шапка, нижняя
@@ -663,8 +693,8 @@ for (const path of files) {
    * Признак дешёвый и не спорный: `:active`, двигающий предмет ВВЕРХ.
    * Подъём — это «сюда можно», то есть ответ на наведение; нажатие отвечает
    * вглубь: провалом, уменьшением, тенью. Вниз двигаться `:active` не
-   * запрещено. */
-  for (const m of css.matchAll(/:active[^{]*\{[^}]*?(?:transform\s*:\s*translateY|translate\s*:)\s*[^;}]*?(?:\(\s*-|-\s*\d|calc\(\s*-1)/g)) {
+   * запрещено. Имя роли `var(--…)` — не минус (И622). */
+  for (const m of css.matchAll(/:active[^{]*\{[^}]*?(?:transform\s*:\s*translateY|translate\s*:)\s*[^;}]*?(?:\(\s*-(?!-)|-\s*\d|calc\(\s*-1)/g)) {
     add('liftOnPress', `${at(m.index)}  нажатие поднимает предмет вверх — это ответ на наведение, не на нажатие`)
   }
 
@@ -1142,6 +1172,73 @@ for (const path of files) {
   }
 }
 
+/* ── близнец блока пальца (И768) ─────────────────────────────────────────
+   Заказчик смотрит дизайн-систему только на ноутбуке и спросил: «может
+   вообще все кнопки перерисовать для десктопа и для мобайла, чтоб было в
+   дизайн-системе?». Перерисовывать нечего — кнопка одна, рост ей даёт шкала;
+   но под пальцем её меняет `@media (pointer:coarse)`, а медиазапрос об
+   устройстве ввода страница на ноутбуке не подделает. Поэтому у каждого
+   такого блока есть близнец — те же правила на рамке
+   `:where([data-pointer='coarse'])`, и дизайн-система ставит настоящие органы
+   в эту рамку (вкладка «Ноутбук и телефон»).
+
+   Близнец — копия текста, и копия разойдётся с первой же правкой. Семья
+   держит их вместе: сразу за блоком пальца — его правила по одному, в том же
+   порядке, селектор с рамкой (корень — сама рамка, набор `[data-…]` — рамка
+   внутри него, орган — внутри рамки), тело то же. Близнец без блока — тоже
+   находка: правку внесли мимо медиазапроса, и на телефоне её нет. Файл шкал
+   читается мимо исключения: его близнецов выпускает строитель, и проверка —
+   единственный, кто сверит выпуск. */
+{
+  const T = ":where([data-pointer='coarse'])"
+  const seen = new Set()
+  const add = (line) => { if (!seen.has(line)) { seen.add(line); found.fingerTwin.push(line) } }
+  /** Части селектора через запятую — запятые внутри скобок не делят. */
+  const parts = (sel) => {
+    const out = []
+    let depth = 0, from = 0
+    for (let i = 0; i < sel.length; i++) {
+      if (sel[i] === '(') depth++
+      else if (sel[i] === ')') depth--
+      else if (sel[i] === ',' && !depth) { out.push(sel.slice(from, i).trim()); from = i + 1 }
+    }
+    return [...out, sel.slice(from).trim()]
+  }
+  const squash = (s) => s.replace(/\s+/g, ' ').replace(/\s*([{};:,()>])\s*/g, '$1').replace(/;$/, '').trim()
+  const twinOf = (sel) => parts(sel).map((s) => (s === ':root' ? T : /^\[data-[\w-]+=(["'])[^"']*\1\]$/.test(s) ? `${s} ${T}` : `${T} ${s}`)).join(', ')
+  const RULE = /\s*([^{}@]+)\{([^{}]*)\}/y
+  for (const path of files) {
+    const rel = relative(ROOT, path)
+    const css = strip(readFileSync(path, 'utf8'))
+    const at = (index) => `${rel}:${css.slice(0, index).split('\n').length}`
+    const owned = []
+    for (const m of css.matchAll(/@media([^{]*)\{/g)) {
+      if (!/pointer\s*:\s*coarse/.test(m[1])) continue
+      if (!/^\s*\(\s*pointer\s*:\s*coarse\s*\)\s*$/.test(m[1])) { add(`${at(m.index)}  @media${m[1]} — палец в паре с другим условием: близнеца у такого блока нет, условие разложить`); continue }
+      let depth = 1, i = m.index + m[0].length
+      const from = i
+      while (i < css.length && depth) {
+        if (css[i] === '{') depth++
+        else if (css[i] === '}') depth--
+        i++
+      }
+      let k = i
+      for (const r of css.slice(from, i - 1).matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+        const want = twinOf(r[1].trim())
+        RULE.lastIndex = k
+        const next = RULE.exec(css)
+        if (!next || squash(next[1]) !== squash(want)) { add(`${at(m.index)}  ${r[1].trim().replace(/\s+/g, ' ').slice(0, 56)} — нет близнеца сразу за блоком пальца: ${want.slice(0, 72)}`); break }
+        if (squash(next[2]) !== squash(r[2])) add(`${at(k + next[0].length - next[2].length - 1)}  ${want.slice(0, 72)} — близнец разошёлся с блоком пальца`)
+        owned.push([k, RULE.lastIndex])
+        k = RULE.lastIndex
+      }
+    }
+    for (const m of css.matchAll(/data-pointer\s*=\s*['"]?coarse/g)) {
+      if (!owned.some(([a, b]) => m.index >= a && m.index < b)) add(`${at(m.index)}  близнец без блока пальца — правка мимо @media (pointer:coarse): на телефоне её нет`)
+    }
+  }
+}
+
 /* ── шкала и её рампы: три семьи, читающие сам файл токенов ───────────────
    Файл шкал стоит в EXEMPT: числа в px внутри clamp() — его работа. Но три
    правила ниже — именно о нём, и потому читаются здесь, мимо исключения.
@@ -1531,6 +1628,9 @@ for (const path of files) {
         const p = pct(name)
         if (!p) { add('stateOut', `${TOKENS}  нет роли ${name}`); continue }
         if (p.v < lo || p.v > hi) add('stateOut', `${at(p.i)}  ${name}: ${Math.round(p.v * 100)}% вне ${lo * 100}…${hi * 100}%`)
+        /* Доля одна у всех органов и записана в одном месте (И702): роль равна шагу руки порогов. */
+        const one = STATE.step?.[name === '--state-hover' ? 'hover' : 'press']
+        if (one !== undefined && Math.abs(p.v - one) > 1e-9) add('stateOut', `${at(p.i)}  ${name}: ${Math.round(p.v * 100)}% — не шаг руки STATE.step (${one * 100}%)`)
       }
       const off = css.match(/(?:^|[;{])\s*--state-off\s*:\s*([\d.]+)/)
       if (!off) add('stateOut', `${TOKENS}  нет роли --state-off`)
@@ -1568,8 +1668,10 @@ for (const path of files) {
     /* Свойства, в значениях которых имя — не краска: гарнитура, имя
        анимации, область сетки, имя контейнера, текст. Маска — см. выше. */
     /* Аргумент смеси «роль долей хода»: `var(--роль) calc(var(--ход) * 100%)`
-       (или доля впереди). Ход — первая группа. */
-    const STEP_SHARE = /^(?:var\(\s*--[\w-]+\s*\)\s+calc\(\s*var\(\s*(--[\w-]+)\s*\)\s*\*\s*100%\s*\)|calc\(\s*var\(\s*(--[\w-]+)\s*\)\s*\*\s*100%\s*\)\s+var\(\s*--[\w-]+\s*\))$/
+       (или доля впереди). Ход — первая группа. Запасное значение хода — 0
+       или 1, у роли — `transparent`: ни то ни другое краски не рождает, а
+       без него роль каталога, не объявленная сайтом, валит всю запись (И588). */
+    const STEP_SHARE = /^(?:(?:var\(\s*--[\w-]+\s*(?:,\s*transparent\s*)?\)|transparent)\s+calc\(\s*var\(\s*(--[\w-]+)\s*(?:,\s*[01]\s*)?\)\s*\*\s*100%\s*\)|calc\(\s*var\(\s*(--[\w-]+)\s*(?:,\s*[01]\s*)?\)\s*\*\s*100%\s*\)\s+var\(\s*--[\w-]+\s*(?:,\s*transparent\s*)?\))$/
     const NOT_PAINT = /^(?:font|animation|transition|grid-area|grid-template|grid-row|grid-column|container|content|quotes|counter-|view-transition|will-change|list-style-type|mask|-webkit-mask)/
     /** Тело вызова `name(` с уравновешенными скобками: [начало тела, конец]. */
     const callsOf = (text, name) => {
@@ -1612,7 +1714,8 @@ for (const path of files) {
           /* Ход состояния (И487): доля `calc(var(--ход) * 100%)`, где ход в
              стилях сайта принимает только 0 и 1, — не краска, а кадр
              перехода между двумя ролями: в покое и под рукой смесь равна
-             одной из них, и обе меряет строитель. Число, которое бывает
+             одной из них, и обе меряет строитель; прозрачность — не краска,
+             ход к ней — тоже кадр (И623). Число, которое бывает
              чем-то ещё, — ручка узла, то есть литерал. */
           const step = arg.match(STEP_SHARE)
           if (step && PROGRESS.has(step[1] ?? step[2])) { shares++; continue }
@@ -1697,9 +1800,53 @@ for (const path of files) {
       const v = m[1].replace(/var\([^)]*\)/g, '').trim()
       if (/\d*\.?\d+(?:px|rem|em)\b/.test(v)) add('radiusPx', `${at(m.index)}  border-radius:${m[1].trim().slice(0, 40)} — возьмите --r-*`)
     }
-    for (const m of css.matchAll(/(?:^|[;{])\s*box-shadow\s*:\s*([^;}]+)/g)) {
-      const v = m[1].replace(/var\([^)]*\)/g, '').replace(/color-mix\([^)]*\)/g, '')
-      if (/(?:^|[\s,])(?!0(?:px)?\b)\d*\.?\d+px\b/.test(v)) add('shadowPx', `${at(m.index)}  box-shadow:${m[1].trim().slice(0, 40)} — возьмите --sh-*`)
+    /* Тень числом — и в `drop-shadow()` фильтра, и у `text-shadow`, и в rem/em
+       (И726): до 04.10.2026 семья видела только `box-shadow` в px, и ореол знака
+       `drop-shadow(…)` стоял мимо ролей незамеченным. */
+    for (const m of css.matchAll(/(?:^|[;{])\s*(box-shadow|text-shadow|filter)\s*:\s*([^;}]+)/g)) {
+      const raw = m[1] === 'filter' ? [...m[2].matchAll(/drop-shadow\(((?:[^()]|\([^()]*\))*)\)/g)].map((x) => x[1]).join(', ') : m[2]
+      if (!raw) continue
+      const v = raw.replace(/var\([^)]*\)/g, '').replace(/color-mix\([^)]*\)/g, '')
+      if (/(?:^|[\s,(])(?!0(?:px|rem|em)?\b)\d*\.?\d+(?:px|rem|em)\b/.test(v)) add('shadowPx', `${at(m.index)}  ${m[1]}:${m[2].trim().slice(0, 40)} — возьмите --sh-*`)
+    }
+    /* Роль тени на своём месте (И726). Тень — только у того, что висит над
+       страницей, и у каждой роли свой круг владельцев: окно с затемнением — лишь
+       у тройки окна; всплывающее — у бумаги меню, окна и кнопок помощи и у
+       сообщения шапки; полоса у края — у полосы покупки и частей окна; подъём —
+       только под рукой; у кнопки тени нет вовсе (И114). До 04.10.2026 полоса
+       покупки носила тень меню, кнопка помощи в покое — тень руки, окна — ту же
+       тень, что меню. */
+    const PLACE = {
+      '--sh-modal': ['styles/pane.module.css'],
+      '--sh-overlay': ['styles/primitives.module.css', 'styles/pane.module.css', 'components/HelpDock.module.css', 'components/Header.module.css'],
+      '--sh-sticky': ['styles/pane.module.css', 'components/ProductView.module.css'],
+    }
+    const selectorAt = (i) => {
+      const open = css.lastIndexOf('{', i)
+      const from = Math.max(css.lastIndexOf('}', open), css.lastIndexOf('{', open - 1), css.lastIndexOf(';', open)) + 1
+      return css.slice(from, open).trim()
+    }
+    for (const m of css.matchAll(/var\((--sh-(?:raised|lift|sticky|overlay|modal|in))\)/g)) {
+      const role = m[1]
+      const file = rel.replaceAll('\\', '/')
+      if (file.endsWith('btn.module.css')) { add('shadowPlace', `${at(m.index)}  ${role} у кнопки — кнопка отвечает краской, не тенью (И114)`); continue }
+      if (PLACE[role] && !PLACE[role].includes(file)) add('shadowPlace', `${at(m.index)}  ${role} не у своего владельца (${PLACE[role].join(', ')})`)
+      if (role === '--sh-lift' && !/:hover|:active|:focus|\[data-hand|@media \(hover/.test(selectorAt(m.index))) add('shadowPlace', `${at(m.index)}  --sh-lift в покое — подъём только под рукой (${selectorAt(m.index).slice(0, 50)})`)
+    }
+    /* Толщина числом в узле (И674): толщину берёт голос — роль текста
+       (`--label-weight` у надписей органов и меню, `--cardname-weight` и
+       `--cardprice-weight` у имени и цены, `--h3-weight` у заголовков,
+       `--body-weight` у текста). Число на месте — вес «на глаз», и голосов
+       становится больше двух: до 03.10.2026 таких мест было 61, весов — четыре
+       («как из разных дизайн-систем»). Панель вида — не сайт, её не меряем. */
+    if (!rel.split('/').includes('look-panel')) {
+      /* `@font-face` объявляет, какие толщины есть в файле шрифта (`400 700`
+         у переменного), — это описание шрифта, а не толщина узла. Блок
+         затирается пробелами, чтобы номера строк не съехали. */
+      const faces = css.replace(/@font-face\s*\{[^}]*\}/g, (x) => x.replace(/[^\n]/g, ' '))
+      for (const m of faces.matchAll(/(?:^|[;{])\s*font-weight\s*:\s*([^;}]+)/g)) {
+        if (/\d|bold/.test(m[1].replace(/var\([^)]*\)/g, ''))) add('weightNum', `${at(m.index)}  font-weight:${m[1].trim().slice(0, 24)} — возьмите голос: --label-weight / --cardname-weight / --h3-weight / --body-weight`)
+      }
     }
     for (const m of css.matchAll(/(?:^|[;{])\s*(border(?:-(?:top|right|bottom|left|inline|block)(?:-start|-end)?)?(?:-width)?|outline(?:-width)?)\s*:\s*([^;}]+)/g)) {
       const v = m[2].replace(/var\([^)]*\)/g, '')
@@ -1753,6 +1900,44 @@ for (const path of files) {
       const hit = literalLead.exec(body)
       if (!hit) continue
       add('typeGuess', `${at(rule.index)}  ${rule[1].trim().slice(0, 40)}: ${hit[0].trim()}`)
+    }
+  }
+
+  /* Подпись заголовка — одна роль (И555).
+   *
+   * Под именем страницы (`.pagehead p`) и под заголовком полки
+   * (`.sectionHead p`) стоит одна и та же вещь — подпись заголовка. Пока
+   * первая брала вводную роль первого экрана (до 21px), а вторая — роль
+   * подписи (размер тела), покупатель с полки «CBD oils» на главной
+   * переходил на страницу «CBD oils» и видел подпись крупнее (заказчик
+   * 29.09.2026). Спрашивается: какую роль размера читает каждая из двух —
+   * роль обязана быть одна. */
+  const captionRoles = new Map()
+  for (const { css, at } of sheets) {
+    for (const rule of css.matchAll(/([^{}]*){([^}]*)}/g)) {
+      const sel = rule[1].trim()
+      const who = /\.pagehead p\b/.test(sel) ? 'pagehead' : /\.sectionHead p\b/.test(sel) ? 'sectionHead' : null
+      const role = who && /font-size\s*:\s*var\(\s*--([\w-]+?)-size\b/.exec(rule[2])?.[1]
+      if (role) captionRoles.set(who, { role, where: at(rule.index) })
+    }
+  }
+  const [page, shelf] = [captionRoles.get('pagehead'), captionRoles.get('sectionHead')]
+  if (page && shelf && page.role !== shelf.role) {
+    add('captionRole', `${page.where}  подпись имени страницы --${page.role}-size, подпись полки (${shelf.where}) --${shelf.role}-size`)
+  }
+  /* Вводная роль `--intro-*` — подпись ВИТРИННОГО заголовка (`--hero-*`),
+     то есть только первого экрана главной. Подпись под любым другим
+     заголовком — `--lede-*`. Список ниже — дома первого экрана: примитив
+     `lede` и варианты героя; новый вариант героя дописывается сюда
+     сознательно, всё прочее с `--intro-size` — та же ошибка, что И555. */
+  const INTRO_HOMES = /\.(ledeText|heroText|introText|claimLede|headlineRow|calm|showNotch|posterText)\b/
+  for (const { rel, css, at } of sheets) {
+    if (EXEMPT.includes(rel)) continue
+    for (const rule of css.matchAll(/([^{}]*){([^}]*)}/g)) {
+      if (!/font-size\s*:[^;}]*--intro-size\b/.test(rule[2])) continue
+      const sel = rule[1].trim()
+      if (INTRO_HOMES.test(sel)) continue
+      add('captionRole', `${at(rule.index)}  ${sel.slice(0, 40)}: вводная роль вне первого экрана — подпись заголовка берёт --lede-*`)
     }
   }
 }
@@ -1828,6 +2013,23 @@ for (const path of files) {
   }
 }
 
+/* ── Пропорция кадра — ролью (И736) ─────────────────────────────────────────
+   На витрине стояло пять пропорций, каждая числом на месте: плитки эффектов
+   1.4 над товаром и статьями 1 : 1 — ряды главной под одним заголовком шли
+   разной высотой кадра, и никто этого не решал. Пропорций три, по тому, что
+   на снимке: товар и ряд карточек, сцена, люди (styles/tokens.css). Узел,
+   который пишет `--frame` числом, заводит четвёртую молча. Дом примитива
+   (`primitives.module.css`, умолчание `:where(.frame)`) — не узел. */
+for (const path of files) {
+  const rel = relative(ROOT, path)
+  if (rel.endsWith('primitives.module.css')) continue
+  const css = strip(readFileSync(path, 'utf8'))
+  for (const m of css.matchAll(/(?<![-\w])--frame\s*:\s*([^;}]+)/g)) {
+    if (/^var\(\s*--(shot|card|scene|people|cover)-frame\b/.test(m[1].trim())) continue
+    found.frameRaw.push(`${rel}:${css.slice(0, m.index).split('\n').length}  кадр «${m[1].trim()}» числом — пропорция берётся ролью по тому, что на снимке: --shot-frame, --card-frame, --scene-frame, --people-frame, --cover-frame (И736, И749)`)
+  }
+}
+
 /* ── `vector-effect`, поставленный не туда ─────────────────────────────────
    `vector-effect` НЕ наследуется. Поставленный на `svg`, он не делает
    ничего — и не говорит об этом: ни ошибки, ни предупреждения. Правка
@@ -1853,6 +2055,50 @@ for (const path of files) {
     const dead = m[1].split(',').some((sel) => /(?:^|[\s>+~])svg\s*$/.test(sel.trim()))
     if (!dead) continue
     found.deadEffect.push(`${at(m.index)}  vector-effect на самом svg — свойство не наследуется и молча не работает; писать «svg *»`)
+  }
+}
+
+/* Знак листа в маске (И630). Вырез по фрагменту листа (`#знак-view`) —
+   хрупкий приём: у заказчика в Chrome вырез по знаку косметики и животных
+   показал стрелку, в других браузерах и в нашем Chromium всё было верно.
+   Два правила, обе про строку, которая не работает молча:
+   · фрагмент должен существовать в листе (после переименования знаков в
+     И628 маски сообщений формы искали `circle-check-view` и
+     `triangle-alert-view`, которых уже нет);
+   · фрагмент знака, выбираемого переменной (`#${…}-view` в разметке), —
+     нельзя: меняющийся знак ставится знаком (`<Icon>`), а не вырезом. */
+{
+  const sheet = existsSync(join(ROOT, 'styles/icons.svg')) ? readFileSync(join(ROOT, 'styles/icons.svg'), 'utf8') : ''
+  const views = new Set([...sheet.matchAll(/<view id="([^"]+)"/g)].map((m) => m[1]))
+  if (views.size) {
+    for (const path of files) {
+      const rel = relative(ROOT, path)
+      const css = strip(readFileSync(path, 'utf8'))
+      for (const m of css.matchAll(/icons\.svg#([\w-]+-view)/g)) {
+        const at = `${rel}:${css.slice(0, m.index).split(String.fromCharCode(10)).length}`
+        found.deadEffect.push(views.has(m[1])
+          ? `${at}  фрагмент листа «${m[1]}» в стиле — Safari (WebKit) его в маске не рисует, а у части Chrome показывает чужой знак; знак для маски — роль \`--sign-mask-<имя>\` из styles/sign-masks.css (И630)`
+          : `${at}  фрагмент «${m[1]}» в листе знаков не найден — маска молча покажет чужое или пустое`)
+      }
+    }
+    const walk = (dir, out = []) => {
+      if (!existsSync(dir)) return out
+      for (const name of readdirSync(dir)) {
+        if (name === 'node_modules' || name === '.next' || name === 'out' || name.startsWith('.')) continue
+        const full = join(dir, name)
+        if (statSync(full).isDirectory()) walk(full, out)
+        else if (/\.tsx$/.test(name)) out.push(full)
+      }
+      return out
+    }
+    for (const dir of ['components', 'app', 'templates/storefront/components', 'templates/storefront/app', 'templates/storefront/look-panel']) {
+      for (const path of walk(join(ROOT, dir))) {
+        const src = readFileSync(path, 'utf8')
+        for (const m of src.matchAll(/icons\.svg#\$\{[^}]+\}-view/g)) {
+          found.deadEffect.push(`${relative(ROOT, path)}:${src.slice(0, m.index).split('\n').length}  знак выбран переменной и вырезан маской по листу — меняющийся знак ставится знаком (<Icon>), а не вырезом (И630)`)
+        }
+      }
+    }
   }
 }
 
@@ -2421,6 +2667,148 @@ for (const path of files) {
   }
 }
 
+/* ── ФОРМА ПОДЛОЖКИ СТРОКИ — У ВИДА, А НЕ У МЕНЮ (И730) ─────────────────
+   Строка меню и окна отвечает руке видом «строка» (`row` в styles/btn.module.css),
+   и форма подложки под рукой — его же, одна на все строки сайта. Заказчик
+   04.10.2026 двумя снимками шапки: в меню связи подложка — прямоугольник, в
+   подменю «Oil» — пилюля: «почему не единообразие согласно дизайн-системе… делай
+   прямоугольник». Модуль меню писал строке `--r-pop`, меню связи — `--r-ctrl`,
+   поиск и вопросы — свой `--r-ctrl` каждый: четыре места решали одно.
+   Находка — угол у строки вне дома вида: (1) в правиле класса, который берёт
+   `row` (`composes: row from …btn.module.css`); (2) в правиле класса, надетого в
+   разметке рядом с видом (`${b.row} ${s.shelf}`); (3) в модуле меню — угол бумаги
+   у примитива `menu`, угол строки у вида, своему углу там места нет. Отрисованный
+   двойник — семья `rowShape` check:craft: все строки страницы одной формы. */
+{
+  const ROW_HOME = 'styles/btn.module.css'
+  const MENU_HOME = 'styles/menu.module.css'
+  const RADIUS = /(?:^|[;\s])border(?:-[a-z]+)*-radius\s*:/
+  const moduleRel = (from, file) => relative(ROOT, from.startsWith('@/') ? join(ROOT, from.slice(2)) : join(dirname(file), from))
+  /* Классы, надетые рядом с видом «строка», — по модулю, которому они принадлежат. */
+  const worn = new Map()
+  const wear = (rel, cls) => { if (!worn.has(rel)) worn.set(rel, new Set()); worn.get(rel).add(cls) }
+  for (const path of CODE) {
+    if (!/\.tsx$/.test(path)) continue
+    const code = readFileSync(path, 'utf8')
+    const mods = new Map([...code.matchAll(/import\s+(\w+)\s+from\s+'([^']+\.module\.css)'/g)].map((m) => [m[1], m[2]]))
+    const rowAlias = [...mods].find(([, from]) => from.endsWith('/btn.module.css'))?.[0]
+    if (!rowAlias) continue
+    for (const m of code.matchAll(/className=\{`([^`]*)`\}/g)) {
+      if (!m[1].includes(`\${${rowAlias}.row}`)) continue
+      for (const c of m[1].matchAll(/\$\{(\w+)\.(\w+)\}/g)) {
+        if (c[1] !== rowAlias && mods.has(c[1])) wear(moduleRel(mods.get(c[1]), path), c[2])
+      }
+    }
+  }
+  for (const path of files) {
+    const rel = relative(ROOT, path)
+    if (rel === ROW_HOME || EXEMPT.includes(rel)) continue
+    const css = strip(readFileSync(path, 'utf8'))
+    const rules = [...css.matchAll(/([^{}]*)\{([^{}]*)\}/g)]
+    /* Классы этого файла, берущие вид «строка» сами. */
+    for (const r of rules) {
+      if (!/composes\s*:\s*row\s+from\s+['"][^'"]*btn\.module\.css['"]/.test(r[2])) continue
+      for (const c of r[1].matchAll(/\.([\w-]+)/g)) wear(rel, c[1])
+    }
+    const mine = worn.get(rel) ?? new Set()
+    for (const r of rules) {
+      if (!RADIUS.test(r[2])) continue
+      const sel = r[1].trim()
+      /* Предмет правила — последнее звено селектора, без псевдоэлементов: `.shelf svg`
+         красит знак, а не строку; `.ask::marker` — не подложка. */
+      const hits = sel.split(',').some((one) => {
+        const last = one.trim().split(/\s*[\s>+~]\s*/).pop() ?? ''
+        if (last.includes('::')) return false
+        return [...last.matchAll(/\.([\w-]+)/g)].some((c) => mine.has(c[1]))
+      })
+      if (!hits && rel !== MENU_HOME) continue
+      const line = `${rel}:${css.slice(0, r.index + r[1].length).split('\n').length}`
+      found.rowShape.push(`${line}  ${sel.replace(/\s+/g, ' ').slice(0, 48)} — угол строки задан на месте; форма подложки — у вида «строка» (btn.module.css), одна на все меню`)
+    }
+  }
+}
+
+/* ── paneFill · ЗАЛИВКА У ЧАСТИ ОКНА — ОКНО КРАСИТ ОДИН ЛИСТ (И772) ─────────
+   Окно поверх страницы — палуба шапки, ОДИН лист и черта над низом
+   (styles/pane.module.css). Слово заказчика 05.10.2026 тремя шторками рядом:
+   «в корзине несколько оттенков, а в меню нет… надёргали разного дизайна». Корзина
+   одна красила полосу доставки тоном марки, тело подложкой, строки белыми
+   карточками, счётчик серым жёлобом — пять заливок против двух у фильтров. Часть
+   окна (тело, низ, шапка, полоса между ними) свою заливку не пишет: нужен другой
+   тон — он меняется у окна, и меняется у всех окон разом.
+   Находка — правило класса, который разметка надевает рядом с `body` / `foot` /
+   `bar` окна (`${pn.body} ${s.list}`) или который называется `pane…` (`paneGoal`,
+   `paneFoot`), с `background` кроме «нет», «прозрачно» и листа окна. Отрисованный
+   двойник — замер шторок (docs/design/шторки.md, §10). */
+{
+  const HOME = 'styles/pane.module.css'
+  const moduleRel = (from, file) => relative(ROOT, from.startsWith('@/') ? join(ROOT, from.slice(2)) : join(dirname(file), from))
+  const worn = new Map()
+  const wear = (rel, cls) => { if (!worn.has(rel)) worn.set(rel, new Set()); worn.get(rel).add(cls) }
+  for (const path of CODE) {
+    if (!/\.tsx$/.test(path)) continue
+    const code = readFileSync(path, 'utf8')
+    const mods = new Map([...code.matchAll(/import\s+(\w+)\s+from\s+'([^']+\.module\.css)'/g)].map((m) => [m[1], m[2]]))
+    const paneAlias = [...mods].find(([, from]) => from.endsWith('/pane.module.css'))?.[0]
+    if (!paneAlias) continue
+    for (const m of code.matchAll(/className=\{`([^`]*)`\}/g)) {
+      if (!['body', 'foot', 'bar'].some((part) => m[1].includes('${' + paneAlias + '.' + part + '}'))) continue
+      for (const c of m[1].matchAll(/\$\{(\w+)\.(\w+)\}/g)) {
+        if (c[1] !== paneAlias && mods.has(c[1])) wear(moduleRel(mods.get(c[1]), path), c[2])
+      }
+    }
+  }
+  const FILL = /(?:^|[;\s])background(?:-color)?\s*:\s*([^;}]*)/
+  const OK = /^(none|transparent|inherit|initial|unset|var\(--surface\))\s*(!important)?$/
+  for (const path of files) {
+    const rel = relative(ROOT, path)
+    if (rel === HOME || EXEMPT.includes(rel)) continue
+    const css = strip(readFileSync(path, 'utf8'))
+    const mine = worn.get(rel) ?? new Set()
+    for (const r of [...css.matchAll(/([^{}]*)\{([^{}]*)\}/g)]) {
+      const fill = FILL.exec(r[2])
+      if (!fill || OK.test(fill[1].trim())) continue
+      const sel = r[1].trim()
+      const hits = sel.split(',').some((one) => {
+        const last = one.trim().split(/\s*[\s>+~]\s*/).pop() ?? ''
+        if (last.includes('::')) return false
+        return [...last.matchAll(/\.([\w-]+)/g)].some((c) => mine.has(c[1]) || /^pane[A-Z]/.test(c[1]))
+      })
+      if (!hits) continue
+      const line = `${rel}:${css.slice(0, r.index + r[1].length).split('\n').length}`
+      found.paneFill.push(`${line}  ${sel.replace(/\s+/g, ' ').slice(0, 48)} — часть окна красит себя (${fill[1].trim().slice(0, 28)}); лист у окна один (styles/pane.module.css)`)
+    }
+  }
+}
+
+/* ── turnFlip · СТРЕЛКА РАСКРЫТИЯ, ПЕРЕВЁРНУТАЯ МЕСТОМ (И481) ─────────────
+   Знак раскрытия один на сайт (`Turn`, styles/turn.module.css) и смотрит
+   одинаково: свёрнуто — вниз, раскрыто — вверх. Код скидки в низу шторки
+   переворачивали по месту (`details[data-grow='up']`: «смотрит туда, куда
+   вырастет»), и заказчик 04.10.2026 снимком свёрнутого вопроса со стрелкой
+   вверх: «перепутано направление стрелки поменяй». Находка — (1) в доме знака
+   поворот под селектором с `data-*`: направление решает место, а не
+   открытость; (2) вне дома — поворот под признаком раскрытия (`[open]`,
+   `aria-expanded`, `:popover-open`, `summary`): стрелка нарисована второй раз. */
+{
+  const TURN_HOME = 'styles/turn.module.css'
+  const TURNS = /(?:^|[;\s])(?:rotate\s*:|transform\s*:[^;]*rotate)/
+  const OPENS = /\[open\]|aria-expanded|:popover-open|\bsummary\b/
+  for (const path of files) {
+    const rel = relative(ROOT, path)
+    if (EXEMPT.includes(rel)) continue
+    const css = strip(readFileSync(path, 'utf8'))
+    for (const r of css.matchAll(/([^{}]*)\{([^{}]*)\}/g)) {
+      if (!TURNS.test(r[2])) continue
+      const sel = r[1].trim()
+      const home = rel === TURN_HOME
+      if (home ? !/\[data-/.test(sel) : !OPENS.test(sel)) continue
+      const line = `${rel}:${css.slice(0, r.index + r[1].length).split('\n').length}`
+      found.turnFlip.push(`${line}  ${sel.replace(/\s+/g, ' ').slice(0, 48)} — ${home ? 'направление стрелки решает место; поворот — только по открытости' : 'стрелка раскрытия повёрнута на месте; знак — Turn'} (свёрнуто вниз, раскрыто вверх)`)
+    }
+  }
+}
+
 /* ── ЛИСТ, КОТОРЫЙ НЕ ОБЪЯВИЛ СЕБЯ ПОЛОМ ─────────────────────────────────
    Белая карточка на тёмной палубе — новый пол для всего, что в ней. Палуба
    переназначает роли (чернила, поверхность, пару состояния), роли идут вниз
@@ -2606,6 +2994,106 @@ for (const path of files) {
   }
   for (const t of ties.values()) {
     found.knobTie.push(`${t.where}  .${t.node} и примитив .${t.prim} на одном узле (${t.on}): оба задают ${[...t.knobs].join(', ')} голым классом — победит порядок кусков сборки; ручку примитива — под :where(), узлу — силой места`)
+  }
+}
+
+/* ── ГДЕ СТОИТ КОНТРОЛ, РЕШАЕТ МЕСТО (placeTie, И755) ─────────────────────
+ *
+ * Корень контрола, которого берут через `composes` (`.glyph` — сердце,
+ * знаки шапки; `.press` — кнопки), ставят в угол снимка, в строку, поверх
+ * кадра — это работа места. Объявив положение у себя голым классом, контрол
+ * спорит с местом равным весом (0,1,0), и побеждает тот, чей кусок сборки
+ * встал ниже: 05.10.2026 сердце карточки в сборке растянулось полосой
+ * 284 × 40, а на сервере разработки стояло в углу. Признак без браузера:
+ * класс, который где-то берут (`composes: X from '…'`), в своём файле
+ * объявляет `position`, `inset*`, `top/right/bottom/left` или `z-index`
+ * голым правилом `.X{…}`. Под `:where(.X)` — вес ноль, не спор.
+ */
+{
+  const taken = new Map()
+  for (const file of files) {
+    const css = strip(readFileSync(file, 'utf8'))
+    for (const m of css.matchAll(/composes\s*:\s*([\w\s-]+?)\s+from\s+['"]([^'"]+)['"]/g)) {
+      const from = resolve(dirname(file), m[2])
+      for (const name of m[1].trim().split(/\s+/)) {
+        if (!taken.has(from)) taken.set(from, new Set())
+        taken.get(from).add(name)
+      }
+    }
+  }
+  for (const [file, names] of taken) {
+    if (!existsSync(file)) continue
+    const css = strip(readFileSync(file, 'utf8'))
+    for (const rule of css.matchAll(/([^{}]*)\{([^{}]*)\}/g)) {
+      const sel = rule[1].trim()
+      const m = sel.match(/^\.([A-Za-z_][\w-]*)$/)
+      if (!m || !names.has(m[1])) continue
+      const props = [...rule[2].matchAll(/(?:^|;)\s*(position|inset[\w-]*|top|right|bottom|left|z-index)\s*:/g)].map((d) => d[1])
+      if (!props.length) continue
+      const line = css.slice(0, rule.index + rule[0].indexOf('{')).split('\n').length
+      found.placeTie.push(`${relative(ROOT, file)}:${line}  .${m[1]} — его берут (composes), а положение (${props.join(', ')}) он объявляет голым классом: место спорит равным весом, победит порядок кусков сборки; положение — под :where(.${m[1]})`)
+    }
+  }
+
+  /* Второй путь — класс места, отданный компоненту (`<Dots className={s.dots}>`),
+     ложится на тот же узел, что класс контрола (`${sl.mark} ${className}`). Тогда
+     спорят свойства, которые объявили ОБА голым классом: положение и показ
+     (`display` — место прячет указатель, пока вид — миниатюры). Точки галереи на
+     телефоне стояли поверх миниатюр: `.mark{display:flex}` бил `.dots{display:none}`
+     в сборке (05.10.2026). Свойства контрола — свои и взятые через `composes`. */
+  const PLACE_PROPS = /(?:^|;)\s*(position|inset[\w-]*|top|right|bottom|left|z-index|display)\s*:/g
+  const bareProps = (file, cls, depth = 0) => {
+    if (!existsSync(file) || depth > 2) return new Set()
+    const css = strip(readFileSync(file, 'utf8'))
+    const out = new Set()
+    for (const rule of css.matchAll(/([^{}]*)\{([^{}]*)\}/g)) {
+      if (rule[1].trim() !== `.${cls}`) continue
+      for (const d of rule[2].matchAll(PLACE_PROPS)) out.add(d[1])
+      for (const c of rule[2].matchAll(/composes\s*:\s*([\w\s-]+?)\s+from\s+['"]([^'"]+)['"]/g)) {
+        for (const n of c[1].trim().split(/\s+/)) for (const p of bareProps(resolve(dirname(file), c[2]), n, depth + 1)) out.add(p)
+      }
+    }
+    return out
+  }
+  const modsOf = (path, code) => {
+    const mods = new Map()
+    for (const m of code.matchAll(/import\s+(\w+)\s+from\s+'([^']+\.module\.css)'/g)) {
+      const file = m[2].startsWith('@/') ? join(ROOT, m[2].slice(2)) : join(dirname(path), m[2])
+      if (existsSync(file)) mods.set(m[1], file)
+    }
+    return mods
+  }
+  /* Компоненты, кладущие `className` пропа рядом со своим классом контрола. */
+  const takers = new Map()
+  for (const path of CODE) {
+    const code = strip(readFileSync(path, 'utf8'))
+    const mods = modsOf(path, code)
+    for (const m of code.matchAll(/export\s+function\s+([A-Z]\w*)/g)) {
+      for (const c of code.matchAll(/className=\{`\$\{(\w+)\.(\w+)\}\s+\$\{className\}`\}/g)) {
+        if (!mods.has(c[1])) continue
+        if (!takers.has(m[1])) takers.set(m[1], [])
+        takers.get(m[1]).push({ file: mods.get(c[1]), cls: c[2] })
+      }
+    }
+  }
+  const seenTie = new Set()
+  for (const path of CODE) {
+    const code = strip(readFileSync(path, 'utf8'))
+    const mods = modsOf(path, code)
+    for (const u of code.matchAll(/<([A-Z]\w*)\b[^>]*?\sclassName=\{(\w+)\.(\w+)\}/g)) {
+      const own = takers.get(u[1])
+      if (!own || !mods.has(u[2])) continue
+      const placeFile = mods.get(u[2])
+      const placeProps = bareProps(placeFile, u[3])
+      for (const t of own) {
+        const both = [...bareProps(t.file, t.cls)].filter((p) => placeProps.has(p))
+        if (!both.length) continue
+        const key = `${placeFile}|${u[3]}|${t.file}|${t.cls}`
+        if (seenTie.has(key)) continue
+        seenTie.add(key)
+        found.placeTie.push(`${relative(ROOT, placeFile)}  .${u[3]} (место, ${relative(ROOT, path)}) и .${t.cls} (${relative(ROOT, t.file)}) на одном узле: оба задают ${both.join(', ')} голым классом — победит порядок кусков сборки; у контрола — под :where(.${t.cls}), месту — сила`)
+      }
+    }
   }
 }
 

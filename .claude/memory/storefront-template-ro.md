@@ -1,6 +1,6 @@
 ---
 name: storefront-template-ro
-description: "The kit's reference storefront is a template for the Romanian market — languages en (default since 23.09.2026), ro, hu; working copy in D:\\BusinessProject\\cbd-storefront-demo"
+description: "The kit's reference storefront is a template for the Romanian market — languages en (default since 23.09.2026), ro, hu; working copy in D:\\MyBssinessProject\\sitebuildingskill\\.storefront (npm run storefront)"
 metadata:
   node_type: memory
   type: project
@@ -8,7 +8,7 @@ metadata:
   modified: 2026-09-26T13:06:34.424Z
 ---
 
-Decided 23.09.2026 by the owner: the reference Next.js CBD storefront built inside the kit (`templates/storefront/`, variant A — own app on the kit foundation, one data contract, sample provider + live Vendure/Payload adapters) is a **template for the Romanian market**: languages Romanian (default), English, Hungarian. Scope: full guest purchase **plus personal account** (register, login, logout, password reset, orders, addresses, profile). Working copy installed by the kit installer into `D:\BusinessProject\cbd-storefront-demo`.
+Decided 23.09.2026 by the owner: the reference Next.js CBD storefront built inside the kit (`templates/storefront/`, variant A — own app on the kit foundation, one data contract, sample provider + live Vendure/Payload adapters) is a **template for the Romanian market**: languages Romanian (default), English, Hungarian. Scope: full guest purchase **plus personal account** (register, login, logout, password reset, orders, addresses, profile). Working copy installed by the kit installer into `.storefront/` of this kit (`npm run storefront`).
 
 **Why:** the owner builds CBD shop storefronts; the kit needs an "эталон" to build from scratch and to audit other sites against.
 

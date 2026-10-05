@@ -28,6 +28,10 @@ export const SCRIPTS = {
      сайт получал её в подсказках и не мог запустить (И192). */
   palette: 'node tools/palette-css.mjs',
   'check:palette': 'node tools/check-palette.mjs && node tools/palette-css.mjs --check',
+  /* Цвет обеих тем на собранном сайте (И766): ступени поверхностей, края,
+     насыщенность и пары краски на трёх полах. Скиллы и реестр звали её, а
+     файла и команды не было. */
+  'check:theme': 'node tools/check-theme.mjs',
   /* Шкалы: выпуск, замер и стенд. То же устройство, что у палитры, и по той
      же причине (И202): числа шкал стояли в tokens.css набранными рукой, а
      формула к ним — словами в комментарии рядом. */
@@ -40,6 +44,7 @@ export const SCRIPTS = {
   'check:buttons': 'node tools/buttons.mjs --check',
   'button:stand': 'node tools/button-stand.mjs',
   'check:icons': 'node tools/icons.mjs --check',
+  'check:engines': 'node tools/check-engines.mjs',
   scale: 'node tools/scale-css.mjs',
   'check:scale': 'node tools/check-scale.mjs && node tools/scale-css.mjs --check',
   'scale:stand': 'node tools/scale-stand.mjs',
@@ -58,9 +63,19 @@ export const SCRIPTS = {
   /* Механическая половина impeccable храповиком (И271): правило «Дизайн
      делается дизайнерскими скиллами», семьи — tools/design-families.mjs. */
   'check:design': 'node tools/check-design.mjs',
+  /* Дизайн-система не отстала от сайта (И605): всё, что стоит на сайте, в
+     ней показано; место не красит контрол и не режет знак. */
+  'check:system': 'node tools/check-system.mjs',
   lint: 'oxlint app components lib',
   test: 'node tools/check-test.mjs',
   'check:craft': 'node tools/check-craft.mjs',
+  /* Нажатием (И652, И763): счётчики, строка покупки и «в корзину» на полке
+     телефона. Файл проверки ехал в каждый магазин, а команды не было ни здесь,
+     ни в этапах (05.10.2026) — она жила только в наборе, и следующий сайт
+     повторил бы «Added · 5» в две строки, не узнав об этом. */
+  'check:counters': 'node tools/check-counters.mjs',
+  /* Тронутая часть — её страницы отрисованной и нажатием, пока её делают (И765). */
+  'check:part': 'node tools/check-part.mjs',
   /* Детектор impeccable по отрисованной странице (И310): вендоренная
      браузерная сборка, закреплённая хешем; семьи — tools/detect-families.mjs. */
   'check:detect': 'node tools/check-detect.mjs',

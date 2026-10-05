@@ -13,8 +13,9 @@
    ГАЛЕРЕЯ ПОМЕЩАЕТСЯ В ЭКРАН (И278). Блок — кадр, зазор и ряд миниатюр —
    не выше бюджета окна: в две колонки это `--pin-fit` примитива `pinned`
    (окно за вычетом прилипшей шапки `--anchor-top` и воздуха под колонкой),
-   в одну — `--gallery-fold` (58 % малого окна: так на телефоне под
-   галереей остаются имя и цена — норма живых магазинов, замер 23.09.2026).
+   в одну — `--gallery-fold`: весь экран под прилипшей шапкой, снимок во
+   всю ширину колонки (И517; до того 58 % окна ужимали его на средней
+   ширине до 440 из 706).
    Ширина колонки галереи — меньшее из доли ряда (`--pdp-gallery`) и ширины,
    при которой блок влезает по высоте (`--gallery-fit`). Миниатюр в ряду
    четыре во всю ширину кадра (как у образца заказчика: кадр 615, миниатюры
@@ -25,7 +26,7 @@
 
    Ручки вида — свойства опубликованного вида (панель «Look», «Admin →
    Product page»; выпущены в styles/look.css): `--pdp-gallery` — доля ряда,
-   `--shot-frame` — пропорция снимка (одна с полкой, «Admin → Card», И400),
+   `--shot-frame` — пропорция снимка (квадрат, одна с полкой; постоянная в tokens.css, И400),
    `--pdp-thumbs` — где миниатюры:
    `below`, `side`, `dots` (точки вместо миниатюр), `over` (точки на самом
    кадре — ряда под кадром нет, блок ростом с кадр); `--pdp-edge` — край
@@ -35,11 +36,7 @@
   --switch-at:820px;--switch-gap:var(--air-block);
   --gallery-gap:var(--gap-row);
   --gallery-r:calc(var(--shot-frame));
-  --gallery-fold:58svh;
-  --frame-max:620px;
-  /* Пол колонки на телефоне (И509): бюджет высоты галереи не сужает колонку
-     уже самого широкого телефона (430) — имя и снимок во всю ширину. */
-  --frame-min:440px;
+  --gallery-fold:calc(100svh - var(--chrome-stuck, 0px));
   /* Сколько лист наезжает на снимок во всю ширину: ровно на свой угол —
      дуга угла ложится на снимок, а не на пол страницы. */
   --gallery-lap:var(--r-sheet);
@@ -79,28 +76,14 @@
   .pin:has([data-many]){--gallery-fit:calc(var(--pin-fit) * var(--gallery-r))}
 }
 
-/* Одна колонка: клеить не к чему — галерея в потоке (`--pin-pos:static`,
-   потолок приклеенного снят). Галерея и колонка покупки под ней — ОДНА
-   колонка по середине ряда: ширина не больше `--frame-max` и такая, что
-   блок галереи не выше `--gallery-fold` (`--gallery-w`). Края кадра и
-   текста совпадают на любой ширине: узкий по высоте кадр над широким
-   текстом стоял бы «ступенькой». Считается на самой карте, а не в
-   запросе: контейнер свой размер не спрашивает. */
-.pdp{--gallery-w:calc((var(--gallery-fold) - var(--gallery-gap)) * var(--gallery-r) * .8 + var(--gallery-gap) * .6)}
-.pdp:not(:has([data-many])){--gallery-w:calc(var(--gallery-fold) * var(--gallery-r))}
-@container style(--pdp-thumbs: dots){
-  .pdp:has([data-many]){--gallery-w:calc((var(--gallery-fold) - var(--gallery-gap) - var(--ctrl-target)) * var(--gallery-r))}
-}
-@container style(--pdp-thumbs: over){
-  .pdp:has([data-many]){--gallery-w:calc(var(--gallery-fold) * var(--gallery-r))}
-}
-/* Меру держат ДЕТИ колонок, а не сами колонки: `max-inline-size` на
-   ребёнке switcher ужимает его основу, и две узкие колонки вставали в
-   один ряд там, где запрос уже считал ряд одной колонкой (замер 900×700:
-   ряд 816, колонки по 322). */
+/* Колонка одна — снимок во всю её ширину, название и цена сразу под ним,
+   как принято (Shopify Dawn, Allbirds): бюджет высоты 58 % окна (И509)
+   ужимал снимок на средней ширине до 440 из 706 и ставил пустоту по бокам
+   (заказчик 28.09.2026: «изображение основное почему не на всю ширину?» —
+   «делай»; И517). Потолок кадра остаётся (правило 4) — весь экран под
+   прилипшей шапкой: на лежачем телефоне снимок не выше окна. */
 @container pdp (max-width:819px){
   .pin{--pin-pos:static;--pin-max:none}
-  .pin > *,.offer > *{max-inline-size:min(var(--frame-max), max(var(--gallery-w), min(100%, var(--frame-min))));margin-inline:auto}
 }
 /* Снимок во всю ширину (`--pdp-edge: bleed`), пока колонка одна: галерея
    пересекает край страницы до окна — край коробки `.wrap` и линию текста в
@@ -137,8 +120,15 @@
 /* Имя → описание — воздух строк одной мысли `--air-line` (И509; замер:
    0.75 тела, docs/design/карта-товара.md «Замеры»). */
 .identity{display:grid;gap:var(--air-line)}
-/* Короткое описание под именем — роль тела, краской подписи, в мере строки. */
-.summary{margin:0;max-inline-size:var(--measure);color:var(--ink-soft)}
+/* Короткое описание под именем — подпись имени страницы, роль `--lede-*`,
+   та же, что под именем каталога и под заголовком полки (И555, И579):
+   текст везде одного размера (заказчик 29.09.2026: «в описании явно не 20,
+   а 16, а мы исправляли, что текст везде 20»). Стояло вторичным ярусом
+   (`blurb`, 16), чтобы марка была на шаг крупнее (И511); марка теперь
+   ростом текста (И563) — не мельче описания, вровень с ним (`ROLE_ORDER`).
+   Мера — текста, а не подписи заголовка: описание читают абзацем, и на 700
+   колонка в столбике давала 85 знаков в строке (check:craft lineLong, И676). */
+.summary{margin:0;font-size:var(--lede-size);line-height:var(--lede-lead);font-weight:var(--lede-weight);letter-spacing:var(--lede-track);color:var(--ink-soft);max-inline-size:var(--body-measure)}
 /* Марка — первая строка заголовка (ProductView.tsx, И441): ростом и
    межстрочьем тела, краской подписи — имя остаётся главным, марка читается
    раньше него. */
@@ -149,28 +139,32 @@
    товара, И502). 28.09.2026 со снимком телефона: «бренд и описание почти
    того же размера, что название — иерархии нет» — марка своей ролью
    `--byline-*` ступенью ниже тела, 0.6 имени, как у Byredo и cbd_ecommerce_eu
-   (И509, замеры в брифе карты товара). */
+   (И509, замеры в брифе карты товара). Тем же днём со снимком карты:
+   «шрифт бренда должен быть на шаг больше, чем описание» — марка на
+   ступени тела, описание ступенью ниже, имя выше: порядок держит
+   соотношение ролей строителя, а не число у одной марки (И511). */
 .brand{display:block;font-size:var(--byline-size);line-height:var(--byline-lead);font-weight:var(--byline-weight);letter-spacing:var(--byline-track);color:var(--ink-soft)}
-.name{font-size:var(--prodhead-size);line-height:var(--prodhead-lead);font-weight:var(--prodhead-weight);letter-spacing:var(--prodhead-track);text-wrap:pretty;overflow-wrap:anywhere}
+.name{text-wrap:pretty;overflow-wrap:anywhere}
+/* Имя и сердце: имя берёт строку, сердце — у правого края по верху имени. */
+.title{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--gap-row)}
 /* Имя переносится как любой заголовок набора (`pretty`, base.css): `balance`
    на узкой колонке резал имя в одну строку на две равные половины (И509). */
-/* Имя товара — на две ступени ниже заголовка страницы: своя роль
-   заголовка первого уровня `--prodhead-*` ростом ступени h3 (строитель
-   шкал, styles/scale.json), а не `--pagehead-*` (слово заказчика
-   28.09.2026: «название товара размер шрифта на 2 шага меньше»; И503). Лестница страницы сдвигается вместе с
-   ним: заголовки разделов и полки похожих — ступенью ниже имени (роль
-   ввода полужирным), иначе раздел звучал бы громче h1 (check:craft,
-   ladder). */
-.related h2{font-size:var(--intro-size);line-height:var(--intro-lead);font-weight:600;letter-spacing:var(--intro-track)}
+/* Имя товара — заголовок страницы, общая роль всех h1 (base.css, И521):
+   ступень заголовка, та же, что у разделов (И561: «размеры заголовков
+   одинаковые»), на ступень над ценой (`h3`, И513). */
 /* Цена у имени (Baymard) — Price.tsx ростом `lead` (И476); наличие — в той
-   же строке, по базовой линии. */
-.stock{font-size:var(--note-size);line-height:var(--note-lead);font-weight:600;color:var(--ink-soft)}
-/* Наличие — текстом сигнала (palette, roles.md, «Текст и знаки»: «в
-   наличии» ok11, «осталось двое» warn11, «нет в наличии» e11; И472). Серым
-   оно стояло одним цветом на все три смысла. */
-.stock[data-level='in']{color:var(--ok)}
-.stock[data-level='low']{color:var(--warn)}
-.stock[data-level='out']{color:var(--bad)}
+   же строке, по базовой линии: StockMark.tsx (И561). */
+/* Строка доверия под именем — оценка и протокол партии рядом (И515;
+   заказчик 28.09.2026: «lab report правее от звёзд»). Протокол — знаком и
+   словом ростом описания — тихая кнопка сайта (`btn`, голос `bare`): она
+   открывает окно, а не ведёт дальше, поэтому ни ползущего знака «куда
+   ведёт», ни подчёркивания ссылки (заказчик 28.09.2026: «почему иконка
+   движущаяся, почему подчёркнуто?»). */
+.proof{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-1) var(--gap-row)}
+.lab{font-size:var(--blurb-size);font-weight:var(--label-weight)}
+/* Артикул — подписью строки доверия, как счёт отзывов (Rating): рост
+   описания, тон вторичного текста, цифры ровным шагом (И589). */
+.sku{font-size:var(--blurb-size);line-height:var(--blurb-lead);color:var(--ink-soft);font-variant-numeric:tabular-nums}
 
 /* Выбор: группа — подпись и опции вплотную, между группами — воздухом
    `--air-set` (ступенью ниже `--air-row`): выбор — одна строка части
@@ -181,7 +175,7 @@
    40 под мышью, 48 под пальцем), а не малые фишки: это выбор, без которого
    не купить. */
 .group{--seg-h:var(--ctrl-h);border:0;padding:0;margin:0;min-inline-size:0}
-.legend{padding:0;margin-block-end:var(--sp-2);font-size:var(--ctrl-fs-sm);font-weight:600;color:var(--ink)}
+.legend{padding:0;margin-block-end:var(--sp-2);font-size:var(--ctrl-fs-sm);font-weight:var(--label-weight);color:var(--ink)}
 /* «Choose an option» — строка ошибки поля (form.module.css, `.say`) под
    опциями первой невыбранной группы, на той же ступени оптики, что подпись
    над ними. */
@@ -192,9 +186,17 @@
    строками под ней. Счётчик — общий орган сайта (QuantityStepper, пилюля `qty`), его рост
    по умолчанию — крупный орган, ровно под кнопку. */
 .buy{display:flex;flex-wrap:wrap;align-items:stretch;gap:var(--sp-2) var(--gap-row)}
+/* Надпись кнопки строкой: тесно — кнопка уходит на следующую строку целиком,
+   а не складывает слово («Add to / cart» на 1024 в колонке покупки 440,
+   check:craft wrap 05.10.2026). */
+.buy :is(button, a):not(dialog *, [popover] *){white-space:nowrap}
 .buy > p{flex-basis:100%}
 .buy > p:empty{display:none}
-.add{flex:1 1 auto;font-variant-numeric:tabular-nums}
+.add{flex:5 1 0;font-variant-numeric:tabular-nums}
+/* Узкая колонка: рядом со счётчиком — «быстрый заказ», «в корзину» —
+   строкой во всю ширину под ними (заказчик 28.09.2026: «быстрый заказ и в
+   корзину поменяй местами на узком экране»; И515). */
+@container pdp (max-width:819px){ .add{order:1} .buy > p{order:2} }
 
 /* Строка покупки у низа окна (StickyBuy.tsx, И509): только пока колонка
    одна и строка покупки ушла за верхний край; стоит над полосой низа
@@ -204,6 +206,6 @@
   position:fixed;inset-inline:0;inset-block-end:var(--dock);z-index:var(--layer-tabbar);
   display:none;align-items:center;justify-content:space-between;gap:var(--gap-row);
   padding:var(--pad-inner) var(--gut);padding-block-end:max(var(--pad-inner), var(--edge-b));
-  background:var(--surface);box-shadow:var(--sh-overlay)
+  background:var(--surface);box-shadow:var(--sh-sticky)
 }
 @container pdp (max-width:819px){ .bar[data-shown]{display:flex} }

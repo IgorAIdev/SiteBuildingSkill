@@ -586,21 +586,6 @@
       "group": "palette",
       "value": "light-dark(#64635F, #695F51)"
     },
-    "--ctrl-btn-case": {
-      "type": "keyword",
-      "group": "button",
-      "value": "none"
-    },
-    "--ctrl-btn-weight": {
-      "type": "number",
-      "group": "button",
-      "value": "600"
-    },
-    "--ctrl-btn-track": {
-      "type": "length",
-      "group": "button",
-      "value": "normal"
-    },
     "--ctrl-btn-fill-pop": {
       "type": "colour",
       "group": "button",
@@ -677,11 +662,6 @@
       "value": "0"
     },
     "--ctrl-btn-mark": {
-      "type": "number",
-      "group": "button",
-      "value": "0"
-    },
-    "--ctrl-btn-pill": {
       "type": "number",
       "group": "button",
       "value": "0"
@@ -946,6 +926,11 @@
       "group": "scale",
       "value": "999px"
     },
+    "--r-btn": {
+      "type": "length",
+      "group": "corners",
+      "value": "var(--r-ctrl)"
+    },
     "--line-w": {
       "type": "length",
       "group": "scale",
@@ -1204,7 +1189,7 @@
     "--menu-mark-pad": {
       "type": "length",
       "group": "marker",
-      "value": "0"
+      "value": "0px"
     },
     "--menu-mark-side": {
       "type": "number",
@@ -1256,6 +1241,31 @@
       "group": "seg-look",
       "value": "chips"
     },
+    "--stock-look": {
+      "type": "keyword",
+      "group": "stock-look",
+      "value": "sign"
+    },
+    "--pager-look": {
+      "type": "keyword",
+      "group": "pager-look",
+      "value": "count"
+    },
+    "--filter-look": {
+      "type": "keyword",
+      "group": "filter-look",
+      "value": "drawer"
+    },
+    "--filter-phone": {
+      "type": "keyword",
+      "group": "filter-phone",
+      "value": "drawer"
+    },
+    "--save-look": {
+      "type": "keyword",
+      "group": "save-look",
+      "value": "disc"
+    },
     "--quick-look": {
       "type": "keyword",
       "group": "quick-look",
@@ -1265,6 +1275,11 @@
       "type": "colour",
       "group": "go-hover",
       "value": "currentcolor"
+    },
+    "--star": {
+      "type": "colour",
+      "group": "star",
+      "value": "var(--star-trade)"
     },
     "--head-icons": {
       "type": "keyword",
@@ -1281,11 +1296,6 @@
       "group": "pair-look",
       "value": "apart"
     },
-    "--chip-sign": {
-      "type": "keyword",
-      "group": "chip-sign",
-      "value": "none"
-    },
     "--drawer-look": {
       "type": "keyword",
       "group": "drawer-look",
@@ -1301,25 +1311,25 @@
       "group": "cart-meta",
       "value": "count"
     },
-    "--shot-frame": {
-      "type": "number",
-      "group": "shot-frame",
-      "value": "1 / 1"
-    },
-    "--shelf-cols": {
-      "type": "number",
-      "group": "shelf-cols",
-      "value": "4"
-    },
-    "--card-buy": {
+    "--door-case": {
       "type": "keyword",
-      "group": "card-buy",
-      "value": "full"
+      "group": "door-case",
+      "value": "none"
     },
-    "--sort-label": {
+    "--band-featured": {
       "type": "keyword",
-      "group": "sort-label",
-      "value": "beside"
+      "group": "band-featured",
+      "value": "none"
+    },
+    "--band-story": {
+      "type": "keyword",
+      "group": "band-story",
+      "value": "none"
+    },
+    "--band-faq": {
+      "type": "keyword",
+      "group": "band-faq",
+      "value": "none"
     }
   },
   "facts": {

@@ -1,0 +1,39 @@
+/* Части статьи блога (И749; бриф docs/design/блог.md). */
+
+/* Обложка — кадр широкой пропорции с потолком (правило 4): у cbdshop.bg
+   обложка 1175 × 685 без потолка уводила «Коротко» на 1325 px окна 800. */
+/* Ширина — вся колонка текста: потолок высоты через пропорцию сужал кадр (на
+   1440 обложка 711 в колонке 1049 — правый край рвался, check:craft lopsided);
+   теперь потолок режет высоту, снимок обрезается по своему фокусу. */
+.cover{--frame:var(--cover-frame);--frame-cap:50svh;border-radius:var(--r-card);inline-size:100%}
+
+/* «Pe scurt» — тон марки (cbdshop.bg: зелёно-серая плашка с ярлыком), поле и
+   угол — роли листа; ярлык — фишка сайта. Мера строки — текста. */
+.tldr{
+  display:flex;flex-direction:column;align-items:flex-start;gap:var(--gap-row);
+  padding:var(--pad-card);border-radius:var(--r-card);background:var(--pop-tint)
+}
+.tldr > p:last-child{max-inline-size:var(--body-measure)}
+
+/* Заголовок «Surse» — ступень раздела документа (DocView: `--h2-at` на роль ниже). */
+.heading{--h2-at:var(--h3-size)}
+/* Отступ номеров — как у всех списков текста сайта (документы, тело статьи):
+   браузерный, своего числа у списка нет. */
+.sources{font-size:var(--blurb-size);line-height:var(--blurb-lead)}
+/* Источник — отдельная цель, а не ссылка в строке текста: рост цели ролью
+   (`--ctrl-target`: 24 под мышью, 44 под пальцем; так же нижняя полоса
+   подвала), на телефоне ссылки стояли 19–40 (check:craft target). */
+.sources a{color:var(--pop-ink);text-underline-offset:.2em;overflow-wrap:anywhere;display:inline-flex;align-items:center;min-block-size:var(--ctrl-target)}
+
+/* «Important» — тихая строка сноски, тоном вторичного текста ролью палитры (у
+   cbdshop.bg — серый через прозрачность 48 %, 3 : 1). */
+/* Мера — у строки текста, а не у коробки: коробка уже колонки рвала её правую
+   вертикаль (762 при колонке 1386, check:craft lopsided 05.10.2026). */
+.important{font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft)}
+.important > p{max-inline-size:var(--body-measure)}
+/* Рубрика над именем статьи — ссылка вплотную к заголовку. Заголовок срезан сверху
+   по заглавным (`text-box`, И738), а попадание браузер считает по несрезанной
+   строке: полоса над буквами принадлежала заголовку, и нижние три четверти
+   ссылки не нажимались (check:craft stolen, 21 точка из 28, 05.10.2026). Ссылка —
+   слоем выше заголовка; вид не меняется. */
+.topic{position:relative}

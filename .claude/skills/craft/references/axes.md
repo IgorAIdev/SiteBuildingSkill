@@ -30,11 +30,11 @@ changing».
 <!-- families:axes -->
 | Ось | Чем включается | Что меняется по ней в стилях набора | Что не меняется |
 | --- | --- | --- | --- |
-| тема: свет / тьма | `color-scheme: light dark` на корне; `[data-theme]` из cookie ставит ТОЛЬКО `color-scheme`; цвет объявлен один раз функцией `light-dark()`; тёмная полоса — `color-scheme: dark` на ней самой; `<meta name="color-scheme">` раньше стилей | 255 объявлений через light-dark(); блоков 2 | ритм, размер, скругление, толщина линии — «с темой меняется только цвет» (next_theming, правило 2) |
-| указатель: палец / курсор | `@media (pointer: coarse)` — цель 44 и зазор 16; `:hover` только внутри `@media (hover: hover)`; ответ на касание — `:active`, сразу | блоков 19; имена: `--gap-targets`, `--ctrl-h-sm`, `--ctrl-h`, `--ctrl-h-lg`, `--ctrl-target`; свойства: color, content, position, left, top, translate | раскладка и содержимое: по указателю «не прячут содержимое и не переключают раскладку» — это эвристика, не факт (next_responsive, правило 17) |
+| тема: свет / тьма | `color-scheme: light dark` на корне; `[data-theme]` из cookie ставит ТОЛЬКО `color-scheme`; цвет объявлен один раз функцией `light-dark()`; тёмная полоса — `color-scheme: dark` на ней самой; `<meta name="color-scheme">` раньше стилей | 288 объявлений через light-dark(); блоков 2 | ритм, размер, скругление, толщина линии — «с темой меняется только цвет» (next_theming, правило 2) |
+| указатель: палец / курсор | `@media (pointer: coarse)` — цель 44 и зазор 16; `:hover` только внутри `@media (hover: hover)`; ответ на касание — `:active`, сразу | блоков 22; имена: `--gap-targets`, `--ctrl-h-sm`, `--ctrl-h`, `--ctrl-h-lg`, `--ctrl-target`, `--ctrl-face`, `--ctrl-face-md`; свойства: color, content, position, left, top, translate | раскладка и содержимое: по указателю «не прячут содержимое и не переключают раскладку» — это эвристика, не факт (next_responsive, правило 17) |
 | ширина: телефон … макет | рампы `clamp()` между двумя названными ширинами (строитель шкал); три шва раскладки; компонент меряет контейнер (`@container`) | блоков 3; имена: `--page-gut`, `--head-pad`, `--dock` | геометрия органа (правило 2 CLAUDE.md), оптика не выше пола |
 | язык страницы | `<html lang>` из адреса; мера строки по языку (`:lang()`); `quotes: auto`; `hyphens: auto` только как улучшение поверх `overflow-wrap: anywhere` и `<wbr>` — у Chromium нет словаря переноса для румынского | блоков 1; имена: `--measure`, `--measure-lede`, `--measure-note` | словарь токенов: «Spectrum tokens are not localized» — локаль меняет раскладку и содержание, а не имена |
-| движение: просьба «меньше анимации» | `@media (prefers-reduced-motion: reduce)` — длительности в 0.01ms, `scroll-behavior: auto`; смысл не держится на движении | блоков 2; имена: `--press-move`; свойства: interpolate-size, animation-duration, animation-iteration-count, transition-duration, scroll-behavior | всё остальное |
+| движение: просьба «меньше анимации» | `@media (prefers-reduced-motion: reduce)` — длительности в 0.01ms, `scroll-behavior: auto`; смысл не держится на движении | блоков 2; имена: `--press-move`, `--press-drop`, `--press-shrink`; свойства: interpolate-size, animation-duration, animation-iteration-count, transition-duration, scroll-behavior | всё остальное |
 | контраст: усиленный и принудительные цвета | `@media (prefers-contrast: more)` усиливает роли (волосок — сплошной, приглушённые чернила — непрозрачные), а не рисует вторую тему; `@media (forced-colors: active)` — обводки вместо теней, `outline` у фокуса, системные цвета; `forced-color-adjust: none` только для образца цвета и выбранного в системной паре `Highlight` / `HighlightText` | блоков 3; имена: `--rule`, `--ink-soft`, `--border`, `--quiet`, `--quiet-on`, `--quiet-tint`; свойства: border, forced-color-adjust, fill, outline, background, color | раскладка, размеры |
 | признаки вне реестра | — | нет | — |
 <!-- /families:axes -->
@@ -156,3 +156,31 @@ purposeful? responsive? meticulous? unobtrusive?».
 состояний в браузере — это проект (Next), не набор: записано в
 `docs/open.md`. Масштаб 1 : 1.25 под пальцем (Spectrum) не заводится:
 у набора цель и зазор растут ролью, кегль — нет.
+
+## Оси — коротко
+
+Перенесено из закона (`SKILL.md`) при сжатии 28.09.2026 дословно; в законе осталась строка со ссылкой сюда.
+
+Слой 2 основания (И225); реестр — `tools/axes.mjs`, разбор и
+первоисточники — `references/axes.md`.
+
+**Сначала оси, потом значения.** Тема, указатель, ширина, язык, движение,
+контраст — у каждой записано, чем она включается, что по ней меняется, а
+что нет; реестр печатается из кода. Медиазапрос по признаку вне реестра —
+семья `axisUnknown`.
+
+**Тема ставит только `color-scheme`.** Цвет объявлен один раз через
+`light-dark()`; переменная под `[data-theme]` или `prefers-color-scheme` —
+семья `axisTheme`. Системные элементы красит `color-scheme`, не рука.
+
+**Указатель меняет цель и отклик, не раскладку.** `:hover` только под
+`(hover: hover)` — семья `axisHover`; `display: none` или смена раскладки
+под `pointer` / `hover` — семья `axisScope`.
+
+**Язык — переносы, кавычки, мера.** `overflow-wrap: anywhere` обязателен,
+`hyphens: auto` — улучшение (у Chromium нет словаря для румынского),
+`quotes: auto`, мера строки по `:lang()`.
+
+**Контраст усиливает роли, не рисует вторую тему.** `prefers-contrast:
+more` — волосок сплошной, приглушённое основным; `forced-colors: active` —
+обводка вместо тени, `outline` у фокуса, `currentColor` у знака.

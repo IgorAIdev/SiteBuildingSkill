@@ -28,6 +28,7 @@
  *    data-frame                         тонкая рамка марки вокруг
  *    data-case   caps                   заглавные с разрядкой
  *    data-size   sm | lg                рост; без него — средний
+ *    data-hover  loud | ink             под рукой заливается маркой · чернилами (элемент 67)
  *    data-shape  pill                   полный круг; без него — угол из Shape
  *    data-icon                          значок без слова: квадрат, с пилюлей — круг
  *    data-motion turn | slide | run     значок: встаёт на место · едет вперёд · разбегается
@@ -82,7 +83,7 @@
 :root{
   --h-sm:32px; --h-md:40px; --h-lg:48px;
   --fs:1rem; --weight:600; --caps:.05em;
-  --line:1px; --frame-w:2px; --ring-w:2px; --ring-off:3px;
+  --frame-w:2px; --ring-w:2px; --ring-off:3px;
   --state-hover:5%; --state-press:9%;
   --hover-t:200ms; --press-t:120ms; --open-t:280ms; --ease:cubic-bezier(.32,.72,0,1);
   --nudge:3px;
@@ -115,7 +116,7 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .el[data-voice='loud']{--bg:var(--pop);--fg:var(--on-pop)}
 .el[data-voice='ink']{--bg:var(--ink);--fg:var(--surface)}
 .el:is([data-voice='ghost'], [data-voice='bare']){--bg:transparent}
-.el[data-voice='line']{--bg:transparent;box-shadow:inset 0 0 0 var(--line) var(--edge)}
+.el[data-voice='line']{--bg:transparent;box-shadow:inset 0 0 0 var(--line-w) var(--edge)}
 /* Пол страницы — орган на тонированном листе: светлая пилюля на тоне. */
 .el[data-voice='paper']{--bg:var(--surface)}
 /* Слово у начала, знак у конца — пилюля во всю ширину листа. */
@@ -124,7 +125,7 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 /* Стекло (элемент 66, И427): заливка — краска строителя палитры долей, на
    которой надпись держит 4.5 : 1 на каждом полу; размыто то, что под
    органом, а не он сам; блик — волосок внутри, снаружи он лёг бы на кольцо. */
-.el[data-fill='glass']{--bg:var(--pop-glass);-webkit-backdrop-filter:blur(var(--frost-blur)) saturate(var(--frost-sat));backdrop-filter:blur(var(--frost-blur)) saturate(var(--frost-sat));box-shadow:inset 0 0 0 var(--line) var(--pop-rim)}
+.el[data-fill='glass']{--bg:var(--pop-glass);-webkit-backdrop-filter:blur(var(--frost-blur)) saturate(var(--frost-sat));backdrop-filter:blur(var(--frost-blur)) saturate(var(--frost-sat));box-shadow:inset 0 0 0 var(--line-w) var(--pop-rim)}
 .el[data-frame]{box-shadow:0 0 0 var(--frame-w) var(--pop-tint)}
 .el[data-case='caps']{text-transform:uppercase;letter-spacing:var(--caps)}
 .el[data-size='sm']{--h:var(--h-sm)}
@@ -149,7 +150,7 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
   border-radius:max(2px, calc(var(--r) - var(--h) * .125))
 }
 .el:has(> .lead){padding-inline:calc(var(--h) * .125) calc(var(--h) * .45)}
-.el .ring{box-shadow:inset 0 0 0 var(--line) currentColor}
+.el .ring{box-shadow:inset 0 0 0 var(--line-w) currentColor}
 .el .tile{background:var(--fg);color:var(--bg)}
 /* Круг пола со знаком товара у начала — фишка категории; знак чернилами,
    на любой заливке пилюли. */
@@ -159,7 +160,7 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .el:is(:not([data-voice]), [data-voice='ghost'], [data-voice='bare'], [data-voice='line']) .tile{color:var(--surface)}
 
 /* Черта перед словом — краской надписи, толщиной линии. */
-.el .dash{inline-size:calc(var(--h) * .6);block-size:var(--line);background:currentColor;flex:none}
+.el .dash{inline-size:calc(var(--h) * .6);block-size:var(--line-w);background:currentColor;flex:none}
 
 /* ── движение значка ─────────────────────────────────────────────────── */
 .el[data-motion='turn'] svg{rotate:var(--turn, -45deg);transition:rotate var(--hover-t) var(--ease)}
@@ -188,12 +189,12 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 /* Кнопка из двух частей: действие и его счёт. Счёт — на полу, краской марки,
    с уголком-указателем к действию; вся кнопка обведена волоском марки, иначе
    белый счёт на белом полу теряет край. */
-.el[data-split]{padding-inline-end:0;overflow:hidden;box-shadow:inset 0 0 0 var(--line) var(--bg)}
+.el[data-split]{padding-inline-end:0;overflow:hidden;box-shadow:inset 0 0 0 var(--line-w) var(--bg)}
 .el .count{
   position:relative;align-self:stretch;display:grid;place-items:center;
   margin-inline-start:calc(var(--h) * .25);padding-inline:calc(var(--h) * .35);
   background:var(--surface);color:var(--pop-ink);font-variant-numeric:tabular-nums;
-  box-shadow:inset 0 0 0 var(--line) var(--bg)
+  box-shadow:inset 0 0 0 var(--line-w) var(--bg)
 }
 .el .count::before{content:'';position:absolute;inset-inline-start:calc(var(--h) * -.1);inline-size:calc(var(--h) * .2);block-size:calc(var(--h) * .2);background:var(--surface);rotate:45deg}
 /* Полоски меню: три черты разной длины от левого края; открыто
@@ -236,7 +237,7 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 /* Знак заливается, когда включено: контур в покое, фигура краской марки —
    сердце «в избранное». Отвечает краской, не ростом. */
 .el[data-fill-on]:is([aria-pressed='true'], [data-on]){--fg:var(--pop)}
-.el[data-fill-on]:is([aria-pressed='true'], [data-on]) svg{fill:currentColor}
+.el[data-fill-on]:is([aria-pressed='true'], [data-on]) svg{--sign-fill:currentColor} /* заливка знака — роль листа (И625) */
 
 /* ── ползунок ────────────────────────────────────────────────────────────
    Дорожка — сам орган (`role="switch"`), ручка — круг на ней; включено
@@ -280,21 +281,26 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
   .el[data-voice='line']:hover,
   .el[data-hover='loud']:hover{--bg:var(--pop);--fg:var(--on-pop);--paint:var(--pop)}
   .el[data-frame]:hover{box-shadow:0 0 0 var(--frame-w) var(--pop)}
+  .el[data-hover='ink']:hover{--bg:var(--ink);--fg:var(--surface);--paint:var(--ink)}
 }
 .el[data-state='hover']{--paint:color-mix(in oklab, var(--bg), var(--fg) var(--state-hover));--veil:color-mix(in srgb, var(--fg) var(--state-hover), transparent);--turn:0deg;--go:var(--nudge);--run:0;--grow:1.1;--tilt:12deg;--lift:calc(var(--nudge) * -1);--spin:180deg;--trail-w:calc(var(--h) * .42);--trail-m:calc(var(--h) * -.18);--trail-o:1;--appear-m:0px}
 .el[data-voice='bare'][data-state='hover']{--paint:transparent;--veil:transparent;--fg:var(--pop-ink)}
 .el[data-voice='line'][data-state='hover'],
 .el[data-hover='loud'][data-state='hover']{--bg:var(--pop);--fg:var(--on-pop);--paint:var(--pop)}
 .el[data-frame][data-state='hover']{box-shadow:0 0 0 var(--frame-w) var(--pop)}
+.el[data-hover='ink'][data-state='hover']{--bg:var(--ink);--fg:var(--surface);--paint:var(--ink)}
 
 .el:active,
 .el[data-state='press']{--paint:color-mix(in oklab, var(--bg), var(--fg) var(--state-press));--veil:color-mix(in srgb, var(--fg) var(--state-press), transparent);--turn:0deg;--go:var(--nudge);--run:0;--grow:1.1;--tilt:12deg;--lift:calc(var(--nudge) * -1);--spin:180deg;--trail-w:calc(var(--h) * .42);--trail-m:calc(var(--h) * -.18);--trail-o:1;--appear-m:0px;transform:translateY(1px) scale(.97)}
 .el[data-voice='bare']:is(:active, [data-state='press']){--paint:transparent;--veil:transparent;--fg:var(--pop-ink)}
 .el:is([data-voice='line'], [data-hover='loud']):is(:active, [data-state='press']){--bg:var(--pop);--fg:var(--on-pop);--paint:var(--pop-press)}
 
+/* Заливка чернилами под рукой (элемент 67): нажатие берёт ту же пару. */
+.el[data-hover='ink']:is(:active, [data-state='press']){--bg:var(--ink);--fg:var(--surface);--paint:color-mix(in oklab, var(--ink), var(--surface) var(--state-press))}
+
 /* Переворот пары «заливка и краска» — сразу, без середины: иначе на полпути
    слово серое на сером (controls.md, «Переворот не анимируют»). */
-.el:is([data-voice='line'], [data-hover='loud']){transition:box-shadow var(--hover-t) var(--ease), transform var(--press-t) var(--ease)}
+.el:is([data-voice='line'], [data-hover='loud'], [data-hover='ink']){transition:box-shadow var(--hover-t) var(--ease), transform var(--press-t) var(--ease)}
 
 .el:focus-visible,
 .el[data-state='focus']{outline:var(--ring-w) solid var(--ring, var(--ink));outline-offset:var(--ring-off)}
@@ -314,7 +320,7 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
   box-sizing:border-box;display:flex;flex-direction:column;gap:var(--air-row, 16px);
   inline-size:100%;padding:var(--pad-card, 1.25rem);
   border-radius:var(--r-card, 16px);background:var(--surface);color:var(--ink);
-  box-shadow:inset 0 0 0 var(--line) var(--rule);font-family:var(--face)
+  box-shadow:inset 0 0 0 var(--line-w) var(--rule);font-family:var(--face)
 }
 .card[data-align='center']{align-items:center;text-align:center}
 .card .title{margin:0;font-size:var(--h3-size, 1.25rem);font-weight:var(--h3-weight, 600);line-height:var(--h3-lead, 1.2)}
@@ -345,7 +351,7 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
    без своей заливки, краской семьи. */
 .card:is([data-tone='ok'], [data-tone='bad']){box-shadow:none}
 .card[data-tone='ok']{--tone-ink:var(--ok);background:var(--ok-tint)}
-.card[data-tone='bad']{--tone-ink:var(--bad);box-shadow:inset 0 0 0 var(--line) var(--rule)}
+.card[data-tone='bad']{--tone-ink:var(--bad);box-shadow:inset 0 0 0 var(--line-w) var(--rule)}
 .card[data-tone] :is(.title, .mark){color:var(--tone-ink)}
 .card[data-tone] .mark{background:transparent}
 .card[data-tone='bad'] .mark{background:var(--bad-tint);border-radius:var(--r-ctrl, 8px)}
@@ -359,10 +365,10 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .sheet{
   box-sizing:border-box;display:flex;flex-direction:column;inline-size:min(480px, 100%);max-block-size:400px;
   border-radius:var(--r-sheet, 20px);background:var(--surface);color:var(--ink);overflow:hidden;
-  box-shadow:inset 0 0 0 var(--line) var(--rule);font-family:var(--face)
+  box-shadow:inset 0 0 0 var(--line-w) var(--rule);font-family:var(--face)
 }
 .sheet > header, .sheet > footer{display:flex;align-items:center;gap:var(--gap-row, 12px);padding:var(--pad-inner, .75rem) var(--pad-card, 1.25rem)}
-.sheet > header{justify-content:space-between;box-shadow:inset 0 calc(var(--line) * -1) 0 var(--rule)}
+.sheet > header{justify-content:space-between;box-shadow:inset 0 calc(var(--line-w) * -1) 0 var(--rule)}
 .sheet > header .title{display:flex;align-items:center;gap:.5rem;margin:0;font-size:var(--h3-size, 1.25rem);font-weight:var(--h3-weight, 600)}
 .sheet > header .title svg{inline-size:1.5rem;block-size:1.5rem;color:var(--pop-ink)}
 .sheet .body{overflow-y:auto;padding:var(--pad-card, 1.25rem);font-size:var(--body-size, 1rem);line-height:var(--body-lead, 1.45)}
@@ -370,14 +376,14 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .sheet .body > *{margin-block-end:0}
 .sheet .body h3{margin-block-start:1.5em;font-size:var(--h3-size, 1.25rem);font-weight:var(--h3-weight, 600);line-height:var(--h3-lead, 1.2)}
 .sheet .body ul{padding-inline-start:1.25em}
-.sheet > footer{position:relative;justify-content:flex-end;box-shadow:inset 0 var(--line) 0 var(--rule)}
+.sheet > footer{position:relative;justify-content:flex-end;box-shadow:inset 0 var(--line-w) 0 var(--rule)}
 .sheet > footer::before{content:'';position:absolute;inset-inline:0;inset-block-end:100%;block-size:2.5rem;background:linear-gradient(to top, var(--surface), transparent);pointer-events:none}
 
 /* Меню действий: бумага всплывающего — лист с волоском, строки — органы во
    всю ширину, группы разделены волоском. На сайте открывается `popover`
    (запрет 8). */
-.menu{box-sizing:border-box;display:flex;flex-direction:column;gap:2px;inline-size:min(240px, 100%);padding:calc(var(--h-sm) * .15);border-radius:var(--r-card, 16px);background:var(--surface);box-shadow:inset 0 0 0 var(--line) var(--rule)}
-.menu hr{margin:4px 0;border:0;block-size:var(--line);background:var(--rule)}
+.menu{box-sizing:border-box;display:flex;flex-direction:column;gap:2px;inline-size:min(240px, 100%);padding:calc(var(--h-sm) * .15);border-radius:var(--r-card, 16px);background:var(--surface);box-shadow:inset 0 0 0 var(--line-w) var(--rule)}
+.menu hr{margin:4px 0;border:0;block-size:var(--line-w);background:var(--rule)}
 .el[data-row]{inline-size:100%;justify-content:flex-start;padding-inline:calc(var(--h) * .3)}
 /* Шапка меню краской марки — кто вошёл; или просто имя списка. */
 .menu > header{display:flex;flex-direction:column;gap:6px;margin:calc(var(--h-sm) * -.15) calc(var(--h-sm) * -.15) 4px;padding:var(--pad-inner, .75rem);border-radius:var(--r-card, 16px) var(--r-card, 16px) 0 0;background:var(--pop);color:var(--on-pop)}
@@ -407,12 +413,12 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .range::-webkit-slider-runnable-track{block-size:6px;border-radius:999px;background:linear-gradient(var(--pop), var(--pop)) 0 / var(--fill) 100% no-repeat, var(--quiet)}
 .range::-moz-range-track{block-size:6px;border-radius:999px;background:var(--quiet)}
 .range::-moz-range-progress{block-size:6px;border-radius:999px;background:var(--pop)}
-.range::-webkit-slider-thumb{-webkit-appearance:none;inline-size:calc(var(--h-sm) * .6);block-size:calc(var(--h-sm) * .6);margin-block-start:calc((6px - var(--h-sm) * .6) / 2);border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 var(--line) var(--edge)}
-.range::-moz-range-thumb{inline-size:calc(var(--h-sm) * .6);block-size:calc(var(--h-sm) * .6);border:0;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 var(--line) var(--edge)}
+.range::-webkit-slider-thumb{-webkit-appearance:none;inline-size:calc(var(--h-sm) * .6);block-size:calc(var(--h-sm) * .6);margin-block-start:calc((6px - var(--h-sm) * .6) / 2);border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 var(--line-w) var(--edge)}
+.range::-moz-range-thumb{inline-size:calc(var(--h-sm) * .6);block-size:calc(var(--h-sm) * .6);border:0;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 var(--line-w) var(--edge)}
 .range:focus-visible{outline:var(--ring-w) solid var(--ring, var(--ink));outline-offset:var(--ring-off)}
 .card .control{display:grid;grid-template-columns:5rem 1fr 2.5rem;align-items:center;gap:var(--gap-row, 12px);font-size:var(--note-size, .875rem);color:var(--ink-soft)}
 .card .control output{text-align:end;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
-.card hr{margin:0;border:0;block-size:var(--line);background:var(--rule)}
+.card hr{margin:0;border:0;block-size:var(--line-w);background:var(--rule)}
 /* Сообщение строкой и сжатая карточка — заголовок и цена ростом тела. */
 .card:is([data-layout='row'], [data-size='sm']) :is(.title, .price){font-size:var(--body-size, 1rem)}
 .card[data-tone='ok'] .el[data-voice='loud']{--bg:var(--ok-fill);--fg:var(--on-ok)}
@@ -428,13 +434,13 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .el .tip{
   position:absolute;inset-block-end:calc(100% + var(--nudge) * 2);inset-inline-start:50%;translate:-50% 0;
   padding:.25rem .6rem;border-radius:var(--r-ctrl, 8px);background:var(--surface);color:var(--ink);
-  box-shadow:inset 0 0 0 var(--line) var(--rule);font-size:var(--note-size, .875rem);font-weight:500;white-space:nowrap;
+  box-shadow:inset 0 0 0 var(--line-w) var(--rule);font-size:var(--note-size, .875rem);font-weight:500;white-space:nowrap;
   pointer-events:none;visibility:hidden;opacity:0;transition:opacity var(--hover-t) var(--ease), visibility var(--hover-t)
 }
 .el:is(:focus-visible, [data-state]) .tip{visibility:visible;opacity:1}
 @media (hover:hover){ .el:hover .tip{visibility:visible;opacity:1} }
 /* Лоток контуром: волосок вместо тона. */
-.tray[data-voice='line']{background:transparent;box-shadow:inset 0 0 0 var(--line) var(--rule)}
+.tray[data-voice='line']{background:transparent;box-shadow:inset 0 0 0 var(--line-w) var(--rule)}
 
 /* Карточка-ссылка: нажимается вся. Под рукой сверху встаёт черта марки,
    нажатая — краской нажатия и на пиксель ниже, без сжатия: карточка
@@ -460,7 +466,7 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
   --edge-c:transparent;--edge-hover:transparent;--sign:var(--ink-soft);--indent:calc(var(--h) * .35);
   box-sizing:border-box;display:inline-flex;align-items:center;gap:calc(var(--h) * .25);
   inline-size:min(300px, 100%);block-size:var(--h);padding-inline:var(--indent);
-  border-radius:var(--r);background:var(--paint);box-shadow:inset 0 0 0 var(--line) var(--edge-c);
+  border-radius:var(--r);background:var(--paint);box-shadow:inset 0 0 0 var(--line-w) var(--edge-c);
   font-family:var(--face);cursor:text;
   transition:background-color var(--hover-t) var(--ease), box-shadow var(--hover-t) var(--ease)
 }
@@ -547,7 +553,7 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .tabs[data-shape='pill'], .tabs[data-shape='pill'] > .el{border-radius:999px}
 /* Пилюля группы — и ручкой угла: круг и кружок внутри считают свой угол от неё. */
 .tabs[data-shape='pill'] > .el{--r:999px}
-.tabs[data-voice='line']{background:transparent;box-shadow:inset 0 0 0 var(--line) var(--rule)}
+.tabs[data-voice='line']{background:transparent;box-shadow:inset 0 0 0 var(--line-w) var(--rule)}
 .tabs[data-voice='ink']{background:var(--ink)}
 .tabs > .el{--bg:transparent;flex:1 1 auto;font-weight:500}
 .tabs[data-voice='ink'] > .el{--fg:var(--surface)}
@@ -565,13 +571,13 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
    полоса rail с прокруткой по ширине. */
 .tabs[data-loose]{display:flex;flex-wrap:wrap;gap:var(--gap-targets, 8px);padding:0;background:transparent;box-shadow:none}
 .tabs[data-loose] > .el{--bg:var(--quiet);flex:none}
-.tabs[data-loose][data-voice='line'] > .el{--bg:transparent;box-shadow:inset 0 0 0 var(--line) var(--edge)}
-.tabs[data-loose][data-voice='line'] > .el:is(:has(> input:checked), [data-on]){box-shadow:inset 0 0 0 var(--line) var(--pop)}
+.tabs[data-loose][data-voice='line'] > .el{--bg:transparent;box-shadow:inset 0 0 0 var(--line-w) var(--edge)}
+.tabs[data-loose][data-voice='line'] > .el:is(:has(> input:checked), [data-on]){box-shadow:inset 0 0 0 var(--line-w) var(--pop)}
 .tabs[data-loose][data-voice='line'] .disc{background:var(--quiet)}
 /* Нижнее меню телефона (data-dock): лист пола со скруглённым верхом и
    волоском по верхней кромке; пункты во всю ширину — знак над словом,
    невыбранные — краской подписи, выбранный — чернилами. */
-.tabs[data-dock]{display:flex;inline-size:100%;gap:0;padding:0 calc(var(--h-md) * .1);border-radius:var(--r-sheet, 20px) var(--r-sheet, 20px) 0 0;background:var(--surface);box-shadow:inset 0 var(--line) 0 var(--rule)}
+.tabs[data-dock]{display:flex;inline-size:100%;gap:0;padding:0 calc(var(--h-md) * .1);border-radius:var(--r-sheet, 20px) var(--r-sheet, 20px) 0 0;background:var(--surface);box-shadow:inset 0 var(--line-w) 0 var(--rule)}
 .tabs[data-dock] > .el{--fg:var(--ink-soft);flex:1 1 0;flex-direction:column;gap:2px;block-size:auto;min-inline-size:0;padding:calc(var(--h-md) * .5) 0 calc(var(--h-md) * .2);font-size:var(--note-size, .875rem);font-weight:500}
 .tabs[data-dock] > .el svg{inline-size:calc(var(--h-md) * .55);block-size:calc(var(--h-md) * .55)}
 .tabs[data-dock] > .el:is(:has(> input:checked), [data-on]){--bg:transparent;--fg:var(--ink);font-weight:600}
@@ -579,16 +585,16 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
    хвост» висит с верхней кромки над выбранным пунктом. */
 .tabs[data-pick='flag'] > .el::before{content:'';position:absolute;inset-block-start:0;inset-inline-start:50%;translate:-50% 0;inline-size:calc(var(--h-md) * .45);block-size:calc(var(--h-md) * .38);background:var(--ink);clip-path:polygon(0 0, 100% 0, 100% 100%, 50% 70%, 0 100%);opacity:0}
 .tabs[data-pick='flag'] > .el:is(:has(> input:checked), [data-on])::before{opacity:1}
-.tabs[data-pick='mark'] > .el:is(:has(> input:checked), [data-on]){--bg:transparent;--fg:var(--pop-ink);box-shadow:inset 0 0 0 var(--line) var(--rule)}
+.tabs[data-pick='mark'] > .el:is(:has(> input:checked), [data-on]){--bg:transparent;--fg:var(--pop-ink);box-shadow:inset 0 0 0 var(--line-w) var(--rule)}
 /* Встык: сегменты без подложки, каждый в волоске края, угол — у крайних;
    выбранный — тон марки в кромке марки. Нажатый не сжимается — встык он
    не отходит от соседа. */
 .tabs[data-join]{gap:0;padding:0;background:transparent}
-.tabs[data-join] > .el{border-radius:0;box-shadow:inset 0 0 0 var(--line) var(--edge)}
-.tabs[data-join] > .el + .el{margin-inline-start:calc(var(--line) * -1)}
+.tabs[data-join] > .el{border-radius:0;box-shadow:inset 0 0 0 var(--line-w) var(--edge)}
+.tabs[data-join] > .el + .el{margin-inline-start:calc(var(--line-w) * -1)}
 .tabs[data-join] > .el:first-child{border-start-start-radius:var(--r-ctrl, 8px);border-end-start-radius:var(--r-ctrl, 8px)}
 .tabs[data-join] > .el:last-child{border-start-end-radius:var(--r-ctrl, 8px);border-end-end-radius:var(--r-ctrl, 8px)}
-.tabs[data-join] > .el:is(:has(> input:checked), [data-on]){z-index:1;box-shadow:inset 0 0 0 var(--line) var(--pop)}
+.tabs[data-join] > .el:is(:has(> input:checked), [data-on]){z-index:1;box-shadow:inset 0 0 0 var(--line-w) var(--pop)}
 .tabs[data-join] > .el:is(:active, [data-state='press']){transform:none}
 /* Счётчик у пункта: число в круге тона; у выбранного — краской марки. */
 .el .badge{display:inline-grid;place-items:center;min-inline-size:1.375rem;block-size:1.375rem;padding-inline:.3rem;box-sizing:border-box;border-radius:999px;background:var(--quiet);color:var(--ink-soft);font-size:var(--note-size, .875rem);font-weight:600;font-variant-numeric:tabular-nums}
@@ -599,7 +605,7 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .tabs[data-pick='sheet']{display:flex;padding-block-end:0;border-end-start-radius:0;border-end-end-radius:0}
 .tabs[data-pick='sheet'] > .el{flex:none;border-end-start-radius:0;border-end-end-radius:0}
 .tabs[data-pick='sheet'] > .el:is(:has(> input:checked), [data-on]){--bg:var(--surface)}
-.tabbed > .panel{padding:var(--pad-card, 1.25rem);border-radius:0 0 var(--r-card, 16px) var(--r-card, 16px);background:var(--surface);box-shadow:inset var(--line) 0 0 var(--rule), inset calc(var(--line) * -1) 0 0 var(--rule), inset 0 calc(var(--line) * -1) 0 var(--rule)}
+.tabbed > .panel{padding:var(--pad-card, 1.25rem);border-radius:0 0 var(--r-card, 16px) var(--r-card, 16px);background:var(--surface);box-shadow:inset var(--line-w) 0 0 var(--rule), inset calc(var(--line-w) * -1) 0 0 var(--rule), inset 0 calc(var(--line-w) * -1) 0 var(--rule)}
 .tabbed > .panel > *{display:none;margin:0;font-size:var(--note-size, .875rem);line-height:var(--body-lead, 1.45);color:var(--ink-soft)}
 /* :has внутри :has браузер не принимает: живой выбор мерится прямо по input. */
 .tabbed:has(> .tabs > .el:nth-child(1) > input:checked, > .tabs > .el:nth-child(1)[data-on]) > .panel > :nth-child(1),
@@ -617,12 +623,12 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
    кружке встаёт точка тоном марки — видно, что будет выбрано. */
 .choices{display:flex;flex-direction:column;gap:calc(var(--air-row, 16px) / 4);font-family:var(--face)}
 .radio{display:inline-flex;align-items:center;gap:calc(var(--h-sm) * .3);min-block-size:var(--h-sm);color:var(--ink);font-size:var(--body-size, 1rem);cursor:pointer;-webkit-tap-highlight-color:transparent}
-.radio > input{appearance:none;-webkit-appearance:none;display:grid;place-items:center;flex:none;inline-size:1.25rem;block-size:1.25rem;margin:0;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 var(--line) var(--edge);cursor:pointer;transition:box-shadow var(--hover-t) var(--ease), transform var(--press-t) var(--ease)}
+.radio > input{appearance:none;-webkit-appearance:none;display:grid;place-items:center;flex:none;inline-size:1.25rem;block-size:1.25rem;margin:0;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 var(--line-w) var(--edge);cursor:pointer;transition:box-shadow var(--hover-t) var(--ease), transform var(--press-t) var(--ease)}
 .radio > input::after{content:'';inline-size:.625rem;block-size:.625rem;border-radius:999px;background:var(--dot, transparent)}
-@media (hover:hover){ .radio:hover > input{box-shadow:inset 0 0 0 var(--line) var(--ink);--dot:var(--pop-tint)} }
-.radio[data-state='hover'] > input{box-shadow:inset 0 0 0 var(--line) var(--ink);--dot:var(--pop-tint)}
+@media (hover:hover){ .radio:hover > input{box-shadow:inset 0 0 0 var(--line-w) var(--ink);--dot:var(--pop-tint)} }
+.radio[data-state='hover'] > input{box-shadow:inset 0 0 0 var(--line-w) var(--ink);--dot:var(--pop-tint)}
 .radio:is(:active, [data-state='press']) > input{transform:translateY(1px) scale(.97)}
-.radio > input:checked, .radio[data-on] > input{box-shadow:inset 0 0 0 var(--line) var(--pop);--dot:var(--pop)}
+.radio > input:checked, .radio[data-on] > input{box-shadow:inset 0 0 0 var(--line-w) var(--pop);--dot:var(--pop)}
 .radio > input:focus-visible, .radio[data-state='focus'] > input{outline:var(--ring-w) solid var(--ring, var(--ink));outline-offset:var(--ring-off)}
 
 /* Форма: поля и действия одного дела на листе карточки. Шапка — по
@@ -631,7 +637,7 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .card .stack[data-align='center']{align-items:center;text-align:center}
 .card[data-form] .entry{inline-size:100%}
 /* Полоса над полкой: вид полки слева, сортировка справа, волосок под ней. */
-.toolbar{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--gap-row, 12px);inline-size:100%;padding-block-end:var(--pad-inner, .75rem);box-shadow:inset 0 calc(var(--line) * -1) 0 var(--rule);font-family:var(--face)}
+.toolbar{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--gap-row, 12px);inline-size:100%;padding-block-end:var(--pad-inner, .75rem);box-shadow:inset 0 calc(var(--line-w) * -1) 0 var(--rule);font-family:var(--face)}
 /* Приглушённая часть надписи органа: «Сортировать:» перед выбранным. */
 .el .muted{font-weight:400;color:var(--muted, var(--ink-soft))}
 /* Орган, который под рукой меняет заливку (контур, переворот в марку), —
@@ -676,13 +682,13 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 /* Флажок: квадрат с кромкой края; отмечен — заливка марки и галка из листа
    набора краской на ней; подпись нажимается вместе с ним. */
 .tick{position:relative;display:inline-flex;align-items:center;gap:calc(var(--h-sm) * .3);min-block-size:var(--h-sm);font-size:var(--note-size, .875rem);color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent}
-.tick > input{--box:1.125rem;appearance:none;-webkit-appearance:none;flex:none;inline-size:var(--box);block-size:var(--box);margin:0;border-radius:calc(var(--box) * .22);background:var(--surface);box-shadow:inset 0 0 0 var(--line) var(--edge);cursor:pointer;transition:box-shadow var(--hover-t) var(--ease), transform var(--press-t) var(--ease)}
+.tick > input{--box:1.125rem;appearance:none;-webkit-appearance:none;flex:none;inline-size:var(--box);block-size:var(--box);margin:0;border-radius:calc(var(--box) * .22);background:var(--surface);box-shadow:inset 0 0 0 var(--line-w) var(--edge);cursor:pointer;transition:box-shadow var(--hover-t) var(--ease), transform var(--press-t) var(--ease)}
 .tick > svg{position:absolute;inset-inline-start:.1875rem;inline-size:.75rem;block-size:.75rem;color:var(--on-pop);stroke-width:2.4;opacity:0;pointer-events:none}
-@media (hover:hover){ .tick:hover > input:not(:checked){box-shadow:inset 0 0 0 var(--line) var(--ink)} }
+@media (hover:hover){ .tick:hover > input:not(:checked){box-shadow:inset 0 0 0 var(--line-w) var(--ink)} }
 .tick > input:checked, .tick[data-on] > input{background:var(--pop);box-shadow:none}
 .tick:has(> input:checked) > svg, .tick[data-on] > svg{opacity:1}
 .tick > input:focus-visible, .tick[data-state='focus'] > input{outline:var(--ring-w) solid var(--ring, var(--ink));outline-offset:var(--ring-off)}
-.tick[data-state='hover'] > input{box-shadow:inset 0 0 0 var(--line) var(--ink)}
+.tick[data-state='hover'] > input{box-shadow:inset 0 0 0 var(--line-w) var(--ink)}
 .tick:is(:active, [data-state='press']) > input{transform:translateY(1px) scale(.97)}
 /* Список флажков: подпись ролью тела; data-pick ink — отмеченный залит
    чернилами, галка краской пола. */
@@ -709,7 +715,7 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .ticks svg{flex:none;inline-size:1.125rem;block-size:1.125rem;color:var(--pop-ink)}
 /* Разделитель «или»: слово краской подписи между двумя волосками. */
 .or{display:flex;align-items:center;gap:var(--gap-row, 12px);margin:0;font-size:var(--note-size, .875rem);color:var(--ink-soft)}
-.or::before, .or::after{content:'';flex:1;block-size:var(--line);background:var(--rule)}
+.or::before, .or::after{content:'';flex:1;block-size:var(--line-w);background:var(--rule)}
 /* Выключенный орган — как у набора (btn.module.css): прозрачность
    --state-off и курсор «нельзя»; под рукой и на нажатие не отвечает.
    `aria-disabled`, а не `disabled`: фокус остаётся — объяснение, почему
@@ -717,7 +723,7 @@ svg{stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .el:is(:disabled, [aria-disabled='true'], [data-state='off']){--paint:var(--bg);--veil:transparent;opacity:var(--state-off, .45);cursor:not-allowed;transform:none}
 
 /* ── страница элемента: живой сверху, состояния застывшими ниже ─────── */
-body{margin:0;min-block-size:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;padding-block:24px;background:var(--surface);color:var(--ink);font-family:var(--face)}
+body{box-sizing:border-box;margin:0;min-block-size:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;padding-block:24px;background:var(--surface);color:var(--ink);font-family:var(--face)}
 .live{display:flex;align-items:center;justify-content:space-between;gap:6px;inline-size:min(360px, 100% - 32px)}
 .live.one{justify-content:center}
 /* Место под карточку на стенде — ширина ячейки полки; строкой — шире. */
@@ -740,6 +746,10 @@ body{margin:0;min-block-size:100vh;display:flex;flex-direction:column;align-item
 .group{display:flex;gap:6px}
 .column{display:flex;flex-direction:column;align-items:center;gap:24px}
 .states{display:flex;flex-wrap:wrap;justify-content:center;gap:24px}
+/* ?live (stage.js): застывшие состояния скрыты — их видно рукой на живом (И620). */
+[data-live] .states{display:none}
+/* ?live в плитке страницы: фон — у плитки, у кадра своего нет (И628). */
+html[data-live],html[data-live] body{background:transparent}
 .states figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:10px}
 .states figcaption{font-size:.8125rem;color:var(--ink-soft)}
 /* Снимок под органом — стекло видно только над чем-то. Кадр с потолком от
@@ -750,7 +760,7 @@ body{margin:0;min-block-size:100vh;display:flex;flex-direction:column;align-item
 .states .backdrop{inline-size:220px;aspect-ratio:3 / 2}
 .states figure:has(.tip){padding-block-start:2.5rem}
 .set{display:grid;grid-template-columns:repeat(auto-fill, minmax(104px, 1fr));gap:8px;inline-size:min(980px, 100% - 32px)}
-.set figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 6px;border-radius:var(--r-card, 12px);box-shadow:inset 0 0 0 var(--line) var(--rule)}
+.set figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 6px;border-radius:var(--r-card, 12px);box-shadow:inset 0 0 0 var(--line-w) var(--rule)}
 .set figure > div{display:flex;align-items:center;gap:12px}
 .set svg{fill:none;stroke:currentColor}
 .set svg.l{inline-size:24px;block-size:24px}
@@ -824,8 +834,8 @@ body{margin:0;min-block-size:100vh;display:flex;flex-direction:column;align-item
 /* Ответ руке: под рукой имя подчёркнуто — вся карточка ведёт на товар;
    нажатая — на пиксель ниже, без сжатия: карточка большая. Фокус — кольцо
    вокруг карточки. Над сердцем и кнопкой отвечают они сами. */
-@media (hover:hover){ .card[data-shelf] .title a:hover{text-decoration:underline;text-decoration-thickness:var(--line);text-underline-offset:.15em} }
-.card[data-shelf][data-state='hover'] .title a{text-decoration:underline;text-decoration-thickness:var(--line);text-underline-offset:.15em}
+@media (hover:hover){ .card[data-shelf] .title a:hover{text-decoration:underline;text-decoration-thickness:var(--line-w);text-underline-offset:.15em} }
+.card[data-shelf][data-state='hover'] .title a{text-decoration:underline;text-decoration-thickness:var(--line-w);text-underline-offset:.15em}
 .card[data-shelf]:has(.title a:active), .card[data-shelf][data-state='press']{transform:translateY(1px)}
 .card[data-shelf] .title a:focus-visible::after, .card[data-shelf][data-state='focus'] .title a::after{outline:var(--ring-w) solid var(--ring, var(--ink));outline-offset:var(--ring-off)}
 @media (prefers-reduced-motion:reduce){ .card[data-shelf]{transition:none} .card[data-shelf]:has(.title a:active){transform:none} }
@@ -867,7 +877,7 @@ body{margin:0;min-block-size:100vh;display:flex;flex-direction:column;align-item
    контуром — тон поля: на тёмном снимке контур без заливки пропадал бы. */
 [data-card='toned'] .card[data-shelf]{background:var(--plate-2, var(--quiet))}
 [data-card='toned'] .card[data-shelf] :is(.title, .text b){font-weight:400}
-[data-card='toned'] .card[data-shelf] .tag{background:var(--plate-2, var(--quiet));color:var(--ink);box-shadow:inset 0 0 0 var(--line) currentColor;font-family:var(--face-head, var(--face));font-style:italic;font-weight:400}
+[data-card='toned'] .card[data-shelf] .tag{background:var(--plate-2, var(--quiet));color:var(--ink);box-shadow:inset 0 0 0 var(--line-w) currentColor;font-family:var(--face-head, var(--face));font-style:italic;font-weight:400}
 [data-card='toned'] .card[data-shelf] .tag[data-tone='sale']{color:var(--sale)}
 [data-card='toned'] .card[data-shelf] .tag[data-tone='warn']{color:var(--warn)}
 
@@ -913,3 +923,329 @@ body:has(> .stand){background:var(--page, var(--surface))}
 .states.widths > figure[data-w='265']{inline-size:265px}
 .states.widths > figure[data-w='307']{inline-size:307px}
 .states.widths figcaption{text-align:start}
+
+/* ═══ ОБРАЗЦЫ ИЗ ИСТОЧНИКОВ (02.10.2026, элементы 69–79) ═════════════════
+ *  Кнопки Uiverse от заказчика (69, 70) и устройство HyperUI, daisyUI,
+ *  shadcn/ui (71–79): названия частей и состояний — оттуда, вид — набора.
+ *    data-motion dash          черта перед словом вырастает под рукой
+ *    data-underline            слово с подчёркиванием; под рукой — марка
+ *    .pair                     кнопка и малая кнопка со знаком встык
+ *    .goal .meter              подпись и полоса (progress); data-tone ok — выполнено
+ *    .steps .stepdot           шаги заказа; data-step done | current · data-view bars
+ *    .status                   значок статуса; data-tone ok | warn | bad | sale · data-dot · data-view line
+ *    .pick                     выбор из списка (select); data-shape pill · data-voice quiet
+ *    .skeleton .skel           заглушка загрузки; data-shape line | circle | block · data-short · data-view row
+ *    .rows                     меню строками; .head · aria-current · aria-disabled · details · data-dir row · data-view icons
+ */
+
+/* Несколько образцов в ряд — шире обычного места и в несколько строк. */
+.live:has(> :is(.pair, .goal, .steps, .status, .pick, .skeleton, .rows)){inline-size:min(760px, 100% - 32px);flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:var(--gap-row, 16px)}
+
+/* Черта вырастает (69): в покое её нет и места она не держит. */
+.el[data-motion='dash'] .dash{inline-size:0;margin-inline-end:calc(var(--h) * -.2);transition:inline-size var(--open-t) var(--ease), margin var(--open-t) var(--ease)}
+@media (hover:hover){ .el[data-motion='dash']:hover .dash{inline-size:var(--h);margin-inline-end:0} }
+.el[data-motion='dash'][data-state='hover'] .dash{inline-size:var(--h);margin-inline-end:0}
+@media (prefers-reduced-motion:reduce){ .el[data-motion='dash'] .dash{transition:none} }
+
+/* Слово с подчёркиванием (71). */
+.el[data-underline]{--fg:var(--pop-ink);text-decoration:underline;text-decoration-thickness:var(--frame-w);text-decoration-color:var(--edge);text-underline-offset:.3em;transition:text-decoration-color var(--hover-t) var(--ease), color var(--hover-t) var(--ease), transform var(--press-t) var(--ease)}
+@media (hover:hover){ .el[data-underline]:hover{text-decoration-color:var(--pop)} }
+.el[data-underline][data-state='hover']{text-decoration-color:var(--pop)}
+
+/* Кнопка и малая кнопка встык (72): углы только по внешним краям. */
+.pair{display:inline-flex;align-items:stretch;gap:var(--line-w)}
+.pair > .el:first-child{border-start-end-radius:0;border-end-end-radius:0}
+.pair > .el:last-child{border-start-start-radius:0;border-end-start-radius:0}
+.pair > .el[data-voice='line'] + .el{margin-inline-start:calc(var(--line-w) * -1)}
+
+
+/* Подпись и полоса до порога (74). */
+.goal{display:flex;flex-direction:column;gap:var(--gap-targets, 8px);inline-size:min(100%, 22rem);font-size:var(--note-size, .875rem)}
+.goal p{display:flex;align-items:center;gap:calc(var(--h-sm) * .2);margin:0}
+.goal p svg{inline-size:calc(var(--h-sm) * .6);block-size:calc(var(--h-sm) * .6);color:var(--ok)}
+.meter{-webkit-appearance:none;appearance:none;inline-size:100%;block-size:calc(var(--h-sm) * .25);border:0;border-radius:var(--r-pop, 999px);overflow:hidden;background:var(--quiet);color:var(--pop)}
+.meter::-webkit-progress-bar{background:var(--quiet)}
+.meter::-webkit-progress-value{background:var(--pop);border-radius:var(--r-pop, 999px);transition:inline-size var(--open-t) var(--ease)}
+.meter::-moz-progress-bar{background:var(--pop);border-radius:var(--r-pop, 999px)}
+.meter[data-tone='ok']::-webkit-progress-value{background:var(--ok-fill)}
+.meter[data-tone='ok']::-moz-progress-bar{background:var(--ok-fill)}
+
+/* Шаги заказа (75). */
+.steps{display:flex;list-style:none;margin:0;padding:0;inline-size:min(100%, 22rem)}
+.steps > li{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:calc(var(--h-sm) * .2);color:var(--ink-soft);font-size:var(--note-size, .875rem);text-align:center}
+.steps > li[data-step]{color:var(--ink)}
+.stepdot{position:relative;z-index:1;display:grid;place-items:center;inline-size:var(--h-sm);block-size:var(--h-sm);border-radius:50%;background:var(--quiet);color:var(--ink);font-weight:var(--weight)}
+.stepdot svg{inline-size:calc(var(--h-sm) * .5);block-size:calc(var(--h-sm) * .5)}
+.steps > li::after{content:'';position:absolute;inset-block-start:calc(var(--h-sm) / 2 - var(--line-w) / 2);inset-inline:calc(50% + var(--h-sm) / 2) calc(-50% + var(--h-sm) / 2);block-size:var(--line-w);background:var(--rule)}
+.steps > li:last-child::after{display:none}
+.steps > li[data-step='done']::after{background:var(--pop)}
+.steps > li[data-step='done'] .stepdot{background:var(--pop);color:var(--on-pop)}
+.steps > li[data-step='current'] .stepdot{background:var(--surface);color:var(--pop-ink);box-shadow:inset 0 0 0 var(--frame-w) var(--pop)}
+.steps[data-view='bars']{gap:var(--gap-targets, 8px)}
+.steps[data-view='bars'] > li{align-items:stretch;text-align:start}
+.steps[data-view='bars'] > li::after{display:none}
+.steps[data-view='bars'] > li::before{content:'';block-size:calc(var(--h-sm) * .15);border-radius:var(--r-pop, 999px);background:var(--quiet)}
+.steps[data-view='bars'] > li:is([data-step='done'], [data-step='current'])::before{background:var(--pop)}
+
+/* Значок статуса (76). */
+.status{display:inline-flex;align-items:center;gap:calc(var(--h-sm) * .2);block-size:calc(var(--h-sm) * .75);padding-inline:calc(var(--h-sm) * .3);border-radius:var(--r-pop, 999px);background:var(--quiet);color:var(--ink);font-size:var(--note-size, .875rem);font-weight:var(--weight);white-space:nowrap}
+.status[data-dot]::before{content:'';inline-size:calc(var(--h-sm) * .22);block-size:calc(var(--h-sm) * .22);border-radius:50%;background:currentColor}
+.status[data-tone='ok']{background:var(--ok-tint);color:var(--ok)}
+.status[data-tone='warn']{background:var(--warn-tint);color:var(--warn)}
+.status[data-tone='bad']{background:var(--bad-tint);color:var(--bad)}
+.status[data-tone='sale']{background:var(--sale-tint);color:var(--sale)}
+.status[data-view='line']{background:transparent;box-shadow:inset 0 0 0 var(--line-w) var(--edge)}
+
+/* Выбор из списка (77): закрытое поле; список открывает система. */
+.pick{position:relative;display:inline-flex;align-items:center;inline-size:min(100%, 11rem)}
+.pick select{-webkit-appearance:none;appearance:none;inline-size:100%;block-size:var(--h-md);padding-inline:calc(var(--h-md) * .35) calc(var(--h-md) * .9);border:0;border-radius:var(--r-ctrl, 8px);background:var(--surface);box-shadow:inset 0 0 0 var(--line-w) var(--edge);color:var(--ink);font:inherit;font-family:var(--face);font-size:var(--fs);cursor:pointer;transition:box-shadow var(--hover-t) var(--ease), background-color var(--hover-t) var(--ease)}
+.pick svg{position:absolute;inset-inline-end:calc(var(--h-md) * .3);inline-size:calc(var(--h-md) * .4);block-size:calc(var(--h-md) * .4);pointer-events:none}
+@media (hover:hover){ .pick select:hover{box-shadow:inset 0 0 0 var(--line-w) var(--ink)} }
+.pick select:focus-visible{outline:var(--ring-w) solid var(--ring, var(--ink));outline-offset:var(--ring-off)}
+.pick[data-shape='pill'] select{border-radius:var(--r-pop, 999px);padding-inline-start:calc(var(--h-md) * .5)}
+.pick[data-voice='quiet'] select{background:var(--quiet);box-shadow:none}
+
+/* Заглушка загрузки (78). */
+.skeleton{display:flex;flex-direction:column;gap:var(--gap-targets, 8px);inline-size:min(100%, 11rem)}
+.skeleton[data-view='row']{flex-direction:row;align-items:center;inline-size:min(100%, 14rem)}
+.skeleton[data-view='row'] > div{flex:1;display:flex;flex-direction:column;gap:var(--gap-targets, 8px)}
+.skel{display:block;border-radius:var(--r-ctrl, 8px);background:linear-gradient(90deg, var(--quiet) 0 35%, var(--quiet-on, var(--quiet)) 50%, var(--quiet) 65% 100%) 0 0 / 300% 100%;animation:skel calc(var(--open-t) * 5) var(--ease) infinite}
+.skel[data-shape='block']{block-size:calc(var(--h-lg) * 3)}
+.skel[data-shape='line']{block-size:calc(var(--h-sm) * .4)}
+.skel[data-shape='line'][data-short]{inline-size:60%}
+.skel[data-shape='circle']{flex:none;inline-size:var(--h-lg);block-size:var(--h-lg);border-radius:50%}
+@keyframes skel{to{background-position:-150% 0}}
+@media (prefers-reduced-motion:reduce){ .skel{animation:none} }
+
+/* Меню строками (79). */
+.rows{display:flex;flex-direction:column;gap:2px;list-style:none;margin:0;padding:0;inline-size:min(100%, 13rem)}
+.rows ul{display:flex;flex-direction:column;gap:2px;list-style:none;margin:0;padding:0 0 0 calc(var(--h-md) * .6)}
+.rows .head{padding:calc(var(--h-sm) * .3) calc(var(--h-md) * .3);color:var(--ink-soft);font-size:var(--note-size, .875rem);text-transform:uppercase;letter-spacing:var(--caps)}
+.rows :is(a, summary){display:flex;align-items:center;gap:calc(var(--h-md) * .25);min-block-size:var(--h-md);padding-inline:calc(var(--h-md) * .3);border-radius:var(--r-ctrl, 8px);color:var(--ink);font-weight:var(--weight);text-decoration:none;list-style:none;cursor:pointer;transition:background-color var(--hover-t) var(--ease), color var(--hover-t) var(--ease)}
+.rows summary::-webkit-details-marker{display:none}
+.rows :is(a, summary) svg{flex:none;inline-size:calc(var(--h-md) * .45);block-size:calc(var(--h-md) * .45)}
+.rows summary .more{margin-inline-start:auto;transition:rotate var(--hover-t) var(--ease)}
+.rows details[open] > summary .more{rotate:180deg}
+@media (hover:hover){ .rows :is(a, summary):hover{background:var(--quiet)} }
+.rows :is(a, summary):active{background:color-mix(in oklab, var(--quiet), var(--ink) var(--state-press))}
+.rows a[aria-current]{background:var(--pop-tint);color:var(--pop-ink)}
+.rows a[aria-disabled='true']{opacity:var(--state-off);cursor:not-allowed}
+.rows :is(a, summary):focus-visible{outline:var(--ring-w) solid var(--ring, var(--ink));outline-offset:var(--ring-off)}
+.rows[data-dir='row']{flex-direction:row;inline-size:auto}
+.rows[data-view='icons']{inline-size:auto}
+.rows[data-view='icons'] a{inline-size:var(--h-md);padding-inline:0;justify-content:center}
+
+/* ═══ ЕЩЁ ОБРАЗЦЫ (02.10.2026, элементы 80–98) ═══════════════════════════
+ *  Палитры источников (род «палитра»: краски образца — их собственные, роли
+ *  набора они не трогают), поля с подписью и состояниями, сообщения-полосы,
+ *  подсказка, оценка, крошки, листание, фишки с крестиком, плашки размера, цена.
+ *    .pal .sw                  ряд образцов краски; .pal-name — имя шкалы
+ *    .entry data-tone bad | ok · .label data-req · .hint
+ *    .entry data-dir row       подпись слева, поле справа
+ *    .field data-voice under   поле с чертой снизу · .add — приставка и окончание (data-box)
+ *    .code                     поле кода из ячеек · .tally — счётчик знаков
+ *    .field > select           страна у телефона
+ *    .note data-tone info | ok | warn | bad · data-view bar | line | banner
+ *    .tipped                   слово с подсказкой; data-side top | bottom | start | end
+ *    .stars                    оценка: звёзды и число
+ *    .crumbs                   хлебные крошки
+ *    .pager                    листание страниц: номера встык
+ *    .tagx                     фишка с крестиком
+ *    .sizes                    плашки размера: выбранная, недоступная
+ *    .price                    цена со скидкой
+ */
+
+/* Образцы краски (80–83). */
+.live:has(> .pal){inline-size:min(780px, 100% - 32px);flex-direction:column;align-items:stretch;gap:var(--gap-row, 16px)}
+.pal{display:grid;gap:calc(var(--h-sm) * .15)}
+.pal-name{margin:0;font-size:var(--note-size, .875rem);font-weight:var(--weight);color:var(--ink)}
+.pal-row{display:grid;grid-template-columns:repeat(auto-fit, minmax(calc(var(--h-lg) * .8), 1fr));gap:calc(var(--h-sm) * .08)}
+.sw{display:block;block-size:var(--h-lg);border-radius:var(--r-xs, 4px)}
+.sw-cap{margin:0;font-size:var(--note-size, .875rem);color:var(--ink-soft)}
+.pal-theme{display:grid;grid-template-columns:repeat(auto-fit, minmax(calc(var(--h-lg) * 2.2), 1fr));gap:calc(var(--h-sm) * .15)}
+.pal-theme > div{display:grid;gap:calc(var(--h-sm) * .08)}
+.pal-theme .sw{block-size:calc(var(--h-lg) * .7)}
+
+/* Поле: подпись, обязательное, состояния (84). */
+.entry > .label[data-req]::after{content:' *';color:var(--bad)}
+.entry[data-tone='bad'] > .field{--edge-c:var(--bad-line);--edge-hover:var(--bad-line)}
+.entry[data-tone='bad'] > .hint{color:var(--bad)}
+.entry[data-tone='ok'] > .field{--edge-c:var(--ok-fill);--edge-hover:var(--ok-fill)}
+.entry[data-tone='ok'] > .hint{color:var(--ok)}
+.entry[data-tone] .field > svg{color:inherit}
+.entry[data-tone='bad'] .field > svg{color:var(--bad)}
+.entry[data-tone='ok'] .field > svg{color:var(--ok)}
+.field:has(> input:disabled){opacity:var(--state-off);cursor:not-allowed}
+.field > input:disabled{cursor:not-allowed}
+.field[data-voice='under']{--bg:transparent;--r:0;--edge-c:var(--edge);--edge-hover:var(--ink);padding-inline:0;box-shadow:inset 0 calc(var(--line-w) * -1) 0 var(--edge-c)}
+.field[data-voice='under']:focus-within{outline:0;box-shadow:inset 0 calc(var(--ring-w) * -1) 0 var(--ring, var(--ink))}
+.live:has(> :is(.entry, .field, .code)){inline-size:min(780px, 100% - 32px);flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:var(--gap-row, 16px)}
+
+/* Подпись слева (85). */
+.entry[data-dir='row']{flex-direction:row;align-items:center;inline-size:min(100%, 26rem);gap:var(--gap-row, 12px)}
+.entry[data-dir='row'] > .label{flex:0 0 6.5rem}
+.entry[data-dir='row'] > .field{flex:1;inline-size:auto}
+
+/* Приставка и окончание (86). */
+.field > .add{flex:none;color:var(--ink-soft);font-size:var(--fs);white-space:nowrap}
+.field:has(> .add[data-box]){padding-inline:0;overflow:hidden}
+.field > .add[data-box]{align-self:stretch;display:grid;place-items:center;padding-inline:calc(var(--h) * .35);background:var(--quiet)}
+.field:has(> .add[data-box]) > input{padding-inline:calc(var(--h) * .3)}
+
+/* Поле кода (88). */
+.code{display:inline-flex;gap:var(--gap-targets, 8px)}
+.code input{box-sizing:border-box;inline-size:calc(var(--h-lg) * .9);block-size:var(--h-lg);padding:0;border:0;border-radius:var(--r-ctrl, 8px);background:var(--quiet);color:var(--ink);font:inherit;font-family:var(--face);font-size:var(--h3-size, 1.25rem);font-weight:var(--weight);text-align:center;transition:box-shadow var(--hover-t) var(--ease)}
+.code input:focus-visible{outline:var(--ring-w) solid var(--ring, var(--ink));outline-offset:var(--ring-off);background:var(--surface);box-shadow:inset 0 0 0 var(--line-w) var(--ring, var(--ink))}
+
+/* Счётчик знаков (89). */
+.tally{font-size:var(--note-size, .875rem);color:var(--ink-soft);font-variant-numeric:tabular-nums}
+
+/* Телефон со страной (90). */
+.field > select{flex:none;padding-inline-end:calc(var(--h) * .3);margin:0;border:0;border-inline-end:var(--line-w) solid var(--rule);background:none;color:var(--ink);font:inherit;font-family:var(--face);font-size:var(--fs);cursor:pointer;outline:none}
+
+/* Сообщения-полосы (91). */
+.note{box-sizing:border-box;display:flex;align-items:flex-start;gap:calc(var(--h-sm) * .3);inline-size:min(100%, 24rem);padding:calc(var(--h-sm) * .35) calc(var(--h-sm) * .4);border-radius:var(--r-card, 16px);background:var(--info-tint);color:var(--info);font-size:var(--note-size, .875rem);line-height:var(--body-lead, 1.45)}
+.note > svg{flex:none;inline-size:calc(var(--h-sm) * .6);block-size:calc(var(--h-sm) * .6);margin-block-start:calc(var(--h-sm) * .05)}
+.note > div{flex:1;min-inline-size:0}
+.note p{margin:0;color:var(--ink)}
+.note b{display:block;font-weight:var(--weight)}
+.note > .el{flex:none;--h:calc(var(--h-sm) * .8);margin-block:calc(var(--h-sm) * -.2) calc(var(--h-sm) * -.2);margin-inline-end:calc(var(--h-sm) * -.2)}
+.note[data-tone='ok']{background:var(--ok-tint);color:var(--ok)}
+.note[data-tone='warn']{background:var(--warn-tint);color:var(--warn)}
+.note[data-tone='bad']{background:var(--bad-tint);color:var(--bad)}
+.note[data-view='bar']{border-radius:var(--r-ctrl, 8px);border-inline-start:var(--ring-w) solid currentColor}
+.note[data-view='line']{background:var(--surface);box-shadow:inset 0 0 0 var(--line-w) currentColor}
+.note[data-view='banner']{inline-size:min(100%, 40rem);border-radius:0}
+
+/* Подсказка у слова (92). */
+.tipped{position:relative;display:inline-flex;align-items:center;padding-inline:calc(var(--h-sm) * .3);min-block-size:var(--h-sm);border-radius:var(--r-ctrl, 8px);background:var(--quiet);color:var(--ink);font-weight:var(--weight);cursor:help}
+.tipped::after{content:attr(data-tip);position:absolute;z-index:1;inset-inline-start:50%;inset-block-end:calc(100% + var(--ring-off));translate:-50% 0;inline-size:max-content;max-inline-size:14rem;padding:calc(var(--h-sm) * .15) calc(var(--h-sm) * .3);border-radius:var(--r-ctrl, 8px);background:var(--ink);color:var(--surface);font-size:var(--note-size, .875rem);font-weight:400;line-height:var(--body-lead, 1.45);visibility:hidden;opacity:0;pointer-events:none;transition:opacity var(--hover-t) var(--ease), visibility var(--hover-t) var(--ease)}
+.tipped[data-side='bottom']::after{inset-block-end:auto;inset-block-start:calc(100% + var(--ring-off))}
+.tipped[data-side='start']::after{inset-inline-start:auto;inset-inline-end:calc(100% + var(--ring-off));inset-block-end:auto;inset-block-start:50%;translate:0 -50%}
+.tipped[data-side='end']::after{inset-inline-start:calc(100% + var(--ring-off));inset-block-end:auto;inset-block-start:50%;translate:0 -50%}
+@media (hover:hover){ .tipped:hover::after{visibility:visible;opacity:1} }
+.tipped:focus-visible::after, .tipped[data-state='hover']::after{visibility:visible;opacity:1}
+.tipped:focus-visible{outline:var(--ring-w) solid var(--ring, var(--ink));outline-offset:var(--ring-off)}
+.live:has(> .tipped){padding-block:calc(var(--h-lg) * 1.2)}
+
+/* Оценка звёздами (93). */
+.stars{display:inline-flex;align-items:center;gap:calc(var(--h-sm) * .15);font-size:var(--note-size, .875rem);color:var(--ink-soft)}
+.stars svg{inline-size:calc(var(--h-sm) * .55);block-size:calc(var(--h-sm) * .55);color:var(--star, var(--warn-fill))}
+.stars svg:not([data-sign='star-fill']){color:var(--rule)}
+.stars b{margin-inline-start:calc(var(--h-sm) * .1);color:var(--ink);font-weight:var(--weight)}
+.stars[data-view='pick']{gap:0}
+.stars[data-view='pick'] .el{--h:var(--h-sm)}
+.stars[data-view='pick'] .el[data-on]{--fg:var(--star, var(--warn-fill))}
+
+/* Хлебные крошки (94). */
+.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:calc(var(--h-sm) * .1);list-style:none;margin:0;padding:0;font-size:var(--note-size, .875rem)}
+.crumbs li{display:flex;align-items:center;gap:calc(var(--h-sm) * .1)}
+.crumbs a{display:inline-flex;align-items:center;gap:calc(var(--h-sm) * .15);min-block-size:var(--h-sm);padding-inline:calc(var(--h-sm) * .15);border-radius:var(--r-ctrl, 8px);color:var(--ink-soft);text-decoration:none;transition:color var(--hover-t) var(--ease)}
+@media (hover:hover){ .crumbs a:hover{color:var(--pop-ink)} }
+.crumbs a:focus-visible{outline:var(--ring-w) solid var(--ring, var(--ink));outline-offset:var(--ring-off)}
+.crumbs [aria-current]{color:var(--ink);font-weight:var(--weight)}
+.crumbs svg{inline-size:calc(var(--h-sm) * .5);block-size:calc(var(--h-sm) * .5);color:var(--ink-soft)}
+.crumbs[data-sep='slash'] li + li::before{content:'/';color:var(--rule);padding-inline:calc(var(--h-sm) * .05)}
+.crumbs[data-sep='chevron'] li + li::before{content:'›';color:var(--ink-soft);padding-inline:calc(var(--h-sm) * .05)}
+
+/* Листание страниц (95). */
+.pager{display:inline-flex;align-items:center;gap:calc(var(--h-sm) * .1);list-style:none;margin:0;padding:0}
+.pager .el{--h:var(--h-sm);padding-inline:calc(var(--h-sm) * .3);min-inline-size:var(--h-sm)}
+.pager .el[aria-current]{--bg:var(--pop-tint);--fg:var(--pop-ink)}
+.pager .gap{padding-inline:calc(var(--h-sm) * .1);color:var(--ink-soft)}
+.pager[data-view='joined']{gap:0}
+.pager[data-view='joined'] .el{border-radius:0;--bg:transparent;box-shadow:inset 0 0 0 var(--line-w) var(--edge);margin-inline-start:calc(var(--line-w) * -1)}
+.pager[data-view='joined'] li:first-child .el{border-start-start-radius:var(--r-ctrl, 8px);border-end-start-radius:var(--r-ctrl, 8px);margin-inline-start:0}
+.pager[data-view='joined'] li:last-child .el{border-start-end-radius:var(--r-ctrl, 8px);border-end-end-radius:var(--r-ctrl, 8px)}
+.pager[data-view='joined'] .el[aria-current]{--bg:var(--ink);--fg:var(--surface);box-shadow:none}
+.pager .total{font-size:var(--note-size, .875rem);color:var(--ink-soft);padding-inline:calc(var(--h-sm) * .2)}
+
+/* Фишка с крестиком (96). */
+.tagx{display:inline-flex;align-items:center;gap:calc(var(--h-sm) * .1);block-size:var(--h-sm);padding-inline:calc(var(--h-sm) * .4) calc(var(--h-sm) * .12);border-radius:var(--r-pop, 999px);background:var(--quiet);color:var(--ink);font-size:var(--note-size, .875rem);font-weight:var(--weight);white-space:nowrap}
+.tagx .el{--h:calc(var(--h-sm) * .75);padding:0}
+.tagx[data-view='line']{background:transparent;box-shadow:inset 0 0 0 var(--line-w) var(--edge)}
+.tagx[data-view='brand']{background:var(--pop-tint);color:var(--pop-ink)}
+.live:has(> .tagx){flex-wrap:wrap;justify-content:center}
+
+/* Плашки размера (97). */
+.sizes{display:flex;flex-wrap:wrap;gap:var(--gap-targets, 8px);list-style:none;margin:0;padding:0}
+.sizes label{position:relative;display:inline-flex;align-items:center;justify-content:center;min-inline-size:calc(var(--h-md) * 1.4);block-size:var(--h-md);padding-inline:calc(var(--h-md) * .35);border-radius:var(--r-ctrl, 8px);background:var(--surface);box-shadow:inset 0 0 0 var(--line-w) var(--edge);color:var(--ink);font-weight:var(--weight);cursor:pointer;transition:box-shadow var(--hover-t) var(--ease), background-color var(--hover-t) var(--ease), color var(--hover-t) var(--ease)}
+.sizes input{position:absolute;inset:0;margin:0;opacity:0;cursor:inherit}
+@media (hover:hover){ .sizes label:hover:not(:has(input:disabled)){box-shadow:inset 0 0 0 var(--line-w) var(--ink)} }
+.sizes label:has(input:checked){background:var(--ink);color:var(--surface);box-shadow:none}
+.sizes label:has(input:focus-visible){outline:var(--ring-w) solid var(--ring, var(--ink));outline-offset:var(--ring-off)}
+.sizes label:has(input:disabled){opacity:var(--state-off);cursor:not-allowed;text-decoration:line-through}
+.sizes[data-view='brand'] label:has(input:checked){background:var(--pop-tint);color:var(--pop-ink);box-shadow:inset 0 0 0 var(--frame-w) var(--pop)}
+.sizes[data-view='pill'] label{border-radius:var(--r-pop, 999px)}
+
+/* Цена со скидкой (98). */
+.price{display:inline-flex;align-items:baseline;flex-wrap:wrap;gap:calc(var(--h-sm) * .2);font-variant-numeric:tabular-nums}
+.price b{font-size:var(--h3-size, 1.25rem);font-weight:var(--weight);color:var(--ink)}
+.price s{color:var(--ink-soft);font-size:var(--note-size, .875rem)}
+.price[data-tone='sale'] b{color:var(--sale)}
+.price small{font-size:var(--note-size, .875rem);color:var(--ink-soft)}
+.live:has(> .price, > .sizes, > .stars, > .crumbs, > .pager, > .note, > .tipped){flex-wrap:wrap;justify-content:center;gap:var(--gap-row, 16px);inline-size:min(780px, 100% - 32px)}
+
+/* ═══ ПОЛОСЫ ДО ПОРОГА: ВИДЫ (03.10.2026, элементы 99–104) ═══════════════════
+ *  К полосе 74 — виды из библиотек MIT: Flowbite, HyperUI, Preline; плашка
+ *  собрана из двух образцов набора, уже взятых оттуда же: сообщение (91) и
+ *  полоса (74). Ширина заливки — от --share (доля порога, 0–100): в магазине её
+ *  ставит переходник, на странице образцов атрибут style нельзя — доля читается
+ *  из data-share лестницей ниже (шаг 5 %). Порог взят — data-tone ok у .goal:
+ *  заливка, знак и надпись встают в краску успеха.
+ *    .goal data-view wide | strip | ends | rider | segments    вид полосы (99–103)
+ *    .gauge > .fill            дорожка (role=progressbar) и заливка; надпись в .fill — wide
+ *    .gauge > .fill + p        лента: надпись поверх дорожки, заливка — тоном (strip)
+ *    .ends                     суммы под полосой: набрано слева, порог справа (ends)
+ *    .reach > .rider + .gauge  знак на конце заливки (rider)
+ *    .segs > .seg              пять долек, у каждой своя доля (segments)
+ *    .note data-view goal      плашка (104): знак слева, слова и полоса .meter под ними
+ */
+
+/* Лестница долей: 0–100 шагом 5 %. */
+[data-share='0']{--share:0}[data-share='5']{--share:5}[data-share='10']{--share:10}[data-share='15']{--share:15}[data-share='20']{--share:20}[data-share='25']{--share:25}[data-share='30']{--share:30}[data-share='35']{--share:35}[data-share='40']{--share:40}[data-share='45']{--share:45}[data-share='50']{--share:50}[data-share='55']{--share:55}[data-share='60']{--share:60}[data-share='65']{--share:65}[data-share='70']{--share:70}[data-share='75']{--share:75}[data-share='80']{--share:80}[data-share='85']{--share:85}[data-share='90']{--share:90}[data-share='95']{--share:95}[data-share='100']{--share:100}
+
+/* Дорожка и заливка (Flowbite «Progress», Preline «Progress»). */
+.gauge{position:relative;box-sizing:border-box;display:flex;align-items:center;inline-size:100%;block-size:var(--gauge-h, calc(var(--h-sm) * .25));border-radius:var(--r-pop, 999px);overflow:hidden;background:var(--quiet)}
+.gauge > .fill{box-sizing:border-box;display:flex;align-items:center;justify-content:center;flex:none;inline-size:calc(var(--share, 0) * 1%);block-size:100%;overflow:hidden;border-radius:inherit;background:var(--pop);color:var(--on-pop);font-weight:var(--weight);line-height:1;white-space:nowrap;transition:inline-size var(--open-t) var(--ease)}
+.goal[data-tone='ok'] .gauge > .fill{background:var(--ok-fill);color:var(--on-ok)}
+.live:has(> .goal[data-view]), .live:has(> .note[data-view='goal']){flex-direction:column;align-items:center}
+
+/* Широкая, надпись в заливке (99). */
+.goal:is([data-view='wide'], [data-view='strip']){inline-size:min(100%, 40rem)}
+.goal[data-view='wide']{--gauge-h:calc(var(--h-sm) * .75)}
+.goal[data-view='wide'] .gauge > .fill{padding-inline:calc(var(--h-sm) * .2)}
+
+/* Лента в рост ряда, надпись поверх всей дорожки (100). */
+.goal[data-view='strip']{font-size:var(--fs-sm)}
+.goal[data-view='strip'] .gauge{--gauge-h:auto;block-size:auto;min-block-size:var(--h-md);border:var(--line-w) solid var(--edge);border-radius:var(--r-ctrl, 8px);background:var(--surface)}
+.goal[data-view='strip'] .gauge > .fill{position:absolute;inset-block:0;inset-inline-start:0;display:block;block-size:auto;border-radius:0;background:var(--pop-trail-far)}
+.goal[data-view='strip'] .gauge > p{position:relative;flex:1;min-inline-size:0;padding:calc(var(--h-md) * .15) calc(var(--h-md) * .35);color:var(--ink)}
+.goal[data-view='strip'] .gauge > p svg{color:var(--pop-ink)}
+.goal[data-view='strip'][data-tone='ok'] .gauge{border-color:var(--ok-fill)}
+.goal[data-view='strip'][data-tone='ok'] .gauge > .fill{background:var(--ok-fill)}
+.goal[data-view='strip'][data-tone='ok'] .gauge > p{color:var(--on-ok)}
+.goal[data-view='strip'][data-tone='ok'] .gauge > p svg{color:inherit}
+
+/* Суммы по краям под тонкой прямой полосой (101; HyperUI «Progress bars» 3). */
+.goal[data-view='ends']{--gauge-h:calc(var(--h-sm) * .125)}
+.goal[data-view='ends'] :is(.gauge, .gauge > .fill){border-radius:0}
+.ends{display:flex;justify-content:space-between;gap:var(--gap-targets, 8px);color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.ends b{color:var(--ink);font-weight:var(--weight)}
+
+/* Знак на конце заливки (102; Preline «Progress», плавающая метка). */
+.reach{display:block;inline-size:100%}
+.rider{box-sizing:border-box;display:grid;place-items:center;inline-size:calc(var(--h-sm) * .75);block-size:calc(var(--h-sm) * .75);margin-inline-start:clamp(0px, calc(var(--share, 0) * 1% - var(--h-sm) * .375), calc(100% - var(--h-sm) * .75));margin-block-end:calc(var(--h-sm) * .15);border-radius:50%;background:var(--pop-tint);color:var(--pop-ink);transition:margin-inline-start var(--open-t) var(--ease)}
+.rider svg{inline-size:calc(var(--h-sm) * .5);block-size:calc(var(--h-sm) * .5)}
+.goal[data-tone='ok'] .rider{background:var(--ok-tint);color:var(--ok)}
+
+/* Пять долек (103; Preline «Progress», ступенчатая). */
+.segs{display:flex;gap:calc(var(--h-sm) * .12);inline-size:100%}
+.seg{flex:1;min-inline-size:0;block-size:calc(var(--h-sm) * .3);border-radius:var(--r-pop, 999px);overflow:hidden;background:var(--quiet)}
+.seg::before{content:'';display:block;inline-size:calc(var(--share, 0) * 1%);block-size:100%;background:var(--pop);transition:inline-size var(--open-t) var(--ease)}
+.goal[data-tone='ok'] .seg::before{background:var(--ok-fill)}
+
+/* Плашка доставки: сообщение 91 с полосой 74 под словами (104). */
+.note[data-view='goal'] .meter{display:block;margin-block-start:calc(var(--h-sm) * .2)}
+
+@media (prefers-reduced-motion:reduce){ .gauge > .fill, .rider, .seg::before{transition:none} }

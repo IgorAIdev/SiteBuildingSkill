@@ -28,14 +28,16 @@
        --from   папка набора: откуда брать полный каталог (ставщик передаёт сам)
        --look   записать опубликованный вид образца = умолчание каталога
                 (новая установка; без ключа вид пересчитывается из имён) */
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { axesOf, resolver, tokenMap } from '../../tools/buttons.mjs'
-import { variables, inputCss, resolve as resolveScale } from '../../tools/scale.mjs'
+import { variables, inputCss, resolve as resolveScale, withKnobs } from '../../tools/scale.mjs'
+import { TYPE } from '../../tools/thresholds.mjs'
 import { valid, FLOORS, SHADOWS } from '../../lib/look-values.ts'
 import { problems } from '../../lib/look-rule.ts'
 import { pairsOf } from './pairs.mjs'
+import { bandBlocks } from '../../scripts/band-blocks.mjs'
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url))
 const read = (dir, p) => JSON.parse(readFileSync(join(dir, p), 'utf8'))
@@ -51,13 +53,14 @@ const TITLES = {
   palette: {
     'Латунь на угле': 'Brass on charcoal', 'Аптека': 'Apothecary', 'Олива': 'Olive', 'Мек остров': 'Soft island',
     'Тёплый лист': 'Warm leaf', 'Ледяной шалфей': 'Icy sage', 'Аптечный синий': 'Pharmacy blue',
+    'Ирис': 'Iris',
   },
   /* Ритм — лестницей от плотного к воздушному (слово заказчика 28.09.2026:
      «ритм — давай больше вариантов»; имена «Standard» и «Quiet» были
      непонятны): имя говорит место на лестнице. Просторный — тот же воздух,
      что у обычного, но крупнее текст. Опоры ступеней — бриф карты товара,
      «Замеры» (И509). */
-  scale: { 'Плотный': 'Dense', 'Тесный': 'Compact', 'Нынешний': 'Standard', 'Просторный': 'Standard · larger type', 'Воздушный': 'Airy', 'Тихий': 'Very airy', 'Галерея': 'Gallery' },
+  scale: { 'Плотный': 'Dense', 'Тесный': 'Compact', 'Нынешний': 'Standard', 'Просторный': 'Spacious', 'Воздушный': 'Airy', 'Тихий': 'Very airy', 'Галерея': 'Gallery' },
 }
 
 /** Движок набора: файлы и откуда (И247: одна математика для панели, сайта и проверок). */
@@ -78,7 +81,18 @@ export function copyEngine(kit, site) {
 export const WIDTHS = [1440, 1280, 1600]
 /** Наборы углов — из лестницы набора (M3 ∪ Carbon, SHAPE.radii), взятые из
  *  наборов ритма; вложенность «орган ≤ карточка ≤ лист» держит каждый. */
-const CORNER_NAMES = { '4/4/12/16': 'Crisp', '8/8/24/28': 'Standard', '8/8/28/32': 'Round' }
+const CORNER_NAMES = { '0/0/0/0': 'Square', '4/4/12/16': 'Crisp', '8/8/24/28': 'Standard', '8/8/28/32': 'Round' }
+/** Прямой угол — ступень 0 лестницы (SHAPE.radii); ни один набор ритма его не несёт. */
+const SQUARE = { xs: 0, ctrl: 0, card: 0, sheet: 0 }
+/** У каждого набора углов — близнец с кнопками полным кругом (`--r-btn` =
+ *  `--r-pop`): «Crisp» и «Crisp · pill» и т. д. Угол кнопки — роль формы, и ставит
+ *  её та же ручка Corners, что все углы (слово заказчика 04.10.2026: «не реагируют
+ *  кнопки на настройку панели, не меняется форма» — пилюля жила осью Buttons →
+ *  Shape, и Corners кнопок не трогал); как `radius="full"` у Radix Themes — одна
+ *  ручка. Близнецы, а не одна «Pill»: пилюля носится с любыми углами карточек
+ *  (Allbirds — пилюли при острых карточках), и любой прежний вид переезжает без
+ *  потерь. Порядок — сначала четыре набора, за ними их близнецы. */
+const withPill = (list) => [...list, ...list.map((o) => ({ ...o, id: `${o.id}-pill`, name: `${o.name} · pill`, line: `Buttons fully rounded · controls ${o.vars['--r-ctrl']} · cards ${o.vars['--r-card']} · sheets ${o.vars['--r-sheet']}`, vars: { ...o.vars, '--r-btn': 'var(--r-pop)' } }))]
 /** Тени — роли по работе (И228). Soft — роли основы набора (его
  *  styles/look.css: у сайта этот файл выпущен из опубликованного вида, и
  *  «Soft» из него значил бы «как сейчас», И385); Flat — без тени, одной
@@ -89,34 +103,67 @@ const CORNER_NAMES = { '4/4/12/16': 'Crisp', '8/8/24/28': 'Standard', '8/8/28/32
    опубликованный на умолчании без имени группы, узнаётся по ним и
    пересчитывается (`reresolve`, ui/choice.mjs). Псевдоним со сроком: снять,
    когда опубликованные виды пересчитаны (план 4, global «look»). */
+/* Всплывающее (`--sh-overlay`: меню, шторка, окно) — у каждого набора своё
+   (заказчик 30.09.2026: «на сайте тени берутся не из панели — это
+   системная ошибка»): «Без тени» — линия, как у карточки; супермягкая —
+   короткая дымка; мягкая — роль основы. До того все три отдавали одно и
+   то же большое облако, и «Без тени» его не снимал.
+   «Выше» (Lifted) снят, «Супермягкая» заведена, «Мягкая» мягче — слово
+   заказчика 30.09.2026: «тень выше — огромная, вообще не подходит; давай
+   мягкий вариант и ещё мягче — минималистичную, да и мягкую сделай ещё
+   мягче». Прежние значения «Мягкой» — в `was`: опубликованный вид с ними
+   узнаётся и пересчитывается на новые. */
+/* Тем же днём: «мягкую меняй на половину от супермягкой и переименуй их
+   соответственно» — мягкая взяла значения супермягкой, супермягкая стала
+   половиной её. `was` держит оба прежних значения мягкой. */
+const SOFT_BEFORE = (t) => [
+  /* та же мягкая до того, как всплывающее стало вариантом набора */
+  { '--sh-raised': t['--sh-raised'], '--sh-lift': t['--sh-lift'], '--sh-overlay': '0 0 0 1px var(--sh-ring), 0 4px 8px var(--sh-near), 0 36px 80px -28px var(--sh-far-3)', '--sh-in': t['--sh-in'] },
+  { '--sh-raised': '0 0 0 1px var(--sh-ring), 0 1px 2px var(--sh-near), 0 8px 20px -10px var(--sh-far-1)', '--sh-lift': '0 0 0 1px var(--sh-ring), 0 2px 4px var(--sh-near), 0 20px 44px -18px var(--sh-far-2)', '--sh-overlay': '0 0 0 1px var(--sh-ring), 0 4px 8px var(--sh-near), 0 36px 80px -28px var(--sh-far-3)', '--sh-in': t['--sh-in'] },
+  { '--sh-raised': '0 0 0 1px var(--sh-ring), 0 1px 2px var(--sh-near), 0 4px 12px -8px var(--sh-far-1)', '--sh-lift': '0 0 0 1px var(--sh-ring), 0 1px 3px var(--sh-near), 0 12px 28px -16px var(--sh-far-1)', '--sh-overlay': '0 0 0 1px var(--sh-ring), 0 4px 8px var(--sh-near), 0 36px 80px -28px var(--sh-far-3)', '--sh-in': t['--sh-in'] },
+]
 const SHADOW_SETS = (t) => [
-  { id: 'soft', name: 'Soft', line: 'The kit shadow roles: a quiet lift at rest, more under the hand', vars: { '--sh-raised': t['--sh-raised'], '--sh-lift': t['--sh-lift'], '--sh-overlay': t['--sh-overlay'], '--sh-in': t['--sh-in'] }, was: [{ '--sh-raised': t['--sh-raised'], '--sh-lift': t['--sh-lift'], '--sh-overlay': t['--sh-overlay'], '--sh-in': 'inset 0 1px 2px var(--sh-inset-paper)' }] },
-  { id: 'flat', name: 'Flat', line: 'No shadow: a hairline marks the card; only overlays keep a shadow', vars: { '--sh-raised': '0 0 0 1px var(--rule)', '--sh-lift': '0 0 0 1px var(--rule)', '--sh-overlay': t['--sh-overlay'], '--sh-in': 'inset 0 0 0 1px var(--rule)' } },
-  { id: 'lifted', name: 'Lifted', line: 'One step higher: cards rest lifted, hover rises further', vars: { '--sh-raised': t['--sh-lift'], '--sh-lift': t['--sh-overlay'], '--sh-overlay': t['--sh-overlay'], '--sh-in': t['--sh-in'] } },
+  { id: 'soft', name: 'Soft', rung: 2, line: 'The kit shadow roles: a quiet lift at rest, more under the hand', vars: { '--sh-raised': t['--sh-raised'], '--sh-lift': t['--sh-lift'], '--sh-sticky': t['--sh-sticky'], '--sh-overlay': t['--sh-overlay'], '--sh-modal': t['--sh-modal'], '--sh-in': t['--sh-in'] }, was: [{ '--sh-raised': t['--sh-raised'], '--sh-lift': t['--sh-lift'], '--sh-overlay': t['--sh-overlay'], '--sh-in': 'inset 0 1px 2px var(--sh-inset-paper)' }, ...SOFT_BEFORE(t)] },
+  /* «Без тени» (И726; слово заказчика 04.10.2026: «для нашей текущей витрины отмени
+     тени, пока делаем без них»): тени нет ни у чего. Карточку, плашку и подъём под
+     рукой отделяют их собственные кромки (`--edge`, `--edge-hand`) — роль пуста;
+     полосу у края — волосок `--rule` по верхнему краю; всплывающее — кромка `--edge-near`,
+     заметнее карточкиной: под меню может лежать что угодно (IBM Carbon — слои
+     краской, у меню одна кромка); окно и шторку отделяет затемнение — роль пуста;
+     вдавленное — волосок внутрь. До 04.10.2026 «Без тени» клал всем одну линию
+     `--rule`, и меню выглядело карточкой. */
+  { id: 'flat', name: 'Flat', rung: 0, line: 'No shadow anywhere: cards keep their own edge, menus a firmer edge, windows the dimmed page', vars: { '--sh-raised': 'none', '--sh-lift': 'none', '--sh-sticky': '0 -1px 0 var(--rule)', '--sh-overlay': '0 0 0 1px var(--edge-near)', '--sh-modal': 'none', '--sh-in': 'inset 0 0 0 1px var(--rule)' } },
+  /* Супермягкая — половина мягкой (слово заказчика 30.09.2026): ближний
+     слой в пиксель размытия, дымка вдвое короче и уже. */
+  { id: 'supersoft', name: 'Supersoft', rung: 1, line: 'Half of Soft: a one-pixel shade at the edge and a very short haze under the hand', vars: { '--sh-raised': '0 1px 1px var(--sh-ring)', '--sh-lift': '0 1px 1px var(--sh-ring), 0 4px 10px -7px var(--sh-far-1)', '--sh-sticky': '0 -1px 0 var(--sh-ring), 0 -2px 6px -3px var(--sh-near)', '--sh-overlay': '0 0 0 1px var(--sh-ring), 0 8px 20px -12px var(--sh-far-1)', '--sh-modal': '0 0 0 1px var(--sh-ring), 0 16px 36px -18px var(--sh-far-2)', '--sh-in': t['--sh-in'] } },
 ]
 /** Роли, по которым панель мерит свою палитру, — какими ступенями палитры
  *  сайт их красит в каждой теме (цепочки ссылок tokens.css). */
 const STEP_ROLES = { page: '--page', plate: '--plate', ink: '--ink', inkSoft: '--ink-soft', pop: '--pop', onPop: '--on-pop' }
 
 /** Шрифты-кандидаты: семейства и толщины, которые загрузит публикация
- *  (scripts/fonts.mjs — со своего адреса сайта), и стек для `--face`. */
+ *  (scripts/fonts.mjs — со своего адреса сайта), и стек для `--face`.
+ *  Кандидат берётся в список, только если умеет буквы рынка: публикация
+ *  останавливает шрифт без них (scripts/font-coverage.mjs, И769). Lato снят
+ *  05.10.2026: расширенная латиница у Google — тридцать польских знаков, без
+ *  румынских ă ș ț, венгерских ő ű и чешских č. */
 export const FACES = [
   { id: 'system', name: 'System', body: null, head: null },
   { id: 'manrope', name: 'Manrope', body: { family: 'Manrope', weights: [400, 500, 600, 700] }, head: null },
   { id: 'plex', name: 'IBM Plex Sans', body: { family: 'IBM Plex Sans', weights: [400, 500, 600, 700] }, head: null },
   { id: 'inter', name: 'Inter', body: { family: 'Inter', weights: [400, 500, 600, 700] }, head: null },
   { id: 'serif', name: 'Source Serif + Plex', body: { family: 'IBM Plex Sans', weights: [400, 500, 600, 700] }, head: { family: 'Source Serif 4', weights: [600, 700], stack: "Georgia, 'Times New Roman', serif" } },
-]
-/** Отметка текущего пункта меню в строке полок шапки. */
-export const MARKERS = [
-  { id: 'underline', name: 'Underline', vars: { '--menu-mark-line': 'underline', '--menu-mark-fill': 'transparent', '--menu-mark-ink': 'var(--ink)', '--menu-mark-r': '0', '--menu-mark-pad': '0', '--menu-mark-side': '0' } },
-  { id: 'pill', name: 'Pill', vars: { '--menu-mark-line': 'none', '--menu-mark-fill': 'var(--quiet)', '--menu-mark-ink': 'var(--ink)', '--menu-mark-r': 'var(--r-ctrl)', '--menu-mark-pad': 'var(--sp-2)', '--menu-mark-side': '0' } },
-  /* Плашка чернил, слово краской пола — выбранная вкладка элементов 51 и 65
-     (elements/, И356). Обе роли правило сочетаний мерит. */
-  { id: 'ink', name: 'Ink pill', vars: { '--menu-mark-line': 'none', '--menu-mark-fill': 'var(--ink)', '--menu-mark-ink': 'var(--on-ink)', '--menu-mark-r': 'var(--r-ctrl)', '--menu-mark-pad': 'var(--sp-2)', '--menu-mark-side': '0' } },
-  /* Тон и черта марки у начала строки — текущий пункт меню кабинета,
-     элемент 52 (И393); черта краской марки для текста: 3 : 1 к тону. */
-  { id: 'side', name: 'Side bar', vars: { '--menu-mark-line': 'none', '--menu-mark-fill': 'var(--quiet)', '--menu-mark-ink': 'var(--ink)', '--menu-mark-r': 'var(--r-ctrl)', '--menu-mark-pad': 'var(--sp-2)', '--menu-mark-side': '1' } },
+  { id: 'dmsans', name: 'DM Sans', body: { family: 'DM Sans', weights: [400,500,600,700] }, head: null },
+  { id: 'worksans', name: 'Work Sans', body: { family: 'Work Sans', weights: [400,500,600,700] }, head: null },
+  { id: 'franklin', name: 'Libre Franklin', body: { family: 'Libre Franklin', weights: [400,500,600,700] }, head: null },
+  { id: 'fira', name: 'Fira Sans', body: { family: 'Fira Sans', weights: [400,500,600,700] }, head: null },
+  { id: 'figtree', name: 'Figtree', body: { family: 'Figtree', weights: [400,500,600,700] }, head: null },
+  { id: 'opensans', name: 'Open Sans', body: { family: 'Open Sans', weights: [400,500,600,700] }, head: null },
+  { id: 'montserrat', name: 'Montserrat', body: { family: 'Montserrat', weights: [400,500,600,700] }, head: null },
+  { id: 'playfair', name: 'Playfair + Inter', body: { family: 'Inter', weights: [400,500,600,700] }, head: { family: 'Playfair Display', weights: [600, 700], stack: "Georgia, 'Times New Roman', serif" } },
+  { id: 'lora', name: 'Lora + Manrope', body: { family: 'Manrope', weights: [400,500,600,700] }, head: { family: 'Lora', weights: [600, 700], stack: "Georgia, 'Times New Roman', serif" } },
+  { id: 'fraunces', name: 'Fraunces + DM Sans', body: { family: 'DM Sans', weights: [400,500,600,700] }, head: { family: 'Fraunces', weights: [600, 700], stack: "Georgia, 'Times New Roman', serif" } },
+  { id: 'cormorant', name: 'Cormorant + Work Sans', body: { family: 'Work Sans', weights: [400,500,600,700] }, head: { family: 'Cormorant Garamond', weights: [600, 700], stack: "Georgia, 'Times New Roman', serif" } },
 ]
 /** Вид поля ввода (И390): одно поле на весь сайт — поиск в шапке, почта,
  *  касса (styles/form.module.css, `.box`). Кромка остаётся у каждого вида:
@@ -140,29 +187,54 @@ export const FIELD_LABELS = [
   { id: 'above', name: 'Above', line: 'The label above the field', vars: { '--ctrl-field-label': 'above' } },
   { id: 'edge', name: 'On the edge', line: 'Inside while empty, on the top edge once you type (element 47)', vars: { '--ctrl-field-label': 'edge' } },
 ]
-/** Шапка cbdin.bg (И430): меню телефона — полки строками или ещё и группы
- *  «по поводу» пилюлями; знак корзины — тележка или сумка; у знака — число
+/** Шапка cbdin.bg (И430): знак корзины — тележка или сумка; у знака — число
  *  или ещё и сумма товаров. */
 export const HEAD_PARTS = {
-  'drawer-look': [
-    { id: 'rows', name: 'Rows', line: 'The phone menu lists the shelves as rows', vars: { '--drawer-look': 'rows' } },
-    { id: 'pills', name: 'Pills', line: 'Shelves as rows, then the catalogue by need as pills (cbdin.bg)', vars: { '--drawer-look': 'pills' } },
-  ],
   'cart-sign': [
     { id: 'cart', name: 'Cart', line: 'A shopping cart sign', vars: { '--cart-sign': 'cart' } },
     { id: 'bag', name: 'Bag', line: 'A bag sign (cbdin.bg)', vars: { '--cart-sign': 'bag' } },
+  ],
+  /* Знак магазина (слово заказчика 29.09.2026: «логотипы 1, 2, 3, 6 — выбор
+     в панель, по умолчанию 6, в нём CBD заглавными»; стенд вариантов —
+     https://claude.ai/artifact/4EVgv9Eu9Jh8YUZmL4V3Bz). */
+  logo: [
+    { id: 'pill', name: 'Word + country', line: 'CBDin bold, the country in a small brand tag (variant 6)', vars: { '--logo': 'pill' } },
+    { id: 'word', name: 'Word', line: 'cbdin bold in lower case, the domain ending in the brand colour (variant 1)', vars: { '--logo': 'word' } },
+    { id: 'split', name: 'CBD + in', line: 'CBD in capitals, “in” light in the brand colour, the country small above (variant 2)', vars: { '--logo': 'split' } },
+    { id: 'leaf', name: 'Leaf dot', line: 'A hemp leaf for the dot over the i (variant 3)', vars: { '--logo': 'leaf' } },
+  ],
+  /* Регистр имён на плитках главной (эффекты; категории — кнопками героя, И673) (слово заказчика 01.10.2026:
+     «текст плашек с заглавной буквы / все заглавные»): одна ручка на все
+     одежды плашки. */
+  'door-case': [
+    { id: 'sentence', name: 'Capitalised', line: 'The shelf name as it is written: a capital first letter', vars: { '--door-case': 'none' } },
+    { id: 'caps', name: 'ALL CAPS', line: 'Every letter of the shelf name is a capital', vars: { '--door-case': 'uppercase' } },
+  ],
+  /* Отметка текущего раздела в строке меню (слово заказчика 04.10.2026, И714):
+     черта краской марки по низу шапки (Carbon UI Shell, Primer UnderlineNav)
+     или только полное слово (Allbirds, Gymshark). Плашки под словом нет (И713). */
+  'nav-current': [
+    { id: 'line', name: 'Line', line: 'A brand-colour line along the bottom of the header under the current item', vars: { '--nav-current': 'line' } },
+    { id: 'word', name: 'Word', line: 'The current item in full ink, the others quieter (Allbirds, Gymshark)', vars: { '--nav-current': 'word' } },
   ],
   'cart-meta': [
     { id: 'count', name: 'Count', line: 'The number of items on the sign', vars: { '--cart-meta': 'count' } },
     { id: 'sum', name: 'Sum', line: 'The number and the sum of the goods beside the sign (cbdin.bg)', vars: { '--cart-meta': 'sum' } },
   ],
 }
-/** Знак полки на фишке (И422): словом или знаком и словом (элемент 65);
- *  сам знак — данные полки, у полки без знака фишка стоит словом. */
-export const CHIP_SIGNS = [
-  { id: 'none', name: 'Word', line: 'Shelf chips as words', vars: { '--chip-sign': 'none' } },
-  { id: 'show', name: 'Sign and word', line: 'A round sign of the shelf before its name, where the shelf has one (element 65)', vars: { '--chip-sign': 'show' } },
+/** Подложка секции главной (И591): четыре слова на каждый блок реестра, кроме
+ *  первого экрана — блоки читаются из реестра сайта (scripts/band-blocks.mjs),
+ *  новый блок получает строку в панели сам. Краски — роли палитры. */
+export const TONES = [
+  { id: 'none', name: 'Off', line: 'No band: the section stands on the page colour' },
+  { id: 'quiet', name: 'Quiet', line: 'A quiet full-width band, a touch deeper than the page' },
+  { id: 'brand', name: 'Brand', line: 'A light tint of the brand colour — to stand a section out' },
+  { id: 'dark', name: 'Dark', line: 'The dark tone of the header and footer — the loudest section' },
 ]
+/** Как секция зовётся в панели; блок без имени — по типу. */
+const BAND_NAMES = { categories: 'Categories', featured: 'Featured', story: 'Our story', faq: 'Questions' }
+const bandName = (b) => BAND_NAMES[b] ?? b.charAt(0).toUpperCase() + b.slice(1)
+const bandOptions = (block) => TONES.map((o) => ({ ...o, vars: { [`--band-${block}`]: o.id } }))
 /** Пара «поле и кнопка» (И421): порознь или встык одной коробкой —
  *  элемент 42; на витрине — купон корзины. */
 export const PAIR_LOOKS = [
@@ -175,18 +247,17 @@ export const SAY_LOOKS = [
   { id: 'line', name: 'Line', line: 'A line of text under the form, in the signal colour', vars: { '--say-look': 'line' } },
   { id: 'note', name: 'Note', line: 'A tinted note with a sign: green when done, red on an error (elements 29, 31)', vars: { '--say-look': 'note' } },
 ]
-/** Знаки шапки (И398): без заливки, тоном под каждым (элемент 01) или рядом
- *  в одном лотке (элементы 09, 39). */
-export const HEAD_ICONS = [
-  { id: 'bare', name: 'Bare', line: 'Icons with no fill; a veil under the hand', vars: { '--head-icons': 'bare' } },
-  { id: 'toned', name: 'Toned', line: 'A tone under each icon at rest (element 01)', vars: { '--head-icons': 'toned' } },
-  { id: 'tray', name: 'Tray', line: 'The header actions in one tone tray (elements 09, 39)', vars: { '--head-icons': 'tray' } },
-]
 /** Краска ссылки «куда ведёт» под рукой (И397): своя (стрелка едет, краска
  *  та же) или марка для текста — элемент 11. */
 export const GO_HOVER = [
   { id: 'plain', name: 'Plain', line: 'The arrow moves under the hand; the colour stays', vars: { '--go-hover': 'currentcolor' } },
   { id: 'brand', name: 'Brand', line: 'Under the hand the link takes the brand colour and the arrow moves (element 11)', vars: { '--go-hover': 'var(--pop-ink)' } },
+]
+/** Краска звезды оценки (И516): золото, принятое в торговле (строитель
+ *  палитры, `--star-trade`), или янтарь палитры (`--warn-fill`). */
+export const STAR = [
+  { id: 'gold', name: 'Gold', line: 'The gold shops use for stars (Amazon, Google)', vars: { '--star': 'var(--star-trade)' } },
+  { id: 'palette', name: 'Palette amber', line: 'The attention colour of your palette', vars: { '--star': 'var(--warn-fill)' } },
 ]
 /** Краска отмеченной галочки и радио (И392): одна на весь сайт — фильтры
  *  полки, касса, формы (styles/base.css, `accent-color`). Сами органы
@@ -202,11 +273,10 @@ export const TICKS = [
  *  260–325px»), вариант — одежда одной раскладки (craft: «Вид меняет
  *  поверхность, краску, поле; раскладку внутри он НЕ меняет»). */
 const CARD_LINES = {
-  framed: { name: 'Framed', line: 'Own surface with a shadow: the card sits above the page' },
-  bare: { name: 'Bare', line: 'No box: the picture with its own corners on the page, text below' },
-  outlined: { name: 'Outlined', line: 'A hairline instead of a shadow; the picture sits inside the card field' },
-  toned: { name: 'Toned', line: 'The picture to the edges, the details on a tone field right under it; no line, no shadow' },
-  tinted: { name: 'Tinted', line: 'The whole card in the brand tint, with the sheet corner; no line, no shadow' },
+  framed: { name: 'Design 2', line: 'A light sheet, the picture to the edges on top, a quiet edge line; under the hand the line darkens' },
+  inset: { name: 'Design 1', line: 'A light sheet, the picture inside the field, as on cbdin.bg; under the hand an edge line' },
+  sheet: { name: 'Design 3', line: 'A light sheet, the picture inside the field; under the hand an edge line and a shadow' },
+  edged: { name: 'Design 4', line: 'The picture to the edges, a quiet edge line; under the hand the line darkens and a shadow lifts' },
 }
 /** Полка (И400, «Admin → Card»): пропорция снимка — одна на полку и карту
  *  товара, снимки у товара одни; плотность — сколько карточек в ряд на
@@ -216,26 +286,6 @@ const CARD_LINES = {
  *  сайт объявляет у себя (scripts/look-slots.mjs, PRODUCT). Пропорция —
  *  дробью 'a / b': из неё же карта считает высоту галереи. */
 export const SHELF = {
-  'shot-frame': [
-    { id: 'square', name: '1:1', line: 'Square pictures, on shelves and on the product page', vars: { '--shot-frame': '1 / 1' } },
-    { id: 'wide', name: '4:3', line: 'Landscape pictures: shorter cards, more rows on a screen', vars: { '--shot-frame': '4 / 3' } },
-    { id: 'portrait', name: '4:5', line: 'Upright pictures, 4 : 5 — taller bottles and boxes', vars: { '--shot-frame': '4 / 5' } },
-    { id: 'tall', name: '3:4', line: 'Tall pictures, 3 : 4 — the product stands the whole height', vars: { '--shot-frame': '3 / 4' } },
-  ],
-  'card-buy': [
-    { id: 'full', name: 'Full width', line: 'The cart button under the price, the whole width of the card', vars: { '--card-buy': 'full' } },
-    { id: 'beside', name: 'Beside the price', line: 'A smaller cart button at the end of the price row; it moves under the price when the card is narrow', vars: { '--card-buy': 'beside' } },
-  ],
-  /* Подпись порядка полки (элемент 63, И395): снаружи кнопки или внутри,
-     со знаком порядка, и галка у выбранного в списке. */
-  'sort-label': [
-    { id: 'beside', name: 'Label beside', line: '«Sort by» before the button; the button shows the order', vars: { '--sort-label': 'beside' } },
-    { id: 'inside', name: 'Label inside', line: 'A sort sign and «Sort by:» inside the button; a tick at the chosen order (element 63)', vars: { '--sort-label': 'inside' } },
-  ],
-  'shelf-cols': [
-    { id: '4', name: '4 in a row', line: 'Four cards in a row on a wide screen: larger pictures', vars: { '--shelf-cols': '4' } },
-    { id: '5', name: '5 in a row', line: 'Five cards in a row on a wide screen: more products at a glance', vars: { '--shelf-cols': '5' } },
-  ],
 }
 /** Карта товара (И278): варианты — значения ручек `--pdp-*`, которые сайт
  *  объявляет у себя (scripts/look-slots.mjs, PRODUCT). Доля ряда под
@@ -261,25 +311,59 @@ export const PRODUCT_PAGE = {
     { id: 'tiles', name: 'Tiles', line: 'Messengers as tiles, two in a row: the window fits a phone screen', vars: { '--quick-look': 'tiles' } },
     { id: 'rows', name: 'Rows', line: 'Messengers as full-width rows, «Order via …» (cbdin.bg)', vars: { '--quick-look': 'rows' } },
   ],
-  /* Выбор варианта (И396): пилюли, встык (элемент 49) или в подложке (50). */
+  /* Выбор варианта (И396): пилюли, встык (элемент 49), в подложке (50) или плашками размера (97, двумя видами). */
   'seg-look': [
     { id: 'chips', name: 'Chips', line: 'Separate chips; the chosen one in the brand colour', vars: { '--seg-look': 'chips' } },
     { id: 'joined', name: 'Joined', line: 'Segments side by side; the chosen one in a brand tint with a brand edge (element 49)', vars: { '--seg-look': 'joined' } },
     { id: 'tray', name: 'Tray', line: 'Segments on a tone tray; the chosen one lifted on the page colour (element 50)', vars: { '--seg-look': 'tray' } },
+    { id: 'tiles', name: 'Tiles', line: 'Separate sheet-coloured tiles with a quiet edge; the chosen one in ink, a sold-out one struck through (element 97)', vars: { '--seg-look': 'tiles' } },
+    { id: 'tint', name: 'Tint tiles', line: 'The same tiles; the chosen one in a brand tint with a brand edge, a sold-out one struck through (element 97)', vars: { '--seg-look': 'tint' } },
+  ],
+  /* Наличие товара (слово заказчика 02.10.2026): знак в круге, точка или
+     только цветное слово — три вида одной строки «в наличии · мало · нет».
+     Знак и точка — знаки листа, цвет — роли сигналов палитры. */
+  'stock-look': [
+    { id: 'sign', name: 'Sign', line: 'A tick, an alert or a cross in a circle before the word, in the signal colour', vars: { '--stock-look': 'sign' } },
+    { id: 'dot', name: 'Dot', line: 'A full, half or empty dot before the word: the shape tells the state without colour', vars: { '--stock-look': 'dot' } },
+    { id: 'word', name: 'Word', line: 'The word alone, in the signal colour', vars: { '--stock-look': 'word' } },
+  ],
+  /* Листание страниц каталога и поиска (слово заказчика 03.10.2026; образец 95: daisyUI, HyperUI, shadcn/ui, MIT): слова, стрелки с номерами, номера встык или «2 / 9». */
+  /* Сердце «в избранное» на снимке карточки (слово заказчика 03.10.2026: «фон для иконки нужен? может как вариант убрать фон и увеличить сердечко до высоты плашки скидки»): на стекле палитры (умолчание) или без подложки, ростом с плашку скидки, с краем цвета листа. */
+  'save-look': [
+    { id: 'disc', name: 'On glass', line: 'A quiet glass disc under the heart: it reads over any picture, the palette measures the glass', vars: { '--save-look': 'disc' } },
+    { id: 'bare', name: 'Bare', line: 'No disc: the heart is as tall as the discount tag, ink with a thin edge in the sheet colour so it reads over a light and a dark picture', vars: { '--save-look': 'bare' } },
+  ],
+  'pager-look': [
+    { id: 'count', name: 'Numbers', line: 'Round page numbers without an edge, the current one filled; «Show more» and «Showing 24 of 96» in the same row (Material UI)', vars: { '--pager-look': 'count' } },
+    { id: 'rings', name: 'Rings', line: 'Every page number in a hairline circle, the current one filled; «Show more» and the count in the same row (Mantine)', vars: { '--pager-look': 'rings' } },
+    { id: 'compact', name: 'Compact', line: 'Round arrows around «2 / 4» instead of the numbers; «Show more» and the count in the same row', vars: { '--pager-look': 'compact' } },
+  ],
+  /* Фильтр полки (И739, слово заказчика 04.10.2026): на широком — одна кнопка и
+     панель колонками (Allbirds) или строка раскрытий (Shopify Dawn, ASOS); на
+     узком — шторка со всеми гранями (Dawn, Gymshark) или пилюли граней вбок
+     (Zalando, notino). Колонка сбоку — другое устройство страницы, не вид:
+     shop, references/catalog.md, «Фильтр полки: виды на выбор». */
+  'filter-look': [
+    { id: 'drawer', name: 'Drawer', line: 'One «Filters» button and a drawer from the side with every filter, like the cart: its head and its button stay, the filters scroll (Gymshark)', vars: { '--filter-look': 'drawer' } },
+    { id: 'bar', name: 'Bar', line: 'A row of filter buttons over the shelf, each opens its own list; the count stands by the sort (Shopify Dawn, ASOS)', vars: { '--filter-look': 'bar' } },
+  ],
+  'filter-phone': [
+    { id: 'drawer', name: 'Drawer', line: 'One «Filters» button and a drawer from the side with every filter; its button says how many products the choice gives (Dawn, Gymshark)', vars: { '--filter-phone': 'drawer' } },
+    { id: 'pills', name: 'Pills', line: 'The same button, and under it the filters as pills in a row that scrolls sideways, each opens its own list (Zalando, notino)', vars: { '--filter-phone': 'pills' } },
   ],
 }
-/** Главные: id — HOMES в lib/homes.ts (docs/design/home.md). `plan` —
- *  первый экран схемой для образца панели, сверху вниз: из чего он сложен
- *  (look.js рисует полосы — сцену, заголовок, фишки, ряд, лист, ящики,
- *  снимок). Строка — как вариант ощущается, словами заказчика. */
+/** Одежда плиток главной (ряд эффектов): id — HOMES в lib/homes.ts (Doors.tsx;
+ *  образцы — вкладка «Плитки» дизайн-системы). Раскладок главной на выбор
+ *  больше нет (И596). */
 const HOME_LINES = {
-  scene: { name: 'Scene', line: 'A dark photo scene first, then shelves, best sellers and the lab sheet', plan: ['scene', 'tiles', 'row'] },
-  counter: { name: 'Shop first', line: 'The promise in one line, every shelf and the best sellers on the first screen', plan: ['title', 'chips', 'row'] },
-  proof: { name: 'Lab report first', line: 'The batch report opens the page: the batch number is the largest thing on it', plan: ['title', 'sheet', 'row'] },
-  journal: { name: 'Headline first', line: 'The promise set large across the page, a wide photo under it, shelves as an index', plan: ['headline', 'photo', 'index'] },
-  cabinet: { name: 'Cabinet', line: 'A calm centred heading, shelves as apothecary drawers, a photo as a pause', plan: ['calm', 'drawers', 'row'] },
-  showroom: { name: 'Showroom', line: 'A rounded photo with the heading on it, the button in a cut-out corner, a product card lying on the photo, shelves as one large line', plan: ['notch', 'words', 'row'] },
-  poster: { name: 'Poster', line: 'A photo edge to edge with a large heading on it, shelves as tall photos with their names on the picture', plan: ['poster', 'tall', 'row'] },
+  caption: { name: 'Caption', line: 'Like the blog cards: the picture, then the name and two lines about the effect under it, on the page' },
+  button: { name: 'Button', line: 'The shelf name as a quiet site pill button on the picture, bottom left' },
+  glass: { name: 'Glass', line: 'The same pill, see-through: a dark name on light glass; the palette builder sets the least opacity that keeps it legible over any picture' },
+  frost: { name: 'Frost', line: 'A rectangle with the control corners, no fill, a quiet edge; the picture under it is blurred (frosted glass); the hand darkens the edge a little, the blur stays the same' },
+  bar: { name: 'Bar', line: 'A see-through band with the name across the foot of the picture' },
+  mount: { name: 'Mount', line: 'The picture inside a white tile, the name under it' },
+  under: { name: 'Under', line: 'The picture, the name under it on the page (Aesop)' },
+  outline: { name: 'Outline', line: 'The name in white on the picture, a quiet outline round the letters instead of a shadow' },
 }
 /** Шапки: id — HEADERS в lib/headers.ts. */
 const HEADER_LINES = {
@@ -335,13 +419,13 @@ export function copyElements(kit, site) {
   for (const row of panel.split('\n').filter((l) => /^\| (System|Admin) \|/.test(l))) {
     const cells = row.split('|').map((c) => c.trim())
     const place = `${cells[2]} › ${/^Main button/.test(cells[3]) ? 'Main button' : cells[3]}`
-    for (const m of row.matchAll(/элемент[ыа]?\s+((?:\d{2}(?:,\s*|\s+и\s+)?)+)/g)) for (const n of m[1].match(/\d{2}/g)) where[n] ??= place
+    for (const m of row.matchAll(/элемент[ыа]?\s+((?:\d{2,3}(?:,\s*|\s+и\s+)?)+)/g)) for (const n of m[1].match(/\d{2,3}/g)) where[n] ??= place
   }
   /* Оси кнопки называют свои элементы в каталоге кнопки (`что`). */
   const axes = existsSync(join(kit, 'styles/buttons.json')) ? JSON.parse(readFileSync(join(kit, 'styles/buttons.json'), 'utf8')) : {}
   for (const [id, a] of Object.entries(axes)) {
     const place = `Buttons › ${id === 'loud' || id === 'shape' ? 'Main button' : a.name}`
-    for (const o of Object.values(a.варианты ?? {})) for (const m of `${o.что ?? ''} ${o.line ?? ''}`.matchAll(/элемент[ыа]?\s+((?:\d{2}(?:,\s*|\s+и\s+)?)+)/g)) for (const n of m[1].match(/\d{2}/g)) where[n] ??= place
+    for (const o of Object.values(a.варианты ?? {})) for (const m of `${o.что ?? ''} ${o.line ?? ''}`.matchAll(/элемент[ыа]?\s+((?:\d{2,3}(?:,\s*|\s+и\s+)?)+)/g)) for (const n of m[1].match(/\d{2,3}/g)) where[n] ??= place
   }
   const list = []
   for (const e of элементы) {
@@ -351,8 +435,10 @@ export function copyElements(kit, site) {
     for (const m of html.matchAll(/href="\.\.\/\.\.\/styles\/([\w.-]+)"/g)) styles.add(m[1])
     mkdirSync(join(to, e.папка), { recursive: true })
     writeFileSync(join(to, e.папка, 'element.html'), html.replaceAll('../../styles/', '../styles/'))
-    const n = e.папка.slice(0, 2)
-    list.push({ n, dir: e.папка, name: e.имя, kind: e.род?.[0] ?? '', where: where[n] ?? '' })
+    /* Снимки под стекло и прочие рядом лежащие картинки (элемент 66, shots/). */
+    if (existsSync(join(from, e.папка, 'shots'))) cpSync(join(from, e.папка, 'shots'), join(to, e.папка, 'shots'), { recursive: true })
+    const n = e.папка.split('-')[0]
+    list.push({ n, dir: e.папка, name: e.имя, kind: e.род?.[0] ?? '', kinds: e.род ?? [], set: e['в наборе'] ?? '', where: where[n] ?? '' })
   }
   for (const f of styles) copyFileSync(join(kit, 'styles', f), join(to, 'styles', f))
   writeFileSync(join(to, 'list.json'), JSON.stringify(list, null, 1) + '\n')
@@ -409,38 +495,53 @@ export async function buildCatalog({ site, kit }) {
       const coarse = new Set([...inputCss(set, 'x').matchAll(/(--[\w-]+):/g)].map((m) => m[1]))
       const vars = ofGroup('scale', Object.fromEntries(Object.entries(variables(set)).filter(([k]) => !coarse.has(k))))
       const r = resolveScale(set)
-      const line = `Text ${r.тело[0]}–${r.тело[1]} px · sections ${r.воздух.page.pair[0]}–${r.воздух.page.pair[1]} px apart`
+      const span = ([a, b]) => (a === b ? `${a}` : `${a}–${b}`)
+      const line = `Sections ${span(r.воздух.page.pair)} px apart · blocks ${span(r.воздух.block.pair)} px · cards ${span(r.зазор.grid)} px apart · card padding ${span(r.поле.card)} px (phone–laptop)`
       return { id, name: TITLES.scale[id] ?? id, line, rung: rung(id), vars: check('scale', id, vars) }
     }),
+    /* Ручки типографики (И561): размер основного текста и размер заголовков
+       на макете. Значения — тем же строителем на первом наборе с выбранной
+       ручкой; ярусы (вторичный, мелкий, подзаголовок) выводятся из неё. */
+    'text-size': siteFirst(Object.keys(TYPE.knobs.текст).map((id) => {
+      const r = resolveScale(withKnobs(Object.values(scales)[0], { текст: id }))
+      const [, base] = r.размер.base, [, sm] = r.размер.sm, [, xs] = r.размер.xs
+      return { id, name: `${id} px`, line: `Text ${base} px · secondary ${sm} · small ${xs} on a laptop; ${r.размер.base[0]} on a phone`, vars: check('text-size', id, ofGroup('text-size', variables(withKnobs(Object.values(scales)[0], { текст: id })))) }
+    })),
+    'head-size': siteFirst(Object.keys(TYPE.knobs.заголовок).map((id) => {
+      const r = resolveScale(withKnobs(Object.values(scales)[0], { заголовок: id }))
+      return { id, name: `${id} px`, line: `Page name ${r.размер.h1[1]} px · sections and price ${r.размер.h2[1]} · subheadings ${r.размер.h3[1]} on a laptop; ${r.размер.h1[0]} · ${r.размер.h2[0]} on a phone`, vars: check('head-size', id, ofGroup('head-size', variables(withKnobs(Object.values(scales)[0], { заголовок: id })))) }
+    })),
     width: siteFirst(WIDTHS.map((w) => ({ id: String(w), name: String(w), line: `Canvas ${w} px wide`, vars: check('width', String(w), { '--wrap': `${w}px` }) }))),
-    corners: siteFirst(Object.values(Object.fromEntries(Object.values(scales).map((set) => {
+    corners: siteFirst(withPill(Object.values(Object.fromEntries([...Object.values(scales), { ...Object.values(scales)[0], радиус: SQUARE }].map((set) => {
       const key = ['xs', 'ctrl', 'card', 'sheet'].map((k) => set.радиус?.[k]).join('/')
       const name = CORNER_NAMES[key] ?? key
-      return [key, { id: name.toLowerCase(), name, line: `Controls ${set.радиус?.ctrl} px · cards ${set.радиус?.card} px · sheets ${set.радиус?.sheet} px`, vars: check('corners', key, ofGroup('corners', variables(set))) }]
-    })))),
+      return [key, { id: name.toLowerCase(), name, rung: set.радиус.card, line: `Controls and buttons ${set.радиус?.ctrl} px · cards ${set.радиус?.card} px · sheets ${set.радиус?.sheet} px`, vars: check('corners', key, ofGroup('corners', variables(set))) }]
+    })))).map((o) => (o.id.endsWith('-pill') ? { ...o, vars: check('corners', o.id, o.vars) } : o))),
     shadow: siteFirst(SHADOW_SETS(tokenMap(readFileSync(join(kit, 'styles/look.css'), 'utf8'))).map((o) => ({ ...o, vars: check('shadow', o.id, o.vars) }))),
-    ...Object.fromEntries(buttonAxes.map((a) => [`btn-${a.id}`, siteFirst(a.options.map((o) => ({ id: o.id, name: o.name, line: o.line ?? '', vars: check(`btn-${a.id}`, o.id, ofGroup('button', o.роли)) })))])),
-    marker: MARKERS.map((m) => ({ ...m, vars: check('marker', m.id, m.vars) })),
+    ...Object.fromEntries(buttonAxes.map((a) => [`btn-${a.id}`, siteFirst(a.options.map((o) => ({ id: o.id, name: o.name, line: o.line ?? '', what: o.что ?? '', vars: check(`btn-${a.id}`, o.id, ofGroup('button', o.роли)) })))])),
     field: siteFirst(FIELD_LOOKS.map((o) => ({ ...o, vars: check('field', o.id, o.vars) }))),
     'field-label': siteFirst(FIELD_LABELS.map((o) => ({ ...o, vars: check('field-label', o.id, o.vars) }))),
     tick: siteFirst(TICKS.map((o) => ({ ...o, vars: check('tick', o.id, o.vars) }))),
     ...Object.fromEntries(Object.entries(HEAD_PARTS).map(([field, list]) => [field, siteFirst(list.map((o) => ({ ...o, vars: check(field, o.id, o.vars) })))])),
-    'chip-sign': siteFirst(CHIP_SIGNS.map((o) => ({ ...o, vars: check('chip-sign', o.id, o.vars) }))),
+    ...Object.fromEntries(bandBlocks(site).map((b) => [`band-${b}`, siteFirst(bandOptions(b).map((o) => ({ ...o, vars: check(`band-${b}`, o.id, o.vars) })))])),
     'pair-look': siteFirst(PAIR_LOOKS.map((o) => ({ ...o, vars: check('pair-look', o.id, o.vars) }))),
     'say-look': siteFirst(SAY_LOOKS.map((o) => ({ ...o, vars: check('say-look', o.id, o.vars) }))),
-    'head-icons': siteFirst(HEAD_ICONS.map((o) => ({ ...o, vars: check('head-icons', o.id, o.vars) }))),
     'go-hover': siteFirst(GO_HOVER.map((o) => ({ ...o, vars: check('go-hover', o.id, o.vars) }))),
+    star: siteFirst(STAR.map((o) => ({ ...o, vars: check('star', o.id, o.vars) }))),
     ...Object.fromEntries(Object.entries({ ...SHELF, ...PRODUCT_PAGE }).map(([field, list]) => [field, siteFirst(list.map((o) => ({ ...o, vars: check(field, o.id, o.vars) })))])),
     header: headers.map((id) => ({ id, ...(HEADER_LINES[id] ?? { name: id, line: '' }) })),
     card: cards.map((id) => ({ id, ...(CARD_LINES[id] ?? { name: id, line: '' }) })),
-    home: homes.map((id) => ({ id, ...(HOME_LINES[id] ?? { name: id, line: '', plan: [] }) })),
+    home: homes.map((id) => ({ id, ...(HOME_LINES[id] ?? { name: id, line: '' }) })),
   }
   const defaults = Object.fromEntries(Object.entries(groups).map(([g, list]) => [g, list[0].id]))
 
   /* Пары: правило сайта на значениях «умолчания сайта + вариант A + вариант B». */
   const base = Object.fromEntries(Object.entries(slots).map(([k, s]) => [k, s.value]))
-  const axes = buttonAxes.map((a) => ({ field: `btn-${a.id}`, name: a.name }))
-  const pairs = pairsOf({ groups, fields: valuesOf({ axes }), base, facts, problems })
+  /* Русское имя и «что это» оси и варианта — для страницы дизайн-системы
+     (вкладка «Кнопки», все стили плитками, И614); панель берёт `name`. */
+  const axes = buttonAxes.map((a) => ({ field: `btn-${a.id}`, name: a.name, title: a.имя ?? a.name, what: a.что ?? '' }))
+  const bands = bandBlocks(site).map((b) => ({ field: `band-${b}`, name: bandName(b) }))
+  const pairs = pairsOf({ groups, fields: valuesOf({ axes, bands }), base, facts, problems })
   /* Ступени, которыми сайт красит страницу, — для замера своей палитры. */
   const own = new Set(Object.keys(slots).filter((k) => slots[k].group === 'palette'))
   const steps = Object.fromEntries(Object.entries(STEP_ROLES).map(([role, name]) => [role, Object.fromEntries(['light', 'dark'].map((t) => [t, stepOf(tokens, own, name, t)]))]))
@@ -448,7 +549,7 @@ export async function buildCatalog({ site, kit }) {
   /* Предпросмотр панели кладёт роли тени туда же, куда сайт, — на список
      полов (lib/look-values.ts, И385), а не на один корень. */
   const floors = { selector: FLOORS, names: [...SHADOWS] }
-  return { about: 'Собран look-panel/scripts/build-catalog.mjs из каталога набора. Руками не правят.', defaults, groups, axes, pairs, steps, floors }
+  return { about: 'Собран look-panel/scripts/build-catalog.mjs из каталога набора. Руками не правят.', defaults, groups, axes, bands, pairs, steps, floors }
 }
 
 /** Опубликованный вид и его копия до первого пересчёта — рядом. */
@@ -506,7 +607,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   writeFileSync(join(ROOT, 'look-panel/ui/catalog.json'), JSON.stringify(catalog, null, 1) + '\n')
   const md = join(ROOT, 'look-panel/PANEL.md')
   if (existsSync(md)) {
-    const text = readFileSync(md, 'utf8')
+    /* Концы строк — LF, как велит .gitattributes набора: файл, сохранённый
+       редактором Windows с CRLF, иначе молча не находил меток, и список пар
+       не обновлялся (selftest storefront-install, 05.10.2026). */
+    const text = readFileSync(md, 'utf8').replace(/\r\n/g, '\n')
     writeFileSync(md, text.replace(/(<!-- pairs:start -->\n)[\s\S]*?(\n<!-- pairs:end -->)/, `$1${pairsMarkdown(catalog)}$2`))
   }
   const count = Object.fromEntries(Object.entries(catalog.groups).map(([g, l]) => [g, l.length]))

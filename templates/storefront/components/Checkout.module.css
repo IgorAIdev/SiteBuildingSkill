@@ -49,7 +49,7 @@
    видна до кнопки, которой шаг продолжают (Baymard; Shopify «Show order
    summary»). На широкой коробке её нет — там колонка. */
 .peek{display:none;border-block:var(--line-w) solid var(--rule);margin-block-end:var(--air-group)}
-.peek > summary{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);min-block-size:var(--ctrl-h);list-style:none;font-weight:600}
+.peek > summary{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);min-block-size:var(--ctrl-h);list-style:none;font-weight:var(--label-weight)}
 .peek > summary::-webkit-details-marker{display:none}
 .peek > summary b{white-space:nowrap;font-variant-numeric:tabular-nums}
 .peekName{display:inline-flex;align-items:center;gap:var(--gap-targets);color:var(--ink)}
@@ -68,7 +68,7 @@
 .steps{display:flex;align-items:center;gap:var(--gap-targets);list-style:none;padding:0;margin:0}
 .stepItem{display:flex;align-items:center;gap:var(--gap-targets);color:var(--ink-soft)}
 .stepItem + .stepItem::before{content:'';inline-size:var(--air-group);border-block-start:var(--line-w) solid var(--rule)}
-.stepItem[aria-current='step']{color:var(--ink);font-weight:600}
+.stepItem[aria-current='step']{color:var(--ink);font-weight:var(--label-weight)}
 .stepItem[data-done]{color:var(--ink)}
 .stepItem a,.stepHere{display:inline-flex;align-items:center;gap:var(--gap-targets);min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target);color:inherit}
 .stepNo{display:inline-grid;place-items:center;flex:none;inline-size:1.9em;block-size:1.9em;border-radius:50%;box-shadow:inset 0 0 0 var(--line-w) var(--edge);font-variant-numeric:tabular-nums}
@@ -104,9 +104,9 @@
 }
 .optionBody{display:grid;gap:var(--sp-1);min-inline-size:0;flex:1}
 .optionHead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--gap-row)}
-.optionName{font-weight:600;color:var(--ink)}
+.optionName{font-weight:var(--label-weight);color:var(--ink)}
 .optionText{color:var(--ink-soft)}
-.price{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.price{font-weight:var(--cardprice-weight);white-space:nowrap;font-variant-numeric:tabular-nums}
 /* Причина недопустимости читается полностью: выключено — имя, а не довод. */
 .reason{color:var(--ink)}
 
@@ -124,18 +124,19 @@
    сумма у правого края. */
 .items{list-style:none;padding:0;margin:0;display:grid;gap:var(--air-row)}
 .item{display:grid;grid-template-columns:calc(var(--ctrl-h-lg) * 1.1) minmax(0, 1fr) auto;column-gap:var(--gap-row);align-items:start}
-.shot{--frame:1 / 1;border-radius:var(--r-ctrl);background:var(--plate-2)}
+.shot{--frame:var(--shot-frame);border-radius:var(--r-ctrl);background:var(--plate-2)}
 .itemWhat{min-inline-size:0}
-.itemName{font-weight:600;overflow-wrap:anywhere}
-.itemSum{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.itemName{font-weight:var(--cardname-weight);overflow-wrap:anywhere}
+.itemSum{font-weight:var(--cardprice-weight);white-space:nowrap;font-variant-numeric:tabular-nums}
 
 /* Сверка: группы разделены воздухом группы, внутри группы заголовок и его
    запись вплотную — строки адреса одной записью (И292). */
 .review{display:flex;flex-direction:column;gap:var(--air-group)}
 .recap{display:grid;row-gap:var(--sp-1)}
 .recapHead{display:flex;justify-content:space-between;align-items:center;gap:var(--gap-row);min-block-size:var(--ctrl-target)}
-.recapHead a{display:inline-flex;align-items:center;min-block-size:var(--ctrl-target);text-decoration-line:underline;text-underline-offset:.2em}
-.recapTitle{font-size:var(--body-size);line-height:var(--body-lead);font-weight:600;letter-spacing:var(--body-track)}
+/* «Изменить» — слово без плиты: вид `word` (тихое → полное), не подчёркивание (И717). */
+.recapHead a{display:inline-flex;align-items:center;min-block-size:var(--ctrl-target)}
+.recapTitle{font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--h3-weight);letter-spacing:var(--body-track)}
 .recapBody{white-space:pre-line;color:var(--ink-soft)}
 .terms{font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft)}
 

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>79 · Меню строками</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 79 — «Меню строками». Источники — daisyUI «Menu» (структура и состояния), shadcn/ui «Sidebar», Headless UI «Menu» (MIT).
+  Список разделов: заголовок группы, текущий пункт, недоступный пункт, пункт с вложенными (родной `details`).
+  Три вида: столбиком; в строку; только знаки. Само меню — наш каркас, daisyUI — как образец названий и состояний.
+  Снято: классы Tailwind и daisyUI, размеры xs…xl, всплывающие подсказки скриптом.
+  Приведено к единой форме: высота строки — из ряда набора; текущий — тон марки; недоступный — прозрачность набора.
+  Наведение: тон. Нажатие: тон + 9 %. Фокус: кольцо набора.
+-->
+</head>
+<body>
+  <div class="live">
+    <ul class="rows" data-nav>
+      <li class="head">Shop</li>
+      <li><a href="#" aria-current="page"><svg data-sign="house"></svg>All products</a></li>
+      <li><a href="#"><svg data-sign="pipette"></svg>Oils</a></li>
+      <li><a href="#" aria-disabled="true"><svg data-sign="pill"></svg>Capsules</a></li>
+      <li><details><summary><svg data-sign="leaf"></svg>More<svg class="more" data-sign="chevron-down"></svg></summary><ul><li><a href="#">Edibles</a></li><li><a href="#">Cosmetics</a></li></ul></details></li>
+    </ul>
+    <ul class="rows" data-dir="row" data-nav>
+      <li><a href="#" aria-current="page">Oils</a></li>
+      <li><a href="#">Capsules</a></li>
+      <li><a href="#">Edibles</a></li>
+    </ul>
+    <ul class="rows" data-view="icons" data-nav>
+      <li><a href="#" aria-current="page" aria-label="Home"><svg data-sign="house"></svg></a></li>
+      <li><a href="#" aria-label="Cart"><svg data-sign="shopping-cart"></svg></a></li>
+      <li><a href="#" aria-label="Saved"><svg data-sign="heart"></svg></a></li>
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+/* Полоса до бесплатной доставки — перенесена из набора элементов (74, daisyUI
+   «Progress» и HyperUI «Progress bars», MIT; docs/rules.md, И668). Подпись над
+   полосой: сколько осталось добрать; у порога полоса заливается краской
+   «успеха» и говорит об этом. Родной `progress`: чтец читает значение и без
+   скрипта. Порог и сумма — данные магазина (`lib/cart-view.ts`, `goalView`),
+   здесь только вид. Состояний руки у полосы нет: она показывает ход. */
+.goal{display:flex;flex-direction:column;gap:var(--gap-targets);font-size:var(--blurb-size);line-height:var(--blurb-lead);color:var(--ink)}
+.say{display:flex;align-items:center;gap:var(--sp-2);margin:0}
+.say b{font-weight:var(--cardprice-weight)}
+.say svg{inline-size:1.25em;block-size:1.25em;flex:none;color:var(--ok)}
+/* Дорожка — тон, заполнение — марка; угол — метка `--r-xs`, не полный круг (круг — у главного
+   действия, check:css); рост — четверть малого органа (8 под мышью,
+   11 под пальцем): полоса читается и не спорит с кнопкой под ней. Ход заливки не
+   анимируется: ширина — свойство раскладки (check:css, «движение»), а полоса
+   перерисовывается на месте целиком. */
+.meter{
+  -webkit-appearance:none;appearance:none;
+  inline-size:100%;block-size:calc(var(--ctrl-h-sm) * .25);
+  border:0;border-radius:var(--r-xs);overflow:hidden;
+  background:var(--quiet);color:var(--pop)
+}
+.meter::-webkit-progress-bar{background:var(--quiet)}
+.meter::-webkit-progress-value{background:var(--pop);border-radius:var(--r-xs)}
+.meter::-moz-progress-bar{background:var(--pop);border-radius:var(--r-xs)}
+.meter[data-tone='ok']::-webkit-progress-value{background:var(--ok-fill)}
+.meter[data-tone='ok']::-moz-progress-bar{background:var(--ok-fill)}

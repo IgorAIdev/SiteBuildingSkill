@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>72 · Кнопка с боковой кнопкой-знаком</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 72 — «Кнопка с боковой кнопкой-знаком». Источник — HyperUI, «Button Groups → Main and Secondary» (MIT).
+  Слово-действие и малая кнопка со знаком встык: «В корзину» и стрелка вниз, «Купить» и сердце. Две кнопки — две цели.
+  Снято: серые рамки и dark-классы Tailwind, наложение рамок через -ms-px.
+  Приведено к единой форме: стык — волосок; у заливки волосок пола между частями, у контура рамки накладываются.
+  Наведение и нажатие — у каждой части своё, как у кнопки набора.
+-->
+</head>
+<body>
+  <div class="live">
+    <span class="pair"><button class="el" data-voice="loud" type="button">Add to cart</button><button class="el" data-voice="loud" data-icon type="button" aria-label="More options"><svg data-sign="chevron-down"></svg></button></span>
+    <span class="pair"><button class="el" data-voice="line" type="button">Buy now</button><button class="el" data-voice="line" data-icon type="button" aria-label="Save"><svg data-sign="heart"></svg></button></span>
+  </div>
+</body>
+</html>

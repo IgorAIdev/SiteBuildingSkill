@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>101 · Полоса с суммами по краям</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 101 — «Полоса с суммами по краям». Источники — HyperUI «Progress bars» (3: «Compact with metadata»),
+  Flowbite «Progress → With label outside» (MIT): подпись над полосой, тонкая прямая полоса, строка подписей под ней.
+  Слева под полосой — сколько набрано в корзине, справа — порог бесплатной доставки; дойдя до порога, полоса
+  заливается краской «успеха». Суммы, порог и валюта — данные.
+  Снято: цвета Tailwind, подпись капителью над полосой (подпись — как у элемента 74).
+  Приведено к единой форме: дорожка — тон, заливка — марка; полоса — волосок в четверть малого органа, углы прямые, как в источнике;
+  суммы — подпись набора, цифры одной ширины. Роль progressbar — на дорожке, подписи под ней скрыты от чтеца: то же говорит aria-valuetext.
+-->
+</head>
+<body>
+  <div class="live">
+    <div class="goal" data-view="ends">
+      <p id="g101a"><b>€70.00</b> to go for free delivery</p>
+      <div class="gauge" role="progressbar" aria-labelledby="g101a" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" aria-valuetext="€30.00 of €100.00" data-share="30"><span class="fill"></span></div>
+      <div class="ends" aria-hidden="true"><b>€30.00</b><span>€100.00</span></div>
+    </div>
+    <div class="goal" data-view="ends">
+      <p id="g101b"><b>€15.00</b> to go for free delivery</p>
+      <div class="gauge" role="progressbar" aria-labelledby="g101b" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-valuetext="€85.00 of €100.00" data-share="85"><span class="fill"></span></div>
+      <div class="ends" aria-hidden="true"><b>€85.00</b><span>€100.00</span></div>
+    </div>
+    <div class="goal" data-view="ends" data-tone="ok">
+      <p id="g101c"><svg data-sign="truck"></svg>Free delivery unlocked</p>
+      <div class="gauge" role="progressbar" aria-labelledby="g101c" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-valuetext="€112.00 of €100.00" data-share="100"><span class="fill"></span></div>
+      <div class="ends" aria-hidden="true"><b>€112.00</b><span>€100.00</span></div>
+    </div>
+  </div>
+</body>
+</html>

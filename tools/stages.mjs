@@ -375,7 +375,7 @@ export const STAGES = [
         }, undefined,
         { reviewed: '20.09.2026', rule: 'И230: утилита делает одну работу и берёт роль; исключение — пометка атрибутом на том же узле; слоёв каскада набор не заводит — решает вес' }),
     ],
-    checks: ['typecheck', 'check:css', 'check:scale', 'check:code', 'check:lint', 'check:tokens', 'check:port', 'test', 'check:rules', 'check:stage'],
+    checks: ['typecheck', 'check:css', 'check:scale', 'check:code', 'check:lint', 'check:tokens', 'check:port', 'check:system', 'test', 'check:rules', 'check:stage'],
     gate: {
       machine: [
         () => has('CLAUDE.md') ? null : 'нет CLAUDE.md — правила не читаются раньше кода',
@@ -479,7 +479,7 @@ export const STAGES = [
         () => (has('app/sitemap.ts') || has('public/sitemap.xml')) && (has('app/robots.ts') || has('public/robots.txt')) ? null : 'карты сайта или robots нет как механизма', undefined,
         { basis: 'архитектуры проекта и живых ответов сервера' }),
     ],
-    checks: ['typecheck', 'check:tokens', 'check:port', 'check:open', 'build:site', 'check:urls', 'check:rules', 'check:stage'],
+    checks: ['typecheck', 'check:tokens', 'check:port', 'check:system', 'check:open', 'build:site', 'check:urls', 'check:rules', 'check:stage'],
     gate: {
       machine: [
         () => has('tools/routes.mjs') ? null : 'дерева маршрутов нет (tools/routes.mjs) — список страниц будет набираться рукой',
@@ -519,7 +519,7 @@ export const STAGES = [
       step(16, 'Обе темы и все ширины', 'свип 320…1600 без переполнения; всё, что открывается, снято открытым в обеих темах', 'craft',
         () => script('sweep') || has('tools/sweep.mjs') ? null : 'свипа нет (tools/sweep.mjs)'),
     ],
-    checks: ['typecheck', 'check:css', 'check:code', 'check:lint', 'check:design', 'check:tokens', 'check:port', 'test', 'check:open', 'build:site', 'check:urls', 'check:seo', 'check:craft', 'check:detect', 'sweep', 'check:rules', 'check:stage'],
+    checks: ['typecheck', 'check:css', 'check:code', 'check:lint', 'check:design', 'check:system', 'check:tokens', 'check:port', 'test', 'check:open', 'build:site', 'check:urls', 'check:seo', 'check:craft', 'check:theme', 'check:detect', 'sweep', 'check:engines', 'check:rules', 'check:stage'],
     gate: {
       machine: [
         () => script('check:craft') && has('tools/craft-baseline.json') ? null : 'храповика по отрисованной странице нет (check:craft + tools/craft-baseline.json)',
@@ -570,8 +570,13 @@ export const STAGES = [
       step(17, 'Поведение с падающего теста', 'корзина, фильтры в адресе, формы с ошибкой у поля, состояния пусто / ошибка / ожидание — каждое начинается с красного теста', 'code',
         () => script('test') ? null : 'тестов нет (test) — красный тест писать нечем'),
       step(17, 'Склады памяти браузера', 'localStorage и cookie — через один склад, компонент помнит одно', 'code'),
+      /* Отзывы появляются из просьбы, а не из блока (слово заказчика
+         03.10.2026: «а как они появятся, если блока нет?», И673): сбор
+         ставится раньше показа. */
+      step(17, 'Отзывы о товаре — сбор и показ', 'письмо покупателю через несколько дней после доставки со ссылкой на форму отзыва о купленном товаре (та же ссылка — в заказе); форма: звёзды, текст, имя, отзыв привязан к заказу; хранение и одобрение — в движке; показ — звёзды на карточке и странице товара с разметкой, блок «Отзывы» на главной после ходовых с первого одобренного; пустой список не висит (И673)', 'shop',
+        () => /\breviews\s*\(/.test(src('lib/source/contract.ts') || src('templates/storefront/lib/source/contract.ts')) ? null : 'отзывов в договоре источника нет (`reviews`): ни сбора, ни показа'),
     ],
-    checks: ['typecheck', 'check:code', 'check:lint', 'check:design', 'check:tokens', 'check:port', 'test', 'check:open', 'build:site', 'check:urls', 'check:craft', 'check:rules', 'check:stage'],
+    checks: ['typecheck', 'check:code', 'check:lint', 'check:design', 'check:system', 'check:tokens', 'check:port', 'test', 'check:open', 'build:site', 'check:urls', 'check:craft', 'check:counters', 'check:rules', 'check:stage'],
     gate: {
       machine: [
         () => {
@@ -620,7 +625,7 @@ export const STAGES = [
           return off.length ? `флаги не в true: ${off.map((f) => f.name).join(', ')}` : null
         }),
     ],
-    checks: ['test', 'check:tokens', 'check:port', 'check:design', 'build:site', 'check:craft', 'check:seo', 'check:rules', 'check:stage'],
+    checks: ['test', 'check:tokens', 'check:port', 'check:design', 'check:system', 'build:site', 'check:craft', 'check:seo', 'check:rules', 'check:stage'],
     gate: {
       machine: [
         () => {
@@ -649,6 +654,7 @@ export const STAGES = [
           'у каждого снимка подпись alt от заказчика, а не от исполнителя',
           'ни одного здравного утверждения на витрине — намеренно',
           'открытые вопросы наполнения в docs/open.md закрыты словом заказчика',
+          'Trustpilot (отзывы о магазине): профиль магазина заведён (бесплатно) и дан адрес-приглашение — он встаёт скрытой копией в письмо о заказе, ссылка на профиль — в подвал (И673)',
         ],
       },
     },
@@ -667,8 +673,15 @@ export const STAGES = [
       step(18, 'Открыто поиску', 'карта сайта и robots открыты, разметка товара с ценой и наличием; check:seo на нуле', 'shop'),
       step(18, 'Вес, скорость, доступность', 'бюджет веса, Core Web Vitals, доступность в check:craft на нуле, PageSpeed и Rich Results глазом', 'craft'),
       step(18, 'Перенос', 'переносимый слой встаёт на другой движок: Shopify, WordPress, Medusa; поломки переносимости на нуле', 'craft'),
+      step(18, 'Значок вкладки', 'app/icon.svg, app/favicon.ico и app/apple-icon.png стоят — выпущены из имени и краски магазина (tools/make-favicon.mjs), а не значок движка', 'craft',
+        () => {
+          const gone = ['app/icon.svg', 'app/favicon.ico', 'app/apple-icon.png'].filter((f) => !has(f))
+          return gone.length ? `нет значка вкладки: ${gone.join(', ')} — выпустить node tools/make-favicon.mjs (скилл craft, references/icons.md)` : null
+        },
+        null,
+        { reviewed: '03.10.2026', rule: 'И677: у шаблона значка не было — вкладка показывала значок движка' }),
     ],
-    checks: ['typecheck', 'check:css', 'check:code', 'check:lint', 'check:design', 'check:tokens', 'check:port', 'test', 'check:open', 'build:site', 'check:urls', 'check:seo', 'check:craft', 'check:detect', 'sweep', 'check:rules', 'check:stage'],
+    checks: ['typecheck', 'check:css', 'check:code', 'check:lint', 'check:design', 'check:system', 'check:tokens', 'check:port', 'test', 'check:open', 'build:site', 'check:urls', 'check:seo', 'check:craft', 'check:theme', 'check:detect', 'sweep', 'check:engines', 'check:counters', 'check:rules', 'check:stage'],
     gate: {
       machine: [
         () => has('out') ? null : 'сайт не собран — npm run build:site',
@@ -735,7 +748,7 @@ export const STAGES = [
     steps: [
       step(19, 'Жизнь', 'Search Console, замер после каждого выката, слежение за адресами и разметкой, новые тексты по спросу; версия у слепка, переименование псевдонимом со сроком', 'stages'),
     ],
-    checks: ['typecheck', 'check:css', 'check:code', 'check:lint', 'check:design', 'check:tokens', 'check:port', 'test', 'check:open', 'build:site', 'check:urls', 'check:seo', 'check:rules', 'check:stage'],
+    checks: ['typecheck', 'check:css', 'check:code', 'check:lint', 'check:design', 'check:system', 'check:tokens', 'check:port', 'test', 'check:open', 'build:site', 'check:urls', 'check:seo', 'check:rules', 'check:stage'],
     gate: {
       machine: [],
       human: {
@@ -745,6 +758,7 @@ export const STAGES = [
         mine: [
           'после каждого выката: адреса и разметка не уехали — это CI (check:urls, check:seo), а не память',
           'у сайта одна витрина и один домен: образцов на нём не осталось нигде',
+          'отзывы идут: письма после доставки уходят, новые отзывы одобряются, блок «Отзывы» на главной стоит (И673)',
         ],
         /* решает заказчик: как выглядит витрина, что на ней написано,
            чьи снимки и реквизиты. Только это и печатается ему. */

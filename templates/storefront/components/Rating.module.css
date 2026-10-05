@@ -1,0 +1,18 @@
+/* Оценка покупателей (components/Rating.tsx, И512). Ростом описания под
+   именем (`--blurb-*`): строка служебная и не спорит ни с маркой, ни с
+   именем. Звезда — квадрат в кегль строки, зазор между звёздами — поле
+   самого знака. Пустая — краской кромки, залитая — янтарём звезды
+   (`--star`, И515). */
+.rating{
+  display:flex;align-items:center;gap:var(--sp-2);margin:0;
+  font-size:var(--blurb-size);line-height:var(--blurb-lead);color:var(--ink-soft)
+}
+.stars{display:inline-flex}
+.star{display:grid;inline-size:1.1em;block-size:1.1em}
+.star svg{grid-area:1 / 1;inline-size:100%;block-size:100%}
+.star svg:first-child{color:var(--border)}
+.star svg:last-child{color:var(--star)}
+.star[data-on='none'] svg:last-child{display:none}
+.star[data-on='half'] svg:last-child{clip-path:inset(0 50% 0 0)}
+.star[data-on='half']:dir(rtl) svg:last-child{clip-path:inset(0 0 0 50%)}
+.value{font-weight:var(--label-weight);color:var(--ink)}

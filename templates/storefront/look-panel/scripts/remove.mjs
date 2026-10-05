@@ -3,8 +3,9 @@
 
    Панель физически отделена от сайта (CLAUDE.md, «Панель настройки
    физически отделена от сайта»): всё её — папка look-panel/; в сайт она
-   входит двумя местами с меткой `look-panel` — адрес app/look-panel/ и
-   строка подключения в components/Shell.tsx. Снять — значит удалить папку,
+   входит тремя местами с меткой `look-panel` — адрес app/look-panel/,
+   страница дизайн-системы app/[lang]/(look-panel)/ и строка подключения в
+   components/Shell.tsx. Снять — значит удалить папку,
    адрес и строку, свои команды в package.json, флаг LOOK_PICKER, черновик
    вида и шрифты, которых опубликованный вид не носит, варианты шапки,
    карточки товара и главной, кроме выбранных (метки `look-header:`,
@@ -35,7 +36,9 @@ import { gzipSync } from 'node:zlib'
 
 export const TAG = 'look-panel'
 /** Всё, что принадлежит панели целиком. */
-export const OWNED = ['look-panel', 'app/look-panel']
+/* Страница дизайн-системы (`/<язык>/design`) — тоже панели: её папка маршрута
+   уходит целиком, как и вход панели. */
+export const OWNED = ['look-panel', 'app/look-panel', 'app/[lang]/(look-panel)']
 /** Где искать метки и упоминания: код и настройки сайта (не документы). */
 const CODE = ['app', 'components', 'lib', 'styles', 'scripts', 'public', 'tests']
 const ROOT_FILES = ['package.json', 'next.config.ts', 'proxy.ts', 'tsconfig.json', 'kit.config.json', '.env', '.env.local', '.env.example', '.gitignore']
@@ -308,12 +311,19 @@ function rootDecls(css) {
 }
 /** Значение так, как его пишет сборщик: light-dark() — парой переменных
  *  lightningcss, краски короче и строчными, без пробелов и кавычек. */
+const NAMED = { '#f00': 'red', '#d2b48c': 'tan', '#000080': 'navy', '#808080': 'gray', '#008080': 'teal', '#dda0dd': 'plum', '#ffd700': 'gold', '#cd853f': 'peru', '#ffc0cb': 'pink', '#fffafa': 'snow', '#f5deb3': 'wheat', '#f0ffff': 'azure', '#f5f5dc': 'beige', '#ffe4c4': 'bisque', '#a52a2a': 'brown', '#ff7f50': 'coral', '#fffff0': 'ivory', '#f0e68c': 'khaki', '#faf0e6': 'linen', '#800000': 'maroon', '#808000': 'olive', '#ffa500': 'orange', '#da70d6': 'orchid', '#a0522d': 'sienna', '#c0c0c0': 'silver', '#ff6347': 'tomato', '#ee82ee': 'violet', '#008000': 'green', '#4b0082': 'indigo' }
 function squeeze(v) {
   const short = (h) => (h[1] === h[2] && h[3] === h[4] && h[5] === h[6] ? `#${h[1]}${h[3]}${h[5]}` : h)
   /* Вуаль строителя палитры `#RRGGBBAA` (И295) сборщик тоже укорачивает:
      `#00000099` → `#0009`. */
   const short8 = (h) => (h[1] === h[2] && h[3] === h[4] && h[5] === h[6] && h[7] === h[8] ? `#${h[1]}${h[3]}${h[5]}${h[7]}` : h)
-  let s = String(v).trim().toLowerCase().replace(/#[0-9a-f]{8}\b/g, short8).replace(/#[0-9a-f]{6}\b/g, short)
+  /* Непрозрачная краска с долей `FF` — сборщик долю снимает: `#2E7C8FFF` →
+     `#2e7c8f` (тёмная пара `--quiet-pop-deck`, check:look 05.10.2026). */
+  let s = String(v).trim().toLowerCase().replace(/#([0-9a-f]{6})ff\b/g, '#$1').replace(/#([0-9a-f]{3})f\b/g, '#$1')
+    .replace(/#[0-9a-f]{8}\b/g, short8).replace(/#[0-9a-f]{6}\b/g, short)
+    /* Имя краски короче её кода — сборщик пишет имя: `#FF0000` → `red`
+       (краска YouTube, И628). */
+    .replace(/#[0-9a-f]{3,6}\b/g, (h) => NAMED[h] ?? h)
   const ld = s.match(/^light-dark\(\s*([^,]+?)\s*,\s*(.+?)\s*\)$/)
   if (ld) s = `var(--lightningcss-light,${ld[1]})var(--lightningcss-dark,${ld[2]})`
   return s.replace(/[\s"']/g, '').replace(/(^|[(,])0\./g, '$1.')
@@ -393,12 +403,17 @@ async function check(root) {
         for (const m of css.matchAll(/@font-face\{[^}]*?url\(([^)]+)\)/g)) if (!fontUrls.has(m[1].replace(/["']/g, ''))) fail.push(`отгружаемый стиль ${basename(f)} несёт чужой шрифт: ${m[1]}`)
         for (const [name, value] of rootDecls(css)) shipped.set(name, [...(shipped.get(name) ?? []), value])
       })
+      /* Стек шрифта с подогнанным запасным начертанием (И608) — то же
+         значение вида, дополненное `withFallback`, своим блоком после
+         значений вида: это не второй источник, а его продолжение. */
+      const { withFallback } = await import(pathToFileURL(join(tmp, 'lib/look-values.ts')).href)
       for (const [name, value] of Object.entries(published_)) {
         const got = (shipped.get(name) ?? []).map(squeeze)
+        const fit = squeeze(withFallback(value, look.fonts ?? []))
         if (!got.includes(squeeze(value))) fail.push(`отгружаемый стиль: ${name} не «${value}» (${(shipped.get(name) ?? ['нет']).join(' | ')})`)
         /* Два значения — второй источник, без исключений: шрифт и тени основа
            больше не объявляет (И385), и пропускать их нечего. */
-        else if (new Set(got).size > 1) fail.push(`отгружаемый стиль: у ${name} два значения — ${shipped.get(name).join(' | ')}`)
+        else if (new Set(got.filter((v) => v !== fit)).size > 1) fail.push(`отгружаемый стиль: у ${name} два значения — ${shipped.get(name).join(' | ')}`)
       }
       console.log(`· отгружаемые стили: ${Object.keys(published_).length} свойств вида — опубликованными значениями, чужих наборов нет`)
       const media = existsSync(join(tmp, '.next/static/media')) ? readdirSync(join(tmp, '.next/static/media')).filter((n) => /\.(woff2?|ttf|otf)$/.test(n)) : []

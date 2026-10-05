@@ -13,15 +13,15 @@ test('concentration is mg ÷ (ml × 10), only for liquids with declared mg', () 
   assert.equal(percentOf({ mg: null, size: 30, unit: 'ml' }), null)
 })
 
-test('the facts line follows how the product is sold', () => {
-  const line = (strength: 'percent' | 'mg', packs: Parameters<typeof factsLine>[1]['packs']) => factsLine('en', { strength, packs })
-  assert.equal(line('percent', [{ mg: 1000, size: 10, unit: 'ml' }]), `10${NB}%${NB}· 10${NB}ml${NB}· 1000${NB}mg`)
-  assert.equal(line('percent', [{ mg: 2000, size: 10, unit: 'ml' }, { mg: 6000, size: 30, unit: 'ml' }]), `20${NB}%${NB}· 10/30${NB}ml`, 'всего мг у разных упаковок — не печатается')
-  assert.equal(line('mg', [{ mg: 750, size: 30, unit: 'pcs' }, { mg: 1500, size: 60, unit: 'pcs' }]), `30/60${NB}×${NB}25${NB}mg`, 'у штучного — доза одной штуки')
-  assert.equal(line('mg', [{ mg: 500, size: 50, unit: 'ml' }]), `500${NB}mg${NB}· 50${NB}ml`)
-  assert.equal(line('mg', [{ mg: null, size: 30, unit: 'ml' }]), `30${NB}ml`)
-  assert.equal(line('mg', []), null)
-  assert.equal(factsLine('hu', { strength: 'percent', packs: [{ mg: 250, size: 10, unit: 'ml' }] }), `2,5${NB}%${NB}· 10${NB}ml${NB}· 250${NB}mg`)
+test('the facts line: milligrams and measure, never the percent', () => {
+  const line = (packs: Parameters<typeof factsLine>[1]['packs']) => factsLine('en', { packs })
+  assert.equal(line([{ mg: 1000, size: 10, unit: 'ml' }]), `1000${NB}mg${NB}· 10${NB}ml`, 'процента нет — он в имени товара')
+  assert.equal(line([{ mg: 2000, size: 10, unit: 'ml' }, { mg: 6000, size: 30, unit: 'ml' }]), `10/30${NB}ml`, 'всего мг у разных упаковок — не печатается')
+  assert.equal(line([{ mg: 750, size: 30, unit: 'pcs' }, { mg: 1500, size: 60, unit: 'pcs' }]), `30/60${NB}×${NB}25${NB}mg`, 'у штучного — доза одной штуки')
+  assert.equal(line([{ mg: 500, size: 50, unit: 'ml' }]), `500${NB}mg${NB}· 50${NB}ml`)
+  assert.equal(line([{ mg: null, size: 30, unit: 'ml' }]), `30${NB}ml`)
+  assert.equal(line([]), null)
+  assert.equal(factsLine('hu', { packs: [{ mg: 75, size: 30, unit: 'pcs' }] }), `30${NB}×${NB}2,5${NB}mg`)
 })
 
 test('a number stays with its unit in a name', () => {

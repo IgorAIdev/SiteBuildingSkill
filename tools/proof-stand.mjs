@@ -170,7 +170,7 @@ ${sheet}
           <button class="btn" data-voice="loud" data-size="lg" type="button">Добави в количката</button>
         </div>
         <p class="muted cluster">${icon('truck')}Доставка до офис на куриер за 1–2 работни дни. Наложен платеж.</p>
-        <p class="muted cluster">${icon('flask-conical')}Протокол на лабораторията за партида B-2409</p>
+        <p class="muted cluster">${icon('flask')}Протокол на лабораторията за партида B-2409</p>
       </div>
     </div>
   </section>

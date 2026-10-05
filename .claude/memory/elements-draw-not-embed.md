@@ -14,6 +14,8 @@ When the owner sends a control (screenshot, Tailwind code, link) — draw it int
 
 Also «все кнопки и всё остальное оптимизируй, приводи к единой форме»: every drawing stands on the one base `elements/base.css` (kit numbers), differs only by its attributes, icons only from the kit sheet via generated `elements/icons.js`; the audit refuses own styles/colours (И337).
 
-Show the owner ONLY screenshots of the real element pages (`node tools/elements.mjs --shots NN`, PLAYWRIGHT from D:/BusinessProject/cbd-storefront-demo/node_modules/playwright/index.mjs), viewed by me first — never a hand-copied chat widget: the chat host restyles pressed buttons/switches (heart became a black square), owner: «ты ж смотри что ты делаешь» (И339).
+Show the owner ONLY screenshots of the real element pages (`node tools/elements.mjs --shots NN`, PLAYWRIGHT from D:/MyBssinessProject/sitebuildingskill/.storefront/node_modules/playwright/index.mjs), viewed by me first — never a hand-copied chat widget: the chat host restyles pressed buttons/switches (heart became a black square), owner: «ты ж смотри что ты делаешь» (И339).
 
 **How to apply:** strip extras (shadow, blur, hover background flood) immediately and list them in `снято`; design hover/press/focus per И273 (hover = colour only, press = deeper colour + 0.97 + 1px down) and show them frozen side by side (`data-state`); when shadow removal makes a white-on-white body invisible, give it a tonal fill ≥1.15 : 1. Rule text: CLAUDE.md «Присланный элемент — рисуется, а не встраивается», docs/rules.md И336. Related: [[look-panel-architecture]], [[design-with-skills]].
+
+**Update 01.10.2026:** in the design system the owner does not want the frozen state strip — element frames open with `?live` (states hidden, he hovers/presses himself; И620). The element page itself still carries the strip.

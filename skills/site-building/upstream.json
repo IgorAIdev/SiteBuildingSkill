@@ -226,12 +226,12 @@
     {
       "local": "assets/icons/lucide/LICENSE",
       "repo": "lucide-icons/lucide",
-      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "commit": "5a92b9ba262de5bf10e864219883267672c05db8",
       "upstreamPath": "LICENSE",
       "license": "ISC and MIT for Feather-derived icons",
       "licenseFile": "assets/icons/lucide/LICENSE",
-      "changes": "Unmodified",
-      "sha256": "b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57"
+      "changes": "Upstream LICENSE at tag 1.49.0 (ISC plus the MIT notice for Feather-derived icons) unmodified; a local provenance note in Russian is appended after a '---' line: icons come from lucide-static via jsDelivr, unmodified drawing, only the license comment and class removed, and the list of icons added on 01.10.2026 from lucide-static 1.49.0 with their local names. No Simple Icons text here (brand icons carry their own assets/icons/brands/LICENSE).",
+      "sha256": "c102c5de3f9f77e716305c6fb139bda5231d844b58e9a777b4163465ed78986e"
     },
     {
       "local": "assets/icons/lucide/menu.svg",
@@ -454,7 +454,7 @@
       "sha256": "d09f13fcbef3c493ead7e4663b5ee91804fec38d5edb5e7cc3acfbd547641cf4"
     },
     {
-      "local": "assets/icons/lucide/circle-check.svg",
+      "local": "assets/icons/lucide/check-circle.svg",
       "repo": "lucide-icons/lucide",
       "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
       "upstreamPath": "icons/circle-check.svg",
@@ -474,7 +474,7 @@
       "sha256": "3891241b8c3bfc3a8a930078f26ffc5a7e9763da6d0162ace2050b28d4c1d1fe"
     },
     {
-      "local": "assets/icons/lucide/flask-conical.svg",
+      "local": "assets/icons/lucide/flask.svg",
       "repo": "lucide-icons/lucide",
       "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
       "upstreamPath": "icons/flask-conical.svg",
@@ -594,7 +594,7 @@
       "sha256": "7f6af73bf1ff6c4bca3f18351c8d1bdec6749c0c2530c4de5da85d520c21df17"
     },
     {
-      "local": "assets/icons/lucide/shield-check.svg",
+      "local": "assets/icons/lucide/check-shield.svg",
       "repo": "lucide-icons/lucide",
       "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
       "upstreamPath": "icons/shield-check.svg",
@@ -634,7 +634,7 @@
       "sha256": "27299f69ad7c6272be64b1b8e2d48cbd6dcf0ef0d4f92827a1affa945c91700e"
     },
     {
-      "local": "assets/icons/lucide/triangle-alert.svg",
+      "local": "assets/icons/lucide/alert-triangle.svg",
       "repo": "lucide-icons/lucide",
       "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
       "upstreamPath": "icons/triangle-alert.svg",
@@ -712,17 +712,17 @@
     },
     {
       "local": "assets/studio/engine/scale.mjs",
-      "sha256": "f76987dd19488844265c922cc1ad422c8f07313d97c833c0335478cd86e1c95f",
+      "sha256": "1c4169b7868944e5c811c0cc9b3736da513ef6a090a27e6fa151aa713f1a7d53",
       "origin": "Generated from the canonical SiteBuildingSkill tools; Node I/O replaced for browser portability. Not imported from a commerce repository."
     },
     {
       "local": "assets/studio/engine/palette.mjs",
-      "sha256": "0400e410fdf5419acd909d931f68ede408245db8ebb62d8a5f43cb58d2c8ec47",
+      "sha256": "074638d18daff825828df40352cd80bc4e774eb522c6944a486eeac7aef206f7",
       "origin": "Generated from the canonical SiteBuildingSkill tools; Node I/O replaced for browser portability. Not imported from a commerce repository."
     },
     {
       "local": "assets/studio/engine/thresholds.mjs",
-      "sha256": "08bd5fe67764d1cafa21f536ab6f6ea535c214f879b43fa1321a89849acfd778",
+      "sha256": "da679f70bb592969002b702af54e3c8169a78c57eae963670f525492c52e2822",
       "origin": "Generated from the canonical SiteBuildingSkill tools; Node I/O replaced for browser portability. Not imported from a commerce repository."
     },
     {

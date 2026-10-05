@@ -12,7 +12,7 @@ export default function ErrorScreen({ reset }: { reset: () => void }) {
   const lang = langOfPath(usePathname())
   return (
     <main id="main" className={`${p.wrap} ${p.section}`} data-air="head">
-      <StateScreen level={1} kind="unavailable" title={t(lang, 'error.title')} step={t(lang, 'error.retry')} icon="triangle-alert" loud retry={reset} />
+      <StateScreen level={1} kind="unavailable" title={t(lang, 'error.title')} step={t(lang, 'error.retry')} icon="alert-triangle" loud retry={reset} />
     </main>
   )
 }

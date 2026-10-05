@@ -17,6 +17,12 @@ export function t(lang: Lang, key: Key, vars: Record<string, string | number> = 
   })
 }
 
+/** Есть ли такое слово интерфейса: имя, собранное из данных (`footer.doc.<адрес>`),
+ *  проверяется до `t`, а не кастом типа (И760). */
+export function isKey(key: string): key is Key {
+  return key in RO
+}
+
 /** Счёт по правилам языка: по-румынски 1 produs, 12 produse, 20 de produse.
  *  Другие переменные строки — рядом со счётом: «1–3 zile» считается по 3. */
 export function tn(lang: Lang, base: PluralBase, n: number, vars: Record<string, string | number> = {}): string {

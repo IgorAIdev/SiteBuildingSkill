@@ -4,20 +4,33 @@ import { SearchForm } from './SearchForm.tsx' // look-header:search
 import go from '@/styles/go.module.css'
 import b from '@/styles/btn.module.css'
 import pn from '@/styles/pane.module.css'
+import fs from './Filters.module.css'
 import s from './Header.module.css'
 import type { Lang } from '@/lib/locale.ts'
-import type { NavGroup, NavLink } from '@/lib/shell.ts'
+import type { NavLink, ServiceLink, TopBar } from '@/lib/shell.ts'
 import type { HeaderVariant } from '@/lib/headers.ts'
 import { t } from '@/lib/i18n/index.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { Icon } from './Icon.tsx'
+import { Logo } from './Logo.tsx'
 import { CartLink } from './CartLink.tsx'
+import { SavedLink } from './SavedLink.tsx'
+import { AccountLink } from './AccountLink.tsx'
+import { SearchPane } from './SearchPane.tsx'
 import { NavLinks } from './NavLinks.tsx'
 import { LangSwitch } from './LangSwitch.tsx'
+import { ThemeToggle } from './ThemeToggle.tsx'
+import { ReachList } from './ReachList.tsx'
+import { PaneHead } from './PaneHead.tsx'
+import { MenuFoot } from './MenuFoot.tsx'
+import { reachRows } from '@/lib/contacts.ts'
 
-/** Меню шапки: полки и группы шторки («по поводу» — грани каталога, И430). */
-type Menu = { links: NavLink[]; groups: NavGroup[]; service: { href: string; label: string }[] }
-type Props = { lang: Lang; nav: NavLink[]; groups: NavGroup[]; service: Menu['service']; variant: HeaderVariant }
+/** Меню шапки: полки, служебное шторки и верхняя строка. */
+type Menu = { links: NavLink[]; service: ServiceLink[]; top: TopBar; at: string }
+/** `idPrefix` — приставка к id окон шапки (меню, трубка, группы, поле):
+ *  второй экземпляр шапки на странице (образец в дизайн-системе) не
+ *  повторяет id первой, и его окна открываются свои. На сайте — пусто. */
+type Props = { lang: Lang; nav: NavLink[]; service: Menu['service']; top: TopBar; variant: HeaderVariant; idPrefix?: string }
 
 /* Шапка — своя полоса поверхности с волоском снизу, на голом полу страницы
    она не лежит никогда. Вариант приходит значением вида (lib/look.ts):
@@ -27,49 +40,93 @@ type Props = { lang: Lang; nav: NavLink[]; groups: NavGroup[]; service: Menu['se
 
    Знаки шапки (поиск, корзина, меню) — тихие глифы ростом с цель
    (`--ctrl-target`), не кнопки действия: стиль кнопок сайта их не касается.
-   На узкой коробке шапки у строки одна — знак, поиск, корзина, меню; полки
-   уходят в шторку по `popovertarget`, без скрипта. */
+   На узкой коробке шапки у строки одна — меню у начального края, знак,
+   поиск, корзина (слово заказчика 05.10.2026: «мобилка, меню перенеси к
+   левому краю»; И753); полки уходят в шторку по `popovertarget`, без
+   скрипта. */
 
-const logo = (lang: Lang) => <a className={s.logo} href={hrefFor(lang, { home: true })} translate="no">CBD</a>
-const cart = (lang: Lang, labelled: boolean) => <CartLink href={hrefFor(lang, { cart: true })} label={t(lang, 'nav.cart')} added={t(lang, 'cart.added')} countUrl={`/api/cart?lang=${lang}`} labelled={labelled} />
+const logo = (lang: Lang) => <a className={s.logo} href={hrefFor(lang, { home: true })}><Logo /></a>
+const cart = (lang: Lang, labelled: boolean) => <CartLink lang={lang} title={t(lang, 'cart.title')} close={t(lang, 'nav.close')} href={hrefFor(lang, { cart: true })} label={t(lang, 'nav.cart')} added={t(lang, 'cart.added')} countUrl={`/api/cart?lang=${lang}`} labelled={labelled} />
+/* Верхняя строка — одна у всех вариантов (бриф docs/design/шапка.md; образец —
+   cbdin.bg): слева «куда ещё» — служебные ссылки, по центру обещание доставки
+   ссылкой на её условия, справа «как показать» — язык и день / ночь. Тише
+   строки меню: кегль надписи органа `xs`, приглушённый цвет, без своей краски.
+   На узкой коробке остаётся одно обещание; ссылки, язык и тема — в шторке меню
+   (7 из 7 референсов), строками её низа (MenuFoot, И770). */
+const tools = (lang: Lang) => (
+  <>
+    {/* В верхней строке — раскрытием при трёх языках и больше (И501). */}
+    <LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop trigger={s.glyph} />
+    <ThemeToggle label={t(lang, 'theme.toggle')} className={s.glyph} sun={s.sun} moon={s.moon} />
+  </>
+)
+const topRow = (lang: Lang, top: TopBar) => (
+  <>
+    {top.links.length ? (
+      <nav className={s.topLinks} aria-label={t(lang, 'header.links')}>
+        <ul>{top.links.map((l) => <li key={l.href}><a className={b.word} data-hand="menu" href={l.href}>{l.label}</a></li>)}</ul>
+      </nav>
+    ) : null}
+    {top.promo.href
+      ? <a className={`${s.promo} ${b.word}`} data-hand="menu" href={top.promo.href}><Icon id="truck" />{top.promo.text}</a>
+      : <p className={s.promo}><Icon id="truck" />{top.promo.text}</p>}
+    <div className={s.topTools}>{tools(lang)}</div>
+  </>
+)
+/* look-header:classic,search,boutique:start */
+/* Верхняя полоса — пол шапки, отбита волоском (И703): палубу марки она носила
+   один день (И697, п. 2) и снята словом заказчика 04.10.2026: «верхнее меню —
+   верни цвет, который был». */
+const topBar = (lang: Lang, top: TopBar) => <div className={s.top}><div className={`${p.wrap} ${s.topRow}`}>{topRow(lang, top)}</div></div>
+/* look-header:classic,search,boutique:end */
 /* look-header:classic,boutique,tray,nested,step:start */
-const find = (lang: Lang) => <a className={s.glyph} href={hrefFor(lang, { search: '' })} aria-label={t(lang, 'nav.search')}><Icon id="search" /></a>
+/* Поиск — окном сверху (SearchPane, И539), контакты и избранное — знаками
+   рядом с корзиной, как «Пишете ни», «Запазени» у cbdin.bg (слово заказчика
+   28.09.2026). Контакты на узкой коробке уходят в шторку меню — там они
+   строкой служебных ссылок; знаков в строке телефона остаётся четыре. */
+const find = (lang: Lang, nav: Menu) => (
+  <SearchPane
+    lang={lang} action={hrefFor(lang, { search: '' })} trigger={s.glyph}
+    shelves={nav.links}
+    words={{ open: t(lang, 'search.open'), close: t(lang, 'search.close'), label: t(lang, 'search.label'), submit: t(lang, 'search.submit'), all: t(lang, 'search.all', { q: '{q}' }), found: t(lang, 'search.found'), none: t(lang, 'search.none', { q: '{q}' }), shelves: t(lang, 'nav.categories') }}
+  />
+)
+const reach = (lang: Lang, nav: Menu) => (
+  <>
+    {/* Трубка раскрывает пути связи — телефон, почта, мессенджеры (слово
+        заказчика 29.09.2026, образец — cbdin; И547). Раскрытие — то же, что у
+        языка в верхней строке и порядка полки: бумага всплывающего под
+        кнопкой, от её правого края, Escape и щелчок мимо — от браузера. */}
+    <div className={s.contact}>
+      <button className={`${s.glyph} ${fs.trigger}`} type="button" popoverTarget={`${nav.at}reach-menu`} aria-label={t(lang, 'reach.menu')}><Icon id="phone" /></button>
+      <div id={`${nav.at}reach-menu`} popover="auto" data-scroll-shut className={`${p.menu} ${fs.drop}`} data-align="end" aria-label={t(lang, 'reach.menu')}>
+        <ReachList rows={reachRows({ phone: t(lang, 'reach.phone'), email: t(lang, 'reach.email') })} />
+      </div>
+    </div>
+    <SavedLink lang={lang} label={t(lang, 'nav.saved')} />
+    {/* Кабинет — за сердцем, перед корзиной (cbdshop.bg; И771); на узкой
+        коробке — строкой в шторке меню. */}
+    <AccountLink lang={lang} label={t(lang, 'nav.account')} />
+  </>
+)
 /* look-header:classic,boutique,tray,nested,step:end */
 /* look-header:classic,search,tray,nested,step:start */
-const menu = (lang: Lang) => <button className={`${s.glyph} ${s.menu}`} type="button" popoverTarget="site-menu" aria-label={t(lang, 'nav.menu')}><Icon id="menu" /></button>
+const menu = (lang: Lang, nav: Menu) => <button className={`${s.glyph} ${s.menu}`} type="button" popoverTarget={`${nav.at}site-menu`} aria-label={t(lang, 'nav.menu')}><Icon id="menu" /></button>
 /* look-header:classic,search,tray,nested,step:end */
-/* Группы шторки — пилюлями под полками, когда вид держит меню телефона
-   пилюлями (`--drawer-look: pills`, меню телефона cbdin.bg, И430): там
-   выбирают поводом, а не местом. Без этого вида групп не видно; разметка
-   одна на оба вида. */
-const shelves = (lang: Lang, nav: Menu, title: string, from: 'start' | 'end' = 'end') => (
-  <nav id="site-menu" popover="auto" className={`${pn.pane} ${s.nav}`} data-pane={from} aria-label={t(lang, 'nav.categories')}>
+/* Шторка полок — от начального края у всех вариантов: кнопка меню стоит там
+   (И753), шторка выезжает из-под неё, как у cbdin.bg. Групп «по поводу» под
+   полками нет: они повторяли грани масел (слово заказчика 05.10.2026: «там
+   повтор меню масел»; И430). */
+const shelves = (lang: Lang, nav: Menu, title: string) => (
+  <nav id={`${nav.at}site-menu`} popover="auto" className={`${pn.pane} ${s.nav}`} data-pane="start" data-row aria-label={t(lang, 'nav.categories')}>
     {/* Шторка — окно общего модуля (styles/pane.module.css, И460, И467):
-        шапка стоит, прокручиваются полки; край, ширина и угол — `data-pane`
-        (от того края, где кнопка: у «boutique» — начальный). В строке шапки
-        тело свёрнуто (`display:contents`), и полки стоят в ней как стояли. */}
-    <div className={`${pn.bar} ${s.sheetHead}`}>
-      <h2 className={pn.title}>{title}</h2>
-      <button className={`${b.btn} ${pn.close}`} data-voice="bare" type="button" popoverTarget="site-menu" popoverTargetAction="hide" aria-label={t(lang, 'nav.close')}><Icon id="x" /></button>
-    </div>
+        шапка стоит, прокручиваются полки; край, ширина и угол — `data-pane`.
+        В строке шапки тело свёрнуто (`display:contents`), и полки стоят в
+        ней как стояли. */}
+    <PaneHead className={s.sheetHead} title={title} close={t(lang, 'nav.close')} target={`${nav.at}site-menu`} />
     <div className={`${pn.body} ${s.sheetBody}`}>
-      <NavLinks links={nav.links} className={s.links} more={t(lang, 'nav.params', { name: '{name}' })} />
-      {nav.groups.length ? (
-        <div className={s.sheetGroups}>
-          {nav.groups.map((g, i) => (
-            <div key={g.name} className={s.sheetGroup}>
-              <p className={s.groupName} id={`menu-group-${i}`}>{g.name}</p>
-              <ul className={`${p.cluster} ${s.pills}`} aria-labelledby={`menu-group-${i}`}>
-                {g.links.map((l) => <li key={l.href}><a className={p.chip} href={l.href}><span className={s.pillName}>{l.label}</span></a></li>)}
-              </ul>
-            </div>
-          ))}
-        </div>
-      ) : null}
-      <div className={s.sheetLang}>
-        {nav.service.length ? <ul className={s.service}>{nav.service.map((l) => <li key={l.href}><a href={l.href}>{l.label}</a></li>)}</ul> : null}
-        <LangSwitch lang={lang} label={t(lang, 'nav.lang')} />
-      </div>
+      <NavLinks links={nav.links} className={`${p.rail} ${s.links}`} more={t(lang, 'nav.params', { name: '{name}' })} overflow={t(lang, 'nav.more')} />
+      <MenuFoot lang={lang} top={nav.top.links} service={nav.service} />
     </div>
   </nav>
 )
@@ -78,12 +135,13 @@ const shelves = (lang: Lang, nav: Menu, title: string, from: 'start' | 'end' = '
 /* classic — знак, полки строкой рядом; справа язык, поиск, корзина. */
 const classic = (lang: Lang, nav: Menu) => (
   <header className={s.head} data-variant="classic">
+    {topBar(lang, nav.top)}
     <div className={`${p.wrap} ${s.bar}`}>
+      {menu(lang, nav)}
       {logo(lang)}
       {shelves(lang, nav, t(lang, 'nav.menu'))}
       <div className={s.actions}>
-        <div className={s.lang}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop trigger={s.glyph} /></div>
-        {find(lang)}{cart(lang, false)}{menu(lang)}
+        {find(lang, nav)}{reach(lang, nav)}{cart(lang, false)}
       </div>
     </div>
   </header>
@@ -95,16 +153,12 @@ const classic = (lang: Lang, nav: Menu) => (
    поиска и корзины со словом; строка полок. */
 const search = (lang: Lang, nav: Menu) => (
   <header className={s.head} data-variant="search">
-    <div className={s.strip} data-ground="deck">
-      <div className={`${p.wrap} ${s.stripRow}`}>
-        <p className={s.promise}>{t(lang, 'header.promise')}</p>
-        <div className={s.lang}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop trigger={s.glyph} /></div>
-      </div>
-    </div>
+    {topBar(lang, nav.top)}
     <div className={`${p.wrap} ${s.bar}`}>
+      {menu(lang, nav)}
       {logo(lang)}
-      <SearchForm action={hrefFor(lang, { search: '' })} q="" label={t(lang, 'search.label')} submit={t(lang, 'nav.search')} id="head-q" quiet className={s.field} />
-      <div className={s.actions}>{cart(lang, true)}{menu(lang)}</div>
+      <SearchForm action={hrefFor(lang, { search: '' })} q="" label={t(lang, 'search.label')} submit={t(lang, 'nav.search')} id={`${nav.at}head-q`} quiet className={s.field} />
+      <div className={s.actions}>{reach(lang, nav)}{cart(lang, true)}</div>
     </div>
     <div className={`${p.wrap} ${s.shelfRow}`}>{shelves(lang, nav, t(lang, 'nav.menu'))}</div>
   </header>
@@ -119,13 +173,13 @@ const search = (lang: Lang, nav: Menu) => (
    быть». */
 const boutique = (lang: Lang, nav: Menu) => (
   <header className={s.head} data-variant="boutique">
+    {topBar(lang, nav.top)}
     <div className={`${p.wrap} ${s.bar}`}>
-      <button className={`${s.glyph} ${s.shop}`} type="button" popoverTarget="site-menu"><Icon id="menu" />{t(lang, 'nav.shop')}</button>
-      <div className={`${s.lang} ${s.side}`}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop trigger={s.glyph} /></div>
+      <button className={`${s.glyph} ${s.shop}`} type="button" popoverTarget={`${nav.at}site-menu`}><Icon id="menu" />{t(lang, 'nav.shop')}</button>
       {logo(lang)}
-      <div className={s.actions}>{find(lang)}{cart(lang, false)}</div>
+      <div className={s.actions}>{find(lang, nav)}{reach(lang, nav)}{cart(lang, false)}</div>
     </div>
-    <div className={`${p.wrap} ${s.shelfRow}`}>{shelves(lang, nav, t(lang, 'nav.shop'), 'start')}</div>
+    <div className={`${p.wrap} ${s.shelfRow}`}>{shelves(lang, nav, t(lang, 'nav.shop'))}</div>
   </header>
 )
 /* look-header:boutique:end */
@@ -143,14 +197,13 @@ const board = (lang: Lang, nav: Menu) => (
   <div className={p.wrap}>
     <div className={s.board}>
       <div className={s.util}>
-        <p className={s.promise}>{t(lang, 'header.promise')}</p>
-        <div className={s.lang}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop trigger={s.glyph} /></div>
+        {topRow(lang, nav.top)}
       </div>
       <div className={`${s.bar} ${s.row}`} data-ground="deck">
-        {menu(lang)}
+        {menu(lang, nav)}
         {logo(lang)}
         {shelves(lang, nav, t(lang, 'nav.menu'))}
-        <div className={s.actions}>{find(lang)}{cart(lang, false)}</div>
+        <div className={s.actions}>{find(lang, nav)}{reach(lang, nav)}{cart(lang, false)}</div>
       </div>
     </div>
   </div>
@@ -175,8 +228,8 @@ const DRAW: Record<HeaderVariant, (lang: Lang, nav: Menu) => ReactNode> = {
   step, // look-header:step
 }
 
-export function Header({ lang, nav, groups, service, variant }: Props) {
-  return DRAW[variant](lang, { links: nav, groups, service })
+export function Header({ lang, nav, service, top, variant, idPrefix = '' }: Props) {
+  return DRAW[variant](lang, { links: nav, service, top, at: idPrefix })
 }
 
 /* Шапка кассы — закрытая (разбор 24.09.2026, S2 и X5; Baymard «enclosed

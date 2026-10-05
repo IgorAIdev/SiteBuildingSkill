@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>91 · Сообщения-полосы</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 91 — «Сообщения-полосы». Источники — HyperUI «Alerts», daisyUI «Alert», shadcn/ui «Alert» (MIT).
+  Сообщение на полосе краской смысла: сведение, успех, внимание, ошибка. Виды: тоном, с чертой слева, контуром, на всю ширину
+  (баннер); с заголовком, со знаком и с крестиком «закрыть». Расширяет элементы 29 и 31.
+-->
+</head>
+<body>
+  <div class="live">
+    <div class="note" role="status"><svg data-sign="info"></svg><div><b>Free delivery from €60</b><p>Add one more item to reach it.</p></div></div>
+    <div class="note" data-tone="ok" role="status"><svg data-sign="check-circle"></svg><div><b>Order placed</b><p>The confirmation is on its way to your e-mail.</p></div></div>
+    <div class="note" data-tone="warn" role="status"><svg data-sign="alert-triangle"></svg><div><b>Only 3 left</b><p>The batch is almost sold out.</p></div></div>
+    <div class="note" data-tone="bad" role="alert"><svg data-sign="alert-circle"></svg><div><b>Payment failed</b><p>Check the card details and try again.</p></div></div>
+    <div class="note" data-tone="warn" data-view="bar" role="status"><svg data-sign="alert-triangle"></svg><div><p>Delivery to islands takes one day longer.</p></div></div>
+    <div class="note" data-tone="ok" data-view="line" role="status"><svg data-sign="check-circle"></svg><div><p>Address saved.</p></div><button class="el" data-voice="ghost" data-icon data-size="sm" type="button" aria-label="Dismiss"><svg data-sign="x"></svg></button></div>
+    <div class="note" data-view="banner" role="status"><svg data-sign="info"></svg><div><p>Free delivery from €60 · returns within 14 days.</p></div><button class="el" data-voice="ghost" data-icon data-size="sm" type="button" aria-label="Dismiss"><svg data-sign="x"></svg></button></div>
+  </div>
+</body>
+</html>

@@ -18,3 +18,11 @@ export const moneyPer = (value: { minor: number; currency: string }, count: numb
     style: 'currency', currency: value.currency, currencyDisplay: MARKET.display,
     minimumFractionDigits: MARKET.precision + 1, maximumFractionDigits: MARKET.precision + 1,
   }).format(toAmount(value.minor, { precision: MARKET.precision }) / count)
+
+/** Круглая сумма без копеек — «от €100» в обещании шапки: у маркетинговой
+ *  строки нули после запятой — шум. Не круглая — как `money`. */
+export const moneyShort = (value: { minor: number; currency: string }, lang: Lang): string =>
+  value.minor % 10 ** MARKET.precision
+    ? money(value, lang)
+    : new Intl.NumberFormat(numberLocale(lang), { style: 'currency', currency: value.currency, currencyDisplay: MARKET.display, maximumFractionDigits: 0 })
+      .format(toAmount(value.minor, { precision: MARKET.precision }))

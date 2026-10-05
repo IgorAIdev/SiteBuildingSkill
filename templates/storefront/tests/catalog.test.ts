@@ -2,6 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { sample, sampleSource } from '../lib/source/sample/catalog.ts'
 import type { ListingQuery } from '../lib/source/contract.ts'
+import { PRODUCTS } from '../lib/products.ts'
 
 const q = (over: Partial<ListingQuery> = {}): ListingQuery => ({ facets: {}, sort: 'popular', page: null, ...over })
 
@@ -58,6 +59,15 @@ test('sorting by price is by the lowest variant price', async () => {
   assert.ok(r.ok)
   const low = r.value.items.map((c) => (c.price.kind === 'single' ? c.price.value.minor : c.price.min.minor))
   assert.deepEqual(low, [...low].sort((a, b) => a - b))
+})
+
+test('newest is by the day the product appeared, newer first (И709)', async () => {
+  const r = await sample.listing('en', q({ sort: 'newest' }))
+  assert.ok(r.ok)
+  const added = new Map(PRODUCTS.map((p) => [p.id, p.added]))
+  const days = r.value.items.map((c) => added.get(c.id) ?? '')
+  assert.ok(days.every(Boolean), 'у каждого товара образца есть день появления')
+  assert.deepEqual(days, [...days].sort().reverse())
 })
 
 test('cards come in the asked order and unknown ids are skipped', async () => {

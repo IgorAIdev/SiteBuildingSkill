@@ -8,10 +8,10 @@
      `<style id="look-preview">` поверх опубликованного и пишет черновик вида
      на сервер (POST /look-panel/draft) — в черновом режиме сайт рисует
      черновик, другие гости видят опубликованное;
-   · своя палитра строится в разделе Color из НАМЕРЕНИЯ — цвет марки, бумага,
-     чернила — строителем набора (choice.mjs → engine/palette.mjs,
-     `fitPalette`): набор верен по построению, что подвинуто — одной строкой
-     (И275); ошибок заказчик не видит;
+   · выбор, черновик, предпросмотр и публикация — общее состояние страницы
+     (studio.mjs): его же берёт страница дизайн-системы, и подраздел,
+     переехавший туда (`page` в choice.mjs, первым — палитра, И567), здесь
+     стоит ссылкой, а не вторым выбором;
    · шапка и карточка товара — другая разметка: черновик и перезагрузка;
    · «Publish» — проверка сочетания (check:choice) и публикация без сборки.
    Вариант, который с текущими не носится, погашен: пары посчитаны правилом
@@ -55,13 +55,15 @@
   }
   var TICK = 'M3.5 8.5l3 3 6-7'
   var CROSS = 'M4 4l8 8M12 4l-8 8'
-  var ARROW = 'M3 8h10M9 4l4 4-4 4'
   /* Развернуть — уголки наружу, свернуть — внутрь. */
   var GROW = 'M9.5 2.5h4v4M13.5 2.5l-4.5 4.5M6.5 13.5h-4v-4M2.5 13.5l4.5-4.5'
   var SHRINK = 'M13 7h-4V3M9 7l4.5-4.5M3 9h4v4M7 9l-4.5 4.5'
   /* Полоса «Look»: настройка — два движка на двух линиях; открыть — уголок вверх. */
   var SLIDERS = 'M2.5 5h11M2.5 11h11M6 3.25v3.5M10 9.25v3.5'
   var UP = 'M4 10l4-4 4 4'
+  /* Перенести панель к другому краю — стрелка в ту сторону. */
+  var TO_START = 'M7 4L3 8l4 4M3 8h10'
+  var TO_END = 'M9 4l4 4-4 4M13 8H3'
   function remember(key, value) {
     try { value === null ? sessionStorage.removeItem(key) : sessionStorage.setItem(key, value) } catch (e) { /* без памяти */ }
   }
@@ -70,6 +72,16 @@
   }
   /* Ширина панели помнится за зрителем, а не за вкладкой: развернул однажды —
      в следующий раз панель откроется развёрнутой (localStorage этого браузера). */
+  /* Сторона панели — тоже за зрителем: панель переезжает к другому краю,
+     чтобы открыть то, что она закрывала (слово заказчика 29.09.2026: «панель
+     сделай, чтоб могла перемещаться от одной стороны к другой»; И574). */
+  var SIDE = 'look-panel-side'
+  function keepSide(start) {
+    try { start ? localStorage.setItem(SIDE, 'start') : localStorage.removeItem(SIDE) } catch (e) { /* без памяти */ }
+  }
+  function keptSide() {
+    try { return localStorage.getItem(SIDE) === 'start' } catch (e) { return false }
+  }
   var WIDE = 'look-panel-wide'
   function keepWide(on) {
     try { on ? localStorage.setItem(WIDE, '1') : localStorage.removeItem(WIDE) } catch (e) { /* без памяти */ }
@@ -77,31 +89,9 @@
   function keptWide() {
     try { return localStorage.getItem(WIDE) === '1' } catch (e) { return false }
   }
-  function send(method, path, body) {
-    return fetch(new URL(path, base).href, {
-      method: method, credentials: 'same-origin',
-      headers: body ? { 'content-type': 'application/json' } : {},
-      body: body ? JSON.stringify(body) : undefined,
-    }).then(function (r) { return r.json().catch(function () { return { ok: r.ok } }) })
-  }
-  function later(fn, ms) {
-    var t = 0
-    return function () { clearTimeout(t); t = setTimeout(fn, ms) }
-  }
-  /* Роли тени — на списке полов, как их кладёт сайт (`floors` каталога,
-     lib/look-values.ts, И385): на палубе и листе предпросмотр пересчитывает
-     их из своих ингредиентов, а не наследует корневую строку. */
-  var cssText = function (vars, floors) {
-    var on = function (keep) { return Object.keys(vars).filter(keep).map(function (k) { return k + ':' + vars[k] }).join(';') }
-    var shadow = function (k) { return Boolean(floors) && floors.names.indexOf(k) >= 0 }
-    var rest = on(function (k) { return !shadow(k) })
-    var roles = on(shadow)
-    return ':root{' + rest + '}' + (roles ? '\n' + floors.selector + '{' + roles + '}' : '')
-  }
-  var HEX = /^#?[0-9a-f]{6}$/i
-  var hexOf = function (v) { v = v.trim(); return HEX.test(v) ? (v[0] === '#' ? v : '#' + v).toUpperCase() : null }
-
-  function build(catalog, choice, state) {
+  function build(s, later, choice, said, swatch) {
+    var catalog = s.catalog
+    var names = s.names
     /* Стили панели страница ставит сама, до первой отрисовки (Shell.tsx):
        в них резерв нижней полосы `--dock`, и пришедший со скриптом он
        сдвигал бы готовую страницу — галерея товара сжималась на рост
@@ -115,55 +105,34 @@
        сайта, к Google страница покупателя не ходит. */
     catalog.groups.face.forEach(function (f) { if (f.google) document.head.appendChild(el('link', { rel: 'stylesheet', href: f.google })) })
 
-    var names = choice.complete((state.previewing && state.draft) || state.published || {}, catalog)
-    var setOf = function (id) { return catalog.groups.palette.find(function (o) { return o.id === id }) }
-    var custom = function () { return names.palette === choice.CUSTOM }
-    /* Своя палитра: намерение (цвет марки, бумага, чернила) и собранные из
-       него краски. Открыта своя — её намерение; стоит набор — намерение,
-       выведенное из набора. */
-    var saved = (state.previewing && state.draftPaints) || state.publishedPaints
-    var current = function () { return (setOf(names.palette) || catalog.groups.palette[0]) }
-    var intent = custom() && saved ? Object.assign({}, saved.intent || choice.intentOf(saved)) : choice.intentOf(current().seed)
-    var paints = custom() && saved ? { name: saved.name || 'Custom', light: saved.light, dark: saved.dark, intent: intent } : null
-    var fitted = { notes: [] }
-    var own = [] /* пары своей палитры — от сервера (POST /look-panel/guard) */
     var status = el('output', { class: 'lp-status', 'aria-live': 'polite' })
+    /* Строка итога публикации — одной фразой; отчёт проверки — под
+       раскрытием с потолком и прокруткой, и крестик убирает всё: отчёт
+       целиком занимал низ панели и не закрывался (заказчик 28.09.2026: «это
+       полотно текста закрыть не могу, чтоб дальше работать»). */
+    var say = function (text, detail) {
+      status.replaceChildren()
+      if (!text) return
+      var shut = el('button', { type: 'button', class: 'lp-status-x', 'aria-label': 'Dismiss', text: '×' })
+      shut.addEventListener('click', function () { say('') })
+      status.append(el('span', { class: 'lp-status-line' }, [el('span', { text: text }), shut]))
+      if (detail) status.append(el('details', { class: 'lp-status-more' }, [el('summary', { text: 'Details' }), el('pre', { text: detail })]))
+    }
     var groups = []
-    var pairs = function () { return catalog.pairs.concat(own) }
-    /* Черновик на экране: полоса «Look» говорит «Draft», пока страница
-       показывает не опубликованное. Сама полоса строится ниже. */
-    var drafting = Boolean(state.previewing && state.draft)
+    /* Полоса «Look» говорит «Draft», пока страница показывает не
+       опубликованное (`s.drafting`). Сама полоса строится ниже. */
     var bandSync = function () {}
-
-    function preview() {
-      var tag = document.getElementById('look-preview')
-      if (!tag) { tag = el('style', { id: 'look-preview' }); document.head.appendChild(tag) }
-      tag.textContent = cssText(choice.compose(names, catalog, custom() ? paints : null).look.vars, catalog.floors)
-    }
-    function body() {
-      return Object.assign({}, names, custom() ? { paints: paints } : {})
-    }
-    function draft(reload) {
-      drafting = true
-      bandSync()
-      status.textContent = 'Saving draft…'
-      return send('POST', 'draft', body()).then(function (r) {
-        status.textContent = r.ok ? 'Draft saved — only you see it.' : 'Draft not saved: ' + (r.error || 'error')
-        if (r.ok && reload) { remember(OPEN, '1'); location.reload() }
-      }, function () { status.textContent = 'Draft not saved: no answer' })
-    }
-    var draftLater = later(function () { draft(false) }, 700)
+    var publishing = false
     function refresh() {
       groups.forEach(function (g) { g.refresh() })
-      promises.refresh()
       bandSync()
-      var bad = choice.clashes(names, pairs())
-      publish.disabled = Boolean(bad.length)
+      var bad = s.clashes()
+      publish.disabled = publishing || Boolean(bad.length)
       publish.title = bad.length ? bad[0].why : ''
     }
 
     function sample(field, o) {
-      if (field === 'palette') {
+      if (field === 'palette' && o.dots) {
         var dots = o.dots.light.map(function (c, i) { return el('i', { class: 'lp-dot', style: 'background:light-dark(' + c + ',' + o.dots.dark[i] + ')' }) })
         return el('span', { class: 'lp-dots', 'aria-hidden': 'true' }, dots)
       }
@@ -191,8 +160,7 @@
         var v = o.vars
         var fill = v['--ctrl-btn-fill-pop'] || v['--ctrl-btn-fill'] || 'transparent'
         var style = 'background:linear-gradient(' + fill + ',' + fill + '),var(--page, #fff);color:' + (v['--ctrl-btn-ink-pop'] || v['--ctrl-btn-ink'] || 'var(--ink)') +
-          ';border-color:' + (v['--ctrl-btn-edge-pop'] || v['--ctrl-btn-edge'] || 'transparent') + ';text-transform:' + (v['--ctrl-btn-case'] || 'none') +
-          ';letter-spacing:' + (v['--ctrl-btn-track'] || 'normal') + ';font-weight:' + (v['--ctrl-btn-weight'] || '600')
+          ';border-color:' + (v['--ctrl-btn-edge-pop'] || v['--ctrl-btn-edge'] || 'transparent') + ';font-weight:600'
         return el('span', { class: 'lp-btn', style: style, 'aria-hidden': 'true', text: 'Aa' })
       }
       /* Вид поля (И390): заливка и кромка варианта поверх пола страницы;
@@ -204,35 +172,25 @@
       }
       /* Место подписи (И394): полоска поля и черта подписи над ним или на кромке. */
       if (field === 'field-label') return el('span', { class: 'lp-label', 'data-at': o.vars['--ctrl-field-label'], 'aria-hidden': 'true' }, [el('b'), el('i', { class: 'lp-field' })])
-      /* Знак полки на фишке (И422): фишка словом или с кругом знака. */
-      if (field === 'chip-sign') return el('span', { class: 'lp-chipsign', 'data-at': o.vars['--chip-sign'], 'aria-hidden': 'true' }, [el('i'), el('b')])
       /* Пара «поле и кнопка» (И421): две коробки с зазором или одна. */
       if (field === 'pair-look') return el('span', { class: 'lp-pair', 'data-at': o.vars['--pair-look'], 'aria-hidden': 'true' }, [el('i'), el('b')])
       /* Сообщение формы (И420): строка или заметка с точкой знака. */
       if (field === 'say-look') return el('span', { class: 'lp-say', 'data-at': o.vars['--say-look'], 'aria-hidden': 'true' }, [el('i'), el('b')])
-      /* Шапка cbdin (И430): меню телефона, знак корзины, сумма у корзины. */
-      if (field === 'drawer-look') return el('span', { class: 'lp-drawer', 'data-at': o.vars['--drawer-look'], 'aria-hidden': 'true' }, [el('i'), el('i'), el('b'), el('b')])
+      /* Шапка cbdin (И430): знак корзины, сумма у корзины. */
       if (field === 'cart-sign') return el('span', { class: 'lp-go', 'aria-hidden': 'true', text: o.vars['--cart-sign'] === 'bag' ? '👜' : '🛒' })
+      if (field === 'door-case') return el('span', { class: 'lp-go', 'aria-hidden': 'true', text: o.vars['--door-case'] === 'uppercase' ? 'AA' : 'Aa' })
       if (field === 'cart-meta') return el('span', { class: 'lp-go', 'aria-hidden': 'true', text: o.vars['--cart-meta'] === 'sum' ? '2 · €45' : '2' })
-      /* Знаки шапки (И398): три знака — без заливки, тоном или в лотке. */
-      if (field === 'head-icons') return el('span', { class: 'lp-heads', 'data-at': o.vars['--head-icons'], 'aria-hidden': 'true' }, [el('i'), el('i'), el('i')])
       /* Ссылка под рукой (И397): стрелка краской варианта. */
       if (field === 'go-hover') return el('span', { class: 'lp-go', style: o.vars['--go-hover'] === 'currentcolor' ? '' : 'color:' + o.vars['--go-hover'], 'aria-hidden': 'true', text: '→' })
       /* Галочка (И392): отмеченный квадрат краской варианта. */
       if (field === 'tick') return el('i', { class: 'lp-tick', style: 'background:' + o.vars['--ctrl-tick-fill'], 'aria-hidden': 'true' })
-      if (field === 'corners') { var r = Math.round(parseFloat(o.vars['--r-card']) / 3) + 'px'; return el('i', { class: 'lp-shape', style: 'border-radius:' + r + ' ' + r + ' 0 0', 'aria-hidden': 'true' }) }
+      /* «· pill» — та же ступень углов с кнопкой полным кругом (`--r-btn`): знак — дугой. */
+      if (field === 'corners') { var r = o.vars['--r-btn'] === 'var(--r-pop)' ? '999px' : Math.round(parseFloat(o.vars['--r-card']) / 3) + 'px'; return el('i', { class: 'lp-shape', style: 'border-radius:' + r + ' ' + r + ' 0 0', 'aria-hidden': 'true' }) }
       /* Карта товара: доля ряда — полоса с долей галереи; пропорция — кадр;
          миниатюры — кадр с рядом под ним, полосой сбоку или точками. */
       if (field === 'pdp-gallery') return el('span', { class: 'lp-row-split', 'aria-hidden': 'true' }, [el('i', { style: 'inline-size:' + o.vars['--pdp-gallery'] })])
-      /* Полка (И400): пропорция снимка — кадр; плотность — столько столбиков,
-         сколько карточек в ряд. */
-      if (field === 'shot-frame') return el('i', { class: 'lp-pic', style: 'aspect-ratio:' + o.vars['--shot-frame'], 'aria-hidden': 'true' })
-      if (field === 'card-buy') return el('span', { class: 'lp-buy', 'data-at': o.vars['--card-buy'], 'aria-hidden': 'true' }, [el('i'), el('b')])
-      /* Подпись порядка (И395): черта подписи перед кнопкой или внутри неё. */
-      if (field === 'sort-label') return el('span', { class: 'lp-sort', 'data-at': o.vars['--sort-label'], 'aria-hidden': 'true' }, [el('i'), el('b', {}, [el('i')])])
       /* Выбор варианта (И396): три сегмента — отдельно, встык или в подложке. */
       if (field === 'seg-look') return el('span', { class: 'lp-seg', 'data-at': o.vars['--seg-look'], 'aria-hidden': 'true' }, [el('b'), el('i'), el('i')])
-      if (field === 'shelf-cols') return el('span', { class: 'lp-cols', 'aria-hidden': 'true' }, Array.from({ length: Number(o.vars['--shelf-cols']) || 4 }, function () { return el('i') }))
       if (field === 'pdp-thumbs') {
         var at = o.vars['--pdp-thumbs']
         return el('span', { class: 'lp-thumbs', 'data-at': at, 'aria-hidden': 'true' }, [el('i', { class: 'lp-pic' })].concat([0, 1, 2].map(function () { return el('b') })))
@@ -241,16 +199,9 @@
          во всю ширину — кадр от края до края рамки, лист наезжает снизу. */
       if (field === 'pdp-edge') return el('span', { class: 'lp-edge', 'data-at': o.vars['--pdp-edge'], 'aria-hidden': 'true' }, [el('i', { class: 'lp-pic' }), el('b')])
       if (field === 'shadow') return el('i', { class: 'lp-shape lp-lit', style: 'box-shadow:' + o.vars['--sh-raised'], 'aria-hidden': 'true' })
-      /* Главная: первый экран схемой — из чего он сложен сверху вниз
-         (catalog.json, `plan`): сцена, заголовок, фишки полок, ряд товара,
-         лист, ящики, снимок, оглавление, снимок с вырезом, строка полок. */
-      if (field === 'home') {
-        /* Ряд, фишки, плитки и ящики — клетками; оглавление — строками. */
-        var cells = { row: 4, tiles: 4, drawers: 4, chips: 4, index: 3, words: 3, tall: 4 }
-        return el('span', { class: 'lp-plan', 'aria-hidden': 'true' }, (o.plan || []).map(function (k) {
-          return el('i', { 'data-k': k }, Array.from({ length: cells[k] || 0 }, function () { return el('b') }))
-        }))
-      }
+      /* Плашка категории (Home): снимок и то, на чём стоит имя — кнопка,
+         лента, белая плашка или пол под снимком. */
+      if (field === 'home') return el('span', { class: 'lp-door', 'data-at': o.id, 'aria-hidden': 'true' }, [el('i', { class: 'lp-pic' }), el('b')])
       return null
     }
 
@@ -293,21 +244,8 @@
         var voice = AXIS_VOICE[field.slice(4)] || 'loud'
         return stageOf(o, function () { return [realButton(field, o, voice)] })
       }
-      if (field === 'palette') {
-        var t = choice.tileOf(o.seed, catalog.steps)
-        var ld = function (k) { return 'light-dark(' + t.light[k] + ',' + t.dark[k] + ')' }
-        return el('span', { class: 'lp-shop', style: 'background:' + ld('page'), 'aria-hidden': 'true' }, [
-          el('span', { class: 'lp-card', style: 'background:' + ld('plate') + ';color:' + ld('ink') }, [
-            el('i', { class: 'lp-card-pic', style: 'background:' + ld('pic') }, [el('b', { class: 'lp-sale', style: 'background:' + ld('sale') + ';color:' + ld('onSale'), text: '−20%' })]),
-            el('b', { class: 'lp-card-name', text: 'Full-spectrum oil 10%' }),
-            el('small', { style: 'color:' + ld('soft'), text: '30 ml · €1.53 / ml' }),
-            el('span', { class: 'lp-card-row' }, [
-              el('b', { text: '€45.90' }),
-              el('span', { class: 'lp-card-buy', style: 'background:' + ld('pop') + ';color:' + ld('onPop'), text: 'Add to cart' }),
-            ]),
-          ]),
-        ])
-      }
+      /* Палитра — кусок магазина её красками (ui/swatch.mjs, И575). */
+      if (field === 'palette' && o.seed) return el('span', { class: 'lp-big-well lp-big-palette', 'aria-hidden': 'true' }, [swatch(choice.tileOf(o.seed, catalog.steps))])
       if (field === 'card') {
         return el('span', { class: 'lp-shop lp-shop-site', 'aria-hidden': 'true' }, [
           el('span', { class: 'lp-pcard', 'data-card': o.id }, [
@@ -317,9 +255,10 @@
           ]),
         ])
       }
-      if (field === 'face') return el('span', { class: 'lp-big-well lp-face', style: 'font-family:' + o.stack, 'aria-hidden': 'true' }, [el('b', { text: 'Aa Ăă Șș' }), el('span', { text: 'Full-spectrum oil, 30 ml' })])
       if (field === 'corners') {
-        return el('span', { class: 'lp-big-well lp-radii', 'aria-hidden': 'true' }, ['--r-ctrl', '--r-card', '--r-sheet'].map(function (k) { return el('i', { style: 'border-radius:' + o.vars[k] }) }))
+        /* Первая плитка — кнопка: её угол (`--r-btn`) — угол контрола или полный круг («· pill»). */
+        var radius = function (k) { var v = o.vars[k]; return v === 'var(--r-pop)' ? '999px' : v === 'var(--r-ctrl)' ? o.vars['--r-ctrl'] : v }
+        return el('span', { class: 'lp-big-well lp-radii', 'aria-hidden': 'true' }, ['--r-btn', '--r-card', '--r-sheet'].map(function (k) { return el('i', { style: 'border-radius:' + radius(k) }) }))
       }
       if (field === 'shadow') return el('span', { class: 'lp-big-well lp-shop-site', 'aria-hidden': 'true' }, [el('i', { class: 'lp-lift', style: 'box-shadow:' + o.vars['--sh-raised'] })])
       var small = sample(field, o)
@@ -329,12 +268,22 @@
     function buildBig() {
       pendingBig.splice(0).forEach(function (fn) { fn() })
     }
+    /* Крупной плиткой в развёрнутой панели — только выбор, видный лишь в
+       размере (look.css, «Система развёрнутой панели», И576). */
+    var TILED = ['palette', 'corners', 'shadow', 'card']
     function group(field, label, extra) {
       var id = 'lp-why-' + field
       var line = el('p', { class: 'lp-why', id: id })
       /* Ритм — лестницей от плотного к воздушному (`rung` каталога). */
       var list = catalog.groups[field].slice()
+      var tiled = TILED.indexOf(field) >= 0 || field.indexOf('btn-') === 0
+      /* Числа — по росту (слово заказчика 29.09.2026 на «36, 34, 39» у
+         заголовков: «почему не по росту значения идут»; И576): каталог
+         ставит умолчание первым, а глаз ищет лесенку. Имя с числом в
+         начале — «34 px», «1440», «16 px». */
+      var lead = function (o) { var m = /^\s*(\d+(?:[.,]\d+)?)/.exec(o.name); return m ? Number(m[1].replace(',', '.')) : NaN }
       if (list.every(function (o) { return typeof o.rung === 'number' })) list.sort(function (a, b) { return a.rung - b.rung })
+      else if (list.every(function (o) { return isFinite(lead(o)) })) list.sort(function (a, b) { return lead(a) - lead(b) })
       var chips = list.map(function (o) {
         var attrs = { type: 'button', class: 'lp-chip', 'data-id': o.id, title: o.line || null }
         if (field === 'face') attrs.style = 'font-family:' + o.stack /* образец — своим шрифтом; у пары — шрифтом заголовков */
@@ -343,22 +292,17 @@
         var chip = el('button', attrs, [mini ? el('span', { class: 'lp-mini' }, [mini]) : null, el('span', { class: 'lp-opt', 'data-text': o.name, text: o.name }), cap])
         chip.label = o.name
         /* Крупный образец — при первом развороте панели. */
-        pendingBig.push(function () { chip.insertBefore(el('span', { class: 'lp-big' }, [big(field, o)]), cap) })
+        if (tiled) pendingBig.push(function () { chip.insertBefore(el('span', { class: 'lp-big' }, [big(field, o)]), cap) })
         var reason = ''
         chip.addEventListener('click', function () {
           if (reason) { line.textContent = o.name + ': ' + reason; return }
-          if (names[field] === o.id) return
-          names[field] = o.id
-          if (field === 'palette') { intent = choice.intentOf(o.seed); paints = null; fitted = { notes: [] }; builder.load() }
-          refresh()
-          if (choice.STRUCTURE.includes(field)) draft(true)
-          else { preview(); draft(false) }
+          s.pick(field, o.id)
         })
         var tell = function () { if (reason) line.textContent = o.name + ': ' + reason }
         chip.addEventListener('pointerenter', tell)
         chip.addEventListener('focus', tell)
         chip.update = function () {
-          var hit = choice.blockedBy(field, o.id, names, pairs())
+          var hit = s.blockedBy(field, o.id)
           reason = hit ? 'not with ' + choice.title(catalog, hit.field, hit.id) + ' — ' + hit.why : ''
           chip.setAttribute('aria-pressed', String(names[field] === o.id))
           if (reason) { chip.setAttribute('aria-disabled', 'true'); chip.title = reason; chip.setAttribute('aria-describedby', id) }
@@ -368,11 +312,21 @@
         return chip
       })
       var legend = el('span', { class: 'lp-legend', id: id + '-l', text: label })
-      var node = el('div', { class: 'lp-group', 'data-field': field }, [el('div', { class: 'lp-row' }, [legend, extra || null]), el('div', { class: 'lp-chips', role: 'group', 'aria-labelledby': id + '-l' }, chips), line])
+      /* Короткие варианты — в строку с заголовком группы (заказчик
+         29.09.2026: «расположи регулировки правее от заголовка, места
+         меньше займёт, и подобные регулировки в строке располагай с
+         заголовком»): без крупных образцов, без своей кнопки в строке
+         заголовка, имя каждого — не длиннее 10 знаков («34 px», «−1»,
+         «Round»). Не помещаются — ряд переносится под заголовок сам. */
+      var inline = !tiled && !extra && list.every(function (o) { return String(o.name).length <= 10 })
+      var node = el('div', { class: 'lp-group', 'data-field': field, 'data-tiled': tiled, 'data-inline': inline ? '' : null }, [el('div', { class: 'lp-row' }, [legend, extra || null]), el('div', { class: 'lp-chips', role: 'group', 'aria-labelledby': id + '-l' }, chips), line])
       groups.push({ refresh: function () {
         var first = ''
         chips.forEach(function (c) { var r = c.update(); if (r && !first) first = c.label + ': ' + r })
-        line.textContent = first
+        /* Выбранный вариант называет свои числа (слово заказчика 29.09.2026:
+           «выбрал ритм — и его параметры написались»); у плиток они в подписи. */
+        var picked = tiled ? null : list.find(function (o) { return o.id === names[field] })
+        line.textContent = first || (picked && picked.line ? picked.name + ': ' + picked.line : '')
       } })
       return node
     }
@@ -394,18 +348,18 @@
       var picks = list.map(function (x) {
         var vars = Object.assign({}, of('btn-loud', x.set['btn-loud']).vars, of('btn-shape', x.set['btn-shape']).vars)
         var style = Object.keys(vars).map(function (k) { return k + ':' + vars[k] }).join(';')
-        var real = siteButton ? el('span', { class: siteButton, 'data-voice': 'loud', 'data-size': 'sm', text: 'Add to cart' }) : el('span', { class: 'lp-opt', text: 'Add to cart' })
+        /* `data-shape` — образец носит форму, как кнопка героя (И618). */
+        var real = siteButton ? el('span', { class: siteButton, 'data-voice': 'loud', 'data-shape': 'on', 'data-size': 'sm', text: 'Add to cart' }) : el('span', { class: 'lp-opt', text: 'Add to cart' })
         var b = el('button', { type: 'button', class: 'lp-pick-btn', title: x.line || null }, [el('span', { class: 'lp-pick-stage', style: style, 'aria-hidden': 'true' }, [real]), el('span', { class: 'lp-opt', 'data-text': x.name, text: x.name })])
         b.addEventListener('click', function () {
           var same = Object.keys(x.set).every(function (f) { return names[f] === x.set[f] })
           if (same) return
-          Object.assign(names, x.set)
-          refresh(); preview(); draft(false)
+          s.pickMany(x.set)
         })
         b.update = function () {
           b.setAttribute('aria-pressed', String(Object.keys(x.set).every(function (f) { return names[f] === x.set[f] })))
           var hit = null
-          Object.keys(x.set).some(function (f) { hit = choice.blockedBy(f, x.set[f], names, pairs()); return hit })
+          Object.keys(x.set).some(function (f) { hit = s.blockedBy(f, x.set[f]); return hit })
           if (hit) { b.setAttribute('aria-disabled', 'true'); b.title = 'not with ' + choice.title(catalog, hit.field, hit.id) + ' — ' + hit.why }
           else { b.removeAttribute('aria-disabled'); b.title = x.line || '' }
         }
@@ -415,41 +369,6 @@
       return el('div', { class: 'lp-group', 'data-field': 'main-button' }, [
         el('span', { class: 'lp-legend', id: 'lp-main-l', text: 'Main button' }),
         el('div', { class: 'lp-picks', role: 'group', 'aria-labelledby': 'lp-main-l' }, picks), line,
-      ])
-    }
-    /* Образец на свободном месте подраздела (слово заказчика 28.09.2026:
-       «в панели есть свободное место — покажи тут же примером этот ритм, и
-       шрифт можно в панели показать»). Кусок витрины — ролями сайта
-       (кегль, ритм, поле, воздух, шрифт, краски, углы, тень, кнопка сайта):
-       предпросмотр пишет роли на корень, и образец меняется вместе со
-       страницей, без своего расчёта. */
-    function demoButton(voice) {
-      return siteButton ? el('span', { class: siteButton, 'data-voice': voice, 'data-size': 'sm', text: 'Add to cart' }) : null
-    }
-    function demo(kind) {
-      var card = function (name, price, old, voice) {
-        return el('span', { class: 'lp-d-card' }, [
-          el('i', { class: 'lp-d-pic' }, old ? [el('b', { class: 'lp-d-sale', text: '−17%' })] : []),
-          el('span', { class: 'lp-d-brand', text: 'NatureCBD' }),
-          el('b', { class: 'lp-d-name', text: name }),
-          el('span', { class: 'lp-d-price' }, [el('b', { text: price }), old ? el('s', { text: old }) : null]),
-          demoButton(voice),
-        ])
-      }
-      if (kind === 'type') {
-        return el('div', { class: 'lp-demo lp-d-type', 'aria-hidden': 'true' }, [
-          el('span', { class: 'lp-d-brand', text: 'NatureCBD' }),
-          el('b', { class: 'lp-d-title', text: '10% CBD Oil Full Spectrum 10ml' }),
-          el('span', { class: 'lp-d-price' }, [el('b', { text: '€40.00' }), el('s', { text: '€48.00' })]),
-          el('p', { class: 'lp-d-body', text: 'Full spectrum CBD oil 10% (1000 mg) in a 10 ml bottle. A few drops under the tongue once a day.' }),
-          el('small', { class: 'lp-d-note', text: 'Lab report · batch 2409' }),
-          demoButton('loud'),
-        ])
-      }
-      return el('div', { class: 'lp-demo', 'aria-hidden': 'true' }, [
-        el('b', { class: 'lp-d-head', text: 'Similar products' }),
-        el('span', { class: 'lp-d-row' }, [card('20% CBD+CBN Oil', '€40.00', '€48.00', 'loud'), card('30% CBD Oil', '€50.00', null, 'quiet')]),
-        el('small', { class: 'lp-d-note', text: 'Free delivery from €50' }),
       ])
     }
     /* Элементы набора — живыми отрисовками (ui/elements/). Страницы
@@ -478,244 +397,111 @@
       return node
     }
     var elements = gallery()
-    var DEMO = { spacing: 'shelf', type: 'type', color: 'shelf', shape: 'shelf', buttons: 'shelf' }
-    /** Сегменты: один из нескольких, нажатый — жирным и подчёркнут. */
-    function segments(label, list, get, set) {
-      var node = el('div', { class: 'lp-segs', role: 'group', 'aria-label': label })
-      var buttons = list.map(function (x) {
-        var b = el('button', { type: 'button', class: 'lp-segb', text: x[1] })
-        b.addEventListener('click', function () { set(x[0]) })
-        node.appendChild(b)
-        return [x[0], b]
-      })
-      return { node: node, sync: function () { buttons.forEach(function (x) { x[1].setAttribute('aria-pressed', String(get() === x[0])) }) } }
-    }
-
-    /* ── Color: наборы, строитель из намерения, шкала, обещания ─────────── */
-
-    var guard = later(function () {
-      if (!custom()) { own = []; refresh(); return }
-      send('POST', 'guard', { paints: paints }).then(function (r) { own = r.ok ? r.pairs : []; refresh() }, function () { /* без ответа — пары каталога */ })
-    }, 250)
-    var builder = (function () {
-      var scaleTheme = 'light'
-      var nameField = el('input', { class: 'lp-name', type: 'text', maxlength: '40', 'aria-label': 'Palette name', value: 'Custom' })
-      nameField.addEventListener('input', function () { if (paints) { paints.name = nameField.value.trim() || 'Custom'; draftLater() } })
-      /* Цвет марки: образец с выбором краски, код с логотипа, тон ползунком. */
-      var brandPick = el('input', { type: 'color', class: 'lp-pick', 'aria-label': 'Brand colour' })
-      var brandHex = el('input', { type: 'text', class: 'lp-hex', inputmode: 'text', spellcheck: 'false', maxlength: '7', 'aria-label': 'Brand colour hex' })
-      var hue = el('input', { type: 'range', class: 'lp-hue', min: '0', max: '359', step: '1', 'aria-label': 'Brand hue' })
-      var fromSw = el('i', { class: 'lp-sw' })
-      var toSw = el('i', { class: 'lp-sw' })
-      var adjust = el('div', { class: 'lp-adjust', hidden: true }, [
-        el('span', { class: 'lp-shift' }, [fromSw, el('span', { class: 'lp-arrow' }, [icon(ARROW)]), toSw]),
-        el('p', { class: 'lp-adjust-line' }),
-      ])
-      var paper = segments('Paper', [['warm', 'Warm'], ['neutral', 'Neutral'], ['cool', 'Cool']], function () { return intent.paper }, function (v) { intent.paper = v; changed() })
-      var tint = segments('Paper tint', [['none', 'None'], ['light', 'Light']], function () { return intent.tint }, function (v) { intent.tint = v; changed() })
-      var toward = el('input', { type: 'checkbox', class: 'lp-check' })
-      toward.addEventListener('change', function () { intent.inkTowardBrand = toward.checked; changed() })
-      var setBrand = function (hex, keep) {
-        intent.brand = hex
-        if (!keep) hue.value = String(Math.round(hueOf(hex)))
-        changed()
-      }
-      brandPick.addEventListener('input', function () { brandHex.value = brandPick.value.toUpperCase(); setBrand(brandPick.value.toUpperCase()) })
-      brandHex.addEventListener('input', function () {
-        var v = hexOf(brandHex.value)
-        if (v) { brandHex.removeAttribute('aria-invalid'); brandPick.value = v.toLowerCase(); setBrand(v) } else brandHex.setAttribute('aria-invalid', 'true')
-      })
-      hue.addEventListener('input', function () {
-        var v = withHue(intent.brand, Number(hue.value))
-        brandHex.value = v; brandPick.value = v.toLowerCase(); setBrand(v, true)
-      })
-      /* Тонкая настройка: свои коды бумаги, чернил и марки по темам — тоже
-         доводятся до замера. */
-      var exact = null
-      var fineTheme = 'light'
-      var fine = {}
-      var fineRows = ['paper', 'ink', 'accent'].map(function (k) {
-        var f = el('input', { type: 'text', class: 'lp-hex', spellcheck: 'false', maxlength: '7', 'aria-label': k + ' hex' })
-        f.addEventListener('change', function () {
-          var v = hexOf(f.value)
-          if (!v) { f.setAttribute('aria-invalid', 'true'); return }
-          f.removeAttribute('aria-invalid')
-          exact = exact || { light: Object.assign({}, fitted.seed ? fitted.seed.light : {}), dark: Object.assign({}, fitted.seed ? fitted.seed.dark : {}) }
-          exact[fineTheme][k] = v
-          changed()
+    /* Подложка секций (И591): строка на каждый блок главной — имя и четыре
+       кружка цвета в ряд (нет · тихая · марки · тёмная). Кружок показывает,
+       что получится, и занимает в строке одну ширину кнопки; слайдер тут не
+       годится — четыре разных цвета, а не число по шкале. Список строк — из
+       каталога, блок добавили на сайте — строка появилась. */
+    function tones(sub) {
+      var rows = sub.fields.map(function (f) {
+        var field = f[0]
+        var opts = catalog.groups[field] || []
+        var word = el('span', { class: 'lp-tone-word' })
+        var dots = opts.map(function (o) {
+          var b = el('button', { type: 'button', class: 'lp-dot', 'data-tone': o.id, 'aria-label': f[1] + ': ' + o.name, title: o.name + ' — ' + o.line }, [el('span', { class: 'lp-dot-fill', 'aria-hidden': 'true' })])
+          b.addEventListener('click', function () { s.pick(field, o.id) })
+          return b
         })
-        fine[k] = f
-        return el('label', { class: 'lp-fine-row' }, [el('span', { class: 'lp-pname', text: { paper: 'Paper', ink: 'Ink', accent: 'Brand' }[k] }), f])
+        groups.push({ refresh: function () {
+          dots.forEach(function (b) { b.setAttribute('aria-pressed', String(names[field] === b.dataset.tone)) })
+          var on = opts.find(function (o) { return o.id === names[field] })
+          word.textContent = on ? on.name : ''
+        } })
+        return el('div', { class: 'lp-tone-row', 'data-field': field }, [el('span', { class: 'lp-tone-name', text: f[1] }), el('span', { class: 'lp-tone-dots', role: 'group', 'aria-label': f[1] + ' background' }, dots.concat([word]))])
       })
-      var fineSeg = segments('Theme', [['light', 'Light'], ['dark', 'Dark']], function () { return fineTheme }, function (v) { fineTheme = v; syncFine() })
-      var syncFine = function () {
-        fineSeg.sync()
-        var src = (exact && exact[fineTheme]) || (fitted.seed && fitted.seed[fineTheme]) || {}
-        ;['paper', 'ink', 'accent'].forEach(function (k) { fine[k].value = src[k] || '' })
-      }
-      var scaleGrid = el('div', { class: 'lp-grid', role: 'img' })
-      var scaleSeg = segments('Scale theme', [['light', 'Light'], ['dark', 'Dark']], function () { return scaleTheme }, function (v) { scaleTheme = v; grid() })
-      function grid() {
-        scaleSeg.sync()
-        var p = paints || current().seed
-        var fams = choice.families(p, scaleTheme)
-        scaleGrid.setAttribute('aria-label', 'Computed steps, ' + scaleTheme + ' theme: 7 families by 12 steps')
-        scaleGrid.replaceChildren.apply(scaleGrid, fams.flatMap(function (f) {
-          return [el('span', { class: 'lp-fam', text: f[0] })].concat(f[1].map(function (hex, i) { return el('i', { class: 'lp-cell', title: f[0] + ' ' + (i + 1) + ' · ' + hex, style: 'background:' + hex }) }))
-        }))
-      }
-      function showAdjust() {
-        var n = fitted.notes.filter(function (x) { return x.what === 'brand' })[0]
-        adjust.hidden = !n
-        if (!n) return
-        fromSw.style.background = n.from; toSw.style.background = n.to
-        fromSw.title = 'Your colour ' + n.from; toSw.title = 'Used for buttons ' + n.to
-        adjust.lastChild.textContent = (n.mode === 'dark' ? 'In the dark theme your colour' : 'Your colour') + ' is used for buttons ' + n.why + '.'
-      }
-      /* Намерение изменилось: строитель собирает набор, который проходит
-         замер; страница перекрашивается им, и только им. */
-      var fit = later(function () {
-        var r = choice.fitPalette(intent, exact)
-        if (!r.ok) { adjust.hidden = false; adjust.lastChild.textContent = r.notes[0].why; return }
-        fitted = r
-        paints = { name: nameField.value.trim() || 'Custom', light: r.seed.light, dark: r.seed.dark, intent: Object.assign({}, intent) }
-        names.palette = choice.CUSTOM
-        showAdjust(); preview(); guard(); refresh(); grid(); syncFine(); draftLater()
-      }, 90)
-      function changed() { paper.sync(); tint.sync(); tint.node.toggleAttribute('data-off', intent.paper === 'neutral'); fit() }
-      function load() {
-        exact = null
-        nameField.value = (paints && paints.name) || 'Custom'
-        brandHex.value = intent.brand; brandPick.value = intent.brand.toLowerCase(); hue.value = String(Math.round(hueOf(intent.brand)))
-        toward.checked = Boolean(intent.inkTowardBrand)
-        paper.sync(); tint.sync(); tint.node.toggleAttribute('data-off', intent.paper === 'neutral')
-        fitted = { notes: [], seed: paints ? { light: paints.light, dark: paints.dark } : null }
-        showAdjust(); syncFine(); grid()
-      }
-      var row = function (label, kids, hint) { return el('div', { class: 'lp-brow' }, [el('span', { class: 'lp-blabel', text: label }), el('div', { class: 'lp-bctl' }, kids.concat(hint ? [el('p', { class: 'lp-bhint', text: hint })] : []))]) }
-      /* Строитель закрывается (слово заказчика 28.09.2026: «при создании
-         новой палитры я не могу её создание закрыть»): собранное уже в
-         черновике, закрытие только убирает строитель. */
-      var shut = el('button', { type: 'button', class: 'lp-x', 'aria-label': 'Close the palette builder', title: 'Close' }, [icon(CROSS, 14)])
-      var node = el('div', { class: 'lp-builder lp-desk', hidden: true }, [
-        el('div', { class: 'lp-row' }, [el('span', { class: 'lp-legend', text: 'Your palette' }), shut]),
-        row('Name', [nameField]),
-        row('Brand', [el('div', { class: 'lp-brand' }, [el('span', { class: 'lp-swatch' }, [brandPick]), brandHex]), hue, adjust]),
-        row('Paper', [paper.node, tint.node]),
-        row('Ink', [el('label', { class: 'lp-toggle' }, [toward, 'Lean towards the brand'])], 'Set for you: always dark enough to read.'),
-        el('details', { class: 'lp-more' }, [el('summary', { text: 'Fine-tune exact colours' }), el('div', { class: 'lp-fine' }, [fineSeg.node].concat(fineRows)), el('p', { class: 'lp-bhint', text: 'These are corrected too: a colour that would not read is moved to the nearest one that does.' })]),
-        el('details', { class: 'lp-more' }, [el('summary', { text: 'Scale · 7 families × 12 steps' }), scaleSeg.node, scaleGrid]),
+      return el('div', { class: 'lp-tones' }, rows.length ? rows : [el('p', { class: 'lp-hint', text: 'No sections yet.' })])
+    }
+    /* Подраздел, который стоит ещё и на странице дизайн-системы (`page` в
+       choice.mjs): там — рядом со своими образцами; у палитры там же
+       строитель своей палитры (И572). */
+    function moved(sub) {
+      var lang = location.pathname.split('/')[1] || ''
+      var color = sub.id === 'color'
+      return el('div', { class: 'lp-aside' }, [
+        el('a', { class: 'lp-link', href: '/' + lang + '/design?t=' + sub.page, title: color ? 'Your own palette from your brand colour is built on the design system page.' : sub.name + ' is also on the design system page, next to its samples.', text: color ? 'Build your own palette →' : 'Open ' + sub.name + ' on the design system page →' }),
       ])
-      load()
-      shut.addEventListener('click', function () { node.hidden = true; edit.hidden = false; edit.focus() })
-      return { node: node, load: load, open: function () { node.hidden = false; load(); fit() } }
-    })()
-    function hueOf(hex) {
-      var c = [1, 3, 5].map(function (i) { return parseInt(hex.slice(i, i + 2), 16) / 255 })
-      var max = Math.max.apply(null, c), min = Math.min.apply(null, c), d = max - min
-      if (!d) return 0
-      var h = max === c[0] ? ((c[1] - c[2]) / d) % 6 : max === c[1] ? (c[2] - c[0]) / d + 2 : (c[0] - c[1]) / d + 4
-      return (h * 60 + 360) % 360
     }
-    /** Тот же цвет с другим тоном — светлота и насыщенность (HSL) остаются. */
-    function withHue(hex, h) {
-      var c = [1, 3, 5].map(function (i) { return parseInt(hex.slice(i, i + 2), 16) / 255 })
-      var max = Math.max.apply(null, c), min = Math.min.apply(null, c), l = (max + min) / 2
-      var s = max === min ? 0.45 : (max - min) / (1 - Math.abs(2 * l - 1))
-      var k = function (n) { return (n + h / 30) % 12 }
-      var a = s * Math.min(l, 1 - l)
-      var f = function (n) { return l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1))) }
-      return '#' + [f(0), f(8), f(4)].map(function (v) { return Math.round(v * 255).toString(16).padStart(2, '0') }).join('').toUpperCase()
-    }
-    /* Строитель палитры — только на компьютере (слово заказчика 28.09.2026:
-       «палитру создавать на телефоне не нужно»); на телефоне на его месте
-       строка, выбор готовых наборов остаётся (look.css, `.lp-desk`). */
-    var edit = el('button', { type: 'button', class: 'lp-link lp-desk', text: 'Build your own' })
-    var deskOnly = el('p', { class: 'lp-hint lp-phone', text: 'Building your own palette — on a computer.' })
-    edit.addEventListener('click', function () { builder.open(); edit.hidden = true })
-    if (custom()) { builder.node.hidden = false; edit.hidden = true }
-
-    /* Обещания палитры: спокойный список; числа — для любопытных. */
-    var promises = (function () {
-      var list = el('ul', { class: 'lp-promises', 'aria-label': 'What this palette guarantees' })
-      var numbers = el('div', { class: 'lp-numbers' })
-      var num = function (r) { return r.unit === ':1' ? r.got + ':1' : r.unit === 'Lc' ? 'Lc ' + Math.round(r.got) : Math.round(r.got) + ' ' + r.unit }
-      function refresh() {
-        var p = custom() && paints ? paints : current().seed
-        var g = choice.guarantees(p, catalog.steps)
-        var bad = choice.clashes(names, pairs()).filter(function (c) { return c.x.field === 'palette' || c.y.field === 'palette' })
-        list.replaceChildren.apply(list, g.map(function (x) {
-          return el('li', { class: x.ok ? 'lp-ok' : 'lp-bad' }, [icon(x.ok ? TICK : CROSS), el('span', { text: x.label })])
-        }).concat([el('li', { class: 'lp-ok' }, [icon(TICK), el('span', { text: 'Built for the light and the dark theme' })])])
-          .concat(bad.length ? [el('li', { class: 'lp-bad' }, [icon(CROSS), el('span', { text: 'Not with ' + choice.title(catalog, bad[0].x.field === 'palette' ? bad[0].y.field : bad[0].x.field, bad[0].x.field === 'palette' ? bad[0].y.id : bad[0].x.id) + ' — ' + bad[0].why })])] : []))
-        numbers.replaceChildren.apply(numbers, g.map(function (x) {
-          var t = ['light', 'dark'].map(function (m) { return (m === 'light' ? 'Light ' : 'Dark ') + x.rows.filter(function (r) { return r.mode === m }).map(num).join(', ') }).join(' · ')
-          return el('p', {}, [el('b', { text: x.label + ': ' }), t])
-        }))
-      }
-      return { node: el('div', { class: 'lp-group' }, [el('span', { class: 'lp-legend', text: 'Guaranteed' }), list, el('details', { class: 'lp-more' }, [el('summary', { text: 'The numbers' }), numbers])]), refresh: refresh }
-    })()
 
     /* ── Действия ──────────────────────────────────────────────────────── */
 
     var copy = el('button', { type: 'button', class: 'lp-act lp-quiet', text: 'Copy settings' })
     copy.addEventListener('click', function () {
-      var text = JSON.stringify(body())
-      var done = function () { status.textContent = 'Copied: ' + text }
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () { status.textContent = text })
-      else status.textContent = text
+      var text = JSON.stringify(s.body())
+      var done = function () { say('Settings copied.', text) }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () { say('Copy these settings:', text) })
+      else say('Copy these settings:', text)
     })
     var publish = el('button', { type: 'button', class: 'lp-act lp-main', text: 'Publish' })
-    /* Опубликованное доходит до статических страниц пересчётом: первый
-       запрос к языку запускает его и ещё получает прежнюю страницу. Панель
-       просит каждый язык без cookie (как гость) и ждёт на главной блок
-       нового вида — тогда вид действительно у всех. */
-    function live(r) {
-      var style = /<style[^>]*data-href="look"[^>]*>([\s\S]*?)<\/style>/
-      var page = function (lang) {
-        return fetch('/' + lang, { cache: 'no-store', credentials: 'omit' }).then(function (x) { return x.ok ? x.text() : '' }, function () { return '' })
-      }
-      var tries = 0
-      var poll = function () {
-        return page(r.main).then(function (html) {
-          var m = html.match(style)
-          if (m && m[1] === r.css) return true
-          if (++tries > 20) return false
-          return new Promise(function (done) { setTimeout(done, 500) }).then(poll)
-        })
-      }
-      return Promise.all(r.langs.map(page)).then(poll)
-    }
     publish.addEventListener('click', function () {
-      publish.disabled = true
-      status.textContent = 'Checking this combination — about a minute…'
-      send('POST', 'publish', body()).then(function (r) {
-        if (!r.ok) { publish.disabled = false; status.textContent = 'Not published: ' + (r.verdict ? r.verdict.join(' ') : r.error); return }
-        status.textContent = 'Passed the check. Publishing…'
-        return live(r).then(function (done) {
-          publish.disabled = false
-          status.textContent = done ? 'Published. Every visitor now sees this look.' : 'Published. Pages pick it up within a minute.'
-        })
-      }, function () { publish.disabled = false; status.textContent = 'Not published: no answer' })
+      publishing = true; refresh()
+      s.publish().then(function () { publishing = false; refresh() })
     })
     var stop = el('button', { type: 'button', class: 'lp-act lp-quiet', text: 'Stop preview' })
     stop.addEventListener('click', function () {
       remember(OPEN, '1')
-      var tag = document.getElementById('look-preview')
-      if (tag) tag.remove()
-      send('DELETE', 'preview').then(function () { location.reload() })
+      s.stop()
     })
 
     /* ── Разделы и подразделы ──────────────────────────────────────────── */
 
+    /* Образец в раскрытой панели — копия живого блока этой страницы: те же
+       классы и краски, поэтому ответ на выбор виден сразу. Копия глухая
+       (inert), своего текста в ней нет. */
+    var lives = []
+    function live(selector, below) {
+      var box = el('div', { class: 'lp-live', 'aria-hidden': 'true' })
+      if (below) box.dataset.below = ''
+      lives.push({ box: box, selector: selector })
+      return box
+    }
+    function fillLives() {
+      lives.forEach(function (l) {
+        var src = document.querySelector(l.selector)
+        if (!src) return l.box.replaceChildren()
+        var copy = src.cloneNode(true)
+        copy.setAttribute('inert', '')
+        copy.removeAttribute('id')
+        l.box.replaceChildren(copy)
+      })
+    }
+    /* Образец формы — вещи сайта, нарисованные его ролями (`--r-*`, `--sh-*`):
+       отвечает на каждый выбор, где бы тень ни стояла на странице. Кнопка —
+       настоящая кнопка сайта (`siteButton`), и угол ей ставит ручка Corners рядом
+       (`--r-btn`; близнец «· pill» — полный круг; заказчик 04.10.2026: «не реагируют кнопки
+       на настройку панели, не меняется форма»). */
+    function shapeDemo() {
+      var item = function (cls, text, inner) { return el('figure', { class: 'lp-demo-item' }, [el('div', { class: 'lp-demo-obj ' + cls }, inner || []), el('figcaption', { text: text })]) }
+      var button = siteButton
+        ? el('figure', { class: 'lp-demo-item' }, [el('span', { class: siteButton, 'data-voice': 'loud', text: 'Add to cart' }), el('figcaption', { text: 'Button · corner from Corners' })])
+        : item('lp-demo-btn', 'Button · corner from Corners', [el('span', { text: 'Add to cart' })])
+      return el('div', { class: 'lp-demo', 'aria-hidden': 'true' }, [
+        button,
+        item('lp-demo-field', 'Field', [el('span', { text: 'Email' })]),
+        item('lp-demo-card', 'Card at rest', [el('span', { text: 'Product name' })]),
+        item('lp-demo-card lp-demo-lift', 'Card under the hand', [el('span', { text: 'Product name' })]),
+        item('lp-demo-pop', 'Menu, popup', [el('span', { text: 'Sort by' })])
+      ])
+    }
     var content = function (sub) {
       return (sub.hint ? [el('p', { class: 'lp-hint', text: sub.hint })] : [])
         .concat(sub.id === 'buttons' ? [mainButton()] : [])
-        .concat(sub.fields.filter(function (f) { return sub.id !== 'buttons' || !MAIN.some(function (m) { return m[0] === f[0] }) })
-          .map(function (f) { return group(f[0], f[1], f[0] === 'palette' ? edit : null) }))
-        .concat(sub.id === 'color' ? [deskOnly, builder.node, promises.node] : [])
+        .concat(sub.bands ? [tones(sub)] : [])
+        .concat(sub.bands ? [] : sub.fields.filter(function (f) { return sub.id !== 'buttons' || !MAIN.some(function (m) { return m[0] === f[0] }) })
+          .map(function (f) { return group(f[0], f[1]) }))
+        .concat(sub.place && sub.place.sample ? [live(sub.place.sample, sub.place.below)] : [])
+        .concat(sub.demo === 'shape' ? [shapeDemo()] : [])
+        .concat(sub.page ? [moved(sub)] : [])
         .concat(sub.id === 'elements' ? [elements] : [])
-        .concat(DEMO[sub.id] ? [el('div', { class: 'lp-group' }, [el('span', { class: 'lp-legend', text: 'On the site' }), demo(DEMO[sub.id])])] : [])
     }
     /* Подразделы, не влезшие в ряд, уходят вбок; недоступный край растворён. */
     var fade = function (bar) {
@@ -734,7 +520,7 @@
         var pane = el('div', { role: 'tabpanel', class: 'lp-pane', id: 'lp-pane-' + sub.id, 'aria-labelledby': 'lp-sub-' + sub.id }, content(sub))
         b.addEventListener('click', function () { showSub(s.id, sub.id) })
         bar.appendChild(b)
-        return { id: sub.id, tab: b, pane: pane }
+        return { id: sub.id, tab: b, pane: pane, place: sub.place || null }
       })
       tab.addEventListener('click', function () { show(s.id) })
       bar.addEventListener('keydown', function (e) { arrows(e, subs, function (x) { showSub(s.id, x.id) }) })
@@ -757,9 +543,39 @@
         if (on && x.tab.scrollIntoView) x.tab.scrollIntoView({ block: 'nearest', inline: 'nearest' })
       })
       remember(SUB + section, id)
+      if (ready) visit(s.subs.find(function (x) { return x.id === id }).place)
       if (id === 'elements') elements.load()
       middle.scrollTop = 0
       fade(s.bar)
+    }
+    /* Вкладка — место на сайте (choice.mjs, `place`): открыл вкладку —
+       сайт переходит на её страницу и показывает её блок. Адреса страниц
+       даёт сервер панели из данных магазина (`places`); оформлению он
+       кладёт в пустую корзину товар образца, иначе полей не видно. Переход —
+       обычной загрузкой: панель помнит, что открыта и на какой вкладке, а
+       блок показывает уже на новой странице (`PLACE`). Вкладки общего вида
+       места не имеют — страница остаётся та, что была. */
+    var ready = false
+    var PLACE = 'look-panel-place'
+    function reveal(block) {
+      var node = block && block !== 'body' ? document.querySelector(block) : null
+      if (node) node.scrollIntoView({ block: 'start', behavior: 'smooth' })
+      else if (block === 'body') window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+    function visit(place) {
+      if (!place) return
+      if (!place.page) return reveal(place.block)
+      var lang = location.pathname.split('/')[1] || ''
+      fetch(new URL('places?lang=' + lang, base).href, { cache: 'no-store' }).then(function (r) { return r.json() }).then(function (p) {
+        var path = p[place.page]
+        var go = function () {
+          if (!path || location.pathname === path) return reveal(place.block)
+          remember(OPEN, '1'); remember(PLACE, place.block)
+          location.assign(path)
+        }
+        if (place.page === 'checkout') return fetch(new URL('sample-cart?lang=' + lang, base).href, { method: 'POST' }).then(go, go)
+        go()
+      }, function () { /* адресов нет — остаёмся на странице */ })
     }
     function show(id) {
       sections.forEach(function (s) {
@@ -792,9 +608,18 @@
       sections.forEach(function (s) { fade(s.bar) })
     }
     widen.addEventListener('click', function () { wide(!panel.hasAttribute('data-wide')) })
+    var move = el('button', { class: 'lp-widen lp-move', type: 'button', 'aria-controls': 'lp-panel' })
+    function side(start) {
+      panel.toggleAttribute('data-start', start)
+      move.setAttribute('aria-label', start ? 'Move the panel to the right' : 'Move the panel to the left')
+      move.title = start ? 'Move to the right edge' : 'Move to the left edge'
+      move.replaceChildren(icon(start ? TO_END : TO_START, 14))
+      keepSide(start)
+    }
+    move.addEventListener('click', function () { side(!panel.hasAttribute('data-start')) })
     var middle = el('div', { class: 'lp-body' }, sections.flatMap(function (s) { return s.subs.map(function (x) { return x.pane }) }))
     var panel = el('div', { id: 'lp-panel', class: 'lp-panel', popover: 'manual', role: 'region', 'aria-label': 'Look' }, [
-      el('div', { class: 'lp-top' }, [el('div', { class: 'lp-head' }, [el('p', { class: 'lp-title', text: 'Look' }), tabs, widen, close])].concat(sections.map(function (s) { return s.bar }))),
+      el('div', { class: 'lp-top' }, [el('div', { class: 'lp-head' }, [el('p', { class: 'lp-title', text: 'Look' }), tabs, move, widen, close])].concat(sections.map(function (s) { return s.bar }))),
       middle,
       el('div', { class: 'lp-foot' }, [
         el('div', { class: 'lp-acts' }, [publish, copy, stop]),
@@ -817,16 +642,21 @@
     var band = el('div', { class: 'lp-band' }, [bandBtn])
     bandSync = function () {
       var open = bandBtn.getAttribute('aria-expanded') === 'true'
-      var words = [custom() ? (paints && paints.name) || 'Custom' : choice.title(catalog, 'palette', names.palette), choice.title(catalog, 'face', names.face), choice.title(catalog, 'scale', names.scale)].join(' · ')
+      var words = s.words()
       bandWords.textContent = words
-      bandDraft.hidden = !drafting
+      bandDraft.hidden = !s.drafting
       bandAct.replaceChildren(el('span', { text: open ? 'Close' : 'Open' }), icon(UP, 14))
-      bandBtn.setAttribute('aria-label', 'Look: ' + words + (drafting ? ', draft' : '') + '. ' + (open ? 'Close' : 'Open') + ' the panel')
+      bandBtn.setAttribute('aria-label', 'Look: ' + words + (s.drafting ? ', draft' : '') + '. ' + (open ? 'Close' : 'Open') + ' the panel')
     }
     document.body.appendChild(el('div', { class: 'lp' }, [band, panel]))
     wide(keptWide())
+    side(keptSide())
     show(recall(TAB) === 'admin' ? 'admin' : 'system')
-    if (custom() && paints) { preview(); guard() }
+    ready = true
+    fillLives()
+    var arrived = recall(PLACE)
+    if (arrived) { remember(PLACE, null); setTimeout(function () { reveal(arrived) }, 300) }
+    s.on(function (what, d) { if (what === 'say') say(said[d.code] || d.code, d.detail); else refresh() })
     refresh()
     panel.addEventListener('toggle', function (e) {
       remember(OPEN, e.newState === 'open' ? '1' : null)
@@ -839,9 +669,8 @@
     root.dataset.lookPanel = 'ready'
   }
 
-  Promise.all([
-    fetch(new URL('catalog.json', base).href).then(function (r) { return r.json() }),
-    import(new URL('choice.mjs', base).href),
-    fetch(new URL('state', base).href, { credentials: 'same-origin' }).then(function (r) { return r.json() }),
-  ]).then(function (all) { build(all[0], all[1], all[2]) }).catch(function (e) { if (window.console) console.warn('look panel:', e) })
+  /* Состояние выбора — общее со страницей дизайн-системы (studio.mjs): тот
+     же адрес модуля — тот же объект на странице. */
+  Promise.all([import(new URL('studio.mjs', base).href), import(new URL('choice.mjs', base).href), import(new URL('swatch.mjs', base).href)])
+    .then(function (m) { return m[0].studio().then(function (s) { build(s, m[0].later, m[1], m[0].SAID, m[2].paletteSample) }) }).catch(function (e) { if (window.console) console.warn('look panel:', e) })
 })()

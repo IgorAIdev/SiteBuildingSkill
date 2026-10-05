@@ -1,0 +1,36 @@
+/* Блоки → «Шапка и подвал» (SiteFrame.tsx): настоящие шапка, подвал и их
+   части; здесь только место образца — имя, строка о нём и коробка, в
+   которой он стоит. Своих красок, теней и обводок у образцов нет. */
+
+/* Образец — имя, строка о нём и сам компонент одним ритмом страницы
+   (`--ex-gap`, design.module.css): имя ближе к образцу, чем к соседу. */
+.sample{display:grid;gap:var(--ex-gap);align-content:start;min-inline-size:0}
+.sample h3{margin:0;font-size:var(--name-size);line-height:var(--name-lead);font-weight:var(--name-weight);letter-spacing:var(--body-track)}
+.sample > p{margin:0}
+
+/* Сборки шапки и подвалы — столбиком, целыми полосами (страницы и разделы
+   стоят друг под другом). */
+.column{--stack:var(--air-group)}
+
+/* Мелкие части шапки — строкой, образец к образцу. */
+.row{--cluster:var(--air-group);align-items:start}
+
+/* Шапка приклеена к верху окна (`sticky`). В своей коробке ростом с саму
+   шапку ей ехать некуда — образец стоит на месте и не ложится на
+   настоящую шапку страницы при прокрутке. */
+.frame{min-inline-size:0}
+
+/* Знак магазина — кеглем и чернилами знака в шапке (`--h3-*`): кегль знаку
+   даёт место. */
+.logo{font-size:var(--h3-size);line-height:var(--h3-lead);color:var(--ink)}
+
+/* Бумага меню связи в потоке страницы: на сайте это раскрытие, поле —
+   то же, что у раскрытия (`--pad-inner`, Filters.module.css `.drop`). */
+.paper{padding:var(--pad-inner);inline-size:max-content;min-inline-size:min(16rem, 100%)}
+.paper[data-wide]{inline-size:min(22rem, 100%)}
+/* Подменю шапки, раскрытое в потоке страницы: сам `dropPanel` сайта (его
+   столбцы, строки и знаки — Header.module.css), только стоит раскрытым, а не
+   ждёт наведения. Раскрытость — свойство образца, поэтому живёт здесь, в
+   панели: снимут панель — сайт не держит правила, которое берёт только она
+   (`deadStyle`, И664). Поле и ширина — как у раскрытого подменю на сайте. */
+.sample .dropOpen{display:block;padding:var(--pad-card);inline-size:max-content;max-inline-size:100%;min-inline-size:12rem}

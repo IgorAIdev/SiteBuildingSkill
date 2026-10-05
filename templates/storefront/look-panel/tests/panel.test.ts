@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { blockedBy, clashes, complete, compose, CUSTOM, fieldsOf, paletteChecks, paletteVars, reresolve, ruleGroup, sectionsOf, STRUCTURE, uncovered } from '../ui/choice.mjs'
+import { blockedBy, clashes, complete, compose, CUSTOM, fieldsOf, migrate, paletteChecks, paletteVars, reresolve, ruleGroup, sectionsOf, STRUCTURE, uncovered } from '../ui/choice.mjs'
 import { toCss } from '../../tools/palette.mjs'
 import { stripHeaders, stripPanel, stripVariants, OWNED } from '../scripts/remove.mjs'
 import { pairsOf } from '../scripts/pairs.mjs'
@@ -37,63 +37,88 @@ test('panel catalog: every variant is values of properties the site declares, ea
   for (const f of FIELDS) assert.equal(catalog.defaults[f], catalog.groups[f][0].id, `${f}: умолчание — первый, вариант сайта`)
 })
 
-test('panel sections: every field sits in exactly one sub-tab; System is colour, type, spacing, layout, shape, buttons, fields', () => {
+test('panel sections: every field sits in exactly one sub-tab; System is colour, type, spacing, layout, shape, buttons; fields sit on Checkout', () => {
   const placed = SECTIONS.flatMap((s) => s.subs.flatMap((sub) => sub.fields.map((f) => f[0])))
   assert.deepEqual([...placed].sort(), [...FIELDS].sort())
   assert.equal(new Set(placed).size, placed.length)
-  assert.deepEqual(SECTIONS[0].subs.map((s) => s.name), ['Color', 'Type', 'Spacing', 'Layout', 'Shape', 'Buttons', 'Fields', 'Links'])
-  /* Ссылка под рукой (И397): своя краска по умолчанию, марка — элемент 11. */
-  assert.deepEqual(catalog.groups['go-hover'].map((o) => o.id), ['plain', 'brand'])
-  /* Знаки шапки (И398): без заливки по умолчанию, тоном (01), лотком (09, 39). */
-  assert.deepEqual(catalog.groups['head-icons'].map((o) => o.id), ['bare', 'toned', 'tray'])
-  /* Шапка cbdin (И430): меню телефона, знак корзины, сумма — умолчание — как было. */
-  assert.deepEqual(['drawer-look', 'cart-sign', 'cart-meta'].map((f) => catalog.groups[f].map((o) => o.id)), [['rows', 'pills'], ['cart', 'bag'], ['count', 'sum']])
+  assert.deepEqual(SECTIONS[0].subs.map((s) => s.name), ['Color', 'Type', 'Spacing', 'Layout', 'Shape', 'Buttons'])
+  /* Вкладка — место на сайте (28.09.2026): у вкладок мест — страница и
+     блок; поля — на вкладке оформления заказа. Шрифт, ритм и форма тоже
+     ведут на живой образец — шапку товара и его части (И573–И576); без
+     места остаются краска (свой образец — страница дизайна, И567), ширина и
+     элементы. */
+  const subs = SECTIONS.flatMap((s) => s.subs)
+  const bare = subs.filter((s) => !s.place).map((s) => s.id)
+  assert.deepEqual(bare, ['color', 'layout', 'elements'])
+  assert.deepEqual(subs.find((s) => s.id === 'fields')!.place, { page: 'checkout', block: 'main form' })
+  /* Варианты каталога — составом, а не порядком: первым каталог ставит
+     вариант, выбранный на сайте (siteFirst), и порядок меняется с каждым
+     выбором в панели (29.09.2026: заказчик выбрал ссылку «brand»).
+     Ссылка под рукой (И397): своя краска, марка — элемент 11. */
+  assert.deepEqual(catalog.groups['go-hover'].map((o) => o.id).sort(), ['plain', 'brand'].sort())
+  /* Шапка cbdin (И430): знак корзины, сумма — умолчание — как было. Меню телефона,
+     знаки шапки и отметка текущего пункта — не ручки (И634). */
+  assert.deepEqual(['cart-sign', 'cart-meta'].map((f) => catalog.groups[f].map((o) => o.id).sort()), [['bag', 'cart'], ['count', 'sum']])
+  assert.deepEqual(catalog.groups['nav-current'].map((o) => o.id).sort(), ['line', 'word'], 'отметка текущего раздела — черта или слово (И714)')
+  for (const gone of ['marker', 'head-icons', 'drawer-look', 'menu-size']) assert.equal(catalog.groups[gone], undefined, `${gone}: ручки в панели нет`)
   /* Поле ввода (И390): один вид на сайт; кромка есть у каждого — вокруг
      или чертой снизу (WCAG 1.4.11); умолчание — то, что стоит у сайта. */
-  assert.deepEqual(catalog.groups.field.map((o) => o.id), ['framed', 'outline', 'tone'])
+  assert.deepEqual(catalog.groups.field.map((o) => o.id).sort(), ['framed', 'outline', 'tone'].sort())
   for (const o of catalog.groups.field) assert.ok(/^var\(--/.test(o.vars!['--ctrl-field-edge']), `${o.id}: кромка — роль палитры`)
   /* Галочка (И392): одна краска отмеченного на сайт, умолчание — марка. */
-  assert.deepEqual(catalog.groups.tick.map((o) => o.id), ['brand', 'ink'])
-  assert.deepEqual(SECTIONS[0].subs.find((s) => s.id === 'fields')!.fields.map((f) => f[0]), ['field', 'field-label', 'tick', 'pair-look', 'say-look'])
+  assert.deepEqual(catalog.groups.tick.map((o) => o.id).sort(), ['brand', 'ink'].sort())
+  assert.deepEqual(SECTIONS[1].subs.find((s) => s.id === 'fields')!.fields.map((f) => f[0]), ['field', 'field-label', 'tick', 'pair-look', 'say-look'])
   /* Пара «поле и кнопка» (И421): порознь по умолчанию, встык — элемент 42. */
-  assert.deepEqual(catalog.groups['pair-look'].map((o) => o.id), ['apart', 'joined'])
+  assert.deepEqual(catalog.groups['pair-look'].map((o) => o.id).sort(), ['apart', 'joined'].sort())
   /* Сообщение формы (И420): строкой по умолчанию, заметкой — элементы 29, 31. */
-  assert.deepEqual(catalog.groups['say-look'].map((o) => o.id), ['line', 'note'])
+  assert.deepEqual(catalog.groups['say-look'].map((o) => o.id).sort(), ['line', 'note'].sort())
   /* Место подписи (И394): над полем — умолчание, на кромке — элемент 47. */
-  assert.deepEqual(catalog.groups['field-label'].map((o) => o.id), ['above', 'edge'])
-  assert.deepEqual(SECTIONS[1].subs.map((s) => s.name), ['Header', 'Card', 'Home', 'Elements', 'Product page'])
-  /* Главная — разметка вида (lib/homes.ts): варианты каталога — все главные
-     сайта, по порядку; первая, нынешняя, — умолчание. */
+  assert.deepEqual(catalog.groups['field-label'].map((o) => o.id).sort(), ['above', 'edge'].sort())
+  assert.deepEqual(SECTIONS[1].subs.map((s) => s.name), ['Header', 'Card', 'Home', 'Sections', 'Product page', 'Checkout', 'Elements'])
+  /* Главная — одежда плиток эффектов (lib/homes.ts): варианты каталога — все
+     одежды, по порядку; первая, нынешняя, — умолчание. */
   assert.deepEqual(catalog.groups.home.map((o) => o.id), [...HOMES])
-  /* Знак полки на фишке (И422): словом по умолчанию, знаком — элемент 65. */
-  assert.deepEqual(SECTIONS[1].subs.find((s) => s.id === 'home')!.fields.map((f) => f[0]), ['home', 'chip-sign'])
-  assert.deepEqual(catalog.groups['chip-sign'].map((o) => o.id), ['none', 'show'])
+  /* Раскладок главной и знаков на фишках в панели нет (И596): во вкладке — регистр имени и одежда. */
+  assert.deepEqual(SECTIONS[1].subs.find((s) => s.id === 'home')!.fields.map((f) => f[0]), ['door-case', 'home'])
+  assert.deepEqual(catalog.groups['door-case'].map((o) => o.id), ['sentence', 'caps'])
+  assert.equal(catalog.groups['chip-sign'], undefined)
+  /* Подложка секций (И591): строки — из каталога, по одной на блок реестра; у каждой четыре слова. */
+  const rows = sectionsOf(catalog)[1].subs.find((s) => s.id === 'sections')!.fields.map((f) => f[0])
+  assert.deepEqual(rows, ['band-effects', 'band-featured', 'band-story', 'band-reviews', 'band-posts', 'band-faq'])
+  /* Первой в каталоге стоит выбранная на сайте, поэтому состав сверяется без порядка. */
+  for (const f of rows) assert.deepEqual(catalog.groups[f].map((o) => o.id).sort(), ['brand', 'dark', 'none', 'quiet'])
   assert.equal(catalog.defaults.home, HOMES[0])
-  for (const o of catalog.groups.home) assert.ok(o.name && o.line && o.plan?.length, `${o.id}: имя, строка и схема первого экрана`)
+  for (const o of catalog.groups.home) assert.ok(o.name && o.line, `${o.id}: имя и строка`)
   /* Карта товара (И278): доля ряда, край снимка, миниатюры — значения
      `--pdp-*`, умолчание — то, что стоит у сайта. Полка (И400): одежда,
      пропорция снимка — одна на полку и карту — и плотность полки. */
   const product = SECTIONS[1].subs.find((s) => s.id === 'product')!
-  assert.deepEqual(product.fields.map((f) => f[1]), ['Gallery width', 'Picture edge', 'Thumbnails', 'Options', 'Quick order'])
-  assert.deepEqual(catalog.groups['seg-look'].map((o) => o.id), ['chips', 'joined', 'tray'], 'выбор варианта — пилюли по умолчанию (И396)')
-  assert.deepEqual(catalog.groups['quick-look'].map((o) => o.id), ['tiles', 'rows'], 'быстрый заказ — плитки по умолчанию, строки вариантом (И470)')
+  assert.deepEqual(product.fields.map((f) => f[1]), ['Gallery width', 'Picture edge', 'Thumbnails', 'Options', 'Stock', 'Quick order', 'Stars'])
+  assert.deepEqual(catalog.groups['seg-look'].map((o) => o.id).sort(), ['chips', 'joined', 'tray', 'tiles', 'tint'].sort(), 'выбор варианта — пилюли по умолчанию (И396), плашки размера двумя видами (элемент 97)')
+  assert.deepEqual(catalog.groups['stock-look'].map((o) => o.id), ['sign', 'dot', 'word'], 'наличие — знак в круге по умолчанию, точка и слово вариантами')
+  assert.deepEqual(catalog.groups['quick-look'].map((o) => o.id).sort(), ['tiles', 'rows'].sort(), 'быстрый заказ — плитки по умолчанию, строки вариантом (И470)')
   const card = SECTIONS[1].subs.find((s) => s.id === 'card')!
-  assert.deepEqual(card.fields.map((f) => f[1]), ['Product card', 'Picture', 'Cart button', 'Shelf density', 'Sort button'])
+  assert.deepEqual(card.fields.map((f) => f[1]), ['Product card', 'Show more and pages', 'Filter on a laptop', 'Filter on a phone', 'Heart'])
+  /* Листание страниц (образец 95): слова по умолчанию, три вида вариантами. */
+  /* Сердце на снимке: стекло по умолчанию, без подложки вариантом. */
+  assert.deepEqual(catalog.groups['save-look'].map((o) => o.id), ['disc', 'bare'], 'сердце — на стекле по умолчанию, без подложки вариантом')
+  assert.deepEqual(catalog.groups['filter-look'].map((o) => o.id), ['drawer', 'bar'], 'фильтр на широком — шторка, как корзина (вид сайта), и строка раскрытий (И739); панель колонками снята 04.10.2026')
+  assert.deepEqual(catalog.groups['filter-phone'].map((o) => o.id), ['drawer', 'pills'], 'фильтр на узком — шторка (вид сайта) и пилюли вбок (И739)')
+  assert.deepEqual(catalog.groups['pager-look'].map((o) => o.id), ['count', 'rings', 'compact'], 'листание — «Показать ещё» со счётом и полоской по умолчанию, номера в кругах и «2 / 4» вариантами (И721)')
   assert.deepEqual(catalog.groups['pdp-gallery'].map((o) => o.id).sort(), ['40', '50', '60'])
-  assert.deepEqual(catalog.groups['shot-frame'].map((o) => o.name).sort(), ['1:1', '3:4', '4:3', '4:5'])
-  for (const o of catalog.groups['shot-frame']) assert.match(o.vars!['--shot-frame'], /^\d+ \/ \d+$/, `${o.id}: дробью a / b — из неё карта считает высоту галереи`)
-  assert.deepEqual(catalog.groups['shelf-cols'].map((o) => o.id).sort(), ['4', '5'], 'плотность — 4 или 5 в ряд (shop: 4–5)')
-  assert.deepEqual(catalog.groups['card-buy'].map((o) => o.id), ['full', 'beside'], 'кнопка карточки — во всю ширину по умолчанию')
   assert.deepEqual(catalog.groups['pdp-thumbs'].map((o) => o.name).sort(), ['Below', 'Dots', 'On the picture', 'Side'])
-  assert.deepEqual(catalog.groups['sort-label'].map((o) => o.id), ['beside', 'inside'], 'подпись порядка — снаружи кнопки по умолчанию (И395)')
-  for (const f of ['pdp-gallery', 'pdp-thumbs', 'pdp-edge', 'shot-frame', 'shelf-cols', 'card-buy', 'sort-label', 'seg-look', 'quick-look']) assert.equal(catalog.groups[f][0].vars![`--${f}`], slots[`--${f}`].value, `${f}: умолчание — значение сайта`)
+  for (const f of ['pdp-gallery', 'pdp-thumbs', 'pdp-edge', 'seg-look', 'stock-look', 'quick-look']) assert.equal(catalog.groups[f][0].vars![`--${f}`], slots[`--${f}`].value, `${f}: умолчание — значение сайта`)
   const buttons = SECTIONS[0].subs.find((s) => s.id === 'buttons')!
-  assert.deepEqual(buttons.fields.map((f) => f[0]), catalog.axes.map((a) => a.field), 'Buttons — оси каталога кнопки')
-  assert.deepEqual(catalog.axes.map((a) => a.name), ['Letters', 'Main button', 'Quiet button', 'Main button shape'])
-  assert.deepEqual(catalog.groups['btn-letters'].map((o) => o.name), ['Sentence case', 'CAPITALS'], 'как в предложении — по умолчанию')
-  assert.deepEqual(catalog.groups.width.map((o) => o.id), ['1440', '1280', '1600'], 'холст по умолчанию — 1440')
-  assert.deepEqual(catalog.groups.corners.map((o) => o.name).sort(), ['Crisp', 'Round', 'Standard'])
-  assert.deepEqual(catalog.groups.shadow.map((o) => o.name), ['Soft', 'Flat', 'Lifted'])
+  assert.deepEqual(buttons.fields.map((f) => f[0]), ['go-hover', ...catalog.axes.map((a) => a.field)], 'Buttons — свои поля подраздела (ссылка под рукой), потом оси каталога кнопки')
+  assert.deepEqual(catalog.axes.map((a) => a.name), ['Main button', 'Quiet button', 'Button shape', 'Hand response'])
+  assert.equal(catalog.groups['btn-letters'], undefined, 'регистр надписи — не ручка (И586)')
+  assert.deepEqual(catalog.groups.width.map((o) => o.id).sort(), ['1440', '1280', '1600'].sort(), 'холст по умолчанию — 1440')
+  /* У каждого набора углов — близнец «· pill»: кнопки полным кругом (`--r-btn`), остальные
+     углы те же (заказчик 04.10.2026: «не реагируют кнопки на настройку панели»). */
+  assert.deepEqual(catalog.groups.corners.map((o) => o.name).sort(), ['Crisp', 'Crisp · pill', 'Round', 'Round · pill', 'Square', 'Square · pill', 'Standard', 'Standard · pill'])
+  for (const o of catalog.groups.corners) assert.equal(o.vars!['--r-btn'], o.id.endsWith('-pill') ? 'var(--r-pop)' : 'var(--r-ctrl)', o.id)
+  /* Состав, а не порядок: первым каталог ставит выбор сайта (`siteFirst`). */
+  assert.deepEqual(catalog.groups.shadow.map((o) => o.name).sort(), ['Flat', 'Soft', 'Supersoft'])
   for (const o of catalog.groups.corners) {
     const [ctrl, card, sheet] = ['--r-ctrl', '--r-card', '--r-sheet'].map((k) => Number.parseFloat(o.vars![k]))
     assert.ok(ctrl <= card && card <= sheet, `${o.name}: орган ≤ карточка ≤ лист`)
@@ -131,23 +156,15 @@ test('panel catalog: the default look is accepted whole, and the published look 
   assert.deepEqual(uncovered(published.vars, slots), [], 'опубликованный вид — значение каждому свойству сайта')
 })
 
-test('a look published before the picture ratio moved to Card keeps its choice: pdp-frame carries over to shot-frame', () => {
-  /* И400: пропорция снимка переехала из «Product page» в «Card» под новым
-     именем. Выбор заказчика под прежним именем переносится, а не теряется. */
-  const names = { 'pdp-frame': 'portrait' }
-  assert.equal(complete(names, catalog)['shot-frame'], 'portrait', 'панель показывает прежний выбор')
-  const r = reresolve({ vars: { '--pdp-frame': '4 / 5' }, names }, catalog)
-  assert.equal(r.look.vars['--shot-frame'], '4 / 5', 'значение — из прежнего выбора')
-  assert.ok(r.dropped.includes('--pdp-frame'), 'прежнего свойства у сайта больше нет')
-  assert.ok(!r.kept.some((k) => k.field === 'shot-frame'), 'группа не держит чужое — выбор узнан')
-})
 
 test('published look re-resolved from its names: new properties get values of the owner\'s choice, names stay, a vanished name keeps its group', () => {
   const palette = catalog.groups.palette.find((o) => o.id !== catalog.defaults.palette)!
-  const names = { palette: palette.id, face: catalog.groups.face.at(-1)!.id, marker: catalog.groups.marker.at(-1)!.id }
+  const names = { palette: palette.id, face: catalog.groups.face.at(-1)!.id, field: catalog.groups.field.at(-1)!.id }
   const full = compose(names, catalog).look
-  /* Вид, опубликованный до новых ролей палитры, теней и формы кнопки. */
-  const newer = [...Object.keys(palette.vars!).slice(-5), '--sh-raised', '--shot-frame']
+  /* Вид, опубликованный до новых ролей палитры, теней и формы кнопки. Роли
+     приклеенного и окна (`--sh-sticky`, `--sh-modal`) пришли с шестью ролями
+     теней (И726): прежние значения «Soft» (`was`) их не знают. */
+  const newer = [...Object.keys(palette.vars!).slice(-5), '--sh-raised', '--sh-sticky', '--sh-modal']
   const old = { header: 'classic', vars: Object.fromEntries(Object.entries(full.vars).filter(([k]) => !newer.includes(k))), fonts: [], names }
   const r = reresolve(old, catalog)
   assert.deepEqual(r.look.names, names, 'имена — как были')
@@ -168,7 +185,9 @@ test('published look re-resolved from its names: new properties get values of th
   assert.equal(unnamed.look.vars['--wrap'], width.vars!['--wrap'])
   /* Умолчание, которое набор переписал (И385): прежние значения «Soft»
      узнаются по `was` — группа без имени пересчитывается на нынешнее. */
-  const soft = catalog.groups.shadow.find((o) => o.id === catalog.defaults.shadow)!
+  /* «Мягкая» — по имени: умолчание каталога — выбор сайта, и у сайта может
+     стоять другая тень (30.09.2026 опубликована супермягкая). */
+  const soft = catalog.groups.shadow.find((o) => o.id === 'soft')!
   const was = (soft as { was?: Record<string, string>[] }).was?.[0]
   assert.ok(was, 'у умолчания теней нет прежних значений')
   const moved = reresolve({ ...old, vars: { ...old.vars, ...was } }, catalog)
@@ -184,10 +203,12 @@ test('published look re-resolved from its names: new properties get values of th
 test('panel pairs: each listed pair is a problem of the site rule, and the guard finds it from both sides', () => {
   const base = Object.fromEntries(Object.entries(slots).map(([k, s]) => [k, s.value]))
   /* Наборы набора доведены строителем (И285), и каталог может не нести ни
-     одной пары. Сторож при этом жив: бледная палитра — «Аптека» до
-     24.09.2026 — не носится с вуалью тихой кнопки, и та же функция, что у
-     /look-panel/guard, это находит. */
-  const pale = { light: { paper: '#FEFCF5', ink: '#24352B', accent: '#B79339' }, dark: { paper: '#0C1510', ink: '#EDECE9', accent: '#B79339' } }
+     одной пары. Сторож при этом жив: бледная палитра не носится с вуалью тихой
+     кнопки, и та же функция, что у /look-panel/guard, это находит. Чернила
+     «Аптеки» до 24.09.2026 (#24352B) строитель теперь кладёт вуалью плотнее
+     (1.17 : 1 — проходит), поэтому образец — чернила светлее, #4A5550: вуаль
+     1.13 : 1 при пороге 1.15, а надпись и поле ещё читаются (замер 04.10.2026). */
+  const pale = { light: { paper: '#FEFCF5', ink: '#4A5550', accent: '#B79339' }, dark: { paper: '#0C1510', ink: '#EDECE9', accent: '#B79339' } }
   const guard = pairsOf({ groups: { ...catalog.groups, palette: [{ id: CUSTOM, vars: paletteVars(pale) }] }, fields: FIELDS.filter((f) => !STRUCTURE.includes(f)), base, facts, problems, only: 'palette' })
   assert.ok(guard.some((p) => p.y.field === 'btn-quiet' && /quiet button fades/.test(p.why)), JSON.stringify(guard))
   const opt = (field: string, id: string) => catalog.groups[field].find((o) => o.id === id)!
@@ -222,7 +243,7 @@ test('panel pairs: every button axis option × palette agrees with the kit butto
 })
 
 test('panel removal: the panel lines go, the chosen header stays without its marks', () => {
-  assert.deepEqual(OWNED, ['look-panel', 'app/look-panel'])
+  assert.deepEqual(OWNED, ['look-panel', 'app/look-panel', 'app/[lang]/(look-panel)'])
   const shell = stripPanel(read('components/Shell.tsx'))
   assert.ok(!shell.includes('look-panel'))
   assert.match(shell, /<style href="look" precedence="look">/)
@@ -235,7 +256,7 @@ test('panel removal: the panel lines go, the chosen header stays without its mar
     const css = stripHeaders(read('components/Header.module.css'), chosen)
     assert.ok(!css.includes('look-header'))
     assert.equal(css.includes("[data-variant='boutique']"), chosen === 'boutique')
-    assert.equal(css.includes('.strip{'), chosen === 'search')
+    assert.equal(css.includes('.field{'), chosen === 'search', `${chosen}: широкое поле поиска — только у search`)
   }
   for (const chosen of CARDS) {
     const css = stripVariants(read('components/ProductCard.module.css'), 'look-card', chosen)
@@ -244,10 +265,9 @@ test('panel removal: the panel lines go, the chosen header stays without its mar
     assert.ok(!/\/\*[^*]*$/.test(css.replace(/\/\*[\s\S]*?\*\//g, '')), `${chosen}: комментарии закрыты`)
     assert.match(stripVariants(read('lib/cards.ts'), 'look-card', chosen), new RegExp(`CARDS = \\[\\n  '${chosen}',\\n\\] as const`))
   }
-  /* Главная: снятие оставляет рецепт, раскладки блоков и правила только
-     выбранной; метки и следы снятия уходят, комментарии закрыты. */
-  const HOME_FILES = ['lib/homes.ts', 'components/blocks/registry.tsx', 'components/blocks/Hero.tsx', 'components/blocks/Categories.tsx', 'components/blocks/Featured.tsx',
-    'components/blocks/blocks.module.css']
+  /* Главная: снятие оставляет одежду плиток и её правила только выбранной;
+     метки и следы снятия уходят, комментарии закрыты. */
+  const HOME_FILES = ['lib/homes.ts', 'components/blocks/Doors.tsx', 'components/blocks/blocks.module.css']
   for (const chosen of HOMES) {
     for (const f of HOME_FILES) {
       const text = stripVariants(read(f), 'look-home', chosen)
@@ -256,12 +276,44 @@ test('panel removal: the panel lines go, the chosen header stays without its mar
       for (const other of HOMES.filter((h) => h !== chosen)) assert.ok(!new RegExp(`^\\s+${other}: `, 'm').test(text), `${chosen}: ${f} — нет строки варианта ${other}`)
     }
     assert.match(stripVariants(read('lib/homes.ts'), 'look-home', chosen), new RegExp(`HOMES = \\[\\n  '${chosen}',\\n\\] as const`))
-    assert.equal(stripVariants(read('components/blocks/registry.tsx'), 'look-home', chosen).includes('Still'), chosen === 'cabinet', `${chosen}: пауза снимком — только у аптеки`)
+    assert.equal((stripVariants(read('components/blocks/blocks.module.css'), 'look-home', chosen).match(/data-door='[a-z]+'\]/g) ?? []).every((m: string) => m.includes(`'${chosen}'`)), true, `${chosen}: правила только своей одежды`)
   }
 })
 
-test('panel fonts: the Google CSS gives one file per face of the latin subsets, variable fonts as a weight range', () => {
+test('panel fonts: the Google CSS gives one file per face of the latin and cyrillic subsets, variable fonts as a weight range', () => {
   const css = ['latin-ext', 'latin', 'cyrillic'].flatMap((subset) => [400, 700].map((w) => `/* ${subset} */\n@font-face {\n  font-family: 'Inter';\n  font-weight: ${w};\n  src: url(https://fonts.gstatic.com/s/inter/v1/${subset}.woff2) format('woff2');\n  unicode-range: U+0000-00FF, U+0131;\n}`)).join('\n')
   const faces = parseFaces(css)
-  assert.deepEqual(faces.map((f) => [f.subset, f.weights]), [['latin-ext', [400, 700]], ['latin', [400, 700]]])
+  assert.deepEqual(faces.map((f) => [f.subset, f.weights]), [['latin-ext', [400, 700]], ['latin', [400, 700]], ['cyrillic', [400, 700]]])
+})
+
+/* Рынок с другим письмом (греческий) берёт и своё подмножество: оно выбирается
+   по диапазону знаков, а не по имени из списка (И769). */
+test('panel fonts: a subset beyond latin and cyrillic is fetched when a market letter falls in its range', () => {
+  const block = (subset: string, range: string) => `/* ${subset} */\n@font-face {\n  font-family: 'Inter';\n  font-weight: 400;\n  src: url(https://fonts.gstatic.com/s/inter/v1/${subset}.woff2) format('woff2');\n  unicode-range: ${range};\n}`
+  const css = [block('greek', 'U+0370-03FF'), block('vietnamese', 'U+0102-0103'), block('latin-ext', 'U+0100-02BA'), block('latin', 'U+0000-00FF')].join('\n')
+  assert.deepEqual(parseFaces(css).map((f) => f.subset), ['latin-ext', 'latin'])
+  assert.deepEqual(parseFaces(css, new Set([0x3b1, 0x61])).map((f) => f.subset), ['greek', 'latin-ext', 'latin'])
+  /* ă — румынская, и она уже в расширенной латинице: вьетнамский файл не нужен. */
+  assert.deepEqual(parseFaces(css, new Set([0x103])).map((f) => f.subset), ['latin-ext', 'latin'])
+})
+
+/* Скрипт панели отдаётся браузеру как есть, без сборки: ни tsc, ни сборка
+   сайта его не разбирают. 28.09.2026 перенос строки внутри строки в
+   look.js («join('↵')») уронил весь скрипт — панели не стало на витрине,
+   а все проверки стояли зелёными. Разбор — здесь. */
+test('panel scripts parse: the browser gets look.js as is, and a syntax error removes the whole panel', () => {
+  for (const file of ['../ui/look.js']) {
+    const src = readFileSync(new URL(file, import.meta.url), 'utf8')
+    assert.doesNotThrow(() => new Function(src), `${file} не разбирается`)
+  }
+})
+
+/* Пилюля кнопки переехала из оси Buttons → Shape в Corners (04.10.2026): вид, выбранный
+   до переезда, переносится без потерь — форма под нынешним id, углы — свой близнец «· pill». */
+test('a look chosen with the old pill button shape moves to the pill twin of its corners', () => {
+  assert.deepEqual(migrate({ corners: 'crisp', 'btn-shape': 'pill' }), { corners: 'crisp-pill', 'btn-shape': 'standard' })
+  assert.deepEqual(migrate({ 'btn-shape': 'arrow-end-outline' }), { corners: 'standard-pill', 'btn-shape': 'arrow-outline' })
+  const today = { corners: 'crisp', 'btn-shape': 'arrow' }
+  assert.equal(migrate(today), today, 'нынешний выбор не трогается')
+  assert.equal(complete({ corners: 'standard', 'btn-shape': 'pill' }, catalog).corners, 'standard-pill')
 })

@@ -53,7 +53,9 @@ const freePort = () => new Promise((done, fail) => {
 })
 
 const PORT = Number(process.env.PORT ?? await freePort())
-const BASE = process.env.SITE ?? `http://127.0.0.1:${PORT}`
+let BASE = process.env.SITE ?? `http://127.0.0.1:${PORT}`
+/** Сколько адресов спрашивать разом; у чужого сервера разработки — по одному (ниже). */
+let WORKERS = 4
 const built = process.argv.includes('--built')
 /* Список адресов — после того, как сайт поднят: у внешнего источника
    (SOURCE=vendure) адреса полок и товаров знает сам сайт, его карта (И414). */
@@ -103,6 +105,21 @@ if (!built) {
     if (dev.exitCode !== null) break
     up = await fetch(BASE, { redirect: 'manual' }).then(() => true, () => false)
   }
+  /* Сервер разработки этой папки уже работает (витрина заказчика на 3020,
+     `npm run storefront`): Next 16 второго в той же папке не поднимает —
+     «Another next dev server is already running» — и проверка падала на каждом
+     большом прогоне (05.10.2026). Это та же подача — разработка, — поэтому
+     обходится он, но по одному адресу за раз: четыре запроса разом к нему на
+     Windows уже ломали `prerender-manifest.json`, и витрина отвечала 500
+     (memory: checks-not-on-dev-server). */
+  const running = log.join('').match(/Another next dev server is already running[\s\S]*?Local:\s*(https?:\/\/\S+)/)
+  if (!up && running) {
+    stop()
+    BASE = running[1].replace(/\/$/, '')
+    WORKERS = 1
+    up = await fetch(BASE, { redirect: 'manual' }).then(() => true, () => false)
+    if (up) console.log(`· сервер разработки этой папки уже работает (${BASE}) — обхожу его, по одному адресу за раз`)
+  }
   if (!up) {
     console.error(dev.exitCode !== null
       ? `\n✗ next dev завершился с кодом ${dev.exitCode}, не ответив на ${BASE}.`
@@ -114,7 +131,7 @@ if (!built) {
 }
 
 
-await useLive(BASE)
+await useLive(BASE, WORKERS === 1)
 urls = all()
 
 const bad = []
@@ -161,7 +178,7 @@ const worker = async () => {
     }
   }
 }
-await Promise.all([worker(), worker(), worker(), worker()])
+await Promise.all(Array.from({ length: WORKERS }, worker))
 
 /* Несуществующая страница — тоже страница (И257).
  *

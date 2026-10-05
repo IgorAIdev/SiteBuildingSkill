@@ -13,9 +13,11 @@ import { pledgesView, type PledgesView } from './pledges.ts'
 /** Поле формы готовыми строками. `short` — ввод короткий по природе
  *  (индекс): поле шириной с ожидаемый ввод, а не во всю колонку (Baymard).
  *  `options` — выбор из закрытого списка рынка (уезд) вместо свободной строки. */
+/** `hint` — строка под полем, пока ошибки нет (правило пароля, И771);
+ *  `show` — имя знака «показать пароль» у поля пароля. */
 export type FieldView = {
-  name: Field; label: string; type: 'email' | 'tel' | 'text'; autoComplete: string; inputMode: 'numeric' | null
-  max: number; value: string; short: boolean; options: { none: string; values: readonly string[] } | null
+  name: Field; label: string; type: 'email' | 'tel' | 'text' | 'password'; autoComplete: string; inputMode: 'numeric' | null
+  max: number; value: string; short: boolean; options: { none: string; values: readonly string[] } | null; hint: string | null; show: string | null
 }
 /** Ряд формы: одно поле — во всю меру; два — парой (имя и фамилия; индекс и
  *  населённый пункт). Что с чем в паре — решает вид, как лечь паре — узел. */
@@ -69,14 +71,16 @@ export function stepsView(lang: Lang, current: Step): StepsView {
   }
 }
 
-type Spec = { key: Key; type?: FieldView['type']; auto: string; numeric?: boolean; short?: boolean; options?: FieldView['options'] }
-const field = (lang: Lang, name: Field, value: string, spec: Spec): FieldView => ({
+type Spec = { key: Key; type?: FieldView['type']; auto: string; numeric?: boolean; short?: boolean; options?: FieldView['options']; hint?: string; show?: string }
+/** Поле готовыми строками — одно на кассу и кабинет (lib/account-view.ts). */
+export const field = (lang: Lang, name: Field, value: string, spec: Spec): FieldView => ({
   name, label: t(lang, spec.key), type: spec.type ?? 'text', autoComplete: spec.auto,
   inputMode: spec.numeric ? 'numeric' : null, max: LIMITS[name], value, short: spec.short ?? false, options: spec.options ?? null,
+  hint: spec.hint ?? null, show: spec.show ?? null,
 })
 
 /** Имя человека по частям: поле формы и строка сверки берут часть отсюда. */
-const NAME_FIELD: Record<NamePart, { name: 'firstName' | 'lastName'; key: Key; auto: string }> = {
+export const NAME_FIELD: Record<NamePart, { name: 'firstName' | 'lastName'; key: Key; auto: string }> = {
   given: { name: 'firstName', key: 'field.firstName', auto: 'given-name' },
   family: { name: 'lastName', key: 'field.lastName', auto: 'family-name' },
 }
@@ -113,7 +117,7 @@ export const countryName = (lang: Lang, code: string): string =>
    адрес пишется «010011 București»; уезд — выбор из списка рынка. Улица —
    одна строка ввода, её токен `address-line1` (`street-address` — для
    многострочного поля). */
-function addressRows(lang: Lang, a: Address | null): FieldRow[] {
+export function addressRows(lang: Lang, a: Address | null): FieldRow[] {
   const v = a ?? { street: '', city: '', region: '', postalCode: '' }
   return [
     [field(lang, 'street', v.street, { key: 'field.street', auto: 'address-line1' })],
@@ -163,10 +167,10 @@ export function deliveryView(lang: Lang, a: { methods: DeliveryMethod[]; deliver
 }
 
 /** Имя строкой — в том же порядке, в каком стоят поля формы (`NAME_ORDER`). */
-const personName = (lang: Lang, c: Contact): string => NAME_ORDER[lang].map((part) => c[NAME_FIELD[part].name]).join(' ')
-const contactLines = (lang: Lang, c: Contact): string[] => [personName(lang, c), c.email, c.phone]
-const methodHead = (d: Delivery): string => [d.method.name, d.method.carrier].filter(Boolean).join(' · ')
-function placeLines(lang: Lang, d: Delivery): string[] {
+export const personName = (lang: Lang, c: Pick<Contact, 'firstName' | 'lastName'>): string => NAME_ORDER[lang].map((part) => c[NAME_FIELD[part].name]).join(' ')
+export const contactLines = (lang: Lang, c: Contact): string[] => [personName(lang, c), c.email, c.phone]
+export const methodHead = (d: Delivery): string => [d.method.name, d.method.carrier].filter(Boolean).join(' · ')
+export function placeLines(lang: Lang, d: Delivery): string[] {
   if (d.address) return [d.address.street, t(lang, 'order.cityLine', { postal: d.address.postalCode, city: d.address.city }), d.address.region]
   if (d.point) return [d.point.name, d.point.address, d.point.city]
   return []
@@ -175,10 +179,10 @@ const deliveryLines = (lang: Lang, d: Delivery): string[] => [methodHead(d), ...
 
 /** Товар сводки: имя, выбранные опции и количество строкой фактов, сумма
  *  строки и снимок — тот же, что в корзине. */
-const itemsOf = (lang: Lang, cart: Cart): ItemView[] =>
+export const itemsOf = (lang: Lang, cart: Cart): ItemView[] =>
   cart.lines.map((l: CartLine) => ({
     id: l.id, name: l.name, image: l.image, total: money(l.total, lang),
-    facts: [lineFacts(l), t(lang, 'order.qty', { n: l.quantity })].filter(Boolean).join(' · '),
+    facts: [lineFacts(lang, l), t(lang, 'order.qty', { n: l.quantity })].filter(Boolean).join(' · '),
   }))
 
 const recap = (lang: Lang, step: Step, lines: string[]): Recap => {

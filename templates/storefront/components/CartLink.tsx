@@ -1,9 +1,11 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useRef, useState, type MouseEvent } from 'react'
 import { usePathname } from 'next/navigation'
 import s from './Header.module.css'
 import p from '@/styles/primitives.module.css'
 import { Icon } from './Icon.tsx'
+import { CartPane } from './CartPane.tsx'
+import { holdAll } from '@/lib/in-cart.ts'
 
 /* Корзина в шапке. Число приходит своим запросом после загрузки и заново —
    после каждого перехода (шапка не размонтируется между страницами, а
@@ -26,25 +28,45 @@ import { Icon } from './Icon.tsx'
    тележка или сумка (`--cart-sign`), рядом со знаком — число на углу или ещё
    и сумма товаров (`--cart-meta`). Сумму пишет страница (`/api/cart`, в
    записи языка), не компонент; оба знака в разметке, какой виден — решают
-   стили. */
+   стили.
+
+   Знак открывает шторку корзины (CartPane, слово заказчика 28.09.2026), а
+   не уводит на страницу: ссылка остаётся ссылкой — без скрипта, с
+   клавишей-модификатором (новая вкладка) и на самой странице корзины она
+   ведёт туда, куда ведёт. На странице корзины знак — текущий (`aria-current`,
+   отметка как у слова меню, И715). */
 const SHOWN_MS = 2400
-export function CartLink({ href, label, added, countUrl, labelled = false }: { href: string; label: string; added: string; countUrl: string; labelled?: boolean }) {
+export function CartLink({ lang, href, label, added, countUrl, title, close, labelled = false }: { lang: string; href: string; label: string; added: string; countUrl: string; title: string; close: string; labelled?: boolean }) {
   const [count, setCount] = useState<number | null>(null)
   const [sum, setSum] = useState<string | null>(null)
   const [told, setTold] = useState(false)
   const pathname = usePathname()
+  const pane = useRef<HTMLDivElement>(null)
+  const id = `cart-${useId().replace(/:/g, '')}`
+  const open = (e: MouseEvent<HTMLAnchorElement>) => {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || !pane.current) return
+    if (pathname === new URL(href, location.href).pathname) return
+    e.preventDefault()
+    pane.current.showPopover()
+  }
+  /* Тот же ответ несёт, сколько штук каждого варианта в корзине: знак кладёт
+     список для надписей «в корзину» страницы (lib/in-cart.ts, И469) — один
+     запрос на страницу, а не по запросу у каждой карточки. */
   useEffect(() => {
     const stop = new AbortController()
     fetch(countUrl, { cache: 'no-store', signal: stop.signal })
-      .then((r) => (r.ok ? (r.json() as Promise<{ count: number | null; sum?: string | null }>) : null))
-      .then((d) => { if (d && typeof d.count === 'number') { setCount(d.count); setSum(d.sum ?? null) } })
+      .then((r) => (r.ok ? (r.json() as Promise<{ count: number | null; sum?: string | null; held?: Record<string, number> | null }>) : null))
+      .then((d) => {
+        if (d && typeof d.count === 'number') { setCount(d.count); setSum(d.sum ?? null) }
+        if (d?.held) holdAll(d.held)
+      })
       .catch(() => {})
-    /* Запись в корзину говорит только число — сумму спрашиваем заново. */
+    /* Запись в корзину говорит только число — сумму и штуки спрашиваем заново. */
     const on = (e: Event) => {
       setCount((e as CustomEvent<number>).detail)
       fetch(countUrl, { cache: 'no-store' })
-        .then((r) => (r.ok ? (r.json() as Promise<{ sum?: string | null }>) : null))
-        .then((d) => { if (d) setSum(d.sum ?? null) })
+        .then((r) => (r.ok ? (r.json() as Promise<{ sum?: string | null; held?: Record<string, number> | null }>) : null))
+        .then((d) => { if (d) setSum(d.sum ?? null); if (d?.held) holdAll(d.held) })
         .catch(() => {})
     }
     window.addEventListener('cart:count', on)
@@ -58,10 +80,10 @@ export function CartLink({ href, label, added, countUrl, labelled = false }: { h
   }, [])
   return (
     <span className={s.cartBox}>
-      <a className={`${s.glyph} ${s.cart}`} href={href} aria-label={count ? `${label} (${count}${sum ? `, ${sum}` : ''})` : label}>
+      <a className={`${s.glyph} ${s.cart}`} href={href} onClick={open} aria-haspopup="dialog" aria-current={pathname === new URL(href, 'http://x').pathname ? 'page' : undefined} aria-label={count ? `${label} (${count}${sum ? `, ${sum}` : ''})` : label}>
         <span className={s.cartSign}>
           <span className={s.signCart}><Icon id="shopping-cart" /></span>
-          <span className={s.signBag}><Icon id="handbag" /></span>
+          <span className={s.signBag}><Icon id="shopping-handbag" /></span>
           {count ? <span className={s.badge} aria-hidden="true">{count}</span> : null}
         </span>
         {labelled ? <span className={s.cartLabel} aria-hidden="true">{label}</span> : null}
@@ -69,6 +91,7 @@ export function CartLink({ href, label, added, countUrl, labelled = false }: { h
       </a>
       <span className={s.told} data-shown={told} aria-hidden="true"><Icon id="check" />{added}</span>
       <span className={p.said} role="status">{told ? added : ''}</span>
+      <CartPane lang={lang} id={id} src={countUrl} title={title} close={close} pane={pane} />
     </span>
   )
 }

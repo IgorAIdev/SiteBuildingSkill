@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>77 · Выбор из списка</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 77 — «Выбор из списка». Источники — HyperUI «Selects» (Neobrutalism), daisyUI «Select», shadcn/ui «Select» (MIT).
+  Родной `select`: список открывает система — на телефоне это крупный выбор пальцем, на столе — меню; вид — только закрытое поле.
+  Три вида: контур, пилюля, тон. Стрелка — уголок листа набора, место справа держит поле.
+  Снято: жёсткая тень Neobrutalism, цвета Tailwind, скрипт-замена списка.
+  Приведено к единой форме: рост, угол и кромка — как у поля набора; наведение — кромка чернилами, фокус — кольцо.
+-->
+</head>
+<body>
+  <div class="live">
+    <label class="pick"><select aria-label="Size"><option>10 ml</option><option>30 ml</option><option>50 ml</option></select><svg data-sign="chevron-down"></svg></label>
+    <label class="pick" data-shape="pill"><select aria-label="Sort"><option>Popular</option><option>Price: low to high</option><option>Newest</option></select><svg data-sign="chevron-down"></svg></label>
+    <label class="pick" data-voice="quiet"><select aria-label="Strength"><option>Mild</option><option>Medium</option><option>Strong</option></select><svg data-sign="chevron-down"></svg></label>
+  </div>
+</body>
+</html>

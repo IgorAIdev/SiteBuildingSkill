@@ -14,7 +14,7 @@ On 23.09.2026 the owner decided how rendered checks run: «зачем гонят
 
 **How to apply:**
 - In implementer fix rounds and re-reviews, name the pages the change touches and have craft/sweep run only on those, in the main language (en for the reference storefront since 23.09.2026; filter with the craft page filter, e.g. `--page /en/`).
-- File checks (tests, tsc, css, code, lint, port, build, open) still run in full every time; they are fast.
+- File checks (tests, tsc, css, code, lint, port, build, open) still run in full every time; they are fast. **Overridden 03.10.2026 18:50 for this machine** ([[overnight-checks-ok]]): in the daytime only narrow checks of touched files; full `npm test`, builds and rendered checks run at night.
 - Once, at final acceptance before integrating or handing over, run craft and sweep in full: all languages, both themes, personal pages. Hungarian is the longest language and catches overflows the others miss.
 
 Related: [[take-recommended]], [[work-locally]].

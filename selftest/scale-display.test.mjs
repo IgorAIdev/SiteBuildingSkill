@@ -37,7 +37,9 @@ test('display sizes are emitted in every set block, rem at both ends and a non-n
     const block = blocks.find((b) => b.startsWith(`[data-scale="${name}"]`))
     assert.ok(block, name)
     for (const en of Object.values(ROLES)) {
-      assert.match(block, new RegExp(`--${en}-size: clamp\\(\\d*\\.?\\d+rem, \\d*\\.?\\d+rem \\+ \\d*\\.?\\d+cqi, \\d*\\.?\\d+rem\\)`), `${name} ${en}`)
+      /* Середина — кривая по колонке; с потолком по высоте окна (И660) — в
+         `min(…, Nsvh)`. Концы и свободный член — в rem. */
+      assert.match(block, new RegExp(`--${en}-size: clamp\\(\\d*\\.?\\d+rem, (?:min\\()?\\d*\\.?\\d+rem \\+ \\d*\\.?\\d+cqi(?:, \\d*\\.?\\d+svh\\))?, \\d*\\.?\\d+rem\\)`), `${name} ${en}`)
       for (const knob of DISPLAY_KNOBS[en]) assert.match(block, new RegExp(`--${en}-${knob}: `), `${name} --${en}-${knob}`)
     }
   }
@@ -45,9 +47,14 @@ test('display sizes are emitted in every set block, rem at both ends and a non-n
 
 test('the approved set keeps its sizes; the intro is not smaller than body text', () => {
   const r = resolve(sets['Нынешний'])
-  /* 30 → 42 до И498: к разделу 1.18 : 1, два заголовка одним голосом. */
-  assert.deepEqual([r.крупные.заголовок.низ, r.крупные.заголовок.верх], [32, 48])
-  assert.deepEqual([r.крупные.герой.низ, r.крупные.герой.верх], [26, 56])
+  /* 30 → 42 до И498: к разделу 1.18 : 1, два заголовка одним голосом.
+     32 → 48 и герой 26 → 56 до И561 (29.09.2026, слово заказчика: заголовки
+     34 / 36 / 39 на ноутбуке — ручка «Headings»): заголовок раздела вырос,
+     и крупные стали 38 → 54 и 36 → 64, чтобы держать 1.25 : 1 над ним (И498).
+     Герой 36 → 64 стал 32 → 54 словом заказчика 02.10.2026 (И645): «размер
+     шрифта на херо давай на шаг меньше»; тест отстал на день. */
+  assert.deepEqual([r.крупные.заголовок.низ, r.крупные.заголовок.верх], [38, 54])
+  assert.deepEqual([r.крупные.герой.низ, r.крупные.герой.верх], [32, 54])
   assert.ok(r.крупные.ввод.низ >= r.размер.base[1])
 })
 
@@ -65,8 +72,10 @@ const broken = (patch) => {
 }
 
 test('audit refuses display sizes out of order, shrinking with zoom or too spread', () => {
-  assert.match(broken({ role: 'заголовок', value: { верх: 36 } }), /заголовок страницы/)
-  assert.match(broken({ role: 'заголовок', value: { низ: 30, верх: 42 } }), /отделён от заголовка раздела/)
+  /* Раздел — 24…28 (h2 — 0.8 имени, не мельче 24; И712): имя страницы низом
+     не выше раздела и низом ближе 1.25 : 1. */
+  assert.match(broken({ role: 'заголовок', value: { низ: 24, верх: 40 } }), /заголовок страницы/)
+  assert.match(broken({ role: 'заголовок', value: { низ: 28, верх: 42 } }), /отделён от заголовка раздела/)
   assert.match(broken({ role: 'ввод', value: { низ: 17 } }), /вводный абзац/)
   assert.match(broken({ role: 'герой', value: { верх: 40 } }), /герой/)
   assert.match(broken({ role: 'герой', value: { основа: -2 } }), /увеличени/)
@@ -128,28 +137,4 @@ test('a role lead is emitted with five decimals, rounded up, and can be named as
   bad.текст[Object.keys(bad.текст)[0]].межстрочье = 'полтора'
   const { auditRoles } = await import('../tools/scale.mjs')
   assert.ok(auditRoles({ [first]: bad }, first).some((f) => f.rule === 'межстрочье не число'), 'кривое межстрочье прошло молча')
-})
-
-/* Окно (И511). Дефект — cbdshop.bg 28.09.2026: копия героя (заголовок 96,
-   слоган, кнопка) выше окна ноутбука 1366×657 под шапкой 200; кривая роли
-   мерила только колонку, и уступить окну было нечем, кроме числа в узле. */
-test('a display role may also be bounded by the window height: min of the column and the window line', () => {
-  const set = structuredClone(sets['Нынешний'])
-  set.крупные.герой = { ...set.крупные.герой, окно: { основа: -232, наклон: 42.4 } }
-  assert.deepEqual(auditScale(set), [])
-  const css = toCss({ probe: set })
-  assert.match(css, /--hero-size: clamp\(\d*\.?\d+rem, min\(\d*\.?\d+rem \+ \d*\.?\d+cqi, -14\.5rem \+ 42\.4svh\), \d*\.?\d+rem\)/)
-  /* Без окна роль — прежняя строка. */
-  assert.doesNotMatch(toCss({ probe: sets['Нынешний'] }), /svh/)
-})
-
-test('audit refuses a window line that shrinks tall windows or does not grow with the window', () => {
-  const probe = (окно) => {
-    const set = structuredClone(sets['Нынешний'])
-    set.крупные.герой = { ...set.крупные.герой, окно }
-    return auditScale(set).map((f) => f.rule).join(' | ')
-  }
-  assert.match(probe({ основа: -232, наклон: 20 }), /высокое окно/)
-  assert.match(probe({ основа: 400, наклон: -1 }), /растёт с высотой окна/)
-  assert.throws(() => resolve({ ...sets['Нынешний'], крупные: { герой: { ...sets['Нынешний'].крупные.герой, окно: { основа: 'x' } } } }), /окно: нужны числа/)
 })

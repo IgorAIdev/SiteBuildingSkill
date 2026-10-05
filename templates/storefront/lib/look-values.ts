@@ -14,15 +14,17 @@
 import { HEADERS, type HeaderVariant } from './headers.ts'
 import { CARDS, type CardVariant } from './cards.ts'
 import { HOMES, type HomeVariant } from './homes.ts'
-import type { Look, LookFont } from './source/contract.ts'
+import type { FontMetrics, Look, LookFont } from './source/contract.ts'
 
 export type SlotType = 'colour' | 'length' | 'number' | 'keyword' | 'shadow' | 'transform' | 'font'
 /** Что выбирается вместе: набор цвета, набор ритма, ширина холста, углы,
- *  тени, шрифт, стиль кнопок, вид поля ввода и галочки, отметка текущего пункта меню; ручки карты
+ *  тени, шрифт, стиль кнопок, вид поля ввода и галочки; ручки карты
  *  товара — доля ряда под галерею, место миниатюр, край снимка (И278); ручки
  *  товара на полке и карте — пропорция снимка, плотность полки и место
  *  кнопки «в корзину» на карточке (И400). */
-export type Group = 'palette' | 'scale' | 'width' | 'corners' | 'shadow' | 'face' | 'button' | 'marker' | 'field' | 'field-label' | 'tick' | 'pdp-gallery' | 'pdp-thumbs' | 'pdp-edge' | 'seg-look' | 'quick-look' | 'go-hover' | 'head-icons' | 'say-look' | 'pair-look' | 'chip-sign' | 'drawer-look' | 'cart-sign' | 'cart-meta' | 'shot-frame' | 'shelf-cols' | 'card-buy' | 'sort-label'
+export type Group = 'palette' | 'scale' | 'text-size' | 'head-size' | 'width' | 'corners' | 'shadow' | 'face' | 'button' | 'field' | 'field-label' | 'tick' | 'pdp-gallery' | 'pdp-thumbs' | 'pdp-edge' | 'seg-look' | 'quick-look' | 'go-hover' | 'star' | 'say-look' | 'pair-look' | 'cart-sign' | 'cart-meta' | 'door-case' | 'logo' | 'stock-look' | 'pager-look' | 'filter-look' | 'filter-phone' | 'save-look' | 'nav-current'
+  /** Подложка секции главной: по группе на блок (`band-<блок>`, И591) — блоки берутся из реестра, список сюда не пишется. */
+  | `band-${string}`
 /** Свойство вида: род значения, группа и умолчание стилей сайта. */
 export type Slot = { type: SlotType; group: Group; value: string }
 export type Slots = Readonly<Record<string, Slot>>
@@ -42,7 +44,7 @@ const WORDS: Readonly<Record<SlotType, readonly string[]>> = {
   colour: ['transparent', 'currentcolor', 'in', 'srgb', 'oklab', 'oklch'],
   length: ['normal'],
   number: [],
-  keyword: ['none', 'uppercase', 'lowercase', 'capitalize', 'normal', 'underline', 'block', 'below', 'side', 'dots', 'over', 'inset', 'bleed', 'full', 'beside', 'above', 'edge', 'inside', 'chips', 'joined', 'tray', 'bare', 'toned', 'line', 'note', 'apart', 'joined', 'show', 'rows', 'pills', 'tiles', 'cart', 'bag', 'count', 'sum'],
+  keyword: ['none', 'uppercase', 'lowercase', 'capitalize', 'normal', 'underline', 'block', 'below', 'side', 'dots', 'over', 'inset', 'bleed', 'full', 'beside', 'above', 'edge', 'inside', 'chips', 'joined', 'tray', 'tint', 'disc', 'words', 'tone', 'compact', 'rings', 'bare', 'toned', 'line', 'note', 'apart', 'joined', 'show', 'rows', 'pills', 'tiles', 'cart', 'bag', 'count', 'sum', 'pill', 'word', 'split', 'leaf', 'quiet', 'brand', 'dark', 'sign', 'dot', 'bar', 'panel', 'drawer'],
   shadow: ['none', 'inset', 'transparent', 'in', 'srgb', 'oklab'],
   transform: ['none'],
   font: [],
@@ -106,9 +108,9 @@ const FONT_URL = /^\/fonts\/[a-z0-9-]{1,80}\.woff2$/
 const WEIGHT = /^[1-9]00( [1-9]00)?$/
 const RANGE = /^U\+[0-9A-Fa-f?]{1,6}(-[0-9A-Fa-f]{1,6})?(, ?U\+[0-9A-Fa-f?]{1,6}(-[0-9A-Fa-f]{1,6})?)*$/
 const LABEL = /^[\p{L}\p{N} .+-]{1,60}$/u
-const FIELDS = new Set(['palette', 'face', 'scale', 'width', 'corners', 'shadow', 'marker', 'field', 'field-label', 'tick', 'header', 'card', 'home', 'pdp-gallery', 'pdp-thumbs', 'pdp-edge', 'seg-look', 'quick-look', 'go-hover', 'head-icons', 'say-look', 'pair-look', 'chip-sign', 'drawer-look', 'cart-sign', 'cart-meta', 'shot-frame', 'shelf-cols', 'card-buy', 'sort-label'])
+const FIELDS = new Set(['palette', 'face', 'text-size', 'head-size', 'scale', 'width', 'corners', 'shadow', 'field', 'field-label', 'tick', 'header', 'card', 'home', 'pdp-gallery', 'pdp-thumbs', 'pdp-edge', 'seg-look', 'quick-look', 'go-hover', 'star', 'say-look', 'pair-look', 'cart-sign', 'cart-meta', 'door-case', 'logo', 'stock-look', 'pager-look', 'filter-look', 'filter-phone', 'save-look', 'nav-current'])
 /** Оси кнопки — поля `btn-<ось>`: каталог кнопки растёт осями данными (И273). */
-const AXIS = /^btn-[a-z0-9-]{1,30}$/
+const AXIS = /^(btn|band)-[a-z0-9-]{1,30}$/
 
 /** Разметка, которую сайт умеет рисовать: варианты шапки, карточки товара
  *  и главной. */
@@ -122,10 +124,18 @@ const record = (x: unknown): Record<string, unknown> | null => (x && typeof x ==
 export function validFont(x: unknown): x is LookFont {
   const f = record(x)
   if (!f || typeof f.family !== 'string' || !FAMILY.test(f.family) || !Array.isArray(f.files) || !f.files.length || f.files.length > 24) return false
+  if (f.metrics !== undefined && !validMetrics(f.metrics)) return false
   return f.files.every((file) => {
     const r = record(file)
     return !!r && typeof r.url === 'string' && FONT_URL.test(r.url) && typeof r.weight === 'string' && WEIGHT.test(r.weight) && typeof r.range === 'string' && RANGE.test(r.range)
   })
+}
+/** Размеры шрифта — четыре доли кегля в разумных пределах: в CSS они идут
+ *  процентами, и мусор в записи не должен стать мусором в стиле. */
+const within = (v: unknown, lo: number, hi: number) => typeof v === 'number' && Number.isFinite(v) && v >= lo && v <= hi
+const validMetrics = (x: unknown): x is FontMetrics => {
+  const m = record(x)
+  return !!m && within(m.avg, 0.2, 1) && within(m.bold, 0.2, 1) && within(m.ascent, 0.5, 2) && within(m.descent, 0, 1) && within(m.gap, 0, 1)
 }
 
 /** Сохранённый вид → вид, которым можно рисовать, и что отброшено. */
@@ -166,28 +176,99 @@ export function acceptValues(raw: unknown, slots: Slots, known: Structure = STRU
  *  каждом полу, который меняет ингредиенты, — одной записью на список полов
  *  `FLOORS`, а не копией геометрии на каждом (И385). Тот же список держит
  *  основа набора в `styles/look.css`. */
-export const SHADOWS = ['--sh-raised', '--sh-lift', '--sh-overlay', '--sh-in'] as const
+/* Шесть ролей по работе, как у профессиональных систем (И726; Atlassian: raised,
+   overflow, overlay; Primer: resting, floating; Material 3: уровни 1–3): raised —
+   поверхность в покое; lift — шаг под рукой, только под рукой; sticky — полоса у
+   края, под которой едет содержимое; overlay — всплывающее немодальное (меню,
+   подсказка, кнопка и окно помощи); modal — окно и шторка с затемнением; in —
+   вдавленное. */
+export const SHADOWS = ['--sh-raised', '--sh-lift', '--sh-sticky', '--sh-overlay', '--sh-modal', '--sh-in'] as const
 export const FLOORS = ":root,[data-ground='deck'],[data-plate]"
 const isShadow = (name: string): boolean => (SHADOWS as readonly string[]).includes(name)
 /** Роли вида, чьи значения ссылаются на краски пола (`var(--ink)`,
- *  `var(--quiet)`, `var(--pop-ink)` …): отметка текущего пункта, вид поля,
+ *  `var(--quiet)`, `var(--pop-ink)` …): вид поля,
  *  галочка, ссылка под рукой (И426). `var()` раскрывается там, где роль
  *  объявлена: объявленные на корне, они несли краски бумаги и на палубу —
  *  слово текущей полки в тёмной строке шапки стояло тёмным на тёмном. Поэтому
- *  они объявляются на каждом полу, как роли тени. */
-export const FLOOR_ROLES = /^--(menu-mark|ctrl-field|ctrl-tick|go-hover)(-|$)/
+ *  они объявляются на каждом полу, как роли тени. Заливка, чернила и кромка
+ *  тихой кнопки (`--ctrl-btn-fill|ink|edge`) — той же породы (И549): знак
+ *  без плиты в тёмном подвале нёс чернила бумаги, тёмным по тёмному. Роли
+ *  главной (`-pop`: заливка, надпись, кромка, тон, обод) — тоже на каждом полу
+ *  (И694): на корне они несли заливку бумаги, и когда палуба стала заливкой
+ *  марки (тёмное одно), главная в подвале совпала с ним цветом — «Subscribe»
+ *  осталась одной надписью (слово заказчика 03.10.2026: «кнопка subscribe
+ *  поломана»). На палубе главная берёт заливку палубы (`--pop` пола). */
+export const FLOOR_ROLES = /^--(?:(?:ctrl-field|ctrl-tick|go-hover)(?:-|$)|ctrl-btn-(?:fill|ink|edge|tint|rim)(?:-pop)?$)/
 const onFloors = (name: string): boolean => isShadow(name) || FLOOR_ROLES.test(name)
 
 /** Проверенный вид → текст блока `<style href="look">`: свойства на корне
  *  (краски — `light-dark()`, как в styles/palette.css, тема решается
  *  `color-scheme`), роли тени — на списке полов, шрифты со своих адресов. */
 export function lookCss(look: Look): string {
-  const decl = (keep: (name: string) => boolean) => Object.entries(look.vars).filter(([k]) => keep(k)).map(([k, v]) => `${k}:${v}`).join(';')
+  const decl = (keep: (name: string) => boolean) => Object.entries(look.vars).filter(([k]) => keep(k)).map(([k, v]) => `${k}:${withFallback(v, look.fonts)}`).join(';')
   const vars = decl((k) => !onFloors(k))
   const shadows = decl(onFloors)
-  const faces = look.fonts.flatMap((f) => f.files.map((x) =>
-    `@font-face{font-family:'${f.family}';src:url(${x.url}) format('woff2');font-weight:${x.weight};font-style:normal;font-display:swap;unicode-range:${x.range}}`))
-  return [vars ? `:root{${vars}}` : '', shadows ? `${FLOORS}{${shadows}}` : '', ...faces].filter(Boolean).join('\n')
+  return [vars ? `:root{${vars}}` : '', shadows ? `${FLOORS}{${shadows}}` : '', ...fontFaces(look.fonts, look.vars)].filter(Boolean).join('\n')
+}
+
+/** Опорные системные шрифты запасного начертания: средняя ширина знака
+ *  тем же счётом, что у шрифта вида (scripts/font-fallback.mjs, `metricsOf`;
+ *  сняты с arial.ttf, arialbd.ttf, times.ttf и timesbd.ttf Windows
+ *  01.10.2026). Жирное — своим файлом: синтетический жирный обычного Arial
+ *  не шире его, и надписи органов (600) выходили на 4 % уже. */
+export const FALLBACK_REFERENCE = {
+  sans: { regular: { local: "local('Arial')", avg: 0.4418 }, bold: { local: "local('Arial Bold'),local('Arial-BoldMT')", avg: 0.4776 } },
+  serif: { regular: { local: "local('Times New Roman')", avg: 0.4003 }, bold: { local: "local('Times New Roman Bold'),local('TimesNewRomanPS-BoldMT')", avg: 0.4259 } },
+} as const
+const fallbackName = (family: string) => `${family} Fallback`
+
+/** Значение свойства шрифта с запасным начертанием сразу за семейством
+ *  вида: `'Manrope', var(--face-stack)` → `'Manrope', 'Manrope Fallback',
+ *  var(--face-stack)`. Только у семейств с размерами — без них запасного
+ *  начертания нет. */
+export function withFallback(value: string, fonts: readonly LookFont[]): string {
+  let out = value
+  for (const f of fonts) {
+    if (!f.metrics || out.includes(`'${fallbackName(f.family)}'`)) continue
+    out = out.replace(`'${f.family}'`, `'${f.family}', '${fallbackName(f.family)}'`)
+  }
+  return out
+}
+
+/** Доля кегля → процент CSS. */
+const pct = (x: number) => `${(x * 100).toFixed(2)}%`
+
+/** `@font-face` вида: файлы семейства (`font-display: swap`; заранее их
+ *  просит Shell, `fontPreloads`) и запасное начертание, растянутое под
+ *  размеры семейства, — слова, набранные им до прихода файла, при подмене
+ *  не сдвигаются (слово заказчика 01.10.2026). Формулы next/font: override
+ *  делится на `size-adjust`, потому что браузер умножает на него и их.
+ *  Опора — Times New Roman, если семейство стоит в стеке с засечками, иначе
+ *  Arial. */
+export function fontFaces(fonts: readonly LookFont[], vars: Record<string, string> = {}): string[] {
+  return fonts.flatMap((f) => {
+    const files = f.files.map((x) =>
+      `@font-face{font-family:'${f.family}';src:url(${x.url}) format('woff2');font-weight:${x.weight};font-style:normal;font-display:swap;unicode-range:${x.range}}`)
+    if (!f.metrics) return files
+    const m = f.metrics
+    const serif = Object.values(vars).some((v) => v.includes(`'${f.family}'`) && /(^|[\s,])serif\s*$/.test(v))
+    const ref = serif ? FALLBACK_REFERENCE.serif : FALLBACK_REFERENCE.sans
+    const face = (weight: string, src: string, size: number) =>
+      `@font-face{font-family:'${fallbackName(f.family)}';src:${src};font-weight:${weight};size-adjust:${pct(size)};ascent-override:${pct(m.ascent / size)};descent-override:${pct(m.descent / size)};line-gap-override:${pct(m.gap / size)}}`
+    return [...files, face('100 500', ref.regular.local, m.avg / ref.regular.avg), face('600 900', ref.bold.local, m.bold / ref.bold.avg)]
+  })
+}
+
+/** Файлы шрифтов вида — все, их документ просит заранее (`preload`), до
+ *  первой отрисовки. Без этого файл шёл в очередь только когда браузер
+ *  встречал текст, и слова сперва вставали запасным стеком, а через миг
+ *  подменялись шрифтом и сдвигались (слово заказчика 01.10.2026: «при
+ *  наведении на пункты меню слова чуть смещаются, один раз на свежей
+ *  странице»). Все подмножества, а не по буквам языка: расширенная латиница
+ *  нужна и английской странице — «Română» в переключателе языка стоит на
+ *  каждой (замер check:craft `fontLate`); два файла латиницы — ~35 КБ. */
+export function fontPreloads(fonts: readonly LookFont[]): string[] {
+  return [...new Set(fonts.flatMap((f) => f.files.map((x) => x.url)))]
 }
 
 /** Толщины, загруженные у семейства вида; null — семейство не загружается

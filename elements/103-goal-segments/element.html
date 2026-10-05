@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>103 · Полоса из пяти долек</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 103 — «Полоса из пяти долек». Источник — Preline «Progress → Steps / segmented» (MIT): ряд равных долек
+  с зазором, залитые — пройденное. Пять долек по 20 € из порога в 100 €: целые залиты, на которой стоит сумма — залита долей.
+  Слова — над рядом. Порог взят — дольки в краске «успеха». Суммы, порог и валюта — данные.
+  Снято: цвета Tailwind, процент в конце ряда (то же говорят слова над рядом и aria-valuetext).
+  Приведено к единой форме: дорожка дольки — тон, заливка — марка; углы дольки — пилюля; зазор — доля малого органа.
+  Роль progressbar — на всём ряду, а не на каждой дольке: чтец читает одно значение.
+-->
+</head>
+<body>
+  <div class="live">
+    <div class="goal" data-view="segments">
+      <p id="g103a"><b>€70.00</b> to go for free delivery</p>
+      <div class="segs" role="progressbar" aria-labelledby="g103a" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" aria-valuetext="€30.00 of €100.00"><span class="seg" data-share="100"></span><span class="seg" data-share="50"></span><span class="seg" data-share="0"></span><span class="seg" data-share="0"></span><span class="seg" data-share="0"></span></div>
+    </div>
+    <div class="goal" data-view="segments">
+      <p id="g103b"><b>€15.00</b> to go for free delivery</p>
+      <div class="segs" role="progressbar" aria-labelledby="g103b" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-valuetext="€85.00 of €100.00"><span class="seg" data-share="100"></span><span class="seg" data-share="100"></span><span class="seg" data-share="100"></span><span class="seg" data-share="100"></span><span class="seg" data-share="25"></span></div>
+    </div>
+    <div class="goal" data-view="segments" data-tone="ok">
+      <p id="g103c"><svg data-sign="truck"></svg>Free delivery unlocked</p>
+      <div class="segs" role="progressbar" aria-labelledby="g103c" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-valuetext="€112.00 of €100.00"><span class="seg" data-share="100"></span><span class="seg" data-share="100"></span><span class="seg" data-share="100"></span><span class="seg" data-share="100"></span><span class="seg" data-share="100"></span></div>
+    </div>
+  </div>
+</body>
+</html>

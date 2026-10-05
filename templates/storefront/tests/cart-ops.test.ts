@@ -1,6 +1,6 @@
 import { test, beforeEach } from 'node:test'
 import assert from 'node:assert/strict'
-import { readCartOp, runCartOp, outcomeOf } from '../lib/cart-ops.ts'
+import { readCartOp, runCartOp, outcomeOf, cartHeld } from '../lib/cart-ops.ts'
 import { sampleCommerce, resetSample, FIXTURES } from '../lib/source/sample/commerce.ts'
 
 beforeEach(() => resetSample())
@@ -57,4 +57,15 @@ test('adding an option that no longer exists says so; a missing line stays «gon
   const set = await runCartOp(sampleCommerce, FIXTURES.cart, 'ro', { op: 'set', lineId: 'l999', quantity: 1 })
   assert.equal(set.code, 'e:not-found')
   assert.equal(outcomeOf('ro', set.code)?.message, 'Produsul nu mai este în coș — reîncărcați pagina.')
+})
+
+/* Список штук по вариантам — для надписей «в корзину» страницы (И469): по
+   нему кнопка говорит «Added · 4» уже при загрузке. Вариант в двух строках
+   складывается; пустая корзина и молчащий источник — пустой список. */
+test('the cart says how many of each option it holds, one list for every add button', async () => {
+  const one = await runCartOp(sampleCommerce, null, 'ro', { op: 'add', variantId: 'uf-20-10', quantity: 4 })
+  const two = await runCartOp(sampleCommerce, one.session, 'ro', { op: 'add', variantId: 'uf-20-10', quantity: 1 })
+  assert.equal(two.inCart, 5)
+  assert.deepEqual(cartHeld({ lines: [{ variantId: 'a', quantity: 2 }, { variantId: 'b', quantity: 1 }, { variantId: 'a', quantity: 3 }] } as never), { a: 5, b: 1 })
+  assert.deepEqual(cartHeld(null), {})
 })

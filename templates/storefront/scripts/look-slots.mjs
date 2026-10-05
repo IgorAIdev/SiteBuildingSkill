@@ -9,8 +9,7 @@
      1. стили — значения свойств вида в styles/palette.css, styles/buttons.css
         и styles/scale.css заменяются опубликованными, блоков чужих наборов
         (`[data-palette]`, `[data-button]`, `[data-scale]`) в них нет;
-        шрифт, тени, отметка пункта меню, ручки товара (`--pdp-*` карты,
-        кадр снимка `--shot-frame`, плотность полки `--shelf-cols`) и
+        шрифт, тени, ручки товара (`--pdp-*` карты) и
         `@font-face` опубликованных шрифтов — в styles/look.css. Устройство файлов (имена, порядок, блок
         `@media (pointer:coarse)`) берётся из них самих: имена выпускают
         строители набора, значения — вид;
@@ -31,18 +30,17 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { bandBlocks } from './band-blocks.mjs'
 import { ROLES as BUTTON, tokenMap } from '../tools/buttons.mjs'
 import { rolesOf } from '../tools/scale.mjs'
 import { CONTRAST, STATE } from '../tools/thresholds.mjs'
-import { acceptValues, lookCss, SHADOWS, FLOORS, FLOOR_ROLES } from '../lib/look-values.ts'
+import { acceptValues, fontFaces, withFallback, SHADOWS, FLOORS, FLOOR_ROLES } from '../lib/look-values.ts'
 import { settle } from '../lib/look-rule.ts'
 
 const TO = 'lib/look-slots.json'
 const PUBLISHED = 'lib/source/sample/look.json'
 const FILES = { palette: 'styles/palette.css', buttons: 'styles/buttons.css', scale: 'styles/scale.css', look: 'styles/look.css' }
 
-/** Род свойства отметки текущего пункта меню. */
-const MARKER = { line: 'keyword', fill: 'colour', ink: 'colour', r: 'length', pad: 'length', side: 'number' }
 /** Род свойства вида поля ввода (И390, styles/form.module.css): заливка,
  *  кромка и 1 / 0 — кромка вокруг или только черта снизу. */
 const FIELD = { fill: 'colour', edge: 'colour', side: 'number', label: ['keyword', 'field-label'] }
@@ -55,32 +53,44 @@ const TICK = { fill: 'colour' }
  *  настройка панели, группа — имя свойства без `--`. Род и умолчание — на
  *  случай, когда styles/look.css сайта старше группы и их ещё не несёт;
  *  дальше значение приходит из опубликованного вида. */
+/** Подложка секции главной (И591): свойство вида на каждый блок реестра, кроме первого экрана — список читается из реестра, а не пишется здесь. */
+const bands = Object.fromEntries(bandBlocks(resolve(fileURLToPath(new URL('..', import.meta.url)))).map((b) => [`--band-${b}`, { type: 'keyword', value: 'none' }]))
 export const PRODUCT = {
   '--pdp-gallery': { type: 'length', value: '50%' },
   '--pdp-thumbs': { type: 'keyword', value: 'below' },
   '--pdp-edge': { type: 'keyword', value: 'inset' },
   '--seg-look': { type: 'keyword', value: 'chips' },
+  '--stock-look': { type: 'keyword', value: 'sign' },
+  '--pager-look': { type: 'keyword', value: 'count' },
+  '--filter-look': { type: 'keyword', value: 'drawer' },
+  '--filter-phone': { type: 'keyword', value: 'drawer' },
+  '--save-look': { type: 'keyword', value: 'disc' },
   '--quick-look': { type: 'keyword', value: 'tiles' },
   '--go-hover': { type: 'colour', value: 'currentcolor' },
-  '--head-icons': { type: 'keyword', value: 'bare' },
+  '--star': { type: 'colour', value: 'var(--star-trade)' },
   '--say-look': { type: 'keyword', value: 'line' },
   '--pair-look': { type: 'keyword', value: 'apart' },
-  '--chip-sign': { type: 'keyword', value: 'none' },
-  '--drawer-look': { type: 'keyword', value: 'rows' },
   '--cart-sign': { type: 'keyword', value: 'cart' },
+  '--logo': { type: 'keyword', value: 'pill' },
   '--cart-meta': { type: 'keyword', value: 'count' },
-  '--shot-frame': { type: 'number', value: '1 / 1' },
-  '--shelf-cols': { type: 'number', value: '4' },
-  '--card-buy': { type: 'keyword', value: 'full' },
-  '--sort-label': { type: 'keyword', value: 'beside' },
+  '--nav-current': { type: 'keyword', value: 'line' },
+  '--door-case': { type: 'keyword', value: 'none' },
+  ...bands,
 }
 /* Роли тени — по работе (И228): предмет в покое, подъём под рукой,
    всплывающее, вдавленное. Объявлены ОДИН раз — в styles/look.css, на
    списке полов `FLOORS` (lib/look-values.ts): основа набора их больше не
    объявляет (И385). */
 /** Группа свойства из styles/scale.css: углы и холст выбираются отдельно от
- *  ритма (Shape и Layout панели) — ритм углов не меняет. */
-const scaleGroup = (name) => (/^--r-(xs|ctrl|card|sheet)$/.test(name) ? 'corners' : name === '--wrap' ? 'width' : 'scale')
+ *  ритма (Shape и Layout панели) — ритм углов не меняет. Размер текста и
+ *  размер заголовков — две ручки типографики (Type панели, И561): основной
+ *  текст с его ярусами и вводным абзацем, заголовки с подзаголовком и
+ *  крупным текстом первого экрана; ритм их не меняет. Ступень `h1` — имя
+ *  страницы, сама ручка заголовков; раздел и подзаголовок — от неё (И712). */
+const TEXT_SIZE = /^--(?:ctrl-)?fs-(?:xs|sm|base)$|^--intro-(?:size|min|max|base|slope)$|^--parthead-size$/
+const HEAD_SIZE = /^--(?:ctrl-)?fs-h[123]$|^--hero-(?:size|max|base|slope)$|^--pagehead-size$/
+const scaleGroup = (name) => (/^--r-(xs|ctrl|card|sheet|btn)$/.test(name) ? 'corners' : name === '--wrap' ? 'width'
+  : TEXT_SIZE.test(name) ? 'text-size' : HEAD_SIZE.test(name) ? 'head-size' : 'scale')
 
 const bare = (css) => css.replace(/\/\*[\s\S]*?\*\//g, '')
 /** Границы первого блока `:root{…}` вне @media: [начало тела, конец тела]. */
@@ -108,15 +118,16 @@ function floorBlock(css) {
 /** Имена, переобъявленные внутри @media. */
 const inMedia = (css) => new Set([...bare(css).matchAll(/@media[^{]*\{([^{}]*\{[^}]*\})/g)].flatMap((m) => [...m[1].matchAll(/(--[\w-]+)\s*:/g)].map((x) => x[1])))
 
-/** Список свойств и факты — из текстов стилей и чисел набора. Шрифт, тени и
- *  отметка — из styles/look.css (у набора он лежит рукой, у витрины
- *  выпущен); отметка, пока файла нет, — из прежнего места
- *  (styles/storefront.css). Шрифта и теней основа не объявляет (И385). */
-export function lookSlots({ palette, buttons, scale, tokens, storefront, look, scales }) {
+/** Список свойств и факты — из текстов стилей и чисел набора. Шрифт и тени —
+ *  из styles/look.css (у набора он лежит рукой, у витрины выпущен). Шрифта и
+ *  теней основа не объявляет (И385). */
+export function lookSlots({ palette, buttons, scale, tokens, look, scales }) {
   const slots = {}
   const put = (name, type, group, value) => { slots[name] = { type, group, value } }
   for (const [k, v] of Object.entries(rootBlock(palette))) put(k, 'colour', 'palette', v)
-  for (const [k, v] of Object.entries(rootBlock(buttons))) {
+  /* У набора роли кнопки — на корне (styles/buttons.css из каталога), у
+     выпущенной витрины — на списке полов (И549): читаются оба места. */
+  for (const [k, v] of Object.entries({ ...rootBlock(buttons), ...floorBlock(buttons) })) {
     /* Род роли кнопки — из каталога набора (tools/buttons.mjs, ROLES). */
     const type = BUTTON[k]
     if (!type) throw new Error(`${k}: роль кнопки неизвестна каталогу набора (tools/buttons.mjs, ROLES)`)
@@ -132,13 +143,6 @@ export function lookSlots({ palette, buttons, scale, tokens, storefront, look, s
       put(k, type, group, own[k])
     }
   }
-  const marks = look ? own : rootBlock(storefront)
-  for (const [k, v] of Object.entries(marks)) {
-    if (!k.startsWith('--menu-mark-')) continue
-    const type = MARKER[k.replace(/^--menu-mark-/, '')]
-    if (!type) throw new Error(`${k}: род свойства отметки неизвестен — дописать в MARKER (scripts/look-slots.mjs)`)
-    put(k, type, 'marker', v)
-  }
   for (const [prefix, kinds, group, table] of [['--ctrl-field-', FIELD, 'field', 'FIELD'], ['--ctrl-tick-', TICK, 'tick', 'TICK']]) {
     for (const [k, v] of Object.entries(own)) {
       if (!k.startsWith(prefix)) continue
@@ -150,8 +154,19 @@ export function lookSlots({ palette, buttons, scale, tokens, storefront, look, s
       put(k, type, own, v)
     }
   }
+  /* Поле и галочка берутся из ПРЕЖНЕГО выпуска styles/look.css:
+     потерял он строку — она пропадала из списка свойств навсегда, и вид,
+     который её даёт, становился «не свойством сайта» (01.10.2026: у витрины
+     пропали все --ctrl-field-*, --ctrl-tick-*, проверка вида
+     красная; И611). Список не сужается молча: каждое свойство таблиц
+     FIELD, TICK обязано быть в выпуске. */
+  if (look) {
+    const lost = [['--ctrl-field-', FIELD], ['--ctrl-tick-', TICK]]
+      .flatMap(([prefix, table]) => Object.keys(table).map((k) => prefix + k)).filter((k) => !slots[k])
+    if (lost.length) throw new Error(`styles/look.css потерял ${lost.length} свойств вида (${lost.slice(0, 4).join(', ')}${lost.length > 4 ? ' …' : ''}): выпуск читает прежний выпуск, и потерянное сам не вернёт — положить styles/look.css шаблона (templates/storefront/styles/look.css) и выпустить заново (И611)`)
+  }
   for (const [k, { type, value }] of Object.entries(PRODUCT)) put(k, type, k.slice(2), own[k] ?? value)
-  /* Роли, на которых правило мерит кнопку, отметку и поле: замыкание ссылок от
+  /* Роли, на которых правило мерит кнопку и поле: замыкание ссылок от
      полов и ролей кнопки до ступеней палитры (они — свойства вида). Роли
      вариантов панели, которых нет в умолчаниях, — списком: подпись и тихая
      плашка (кромка и заливка поля, И390). Второй конец градиента, стекло и
@@ -159,7 +174,7 @@ export function lookSlots({ palette, buttons, scale, tokens, storefront, look, s
      палитры, правило видит их и так (И424, И427, И443). */
   const refs = (v) => [...String(v).matchAll(/var\((--[\w-]+)\)/g)].map((m) => m[1])
   const queue = ['--page', '--plate', '--surface', '--ink', '--ink-soft', '--plate-quiet', '--quiet', '--pop', '--on-pop', '--pop-ink', '--rule',
-    ...Object.values(slots).filter((s) => ['button', 'marker', 'field', 'tick', 'shadow'].includes(s.group)).flatMap((s) => refs(s.value))]
+    ...Object.values(slots).filter((s) => ['button', 'field', 'tick', 'shadow'].includes(s.group)).flatMap((s) => refs(s.value))]
   const roles = {}
   while (queue.length) {
     const name = queue.shift()
@@ -169,7 +184,7 @@ export function lookSlots({ palette, buttons, scale, tokens, storefront, look, s
   }
   const first = Object.keys(scales)[0]
   const headings = Object.entries(rolesOf(scales, first)).filter(([, r]) => r.род === 'заголовок').map(([role]) => role)
-  return { slots, facts: { roles, need: { text: CONTRAST.text, control: CONTRAST.control, visible: STATE.visible }, headings } }
+  return { slots, facts: { roles, need: { text: CONTRAST.text, control: CONTRAST.control, visible: STATE.visible, edge: STATE.edge }, headings } }
 }
 
 const HEAD = (what) => `/* Выпущен scripts/look-slots.mjs из опубликованного вида (${PUBLISHED};\n   у Payload — global «look»). Руками не правят: ${what}. */\n\n`
@@ -189,6 +204,14 @@ const ownPart = (css, attr) => {
   return css.slice(at < 0 ? 0 : at, cut < 0 ? css.length : cut).replace(/^\n/, '').replace(/\s*$/, '\n')
 }
 
+/** Стек шрифта с подогнанным запасным начертанием — блоком `:root`, только
+ *  у свойств, где оно что-то добавило; пусто, если добавить нечего. */
+const fitStack = (fonts, values, slots) => {
+  const decls = ['--face', '--face-head'].map((k) => [k, values[k] ?? slots[k]?.value]).filter(([, v]) => v)
+    .map(([k, v]) => [k, withFallback(v, fonts), v]).filter(([, w, v]) => w !== v).map(([k, w]) => `  ${k}: ${w};`)
+  return decls.length ? `:root{\n${decls.join('\n')}\n}\n` : ''
+}
+
 /** Опубликованный вид → тексты стилей вида и список свойств. `notes` —
  *  чего вид не дал или что не прошло проверку: там остаётся прежнее. */
 export function lookStyles(site, raw) {
@@ -199,20 +222,31 @@ export function lookStyles(site, raw) {
   const missing = raw ? Object.keys(before.slots).filter((k) => !Object.hasOwn(values, k)) : []
   const notes = [...dropped.map((d) => `${d.what} ${d.why}`), ...kept.fell.map((f) => `${f.group} ${f.why}`),
     ...(missing.length ? [`вид не дал значения ${missing.length} свойствам (${missing.slice(0, 4).join(', ')}${missing.length > 4 ? ' …' : ''}) — остались прежние; вид старше каталога — пересчитать из имён (И352)`] : [])]
-  const decls = (group) => Object.entries(before.slots).filter(([, s]) => s.group === group)
+  const declsWhere = (group, keep) => Object.entries(before.slots).filter(([k, s]) => s.group === group && keep(k))
     .map(([k, s]) => `  ${k}: ${values[k] ?? s.value};`).join('\n')
+  const decls = (group) => declsWhere(group, () => true)
   const out = {
     palette: `${HEAD('краски обеих тем — ступени и линии')}:root{\n  color-scheme: light dark;\n${decls('palette')}\n}\n`,
-    buttons: `${HEAD('роли одной кнопки основы (styles/btn.module.css)')}:root{\n${decls('button')}\n}\n`,
+    /* Заливка, чернила и кромка тихой кнопки — на списке полов (И549): они
+       составлены из красок пола (`var(--quiet)`, `var(--ink)`), и на корне
+       раскрывались краской бумаги — знак без плиты в тёмном подвале стоял
+       тёмным по тёмному. Остальные роли кнопки — на корне. */
+    buttons: `${HEAD('роли одной кнопки основы (styles/btn.module.css)')}:root{\n${declsWhere('button', (k) => !FLOOR_ROLES.test(k))}\n}\n${FLOORS}{\n${declsWhere('button', (k) => FLOOR_ROLES.test(k))}\n}\n`,
     scale: HEAD('ступени кегля и ритма, поле, воздух, зазор, холст и углы; под пальцем — свои высоты органов') + substitute(ownPart(site.scale, 'scale'), values),
     /* Роли тени — своим блоком на списке полов (И385): на палубе и листе
        геометрия вида пересчитывается из их ингредиентов. Там же роли,
-       ссылающиеся на краски пола (И426): отметка текущего пункта, вид поля,
+       ссылающиеся на краски пола (И426): вид поля,
        галочка, ссылка под рукой — на палубе и листе они раскрываются от
        красок своего пола. */
-    look: `${HEAD('шрифт, тени, отметка текущего пункта меню, вид поля ввода и галочки, ручки карты товара и полки и шрифты вида со своего адреса')}:root{\n${['face', ...Object.keys(PRODUCT).filter((k) => !FLOOR_ROLES.test(k)).map((k) => k.slice(2))].map(decls).join('\n')}\n}\n` +
-      `${FLOORS}{\n${['shadow', 'marker', 'field', 'field-label', 'tick', ...Object.keys(PRODUCT).filter((k) => FLOOR_ROLES.test(k)).map((k) => k.slice(2))].map(decls).join('\n')}\n}\n` +
-      (kept.fonts.length ? `\n${lookCss({ header: look.header, vars: {}, fonts: kept.fonts, names: {} })}\n` : ''),
+    look: `${HEAD('шрифт, тени, вид поля ввода и галочки, ручки карты товара и полки и шрифты вида со своего адреса')}:root{\n${['face', ...Object.keys(PRODUCT).filter((k) => !FLOOR_ROLES.test(k)).map((k) => k.slice(2))].map(decls).join('\n')}\n}\n` +
+      `${FLOORS}{\n${['shadow', 'field', 'field-label', 'tick', ...Object.keys(PRODUCT).filter((k) => FLOOR_ROLES.test(k)).map((k) => k.slice(2))].map(decls).join('\n')}\n}\n` +
+      /* Шрифты вида и их запасные начертания (lib/look-values.ts, `fontFaces`),
+         затем стек с запасным начертанием за семейством (`withFallback`) —
+         своим блоком ПОСЛЕ них: первый блок файла несёт значения вида слово в
+         слово, по нему сверяется список свойств, а этот перекрывает его в
+         браузере. Блок вида страницы свойств шрифта не несёт, если вид их не
+         менял, — стек берётся отсюда (замер check:craft `fontLate`, И608). */
+      (kept.fonts.length ? `\n${fontFaces(kept.fonts, values).join('\n')}\n${fitStack(kept.fonts, values, before.slots)}` : ''),
   }
   const after = lookSlots({ ...site, ...out })
   return { files: out, slots: after, notes }
@@ -227,7 +261,7 @@ export function readSite(root = '.') {
   const maybe = (p) => (existsSync(resolve(root, p)) ? at(p) : null)
   return {
     palette: at(FILES.palette), buttons: at(FILES.buttons), scale: at(FILES.scale), look: maybe(FILES.look),
-    tokens: at('styles/tokens.css'), storefront: at('styles/storefront.css'), scales: JSON.parse(at('styles/scale.json')),
+    tokens: at('styles/tokens.css'), scales: JSON.parse(at('styles/scale.json')),
   }
 }
 export const readPublished = (root = '.') => (existsSync(resolve(root, PUBLISHED)) ? JSON.parse(readFileSync(resolve(root, PUBLISHED), 'utf8')) : null)

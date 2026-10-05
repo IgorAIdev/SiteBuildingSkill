@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>93 · Оценка звёздами</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 93 — «Оценка звёздами». Источники — daisyUI «Rating», HyperUI «Rating», shadcn/ui (звёзды как знаки) (MIT).
+  Сколько поставили: звёзды и число, число отзывов; компактный вид «★ 4,8 · 213 отзывов»; выбор оценки пальцем (пять кнопок).
+  Звёзды — листа набора, краска — роль звёзд (`--star`) палитры.
+-->
+</head>
+<body>
+  <div class="live">
+    <span class="stars" role="img" aria-label="4 out of 5"><svg data-sign="star-fill"></svg><svg data-sign="star-fill"></svg><svg data-sign="star-fill"></svg><svg data-sign="star-fill"></svg><svg data-sign="star"></svg><b>4.0</b>(128)</span>
+    <span class="stars" role="img" aria-label="4.8 out of 5"><svg data-sign="star-fill"></svg><b>4.8</b>· 213 reviews</span>
+    <span class="stars" data-view="pick" role="group" aria-label="Your rating"><button class="el" data-voice="ghost" data-icon data-fill-on type="button" aria-pressed="true" aria-label="1 star"><svg data-sign="star"></svg></button><button class="el" data-voice="ghost" data-icon data-fill-on type="button" aria-pressed="true" aria-label="2 star"><svg data-sign="star"></svg></button><button class="el" data-voice="ghost" data-icon data-fill-on type="button" aria-pressed="true" aria-label="3 star"><svg data-sign="star"></svg></button><button class="el" data-voice="ghost" data-icon data-fill-on type="button" aria-pressed="false" aria-label="4 star"><svg data-sign="star"></svg></button><button class="el" data-voice="ghost" data-icon data-fill-on type="button" aria-pressed="false" aria-label="5 star"><svg data-sign="star"></svg></button></span>
+  </div>
+</body>
+</html>

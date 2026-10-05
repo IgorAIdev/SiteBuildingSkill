@@ -36,3 +36,9 @@ test('cart and checkout addresses', () => {
   assert.equal(hrefFor('ro', { checkout: 'delivery', city: 'București' }), '/ro/checkout/delivery?city=Bucure%C8%99ti')
   assert.equal(hrefFor('en', { checkout: 'done' }), '/en/checkout/done')
 })
+
+test('`from` rides after the page only while it stands before it (show more, И721)', () => {
+  assert.equal(hrefFor('en', { catalog: true, page: 3, from: 1 }), '/en/catalog?page=3&from=1')
+  assert.equal(hrefFor('en', { catalog: true, page: 3, from: 3 }), '/en/catalog?page=3')
+  assert.equal(hrefFor('en', { search: 'ulei', page: 2, from: 1 }), '/en/search?q=ulei&page=2&from=1')
+})

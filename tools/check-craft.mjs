@@ -59,11 +59,11 @@
  * PLAYWRIGHT.
  */
 
-import { loadPlaywright, loadSharp, still } from './browser.mjs'
+import { loadPlaywright, loadSharp, settled, still } from './browser.mjs'
 const { chromium } = await loadPlaywright()
 const sharp = await loadSharp()
 import { readFileSync, writeFileSync } from 'node:fs'
-import { CONTRAST, TARGET, LAYOUT, IOS_ZOOM, H1_LINES } from './thresholds.mjs'
+import { CONTRAST, TARGET, LAYOUT, IOS_ZOOM, H1_LINES, TYPE, CONTROL } from './thresholds.mjs'
 import { CRAFT_LABELS as NAMES, VECTOR } from './craft-families.mjs'
 import { SHEET_AR_SLACK, SHEET_SAMPLES, SHEET_SLACK } from './sheet-samples.mjs'
 import { relative } from 'node:path'
@@ -161,18 +161,21 @@ const BASELINE = fileURLToPath(new URL('./craft-baseline.json', import.meta.url)
    900 помещается, на ноутбуке уходит за край — так и было с галереей товара. */
 const SHORT_H = LAYOUT.shortWindow
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
+/** Роли текста — те, что выпустил строитель шкал (`--<роль>-weight` в
+ *  styles/scale.css): семья `typeRole` сверяет с ними отрисованный текст (И674). */
+const TEXT_ROLES = [...new Set([...readFileSync(new URL('../styles/scale.css', import.meta.url), 'utf8').matchAll(/--([a-z][a-z0-9]*)-weight\s*:/g)].map((m) => m[1]))]
 
 /** Что меряется в самой странице. Одной функцией, потому что она уезжает
  *  в браузер целиком и ничего оттуда не импортирует. */
-const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines, autofill }) => {
+const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines, autofill, textRoles, measureMax, captionMax, tileFace }) => {
   const out = { placeholder: [], measure: [], target: [], contrast: [], collision: [],
                 weight: [], jump: [], name: [], heads: [], dress: [], clip: [],
-                swipe: [], stretch: [], broken: [], spill: [], focus: [], wrap: [],
+                swipe: [], stretch: [], broken: [], spill: [], offColumn: [], focus: [], wrap: [],
                 anchor: [], outline: [], marker: [], dark: [], ladder: [], wideCtrl: [], lopsided: [],
                 markInk: [],
                 covered: [],
-                lane: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [],
-                autofill: [], fieldZoom: [], h1Lines: [] }
+                lane: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], lineLong: [], headActs: [],
+                autofill: [], fieldZoom: [], h1Lines: [], twoWays: [], edge: [], fontLate: [], shift: [], ruleAir: [], rowShape: [], railTail: [], tileGrow: [] }
   const seen = new Set()
 
   const lum = (c) => {
@@ -868,6 +871,440 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
     }
   }
 
+  /* 4a3 · подблок громче блока (И520).
+     Шов между РАЗНЫМИ блоками обязан быть больше шва между частями одного
+     блока, иначе глаз не отличает «следующее о том же» от «другое». Заказчик
+     увидел это на странице товара: «Как применять» → «Похожие товары» стоял
+     тем же просветом, что «Состав» → «Как применять», — ручка воздуха
+     раздела протекала во вложенный раздел.
+
+     Мерится каждый раздел (`section`) против соседа сверху: шов — от низа
+     соседа до верха первой вещи раздела; внутри соседа — наибольший шов
+     между его подряд стоящими разделами-частями. */
+  for (const c of document.querySelectorAll('main section')) {
+    if (!shown(c)) continue
+    let a = c.previousElementSibling
+    while (a && !shown(a)) a = a.previousElementSibling
+    if (!a) continue
+    const head = [...c.children].find((k) => shown(k)) ?? c
+    const seam = head.getBoundingClientRect().top - a.getBoundingClientRect().bottom
+    let inner = 0
+    for (const box of [a, ...a.querySelectorAll('*')]) {
+      const parts = [...box.children].filter((k) => k.tagName === 'SECTION' && shown(k))
+      for (let i = 1; i < parts.length; i++) {
+        const first = [...parts[i].children].find((k) => shown(k)) ?? parts[i]
+        inner = Math.max(inner, first.getBoundingClientRect().top - parts[i - 1].getBoundingClientRect().bottom)
+      }
+    }
+    if (inner > 0 && seam <= inner + 1) {
+      out.airOrder.push(`${name(a)} → ${name(c)} — шов ${Math.round(seam)}px, а между частями блока ${Math.round(inner)}px`)
+    }
+  }
+
+  /* 4a3б · шов у края полосы — по видимому, поровну (И738).
+     Заказчик 04.10.2026: при смене цвета фона расстояние от предыдущего блока
+     до края полосы и от края до текста следующего «чуть разные». По ролям
+     оба были 72, но под краем стоял заголовок коробкой строки — над
+     заглавными запас строки и шрифта, на глаз 81 против 72. Меряется
+     ВИДИМОЕ: коробка элемента с собственным текстом (срезанный заголовок —
+     от заглавных), снимок, крашеная коробка; всё обрезано предками с
+     `overflow`, чтобы невидимое в ленте и под обрезкой строк не считалось.
+     Полоса — ребёнок `main` во всю ширину, красящий свой пол. */
+  const inkOf = (root) => {
+    let top = Infinity, bottom = -Infinity
+    for (const el of root.querySelectorAll('*')) {
+      if (!shown(el)) continue
+      /* Ответ закрытого вопроса держит место в раскладке, но обрезан
+         `::details-content` — предком его не найти; глазу его нет. */
+      const shut = el.closest('details:not([open])')
+      if (shut && !el.closest('summary')) continue
+      const own = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())
+      const media = /^(IMG|VIDEO|svg|CANVAS)$/i.test(el.tagName)
+      /* Крашеная коробка или видимая линия по краю (волосок под последним
+         вопросом справки) — тоже граница блока. */
+      const ecs = getComputedStyle(el)
+      const edged = ['Top', 'Bottom'].some((k) => parseFloat(ecs[`border${k}Width`]) > 0 && alpha(ecs[`border${k}Color`]) > 0.02)
+      const box = (paints(el) || edged) && el !== root
+      if (!own && !media && !box) continue
+      let r = el.getBoundingClientRect()
+      /* Текст в набитой коробке (слово пилюли) — по самим строкам, а не по
+         рамке: рамка — крашеная коробка, её считает низ. */
+      const cs0 = getComputedStyle(el)
+      if (own && !box && (parseFloat(cs0.paddingTop) > 0 || parseFloat(cs0.borderTopWidth) > 0)) {
+        const rg = document.createRange(); rg.selectNodeContents(el); const rs = [...rg.getClientRects()].filter((x) => x.height > 0)
+        if (rs.length) r = { top: Math.min(...rs.map((x) => x.top)), bottom: Math.max(...rs.map((x) => x.bottom)), left: Math.min(...rs.map((x) => x.left)), right: Math.max(...rs.map((x) => x.right)) }
+      } else if (own && box) {
+        const rg = document.createRange(); rg.selectNodeContents(el); const rs = [...rg.getClientRects()].filter((x) => x.height > 0)
+        if (rs.length) { const tt = Math.min(...rs.map((x) => x.top)); r = { top: tt, bottom: r.bottom, left: r.left, right: r.right } }
+      }
+      let t = r.top, b = r.bottom, l = r.left, rt = r.right
+      for (let up = el.parentElement; up && up !== root.parentElement; up = up.parentElement) {
+        const cs = getComputedStyle(up)
+        if (cs.overflowX === 'visible' && cs.overflowY === 'visible') continue
+        const u = up.getBoundingClientRect()
+        t = Math.max(t, u.top); b = Math.min(b, u.bottom); l = Math.max(l, u.left); rt = Math.min(rt, u.right)
+      }
+      if (b - t < 1 || rt - l < 1 || rt < 0 || l > innerWidth) continue
+      /* Верх блока — текст и снимок («от линии до последующего текста»):
+         рамка кнопки ряда, вставшей по середине заглавных, выступает над
+         буквами по замыслу. Низ — ещё и край карточки. */
+      if (own || media) top = Math.min(top, t)
+      bottom = Math.max(bottom, b)
+    }
+    return { top, bottom }
+  }
+  const mainEl = document.querySelector('main')
+  const bandRows = mainEl ? [...mainEl.children].filter((k) => shown(k)) : []
+  bandRows.forEach((band, i) => {
+    if (!paints(band) || band.getBoundingClientRect().width < innerWidth * 0.9) return
+    const prev = bandRows[i - 1], next = bandRows[i + 1]
+    const r = band.getBoundingClientRect(), inside = inkOf(band)
+    const seamCheck = (where, a, b) => {
+      if (!Number.isFinite(a) || !Number.isFinite(b) || Math.abs(a - b) <= 4) return
+      out.bandSeam.push(`${name(band)}, ${where} край полосы — над краем ${Math.round(a)}px, под ним ${Math.round(b)}px`)
+    }
+    if (prev && !paints(prev)) seamCheck('верхний', r.top - inkOf(prev).bottom, inside.top - r.top)
+    if (next && !paints(next)) seamCheck('нижний', r.bottom - inside.bottom, inkOf(next).top - r.bottom)
+  })
+  /* Подвал на своём полу — тот же край: от видимого низа страницы до края и
+     от края до заглавных его первой строки. */
+  const foot = mainEl ? mainEl.parentElement.querySelector(':scope > footer') ?? document.querySelector('body footer') : null
+  if (foot && shown(foot) && paints(foot) && !paints(mainEl)) {
+    const fr = foot.getBoundingClientRect(), a = fr.top - inkOf(mainEl).bottom, b = inkOf(foot).top - fr.top
+    if (Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) > 4) out.bandSeam.push(`подвал — над краем ${Math.round(a)}px, под ним ${Math.round(b)}px`)
+  }
+
+  /* 4a4 · заголовок страницы одним кеглем (И521).
+     h1 страницы — одна роль на весь сайт: каталог, корзина, поиск, документ
+     и имя товара. Заказчик: «почему на одних страницах одни размеры, а на
+     других другие совсем» — каталог стоял 54px, имя товара 39. Кегль любого
+     h1 сверяется с ролью `--prodhead-size`, вычисленной на этой же
+     странице; герой главной (h1 внутри `[data-lede]` или блока вводной)
+     — витрина и сюда не входит. */
+  {
+    const probe = document.createElement('span')
+    probe.style.cssText = 'position:absolute;visibility:hidden;font-size:var(--prodhead-size)'
+    document.body.append(probe)
+    const want = parseFloat(getComputedStyle(probe).fontSize)
+    probe.remove()
+    for (const h of document.querySelectorAll('main h1')) {
+      if (!shown(h) || h.closest('[data-ground="deck"], [class*="lede"], [class*="hero"], [class*="intro"]')) continue
+      const got = parseFloat(getComputedStyle(h).fontSize)
+      if (Math.abs(got - want) > 1) out.h1Size.push(`${name(h)} — ${Math.round(got)}px, а заголовок страницы ${Math.round(want)}px`)
+    }
+  }
+
+  /* 4a4a · любой заголовок — с заглавной буквы (И701).
+     Магазин отдаёт имена строчными («capsules»), и первую букву пишет
+     заглавной экран: `::first-letter` всех уровней в base.css. Он не доходит
+     сквозь флекс, сетку и строчный блок — у такого заголовка буква должна
+     выйти заглавной своим правилом на блоке с именем. Меряется путь до первой
+     буквы вверх от текста: блоки по дороге до заголовка (или до строчного
+     блока — он свою первую букву держит сам) — те, чей `::first-letter`
+     букву достаёт; флекс и сетка путь рвут (их ребёнок — уже отдельный
+     блок, `::first-letter` заголовка до него не доходит). Хоть у одного
+     блока на пути `::first-letter` ставит заглавную — или `text-transform`
+     у текста — буква заглавная. */
+  {
+    const flow = new Set(['block', 'list-item', 'flow-root', 'table-cell', 'table-caption', 'inline-block'])
+    const ups = (v) => v === 'uppercase' || v === 'capitalize'
+    for (const h of document.querySelectorAll('h1, h2, h3, h4, h5, h6')) {
+      if (!shown(h)) continue
+      const walk = document.createTreeWalker(h, NodeFilter.SHOW_TEXT, { acceptNode: (t) => (/\S/.test(t.data) && t.parentElement.getClientRects().length ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP) })
+      const text = walk.nextNode()
+      const c = text?.data.trim()[0]
+      if (!c || c === c.toLocaleUpperCase() || ups(getComputedStyle(text.parentElement).textTransform)) continue
+      const boxes = []
+      for (let el = text.parentElement; ; el = el.parentElement) {
+        const d = getComputedStyle(el).display
+        if (flow.has(d)) boxes.push(el)
+        else if (d !== 'inline' && d !== 'contents') break
+        if (el === h || d === 'inline-block') break
+      }
+      if (boxes.some((b) => ups(getComputedStyle(b, '::first-letter').textTransform))) continue
+      out.headCase.push(`${name(h)} — «${h.textContent.trim().slice(0, 30)}» начинается строчной: первую букву не достаёт ни \`::first-letter\`, ни \`text-transform\``)
+    }
+  }
+
+  /* 4a4b · внутри окна нет текста крупнее его заголовка (И562).
+     Заголовок окна — вершина окна. Экран «корзина пуста» ставил внутрь
+     шторки заголовок раздела: 36px под заголовком шторки 28 (заказчик
+     29.09.2026: «внутренний текст больше по размеру заголовка формы»).
+     Окна на обходе закрыты, поэтому каждое окно страницы открывается на миг
+     (`showPopover`/`show`), мерится и закрывается обратно: кегль любого
+     видимого текста в нём сверяется с первым заголовком окна. */
+  for (const pane of document.querySelectorAll('[data-pane]')) {
+    let opened = false
+    try {
+      if (pane.popover && !pane.matches(':popover-open')) { pane.showPopover(); opened = true }
+      else if (pane.tagName === 'DIALOG' && !pane.open) { pane.show(); opened = true }
+    } catch { /* окно, которое не открывается само, мерится, когда открыто */ }
+    /* Заголовок окна — заголовок его шапки (PaneHead, И671), каким бы тегом он
+       ни стоял: у протокола партии это `span` (окно — не раздел страницы), и
+       первым «заголовком» замер брал h3 протокола в теле — 18 при шапке 22,
+       13 находок на шапку, которая и есть вершина (05.10.2026). Нет шапки —
+       первый видимый заголовок, как прежде. */
+    const head = [...pane.querySelectorAll('[class*="bar"] [class*="title"]')].find((e) => shown(e) && e.closest('[data-pane]') === pane)
+    const title = head ?? [...pane.querySelectorAll('h1, h2, h3')].find(shown)
+    if (title) {
+      const top = parseFloat(getComputedStyle(title).fontSize)
+      const walk = document.createTreeWalker(pane, NodeFilter.SHOW_TEXT)
+      const seen = new Set()
+      for (let t = walk.nextNode(); t; t = walk.nextNode()) {
+        const e = t.parentElement
+        if (!e || seen.has(e) || !t.textContent.trim() || title.contains(e) || !shown(e)) continue
+        seen.add(e)
+        const got = parseFloat(getComputedStyle(e).fontSize)
+        if (got > top + 0.5) out.paneTop.push(`${name(e)} — ${Math.round(got)}px, а заголовок окна «${title.textContent.trim().slice(0, 30)}» ${Math.round(top)}px`)
+      }
+    }
+    if (opened) {
+      /* Закрывается БЕЗ ХОДА: окно уезжает `--open-t` (`display … allow-discrete`,
+         pane.module.css), и следующие семьи того же замера видели уходящие окна
+         на странице — ссылки видеоотзывов и строки меню связи «не отзывались»,
+         перехваченные плитками героя и эффектов (779 находок stolen 05.10.2026). */
+      const was = pane.style.transition
+      pane.style.transition = 'none'
+      try { if (pane.popover) pane.hidePopover(); else pane.close() } catch { /* уже закрыто */ }
+      void pane.offsetHeight
+      pane.style.transition = was
+    }
+  }
+
+  /* 4a4b · текст по ролям (И674). Пара «кегль / толщина» каждого видимого
+     текста даётся какой-нибудь ролью текста (`--<роль>-size` и
+     `--<роль>-weight`, их выпускает строитель шкал) или надписью органа
+     (`--ctrl-fs-*` толщиной `--label-weight`). Иначе текст набран мимо
+     системы: число на месте, «жирное» браузера (`<strong>`, `<th>` — 700),
+     чужой стиль. Роли меряются пробой рядом с текстом — в том же контейнере:
+     роли на `cqi` (герой, имя страницы) иначе читались бы чужой колонкой.
+     Логотип (`data-logo`) — знак марки, а не текст; панель вида (`.lp`) — не
+     сайт. Слово заказчика 03.10.2026: «в проверку закладывай, чтобы она
+     проверяла, всё ли по ролям, или где-то проебали». */
+  if (textRoles?.length) {
+    const pairOf = (size, weight) => `${Math.round(parseFloat(size) * 2) / 2}/${weight}`
+    const roleSets = new Map()
+    const rolesAt = (host) => {
+      if (roleSets.has(host)) return roleSets.get(host)
+      const probe = document.createElement('span')
+      probe.textContent = 'x'
+      probe.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none'
+      host.append(probe)
+      const pairs = new Set()
+      for (const r of textRoles) {
+        probe.style.fontSize = `var(--${r}-size)`
+        probe.style.fontWeight = `var(--${r}-weight)`
+        const cs = getComputedStyle(probe)
+        pairs.add(pairOf(cs.fontSize, cs.fontWeight))
+      }
+      for (const v of ['--ctrl-fs-xs', '--ctrl-fs-sm', '--ctrl-fs-base', '--ctrl-fs']) {
+        probe.style.fontSize = `var(${v})`
+        probe.style.fontWeight = 'var(--label-weight)'
+        const cs = getComputedStyle(probe)
+        pairs.add(pairOf(cs.fontSize, cs.fontWeight))
+      }
+      /* Колонка «текст и кадр» в столбике (примитив `lede`, И243) держит роли
+         героя и вводного абзаца размером, который они имели в миг складывания
+         (`--hero-fold`, `--lede-intro`): та же роль, замороженная на шве, а не
+         число на месте. Без них заголовок героя на 700 (32.7 / 500) и его
+         абзац (18 / 400) читались «мимо ролей» (05.10.2026). */
+      for (const [size, weight] of [['min(var(--hero-size), var(--hero-fold, var(--hero-size)))', 'var(--hero-weight)'], ['var(--lede-intro, var(--intro-size))', 'var(--intro-weight)']]) {
+        probe.style.fontSize = size
+        probe.style.fontWeight = weight
+        const cs = getComputedStyle(probe)
+        pairs.add(pairOf(cs.fontSize, cs.fontWeight))
+      }
+      probe.remove()
+      roleSets.set(host, pairs)
+      return pairs
+    }
+    const typed = new Set()
+    const walkType = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT)
+    for (let t = walkType.nextNode(); t; t = walkType.nextNode()) {
+      const e = t.parentElement
+      if (!e || typed.has(e) || !t.textContent.trim()) continue
+      typed.add(e)
+      if (e.closest('svg, script, style, noscript, template, [data-logo], .lp, [aria-hidden="true"]') || !shown(e)) continue
+      const cs = getComputedStyle(e)
+      const got = pairOf(cs.fontSize, cs.fontWeight)
+      if (!rolesAt(e.parentElement ?? e).has(got)) out.typeRole.push(`${name(e)} — ${got}: такой пары не даёт ни одна роль текста и ни одна надпись органа`)
+    }
+  }
+
+  /* 4a4c · марка не мельче текста описания (И563).
+     Стояла 13 при тексте 20 (заказчик: «и ты предлагаешь бренд мелким
+     текстом?», «бренд и не может быть мельче текста описания»). Кегль
+     любой видимой марки (`[class*="brand"]`: карточка, карта товара,
+     поиск) сверяется с ролью текста `--body-size` этой же страницы. */
+  {
+    const probe = document.createElement('span')
+    probe.style.cssText = 'position:absolute;visibility:hidden;font-size:var(--body-size)'
+    document.body.append(probe)
+    const body = parseFloat(getComputedStyle(probe).fontSize)
+    probe.remove()
+    /* Марка карточки полки — своя роль `maker`, ступенью ниже имени (заказчик
+       30.09.2026 со снимком полки: «явно название бренда должно быть меньше»);
+       её пол — строка фактов этой же карточки (ROLE_ORDER, tools/scale.mjs), а
+       не текст страницы: сверка с телом давала 182 находки на решение
+       заказчика (05.10.2026). */
+    const floorOf = (brand) => {
+      /* Карточка товара — статья (`article`) вокруг марки (класс самой марки
+         «ProductCard-…__brand» тоже содержит «Card», и `closest` по классу
+         находил её саму). Пол марки в карточке — строка фактов этой карточки; в
+         одежде без строки фактов (имя, цена, кнопка) пола нет: ступень марки
+         держит строитель шкал (ROLE_ORDER), а сверка с текстом страницы спорила
+         бы с решением заказчика. */
+      const card = brand.closest('article')
+      if (card) {
+        const facts = card.querySelector('[class*="facts"]')
+        const line = facts && [...facts.querySelectorAll('*')].find((e) => shown(e) && e.textContent.trim() && !e.children.length)
+        return line ? { px: parseFloat(getComputedStyle(line).fontSize), what: 'строке фактов карточки' } : null
+      }
+      return { px: body, what: 'тексте' }
+    }
+    for (const brand of document.querySelectorAll('main [class*="brand"], [data-pane] [class*="brand"]')) {
+      if (!shown(brand) || !brand.textContent.trim() || brand.closest('header, footer')) continue
+      const b = parseFloat(getComputedStyle(brand).fontSize)
+      const floor = floorOf(brand)
+      if (floor && b < floor.px - 0.5) { out.brandTier.push(`${name(brand)} — марка ${Math.round(b)}px при ${floor.what} ${Math.round(floor.px)}px`); break }
+    }
+  }
+
+  /* 4a5 · заголовок → его текст одним воздухом (И524).
+     Одно отношение — одна ступень на всём сайте: от низа заголовка до
+     строки под ним (лид, описание, справка) — роль `--air-line`. Заказчик
+     сравнил страницу товара с самой собой: имя → описание 14px, «Состав» →
+     текст 0px; по сайту стояло три ответа (8, 14, 20). Мерится видимый
+     h1–h3 вне карточек против следующего видимого соседа-текста; сосед
+     сбоку (заголовок слева, текст справа) и сосед-сетка сюда не входят. */
+  {
+    const probe = document.createElement("div")
+    probe.style.cssText = "position:absolute;visibility:hidden;inline-size:0;block-size:var(--air-line)"
+    document.querySelector("main")?.append(probe)
+    const lineAir = probe.getBoundingClientRect().height
+    /* Одно описание частями (`[data-parts]`, И581): подзаголовок части → её
+       текст — тесный воздух `--air-tight`, а не воздух строк страницы. */
+    probe.style.blockSize = "var(--air-tight)"
+    const tightAir = probe.getBoundingClientRect().height
+    probe.remove()
+    for (const h of document.querySelectorAll("main :is(h1, h2, h3)")) {
+      const want = h.closest("[data-parts]") && tightAir > 0 ? tightAir : lineAir
+      if (!shown(h) || want <= 0 || h.closest("li, dialog, [class*=card], [class*=Card]")) continue
+      let n = h.nextElementSibling
+      while (n && !shown(n)) n = n.nextElementSibling
+      if (!n || !(n.tagName === "P" || /note|summary|lede/.test(String(n.className)))) continue
+      const a = h.getBoundingClientRect(), b = n.getBoundingClientRect()
+      if (b.top < a.bottom - 1) continue
+      const gap = b.top - a.bottom
+      if (Math.abs(gap - want) > 2) out.headAir.push(`${name(h)} → ${name(n)} — ${Math.round(gap)}px, а заголовок → текст ${Math.round(want)}px`)
+    }
+  }
+
+  /* 4a5b · часть → часть одного описания воздухом строки (И581).
+     Части одного описания (`[data-parts]`: «Описание / Состав / Как
+     применять» у товара) стоят `--air-row` друг от друга — теснее
+     разделов страницы, но различимо от «подзаголовок → текст». */
+  {
+    const probe = document.createElement("div")
+    probe.style.cssText = "position:absolute;visibility:hidden;inline-size:0;block-size:var(--air-row)"
+    document.querySelector("main")?.append(probe)
+    const want = probe.getBoundingClientRect().height
+    probe.remove()
+    for (const box of document.querySelectorAll("main [data-parts]")) {
+      const parts = [...box.children].filter((x) => x.tagName === "SECTION" && shown(x))
+      for (let i = 1; i < parts.length; i++) {
+        const gap = parts[i].getBoundingClientRect().top - parts[i - 1].getBoundingClientRect().bottom
+        if (want > 0 && Math.abs(gap - want) > 2) out.partAir.push(`${name(parts[i - 1])} → ${name(parts[i])} — ${Math.round(gap)}px, а часть → часть одного описания ${Math.round(want)}px`)
+      }
+    }
+  }
+
+  /* 4a6 · раздел → раздел одним воздухом (И524).
+     Разделы текста с заголовком h2 внутри одного блока — «Доставка»,
+     «Возврат», «Описание / Состав / Как применять» у товара — одно
+     отношение, и стоят они одной ступенью `--air-block`: документ стоял
+     52px, разделы товара 40. Верхние блоки страницы (дети `main`) — это
+     швы между блоками, их меряет airOrder. */
+  {
+    const probe = document.createElement("div")
+    probe.style.cssText = "position:absolute;visibility:hidden;inline-size:0;block-size:var(--air-block)"
+    document.querySelector("main")?.append(probe)
+    const want = probe.getBoundingClientRect().height
+    probe.remove()
+    const titled = (x) => [...x.querySelectorAll("h2")].some((h) => shown(h) && h.closest("section") === x)
+    for (const c of document.querySelectorAll("main section")) {
+      if (!shown(c) || want <= 0 || c.parentElement?.tagName === "MAIN" || !titled(c)) continue
+      let a = c.previousElementSibling
+      while (a && !shown(a)) a = a.previousElementSibling
+      if (!a || a.tagName !== "SECTION" || !titled(a)) continue
+      const gap = c.getBoundingClientRect().top - a.getBoundingClientRect().bottom
+      if (gap >= 0 && Math.abs(gap - want) > 2) out.partAir.push(`${name(a)} → ${name(c)} — ${Math.round(gap)}px, а раздел → раздел ${Math.round(want)}px`)
+    }
+  }
+
+  /* 4a7 · строка длиннее меры (И676). Читаемый абзац вне карточек, таблиц,
+     форм, окон и меню: знаков в строке в среднем больше верхнего края
+     `TYPE.measure` (80; Bringhurst 45–75, WCAG 1.4.8 — не больше 80) — глаз
+     теряет начало следующей строки. Слово заказчика 03.10.2026 о подписи
+     полки в 150 знаков: «должен быть 53–74, как у профессионалов? … давай».
+     Прежде здесь стояла обратная семья «потолок у текста» (И525: «у текста потолка
+     нет»). Строк — сколько разных верхов у прямоугольников текста абзаца.
+     Одна строка — не мера, её не меряем. Подпись под заголовком (`hgroup > p`,
+     строка под именем страницы) — одна-три строки одним взглядом с
+     заголовком: её потолок — 90, верх коридора Баттерика (`TYPE.measureCaption`,
+     И680: ширину подписи заказчик взял у Gymshark). */
+  for (const el of document.querySelectorAll('main :is(p, li, dd, blockquote)')) {
+    if (!shown(el) || el.closest('dialog, table, form, nav, [class*=card], [class*=Card]')) continue
+    if (el.querySelector('p, li, dd, blockquote')) continue
+    const max = el.matches(':is(hgroup, [class*=pagehead]) > p:not([class*=note])') ? captionMax : measureMax
+    const text = (el.textContent || '').replace(/\s+/g, ' ').trim()
+    if (text.length <= max) continue
+    const range = document.createRange()
+    range.selectNodeContents(el)
+    const lines = new Set([...range.getClientRects()].filter((r) => r.width > 0 && r.height > 0).map((r) => Math.round(r.top))).size
+    if (lines < 2) continue
+    const perLine = text.length / lines
+    if (perLine > max) out.lineLong.push(`${name(el)} — ${Math.round(perLine)} знаков в строке при норме до ${max}`)
+  }
+
+  /* 4a8 · шапка ряда (И678). Шапка со строкой (`data-row`, заголовок в
+     `hgroup`): кнопки листания и выход «ко всему» кончаются у правого края
+     шапки и стоят по середине строки заголовка, подпись — под заголовком.
+     Дефект 03.10.2026: подпись получила меру строки (И676), поместилась в
+     строку заголовка и встала справа, а кнопки выдавило на середину шапки —
+     заказчик: «кнопку View all сделал слева от текста, почти по центру блока —
+     так не делают». */
+  /* Строка заголовка — его заглавные первой строки, а не коробка элемента
+     (И738, 04.10.2026: кнопки встают по середине заглавных, `.5cap`; коробку
+     срез `text-box` сдвигает относительно букв, и прежний замер «середина
+     коробки» давал 4px на каждой шапке — 163 находки 05.10.2026). Полоса
+     заглавных — пустой строчный блок высотой `1cap` на линии букв: его низ —
+     базовая линия, верх — верх заглавных; срез есть или нет — всё равно. */
+  const capsMid = (h) => {
+    const probe = document.createElement('span')
+    probe.style.cssText = 'display:inline-block;inline-size:0;block-size:1cap;vertical-align:baseline'
+    h.prepend(probe)
+    const r = probe.getBoundingClientRect()
+    probe.remove()
+    return (r.top + r.bottom) / 2
+  }
+  for (const head of document.querySelectorAll('main [data-row]:has(> hgroup > h2)')) {
+    const h = head.querySelector(':scope > hgroup > h2')
+    if (!shown(h)) continue
+    const hr = h.getBoundingClientRect()
+    const mid = (r) => (r.top + r.bottom) / 2
+    const acts = head.querySelector(':scope > hgroup + *')
+    const ar = acts && acts.getBoundingClientRect()
+    if (ar && ar.width > 0) {
+      const off = head.getBoundingClientRect().right - ar.right
+      if (Math.abs(off) > 2) out.headActs.push(`${name(head)} — кнопки кончаются в ${Math.round(off)}px от правого края шапки`)
+      const line = capsMid(h)
+      if (Math.abs(mid(ar) - line) > 2) out.headActs.push(`${name(head)} — кнопки не по строке заголовка: середины расходятся на ${Math.round(Math.abs(mid(ar) - line))}px`)
+    }
+    const cap = head.querySelector(':scope > hgroup > p')
+    if (cap && shown(cap) && cap.getBoundingClientRect().top < hr.bottom - 1) out.headActs.push(`${name(head)} — подпись стоит в строке заголовка, а не под ним`)
+  }
+
   /* 4b · одна в ряду.
      Полка, у которой в ряду одна карточка, — уже не полка: сравнивать не с
      чем, соседа не видно, а до пятого товара мотать вчетверо дольше. То же
@@ -1019,6 +1456,22 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
     out.name.push(`${fieldOf(el)} — без подписи${hint ? ` (подсказка «${hint.slice(0, 24)}» — не имя)` : ''}`)
   }
 
+  /* 7а · два способа одного действия: у поля числа свои стрелки браузера,
+     а рядом — «−» и «+» счётчика. Покупатель видит два управления одним
+     числом в одном месте; принято одно — кнопки (Baymard, «Quantity
+     Selectors»; Shopify Dawn, Amazon) (заказчик 28.09.2026: «в количестве
+     товаров у тебя ДВА способа изменения количества»; И515). Признак —
+     `appearance` поля числа не снят, а в той же группе есть кнопки. */
+  for (const el of document.querySelectorAll('input[type="number"]')) {
+    if (!shown(el)) continue
+    const group = el.closest('[role="group"], fieldset, form')
+    if (!group || !group.querySelector('button')) continue
+    const look = getComputedStyle(el).appearance
+    if (look === 'textfield' || look === 'none') continue
+    const key = `w:${el.getAttribute('name') || ''}`
+    if (!seen.has(key)) { seen.add(key); out.twoWays.push(`${fieldOf(el)} — стрелки браузера рядом с кнопками «−» и «+»`) }
+  }
+
   /* 7б · поле мельче 16px на телефоне: iOS Safari при фокусе увеличивает
      страницу и назад не возвращает — покупатель оформляет заказ в
      съехавшем окне (Эмиль Ковальский, mobile-native, исправление 4).
@@ -1147,8 +1600,17 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
    * крупная светлая цифра заголовку не соперник. */
   const h1 = big.get(1)
   if (h1) {
+    /* Слайд ленты за её краем не виден: на экране один слайд, и заголовок
+       второго слайда в миг показа — единственный крупный (находка 28.09.2026
+       на слайдере героя; слайдер снят 01.10.2026, правило — для любой ленты). */
+    const offSlide = (el) => {
+      const sl = el.closest('[aria-roledescription="slide"]')
+      if (!sl?.parentElement) return false
+      const band = sl.parentElement.getBoundingClientRect(), r = sl.getBoundingClientRect()
+      return r.left >= band.right - 1 || r.right <= band.left + 1
+    }
     for (const el of document.querySelectorAll('b,strong,span,div,p,i,em,a,button')) {
-      if (!painted(el)) continue
+      if (!painted(el) || offSlide(el)) continue
       const own = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())
       if (!own) continue
       const cs = getComputedStyle(el)
@@ -1193,6 +1655,109 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
       if (seen.has(key)) continue
       seen.add(key)
       out.wideCtrl.push(`«${name(el)}» ${Math.round(b.width)}px при пороге ${Math.round(cap)}`)
+    }
+  }
+
+  /* Пустая полоса под карточкой ряда (поправка И762).
+   *
+   * Ячейки ряда — рельсы или сетки — одной высоты, по самой высокой карточке.
+   * У карточки без рамки низ ячейки глазу не виден, виден низ последней
+   * строки. Стоит одной карточке вырасти на строку (заголовок, строка «дата ·
+   * время чтения · рубрика» в две строки), и под остальными остаётся пустая
+   * полоса, которая прибавляется к воздуху до следующего раздела. Заказчик
+   * 05.10.2026 видел это дважды за день: статьи → вопросы 69 и 57 против 49 и
+   * 39 у отзывов. В файле этого не видно — перенос зависит от длины слов и
+   * ширины ячейки; мерится отрисованным: от низа видимого (строки с учётом
+   * обрезки, снимки, закрашенные коробки и кромки, слой рамки) до низа ячейки,
+   * у каждой ячейки ряда. Поле самой плотной ячейки — устройство карточки, оно
+   * не в счёт. Находка — когда ВИДИМЫЙ низ ряда (самая низкая строка среди
+   * ячеек в окне) выше низа ряда: ряд тянет карточка за краем рельсы, глаз её
+   * не видит, а пустота под видимыми прибавляется к воздуху. Сетка, где видны
+   * все плитки, неровным низом не наказывается: самая длинная плитка видна, и
+   * воздух до следующего раздела идёт от неё (на ноутбуке «Shop by effect» и
+   * отзывы, 05.10.2026). */
+  {
+    const inked = (cs) => alpha(cs.backgroundColor) > 0.05
+      || (parseFloat(cs.borderBottomWidth) > 0 && alpha(cs.borderBottomColor) > 0.05)
+      || (cs.boxShadow !== 'none' && (cs.boxShadow.match(/(?:rgba?|oklab|oklch|lab|lch|color)\([^)]*\)/g) ?? []).some((c) => alpha(c) > 0.05))
+    const hidden = (el) => { const cs = getComputedStyle(el); return cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) < 0.05 }
+    const cut = (el, cell, top, bot) => {
+      for (let a = el; a && a !== cell.parentElement; a = a.parentElement) {
+        const cs = getComputedStyle(a)
+        if (cs.overflowX !== 'visible' || cs.overflowY !== 'visible') { const r = a.getBoundingClientRect(); top = Math.max(top, r.top); bot = Math.min(bot, r.bottom) }
+      }
+      return bot - top > 1 ? bot : -Infinity
+    }
+    const inkBottom = (cell) => {
+      let bot = -Infinity
+      for (const el of [cell, ...cell.querySelectorAll('*')]) {
+        if (hidden(el) || el.closest('[hidden]')) continue
+        const r = el.getBoundingClientRect()
+        if (r.width < 1 || r.height < 1) continue
+        const framed = inked(getComputedStyle(el)) || ['::before', '::after'].some((p) => { const ps = getComputedStyle(el, p); return ps.content !== 'none' && inked(ps) })
+        if (framed || /^(img|svg|video|canvas)$/.test(el.localName)) bot = Math.max(bot, cut(el, cell, r.top, r.bottom))
+        for (const n of el.childNodes) {
+          if (n.nodeType !== 3 || !n.textContent.trim()) continue
+          const rg = document.createRange(); rg.selectNodeContents(n)
+          for (const q of rg.getClientRects()) if (q.width > 0) bot = Math.max(bot, cut(el, cell, q.top, q.bottom))
+        }
+      }
+      return bot
+    }
+    for (const list of document.querySelectorAll('ul, ol')) {
+      const cells = [...list.children].filter((c) => c.localName === 'li' && !hidden(c) && c.getBoundingClientRect().height >= 120)
+      if (cells.length < 2) continue
+      const rows = new Map()
+      for (const c of cells) { const r = c.getBoundingClientRect(); const k = Math.round(r.top); rows.set(k, [...(rows.get(k) ?? []), { c, r }]) }
+      for (const row of rows.values()) {
+        if (row.length < 2 || row.some((x) => Math.abs(x.r.height - row[0].r.height) > 1)) continue
+        const blank = row.map((x) => ({ ...x, gap: x.r.bottom - inkBottom(x.c), seen: shown(x.c) })).filter((x) => Number.isFinite(x.gap))
+        const inView = blank.filter((x) => x.seen)
+        if (blank.length < 2 || !inView.length) continue
+        const tight = blank.reduce((a, x) => (x.gap < a.gap ? x : a))
+        const near = inView.reduce((a, x) => (x.gap < a.gap ? x : a))
+        if (near.gap - tight.gap <= 8) continue
+        const head = (list.closest('section')?.querySelector('h2, h1')?.textContent ?? '').trim().slice(0, 24)
+        const key = `railTail:${head}:${name(list)}`
+        if (seen.has(key)) continue
+        seen.add(key)
+        out.railTail.push(`ряд «${head || name(list)}» — видимый низ на ${Math.round(near.gap - tight.gap)} px выше низа ряда: ряд тянет «${name(tight.c.querySelector('h2, h3, a') ?? tight.c)}» за краем окна`)
+      }
+    }
+  }
+
+  /* Кнопка плитки под пальцем не растёт (поправка И764).
+   *
+   * Шкала под пальцем поднимает рост органа на ступень (40 → 48), и кнопка с
+   * надписью в ячейке ряда — «Add» карточки товара — вырастала вместе с целью:
+   * на полке телефона 24 кнопки ростом кнопки страницы товара (заказчик
+   * 05.10.2026: «кнопки Add для мобайла нужно делать меньше?»). Allbirds и
+   * cbdin.bg на 390 — 40. Рисунок плитки — `--ctrl-face-md` (порог
+   * `CONTROL.faceMd`), цель 44 — запасом `.tap`. Меряется под пальцем:
+   * закрашенная или обведённая кнопка с надписью внутри ячейки списка, одна и
+   * та же (тег и класс) три раза и больше, выше рисунка плитки. */
+  if (phone && tileFace) {
+    const groups = new Map()
+    for (const el of document.querySelectorAll('button, a, [role="button"], input[type="submit"]')) {
+      /* Плитка — ячейка с предметом: снимок или заголовок рядом с кнопкой.
+         Кнопки категорий первого экрана стоят в ячейках по одной — это
+         ряд кнопок, а не плиток, им рост пальца положен. */
+      const cell = el.closest('li')
+      if (!cell || !cell.querySelector('img, h2, h3, h4') || !shown(el)) continue
+      const b = el.getBoundingClientRect()
+      if (b.height < 28 || b.height > 96 || b.width >= innerWidth * 0.6) continue
+      if ((el.innerText || el.value || '').trim().length < 2) continue
+      const cs = getComputedStyle(el)
+      const painted = alpha(cs.backgroundColor) > 0.05 || (parseFloat(cs.borderTopWidth) > 0 && alpha(cs.borderTopColor) > 0.05)
+        || ['::before', '::after'].some((p) => { const ps = getComputedStyle(el, p); return ps.content !== 'none' && alpha(ps.backgroundColor) > 0.05 })
+      if (!painted) continue
+      const key = `${el.localName}.${String(el.className)}`
+      const g = groups.get(key) ?? { n: 0, h: 0, el }
+      g.n++; g.h = Math.max(g.h, b.height); groups.set(key, g)
+    }
+    for (const g of groups.values()) {
+      if (g.n < 3 || g.h <= tileFace + 0.5) continue
+      out.tileGrow.push(`«${name(g.el)}» ×${g.n} — ${Math.round(g.h)} px под пальцем при рисунке плитки ${tileFace}`)
     }
   }
 
@@ -1267,12 +1832,30 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
    * дефект. Признак — `position` `fixed` или `sticky` у перехватчика или у
    * любого его предка.
    */
+  /** Видимая коробка: коробка органа, обрезанная каждым предком, который режет
+   *  своё содержимое по оси (`overflow` не `visible`). Ничего не видно — null. */
+  const clipOf = (node) => {
+    const b = node.getBoundingClientRect()
+    let l = b.left, t = b.top, rt = b.right, bt = b.bottom
+    for (let p = node.parentElement; p && p !== document.documentElement; p = p.parentElement) {
+      const ps = getComputedStyle(p)
+      if (ps.overflowX === 'visible' && ps.overflowY === 'visible') continue
+      const pr = p.getBoundingClientRect()
+      if (ps.overflowX !== 'visible') { l = Math.max(l, pr.left); rt = Math.min(rt, pr.right) }
+      if (ps.overflowY !== 'visible') { t = Math.max(t, pr.top); bt = Math.min(bt, pr.bottom) }
+    }
+    return rt > l && bt > t ? { left: l, top: t, right: rt, bottom: bt, width: rt - l, height: bt - t } : null
+  }
   for (const el of document.querySelectorAll('a[href], button, [role="button"], label, summary')) {
     if (!shown(el)) continue
     const cs = getComputedStyle(el)
     if (cs.pointerEvents === 'none') continue
-    const r = el.getBoundingClientRect()
-    if (r.width < 8 || r.height < 8) continue
+    /* Меряется ВИДИМАЯ часть органа: у ленты, которая едет вбок (полки
+       героя на 1024), кнопка у края наполовину за краем ленты, и точки в
+       спрятанной половине попадали в снимок героя — «перехватывает img»
+       там, где пальцу и мыши органа просто не видно (05.10.2026). */
+    const r = clipOf(el)
+    if (!r || r.width < 8 || r.height < 8) continue
     /* Орган, уехавший за край окна, меряется на другой прокрутке. */
     if (r.top < 4 || r.bottom > window.innerHeight - 4) continue
     let dead = 0, seenPoints = 0, thief = ''
@@ -1281,6 +1864,13 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
         const hit = document.elementFromPoint(
           r.left + (r.width * ix) / 8, r.top + (r.height * iy) / 5)
         if (!hit) continue
+        /* Оверлей сервера разработки Next (`<nextjs-portal>`) — не сайт: на
+           сборке его нет, а в разработке его хозяин висит над углом страницы
+           с `position:static`, свой `fixed` у него в теневом дереве, и
+           признак ниже его не видит. Кнопка Publish панели меряет вид на
+           сервере разработки и браковала «Add» полки каталога @1440 за
+           «перехватывает nextjs-portal» (28.09.2026). */
+        if (hit.localName === 'nextjs-portal') continue
         seenPoints++
         if (hit === el || el.contains(hit) || hit.contains(el)) continue
         let over = false
@@ -1362,6 +1952,16 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
       covered = Math.max(covered, (k.width * k.height) / (eb.width * eb.height || 1))
     }
     if (covered >= 0.6) continue
+    /* Орган НА СНИМКЕ (сердце в углу кадра карточки, И652): его пол — картинка,
+       а не краска родителя, и слоями стилей его не узнать — `ground` видел под
+       сердцем лист карточки и давал 1.00 на каждой карточке (407 находок
+       05.10.2026). Подложку такого органа решает роль палитры «стекло»
+       (palette-solves-contrast); здесь он не меряется. Снимок — соседний, не
+       свой: середина органа лежит на картинке, которая не внутри него. */
+    const cx = eb.left + eb.width / 2, cy = eb.top + eb.height / 2
+    const onPicture = [...(el.parentElement?.closest('[class*="frame"], [class*="card"], [class*="Card"], li, figure') ?? el.parentElement ?? document.body).querySelectorAll('img, video, picture, canvas')]
+      .some((m) => { if (el.contains(m)) return false; const r = m.getBoundingClientRect(); return r.width > 0 && cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom })
+    if (onPicture) continue
     /* Пол — то, на чём орган стоит: слои начиная с родителя. */
     const g = ground(el.parentElement)
     if (!g.known) continue
@@ -1473,6 +2073,11 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
    * видно. */
   for (const img of document.images) {
     if (getComputedStyle(img).display === 'none') continue
+    /* Уходящее окно открыл и закрыл сам замер (4a4b): ленивые значки меню
+       полок в нём попросились в миг открытия и к замеру не доехали — дно
+       замера, а не страницы. Покупатель открывает меню нажатием, и значки
+       едут вместе с ним (03.10.2026, И663). */
+    if (img.closest('[data-leaving]')) continue
     const src = img.getAttribute('src') || img.currentSrc
     if (!src && !img.srcset) continue
     if (img.complete && img.naturalWidth > 0) continue
@@ -1529,7 +2134,13 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
     /* Видимость своя: общая `shown()` требует, чтобы элемент был виден на
        60% ширины, — а виновник переполнения ровно тем и плох, что он вдвое
        шире экрана, и по общей мерке был бы пропущен как «его не видно». */
+    /* Уходящее окно (`data-leaving`) — не переполнение: его на миг открыл и
+       закрыл сам замер выше (4a4b, кегль внутри окна), и закрытая шторка
+       ещё ход перехода уезжает за край, а потом пропадает. Семья ловила
+       «Your cart за правым краем на 390px» на всех ширинах — дно замера, а
+       не страницы (03.10.2026, И663). */
     const boxed = (el) => {
+      if (el.closest('[data-leaving]')) return false
       const cs = getComputedStyle(el)
       if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) < 0.05) return false
       const b = el.getBoundingClientRect()
@@ -1552,6 +2163,37 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
       if (seen.has(key)) continue
       seen.add(key)
       out.spill.push(`${name(el)} — за правым краем на ${Math.round(b.right - pageW)}px`)
+    }
+  }
+
+  /* 13б · лента вышла из колонки сайта (И598).
+   *
+   * `spill` выше мерит край ОКНА и нарочно пропускает всё, что лежит внутри
+   * прокручиваемого — иначе лента, листаемая вбок, считалась бы дефектом.
+   * Оттого лента, которая сама стояла шире колонки и уходила под край окна,
+   * была невидима для проверки: заказчик увидел её глазами («плашки все
+   * вылазят за ширину сайта», 01.10.2026), а проверки молчали. Здесь мерится
+   * не содержимое ленты, а её собственная коробка: прокручиваемый узел,
+   * у которого есть что листать, стоит внутри колонки — между линиями
+   * текста обёртки страницы. */
+  {
+    const w = document.querySelector('main[class*="__wrap"]:not([class*="flush"]), main [class*="__wrap"]:not([class*="flush"])')
+    if (w) {
+      const cs = getComputedStyle(w)
+      const wb = w.getBoundingClientRect()
+      const L = wb.left + parseFloat(cs.paddingLeft)
+      const R = wb.right - parseFloat(cs.paddingRight)
+      for (const el of document.querySelectorAll('main *')) {
+        if (getComputedStyle(el).overflowX === 'visible') continue
+        if (el.scrollWidth <= el.clientWidth + 1) continue
+        const b = el.getBoundingClientRect()
+        if (b.width < 2 || b.height < 2) continue
+        if (b.left >= L - 1 && b.right <= R + 1) continue
+        const key = `c:${name(el)}`
+        if (seen.has(key)) continue
+        seen.add(key)
+        out.offColumn.push(`${name(el)} — коробка ${Math.round(b.left)}–${Math.round(b.right)}, колонка ${Math.round(L)}–${Math.round(R)}`)
+      }
     }
   }
 
@@ -1681,9 +2323,12 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
       const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
       for (let n = walk.nextNode(); n; n = walk.nextNode()) {
         const txt = (n.nodeValue || '').trim()
-        /* Одно слово перенестись не может, а длинная строка — это уже не
-           подпись органа, а заголовок карточки: ему две строки положены. */
-        if (!/\s/.test(txt) || txt.length > 28) continue
+        /* Длинная строка — это уже не подпись органа, а заголовок карточки:
+           ему две строки положены. Одно слово тоже ломается — посередине
+           (`overflow-wrap: anywhere` основы): «Kosá|rba» в кнопке карточки
+           на окне 320 (И763). Это хуже переноса между словами, и меряется
+           так же. */
+        if (txt.length > 28) continue
         /* ВОПРОС — тоже не подпись. У `<summary>` в списке вопросов стоит
            целое предложение, и две строки ему положены так же, как заголовку
            карточки. Порог в 28 знаков его не отсеивал: болгарское «Колко
@@ -1695,7 +2340,7 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
         const key = `w:${txt}`
         if (seen.has(key)) break
         seen.add(key)
-        out.wrap.push(`«${txt}» — подпись ${name(el)} в две строки`)
+        out.wrap.push(/\s/.test(txt) ? `«${txt}» — подпись ${name(el)} в две строки` : `«${txt}» — слово в подписи ${name(el)} разломилось посередине`)
         break
       }
     }
@@ -1724,7 +2369,7 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
    * шапки как она есть.
    *
    * И занят верх только там, где шапка В САМОМ ДЕЛЕ стоит у верха окна,
-   * когда цель приехала (И512). Шапка, которая уезжает со страницей
+   * когда цель приехала (И773). Шапка, которая уезжает со страницей
    * (`position: relative`), не закрывает ничего; прилипшая к своей обёртке —
    * только пока обёртка не кончилась. На cbdshop.bg проверка без этого
    * вопроса дала 620 находок на шапке, которая не прилипает вовсе. Поэтому
@@ -1921,6 +2566,143 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
     }
   }
 
+  /* Граница органа видна (WCAG 1.4.11, И556). Поле, выбор, галочка,
+   * переключатель, счётчик: чтобы их найти, у них должна быть видна
+   * граница — кромка или своя заливка — 3 : 1 к полу, на котором они
+   * стоят. 29.09.2026 кромка полей и счётчиков на ночной карточке давала
+   * 2.76: строитель палитры мерил её против одной ступени, а карточка ночью
+   * стоит на другой, и ни одна проверка страницы кромку не мерила — нашёл
+   * это ручной замер. Выключенный орган норме не подлежит (WCAG
+   * исключает неактивные). Меряется и днём, и ночью: ночной проход берёт
+   * эту семью вместе с контрастом.
+   *
+   * Граница — у самого органа или у его рамки: поле количества без своей
+   * кромки стоит в пилюле-счётчике, и граница — у пилюли (WCAG 1.4.11
+   * спрашивает с органа целиком). Граница — кромка любой стороны, кольцо
+   * тени без размытия (`box-shadow: 0 0 0 1px`, в том числе inset) или своя
+   * заливка. Рамка ищется на два уровня вверх. */
+  const bound = (node) => {
+    const cs = getComputedStyle(node)
+    const g = ground(node.parentElement)
+    if (!g.known) return null
+    const under = over(g.layers, [255, 255, 255])
+    const fillA = alpha(cs.backgroundColor)
+    const fill = rgb(cs.backgroundColor)
+    const own = fill && fillA > 0.004 ? over([[fill, fillA]], under) : under
+    let best = pair(own, under)
+    /* Волосок — один физический пиксель (`--line-w`): на экране 150 % это
+       0.67 CSS-пикселя, и он виден; порог «от 1px» его пропускал. */
+    for (const side of ['Top', 'Right', 'Bottom', 'Left']) {
+      if (parseFloat(cs[`border${side}Width`]) <= 0 || cs[`border${side}Style`] === 'none') continue
+      const c = rgb(cs[`border${side}Color`])
+      const a = alpha(cs[`border${side}Color`])
+      if (c && a > 0.004) best = Math.max(best, pair(over([[c, a]], under), under))
+    }
+    for (const ring of (cs.boxShadow === 'none' ? [] : cs.boxShadow.split(/,(?![^(]*\))/))) {
+      const colour = ring.match(/(?:rgba?|oklch|oklab|color|hsla?)\([^)]*\)|#[0-9a-f]{3,8}/i)?.[0]
+      const nums = ring.replace(colour ?? '', '').match(/-?[\d.]+px/g)?.map(parseFloat) ?? []
+      /* Кольцо: без сдвига и размытия, с разлётом. */
+      if (!colour || nums.length < 4 || nums[0] || nums[1] || nums[2] || nums[3] <= 0) continue
+      const c = rgb(colour)
+      const a = alpha(colour)
+      if (c && a > 0.004) best = Math.max(best, pair(over([[c, a]], under), under))
+    }
+    return best
+  }
+  for (const el of document.querySelectorAll('input:not([type=hidden]):not([type=submit]):not([type=button]), select, textarea, [role=checkbox], [role=radio], [role=switch], [role=spinbutton]')) {
+    if (!shown(el) || el.disabled || el.getAttribute('aria-disabled') === 'true') continue
+    /* Галочку и точку выбора своего вида (`appearance: auto`) рисует браузер:
+       кольцо у него своё (Chrome — #767676, 4.5 : 1 на белом), а кромка стилей
+       (`--tick-edge`, base.css) на нём не рисуется вовсе. Мерить её — мерить
+       невидимое: точка выбора способа доставки давала 1.82 : 1 (05.10.2026). */
+    if (el.matches('input[type=radio], input[type=checkbox]') && getComputedStyle(el).appearance !== 'none') continue
+    let seenBy = null
+    for (let n = el, i = 0; n && i < 3; n = n.parentElement, i++) {
+      const got = bound(n)
+      if (got !== null) seenBy = Math.max(seenBy ?? 1, got)
+      if (seenBy !== null && seenBy >= 3) break
+    }
+    if (seenBy === null || seenBy >= 3) continue
+    const key = `edge:${name(el)}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    out.edge.push(`${name(el)} — граница видна на ${seenBy.toFixed(2)}:1 к своему полу (норма 3)`)
+  }
+
+  /* ruleAir · ТЕКСТ НА ВОЛОСКЕ (И741). Волосок-разделитель — край только
+     сверху (рамка со всех сторон — уже орган или карточка, у них своё поле).
+     Первая видимая строка текста под ним ближе 8 px к краю — находка, тот же
+     порог, что у соседних блоков (`collision`). Купил семью подвал: нижняя
+     полоса стояла листом на палубе, своя набивка узла листу проигрывала, и
+     ручка листа, обнулённая предком, поставила правила и оговорку о CBD
+     вплотную к волоску — в файлах отступ был, на экране ноль. */
+  const solid = (c) => !/^transparent$|,\s*0\)$/.test(c)
+  for (const el of document.body.querySelectorAll('*')) {
+    const cs = getComputedStyle(el)
+    const top = parseFloat(cs.borderTopWidth) || 0
+    if (!top || cs.borderTopStyle === 'none' || cs.borderTopStyle === 'hidden' || !solid(cs.borderTopColor)) continue
+    if ((parseFloat(cs.borderLeftWidth) || 0) || (parseFloat(cs.borderRightWidth) || 0) || (parseFloat(cs.borderBottomWidth) || 0)) continue
+    if (!shown(el)) continue
+    const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
+    let line = null
+    for (let t = walk.nextNode(); t && !line; t = walk.nextNode()) {
+      if (!t.textContent.trim() || !t.parentElement || !shown(t.parentElement)) continue
+      const range = document.createRange()
+      range.selectNodeContents(t)
+      const r = range.getClientRects()[0]
+      if (r && r.height > 0) line = r
+    }
+    if (!line) continue
+    const air = line.top - (el.getBoundingClientRect().top + top)
+    if (air >= 8) continue
+    const key = `ruleAir:${name(el)}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    out.ruleAir.push(`${name(el)} — от волоска до первой строки ${Math.round(air)}px (норма 8)`)
+  }
+
+  /* rowShape · ПОДЛОЖКА СТРОКИ ДВУМЯ ФОРМАМИ (И730). Строки меню и окон отвечают
+     руке видом «строка» (`row` из styles/btn.module.css), и форма подложки — его
+     же, одна на сайт. Заказчик 04.10.2026 двумя снимками шапки: под рукой в меню
+     связи — прямоугольник, в подменю «Oil» — пилюля («почему не единообразие
+     согласно дизайн-системе»): меню писало свой угол поверх вида. Класс вида
+     читается из таблиц стилей страницы (правило наведения `.<класс>:not(
+     [aria-disabled])` подложкой `--hover-row`) — имя у сборки своё; меряются все
+     строки, и закрытые меню тоже: угол — вычисленное значение, ему не нужно, чтобы
+     строку было видно. Больше одной формы на странице — находка у каждой
+     меньшинства. */
+  let rowClass = null
+  const findRow = (list) => {
+    for (const rule of list) {
+      if (rowClass) return
+      if (rule.cssRules && !rule.selectorText) { findRow(rule.cssRules); continue }
+      const m = rule.selectorText?.match(/^\.([\w-]+):not\(\[aria-disabled=["']?true["']?\]\):hover$/)
+      if (m && /var\(--hover-row\)/.test(rule.style?.getPropertyValue('background-color') ?? '')) rowClass = m[1]
+    }
+  }
+  for (const sheet of document.styleSheets) {
+    try { findRow(sheet.cssRules) } catch { /* чужая таблица без CORS */ }
+    if (rowClass) break
+  }
+  if (rowClass) {
+    const shapes = new Map()
+    for (const el of document.querySelectorAll(`.${CSS.escape(rowClass)}`)) {
+      const cs = getComputedStyle(el)
+      const r = [cs.borderTopLeftRadius, cs.borderTopRightRadius, cs.borderBottomRightRadius, cs.borderBottomLeftRadius].join(' ')
+      if (!shapes.has(r)) shapes.set(r, [])
+      shapes.get(r).push(el)
+    }
+    if (shapes.size > 1) {
+      const [main] = [...shapes].sort((a, b) => b[1].length - a[1].length)
+      for (const [r, els] of shapes) {
+        if (r === main[0]) continue
+        const el = els[0]
+        const words = (el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 24)
+        out.rowShape.push(`${name(el)} «${words}» — подложка строки углом ${r}, у ${main[1].length} строк страницы — ${main[0]} (${els.length} строк)`)
+      }
+    }
+  }
+
   return out
 }
 
@@ -1952,7 +2734,15 @@ const handDark = await browser.newContext({ colorScheme: 'dark', hasTouch: true,
    движения» ниже (`jar`). */
 const JAR = (process.env.CRAFT_COOKIE ?? '').split(';').map((x) => x.trim()).filter(Boolean)
   .map((pair) => ({ name: pair.slice(0, pair.indexOf('=')), value: pair.slice(pair.indexOf('=') + 1), url: BASE }))
-const jar = async (ctx) => { if (JAR.length) await ctx.addCookies(JAR); return ctx }
+/* Живое обновление сервера разработки (HMR) снимается: правка соседней сессии
+   перезагружала страницу посреди замера, и проверка падала на подменённом
+   документе («document.head — null», `check:part` 05.10.2026, И765). У сборки
+   этого канала нет — там ничего не меняется. */
+const jar = async (ctx) => {
+  if (JAR.length) await ctx.addCookies(JAR)
+  await ctx.routeWebSocket?.(/\/_next\/(webpack|turbopack)-hmr/, (ws) => ws.close())
+  return ctx
+}
 for (const ctx of [desk, hand, deskDark, handDark]) await jar(ctx)
 /* ── ПОЛОСЫ: почему проверка шла двадцать минут ────────────────────────────
  *
@@ -2005,16 +2795,15 @@ async function lanes(items, work, n = LANES) {
     }
   }))
 }
-const found = { lane: [], placeholder: [], measure: [], target: [], contrast: [], collision: [],
+const found = { lane: [], heroLane: [], placeholder: [], measure: [], target: [], contrast: [], collision: [],
                 weight: [], jump: [], name: [], heads: [], dress: [], clip: [],
-                swipe: [], stretch: [], broken: [], spill: [], focus: [], wrap: [],
-                anchor: [], outline: [], marker: [], sticky: [], theme: [], coarse: [], calm: [],
+                swipe: [], stretch: [], broken: [], spill: [], offColumn: [], focus: [], wrap: [],
+                anchor: [], outline: [], marker: [], sticky: [], fold: [], theme: [], coarse: [], calm: [],
                 inkDip: [], markInk: [],
                 covered: [],
-                ladder: [], wideCtrl: [], lopsided: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [],
+                ladder: [], wideCtrl: [], lopsided: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], lineLong: [], headActs: [],
                 twiceLift: [], sheetSize: [],
-                autofill: [], fieldZoom: [], h1Lines: [],
-                cardFold: [], heroFold: [], wasPrice: [] }
+                autofill: [], fieldZoom: [], h1Lines: [], twoWays: [], edge: [], fontLate: [], shift: [], ruleAir: [], rowShape: [], railTail: [], tileGrow: [] }
 
 /** Открыть страницу на ширине и померить.
  *
@@ -2028,10 +2817,15 @@ const found = { lane: [], placeholder: [], measure: [], target: [], contrast: []
 /** Открыть адрес проверки. Сессию личной страницы несёт заголовок
  *  `Cookie` — страницы берутся из общей стопки, поэтому заголовок ставится
  *  каждый раз, и у страницы без сессии он пустой (И263). */
+/* Сколько ждать страницу. На сборке хватает 30 секунд; сервер разработки
+   готовит каждый снимок под новую ширину заново, и главная со множеством
+   снимков на 1440 и 1600 не затихала за 30 — проверка части (`check:part`,
+   И765) ставит `CRAFT_OPEN_MS` больше. */
+const OPEN_MS = Math.max(30000, Number(process.env.CRAFT_OPEN_MS ?? 30000))
 async function openAt(page, path, options) {
   const { path: clean, cookie } = sessionOf(path, SESSIONS.cookie)
   await page.setExtraHTTPHeaders(cookie ? { cookie } : {})
-  return page.goto(BASE + clean, options)
+  return page.goto(BASE + clean, { timeout: OPEN_MS, ...options })
 }
 
 async function visit(path, w, { finger, dark = false }) {
@@ -2077,9 +2871,7 @@ async function visit(path, w, { finger, dark = false }) {
        ширинам. Ждём, пока кончатся все анимации, а не выдуманное число
        миллисекунд. */
     await still(page)
-    await page.evaluate(() => Promise.all(
-      document.getAnimations().map((a) => a.finished.catch(() => {})),
-    )).catch(() => {})
+    await settled(page)
     await page.waitForTimeout(150)
 
     /* Кольцо фокуса рисуется по `:focus-visible`, а он у браузера зависит от
@@ -2120,6 +2912,10 @@ async function visit(path, w, { finger, dark = false }) {
       /* Личная страница (`#as=` — сессия из kit.config.json) — форма
          оформления с полной корзиной: там меряется автозаполнение. */
       autofill: path.includes('#as='),
+      textRoles: TEXT_ROLES,
+      measureMax: TYPE.measure[1],
+      captionMax: TYPE.measureCaption,
+      tileFace: CONTROL.faceMd,
     })
 
     /* ── приклеенное — в НИЗКОМ окне ───────────────────────────────────────
@@ -2157,105 +2953,65 @@ async function visit(path, w, { finger, dark = false }) {
         }
         return out
       })
-
-      /* ── встаёт в окно ноутбука: карточка товара и первый экран (И510) ──
-         Заказчик 28.09.2026 с 13" ноутбука (окно ≈ 1536×730): герой главной
-         выше окна, у карточки полки цена и «Добави» под краем. Потолок
-         снимка (`60svh`, запрет 4) стоял, а блок целиком не мерил никто:
-         текст под снимком растёт сам. Меряется на ширинах стола в двух
-         низких окнах — 657 и 730 (`LAYOUT.laptopWindows`): карточку
-         подводят верхом под прилипшую шапку и смотрят, не ушёл ли низ
-         (кнопка) за край; первый экран (`data-hero`) — не выше окна за
-         вычетом шапки. Шапка — приклеенная или прибитая полоса у верха
-         шире половины окна; не прилипает — вычитать нечего. */
-      r.cardFold = []
-      r.heroFold = []
-      if (w >= LAYOUT.laptopFrom) {
-        for (const height of LAYOUT.laptopWindows) {
-          await page.setViewportSize({ width: w, height })
-          const got = await page.evaluate(async (height) => {
-            const wait = (ms) => new Promise((ok) => setTimeout(ok, ms))
-            const html = document.documentElement
-            const was = html.style.scrollBehavior
-            html.style.scrollBehavior = 'auto'
-            const chrome = () => {
-              let bottom = 0
-              for (const el of document.querySelectorAll('body *')) {
-                const cs = getComputedStyle(el)
-                if (cs.position !== 'sticky' && cs.position !== 'fixed') continue
-                const b = el.getBoundingClientRect()
-                if (b.height < 8 || b.top > 40 || b.top < -2 || b.width < innerWidth / 2 || b.bottom > innerHeight * 0.4) continue
-                bottom = Math.max(bottom, b.bottom)
-              }
-              return Math.round(bottom)
-            }
-            const label = (el) => {
-              const t = (el.querySelector('h1, h2, h3') || el).textContent.trim().replace(/\s+/g, ' ').slice(0, 28)
-              return t ? `«${t}»` : el.tagName.toLowerCase()
-            }
-            const out = { card: [], hero: [] }
-            /* Шапка меряется прилипшей: страница сдвинута с верха. */
-            scrollTo(0, 600)
-            await wait(120)
-            const head = chrome()
-            for (const el of document.querySelectorAll('[data-hero]')) {
-              const h = el.getBoundingClientRect().height
-              if (h && h > innerHeight - head + 1) {
-                out.hero.push(`первый экран ${label(el)} — ${Math.round(h)}px при шапке ${head}: в окне ${height} не помещается на ${Math.round(h - (innerHeight - head))}px`)
-              }
-            }
-            const seen = new Set()
-            for (const el of [...document.querySelectorAll('[data-product-card]')].slice(0, 24)) {
-              const b0 = el.getBoundingClientRect()
-              if (!b0.height || getComputedStyle(el).display === 'none') continue
-              const key = `${Math.round(b0.width)}x${Math.round(b0.height)}`
-              if (seen.has(key)) continue
-              seen.add(key)
-              el.scrollIntoView({ block: 'start', behavior: 'instant' })
-              await wait(60)
-              const top = chrome()
-              scrollBy(0, el.getBoundingClientRect().top - top)
-              await wait(60)
-              const b = el.getBoundingClientRect()
-              if (b.bottom > innerHeight + 1) {
-                out.card.push(`карточка ${label(el)} ${Math.round(b.width)}×${Math.round(b.height)} под шапкой ${top}: низ ниже окна ${height} на ${Math.round(b.bottom - innerHeight)}px — цена и кнопка за краем`)
-              }
-            }
-            scrollTo(0, 0)
-            html.style.scrollBehavior = was
-            return out
-          }, height)
-          r.cardFold.push(...got.card)
-          r.heroFold.push(...got.hero)
-        }
+      /* Первый экран в низком окне (И659). Сцена с заголовком страницы —
+         герой — и её громкая кнопка обязаны стоять в окне целиком на нуле
+         прокрутки: заказчик открыл главную на своём ноутбуке (1280 × 587) —
+         «изображение не видно полностью, нужно скролить», а замер в 900 и в
+         657 этого не видел. Мерится на ширине ноутбука: у телефона свой рост
+         окна и своя раскладка героя (И657). */
+      if (w >= PHONE) {
+        r.fold = await page.evaluate(() => {
+          scrollTo(0, 0)
+          const h1 = document.querySelector('h1')
+          const stage = h1?.closest('[data-ground="deck"]')
+          if (!stage) return []
+          const out = []
+          const b = stage.getBoundingClientRect()
+          if (b.bottom > innerHeight + 1) out.push(`сцена героя кончается на ${Math.round(b.bottom)} при окне ${innerHeight}: снимок виден не весь`)
+          const cta = stage.querySelector('[data-voice="loud"]')
+          const c = cta?.getBoundingClientRect()
+          if (c && c.bottom > innerHeight + 1) out.push(`громкая кнопка «${cta.textContent.trim().slice(0, 24)}» кончается на ${Math.round(c.bottom)} при окне ${innerHeight}: главного действия первого экрана не видно`)
+          return out
+        })
       }
       await page.setViewportSize({ width: w, height: 900 })
-
-      /* ── строка цены: нынешняя первой, прежняя справа (И510) ─────────────
-         Прежняя цена своим этажом над нынешней отнимала у карточки строку
-         высоты; перед нынешней в строке — читается первой вместо той, что
-         платят. Заказчик: «зачеркнутую цену располагать правее от
-         незачеркнутой, чтоб она по высоте место не занимала». Прежняя —
-         `s` или `del`; нынешняя — ближайшее к ней число вне зачёркнутого. */
-      r.wasPrice = await page.evaluate(() => {
-        const out = new Set()
-        const shown = (el) => { const b = el.getBoundingClientRect(); return b.width > 1 && b.height > 1 }
-        for (const s of document.querySelectorAll('s, del')) {
-          if (!shown(s) || !/\d/.test(s.textContent)) continue
-          let box = s.parentElement, now = null
-          for (let i = 0; box && i < 4 && !now; i++, box = box.parentElement) {
-            now = [...box.querySelectorAll('*')].find((e) => e.children.length === 0 && !e.closest('s, del')
-              && !e.contains(s) && /\d/.test(e.textContent) && shown(e)) ?? null
-          }
-          if (!now) continue
-          const a = s.getBoundingClientRect(), b = now.getBoundingClientRect()
-          const txt = `«${s.textContent.trim()}» и «${now.textContent.trim()}»`
-          if (a.bottom <= b.top + 2) out.add(`прежняя цена ${txt} — своей строкой над нынешней`)
-          else if (a.top < b.bottom && b.top < a.bottom && a.right <= b.left + 2) out.add(`прежняя цена ${txt} — перед нынешней в строке`)
-        }
-        return [...out]
-      })
     }
+
+    /* ── кнопки героя — в колонке текста (И673) ─────────────────────────────
+       Кнопки первого экрана стоят под словами и переносятся в их колонке:
+       правая часть сцены — снимку. Дефект, из-за которого заведено: кнопки
+       всех девяти полок встали строкой по низу снимка во всю ширину сцены,
+       заказчик 03.10.2026: «кнопки не должны вылазить вправо за текст, т.к. на
+       блоки место нужно поделить». Колонка — самый широкий предок заголовка,
+       который заметно уже сцены (не шире 80 % её): на узкой сцене текст стоит
+       во всю ширину под снимком, своей колонки у него нет, и мерить нечего —
+       поле сцены колонкой не считается. Рост — один у всех кнопок героя
+       (И683): «Shop» стояла крупной над обычными полками, заказчик: «кнопка
+       шоп поставь маленькую такую как и другие кнопки». */
+    r.heroLane = await page.evaluate(() => {
+      scrollTo(0, 0)
+      const h1 = document.querySelector('main h1')
+      const stage = h1?.closest('[data-ground="deck"]')
+      if (!stage) return []
+      const scene = stage.getBoundingClientRect()
+      let col = null
+      for (let el = h1.parentElement; el && el !== stage; el = el.parentElement) {
+        if (el.getBoundingClientRect().width <= scene.width * .8) col = el
+      }
+      if (!col) return []
+      const c = col.getBoundingClientRect()
+      const out = []
+      const tall = new Map()
+      for (const el of stage.querySelectorAll('a[href], button')) {
+        const b = el.getBoundingClientRect()
+        if (!b.width) continue
+        if (b.right > c.right + 1 || b.left < c.left - 1) out.push(`«${el.textContent.trim().slice(0, 24)}» ${Math.round(b.left)}…${Math.round(b.right)} при колонке текста ${Math.round(c.left)}…${Math.round(c.right)}: кнопка героя вышла из колонки на снимок`)
+        const h = Math.round(b.height)
+        if (!tall.has(h)) tall.set(h, el.textContent.trim().slice(0, 24))
+      }
+      if (tall.size > 1) out.push(`кнопки героя разного роста: ${[...tall].map(([h, name]) => `«${name}» ${h}`).join(', ')} — у выхода из героя рост один (И683)`)
+      return out
+    })
 
     /* ── второй проход: дно, которое не прочитать стилями ──────────────────
        Подпись на фотографии лежит на вуали, вуаль задана градиентом, то есть
@@ -2342,7 +3098,19 @@ async function visit(path, w, { finger, dark = false }) {
           range.selectNodeContents(el)
           const rb = range.getBoundingClientRect()
           const b = rb.width >= 2 && rb.height >= 2 ? rb : el.getBoundingClientRect()
-          return { x: b.left, y: b.top, w: b.width, h: b.height,
+          /* Только видимая часть букв: у ленты, которая едет вбок (полки
+             героя на 1024), слово у края наполовину за краем ленты, и снимок
+             брал под ним кадр героя — «Cosmetics» 3.81 : 1 на заливке марки,
+             где видно 8 : 1 (05.10.2026). Режет каждый предок с `overflow`. */
+          let l = b.left, t = b.top, rt = b.right, bt = b.bottom
+          for (let p = el.parentElement; p && p !== document.documentElement; p = p.parentElement) {
+            const ps = getComputedStyle(p)
+            if (ps.overflowX === 'visible' && ps.overflowY === 'visible') continue
+            const pr = p.getBoundingClientRect()
+            if (ps.overflowX !== 'visible') { l = Math.max(l, pr.left); rt = Math.min(rt, pr.right) }
+            if (ps.overflowY !== 'visible') { t = Math.max(t, pr.top); bt = Math.min(bt, pr.bottom) }
+          }
+          return { x: l, y: t, w: Math.max(0, rt - l), h: Math.max(0, bt - t),
                    vw: innerWidth, vh: innerHeight, dpr: devicePixelRatio }
         }, { i: d.i })
 
@@ -2353,10 +3121,15 @@ async function visit(path, w, { finger, dark = false }) {
         const width = Math.min(Math.round(box.w), box.vw - left)
         const height = Math.min(Math.round(box.h), box.vh - top)
         if (width >= 2 && height >= 2) {
-          const shot = await page.screenshot({ clip: { x: left, y: top, width, height } })
-          const px = await sharp(shot).resize(1, 1, { fit: 'fill' }).removeAlpha().raw().toBuffer()
-          bare = [px[0], px[1], px[2]]
-          got = pairOf(d.fg, bare)
+          /* Кусок мог уехать за край снимка между замером коробки и съёмкой
+             (страница досчитала раскладку после прокрутки) — тогда замера
+             нет, а не находка и не падение всего прогона (03.10.2026). */
+          const shot = await page.screenshot({ clip: { x: left, y: top, width, height } }).catch(() => null)
+          if (shot) {
+            const px = await sharp(shot).resize(1, 1, { fit: 'fill' }).removeAlpha().raw().toBuffer()
+            bare = [px[0], px[1], px[2]]
+            got = pairOf(d.fg, bare)
+          }
         }
 
         await page.evaluate(({ i }) => {
@@ -2380,8 +3153,8 @@ async function visit(path, w, { finger, dark = false }) {
          * Второй снимок делается ТОЛЬКО под находку: их единицы, а замеров
          * сотни. */
         if (got !== null && got < d.need && width >= 2 && height >= 2) {
-          const seen = await page.screenshot({ clip: { x: left, y: top, width, height } })
-          const sp = await sharp(seen).resize(1, 1, { fit: 'fill' }).removeAlpha().raw().toBuffer()
+          const seen = await page.screenshot({ clip: { x: left, y: top, width, height } }).catch(() => null)
+          const sp = seen ? await sharp(seen).resize(1, 1, { fit: 'fill' }).removeAlpha().raw().toBuffer() : bare
           const moved = Math.max(Math.abs(sp[0] - bare[0]), Math.abs(sp[1] - bare[1]),
                                  Math.abs(sp[2] - bare[2]))
           if (moved < 2) got = null
@@ -2416,6 +3189,10 @@ const holders = new Map()
 /* Семьи, которые от ширины не зависят: цель поля — факт страницы, а не
    окна. Семь ширин не делают из одного поля семь. */
 const PER_PAGE = new Set(['autofill'])
+/* Семьи сайта, а не страницы: подложка строки в шапке стоит на каждой странице, и
+   одна и та же пилюля в подменю — одна находка, а не по одной на страницу (И730).
+   Пишется первым адресом, где нашлась. */
+const ONCE = new Set(['rowShape'])
 
 /** Разложить находки по семьям. */
 const keep = (path, w, r) => {
@@ -2425,6 +3202,10 @@ const keep = (path, w, r) => {
         const where = holders.get(line) ?? new Set()
         where.add(path)
         holders.set(line, where)
+        continue
+      }
+      if (ONCE.has(k)) {
+        if (!found[k].some((x) => x.endsWith(`  ${line}`))) found[k].push(`${path}  ${line}`)
         continue
       }
       if (PER_PAGE.has(k)) {
@@ -2458,6 +3239,9 @@ await lanes(
   async ({ path, w }) => {
     const r = await visit(path, w, { finger: w < PHONE, dark: true })
     for (const line of r.contrast) found.theme.push(`${path} @${w} тёмная  ${line}`)
+    /* Граница органа — и ночью (И556): кромка, видная днём, ночью стоит на
+       другом полу. Семья та же, строка помечена. */
+    for (const line of r.edge) found.edge.push(`${path} @${w} тёмная  ${line}`)
   })
 
 /* ── проход третий: палец на широком окне ──────────────────────────────────
@@ -2540,6 +3324,94 @@ await lanes(native, async (path) => {
   }
 })
 
+/* ── проход: страница НЕ ДВИГАЕТСЯ сама, пока грузится ─────────────────────
+ *
+ * Заведено дефектом, который заказчик поймал глазом (01.10.2026): «на свежей
+ * странице, при наведении на пункты верхнего меню, слова чуть смещаются, и
+ * больше такой эффект не повторяется». Наведение было ни при чём: шрифт вида
+ * приходил через несколько секунд после первой отрисовки — без предзагрузки
+ * и без подогнанного запасного начертания, — и слова, набранные системным
+ * шрифтом, подменялись и сдвигались. Все прочие проходы берут страницу уже
+ * загруженной (`networkidle`) и подмены не видят: она кончается до замера.
+ *
+ * Две семьи. `fontLate` — устройство, оно не зависит от удачи сети: каждый
+ * шрифт со своего адреса, который страница взяла, просит документ заранее
+ * (`<link rel=preload as=font>`), и за ним в стеке стоит подогнанное
+ * запасное начертание (`'<Семейство> Fallback'` с `size-adjust`,
+ * lib/look-values.ts `fontFaces`). `shift` — то, что видит глаз: сдвиги
+ * раскладки (`layout-shift`, без нажатий и прокрутки) от первой отрисовки
+ * до тишины, на холодной странице — кэш выключен, чтобы шрифты, снимки и
+ * стили шли заново, как у нового гостя. Какой бы ни была причина — шрифт,
+ * снимок без размеров, поздний стиль, скрипт, переставивший пункты меню, —
+ * сдвиг виден здесь. Порог — сдвиг узла больше чем на пиксель: столько глаз
+ * уже ловит в строке меню.
+ *
+ * Одна ширина и родные страницы — плюс главная каждого другого языка: шрифт
+ * подмножествами зависит от букв языка (румынские ș ț, венгерские ő ű). */
+const SHIFT_W = 1200
+const coldPages = [...native, ...PAGES.filter((p) => !isNative(p) && p.split('/').filter(Boolean).length === 1)]
+const cold = await jar(await browser.newContext())
+await cold.addInitScript(() => {
+  window.__shifts = []
+  const name = (el) => {
+    if (!el || !el.tagName) return '?'
+    const cls = (el.className || '').toString().trim().split(/\s+/)[0] || ''
+    const txt = (el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 24)
+    return `${el.tagName.toLowerCase()}${cls ? '.' + cls.split('__').pop() : ''}${txt ? ` «${txt}»` : ''}`
+  }
+  try {
+    new PerformanceObserver((list) => {
+      for (const e of list.getEntries()) {
+        if (e.hadRecentInput) continue
+        for (const s of e.sources || []) {
+          const a = s.previousRect; const b = s.currentRect
+          const moved = Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y), Math.abs(a.width - b.width), Math.abs(a.height - b.height))
+          if (moved > 1 && a.width && b.width) window.__shifts.push({ who: name(s.node), moved: Math.round(moved) })
+        }
+      }
+    }).observe({ type: 'layout-shift', buffered: true })
+  } catch { /* браузер без layout-shift — замера нет, а не находка */ }
+})
+await lanes(coldPages, async (path) => {
+  const page = await take(cold)
+  const cdp = await cold.newCDPSession(page)
+  try {
+    await cdp.send('Network.enable')
+    await cdp.send('Network.setCacheDisabled', { cacheDisabled: true })
+    await page.setViewportSize({ width: SHIFT_W, height: 900 })
+    try { await openAt(page, path, { waitUntil: 'networkidle' }) } catch { return }
+    const { shifts, late } = await page.evaluate(async () => {
+      await document.fonts.ready
+      await new Promise((r) => setTimeout(r, 500))
+      /* Шрифты со своего адреса, которые страница взяла: у FontFace адреса
+         нет, поэтому сверяются семейства и файлы, которые пришли по сети. */
+      const files = performance.getEntriesByType('resource').map((e) => e.name).filter((u) => /\.woff2(\?|$)/.test(u)).map((u) => new URL(u).pathname)
+      const preloaded = new Set([...document.querySelectorAll('link[rel="preload"][as="font"]')].map((l) => new URL(l.href).pathname))
+      const out = []
+      for (const f of files) if (!preloaded.has(f)) out.push(`${f} — без предзагрузки: шрифт приходит после первой отрисовки`)
+      const loaded = new Set([...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family.replace(/^["']|["']$/g, '')))
+      const declared = new Set([...document.fonts].map((f) => f.family.replace(/^["']|["']$/g, '')))
+      const seen = new Set()
+      for (const el of document.querySelectorAll('body *')) {
+        if (!el.firstChild || el.children.length === el.childNodes.length) continue
+        const first = getComputedStyle(el).fontFamily.split(',')[0].trim().replace(/^["']|["']$/g, '')
+        if (seen.has(first) || !loaded.has(first) || first.endsWith(' Fallback')) continue
+        seen.add(first)
+        const stack = getComputedStyle(el).fontFamily.split(',').map((x) => x.trim().replace(/^["']|["']$/g, ''))
+        if (stack[1] !== `${first} Fallback` || !declared.has(`${first} Fallback`)) out.push(`«${first}» — без подогнанного запасного начертания: подмена сдвинет слова`)
+      }
+      return { shifts: window.__shifts || [], late: out }
+    })
+    for (const line of new Set(late)) found.fontLate.push(`${path}  ${line}`)
+    const worst = new Map()
+    for (const s of shifts) worst.set(s.who, Math.max(worst.get(s.who) ?? 0, s.moved))
+    for (const [who, moved] of worst) found.shift.push(`${path}  ${who} — сдвинулся на ${moved}px сам, пока страница грузилась`)
+  } finally {
+    await cdp.detach().catch(() => {})
+    give(cold, page)
+  }
+})
+
 /* ── проход пятый: контраст ПО ХОДУ перехода ───────────────────────────────
  *
  * Все прочие замеры цвета берут страницу ОСТАНОВИВШЕЙСЯ: в покое и под рукой.
@@ -2587,8 +3459,7 @@ await lanes(
     await page.setViewportSize({ width: DIP_W, height: 900 })
     try { await openAt(page, path, { waitUntil: 'networkidle' }) } catch { return }
     await still(page)
-    await page.evaluate(() => Promise.all(
-      document.getAnimations().map((a) => a.finished.catch(() => {})))).catch(() => {})
+    await settled(page)
     await page.waitForTimeout(120)
 
     /* Один орган на род: подпись собирается из `data-skin` и первого класса. */

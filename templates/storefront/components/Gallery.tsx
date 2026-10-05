@@ -1,30 +1,27 @@
 'use client'
-import { useSyncExternalStore } from 'react'
 import p from '@/styles/primitives.module.css'
 import sl from '@/styles/slides.module.css'
 import s from './Gallery.module.css'
 import type { GalleryView } from '@/lib/product-view.ts'
-import { Arrows } from './Arrows.tsx'
 import { Dots } from './Dots.tsx'
+import { SaveToggle } from './SaveToggle.tsx'
 import { useSlides } from './useSlides.ts'
 import { shot } from '@/lib/shot.ts'
-
-const never = () => () => {}
 
 /* Галерея товара: главный кадр — лента слайдов с прилипанием, под ним ряд
    миниатюр (или точек — ручка `--pdp-thumbs`). Без скрипта работает
    целиком: у каждого слайда якорь, миниатюра — ссылка на него, лента
-   листается пальцем и колесом. Скрипт добавляет стрелки на кадре и держит
-   отметку текущей миниатюры; помнит компонент одно — номер слайда.
+   листается пальцем и колесом. Скрипт держит отметку текущей миниатюры; помнит компонент одно — номер слайда.
 
    Размер — не здесь: блок целиком (кадр, зазор, ряд) помещается в экран
    правилом Gallery.module.css (И278), разметка о высоте окна не знает. */
-export function Gallery({ view }: { view: GalleryView }) {
+/* Сердце «в избранное» — на главном кадре, в верхнем правом углу, как на карточке
+   полки (слово заказчика 04.10.2026: «избранное перенеси на изображение»; было —
+   квадратная кнопка в строке заказа). Та же кнопка и тот же вид, что на карточке
+   (SaveToggle, `--save-look`); галерея решает только, где оно стоит. */
+export function Gallery({ view, save }: { view: GalleryView; save?: { id: string; add: string; remove: string } }) {
   /* Лента и точки — общее устройство (useSlides, Dots; И493). */
-  const { strip, current, show, pick, onScroll } = useSlides(view.slides.length)
-  /* Стрелки — только со скриптом: без него они ничего не умеют. Снимок
-     сервера — «скрипта нет», после гидратации — «есть». */
-  const live = useSyncExternalStore(never, () => true, () => false)
+  const { strip, current, pick, onScroll } = useSlides(view.slides.length)
   const many = view.slides.length > 1
 
   return (
@@ -43,7 +40,7 @@ export function Gallery({ view }: { view: GalleryView }) {
           ))}
         </div>
         {view.badge ? <span className={`${p.cut} ${s.badge}`}>{view.badge}</span> : null}
-        {many && live ? <Arrows back={view.prev} next={view.next} onBack={() => show(current - 1)} onNext={() => show(current + 1)} className={s.arrow} /> : null}
+        {save ? <SaveToggle id={save.id} add={save.add} remove={save.remove} over="picture" className={s.save} /> : null}
       </div>
       {many ? (
         <>

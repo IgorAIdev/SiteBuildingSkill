@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import b from '@/styles/btn.module.css'
 import s from './ProductView.module.css'
 import { Icon } from './Icon.tsx'
@@ -20,11 +20,23 @@ export function StickyBuy({ buy, label, children }: { buy: string; label: string
     io.observe(el)
     return () => io.disconnect()
   }, [buy])
+  /* Рост строки — корню (`--bottom-bar`): окно помощи у края экрана
+     (HelpDock.tsx, И547) встаёт над строкой, а не на её кнопку. Спрятанная
+     строка — рост ноль. */
+  const bar = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = bar.current
+    if (!el) return
+    const root = document.documentElement.style
+    const ro = new ResizeObserver(() => root.setProperty('--bottom-bar', `${el.offsetHeight}px`))
+    ro.observe(el)
+    return () => { ro.disconnect(); root.removeProperty('--bottom-bar') }
+  }, [])
   const press = () => document.getElementById(buy)?.querySelector<HTMLButtonElement>('button[type="submit"][data-voice="loud"]')?.click()
   return (
-    <div className={s.bar} data-shown={shown ? '' : undefined} inert={!shown}>
+    <div ref={bar} className={s.bar} data-shown={shown ? '' : undefined} inert={!shown}>
       {children}
-      <button className={b.btn} data-voice="loud" type="button" onClick={press}><Icon id="shopping-cart" />{label}</button>
+      <button className={b.btn} data-voice="loud" type="button" onClick={press}>{label}<Icon id="shopping-cart" /></button>
     </div>
   )
 }

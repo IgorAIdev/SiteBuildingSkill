@@ -8,18 +8,18 @@ import { t } from '@/lib/i18n/index.ts'
 import { deliveryTable } from '@/lib/checkout-view.ts'
 import { toMetadata } from '@/lib/seo.ts'
 import { breadcrumbLd } from '@/lib/ld.ts'
-import { Breadcrumbs } from '@/components/Breadcrumbs.tsx'
+import { Breadcrumbs, trailTo } from '@/components/Breadcrumbs.tsx'
 import { DeliveryTable } from '@/components/DeliveryTable.tsx'
 import { DocView, DOC_TABLE } from '@/components/DocView.tsx'
+import { Faq } from '@/components/blocks/Faq.tsx'
+import { docView, plainOf } from '@/lib/doc-view.ts'
+import b from '@/styles/btn.module.css'
 import { JsonLd } from '@/components/JsonLd.tsx'
 import { Unavailable } from '@/components/StateScreen.tsx'
 
 type Props = { params: Promise<{ lang: string; doc: string }> }
 
-/* Вынесено из тела страницы: массив-литерал, собранный прямо в JSX-пропе,
-   ловит react-perf/jsx-no-new-array-as-prop даже будучи присвоен константе
-   в той же области видимости — только вызов функции СНАРУЖИ снимает находку. */
-const docTrail = (home: { name: string; href: string }, title: string) => [home, { name: title }]
+const NO_AIR = { air: null }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const lang = await langOf(params)
@@ -43,11 +43,19 @@ export default async function DocPage({ params }: Props) {
   const methods = r.value.table === 'delivery' ? await commerce().deliveryMethods(null, lang) : null
   const view = methods?.ok ? deliveryTable(lang, methods.value) : null
   const table = view ? <DeliveryTable view={view} labelledBy={DOC_TABLE} /> : null
+  const page = docView(lang, r.value, view ? { id: DOC_TABLE, heading: view.caption } : null)
+  /* Кнопка отказа — первый шаг (И748): ведёт к форме, где второй шаг —
+     «Confirmați retragerea». Вид — громкая кнопка сайта. */
+  const forms = { withdrawal: <p><a className={b.btn} data-voice="loud" href={hrefFor(lang, { withdraw: true })}>{t(lang, 'withdraw.button')}</a></p> }
+  /* Вопросы документа — блок FAQ сайта с разметкой FAQPage (И503); ответ —
+     строкой без разметки ссылок. */
+  const faq = r.value.faq.length ? { type: 'faq' as const, title: t(lang, 'doc.faq'), items: r.value.faq.map((x) => ({ q: plainOf(x.q), a: plainOf(x.a) })) } : null
   return (
     <main id="main" className={`${p.wrap} ${p.section}`} data-air="head">
       <JsonLd data={breadcrumbLd([home, { name: r.value.title, href: hrefFor(lang, { doc }) }])} />
-      <Breadcrumbs trail={docTrail(home, r.value.title)} label={t(lang, 'crumb.label')} />
-      <DocView doc={r.value} table={table} tableTitle={view?.caption} />
+      <Breadcrumbs trail={trailTo([home], r.value.title)} label={t(lang, 'crumb.label')} />
+      <DocView view={page} table={table} tableTitle={view?.caption} forms={forms} />
+      {faq ? <Faq block={faq} place={NO_AIR} /> : null}
     </main>
   )
 }

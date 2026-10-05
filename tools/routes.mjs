@@ -49,6 +49,9 @@ const catalogue = src('lib/products.ts')
    регулярка полок ищет `slug:` по всему тексту, и марка, положенная рядом с
    товарами, молча стала бы десятой полкой. */
 const brands = src('lib/brands.ts')
+/* Кабинет образца — коды прошлых заказов заготовленной покупательницы
+   (И771): у них страницы `/[lang]/account/orders/[code]`. */
+const accountSample = src('lib/source/sample/account.ts')
 
 /** Языки. Язык — это адрес: `/bg/...` и `/en/...`, по маршруту на язык. */
 const staticLocales = [...(locale.match(/LOCALES\s*=\s*\[([^\]]*)\]/)?.[1] ?? '')
@@ -80,6 +83,8 @@ export const DOCS = JSON.parse(src('lib/docs.json') || '[]')
 /** Статьи наръчника — тем же способом, что документы: данные, а не разбор
  *  кода (`lib/blog.json`). */
 export const POSTS = JSON.parse(src('lib/blog.json') || '[]')
+/** Рубрики блога со статьями (И749): у рубрики без статей страницы нет. */
+export const TOPICS = [...new Set(POSTS.map((p) => p.topic).filter(Boolean))]
 
 /** Источник данных витрины (И414): образец в файлах (`SOURCE` пуст или
  *  `sample`) или внешний движок (`SOURCE=vendure` в окружении или в `.env`
@@ -106,13 +111,24 @@ export async function livePaths(base) {
 let LIVE = EXTERNAL && process.env.SITE ? await livePaths(process.env.SITE) : null
 /** Карта сайта для внешнего источника, когда сайт подняли после загрузки
  *  этого модуля (`check:open` поднимает `next dev` сам). */
-export async function useLive(base) {
-  if (EXTERNAL) LIVE = await livePaths(base)
+/** `force` — карта чужого поднятого сайта, какой бы источник ни стоял у этого
+ *  процесса: `check:open`, обходящий уже работающую витрину на 3020, не знает её
+ *  источника (его даёт запускатель, а не `.env`) и брал адреса образца — 57 из
+ *  177 «не найдено» на витрине с движком cbdin (05.10.2026). */
+let FORCED = false
+export async function useLive(base, force = false) {
+  if (EXTERNAL || force) { LIVE = await livePaths(base); FORCED = force }
 }
 
 /** Полки. Порядок тот же, что в данных: он по спросу, и первая полка — самая
  *  полная. */
 export const CATEGORIES = [...catalogue.matchAll(/\{\s*slug:\s*'([a-z-]+)'/g)]
+  .map((m) => m[1])
+
+/** Эффекты — страницы `/[lang]/effect/[effect]`: значения грани эффекта
+ *  образца, записанные ключом `effect:` (lib/products.ts, `EFFECTS`). Грань
+ *  у товара пишется `effect: [` после запятой — её регулярка не берёт. */
+export const EFFECTS = [...catalogue.matchAll(/\{\s*effect:\s*'([a-z-]+)'/g)]
   .map((m) => m[1])
 
 /** Товары. Нужны три поля: адрес, полка и семья вариантов — по ним
@@ -148,6 +164,9 @@ const countedBrands = () => {
   }
   return [...seen.values()]
 }
+/** Заказы кабинета образца — по записи `{ code: 'EXEMPLU2', days: …`. */
+export const ORDERS = [...accountSample.matchAll(/\{ code: '([A-Z0-9]+)', days:/g)].map((m) => m[1])
+
 export const BRANDS = listedBrands.length || !/\bbrandKeyOf\b/.test(brands) ? listedBrands : countedBrands()
 
 /** Есть файл, а данных из него не вышло — это сломанный разбор, а не пустой
@@ -159,7 +178,7 @@ export const BRANDS = listedBrands.length || !/\bbrandKeyOf\b/.test(brands) ? li
 export function assertData() {
   const empty = [
     ['LOCALES', locale, LOCALES], ['CATEGORIES', catalogue, CATEGORIES],
-    ['PRODUCTS', catalogue, PRODUCTS], ['BRANDS', brands, BRANDS],
+    ['PRODUCTS', catalogue, PRODUCTS], ['BRANDS', brands, BRANDS], ['ORDERS', accountSample, ORDERS],
   ].filter(([, file, v]) => file && !v.length).map(([n]) => n)
   if (empty.length) {
     console.error(`\n✗ tools/routes.mjs: разбор данных дал пусто — ${empty.join(', ')}.`)
@@ -219,6 +238,9 @@ const FILL = {
   '[doc]': () => DOCS.map((d) => d.slug),
   '[brand]': () => BRANDS.map((b) => b.slug),
   '[slug]': () => POSTS.map((p) => p.slug),
+  '[topic]': () => TOPICS,
+  '[effect]': () => EFFECTS,
+  '[code]': () => ORDERS,
 }
 
 /** Образцы для дорогих проверок: не «первое попавшееся», а два конца.
@@ -263,6 +285,14 @@ const SAMPLE = {
     const sorted = [...POSTS].sort((a, b) => size(b) - size(a))
     return [...new Set([sorted[0]?.slug, sorted[sorted.length - 1]?.slug])].filter(Boolean)
   },
+  /* Рубрика блога: первая и последняя (И749) — у них разное число статей. */
+  '[topic]': () => [...new Set([TOPICS[0], TOPICS[TOPICS.length - 1]])].filter(Boolean),
+  /* Эффект: первый и последний по данным — у образца это самый полный
+     (четыре товара) и самый пустой (один): одна карточка в сетке — своя
+     раскладка, как у пустой полки. */
+  '[effect]': () => [...new Set([EFFECTS[0], EFFECTS[EFFECTS.length - 1]])].filter(Boolean),
+  /* Заказ кабинета: первый и последний — отправленный и доставленный. */
+  '[code]': () => [...new Set([ORDERS[0], ORDERS[ORDERS.length - 1]])].filter(Boolean),
   '[id]': () => {
     const count = {}
     for (const p of PRODUCTS) if (p.family) count[p.family] = (count[p.family] ?? 0) + 1
@@ -330,7 +360,7 @@ function asked(fill) {
 /** Каждый адрес, который публикует сайт. Для дешёвых проверок: открывается
  *  ли страница, обещана ли она картой сайта. */
 export function all() {
-  if (EXTERNAL) return liveList(FILL, (list) => list)
+  if (EXTERNAL || FORCED) return liveList(FILL, (list) => list)
   assertData()
   return [...new Set([...shapes().flatMap(expand(FILL)), ...queried(), ...asked(FILL)])].sort()
 }
@@ -338,7 +368,7 @@ export function all() {
 /** По одному адресу на форму маршрута и язык. Для дорогих проверок —
  *  отрисованных, где каждая страница стоит шести открытий. */
 export function sample() {
-  if (EXTERNAL) return liveList(SAMPLE, (list) => [...new Set([list[0], list[list.length - 1]])])
+  if (EXTERNAL || FORCED) return liveList(SAMPLE, (list) => [...new Set([list[0], list[list.length - 1]])])
   assertData()
   return [...new Set([...shapes().flatMap(expand(SAMPLE)), ...queried(), ...asked(SAMPLE)])].sort()
 }
@@ -352,7 +382,7 @@ export function sample() {
  *  адресов не выдумывают: проверка останавливается и говорит, чего ей
  *  нужно. Части адреса в дереве — слова (`catalog`, `product`): группы
  *  `(x)` в адрес не входят, поэтому в образце карты они стоят как есть. */
-const LOCAL = new Set(['[lang]', '[locale]', '[doc]', '[slug]'])
+const LOCAL = new Set(['[lang]', '[locale]', '[doc]', '[slug]', '[topic]'])
 const dynamic = (seg) => seg.startsWith('[') && seg.endsWith(']')
 function liveList(fill, pick) {
   if (!LIVE) {

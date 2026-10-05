@@ -19,6 +19,12 @@ export async function writeSession(token: string): Promise<void> {
   jar.set(SESSION_COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: SITE_URL().startsWith('https:'), path: '/', maxAge: MONTH })
 }
 
+/** Выход из кабинета (И771): сессию у источника уже закрыл `signOut`, cookie
+ *  уходит здесь — следующая страница открывается гостем. */
+export async function clearSession(): Promise<void> {
+  (await cookies()).delete(SESSION_COOKIE)
+}
+
 /** Запись в корзину или в оформление меняет все личные страницы сразу. Со
  *  скриптом браузер держит уже открытые страницы в памяти роутера, и
  *  «Назад» показывал их такими, какими они были до записи: контакты пустыми,

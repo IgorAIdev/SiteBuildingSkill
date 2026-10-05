@@ -36,18 +36,19 @@ const args = process.argv.slice(2)
 const FINAL = args.includes('--final')
 const FAST = args.includes('--fast')
 
-/** Отрисованным проверкам нужен браузер и поднятый сайт. */
-const RENDERED = new Set(['check:craft', 'check:detect', 'sweep'])
+/** Отрисованным проверкам нужен браузер и поднятый сайт. `check:counters`
+ *  нажимает «в корзину» — ей нужен сайт с корзиной, а не только отрисовка. */
+const RENDERED = new Set(['check:craft', 'check:detect', 'sweep', 'check:choice', 'check:engines', 'check:theme', 'check:counters'])
 /** Эти читают собранный `out/`. */
-const NEEDS_BUILD = new Set(['check:urls', 'check:seo', 'check:craft', 'check:detect', 'sweep'])
-const NEEDS_LIVE = new Set(['check:urls', 'check:seo', 'check:craft', 'check:detect', 'sweep'])
+const NEEDS_BUILD = new Set(['check:urls', 'check:seo', 'check:craft', 'check:detect', 'sweep', 'check:choice', 'check:engines', 'check:theme', 'check:counters'])
+const NEEDS_LIVE = new Set(['check:urls', 'check:seo', 'check:craft', 'check:detect', 'sweep', 'check:choice', 'check:engines', 'check:theme', 'check:counters'])
 const PORT = 8099
 function runNpm(check) {
   if (!/^[\w:-]+$/.test(check)) throw new Error(`Недопустимое имя проверки: ${check}`)
   /* Адрес — всем, кому поднят сайт: своим сервером или уже живым на порту.
      `check:detect` без SITE= честно отвечает «не проверено» — и большая
      проверка, поднявшая сайт, обязана его назвать (И310). */
-  const env = { ...process.env, ...(server || live ? { SITE: `http://localhost:${PORT}` } : {}) }
+  const env = { ...process.env, ...(server || live ? { SITE: `http://localhost:${PORT}` } : {}), ...(FINAL ? { ENGINES_REQUIRE: 'all' } : {}) }
   if (process.platform === 'win32') {
     return spawnSync(process.env.ComSpec ?? 'cmd.exe', ['/d', '/s', '/c', `npm.cmd run ${check}`], {
       cwd: ROOT, stdio: 'inherit', shell: false, env,
@@ -63,6 +64,12 @@ if (!stage) {
 }
 
 let list = [...stage.checks]
+/* Магазин с панелью вида (И612): панель снимается чисто (`check:look`) и
+   опубликованный вид годен — даёт значение каждому свойству сайта и не
+   ломает отрисовку (`check:choice`, на поднятой сборке). Пока их не гоняла
+   большая проверка, вид без четырёх красок стекла нашёлся руками. Панель
+   сняли — проверок нет и мерить нечего. */
+if (existsSync(join(ROOT, 'look-panel'))) list.push('check:look', 'check:choice')
 if (FAST) list = list.filter((c) => !RENDERED.has(c))
 /* Сборка обязана быть в списке, если ниже кто-то читает собранное: этап мог
    перечислить проверку по `out/`, не назвав сборку, и тогда мерилась бы
@@ -90,14 +97,31 @@ let live = false
    мерил бы вчерашнюю сборку. Поэтому гасится и на обычном выходе тоже. */
 process.on('exit', () => server?.kill())
 
+/* Выбор вида меряется через окно предпросмотра панели (`/look-panel/preview`),
+   а оно открыто только при `LOOK_PICKER=on` — флаг читается при запросе.
+   Свой сервер сборки поднимался без флага, и `check:choice` отвечал «404 —
+   LOOK_PICKER=on?» (большая проверка 05.10.2026). Перед ней свой сервер
+   поднимается заново с флагом; остальные отрисованные меряют сайт без панели,
+   как его видит покупатель. */
+const PANEL = new Set(['check:choice'])
+let panelOn = false
+
 async function serveIfNeeded(check) {
-  if (!NEEDS_LIVE.has(check) || server) return
-  if (await alive()) { live = true; return }
-  console.log(`   (поднимаю свой сервер на ${PORT} — отрисованным проверкам нужен отданный сайт)`)
+  if (!NEEDS_LIVE.has(check)) return
+  const wantPanel = PANEL.has(check)
+  if (server && wantPanel !== panelOn) {
+    server.kill()
+    server = null
+    for (let i = 0; i < 40 && (await alive()); i++) await new Promise((r) => setTimeout(r, 250))
+  }
+  if (server) return
+  if (!wantPanel && (await alive())) { live = true; return }
+  console.log(`   (поднимаю свой сервер на ${PORT}${wantPanel ? ' с панелью вида' : ''} — отрисованным проверкам нужен отданный сайт)`)
   const command = existsSync(join(ROOT, 'out'))
     ? [join(ROOT, 'tools/serve.mjs'), String(PORT)]
     : [join(ROOT, 'node_modules', 'next', 'dist', 'bin', 'next'), 'start', '--port', String(PORT)]
-  server = spawn(process.execPath, command, { cwd: ROOT, stdio: 'ignore' })
+  server = spawn(process.execPath, command, { cwd: ROOT, stdio: 'ignore', env: { ...process.env, ...(wantPanel ? { LOOK_PICKER: 'on' } : {}) } })
+  panelOn = wantPanel
   for (let i = 0; i < 40; i++) {
     if (await alive()) return
     await new Promise((r) => setTimeout(r, 250))

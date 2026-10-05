@@ -1,0 +1,4 @@
+/* Форма отказа — мерой текста (`--measure`), как поля кассы
+   (Checkout.module.css, `.measure`): поле шириной с ожидаемый ввод, а не
+   полоса во всю колонку (Baymard; разбор 24.09.2026, O4). */
+.form{max-inline-size:var(--measure)}

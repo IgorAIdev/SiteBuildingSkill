@@ -39,7 +39,7 @@ for (const [lang, dot, price] of WRITING) {
   test(`${lang}: money, the facts line, the strength facet and the lab figures share one writing`, async () => {
     const d = (x: string) => x.replace('.', dot)
     assert.equal(money({ minor: 123450, currency: 'EUR' }, lang), price)
-    assert.equal(factsLine(lang, { strength: 'percent', packs: [{ mg: 250, size: 10, unit: 'ml' }] }), `${d('2.5')}${NB}%${NB}· 10${NB}ml${NB}· 250${NB}mg`)
+    assert.equal(factsLine(lang, { packs: [{ mg: 75, size: 30, unit: 'pcs' }] }), `30${NB}×${NB}${d('2.5')}${NB}mg`)
     const listing = await sample.listing(lang, { facets: {}, sort: 'popular', page: null })
     assert.ok(listing.ok)
     const strength = listing.value.facets.find((f) => f.code === 'putere')

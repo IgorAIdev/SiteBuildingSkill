@@ -21,7 +21,7 @@ export const DESIGN_FAMILIES = [
   'eyebrow', 'bareHeading', 'headRole', 'navSmall', 'flatRhythm', 'iconCards',
   'browserSurface', 'proseLink', 'gradientText', 'glassBlur', 'sideStripe',
   'hardShadow', 'glowHalo', 'trackTight', 'glyphIcon', 'monoCostume',
-  'docValue', 'docDead', 'briefRefs', 'briefMeasured',
+  'docValue', 'docDead', 'briefRefs', 'briefMeasured', 'briefMissing',
 ]
 
 /** Пустая база: ноль по каждой семье — новый проект долга не несёт. */
@@ -50,6 +50,7 @@ export const DESIGN_LABELS = {
   docValue: 'DESIGN.md несёт число (#код, rgb/oklch, px, ms): вид описывается ролями, числа выпускают строители',
   docDead: 'DESIGN.md называет роль (--имя), которой нет ни в одном файле стилей — описание разошлось с системой',
   briefMeasured: 'бриф поверхности (docs/design/*.md) без раздела «## Замеры» с числами из исследования набора, уже сделанной витрины и трёх живых сайтов — кегли и отступы поставлены на глаз',
+  briefMissing: 'модуль поверхности витрины (шапка, подвал, каталог, карточка, корзина…) не назван ни в одном брифе docs/design/ — поверхность сверстана без референсов и замеров (И531)',
   briefRefs: 'бриф поверхности (docs/design/*.md) без живых референсов: в разделе «2. Референсы» меньше трёх адресов разных сайтов — решение вида придумано, а не сверено',
 }
 
@@ -75,5 +76,6 @@ export const DESIGN_SOURCES = {
   docValue: 'document.md:46 — «Never split the source of truth without explicit reason»; спецификация google-labs-code/design.md: «The frontmatter is optional»; CLAUDE.md, «Делается только правильно» — краска → строитель палитры → роль',
   docDead: 'doctor.md:11 — «Truth drift. The code moved on and the document no longer describes it»',
   briefMeasured: 'layout.md:49 — «Use a documented spacing scale rather than one-off values»; CLAUDE.md, порядок дизайна, шаг 3 — «референсы и замок — три-пять живых магазинов»; слово заказчика 28.09.2026: «у тебя исследования есть, есть другие витрины, уже сделанные, посмотри там соотношения размеров, и на других ведущих лучших сайтах»',
+  briefMissing: 'layout.md:35 — «Before editing, name:»; CLAUDE.md, порядок дизайна, шаги 3–4 — бриф, референсы и тезис до правки; слово заказчика 28.09.2026: «возможно, чтоб ты изначально строил правильно»',
   briefRefs: 'document.md:62 — «rather than filling them with invented rules»; CLAUDE.md, порядок дизайна, шаг 3 — «три-пять живых магазинов для этой поверхности»; слово заказчика 27.09.2026: «не сверился с лучшими существующими решениями»',
 }

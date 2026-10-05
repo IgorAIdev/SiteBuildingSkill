@@ -29,7 +29,7 @@ test('--storefront lays the template over the foundation and copies the kit help
     assert.ok(pkg.dependencies.next && pkg.dependencies.react, 'Next и React')
     assert.equal(pkg.scripts['check:css'], 'node tools/check-css.mjs', 'команды набора дописаны')
     assert.equal(pkg.scripts.test, 'node tools/check-test.mjs', 'тесты гоняет прогон набора')
-    assert.equal(pkg.scripts.build, 'node scripts/copy-icons.mjs && node scripts/look-slots.mjs && next build', 'свой build шаблона остался')
+    assert.equal(pkg.scripts.build, 'node scripts/fresh-data.mjs && node scripts/copy-icons.mjs && node scripts/look-slots.mjs && next build', 'свой build шаблона остался (кеш данных стирается перед сборкой, И662)')
     assert.match(readFileSync(join(dir, 'lib/locale.ts'), 'utf8'), /LOCALES = \['ro', 'en', 'hu'\]/)
 
     /* Этот файл сам гоняется `node --test`, и Node метит СЕБЯ переменной
@@ -104,8 +104,17 @@ test('--storefront installs one look in the site and the whole kit catalogue in 
        строителем (И285), и сейчас каждое сочетание каталога носится. */
     assert.ok(Array.isArray(catalog.pairs), 'пары, которые не носятся, посчитаны')
     assert.match(readFileSync(join(plain, 'look-panel/PANEL.md'), 'utf8'), /<!-- pairs:start -->\n\| вариант \| не носится с \| почему \|\n\| --- \| --- \| --- \|\n\|/, 'список пар — в PANEL.md')
-    /* Карта товара (И278): три ручки — группы каталога, умолчание — значение сайта. */
-    for (const [g, id] of [['pdp-gallery', '50'], ['shot-frame', 'square'], ['shelf-cols', '4'], ['pdp-thumbs', 'below']]) assert.equal(catalog.defaults[g], id, g)
+    /* Карта товара (И278): ручки — группы каталога, умолчание — значение сайта.
+       Пропорция снимка и плотность полки выбором больше не бывают — словом
+       заказчика они постоянные раскладки в tokens.css (docs/decisions.md:
+       «Снимок товара — один формат, квадрат 1:1», 01.10.2026, `--shot-frame`;
+       «Панель Look → Admin → Card…», 30.09.2026, `--shelf-cols`, И594). */
+    for (const [g, id] of [['pdp-gallery', '50'], ['pdp-thumbs', 'below']]) assert.equal(catalog.defaults[g], id, g)
+    const tokens = readFileSync(join(plain, 'styles/tokens.css'), 'utf8')
+    for (const [g, decl] of [['shot-frame', /--shot-frame:\s*1 \/ 1;/], ['shelf-cols', /--shelf-cols:\s*4;/]]) {
+      assert.ok(!(g in catalog.groups) && !(g in catalog.defaults), `${g}: выбора в панели нет — постоянная`)
+      assert.match(tokens, decl, `${g}: постоянная в tokens.css`)
+    }
     assert.deepEqual(json('lib/source/sample/look.json').names, catalog.defaults, 'опубликован вид по умолчанию')
 
     const named = join(root, 'named')

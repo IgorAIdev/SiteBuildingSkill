@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { langOf } from '@/lib/route.ts'
 import { source } from '@/lib/source/index.ts'
-import { first, type Asked, type Params } from '@/lib/listing.ts'
+import { first, shownListing, type Asked, type Params } from '@/lib/listing.ts'
 import type { Listing } from '@/lib/source/contract.ts'
 import { catalogView } from '@/lib/catalog-view.ts'
 import { hrefFor, type Query } from '@/lib/href.ts'
@@ -32,15 +32,15 @@ export default async function SearchPage({ params, searchParams }: Props) {
   const lang = await langOf(params)
   const sp = await searchParams
   const q = (first(sp.q) ?? '').trim()
-  const asked: Asked = { facets: {}, sort: 'popular', page: q ? first(sp.page) : null }
-  const r = q ? await source().listing(lang, { q, ...asked }) : null
+  const asked: Asked = { facets: {}, sort: 'popular', page: q ? first(sp.page) : null, from: q ? first(sp.from) : null }
+  const r = q ? await shownListing(source(), lang, { q, ...asked }) : null
   if (r && !r.ok) {
     if (r.reason === 'unavailable') return <Unavailable lang={lang} />
     notFound()
   }
   const listing = r?.value ?? NOTHING
   const best = listing.total ? null : await source().listing(lang, { facets: {}, sort: 'popular', page: null })
-  const at = (query: Query) => hrefFor(lang, { search: q, page: query.page })
+  const at = (query: Query) => hrefFor(lang, { search: q, page: query.page, from: query.from })
   const title = !q ? t(lang, 'nav.search') : listing.total ? t(lang, 'search.results', { q }) : t(lang, 'search.none', { q })
   const empty = { title: null, hint: q ? t(lang, 'search.noneHint') : null, step: t(lang, 'catalog.emptyStep'), href: hrefFor(lang, { catalog: true }) }
   const more = best?.ok ? { title: t(lang, 'shelf.popular'), cards: best.value.items.slice(0, BEST) } : null

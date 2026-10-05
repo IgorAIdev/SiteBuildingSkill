@@ -5,7 +5,7 @@ import type { Checkout, Delivery, DeliveryMethod } from '../lib/source/contract.
 
 const EUR = (minor: number) => ({ minor, currency: 'EUR' })
 const cart = (n: number): Checkout['cart'] => ({
-  lines: Array.from({ length: n }, (_, i) => ({ id: `l${i}`, productId: 'p', variantId: 'v', name: 'P', options: [], image: { src: '', alt: '', width: 1, height: 1 }, unit: EUR(100), quantity: 1, total: EUR(100) })),
+  lines: Array.from({ length: n }, (_, i) => ({ id: `l${i}`, productId: 'p', variantId: 'v', name: 'P', options: [], pack: null, image: { src: '', alt: '', width: 1, height: 1 }, unit: EUR(100), quantity: 1, total: EUR(100) })),
   quantity: n, subtotal: EUR(100 * n), discounts: [], delivery: null, total: EUR(100 * n),
 })
 const door: DeliveryMethod = { id: 'd', kind: 'address', carrier: null, name: 'D', description: '', price: EUR(0), days: null }

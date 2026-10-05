@@ -1,17 +1,17 @@
 'use client'
-import { useEffect, useRef, useState, type MouseEvent } from 'react'
+import { useEffect, useId, useRef, useState, type MouseEvent } from 'react'
 import b from '@/styles/btn.module.css'
 import f from '@/styles/form.module.css'
 import pn from '@/styles/pane.module.css'
 import p from '@/styles/primitives.module.css'
 import s from './QuickOrder.module.css'
 import type { QuickView } from '@/lib/product-view.ts'
-import { chatHref, type Messenger } from '@/lib/contacts.ts'
+import { chatHref } from '@/lib/contacts.ts'
 import { Icon } from './Icon.tsx'
+import { PaneHead } from './PaneHead.tsx'
+import { SIGN } from './marks.ts'
+import rl from './ReachList.module.css'
 
-/* Знак строки — из листа: марки силуэтами (brands/), Telegram — самолётик
-   нашим пером, без круга (решение заказчика на cbdin.bg). */
-const MARK: Record<Messenger, string> = { viber: 'viber', telegram: 'send', whatsapp: 'whatsapp', instagram: 'instagram' }
 
 /* Быстрый заказ — одно сообщение в мессенджер вместо оформления (слово
    заказчика 25.09.2026: «быстрый заказ вызывает всплывающее меню с
@@ -30,6 +30,9 @@ const MARK: Record<Messenger, string> = { viber: 'viber', telegram: 'send', what
    Строка без адреса стоит надписью, нажатие прячется (И111 прежнего
    проекта): заказчик видит, что канал есть и ждёт номера. */
 export function QuickOrder({ view }: { view: QuickView }) {
+  /* Имена заголовка и поля окна — свои у каждого окна: на странице
+     дизайн-системы быстрый заказ стоит не один (как CartLink, SearchPane). */
+  const id = `quick-${useId().replace(/:/g, '')}`
   const ref = useRef<HTMLDialogElement>(null)
   const [qty, setQty] = useState(1)
   const [phone, setPhone] = useState('')
@@ -61,11 +64,8 @@ export function QuickOrder({ view }: { view: QuickView }) {
       <button className={`${b.btn} ${s.trigger}`} data-size="lg" type="button" aria-haspopup="dialog" onClick={open}>{view.open}</button>
       {/* Окно — тройка общего модуля (styles/pane.module.css, И460): шапка
           стоит, прокручивается только тело. */}
-      <dialog ref={ref} className={pn.pane} data-pane="dialog" aria-labelledby="quick-title">
-        <div className={pn.bar}>
-          <h2 className={pn.title} id="quick-title">{view.title}</h2>
-          <button className={`${b.btn} ${pn.close}`} data-voice="bare" type="button" aria-label={view.close} onClick={() => ref.current?.close()}><Icon id="x" /></button>
-        </div>
+      <dialog ref={ref} className={pn.pane} data-pane="dialog" aria-labelledby={`${id}-title`}>
+        <PaneHead title={view.title} titleId={`${id}-title`} close={view.close} onClose={() => ref.current?.close()} />
         <div className={`${pn.body} ${s.body}`}>
           <div className={s.intro}>
             <p className={s.lead}>{view.lead}</p>
@@ -84,17 +84,17 @@ export function QuickOrder({ view }: { view: QuickView }) {
             {rows.map((r) => (
               <li key={r.key}>
                 {r.href
-                  ? <a className={`${b.btn} ${s.row}`} data-size="lg" data-mark={r.key} href={r.href} target="_blank" rel="noopener noreferrer" aria-label={r.label}><Icon id={MARK[r.key]} /><span className={s.name}>{r.name}</span><span className={s.via}>{r.label}</span></a>
-                  : <span className={`${b.btn} ${s.row}`} data-size="lg" data-mark={r.key} aria-disabled="true" aria-label={r.label}><Icon id={MARK[r.key]} /><span className={s.name}>{r.name}</span><span className={s.via}>{r.label}</span></span>}
+                  ? <a className={`${b.btn} ${s.row} ${rl.mark}`} data-size="lg" data-mark={r.key} href={r.href} target="_blank" rel="noopener noreferrer" aria-label={r.label}><Icon id={SIGN[r.key]} /><span className={s.name}>{r.name}</span><span className={s.via}>{r.label}</span></a>
+                  : <span className={`${b.btn} ${s.row} ${rl.mark}`} data-size="lg" data-mark={r.key} aria-disabled="true" aria-label={r.label}><Icon id={SIGN[r.key]} /><span className={s.name}>{r.name}</span><span className={s.via}>{r.label}</span></span>}
               </li>
             ))}
           </ul>
           <div className={f.field}>
-            <label className={f.label} htmlFor="quick-phone">{view.phone.label}</label>
+            <label className={f.label} htmlFor={`${id}-phone`}>{view.phone.label}</label>
             {/* Номер и «перезвоните» — общая пара поля и кнопки (`f.send`,
                 И481); не помещаются — кнопка встаёт под полем. */}
             <div className={f.send}>
-              <input className={f.box} id="quick-phone" type="tel" inputMode="tel" autoComplete="tel" placeholder={view.phone.hint} value={phone} onChange={(e) => setPhone(e.target.value)} />
+              <input className={f.box} id={`${id}-phone`} type="tel" inputMode="tel" autoComplete="tel" placeholder={view.phone.hint} value={phone} onChange={(e) => setPhone(e.target.value)} />
               {call
                 ? <a className={b.btn} data-voice="loud" href={call} target="_blank" rel="noopener noreferrer"><Icon id="arrow-right" />{view.call}</a>
                 : <span className={b.btn} data-voice="loud" aria-disabled="true"><Icon id="arrow-right" />{view.call}</span>}

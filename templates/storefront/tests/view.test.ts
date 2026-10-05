@@ -12,11 +12,11 @@ test('a shelf card carries ready strings: address, the standard variant price an
   /* Карточка стоит на стандартном варианте (И473): 10 % · 10 ml, его цена. */
   assert.equal(oil.price, '44,90\u00a0€')
   assert.equal(oil.flag, null, '«în stoc» на полке не печатается')
-  assert.equal(oil.facts, '10\u00a0%\u00a0· 10\u00a0ml\u00a0· 1000\u00a0mg')
+  assert.equal(oil.facts, '1000 mg · 10 ml', 'процента нет — он в имени товара')
   assert.equal(serum.price, '32,90 €')
   assert.deepEqual(serum.flag, { level: 'out', text: 'Stoc epuizat' })
   assert.deepEqual(cats.flag?.level, 'low')
-  assert.equal(cats.facts, '2,5 % · 10 ml · 250 mg')
+  assert.equal(cats.facts, '250 mg · 10 ml')
 })
 
 test('a shelf card binds a number to its unit in the name', async () => {
@@ -33,7 +33,7 @@ test('a shelf card buys the standard variant directly and shows its old price; s
   assert.ok(r.ok)
   const [forte, oil, serum, caps] = r.value.map((c) => shelfCard('en', c))
   assert.equal(forte.buy.variant, 'uf30-10')
-  assert.equal(forte.buy.add, 'Add')
+  assert.equal(forte.buy.add, 'Add to cart')
   assert.equal(forte.buy.name, 'Add to cart: CBD oil 30 % forte')
   assert.equal(forte.was?.text, '€104.90')
   assert.equal(forte.sale, '−14 %')

@@ -1,4 +1,5 @@
 import p from '@/styles/primitives.module.css'
+import tb from '@/styles/table.module.css'
 import s from './DeliveryTable.module.css'
 import type { DeliveryTableView } from '@/lib/checkout-view.ts'
 
@@ -11,8 +12,8 @@ import type { DeliveryTableView } from '@/lib/checkout-view.ts'
    том, что таблица — её главный ответ (разбор 24.09.2026, D2). */
 export function DeliveryTable({ view, labelledBy }: { view: DeliveryTableView; labelledBy: string }) {
   return (
-    <div className={s.scroll}>
-      <table className={s.table} aria-labelledby={labelledBy}>
+    <div className={tb.scroll}>
+      <table className={tb.table} aria-labelledby={labelledBy}>
         <thead><tr>{view.head.map((h) => <th key={h} scope="col">{h}</th>)}</tr></thead>
         <tbody>
           {view.rows.map((r) => (

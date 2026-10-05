@@ -1,0 +1,44 @@
+/* Пути к магазину (ReachList.tsx, И547) — одна одежда строки на меню трубки
+   в шапке и окно помощи. Образец — снимок заказчика с cbdin: знак краской
+   марки слева, имя полужирным, под ним адрес тоном вторичного текста.
+   Числа не взяты — роли: строка — рост крупного органа, поле, просвет и
+   знак — доли этого роста (правило 2); ответ на руку — вид «строка»
+   (`row` из styles/btn.module.css, И685), как у строк фильтров и поиска;
+   форма подложки — тоже вида, одна на все строки сайта (И730). */
+.list{list-style:none;margin:0;padding:0;display:grid}
+.row{
+  composes:row from '../styles/btn.module.css';
+  display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-content:center;
+  column-gap:calc(var(--ctrl-h-lg) * .3);
+  min-block-size:var(--ctrl-h-lg);padding:calc(var(--ctrl-h-lg) * .12) calc(var(--ctrl-h-lg) * .25);
+  color:var(--ink);text-decoration:none;
+  font-size:var(--ctrl-fs);line-height:1.25
+}
+/* Штрих пера — штрих буквы имени рядом (имя весом подписи, как у кнопки: И677,
+   п. 3); силуэты марок штриха не имеют, живая зона у них та же, что у пера (И679). */
+.row svg{
+  grid-row:1 / -1;align-self:center;inline-size:calc(var(--ctrl-h-lg) * .44);block-size:calc(var(--ctrl-h-lg) * .44);
+  --icon-stroke:calc(var(--ctrl-fs) * var(--icon-stem))
+}
+.name{font-weight:var(--label-weight)}
+.value{font-size:var(--ctrl-fs-sm);color:var(--ink-soft);font-variant-numeric:tabular-nums}
+/* Строка без адреса ждёт номера: видна, но тише (И442). */
+.row[aria-disabled='true']{color:var(--ink-soft)}
+
+/* Знак — краской своей марки (роли `--mark-*` строителя палитры, И471):
+   так мессенджер узнают; фон строки своей краски не получает («фон у
+   иконок мессенджеров не красят» — слово заказчика 27.09.2026). Телефон и
+   почта — чернилами. Класс берёт и быстрый заказ (QuickOrder.tsx): краски
+   марок нарисованы один раз. */
+.mark[data-mark='viber'] svg{color:var(--mark-viber)}
+.mark[data-mark='telegram'] svg{color:var(--mark-telegram)}
+.mark[data-mark='whatsapp'] svg{color:var(--mark-whatsapp)}
+.mark[data-mark='instagram'] svg{color:var(--mark-instagram)}
+
+/* Кто отвечает — буква имени в круге на месте знака (первая строка окна
+   помощи): круг ростом знака с полем, тихой плашкой. */
+.face{
+  grid-row:1 / -1;display:grid;place-items:center;
+  inline-size:calc(var(--ctrl-h-lg) * .72);block-size:calc(var(--ctrl-h-lg) * .72);margin-inline:calc(var(--ctrl-h-lg) * -.14);
+  border-radius:50%;background:var(--quiet);font-weight:var(--label-weight)
+}

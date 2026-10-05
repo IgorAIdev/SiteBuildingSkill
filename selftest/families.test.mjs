@@ -38,7 +38,8 @@ test('noPress: ответ, взятый через composes из файла ко
     const r = css(dir)
     const out = r.stdout + r.stderr
     assert.match(out, /Mute\.module\.css.*\.mute — есть :hover, нет отклика/, 'без взятого ответа — находка')
-    assert.doesNotMatch(out, /Buy\.module\.css/, 'взятый ответ на нажатие — не находка')
+    /* Строка noPress, а не весь вывод: подчёркивание узла под рукой ловит своя семья handOut (И717). */
+    assert.doesNotMatch(out, /Buy\.module\.css.*— есть :hover, нет отклика/, 'взятый ответ на нажатие — не находка')
   } finally { rmSync(dir, { recursive: true, force: true }) }
 })
 
@@ -47,8 +48,9 @@ test('noPress: отрицание состояния в селекторе не 
     'components/Pills.module.css': '.pill { text-decoration-line: none }\n@media (hover:hover){ .pill:not([data-current]):hover { text-decoration-line: underline } }\n.pill:active { filter: brightness(.95) }\n',
   })
   try {
-    const out = css(dir).stdout + css(dir).stderr
-    assert.doesNotMatch(out, /Pills\.module\.css/)
+    const r = css(dir)
+    const out = r.stdout + r.stderr
+    assert.doesNotMatch(out, /Pills\.module\.css.*— есть :hover, нет отклика/)
   } finally { rmSync(dir, { recursive: true, force: true }) }
 })
 
@@ -375,4 +377,72 @@ test('halfRole: пара, сломанная ролью --ink, — находк�
     assert.match(out, /Deck\.module\.css:4 {2}\.old — знак переопределён, поверхность нет/)
     assert.doesNotMatch(out, /\.whole/, 'знак вместе с поверхностью — пара целиком, не находка')
   } finally { rmSync(dir, { recursive: true, force: true }) }
+})
+
+/* placeTie (И755): корень, которого берут через composes, объявляет положение голым
+   классом — находка; под :where() — нет. Сердце карточки 05.10.2026: знак `.glyph`
+   с `position:relative` бил `position:absolute` места в сборке. */
+test('placeTie: a composed control root that sets its own position at full weight is a finding; under :where it is not', () => {
+  const dir = project({
+    'styles/glyph.module.css': '.glyph { position: relative; display: inline-flex }\n',
+    'styles/mark.module.css': ':where(.mark) { position: relative }\n.mark { display: inline-flex }\n',
+    'components/Heart.module.css': ".save { composes: glyph from '../styles/glyph.module.css' }\n.dot { composes: mark from '../styles/mark.module.css' }\n",
+  })
+  try {
+    const out = spawnSync(process.execPath, [join(dir, 'tools/check-css.mjs'), '--list', 'placeTie'], { cwd: dir, encoding: 'utf8' }).stdout
+    assert.match(out, /glyph\.module\.css:1 {2}\.glyph — его берут \(composes\), а положение \(position\)/)
+    assert.doesNotMatch(out, /\.mark —/, 'положение под :where — не спор')
+  } finally { rmSync(dir, { recursive: true, force: true }) }
+})
+
+/* placeTie, второй путь (И755): класс места отдан компоненту и лёг на узел рядом с
+   классом контрола; оба объявили показ голым классом — находка. Точки галереи
+   05.10.2026 стояли поверх миниатюр: `.mark{display:flex}` бил `.dots{display:none}`. */
+test('placeTie: a place class handed to a component ties with the control class on the same node', () => {
+  const files = (mark) => ({
+    'styles/slides.module.css': mark,
+    'components/Dots.tsx': "import sl from '../styles/slides.module.css'\nexport function Dots({ className = '' }: { className?: string }) { return <div className={`${sl.mark} ${className}`} /> }\n",
+    'components/Gallery.module.css': '.dots { display: none }\n',
+    'components/Gallery.tsx': "import s from './Gallery.module.css'\nimport { Dots } from './Dots.tsx'\nexport function Gallery() { return <Dots className={s.dots} /> }\n",
+  })
+  const run = (mark) => {
+    const dir = project(files(mark))
+    try { return spawnSync(process.execPath, [join(dir, 'tools/check-css.mjs'), '--list', 'placeTie'], { cwd: dir, encoding: 'utf8' }).stdout }
+    finally { rmSync(dir, { recursive: true, force: true }) }
+  }
+  assert.match(run('.mark { display: flex; gap: 4px }\n'), /\.dots \(место, components\/Gallery\.tsx\) и \.mark .* оба задают display/)
+  assert.doesNotMatch(run(':where(.mark) { display: flex }\n.mark { gap: 4px }\n'), /\.dots \(место/, 'показ контрола под :where — не спор')
+})
+
+/* paneFill (И772): у окна поверх страницы один лист. Корзина красила полосу доставки
+   тоном, тело подложкой, строки карточками — пять заливок против двух у меню и
+   фильтров (слово заказчика 05.10.2026). Часть окна, надетая рядом с `body` / `foot` /
+   `bar`, или класс `pane…` свою заливку не пишет. */
+test('paneFill: a window part that paints itself is a finding; none, transparent and the sheet colour are not', () => {
+  const files = (own) => ({
+    'styles/pane.module.css': '.pane { background: var(--surface) }\n.body { overflow: auto }\n.foot { flex: none }\n',
+    'components/Win.module.css': own,
+    'components/Win.tsx': [
+      "import pn from '../styles/pane.module.css'",
+      "import s from './Win.module.css'",
+      'export function Win() {',
+      '  return (<div className={pn.pane}>',
+      '    <div className={`${pn.body} ${s.list}`} />',
+      '    <div className={s.paneGoal} />',
+      '    <div className={`${pn.foot} ${s.acts}`} />',
+      '  </div>)',
+      '}',
+    ].join('\n') + '\n',
+  })
+  const run = (own) => {
+    const dir = project(files(own))
+    try { return spawnSync(process.execPath, [join(dir, 'tools/check-css.mjs'), '--list', 'paneFill'], { cwd: dir, encoding: 'utf8' }).stdout }
+    finally { rmSync(dir, { recursive: true, force: true }) }
+  }
+  const out = run('.list { background: var(--band) }\n.paneGoal { background-color: var(--pop-tint) }\n.acts { background: var(--surface) }\n.line { background: var(--plate) }\n')
+  assert.match(out, /Win\.module\.css:1 {2}\.list — часть окна красит себя/, 'тело окна с подложкой — находка')
+  assert.match(out, /Win\.module\.css:2 {2}\.paneGoal — часть окна красит себя/, 'полоса окна с тоном — находка')
+  assert.doesNotMatch(out, /\.acts —/, 'лист окна — не находка')
+  assert.doesNotMatch(out, /\.line —/, 'строка внутри тела не часть окна')
+  assert.doesNotMatch(run('.list { background: none }\n.paneGoal { background: transparent }\n'), /часть окна красит себя/)
 })

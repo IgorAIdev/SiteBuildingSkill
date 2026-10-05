@@ -1,0 +1,8 @@
+/* Главная → Разделение секций (HomeSections.tsx): образец ритма после героя и плитки цветов полов. */
+.rhythm{display:grid;gap:var(--air-page)}
+.sample{display:grid;gap:var(--air-row);align-content:start}
+.floors{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:var(--gap-grid)}
+.floor{display:grid;gap:var(--sp-1);align-content:start}
+.floor b{font-size:var(--name-size);line-height:var(--name-lead);font-weight:var(--name-weight)}
+.floor code{font-size:var(--code-size)}
+.chip{display:block;block-size:var(--sp-9);border-radius:var(--r-card);box-shadow:inset 0 0 0 var(--line-w) var(--rule)}

@@ -1,6 +1,6 @@
 ---
 name: work-locally
-description: "GitHub flow for SkillSiteBuilding: work on claude/* branch, PR to main, merge on green with a merge commit; local-only phase ended 25.09.2026"
+description: "Since 28.09.2026 local-only again: commit on local main, no push, no PR until the owner says; earlier GitHub flow (claude/* → PR → merge) is paused"
 metadata:
   node_type: memory
   type: feedback
@@ -8,6 +8,9 @@ metadata:
   modified: 2026-09-26T13:06:30.750Z
 ---
 
+**28.09.2026 — local again.** Owner: «как сделаешь всё — коммить локально, вливать в GitHub не нужно, работаем локально» (see [[no-history]]). Finished work is committed on the local `main` in this checkout; no push, no PR, no CI until the owner says «заливай». The storefront runs locally (`npm run storefront`, phone by the LAN address the launcher prints). The claude/* → PR flow above is paused, not deleted. This overrides CLAUDE.md «Ветка и вливание» and «Работа показывается отрисованной — на проде» for sessions in this kit; CLAUDE.md keeps the PR flow because it travels to new shops.
+
+**History (paused flow):**
 From 23.09 to 25.09.2026 the owner kept everything local («Заливать на гитхаб пока ничего не нужно, работаем локально»). On 25.09.2026 they said «заливай все на гитхаб, далее в облаке буду продолжать»: all work went to GitHub `main` through PRs #59–#62, old remote branches were deleted, and only `main` remains. The owner now continues in cloud sessions from `main`.
 
 On 26.09.2026 the owner decided to move everything from GitHub to another laptop and work locally in the Claude desktop app, steering from the phone through Remote Control. The reason: a cloud session can't show a live page. At the same time the memory moved into the repo, at `.claude/memory/`, loaded by `.claude/rules/memory.md`.

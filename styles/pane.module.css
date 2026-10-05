@@ -13,8 +13,9 @@
  *    .pane   само окно — `<dialog>` или `popover`; открытое — столбик, и
  *            само оно НЕ прокручивается никогда;
  *    .bar    шапка: заголовок и крестик одной строкой; стоит;
- *    .title  заголовок окна — роль раздела (`--h2-*`: в разметке окна это
- *            h2, чужая роль уровню запрещена — семья `headRole`);
+ *    .title  заголовок окна — своя роль (`--panehead-*`): в разметке окна
+ *            это h2, но ступенью ниже заголовка раздела — окно в 400, а
+ *            не страница (И551); уровень роли знает семья `headRole`;
  *    .close  крестик — кнопка сайта (`btn`) квадратом ростом цели;
  *    .body   тело: прокручивается только оно, остаток прокрутки не уходит
  *            на страницу;
@@ -41,18 +42,54 @@
  *  одна на обе ширины.
  */
 
-.pane:is([open], :popover-open){
+/* УХОДЯЩЕЕ ОКНО — ВСЁ ЕЩЁ ОКНО (И510). Вид окна объявлен открытому, а
+   закрытое уезжает ещё `--open-t`: с закрытием оно теряло коробку, и
+   шторка меню уезжала строкой полок шапки — «при закрытии шторки в фоне
+   сверху идут какие-то слова влево за шторкой». На время ухода жест
+   (components/PaneSwipe.tsx, `beforetoggle`) ставит окну `data-leaving`:
+   всё, что рисует окно или его содержимое, читает `:is(:popover-open,
+   [data-leaving])`, а положение — только закрытое (`:not(:popover-open)`),
+   так окно и уезжает. Где браузер `beforetoggle` у `<dialog>` не шлёт —
+   окно уходит, как прежде.
+
+   Вид окна — умолчание модуля: его носит и закрытым каждое окно, кроме
+   того, что на широком бывает строкой (`data-row`: меню шапки, фильтры),
+   — новое окно защищено само, без пометки на месте, и от метки не
+   зависит. `display:flex` — только открытому: уходящее держит на экране
+   ход (`display … allow-discrete`), а не метка. Метка включала и показ —
+   снятая, она оставляла окно на экране ещё ход уже без вида окна; окно-
+   диалог `<dialog>` закрытым браузер ставит `absolute` — оно крепится к
+   экрану само (`position:fixed`). Заказчик 29.09.2026: после закрытия
+   корзины на кадры вставала голая коробка со словами в столбик (И557).
+
+   Горизонталь пальца на шторке — жесту, а не браузеру (`touch-action`,
+   тот же разбор, что у меню шапки, И147): браузер телефона читал её
+   своим жестом и забирал палец, шторка за ним не шла. Ставится и телу —
+   `touch-action` действует до ближайшей прокрутки, а тело прокручивается. */
+.pane:is([data-pane='start'], [data-pane='end']):popover-open,
+.pane:is([data-pane='start'], [data-pane='end']):popover-open .body{touch-action:pan-y}
+.pane:is([open], :popover-open){display:flex}
+.pane:is([open], :popover-open, [data-leaving], :not([data-row])){
   --grab-size:calc(var(--ctrl-target) * .8);--grab-w:calc(var(--ctrl-target) * .1);
   transition:translate var(--open-t) var(--ease),overlay var(--open-t) allow-discrete,display var(--open-t) allow-discrete;
-  display:flex;flex-direction:column;
+  flex-direction:column;
   overflow:hidden;padding:0;border:0;
   background:var(--surface);color:var(--ink);
-  box-shadow:var(--sh-overlay)
+  /* Окно и шторка с затемнением — роль модального (И726), выше меню: у
+     профессионалов диалог стоит над всплывающим (Material 3: меню — уровень 2,
+     диалог — 3; Primer: floating-large у модальных). */
+  box-shadow:var(--sh-modal)
 }
 /* Затемнение гаснет по мере того, как окно тянут пальцем (`--pull` от 0 до
    1 ставит жест, components/PaneSwipe.tsx; ::backdrop наследует его от
-   окна). */
+   окна). Закрытое окно ещё держится в верхнем слое, пока уезжает
+   (`overlay` ниже), и затемнение под ним — тоже: у закрытого оно 0 и гаснет
+   тем же ходом. Без этого (дефект 28.09.2026, И510) затемнение уходящей
+   шторки стояло полным и пропадало рывком, а после жеста пальцем жест
+   сбрасывал `--pull`, и уже погасшее затемнение вспыхивало снова на время
+   ухода: «после закрытия шторки сайт мигает, темнеет и снова загорается». */
 .pane::backdrop{background:var(--scrim);opacity:calc(1 - var(--pull, 0))}
+.pane:not([open], :popover-open)::backdrop{opacity:0;transition-timing-function:var(--ease-exit)}
 
 /* ЗА ПАЛЬЦЕМ (И494). Окно въезжает от своего края и уезжает туда же — тем
    же путём, каким его уводит палец (жест — components/PaneSwipe.tsx: один
@@ -65,23 +102,40 @@
    «grabber»; Material 3, «drag handle»). Рисунок — волосок-кромка
    (`--border`), толщина и длина — от цели пальца. */
 .pane::backdrop{transition:opacity var(--open-t) var(--ease)}
-.pane:is([data-pane='start'], [data-pane='end']):popover-open::after,
+.pane:is([data-pane='start'], [data-pane='end']):is(:popover-open, [data-leaving], :not([data-row]))::after,
 .pane[data-pane='dialog']::after{
   content:'';position:absolute;border-radius:var(--grab-w);background:var(--border);pointer-events:none
 }
-.pane[data-pane='start']:popover-open::after{inset-inline-end:var(--grab-w);inset-block-start:calc(50% - var(--grab-size) / 2);inline-size:var(--grab-w);block-size:var(--grab-size)}
-.pane[data-pane='end']:popover-open::after{inset-inline-start:var(--grab-w);inset-block-start:calc(50% - var(--grab-size) / 2);inline-size:var(--grab-w);block-size:var(--grab-size)}
+.pane[data-pane='start']:is(:popover-open, [data-leaving], :not([data-row]))::after{inset-inline-end:var(--grab-w);inset-block-start:calc(50% - var(--grab-size) / 2);inline-size:var(--grab-w);block-size:var(--grab-size)}
+.pane[data-pane='end']:is(:popover-open, [data-leaving], :not([data-row]))::after{inset-inline-start:var(--grab-w);inset-block-start:calc(50% - var(--grab-size) / 2);inline-size:var(--grab-w);block-size:var(--grab-size)}
 .pane[data-pane='dialog']::after{display:none}
-/* Закрытое положение — за своим краем: только на телефоне, где меню и
-   фильтры и есть шторки; на широком они — строка в шапке и над полкой
-   (тело `display:contents`, см. выше), и уводить их за край нельзя. */
-@media (max-width:820px){
-  /* Уход — тем же ходом, что приход: переход объявлен и закрытому. */
-  .pane:is([data-pane='start'], [data-pane='end']):not(:popover-open){transition:translate var(--open-t) var(--ease-exit),overlay var(--open-t) allow-discrete,display var(--open-t) allow-discrete}
-  .pane[data-pane='start']:not(:popover-open){translate:-100% 0}
-  .pane[data-pane='end']:not(:popover-open){translate:100% 0}
-}
+/* Закрытое положение — за своим краем, и только у УХОДЯЩЕЙ шторки
+   (`data-leaving`): меню и фильтры на широком — строка в шапке и над полкой
+   (тело `display:contents`, см. выше), и уводить их за край нельзя. Прежде
+   ход был под швом окна (`@media 820`), а строку или шторку решает шов
+   коробки шапки (`@container 819`), и окно у́же коробки на полосу прокрутки:
+   на сужении строка полок получала уход вправо с дискретным `display` и
+   0.28 s ехала словами за край, пока не гасла (заказчик 29.09.2026: «слова
+   реально уезжают с анимацией вправо… когда меню сворачивается в боковое»;
+   И552). Метка ухода ставится только закрытию открытой шторки
+   (components/PaneSwipe.tsx), шву — никогда. */
+.pane:is([data-pane='start'], [data-pane='end'])[data-leaving]:not(:popover-open){transition:translate var(--open-t) var(--ease-exit),overlay var(--open-t) allow-discrete,display var(--open-t) allow-discrete}
+.pane[data-pane='start'][data-leaving]:not(:popover-open){translate:-100% 0}
+.pane[data-pane='end'][data-leaving]:not(:popover-open){translate:100% 0}
+/* Шторка, которая строкой не бывает (без `data-row`: корзина), уходит
+   за край и на столе: без этого на широком она закрывалась вспышкой, без
+   хода (И537). */
+.pane:not([data-row]):is([data-pane='start'], [data-pane='end']):not(:popover-open){transition:translate var(--open-t) var(--ease-exit),overlay var(--open-t) allow-discrete,display var(--open-t) allow-discrete}
+.pane:not([data-row])[data-pane='start']:not(:popover-open){translate:-100% 0}
+.pane:not([data-row])[data-pane='end']:not(:popover-open){translate:100% 0}
+/* Окно сверху (`top`, поиск из шапки, И539): во всю ширину от верхнего
+   края, ростом по содержимому и не выше окна; поле отдаёт мере страницы
+   (`--pane-pad:0`, ширину держит `wrap` узла); уезжает вверх на любой
+   ширине. */
+.pane[data-pane='top']:is(:popover-open, [data-leaving], :not([data-row])){--pane-pad:0px;position:fixed;inset:0 0 auto;margin:0;inline-size:100%;max-inline-size:none;block-size:auto;max-block-size:100dvh;border-radius:0 0 var(--r-sheet) var(--r-sheet)}
+.pane[data-pane='top']:not(:popover-open){transition:translate var(--open-t) var(--ease-exit),overlay var(--open-t) allow-discrete,display var(--open-t) allow-discrete;translate:0 -100%}
 @starting-style{
+  .pane[data-pane='top']:popover-open{translate:0 -100%}
   .pane[data-pane='start']:popover-open{translate:-100% 0}
   .pane[data-pane='end']:popover-open{translate:100% 0}
   .pane:is([open], :popover-open)::backdrop{opacity:0}
@@ -92,7 +146,7 @@
   --pane-pad:var(--pad-card);
   inline-size:min(calc(100% - var(--gut) * 2), var(--measure));
   max-block-size:calc(100dvh - var(--gut) * 2);
-  margin:auto;border-radius:var(--r-sheet)
+  position:fixed;inset:0;margin:auto;border-radius:var(--r-sheet)
 }
 /* На телефоне окно — нижняя шторка под большой палец (шов «телефон»,
    И494): во всю ширину, от низа, с ручкой сверху, уходит вниз пальцем.
@@ -106,35 +160,98 @@
     padding-block-end:env(safe-area-inset-bottom)
   }
   .pane[data-pane='dialog']::after{display:block;inset-block-start:var(--grab-w);inset-inline-start:calc(50% - var(--grab-size) / 2);inline-size:var(--grab-size);block-size:var(--grab-w)}
-  .pane[data-pane='dialog']:not([open]){translate:0 100%;transition:translate var(--open-t) var(--ease-exit),overlay var(--open-t) allow-discrete,display var(--open-t) allow-discrete}
-  @starting-style{ .pane[data-pane='dialog'][open]{translate:0 100%} }
+  .pane[data-pane='dialog']:not([open], :popover-open){translate:0 100%;transition:translate var(--open-t) var(--ease-exit),overlay var(--open-t) allow-discrete,display var(--open-t) allow-discrete}
+  @starting-style{ .pane[data-pane='dialog']:is([open], :popover-open){translate:0 100%} }
+}
+/* Окно у плавающей кнопки (`dock`, окно помощи, И547): над своей кнопкой,
+   от её правого края, шириной строки меню, ростом своих строк — прокрутки нет,
+   пока окно браузера вмещает список; «наверх» над кнопкой окно может накрыть
+   (И757). Не выше места над кнопкой (правило 9). Растёт из угла кнопки — прозрачностью и масштабом, а не
+   въездом от края: оно не шторка, пальцем его не уводят. Страницу не
+   затемняет — окно немодальное, мимо можно нажать. Без привязки к якорю —
+   над стопкой числом её роста (`--float-at` объявляет стопка). */
+.pane[data-pane='dock']:is(:popover-open, [data-leaving], :not([data-row])){
+  --pane-pad:var(--pad-inner);
+  position:fixed;margin:0;inset:auto var(--page-edge) var(--float-at, var(--gut)) auto;
+  inline-size:min(22rem, 100% - var(--page-edge) * 2);max-block-size:calc(100dvh - var(--float-at, var(--gut)) - var(--gut));
+  border-radius:var(--r-sheet);transform-origin:100% 100%;
+  transition:opacity var(--open-t) var(--ease),scale var(--open-t) var(--ease),overlay var(--open-t) allow-discrete,display var(--open-t) allow-discrete
+}
+.pane[data-pane='dock']:not(:popover-open){opacity:0;scale:.96;transition:opacity var(--open-t) var(--ease-exit),scale var(--open-t) var(--ease-exit),overlay var(--open-t) allow-discrete,display var(--open-t) allow-discrete}
+@starting-style{ .pane[data-pane='dock']:popover-open{opacity:0;scale:.96} }
+@media (prefers-reduced-motion:reduce){ .pane[data-pane='dock']{scale:none} }
+.pane[data-pane='dock']::backdrop{background:none}
+/* Окно помощи не модальное — страница под ним живая, затемнения нет: роль
+   всплывающего, как у меню (И726). */
+.pane[data-pane='dock']:is([open], :popover-open, [data-leaving], :not([data-row])){box-shadow:var(--sh-overlay)}
+@supports (position-area:block-start){
+  .pane[data-pane='dock']:is(:popover-open, [data-leaving], :not([data-row])){
+    position-anchor:--help;position-area:block-start span-inline-start;inset:auto;
+    margin-block-end:var(--gap-targets);inline-size:min(22rem, 100% - var(--page-edge));max-block-size:calc(100% - var(--gut) - var(--gap-targets))
+  }
 }
 /* Шторка от края: во всю высоту окна (`dvh`, правило 9), шириной не больше
    окна за вычетом полосы под палец — мимо шторки должно быть куда нажать
    (M2, «ширина экрана минус 56»). Угол — у свободного края. Правила не
    спрятаны под шов: открытая шторка остаётся шторкой, даже если окно
    раздвинули, пока она открыта. */
-.pane:is([data-pane='start'], [data-pane='end']):popover-open{
-  --pane-pad:var(--pad-sheet);
+/* Шторка — одна мера на меню, фильтры и корзину (бриф docs/design/шторки.md,
+   28.09.2026): ширина 25rem — Dawn 400, Material 3 до 400, cbdin.bg 360
+   меню и 440 корзина; поле — поле карточки, как у окна посреди экрана
+   (cbdin.bg 19.6, Dawn 15). Поле листа (36 на телефоне) съедало пятую часть
+   шторки в 334: строки меню стояли в 262 (слово заказчика: «дизайн их
+   сделай, ибо сейчас плохо»). */
+.pane:is([data-pane='start'], [data-pane='end']):is(:popover-open, [data-leaving], :not([data-row])){
+  --pane-pad:var(--pad-card);
   position:fixed;inset-block:0;margin:0;
-  inline-size:min(22.5rem, 100% - var(--ctrl-h-lg));block-size:100dvh;max-block-size:none
+  inline-size:min(25rem, 100% - var(--ctrl-h-lg));block-size:100dvh;max-block-size:none
 }
-.pane[data-pane='start']:popover-open{inset-inline:0 auto;border-radius:0;border-start-end-radius:var(--r-sheet);border-end-end-radius:var(--r-sheet)}
-.pane[data-pane='end']:popover-open{inset-inline:auto 0;border-radius:0;border-start-start-radius:var(--r-sheet);border-end-start-radius:var(--r-sheet)}
+.pane[data-pane='start']:is(:popover-open, [data-leaving], :not([data-row])){inset-inline:0 auto;border-radius:0;border-start-end-radius:var(--r-sheet);border-end-end-radius:var(--r-sheet)}
+.pane[data-pane='end']:is(:popover-open, [data-leaving], :not([data-row])){inset-inline:auto 0;border-radius:0;border-start-start-radius:var(--r-sheet);border-end-start-radius:var(--r-sheet)}
 
+/* Шапка отбита от тела волоском черты, как низ (`.foot`): тело едет под
+   стоящей шапкой, и край прокрутки виден (cbdin.bg, Dawn — у всех трёх
+   образцов шапка окна отделена). */
 .bar{
   flex:none;
   display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);
-  padding:var(--pane-pad, var(--pad-card)) var(--pane-pad, var(--pad-card)) var(--air-row)
+  padding:var(--pad-inner) var(--pane-pad, var(--pad-card));
+  border-block-end:var(--line-w) solid var(--rule)
 }
-.title{margin:0;font-size:var(--h2-size);line-height:var(--h2-lead);font-weight:var(--h2-weight);letter-spacing:var(--h2-track)}
+/* Шапка на палубе — у каждого окна: тёмная полоса пола `data-ground='deck'` (base.css),
+   как шапка и подвал сайта; роли чернил, знака и кнопки переназначает сам пол, внутри
+   шапки о нём ничего не знают (И671; корзина cbdin.bg: шапка шторки тёмная, слово белое,
+   замер 03.10.2026). Пол ставит одна разметка шапки — components/PaneHead.tsx; до
+   04.10.2026 его ставило окно само, и тёмной шапка была только у корзины («у окна
+   корзины закрашена шапка, а в твоём меню не закрашена»). Волосок снизу тёмной шапке не
+   нужен: край — сама смена цвета. */
+.bar[data-ground='deck']{background:var(--page-deck);border-block-end:0}
+.title{margin:0;font-size:var(--panehead-size);line-height:var(--panehead-lead);font-weight:var(--panehead-weight);letter-spacing:var(--panehead-track)}
+/* Заголовок и тихое рядом (число штук корзины) — одной строкой текста по базовой
+   линии; не влезло рядом (длинный заголовок на румынском) — переносится под
+   заголовок, а не режет его. */
+.lead{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:var(--gap-row);min-inline-size:0}
+.aside{font-size:var(--blurb-size);line-height:var(--blurb-lead);color:var(--ink-soft);white-space:nowrap}
+/* Шапка окна сверху — содержимое в мере страницы (`wrap`), строкой, как шапка
+   сайта под ним. */
+.wide{flex:1 1 auto;min-inline-size:0}
+.row{display:flex;align-items:center;gap:var(--gap-row)}
+/* Внутри окна нет текста крупнее его заголовка (И562): заголовок окна —
+   вершина окна, всё прочее под ним. Заголовок, поставленный внутрь окна
+   компонентом страницы (пустая корзина — экран состояния с h2 раздела),
+   набирается жирным основным текстом, а не ролью раздела: «Your cart is
+   empty» стоял 36 под заголовком шторки 28 (заказчик 29.09.2026: «внутренний
+   текст больше по размеру заголовка»). Сила нулевая (`:where`) — модуль
+   компонента, решивший своё, перебивает её, но проверка `paneTop` (check:craft) мерит
+   отрисованное. */
+:where(.pane) :where(h1, h2, h3):not(.title){font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--h3-weight);letter-spacing:var(--body-track)}
 .close{--btn-h:var(--ctrl-target);flex:none;inline-size:var(--btn-h);padding:0}
 .close svg{inline-size:1.25em;block-size:1.25em}
 
 .body{
   flex:1 1 auto;min-block-size:0;
   overflow:auto;overscroll-behavior:contain;
-  padding:0 var(--pane-pad, var(--pad-card)) var(--pane-pad, var(--pad-card))
+  padding:var(--air-row) var(--pane-pad, var(--pad-card)) var(--pane-pad, var(--pad-card))
 }
 .body:has(+ .foot){padding-block-end:var(--air-row)}
 
@@ -143,3 +260,35 @@
   padding:var(--pad-inner) var(--pane-pad, var(--pad-card)) var(--pane-pad, var(--pad-card));
   border-block-start:var(--line-w) solid var(--rule)
 }
+
+/* ОДНО ОКНО — ОДИН ЛИСТ И ОДНА ПАРА ДЕЙСТВИЙ (И772). Слово заказчика
+   05.10.2026 тремя шторками рядом: «кнопки внизу в разных формах по-разному,
+   там серые, там белые… в корзине несколько оттенков, а в меню нет… надёргали
+   разного дизайна, всё несогласовано — сократить роли, чтоб была
+   целостность». Замер (отрисованные шторки, 800): в корзине пять разных
+   заливок (палуба шапки, полоса доставки на тоне марки или успеха, подложка
+   тела, белые карточки строк, серый жёлоб счётчика), в фильтрах — две, в меню —
+   три (с плашкой текущей полки); низ корзины — слово и громкая кнопка рядом, низ
+   фильтров — громкая и тихая столбиком.
+
+   Окно — это два тона и черта, а не пять: ПАЛУБА шапки (`data-ground='deck'`, её
+   ставит `PaneHead`) и ОДИН ЛИСТ ниже (`--surface` — красит само окно, выше),
+   отбитый чертой (`--rule`) от стоящих верха и низа. Тело, строки и низ листа своей заливки не пишут: окну
+   нужен тон — он меняется здесь, у окна, и меняется у всех трёх разом. Находка
+   `paneFill` (check:css) — заливка у части окна, надетой на `body`/`foot`/`bar`.
+   Строки внутри — волосок черты и воздух, а не карточки на подложке; кромку
+   «это нажимается» даёт рука (`--edge-hand`), а не лежащая в покое плита.
+
+   НИЗ — ПАРА: тихая слева, громкая справа, одним рядом (cbdin.bg: «Отвори
+   количката · Към поръчката»; Dawn: «View cart · Check out»). Ряд занимает
+   ширину: громкая тянется по надписи, тихая — тоже; не хватает места на
+   узком — переносится, и громкая встаёт НАД тихой (`wrap-reverse`): порядок
+   чтения «тихая, громкая» остаётся, а на узком обе — во всю ширину, а не одна
+   посреди строки. Обе — обычного роста окна, не крупные: 56 под пальцем брали
+   у строк корзины ещё 8. Тихая — кнопка каталога «тихая» (контур или вуаль, как
+   выбрал заказчик в панели), а не слово: «Clear filters» стояла контуром, «View
+   cart» — словом, и рядом они читались двумя разными окнами. */
+.acts{
+  display:flex;flex-wrap:wrap-reverse;align-items:center;gap:var(--gap-row)
+}
+.acts > *{flex:1 1 auto}

@@ -3,7 +3,7 @@ import type { Card, Image, Money, Price, Stock } from './source/contract.ts'
 import { t } from './i18n/index.ts'
 import { money } from './money.ts'
 import { hrefFor } from './href.ts'
-import { bindUnits, factsLine } from './facts.ts'
+import { bindUnits, cardFigures, factsLine, type CardFigure } from './facts.ts'
 import { percent } from './format.ts'
 
 /** Наличие на полке — только исключение: мало или нет. «В наличии» стояло
@@ -17,15 +17,16 @@ export type WasView = { text: string; said: string }
  *  товара он один); null — вариантов несколько, и кнопка ведёт к выбору на
  *  карте (`ask` — её адрес с `choose=1`, И284); распродано — тоже null, и
  *  кнопка ведёт на карту словом «View». `add` и `added` — надпись
- *  кнопки до записи и после; `name` — имя кнопки для чтения вслух: кнопок на
+ *  кнопки, пока варианта в корзине нет и когда он там есть; `name` — имя кнопки для чтения вслух: кнопок на
  *  полке много, и у каждой своё. `timeout`, `failed` — слова исхода записи,
  *  те же, что у кнопки карты товара. */
-export type ShelfBuy = { variant: string | null; ask: string; add: string; added: string; choose: string; name: string; timeout: string; failed: string }
+export type ShelfBuy = { variant: string | null; ask: string; add: string; short: string; added: string; choose: string; name: string; timeout: string; failed: string }
 /** Карточка на полке — готовые строки: блок не считает и не переводит.
  *  `facts` — сила, мера и мг одной строкой (lib/facts.ts); нечего сказать —
- *  null. `was` и `sale` — прежняя цена и плашка «−15 %» (скидки нет — null);
+ *  null; `figures` — те же числа порознь (всего мг, мера, доза) для подачи
+ *  плашками и строками (lib/cards.ts, `CARD_INFO`). `was` и `sale` — прежняя цена и плашка «−15 %» (скидки нет — null);
  *  `lang` — язык формы корзины. */
-export type ShelfCard = { id: string; lang: Lang; href: string; brand: string | null; name: string; image: Image; price: string; was: WasView | null; sale: string | null; facts: string | null; flag: StockFlag | null; buy: ShelfBuy }
+export type ShelfCard = { id: string; lang: Lang; href: string; brand: string | null; name: string; image: Image; price: string; was: WasView | null; sale: string | null; facts: string | null; figures: CardFigure[]; flag: StockFlag | null; buy: ShelfBuy }
 
 const STOCK = { in: 'product.inStock', low: 'product.lowStock', out: 'product.outOfStock' } as const
 export const stockText = (lang: Lang, stock: Stock): string => t(lang, STOCK[stock])
@@ -61,10 +62,11 @@ export const shelfCard = (lang: Lang, c: Card): ShelfCard => {
     id: c.id, lang, href: hrefFor(lang, { product: c.id }), brand: c.brand, name, image: c.image,
     price: pick ? money(pick.price, lang) : priceText(lang, c.price), was: sale?.was ?? null, sale: sale?.badge ?? null,
     facts: factsLine(lang, pick?.pack ? { ...c, packs: [pick.pack] } : c),
+    figures: cardFigures(lang, c),
     flag: stock === 'in' ? null : { level: stock, text: stockText(lang, stock) },
     buy: {
       variant: direct, ask: out ? hrefFor(lang, { product: c.id }) : hrefFor(lang, { product: c.id, choose: true }),
-      add: t(lang, 'shelf.add'), added: t(lang, 'shelf.added', { n: '{n}' }) /* шаблон: число ставит надпись после записи (AddLabel, И469) */, choose: t(lang, out ? 'shelf.view' : 'shelf.choose'),
+      add: t(lang, 'shelf.add'), short: t(lang, 'shelf.addShort') /* узкая карточка телефона: длинное слово со знаком не помещается */, added: t(lang, 'shelf.added', { n: '{n}' }) /* шаблон: число ставит надпись по корзине (AddLabel, И469) */, choose: t(lang, out ? 'shelf.view' : 'shelf.choose'),
       name: t(lang, direct ? 'shelf.addName' : out ? 'shelf.viewName' : 'shelf.chooseName', { name }),
       timeout: t(lang, 'cart.error.timeout'), failed: t(lang, 'cart.error.unavailable'),
     },

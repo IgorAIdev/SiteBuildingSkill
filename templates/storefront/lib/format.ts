@@ -1,4 +1,5 @@
 import type { Lang } from './locale.ts'
+import { intlLocale } from './market.ts'
 
 /* Запись числа — одна на витрину и по языку страницы (И347): цена,
    строка фактов карточки, значения грани «Сила», протокол партии и плашка
@@ -37,3 +38,16 @@ export const num = (lang: Lang, value: number, digits = 1): string =>
  *  строку фактов, грань, протокол и скидку: знак, который в одном месте
  *  стоит вплотную, а в соседнем через пробел, читается двумя разными. */
 export const percent = (lang: Lang, value: number, digits = 1): string => `${num(lang, value, digits)}${BIND}%`
+
+/** Дата дня — порядком рынка (`intlLocale`: ro «20 septembrie 2026», en
+ *  «20 September 2026», hu «2026. szeptember 20.»), по UTC: дата ISO без
+ *  времени не съезжает на соседний день по часовому поясу сервера. Один
+ *  писатель даты на витрину (И729): блог, статья, протокол партии, отзыв.
+ *  Прежде блог писал её своим `Intl.DateTimeFormat(lang)` без рынка
+ *  («September 20, 2026»), а протокол — порядком рынка. */
+/** Дата и время по часам рынка (Бухарест) — подтверждение заявления об
+ *  отказе называет и то и другое (ст. 11a(4) Директивы 2011/83). */
+export const momentOf = (lang: Lang, iso: string): string =>
+  new Intl.DateTimeFormat(intlLocale(lang), { dateStyle: 'long', timeStyle: 'short', timeZone: 'Europe/Bucharest' }).format(new Date(iso))
+export const dayOf = (lang: Lang, iso: string): string =>
+  new Intl.DateTimeFormat(intlLocale(lang), { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(iso))

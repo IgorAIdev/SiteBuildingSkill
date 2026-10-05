@@ -20,7 +20,7 @@ import { availability, toCss, axesOf } from './buttons.mjs'
 import { plainCss, takenBy, withTaken } from './stand-modules.mjs'
 
 const read = (p) => (existsSync(path.resolve(p)) ? readFileSync(path.resolve(p), 'utf8') : '')
-const need = ['styles/palette.css', 'styles/scale.css', 'styles/tokens.css', 'styles/base.css', 'styles/primitives.module.css', 'styles/btn.module.css', 'styles/buttons.json', 'styles/palette.json', 'styles/icons.svg']
+const need = ['styles/palette.css', 'styles/scale.css', 'styles/tokens.css', 'styles/sign-masks.css', 'styles/base.css', 'styles/primitives.module.css', 'styles/btn.module.css', 'styles/buttons.json', 'styles/palette.json', 'styles/icons.svg']
 const missing = need.filter((p) => !read(p))
 if (missing.length) { console.error(`✗ Нет ${missing.join(', ')} — показывать нечем.`); process.exit(1) }
 
@@ -83,6 +83,7 @@ const head = `<title>Стенд кнопок</title>
 ${read('styles/palette.css')}
 ${scaleCss}
 ${read('styles/tokens.css')}
+${read('styles/sign-masks.css')}
 ${read('styles/look.css')}
 ${read('styles/base.css')}
 ${plain('styles/primitives.module.css')}

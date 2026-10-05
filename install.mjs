@@ -136,7 +136,7 @@ if (flags.has('--look-panel')) {
     console.error(`${OUT} — не витрина набора (нет lib/look-values.ts или опубликованного вида lib/source/sample/look.json).`)
     process.exit(1)
   }
-  const { stripPanel, stripVariants, VARIANTS, OWNED } = await import(pathToFileURL(join(T, 'look-panel/scripts/remove.mjs')).href)
+  const { stripPanel, stripVariants, VARIANTS, OWNED, plan } = await import(pathToFileURL(join(T, 'look-panel/scripts/remove.mjs')).href)
   const look = JSON.parse(readFileSync(join(OUT, 'lib/source/sample/look.json'), 'utf8'))
   const lf = (p) => readFileSync(p, 'utf8').replace(/\r\n/g, '\n')
   const listIn = (text, name) => [...(text.match(new RegExp(`${name} = \\[([\\s\\S]*?)\\]`))?.[1] ?? '').matchAll(/'([a-z-]+)'/g)].map((m) => m[1])
@@ -146,9 +146,12 @@ if (flags.has('--look-panel')) {
     const left = existsSync(join(OUT, v.list)) ? listIn(lf(join(OUT, v.list)), v.name) : []
     return [v.tag, look[v.field] ?? left[0] ?? listIn(lf(join(T, v.list)), v.name)[0]]
   }))
-  const MARKED = ['components/Shell.tsx', 'components/Header.tsx', 'components/Header.module.css', 'components/ProductCard.module.css', 'lib/headers.ts', 'lib/cards.ts',
-    'lib/homes.ts', 'components/blocks/registry.tsx', 'components/blocks/Hero.tsx', 'components/blocks/Categories.tsx', 'components/blocks/Featured.tsx',
-    'components/blocks/blocks.module.css']
+  /* Размеченные панелью файлы — те же, что снятие переписывает (`plan` в
+     look-panel/scripts/remove.mjs): список ищется по меткам шаблона, а не
+     держится рукой. Ручной список отстал на первом же переименовании —
+     плитки категорий ушли в кнопки героя (И673), файла не стало, и возврат
+     панели падал на нём (03.10.2026). */
+  const MARKED = plan(T).edits.map(([rel]) => rel).filter((rel) => /\.(ts|tsx|css)$/.test(rel))
   const stripped = (text) => VARIANTS.reduce((t, v) => (t.includes(v.tag) ? stripVariants(t, v.tag, chosen[v.tag]) : t), text.includes('look-panel') ? stripPanel(text) : text)
   const touched = MARKED.filter((rel) => {
     if (!existsSync(join(OUT, rel))) return false
@@ -212,6 +215,8 @@ if (MODE === 'skill-only') {
     process.exit(1)
   }
   for (const agent of ['.agents', '.claude']) {
+    /* Зеркалом, как ниже (И607): старые файлы скилла не остаются. */
+    rmSync(join(OUT, agent, 'skills/site-building'), { recursive: true, force: true })
     copy(join(SRC, 'skills/site-building'), join(OUT, agent, 'skills/site-building'))
   }
   console.log(`Скилл установлен в ${OUT}: .agents/skills/site-building и .claude/skills/site-building. Файлы сайта не изменены.`)
@@ -406,9 +411,12 @@ if (MODE !== 'audit') {
 }
 
 // One authored entrypoint, discoverable by both supported agent layouts.
-for (const agent of ['.agents', '.claude']) {
-  copy(join(SRC, 'skills/site-building'), join(OUT, agent, 'skills/site-building'))
-}
+/* Скилл — целиком набора, и ставится зеркалом: копия поверх старой
+   оставляла файлы, которых в наборе уже нет. Знак Apple Pay переехал из
+   `icons/brands/` в `icons/pay/` (И549), а старый остался в проекте — и лист
+   знаков падал «имя знака в двух папках» (01.10.2026, И607). */
+const mirror = (to) => { rmSync(to, { recursive: true, force: true }); copy(join(SRC, 'skills/site-building'), to) }
+for (const agent of ['.agents', '.claude']) mirror(join(OUT, agent, 'skills/site-building'))
 moved.push('site-building (Codex и Claude)')
 
 /* Пара ставщик + список команд неразделима: половина пары — сломанный ввоз. */

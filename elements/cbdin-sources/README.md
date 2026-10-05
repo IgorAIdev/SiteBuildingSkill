@@ -28,6 +28,10 @@
 - `go.module.css` — модуль одежд знака «куда ведёт», копия
   `D:/Bussiness_Project/cbd_ecommerce_eu/apps/cbdin/styles/go.module.css`;
 - `Icons.tsx` — лист значков, копия `…/apps/cbdin/components/Icons.tsx`;
+  Элемент 15 (отрисовка листа) снят 03.10.2026: все его двадцать значков уже
+  в листе знаков набора — семь в рисунке cbdin, остальные тем же смыслом из
+  Lucide, недостающая таблица (`Rows`) добавлена как `table`; файл остаётся
+  справкой о происхождении;
 - `ProductCard.tsx`, `ProductCard.module.css`, `BuyBtn.module.css` — карточка
   товара полки и её кнопка «в корзину», копии `…/apps/cbdin/components/`;
   снимки товаров к элементу 64 — `…/apps/cbdin/public/shots/`;

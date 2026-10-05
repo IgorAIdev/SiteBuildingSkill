@@ -3,12 +3,12 @@
     "light": {
       "paper": "#FEFCF5",
       "ink": "#1E2F25",
-      "accent": "#B79339"
+      "accent": "#D1AC54"
     },
     "dark": {
       "paper": "#0C1510",
       "ink": "#EDECE9",
-      "accent": "#B79339"
+      "accent": "#D1AC54"
     }
   },
   "Олива": {
@@ -40,7 +40,7 @@
       "paper": "#FFFCF6",
       "ink": "#241E17",
       "accent": "#A34627",
-      "error": "#E5484D"
+      "error": "#D83B43"
     },
     "dark": {
       "paper": "#15120E",
@@ -52,12 +52,12 @@
     "light": {
       "paper": "#FAFCFB",
       "ink": "#1B2422",
-      "accent": "#4E8C7A"
+      "accent": "#438170"
     },
     "dark": {
       "paper": "#0D1211",
       "ink": "#E9EDEC",
-      "accent": "#5FA391"
+      "accent": "#78BCAA"
     }
   },
   "Аптечный синий": {
@@ -69,19 +69,31 @@
     "dark": {
       "paper": "#0E1116",
       "ink": "#E8EBF0",
-      "accent": "#5B90C7"
+      "accent": "#4579AF"
+    }
+  },
+  "Ирис": {
+    "light": {
+      "paper": "#FBFBFB",
+      "ink": "#211F2F",
+      "accent": "#6E56CF"
+    },
+    "dark": {
+      "paper": "#121212",
+      "ink": "#EAE8FF",
+      "accent": "#6E56CF"
     }
   },
   "Латунь на угле": {
     "light": {
       "paper": "#FCFBF9",
       "ink": "#1F1E1C",
-      "accent": "#9A7B3F"
+      "accent": "#917236"
     },
     "dark": {
       "paper": "#121110",
       "ink": "#EDEBE8",
-      "accent": "#B8955A"
+      "accent": "#CFAB6F"
     }
   }
 }

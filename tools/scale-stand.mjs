@@ -83,10 +83,10 @@ h2{font-size:var(--h2-size);line-height:var(--h2-lead);font-weight:var(--h2-weig
 .card{background:var(--plate);border:1px solid var(--rule);border-radius:14px;padding:var(--pad-card);display:flex;flex-direction:column;gap:var(--air-group)}
 .shot{aspect-ratio:4/3;max-block-size:220px;border-radius:10px;background:var(--pop-tint)}
 .in{display:flex;flex-direction:column;gap:var(--air-row)}
-.nm{font-size:var(--body-size);font-weight:600}
+.nm{font-size:var(--cardname-size);line-height:var(--cardname-lead);font-weight:var(--cardname-weight)}
 .sub{font-size:var(--note-size);color:var(--ink-soft)}
 .row{display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap}
-.price{font-size:var(--h3-size);font-weight:600}
+.price{font-size:var(--cardprice-size);font-weight:var(--cardprice-weight)}
 .badge{font-size:var(--ctrl-fs-xs);padding:2px 8px;border-radius:999px;background:var(--warn-tint);color:var(--warn)}
 .buy{display:flex;align-items:center;gap:var(--gap-targets);flex-wrap:wrap}
 .count{display:flex;align-items:center;gap:var(--gap-targets)}

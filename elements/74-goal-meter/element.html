@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>74 · Полоса до бесплатной доставки</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 74 — «Полоса до бесплатной доставки». Источники — daisyUI «Progress», HyperUI «Progress bars» (MIT).
+  Полоса показывает, сколько осталось до порога: «ещё 12,40 € до бесплатной доставки»; дойдя до порога, она заливается
+  краской «успеха» и говорит об этом. Родной `progress`: чтец читает значение без скрипта; порог и валюта — данные.
+  Снято: цвета Tailwind, градиент полосы, подпись процентом внутри.
+  Приведено к единой форме: дорожка — тон, заполнение — марка, у выполненного — краска успеха; высота — доля ряда набора.
+-->
+</head>
+<body>
+  <div class="live">
+    <div class="goal"><p><b>€12.40</b> to go for free delivery</p><progress class="meter" value="68" max="100">68%</progress></div>
+    <div class="goal"><p><svg data-sign="truck"></svg>Free delivery unlocked</p><progress class="meter" data-tone="ok" value="100" max="100">100%</progress></div>
+  </div>
+</body>
+</html>

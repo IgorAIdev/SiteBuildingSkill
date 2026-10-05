@@ -1,37 +1,8 @@
 {
-  "letters": {
-    "имя": "Буквы",
-    "name": "Letters",
-    "что": "как набраны надписи на кнопках",
-    "варианты": {
-      "sentence": {
-        "имя": "Как в предложении",
-        "name": "Sentence case",
-        "line": "First letter capital, the rest as written",
-        "что": "первая буква заглавная, дальше — как написано; регистр не переписывается",
-        "роли": {
-          "--ctrl-btn-case": "none",
-          "--ctrl-btn-weight": "600",
-          "--ctrl-btn-track": "normal"
-        }
-      },
-      "caps": {
-        "имя": "Заглавные",
-        "name": "CAPITALS",
-        "line": "All capitals, with the kit letter-spacing",
-        "что": "все буквы заглавные, с разрядкой набора и полужирные",
-        "роли": {
-          "--ctrl-btn-case": "uppercase",
-          "--ctrl-btn-weight": "600",
-          "--ctrl-btn-track": "0.04em"
-        }
-      }
-    }
-  },
   "loud": {
-    "имя": "Главная",
+    "имя": "Заливка главной кнопки",
     "name": "Main button",
-    "что": "чем главное действие экрана отличается от остального",
+    "что": "чем залита главная кнопка: краской марки целиком или краской марки с переходом в её светлый оттенок; краски — из палитры",
     "варианты": {
       "fill": {
         "имя": "Заливка",
@@ -42,21 +13,7 @@
           "--ctrl-btn-fill-pop": "var(--pop)",
           "--ctrl-btn-ink-pop": "var(--on-pop)",
           "--ctrl-btn-edge-pop": "transparent",
-          "--ctrl-btn-tint-pop": "transparent",
-          "--ctrl-btn-frost-pop": "0",
-          "--ctrl-btn-rim-pop": "transparent"
-        }
-      },
-      "ink": {
-        "имя": "Чернила",
-        "name": "Ink",
-        "line": "Dark ink fill, light label",
-        "что": "заливка чернилами, надпись краской пола (элементы 08, 17)",
-        "роли": {
-          "--ctrl-btn-fill-pop": "var(--ink)",
-          "--ctrl-btn-ink-pop": "var(--surface)",
-          "--ctrl-btn-edge-pop": "transparent",
-          "--ctrl-btn-tint-pop": "transparent",
+          "--ctrl-btn-tint-pop": "var(--pop)",
           "--ctrl-btn-frost-pop": "0",
           "--ctrl-btn-rim-pop": "transparent"
         }
@@ -74,20 +31,6 @@
           "--ctrl-btn-frost-pop": "0",
           "--ctrl-btn-rim-pop": "transparent"
         }
-      },
-      "glass": {
-        "имя": "Стекло",
-        "name": "Glass",
-        "line": "Translucent brand glass: what lies beneath shows through, blurred",
-        "что": "стекло марки: заливка краской строителя палитры --pop-glass долей, под ней размыто то, что лежит под кнопкой; блик кромки --pop-rim (элемент 66)",
-        "роли": {
-          "--ctrl-btn-fill-pop": "var(--pop-glass)",
-          "--ctrl-btn-ink-pop": "var(--on-pop)",
-          "--ctrl-btn-edge-pop": "transparent",
-          "--ctrl-btn-tint-pop": "transparent",
-          "--ctrl-btn-frost-pop": "1",
-          "--ctrl-btn-rim-pop": "var(--pop-rim)"
-        }
       }
     }
   },
@@ -104,43 +47,49 @@
         "роли": {
           "--ctrl-btn-fill": "var(--quiet)",
           "--ctrl-btn-ink": "var(--ink)",
-          "--ctrl-btn-edge": "transparent"
-        }
-      },
-      "tint": {
-        "имя": "Тон марки",
-        "name": "Brand tint",
-        "line": "A veil of the brand colour, label in brand ink",
-        "что": "вуаль марки на полу, надпись марочным текстом — тоновая кнопка Material 3 (filled tonal); выбор заказчика, не умолчание: по ролям палитры орган в покое — нейтраль (И462, И472)",
-        "роли": {
-          "--ctrl-btn-fill": "var(--quiet-tint)",
-          "--ctrl-btn-ink": "var(--on-quiet-tint)",
-          "--ctrl-btn-edge": "transparent"
+          "--ctrl-btn-edge": "transparent",
+          "--ctrl-btn-edge-hand": "transparent",
+          "--ctrl-btn-dash": "0"
         }
       },
       "outline": {
         "имя": "Контур",
         "name": "Outline",
         "line": "No fill, a hairline edge, ink label",
-        "что": "без заливки: кромка краской края, надпись чернилами (элементы 07, 43)",
+        "что": "без заливки: тихая кромка краской края, надпись чернилами (элементы 07, 43); под рукой кромка — краской --edge-hand по оси «Ответ на руку» (И588)",
         "роли": {
           "--ctrl-btn-fill": "transparent",
           "--ctrl-btn-ink": "var(--ink)",
-          "--ctrl-btn-edge": "var(--edge)"
+          "--ctrl-btn-edge": "var(--edge)",
+          "--ctrl-btn-edge-hand": "var(--edge-hand)",
+          "--ctrl-btn-dash": "0"
+        }
+      },
+      "dash": {
+        "имя": "Черта перед словом",
+        "name": "Dash",
+        "line": "No box; a thin dash before the word, the word takes the brand under the hand",
+        "что": "без коробки и кромки, перед словом тонкая черта краской слова; под рукой слово — краской марки для текста, вуали нет (образец 07, И626)",
+        "роли": {
+          "--ctrl-btn-fill": "transparent",
+          "--ctrl-btn-ink": "var(--ink)",
+          "--ctrl-btn-edge": "transparent",
+          "--ctrl-btn-edge-hand": "transparent",
+          "--ctrl-btn-dash": "1"
         }
       }
     }
   },
   "shape": {
-    "имя": "Форма главной",
-    "name": "Main button shape",
-    "что": "контур главного действия; тихие кнопки и знаки — всегда прямоугольник с углом из Shape",
+    "имя": "Форма кнопки",
+    "name": "Button shape",
+    "что": "контур кнопки и ответ её знака на руку; контур (остриё, выемка, кружок, хвост) носит кнопка героя (`data-shape`, И618); угол всех кнопок — не здесь, а у формы: роль `--r-btn`, ручка Shape → Corners (Pill — полный круг; заказчик 04.10.2026: «не реагируют кнопки на настройку панели»)",
     "варианты": {
       "standard": {
         "имя": "Обычная",
         "name": "Standard",
-        "line": "Corners from Shape, like every control",
-        "что": "углы из Shape, как у всех органов",
+        "line": "Plain: the corner comes from Shape → Corners, like every control",
+        "что": "обычная кнопка без знака; угол — из Shape → Corners (Pill — полный круг)",
         "роли": {
           "--ctrl-btn-tip": "0",
           "--ctrl-btn-tip-at": "0",
@@ -149,15 +98,18 @@
           "--ctrl-btn-trail-1": "0",
           "--ctrl-btn-trail-2": "0",
           "--ctrl-btn-mark": "0",
-          "--ctrl-btn-pill": "0",
-          "--ctrl-btn-glyph": "0"
+          "--ctrl-btn-glyph": "0",
+          "--ctrl-btn-still": "0",
+          "--ctrl-btn-swap": "0",
+          "--ctrl-btn-hollow": "0",
+          "--ctrl-btn-draw": "0"
         }
       },
-      "pill": {
-        "имя": "Пилюля",
-        "name": "Pill",
-        "line": "The main button fully rounded, the action of the page",
-        "что": "полный круг у главного действия — пилюля без знака (элемент 16; пилюля элементов 06 и 19)",
+      "outline": {
+        "имя": "Без заливки",
+        "name": "Standard · outline",
+        "line": "The same button with no fill at rest: a brand edge and brand-ink label",
+        "что": "та же кнопка без заливки в покое: кромка марки и надпись краской марки для текста; под рукой — лёгкая вуаль марки, при нажатии темнее (копия «Pill standard» по образцу «Circle arrow · outline», И623)",
         "роли": {
           "--ctrl-btn-tip": "0",
           "--ctrl-btn-tip-at": "0",
@@ -166,117 +118,98 @@
           "--ctrl-btn-trail-1": "0",
           "--ctrl-btn-trail-2": "0",
           "--ctrl-btn-mark": "0",
-          "--ctrl-btn-pill": "1",
-          "--ctrl-btn-glyph": "0"
-        }
-      },
-      "arrow-end": {
-        "имя": "Стрелка у конца",
-        "name": "Arrow end",
-        "line": "The main button with an arrow after its word",
-        "что": "угол из Shape, у конца — стрелка из листа знаков краской надписи (элемент 03)",
-        "роли": {
-          "--ctrl-btn-tip": "0",
-          "--ctrl-btn-tip-at": "0",
-          "--ctrl-btn-notch": "0",
-          "--ctrl-btn-echo": "none",
-          "--ctrl-btn-trail-1": "0",
-          "--ctrl-btn-trail-2": "0",
-          "--ctrl-btn-mark": "0",
-          "--ctrl-btn-pill": "0",
-          "--ctrl-btn-glyph": "1"
+          "--ctrl-btn-glyph": "0",
+          "--ctrl-btn-still": "0",
+          "--ctrl-btn-swap": "0",
+          "--ctrl-btn-hollow": "1",
+          "--ctrl-btn-draw": "0"
         }
       },
       "arrow": {
-        "имя": "Стрелка",
-        "name": "Arrow",
-        "line": "The right end is pointed like an arrow tip",
-        "что": "правый конец — остриё стрелки",
+        "имя": "Со стрелкой",
+        "name": "Arrow end",
+        "line": "At rest the arrow head, under the hand the shaft draws in; corner from Shape → Corners",
+        "что": "у конца — стрелка краской надписи прямо на заливке: в покое видна голова «›», под рукой дорисовывается древко и голова уходит на шаг — стрелка вытягивается, как у Stripe; при нажатии — только тон; кнопка стоит (элемент 03, И623)",
         "роли": {
-          "--ctrl-btn-tip": "0.5",
+          "--ctrl-btn-tip": "0",
           "--ctrl-btn-tip-at": "0",
           "--ctrl-btn-notch": "0",
           "--ctrl-btn-echo": "none",
           "--ctrl-btn-trail-1": "0",
           "--ctrl-btn-trail-2": "0",
           "--ctrl-btn-mark": "0",
-          "--ctrl-btn-pill": "0",
-          "--ctrl-btn-glyph": "0"
+          "--ctrl-btn-glyph": "1",
+          "--ctrl-btn-still": "1",
+          "--ctrl-btn-swap": "0",
+          "--ctrl-btn-hollow": "0",
+          "--ctrl-btn-draw": "0"
         }
       },
-      "chevron": {
-        "имя": "Шеврон",
-        "name": "Chevron",
-        "line": "Pointed right end, notched left end, like a step",
-        "что": "остриё справа и выемка слева, как ступень",
+      "arrow-outline": {
+        "имя": "Со стрелкой на конце · без заливки",
+        "name": "Arrow end · outline",
+        "line": "The same arrow with no fill at rest: a brand edge, brand-ink label and arrow",
+        "что": "та же кнопка со стрелкой у конца без заливки в покое: кромка марки, надпись и стрелка краской марки для текста; под рукой стрелка вытягивается, как у «Pill arrow end» (копия по образцу «Circle arrow · outline», И623)",
         "роли": {
-          "--ctrl-btn-tip": "0.5",
+          "--ctrl-btn-tip": "0",
           "--ctrl-btn-tip-at": "0",
-          "--ctrl-btn-notch": "0.35",
+          "--ctrl-btn-notch": "0",
           "--ctrl-btn-echo": "none",
           "--ctrl-btn-trail-1": "0",
           "--ctrl-btn-trail-2": "0",
           "--ctrl-btn-mark": "0",
-          "--ctrl-btn-pill": "0",
-          "--ctrl-btn-glyph": "0"
+          "--ctrl-btn-glyph": "1",
+          "--ctrl-btn-still": "1",
+          "--ctrl-btn-swap": "0",
+          "--ctrl-btn-hollow": "1",
+          "--ctrl-btn-draw": "1"
         }
       },
-      "double": {
-        "имя": "Двойной шеврон",
-        "name": "Double chevron",
-        "line": "An arrow with one chevron echoing behind it",
-        "что": "стрелка и за ней шеврон тоном марки, эхом",
+      "trail": {
+        "имя": "Хвост шевронов",
+        "name": "Chevron trail",
+        "line": "The tip with two tonal chevrons; under the hand they fill in a wave",
+        "что": "остриё и два шеврона тоном марки, промежутки между кнопкой и шевронами и между шевронами одинаковые — .07 высоты; под рукой шевроны наливаются волной от кнопки наружу; кнопка стоит (элемент 10, И623, И628)",
         "роли": {
-          "--ctrl-btn-tip": "0.8",
-          "--ctrl-btn-tip-at": "0.47",
+          "--ctrl-btn-tip": "1.07",
+          "--ctrl-btn-tip-at": "0.74",
           "--ctrl-btn-notch": "0",
           "--ctrl-btn-echo": "block",
-          "--ctrl-btn-trail-1": "0.17",
-          "--ctrl-btn-trail-2": "0.17",
+          "--ctrl-btn-trail-1": "0.07",
+          "--ctrl-btn-trail-2": "0.44",
           "--ctrl-btn-mark": "0",
-          "--ctrl-btn-pill": "0",
-          "--ctrl-btn-glyph": "0"
+          "--ctrl-btn-glyph": "0",
+          "--ctrl-btn-still": "1",
+          "--ctrl-btn-swap": "0",
+          "--ctrl-btn-hollow": "0",
+          "--ctrl-btn-draw": "0"
         }
       },
-      "trail-spaced": {
-        "имя": "Тоновый след, врозь",
-        "name": "Tonal trail · spaced",
-        "line": "Two chevrons behind the arrow, each a step lighter, spaced",
-        "что": "за стрелкой два шеврона, каждый на ступень светлее, с просветом",
+      "trail-joined": {
+        "имя": "Хвост шевронов вплотную",
+        "name": "Chevron trail · joined",
+        "line": "The tip and two tonal chevrons with no gaps",
+        "что": "остриё и два шеврона тоном марки вплотную, без промежутков; под рукой шевроны наливаются волной; кнопка стоит (И628)",
         "роли": {
-          "--ctrl-btn-tip": "1.17",
-          "--ctrl-btn-tip-at": "0.84",
+          "--ctrl-btn-tip": "0.93",
+          "--ctrl-btn-tip-at": "0.6",
           "--ctrl-btn-notch": "0",
           "--ctrl-btn-echo": "block",
-          "--ctrl-btn-trail-1": "0.17",
-          "--ctrl-btn-trail-2": "0.54",
+          "--ctrl-btn-trail-1": "0",
+          "--ctrl-btn-trail-2": "0.3",
           "--ctrl-btn-mark": "0",
-          "--ctrl-btn-pill": "0",
-          "--ctrl-btn-glyph": "0"
-        }
-      },
-      "trail-overlap": {
-        "имя": "Тоновый след, внахлёст",
-        "name": "Tonal trail · overlapping",
-        "line": "Two chevrons a step lighter each, tucked under the tip",
-        "что": "два шеврона, каждый на ступень светлее, заходят под остриё",
-        "роли": {
-          "--ctrl-btn-tip": "0.79",
-          "--ctrl-btn-tip-at": "0.46",
-          "--ctrl-btn-notch": "0",
-          "--ctrl-btn-echo": "block",
-          "--ctrl-btn-trail-1": "-0.12",
-          "--ctrl-btn-trail-2": "0.16",
-          "--ctrl-btn-mark": "0",
-          "--ctrl-btn-pill": "0",
-          "--ctrl-btn-glyph": "0"
+          "--ctrl-btn-glyph": "0",
+          "--ctrl-btn-still": "1",
+          "--ctrl-btn-swap": "0",
+          "--ctrl-btn-hollow": "0",
+          "--ctrl-btn-draw": "0"
         }
       },
       "circle": {
         "имя": "Кружок со стрелкой",
         "name": "Circle arrow",
-        "line": "A full-round pill with a circle and an arrow at the end",
-        "что": "пилюля, у конца — кружок краской надписи, в нём стрелка из листа знаков краской заливки (элемент 02, «Shop now»)",
+        "line": "Arrow in a circle; under the hand the arrow swaps — out to the right, in from the left",
+        "что": "пилюля с кружком краской надписи у конца, стрелка вырезана до заливки; под рукой стрелка уходит вправо и из-за края кружка входит такая же — кружок их режет; при нажатии кружок на тон темнее; кнопка стоит (элемент 02, И623)",
         "роли": {
           "--ctrl-btn-tip": "0",
           "--ctrl-btn-tip-at": "0",
@@ -285,8 +218,58 @@
           "--ctrl-btn-trail-1": "0",
           "--ctrl-btn-trail-2": "0",
           "--ctrl-btn-mark": "1",
-          "--ctrl-btn-pill": "0",
-          "--ctrl-btn-glyph": "0"
+          "--ctrl-btn-glyph": "0",
+          "--ctrl-btn-still": "1",
+          "--ctrl-btn-swap": "1",
+          "--ctrl-btn-hollow": "0",
+          "--ctrl-btn-draw": "0"
+        }
+      },
+      "circle-outline": {
+        "имя": "Кружок со стрелкой · без заливки",
+        "name": "Circle arrow · outline",
+        "line": "No fill, a brand edge, the circle filled; the arrow swaps under the hand",
+        "что": "пилюля без заливки с кромкой марки, надпись краской марки для текста, кружок залит маркой, стрелка — вырез до пола; под рукой — смена стрелки и лёгкая вуаль на пилюле (И623)",
+        "роли": {
+          "--ctrl-btn-tip": "0",
+          "--ctrl-btn-tip-at": "0",
+          "--ctrl-btn-notch": "0",
+          "--ctrl-btn-echo": "none",
+          "--ctrl-btn-trail-1": "0",
+          "--ctrl-btn-trail-2": "0",
+          "--ctrl-btn-mark": "1",
+          "--ctrl-btn-glyph": "0",
+          "--ctrl-btn-still": "1",
+          "--ctrl-btn-swap": "1",
+          "--ctrl-btn-hollow": "1",
+          "--ctrl-btn-draw": "0"
+        }
+      }
+    }
+  },
+  "hand": {
+    "имя": "Ответ на руку",
+    "name": "Hand response",
+    "что": "как тихая кнопка с кромкой и знак шапки отвечают на наведение и нажатие (И588)",
+    "варианты": {
+      "darken": {
+        "имя": "Кромка темнеет",
+        "name": "Edge darkens",
+        "line": "Under the hand the quiet edge darkens to 3 : 1",
+        "что": "под рукой тихая кромка темнеет до краски --edge-hand (3 : 1), вуаль нажатия — как у всех",
+        "роли": {
+          "--ctrl-btn-hand-edge": "1",
+          "--ctrl-btn-hand-fill": "0"
+        }
+      },
+      "hold": {
+        "имя": "Кромка держится",
+        "name": "Edge holds",
+        "line": "The edge stays quiet, only the veil answers the hand",
+        "что": "кромка остаётся тихой, на руку отвечает только вуаль — контурная кнопка Material 3 (outline под рукой не меняется)",
+        "роли": {
+          "--ctrl-btn-hand-edge": "0",
+          "--ctrl-btn-hand-fill": "0"
         }
       }
     }

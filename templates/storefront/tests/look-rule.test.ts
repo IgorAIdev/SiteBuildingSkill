@@ -17,7 +17,7 @@ const facts: Facts = {
     '--pop': 'var(--a-9)', '--on-pop': 'var(--on-a-9)', '--pop-ink': 'var(--a-11)',
     '--rule': 'color-mix(in oklab, var(--ink) 16%, transparent)',
   },
-  need: { text: 4.5, control: 3, visible: 1.15 },
+  need: { text: 4.5, control: 3, visible: 1.15, edge: 1.4 },
   headings: ['h2'],
 }
 const slots: Slots = {

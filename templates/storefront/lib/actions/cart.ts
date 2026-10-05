@@ -1,7 +1,7 @@
 'use server'
 import { redirect } from 'next/navigation'
 import { commerce } from '../source/index.ts'
-import { readSession, writeSession, sessionChanged } from '../session.ts'
+import { readSession, writeSession } from '../session.ts'
 import { readCartOp, runCartOp, outcomeOf, type Outcome } from '../cart-ops.ts'
 import { DEFAULT_LANG, isLang, type Lang } from '../locale.ts'
 import { hrefFor } from '../href.ts'
@@ -12,7 +12,12 @@ async function apply(form: FormData): Promise<{ lang: Lang; code: string; count:
   const before = await readSession()
   const done = await runCartOp(commerce(), before, lang, readCartOp(form))
   if (done.session && done.session !== before) await writeSession(done.session)
-  if (!done.code.startsWith('e:')) sessionChanged()
+  /* Личные страницы запись не пересобирает (`sessionChanged`): ответ действия
+     нёс бы заново собранную ТЕКУЩУЮ страницу — главную со всеми полками за «+»
+     в шторке (962 мс), а на самой странице корзины такая запись шла 6 с против
+     1.4 с у «запись, потом перерисовка» (замер 03.10.2026; И696). Страница
+     корзины перерисовывается сама (CartFresh); без скрипта переход на корзину и
+     так свежий. */
   return { lang, code: done.code, count: done.count, inCart: done.inCart }
 }
 

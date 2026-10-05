@@ -17,6 +17,11 @@ export const SITE_URL = () => siteUrlFrom(CATALOG_IS_REAL, process.env)
 export const absolute = (path: string) => `${SITE_URL()}${path}`
 const OG: Record<Lang, string> = { ro: 'ro_RO', en: 'en_RO', hu: 'hu_RO' }
 
+/** Заголовок вкладки — с заглавной буквы, как заголовок на странице (И701):
+ *  магазин отдаёт имена строчными («capsules»), а `<title>` стилями не достать.
+ *  Только первая буква, остальное как в данных. */
+export const headCase = (lang: Lang, title: string) => title.replace(/^\p{Ll}/u, (c) => c.toLocaleUpperCase(lang))
+
 /** Метаданные страницы: canonical — на себя, hreflang — на три языка и
  *  x-default на основной. `path` — та же функция адреса, что у ссылок.
  *  Пока каталог — образец, страница закрыта от обхода (флаг настоящести). */
@@ -24,11 +29,12 @@ export function toMetadata(lang: Lang, page: { title: string; description: strin
   const languages: Record<string, string> = Object.fromEntries(LOCALES.map((l) => [l, absolute(page.path(l))]))
   languages['x-default'] = absolute(page.path(DEFAULT_LANG))
   const open = CATALOG_IS_REAL && page.index !== false
+  const title = headCase(lang, page.title)
   return {
-    title: page.title,
+    title,
     description: page.description,
     alternates: { canonical: absolute(page.path(lang)), languages },
-    openGraph: { title: page.title, description: page.description, url: absolute(page.path(lang)), locale: OG[lang], type: 'website' },
+    openGraph: { title, description: page.description, url: absolute(page.path(lang)), locale: OG[lang], type: 'website' },
     robots: { index: open, follow: CATALOG_IS_REAL },
   }
 }

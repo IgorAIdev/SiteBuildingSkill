@@ -1,0 +1,31 @@
+/* Окно поиска (SearchPane.tsx; бриф docs/design/поиск.md). Устройство окна —
+   общий модуль (styles/pane.module.css, `data-pane="top"`): шапка с полем
+   стоит, подсказки прокручиваются. Поле и подсказки стоят в мере страницы
+   (`wrap`), как строка шапки над ними. */
+.form{display:flex;align-items:center;gap:var(--gap-row);flex:1 1 auto;min-inline-size:0}
+.form > svg{flex:none;inline-size:1.25em;block-size:1.25em;color:var(--ink-soft)}
+.input{flex:1 1 auto;min-inline-size:0}
+.body{display:grid;justify-items:start;gap:var(--air-row);padding-block:var(--air-row) var(--pad-card)}
+.head{margin:0;font-size:var(--ctrl-fs-sm);font-weight:var(--label-weight);color:var(--ink-soft)}
+/* Полки — строками со знаком, колонок столько, сколько встаёт (правило 5),
+   как подсказки ниже; слово — ролью меню (полка шапки), с заглавной, как в
+   меню (имена приходят из данных строчными); знак — тихий. Под рукой —
+   подложка строки (`row`, И685), её форма — у вида (И730). Не кнопки: в
+   окне поиска путь — текст (И691). */
+.shelves{justify-self:stretch;list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 14rem), 1fr));gap:0 var(--gap-grid)}
+.shelf{display:flex;align-items:center;gap:var(--gap-row);min-block-size:var(--ctrl-h);padding-inline:var(--sp-2);font-size:var(--menu-size);line-height:var(--menu-lead);font-weight:var(--menu-weight);color:var(--ink)}
+.shelf svg{flex:none;inline-size:1.25em;block-size:1.25em;color:var(--ink-soft)}
+.shelfName::first-letter{text-transform:uppercase}
+.shelfName{display:inline-block}
+/* Подсказки — строками: снимок, марка и имя, цена; колонок столько,
+   сколько встаёт (правило 5), строку отличает плашка под рукой. */
+.found{justify-self:stretch;list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 18rem), 1fr));gap:var(--sp-1) var(--gap-grid)}
+.hit{composes:row from '../styles/btn.module.css';display:grid;grid-template-columns:var(--ctrl-h-lg) minmax(0, 1fr) auto;align-items:center;gap:var(--gap-row);padding:var(--sp-2);color:var(--ink);text-decoration:none}
+.thumb{--frame:var(--shot-frame);border-radius:var(--r-ctrl);background:var(--plate-2)}
+.what{display:flex;flex-direction:column;min-inline-size:0}
+/* Марка у находки — роль марки, как в карточке (И563): ростом текста. */
+.brand{font-size:var(--byline-size);line-height:var(--byline-lead);font-weight:var(--byline-weight);color:var(--ink-soft)}
+/* Имя находки — толщиной имени товара, как на полке (И589). */
+.name{font-weight:var(--prodhead-weight);overflow-wrap:anywhere}
+.price{font-weight:var(--cardprice-weight);font-variant-numeric:tabular-nums;white-space:nowrap}
+.none{margin:0;color:var(--ink-soft)}

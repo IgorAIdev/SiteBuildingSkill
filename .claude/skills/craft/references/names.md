@@ -78,9 +78,9 @@ is»; Curtis (Purposeful vs Aesthetic) — перекраска марки пе�
 <!-- families:names -->
 | Группа | Понятия | Ярус |
 | --- | --- | --- |
-| colour | `--ink`, `--plate`, `--page`, `--surface`, `--pop`, `--select`, `--ctrl`, `--field`, `--rule`, `--border`, `--line`, `--ring`, `--scrim`, `--quiet`, `--thumb`, `--tile`, `--tick`, `--menu`, `--accent`, `--hover`, `--press`, `--chrome`, `--on`, `--bad`, `--ok`, `--warn`, `--sale`, `--info`, `--mark` | роль |
+| colour | `--ink`, `--plate`, `--page`, `--surface`, `--pop`, `--select`, `--ctrl`, `--field`, `--rule`, `--border`, `--line`, `--ring`, `--scrim`, `--quiet`, `--thumb`, `--tile`, `--tick`, `--menu`, `--accent`, `--hover`, `--press`, `--chrome`, `--on`, `--bad`, `--ok`, `--warn`, `--sale`, `--info`, `--star`, `--band`, `--mark`, `--sign`, `--chosen` | роль |
 | rhythm | `--pad`, `--air`, `--gap` | роль |
-| text | `--hero`, `--pagehead`, `--prodhead`, `--byline`, `--h2`, `--h3`, `--intro`, `--lede`, `--body`, `--note`, `--eyebrow`, `--measure`, `--face`, `--fs`, `--page` | роль |
+| text | `--hero`, `--pagehead`, `--prodhead`, `--panehead`, `--parthead`, `--logo`, `--price`, `--byline`, `--maker`, `--cardname`, `--cardprice`, `--cardbtn`, `--label`, `--blurb`, `--h2`, `--h3`, `--intro`, `--lede`, `--body`, `--note`, `--eyebrow`, `--measure`, `--face`, `--fs`, `--page` | роль |
 | shape | `--r` | роль |
 | depth | `--sh`, `--frost` | роль |
 | motion | `--ease`, `--rise`, `--nudge`, `--creep`, `--open` | роль |
@@ -88,10 +88,10 @@ is»; Curtis (Purposeful vs Aesthetic) — перекраска марки пе�
 | layer | `--layer` | роль |
 | control | `--ctrl`, `--chan`, `--chip`, `--tab`, `--dock`, `--edge`, `--grab` | роль |
 | layout | `--wrap`, `--gut`, `--head`, `--anchor`, `--float`, `--chrome`, `--tile` | роль |
-| ручки примитивов | `--stack-*`, `--cluster-*`, `--switch-*`, `--rail-*`, `--section-*`, `--sheet-*`, `--lede-*`, `--hero-*`, `--grid-*`, `--cols-*`, `--cell-*`, `--pin-*`, `--tray-*`, `--leaf-*`, `--chip-*`, `--qty-*`, `--chan-*`, `--side-*`, `--prose-*`, `--pinned-*`, `--sidebar-*`, `--frame-*`, `--btn-*`, `--seg-*`, `--gallery-*`, `--pane-*`, `--turn-*`, `--dot-*` | узел |
+| ручки примитивов | `--stack-*`, `--cluster-*`, `--switch-*`, `--rail-*`, `--section-*`, `--sheet-*`, `--lede-*`, `--hero-*`, `--grid-*`, `--cols-*`, `--cell-*`, `--pin-*`, `--tray-*`, `--leaf-*`, `--chip-*`, `--qty-*`, `--chan-*`, `--side-*`, `--prose-*`, `--pinned-*`, `--sidebar-*`, `--frame-*`, `--btn-*`, `--seg-*`, `--gallery-*`, `--pane-*`, `--turn-*`, `--dot-*`, `--glyph-*` | узел |
 | сырьё | `--n-N`, `--a-N`, `--e-N`, `--sale-N`, `--warn-N`, `--ok-N`, `--info-N`, `--on-*-N`, `--sp-N`, `--fs-*` | сырьё |
-| обязательные роли | `--bad`, `--bad-fill`, `--on-bad`, `--bad-tint`, `--bad-line`, `--ok`, `--ok-fill`, `--on-ok`, `--ok-tint`, `--quiet-tint`, `--on-quiet-tint`, `--pane-sheet`, `--mark-viber`, `--mark-telegram`, `--mark-whatsapp`, `--mark-instagram`, `--info`, `--info-tint`, `--warn`, `--warn-fill`, `--on-warn`, `--warn-tint`, `--sale`, `--sale-fill`, `--on-sale`, `--sale-tint`, `--pop-press`, `--pop-ink-hover`, `--r-pop`, `--ease-exit`, `--plate-2`, `--rule`, `--field`, `--scrim`, `--scrim-deck`, `--creep`, `--on-ink`, `--air-line`, `--air-set`, `--quiet-pop`, `--on-quiet-pop`, `--prodhead-size`, `--byline-size`, `--byline-lead`, `--byline-weight`, `--byline-track`, `--prodhead-lead`, `--prodhead-weight`, `--prodhead-track`, `--layer-helper`, `--layer-toast` | роль |
-| объявлений в стилях набора | 1369, по форме 1369 | `tools/names.mjs`, `parse()` |
+| обязательные роли | `--bad`, `--bad-fill`, `--on-bad`, `--bad-tint`, `--bad-line`, `--ok`, `--ok-fill`, `--on-ok`, `--ok-tint`, `--quiet-tint`, `--on-quiet-tint`, `--logo-size`, `--logo-lead`, `--logo-weight`, `--logo-track`, `--parthead-size`, `--parthead-lead`, `--parthead-weight`, `--parthead-track`, `--menu-lead`, `--menu-weight`, `--menu-track`, `--menu-size`, `--head-full`, `--shot-frame`, `--sh-far-3`, `--mark-messenger`, `--mark-youtube`, `--mark-gmail`, `--pane-sheet`, `--mark-viber`, `--mark-telegram`, `--mark-whatsapp`, `--mark-instagram`, `--info`, `--info-tint`, `--warn`, `--warn-fill`, `--on-warn`, `--warn-tint`, `--star`, `--star-trade`, `--sale`, `--sale-fill`, `--on-sale`, `--sale-tint`, `--pop-press`, `--pop-ink-hover`, `--r-pop`, `--ease-exit`, `--band`, `--plate-2`, `--rule`, `--field`, `--scrim`, `--scrim-deck`, `--creep`, `--on-ink`, `--air-line`, `--air-set`, `--quiet-pop`, `--on-quiet-pop`, `--prodhead-size`, `--byline-size`, `--price-size`, `--price-lead`, `--price-weight`, `--price-track`, `--blurb-size`, `--blurb-lead`, `--blurb-weight`, `--blurb-track`, `--blurb-measure`, `--byline-lead`, `--byline-weight`, `--byline-track`, `--maker-size`, `--cardname-size`, `--cardname-lead`, `--cardname-weight`, `--cardname-track`, `--cardprice-size`, `--cardbtn-size`, `--cardbtn-lead`, `--cardbtn-weight`, `--cardbtn-track`, `--cardprice-lead`, `--cardprice-weight`, `--cardprice-track`, `--maker-lead`, `--maker-weight`, `--maker-track`, `--prodhead-lead`, `--prodhead-weight`, `--prodhead-track`, `--label-size`, `--label-lead`, `--label-weight`, `--label-track`, `--label-measure`, `--panehead-size`, `--panehead-lead`, `--panehead-weight`, `--panehead-track`, `--layer-helper`, `--layer-toast` | роль |
+| объявлений в стилях набора | 1909, по форме 1909 | `tools/names.mjs`, `parse()` |
 <!-- /families:names -->
 
 ## Роли, обязанные существовать
@@ -137,3 +137,28 @@ is»; Curtis (Purposeful vs Aesthetic) — перекраска марки пе�
 псевдонимами со сроком на каждое старое имя (`docs/open.md`). Не ловит
 ссылку на несуществующее имя без запасного значения (`unknownVar`) — ждёт
 своего дефекта.
+
+## Имена и ярусы — коротко
+
+Перенесено из закона (`SKILL.md`) при сжатии 28.09.2026 дословно; в законе осталась строка со ссылкой сюда.
+
+Слой 1 основания (И224); разбор и первоисточники — `references/names.md`.
+
+**Три яруса, ссылки в одну сторону.** Сырьё (`--n-12`, `--sp-4`, `--fs-base`)
+выпускает строитель, и читают его только роли. Роль (`--ink`, `--pad-card`,
+`--body-size`) — должность, имя по назначению, не по виду. Узел читает роль;
+ступень напрямую — семья `stepDirect`, кроме оптики не выше пола ритма.
+Ссылка вверх — сырьё к роли, роль к ручке узла, ручка узла на корне — семья
+`tierUp`: так `--stack` стал шрифтовым стеком, и отступ примитива был нулём.
+
+**Имя по форме.** `--<понятие>[-<уточнение>]*` из реестра `tools/names.mjs`;
+слово по виду (`sage`, `live`) в реестр не попадает. Не по форме — семья
+`nameGrammar`. Ручка примитива объявляется на примитиве и по умолчанию
+берёт роль: `var(--stack, var(--air-block))`.
+
+**Имя живёт по просителю.** Объявлено — значит читает узел, код,
+инструмент или тест, либо роль стоит в списке обязательных по элементам
+(`REQUIRED`). Иначе — семья `deadName`, и это не долг: снимается сразу.
+
+**Переименование — псевдоним со сроком,** не поиск-замена; сторож падает на
+удалённом имени, на которое ещё ссылаются.

@@ -8,7 +8,6 @@ import { CartForm } from './CartForm.tsx'
 import { QuantityStepper } from './QuantityStepper.tsx'
 import { QuickOrder } from './QuickOrder.tsx'
 import { AddLabel } from './AddLabel.tsx'
-import { Icon } from './Icon.tsx'
 
 /* Покупка на карте товара — одна строка: количество, «в корзину» и рядом
    «быстрый заказ» (слово заказчика 25.09.2026, И441, И442), ростом крупного
@@ -35,7 +34,7 @@ export function AddToCart({ lang, buy, hint, submit, call }: { lang: string; buy
   const row = (
     <>
       <QuantityStepper field={{ label: buy.quantity, name: buy.variant ? 'quantity' : undefined, min: 1, max: buy.max, less: buy.less, more: buy.more }} />
-      <button className={`${b.btn} ${s.add}`} data-voice="loud" data-size="lg" type="submit" disabled={!buy.variant && !buy.ask} aria-describedby={hint ? 'buy-hint' : undefined}><Icon id="shopping-cart" /><AddLabel add={buy.add} added={buy.added} /></button>
+      <button className={`${b.btn} ${s.add}`} data-voice="loud" data-size="lg" type="submit" disabled={!buy.variant && !buy.ask} aria-describedby={hint ? 'buy-hint' : undefined}><AddLabel variant={buy.variant} add={buy.add} added={buy.added} /></button>
       <QuickOrder view={buy.quick} />
       {hint ? <p className={f.say} id="buy-hint" role="status">{hint}</p> : null /* строка сообщения — одна на сайт (f.say, И476) */}
     </>

@@ -8,6 +8,7 @@ import { organizationLd, websiteLd } from '@/lib/ld.ts'
 import { COMPANY_IS_REAL } from '@/lib/flags.ts'
 import { lookNow } from '@/lib/look.ts'
 import { arrange } from '@/lib/homes.ts'
+import { toneOf } from '@/lib/bands.ts'
 import { pledgesView } from '@/lib/pledges.ts'
 import { Blocks } from '@/components/blocks/registry.tsx'
 import { JsonLd } from '@/components/JsonLd.tsx'
@@ -32,9 +33,11 @@ export default async function Home({ params }: Props) {
   /* Способы доставки — тот же список, что выбор на оформлении (И95): из
      него обещание «доставка от» героя. Молчит источник покупки — обещание
      стоит без цены, а не падает. */
-  const [cols, cards, methods, facts, look] = await Promise.all([
-    source().collections(lang), source().cards(lang, ids),
-    commerce().deliveryMethods(null, lang), content().facts(), lookNow(),
+  /* Отзывы и статьи — лентам главной (И728, И729); молчит источник — лент
+     нет, а главная стоит. */
+  const [cols, effects, cards, methods, facts, look, reviews, posts] = await Promise.all([
+    source().collections(lang), source().effects(lang), source().cards(lang, ids),
+    commerce().deliveryMethods(null, lang), content().facts(), lookNow(), content().reviews(lang), content().posts(lang),
   ])
   if (!cols.ok || !cards.ok) return <Unavailable lang={lang} />
   /* Обещания покупки — из данных магазина, как у кнопки заказа (И332):
@@ -42,21 +45,25 @@ export default async function Home({ params }: Props) {
      получении главная не обещает: её допустимость зависит от суммы корзины,
      а корзины у главной нет. */
   const pledges = pledgesView(lang, { payments: null, methods: methods.ok ? methods.value : null, returnDays: facts.ok ? facts.value.returnDays : null })
+  /* Эффекты — ряд дверей под полками; источник их не дал — ряда нет, а
+     главная стоит. */
   const shelf: BlockCtx['cards'] = Object.fromEntries(cards.value.map((c) => [c.id, shelfCard(lang, c)]))
   const ctx: BlockCtx = {
-    lang, home: look.home, collections: cols.value, pledges, cart: { submit: cartSubmit, call: cartCall }, cards: shelf,
+    lang, home: look.home, collections: cols.value, effects: effects.ok ? effects.value : [], pledges, cart: { submit: cartSubmit, call: cartCall }, cards: shelf,
     spotlight: ids.map((id) => shelf[id]).find(Boolean) ?? null,
+    bands: Object.fromEntries(page.value.blocks.map((b) => [b.type, toneOf(look.vars, b.type)])),
+    reviews: reviews.ok ? reviews.value : [], posts: posts.ok ? posts.value : [],
   }
   return (
-    /* Вариант главной — разметкой (lib/homes.ts): порядок и раскладка блоков
-       приходят из вида, как шапка и карточка товара; `data-home` — по нему
-       проверки видят, какая главная нарисована. */
-    <main id="main" data-home={look.home}>
+    /* Порядок блоков — рецепт главной (lib/homes.ts); `data-home` — одежда
+       плашек категорий из вида, по ней проверки видят, что нарисовано;
+       `data-page` — ярус заголовков разделов главной (И727, base.css). */
+    <main id="main" data-home={look.home} data-page="home">
       {/* Сведения об организации машина читает как факт: образец компании в
           них не публикуется (флаг настоящести COMPANY_IS_REAL). */}
       {COMPANY_IS_REAL && <JsonLd data={organizationLd()} />}
       {COMPANY_IS_REAL && <JsonLd data={websiteLd()} />}
-      <Blocks placed={arrange(page.value.blocks, look.home)} ctx={ctx} />
+      <Blocks placed={arrange(page.value.blocks)} ctx={ctx} />
     </main>
   )
 }

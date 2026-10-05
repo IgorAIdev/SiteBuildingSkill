@@ -27,14 +27,11 @@
 
 /* Плашка скидки — примитив `cut` (верхний левый угол кадра). */
 .badge{pointer-events:none}
-
-/* Стрелки — стрелки листания набора (`go`, кромкой), по середине боков
-   кадра. Есть при любом указателе: палец листает и свайпом, но видимость
-   по устройству ввода не меняется (check:css, семья о раскладке по
-   указателю) — под пальцем растёт цель, а не пропадает орган. */
-.arrow{position:absolute;inset-block-start:50%;translate:0 -50%}
-.arrow[data-to='back']{inset-inline-start:var(--pad-inner)}
-.arrow:not([data-to]){inset-inline-end:var(--pad-inner)}
+/* Сердце «в избранное» — верхний правый угол кадра, тем же полем, что на карточке
+   полки (ProductCard.module.css, `.save`): на стекле — `--sp-2`; без подложки
+   (`--save-look: bare`) — поле плашки скидки, верх знака на линии верха плашки. */
+.save{position:absolute;z-index:1;inset-block-start:var(--sp-2);inset-inline-end:var(--sp-2)}
+@container style(--save-look: bare){ .save{inset-block-start:var(--pad-inner);inset-inline-end:var(--pad-inner)} }
 
 /* Ряд миниатюр: четыре во всю ширину кадра; больше четырёх — ряд
    листается вбок, а не сжимает миниатюры. */
@@ -82,18 +79,9 @@
   .gallery{grid-template-areas:'stage'}
   .thumbs{display:none}
   .dots{display:flex;grid-area:stage;align-self:end;position:relative;z-index:1;margin-block-end:var(--sp-1)}
-  /* Под точкой любой снимок: точка — пол страницы с волоском кромки,
-     текущая — чернила с кольцом пола. */
-  .dots a::before{background:var(--page);opacity:1;box-shadow:0 0 0 var(--line-w) var(--border)}
-  .dots a[aria-current='true']::before{background:var(--ink);box-shadow:0 0 0 var(--line-w) var(--page)}
-}
-/* Сила места (0,2,0): стрелка — орган `go`, и его `display` весом голого
-   класса иначе решал бы порядок кусков сборки. */
-/* В одну колонку стрелок нет ни в каком виде (И497): кадр листает палец,
-   стрелки-плашки на середине кадра — мимо большого пальца и лишние коробки
-   на снимке (разбор impeccable 27.09.2026). */
-@container pdp (max-width:819px){
-  .gallery .arrow{display:none}
+  /* Под точкой любой снимок: дорожка — пол страницы с волоском кромки,
+     ползунок — чернила с кольцом пола (ручки указателя, И584). */
+  .dots{--dot-quiet:var(--page);--dot-dim:1;--dot-edge:0 0 0 var(--line-w) var(--border);--dot-ink:var(--ink);--dot-ink-edge:0 0 0 var(--line-w) var(--page)}
 }
 /* Снимок во всю ширину (`--pdp-edge: bleed`, ширину даёт колонка —
    ProductView.module.css): у края окна скругления нет. С точками на снимке
@@ -106,7 +94,7 @@
   .gallery .stage{border-radius:0;inline-size:100%}
   /* Во всю ширину уходит только кадр: ряд миниатюр остаётся в полях
      страницы, по линии текста под ним (`--gallery-bleed` — нахлёст колонки). */
-  .thumbs{justify-self:center;inline-size:min(100% - var(--gallery-bleed) * 2, var(--frame-max), var(--gallery-w))}
+  .thumbs{justify-self:center;inline-size:calc(100% - var(--gallery-bleed) * 2)}
 }
 @container pdp (max-width:819px) and style(--pdp-edge: bleed) and style(--pdp-thumbs: over){
   .dots{margin-block-end:calc(var(--sp-1) + var(--gallery-lap))}

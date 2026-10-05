@@ -20,7 +20,7 @@ const LOCK = 8
 const SHUT = 0.3
 const FLICK = 0.5
 
-type Way = 'start' | 'end' | 'down'
+type Way = 'start' | 'end' | 'down' | 'up'
 
 function wayOf(pane: HTMLElement): Way | null {
   const kind = pane.dataset.pane
@@ -28,6 +28,7 @@ function wayOf(pane: HTMLElement): Way | null {
     const rtl = getComputedStyle(pane).direction === 'rtl'
     return rtl ? (kind === 'start' ? 'end' : 'start') : kind
   }
+  if (kind === 'top') return 'up'
   if (kind === 'dialog' && getComputedStyle(pane).getPropertyValue('--pane-sheet').trim() === '1') return 'down'
   return null
 }
@@ -66,38 +67,71 @@ export function PaneSwipe() {
         if (Math.hypot(dx, dy) < LOCK) return
         lock = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'
         const scroller = e.target instanceof Element ? e.target.closest<HTMLElement>('[data-pane] > *') : null
-        const mine = way === 'down' ? lock === 'y' && dy > 0 && !(scroller && scroller.scrollTop > 0) : lock === 'x'
+        const mine = way === 'down' ? lock === 'y' && dy > 0 && !(scroller && scroller.scrollTop > 0)
+          : way === 'up' ? lock === 'y' && dy < 0 && !(scroller && scroller.scrollTop + scroller.clientHeight < scroller.scrollHeight - 1)
+          : lock === 'x'
         if (!mine) { pane = null; return }
       }
       e.preventDefault()
-      const along = way === 'down' ? dy : way === 'start' ? -dx : dx
+      const along = way === 'down' ? dy : way === 'up' ? -dy : way === 'start' ? -dx : dx
       pull = Math.max(0, along)
-      const size = way === 'down' ? pane.offsetHeight : pane.offsetWidth
+      const size = way === 'down' || way === 'up' ? pane.offsetHeight : pane.offsetWidth
       pane.style.transition = 'none'
-      pane.style.translate = way === 'down' ? `0 ${pull}px` : `${way === 'start' ? -pull : pull}px 0`
+      pane.style.translate = way === 'down' ? `0 ${pull}px` : way === 'up' ? `0 ${-pull}px` : `${way === 'start' ? -pull : pull}px 0`
       pane.style.setProperty('--pull', String(Math.min(1, pull / size)))
     }
     const end = (e: TouchEvent) => {
       const el = pane
       pane = null
       if (!el || !way || !lock) return
-      const size = way === 'down' ? el.offsetHeight : el.offsetWidth
+      const size = way === 'down' || way === 'up' ? el.offsetHeight : el.offsetWidth
       const fast = pull / Math.max(1, e.timeStamp - t0) > FLICK
       el.style.removeProperty('transition')
+      /* Отпустил дальше порога — окно закрывается СРАЗУ и уезжает из-под
+         пальца ходом закрытого окна (styles/pane.module.css): снимок места
+         пальца остаётся на кадр, потом снимается, и переход идёт от него к
+         краю. Прежде жест сам доводил окно до края и закрывал его по таймеру
+         — два хода сталкивались, и шторка корзины «закрывается, открывается и
+         снова закрывается сама» (заказчик 28.09.2026; И537). */
       if (pull > size * SHUT || (fast && pull > LOCK)) {
-        el.style.translate = way === 'down' ? '0 100%' : way === 'start' ? '-100% 0' : '100% 0'
-        el.style.setProperty('--pull', '1')
-        const done = () => { shut(el); reset(el) }
-        const ms = parseFloat(getComputedStyle(el).transitionDuration) * 1000 || 0
-        if (ms > 0) window.setTimeout(done, ms)
-        else done()
+        shut(el)
+        requestAnimationFrame(() => reset(el))
       } else reset(el)
     }
+    /* Уходящее окно — всё ещё окно (styles/pane.module.css, И510): закрытое
+       уезжает ещё ход перехода, и на это время носит `data-leaving`, чтобы
+       не потерять вид окна. `beforetoggle` — до смены состояния, так ни один
+       кадр не рисуется без коробки; открытие метку снимает. */
+    const leave = (e: Event) => {
+      const el = e.target
+      if (!(el instanceof HTMLElement) || !el.matches('[data-pane]')) return
+      if ((e as ToggleEvent).newState === 'open') { delete el.dataset.leaving; return }
+      el.dataset.leaving = ''
+      /* Метку снимает конец хода самого окна (сдвиг, масштаб или `display`),
+         а не таймер от `beforetoggle`: страница подтормаживала — ход
+         начинался позже, таймер снимал метку на середине (заказчик
+         29.09.2026, снимок шторки корзины; И557). Метка нужна только окну,
+         которое бывает строкой (`data-row`): остальные носят вид окна и без
+         неё (styles/pane.module.css). Таймер — только запасом, если хода нет. */
+      const ms = parseFloat(getComputedStyle(el).transitionDuration) * 1000 || 0
+      const done = (ev?: TransitionEvent) => {
+        if (ev && (ev.target !== el || !['display', 'translate', 'scale'].includes(ev.propertyName))) return
+        el.removeEventListener('transitionend', done)
+        el.removeEventListener('transitioncancel', done)
+        window.clearTimeout(spare)
+        if (!el.matches('[open], :popover-open')) delete el.dataset.leaving
+      }
+      const spare = window.setTimeout(done, ms * 4 + 500)
+      el.addEventListener('transitionend', done)
+      el.addEventListener('transitioncancel', done)
+    }
+    document.addEventListener('beforetoggle', leave, true)
     document.addEventListener('touchstart', start, { passive: true })
     document.addEventListener('touchmove', move, { passive: false })
     document.addEventListener('touchend', end)
     document.addEventListener('touchcancel', end)
     return () => {
+      document.removeEventListener('beforetoggle', leave, true)
       document.removeEventListener('touchstart', start)
       document.removeEventListener('touchmove', move)
       document.removeEventListener('touchend', end)

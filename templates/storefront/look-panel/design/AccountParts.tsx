@@ -1,0 +1,74 @@
+import p from '@/styles/primitives.module.css'
+import f from '@/styles/form.module.css'
+import type { Lang } from '@/lib/locale.ts'
+import type { AccountState } from '@/lib/actions/account.ts'
+import { sampleCommerce, FIXTURES } from '@/lib/source/sample/commerce.ts'
+import { addressBookView, cabinetView, orderPageView, passwordView, signInView, signUpView } from '@/lib/account-view.ts'
+import { hrefFor } from '@/lib/href.ts'
+import { t } from '@/lib/i18n/index.ts'
+import { AuthPage } from '@/components/AuthPage.tsx'
+import { AuthForm } from '@/components/AuthForm.tsx'
+import { PasswordBox } from '@/components/PasswordBox.tsx'
+import { Cabinet } from '@/components/Cabinet.tsx'
+import { OrderPage } from '@/components/OrderPage.tsx'
+import { AddressBook } from '@/components/AddressBook.tsx'
+import { AddressEdit } from '@/components/AddressEdit.tsx'
+import { Part } from './parts.tsx'
+
+/* Магазин → «Кабинет» (И771): настоящие страницы кабинета на покупательнице
+   образца (заготовка `sample-account`: два прошлых заказа, два адреса) —
+   те же компоненты и тот же вид, что на сайте. Данные — образца при любом
+   источнике, как у корзины образца: заводить вход в живом магазине
+   дизайн-система не должна. Формы получают действие-пустышку: кнопки
+   отвечают руке, но никто не входит и ничего не пишется. */
+
+async function still(): Promise<AccountState> {
+  'use server'
+  return null
+}
+
+const Missing = ({ what }: { what: string }) => <p className={p.note}>{what}</p>
+
+export async function AccountParts({ lang }: { lang: Lang }) {
+  const [who, orders] = await Promise.all([sampleCommerce.customer(FIXTURES.account, lang), sampleCommerce.orders(FIXTURES.account, lang)])
+  const customer = who.ok ? who.value : null
+  const list = orders.ok ? orders.value : []
+  const first = list[0] ? await sampleCommerce.order(FIXTURES.account, lang, list[0].code) : null
+  const order = first?.ok ? first.value : null
+  const here = hrefFor(lang, { account: 'home' })
+  return (
+    <>
+      <Part title="Вход" lede="Знак человека в шапке ведёт сюда гостя: почта, пароль с глазом «показать», «забыли пароль» тихим словом под паролем, одна громкая кнопка; ниже — «нет кабинета — создать» и что заказать можно и без кабинета.">
+        <AuthPage view={signInView(lang, null)} action={still} permalink={here} landmark={false} at="in-" />
+      </Part>
+      <Part title="Создание кабинета" lede="Имя и фамилия парой (по-венгерски фамилия первой), почта, пароль с правилом под полем; как магазин обращается с данными — ссылкой. Создан — сразу вход; движок ждёт подтверждения — слова «проверьте почту» на месте формы.">
+        <AuthPage view={signUpView(lang, null)} action={still} permalink={here} landmark={false} at="up-" />
+      </Part>
+      <Part title="Новый пароль по ссылке из письма" lede="Ссылка из письма сброса открывает одну форму: новый пароль с правилом под полем и кнопка; после неё — сразу вход.">
+        <div className={p.wrap}><AuthForm view={passwordView(lang, 'design')} action={still} permalink={here} at="pw-" /></div>
+      </Part>
+      <Part title="Поле пароля" lede="Тот же ввод, что у всех полей, и тихий знак глаза у его конца: нажат — пароль виден, глаз залит краской марки, как отмеченное сердце.">
+        <div className={f.field}>
+          <label className={f.label} htmlFor="design-password">{t(lang, 'field.password')}</label>
+          <PasswordBox id="design-password" name="design-password" autoComplete="off" show={t(lang, 'field.passwordShow')} />
+        </div>
+      </Part>
+      <Part title="Кабинет" lede="Вошедший видит заказы карточками — снимок первого товара, номер, дата и состояние словом, сумма и число штук; карточка ведёт на заказ. Справа — кто я, адрес по умолчанию со ссылкой на все адреса и выход.">
+        {customer ? <Cabinet lang={lang} view={cabinetView(lang, customer, list)} landmark={false} /> : <Missing what="Кабинета образца нет." />}
+      </Part>
+      <Part title="Заказ в кабинете" lede="Заказ целиком — рама «спасибо»: номер именем страницы, под ним дата и состояние; как приедет, чем платится, кому, товары; справа итог и путь назад в кабинет.">
+        {order ? <OrderPage view={orderPageView(lang, order)} landmark={false} /> : <Missing what="Заказов образца нет." />}
+      </Part>
+      <Part title="Адреса" lede="Адреса карточками: строки конверта, «адрес по умолчанию» словом, «изменить» и «удалить» тихими словами; новый адрес — кнопкой внизу.">
+        {customer ? <AddressBook lang={lang} view={addressBookView(lang, customer, null)} permalink={hrefFor(lang, { account: 'addresses' })} landmark={false} /> : <Missing what="Кабинета образца нет." />}
+      </Part>
+      <Part title="Правка адреса" lede="«Изменить» открывает поля адреса на месте карточки: те же, что на кассе, — улица, индекс рядом с городом, уезд списком; галочка «адрес по умолчанию», кнопка и «отменить».">
+        {customer ? (
+          <div className={p.wrap}>
+            <AddressEdit form={addressBookView(lang, customer, null).cards[0].edit.form} action={still} permalink={hrefFor(lang, { account: 'addresses' })} cancel={{ label: t(lang, 'addresses.cancel'), href: hrefFor(lang, { account: 'addresses' }) }} />
+          </div>
+        ) : <Missing what="Кабинета образца нет." />}
+      </Part>
+    </>
+  )
+}

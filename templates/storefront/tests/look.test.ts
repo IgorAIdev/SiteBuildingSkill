@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { lookSlots, lookStyles, readPublished, readSite, render } from '../scripts/look-slots.mjs'
-import { acceptLook, type Facts } from '../lib/look-rule.ts'
+import { acceptLook, READ_BY_SERVER, type Facts } from '../lib/look-rule.ts'
 import { acceptValues, lookCss, type Slots } from '../lib/look-values.ts'
 import { HEADERS } from '../lib/headers.ts'
 import { CARDS } from '../lib/cards.ts'
@@ -33,7 +33,8 @@ test('look: the published look is accepted — every value of its kind, the comb
   assert.ok(stale.notes.some((n) => n.what === '--mark-fill' && n.why === STALE), 'снятое свойство отброшено и названо')
   assert.deepEqual(stale.look.vars, look.vars, 'остальное — как без него')
   assert.equal(look.header, raw.header)
-  for (const [k, v] of Object.entries(look.vars)) assert.notEqual(SLOTS.slots[k].value, v, `${k}: значение по умолчанию в блок не идёт`)
+  /* Слова, которые читает сервер для разметки (подложка секции), идут и когда равны умолчанию: вид сайта выпущен в стили. */
+  for (const [k, v] of Object.entries(look.vars)) if (!READ_BY_SERVER.test(k)) assert.notEqual(SLOTS.slots[k].value, v, `${k}: значение по умолчанию в блок не идёт`)
   assert.ok(lookCss(look).length < 20000, 'блок вида — не каталог')
 })
 
@@ -47,7 +48,6 @@ test('look: the styles emitted from the published look carry exactly its values 
     assert.doesNotMatch(css, /\[data-(palette|button|scale|face)=/, `${file}: чужой набор`)
     assert.match(css, /Руками не правят/, `${file}: выпущен, а не написан`)
   }
-  assert.doesNotMatch(read('styles/storefront.css').replace(/\/\*[\s\S]*?\*\//g, ''), /--menu-mark-[\w-]+\s*:/, 'отметка пункта меню — только в выпущенном styles/look.css')
 })
 
 test('look: the site stylesheets are emitted, never a second set; the property list is not behind them', () => {
@@ -57,7 +57,7 @@ test('look: the site stylesheets are emitted, never a second set; the property l
   assert.ok(!read('components/Shell.tsx').includes('next/font'), 'next/font в сайте нет')
   assert.equal(read('lib/look-slots.json').replace(/\r\n/g, '\n'), render(lookSlots(readSite(ROOT))))
   const groups = new Set(Object.values(SLOTS.slots).map((s) => s.group))
-  assert.deepEqual([...groups].sort(), ['button', 'card-buy', 'cart-meta', 'cart-sign', 'chip-sign', 'corners', 'drawer-look', 'face', 'field', 'field-label', 'go-hover', 'head-icons', 'marker', 'pair-look', 'palette', 'pdp-edge', 'pdp-gallery', 'pdp-thumbs', 'quick-look', 'say-look', 'scale', 'seg-look', 'shadow', 'shelf-cols', 'shot-frame', 'sort-label', 'tick', 'width'])
+  assert.deepEqual([...groups].sort(), ['band-effects', 'band-faq', 'band-featured', 'band-posts', 'band-reviews', 'band-story', 'button', 'cart-meta', 'cart-sign', 'corners', 'door-case', 'face', 'field', 'field-label', 'filter-look', 'filter-phone', 'go-hover', 'head-size', 'logo', 'nav-current', 'pager-look', 'pair-look', 'palette', 'pdp-edge', 'pdp-gallery', 'pdp-thumbs', 'quick-look', 'save-look', 'say-look', 'scale', 'seg-look', 'shadow', 'star', 'stock-look', 'text-size', 'tick', 'width'])
   for (const role of ['--page', '--plate', '--quiet', '--pop', '--on-pop']) assert.ok(SLOTS.facts.roles[role], role)
 })
 
@@ -75,4 +75,16 @@ test('look: the header and the product card draw each variant the site keeps; th
      `dynamicParams = false` Next отвечает «не найдено» (И270). */
   assert.doesNotMatch(route, /revalidateTag\([^)]*expire:\s*0/)
   assert.match(route, /revalidateTag\(known, 'max'\)/)
+})
+
+/* Подложка секции (И591): значение `--band-<блок>` носится всегда — группа вне
+   ORDER ни с чем не пара, и `settle` её не отбрасывает молча. Так выбор из
+   панели доходил до сервера, а на странице оставался «без подложки». */
+test('look: a section background (band-<block>) survives the combination check and keeps its word', () => {
+  const { look, notes } = acceptLook({ vars: { '--band-featured': 'dark', '--band-faq': 'quiet', '--band-story': 'brand' } }, SLOTS.slots, SLOTS.facts)
+  assert.equal(look.vars['--band-featured'], 'dark')
+  assert.equal(look.vars['--band-faq'], 'quiet')
+  assert.equal(look.vars['--band-story'], 'brand')
+  assert.deepEqual(notes.filter((n) => n.what.includes('band')), [])
+  assert.equal(acceptLook({ vars: { '--band-faq': 'loud' } }, SLOTS.slots, SLOTS.facts).look.vars['--band-faq'], undefined, 'a word the site does not know is dropped')
 })

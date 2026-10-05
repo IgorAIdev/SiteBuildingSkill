@@ -50,7 +50,7 @@
 }
 
 .field{display:flex;flex-direction:column;gap:calc(var(--ctrl-h) * .15);min-inline-size:0}
-.label{font-size:var(--ctrl-fs-sm);font-weight:600;color:var(--ink)}
+.label{font-size:var(--ctrl-fs-sm);font-weight:var(--label-weight);color:var(--ink)}
 
 /* Рисунок поля — один; `select.box`, `textarea.box` и `.input` приматива
    берут его же.
@@ -106,9 +106,9 @@ textarea.box{padding-block:calc(var(--ctrl-h) * .25);min-block-size:calc(var(--c
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;
     transition:color var(--hover-t) var(--ease)
   }
-  .field:has(> input.box:placeholder-shown:not(:focus)) > .label{
+  .field:has(> input.box:placeholder-shown:not(:focus), > .secret > input.box:placeholder-shown:not(:focus)) > .label{
     inset-block-start:calc(var(--ctrl-h) / 2);
-    font-size:var(--ctrl-fs-base);font-weight:400;color:var(--ink-soft);background:none
+    font-size:var(--ctrl-fs-base);font-weight:var(--body-weight);color:var(--ink-soft);background:none
   }
   .field:focus-within > .label{color:var(--pop-ink)}
   /* Фокус — сама кромка краской кольца толщиной кольца (так у элемента 47):
@@ -119,6 +119,15 @@ textarea.box{padding-block:calc(var(--ctrl-h) * .25);min-block-size:calc(var(--c
   .box:not(:disabled):focus-visible{outline:0;border-color:var(--ring);box-shadow:inset 0 0 0 calc(var(--ring-w) - var(--line-w)) var(--ring)}
   .box::placeholder{color:transparent}
 }
+
+/* Пароль и знак «показать» (И771; PasswordBox): ввод — та же коробка, знак —
+   тихий знак набора у конца поля, квадратом роста поля, как глаз Gymshark
+   (44 в поле 52). Вписанное не заходит под знак: конец ввода отдан ему.
+   Подпись на кромке у пароля та же — ввод лежит в обёртке, и запрос «пусто
+   ли поле» спрашивает и его (`> .secret > input`, выше). */
+.secret{position:relative;display:flex}
+.secret > .box{padding-inline-end:var(--ctrl-h)}
+.secret > .reveal{position:absolute;inset-block-start:0;inset-inline-end:0;min-block-size:var(--ctrl-h);min-inline-size:var(--ctrl-h)}
 
 /* Список — та же коробка и своя стрелка: системную снимает `appearance`,
    стрелку рисуют два угла тона чернил — она следует теме без картинки. */
@@ -154,13 +163,13 @@ textarea.box{padding-block:calc(var(--ctrl-h) * .25);min-block-size:calc(var(--c
   }
   .say:is([role='status'], [role='alert']):not(:empty)::before{
     content:'';flex:none;inline-size:1.25em;block-size:1.25em;background:var(--ok);
-    -webkit-mask:url('/icons.svg#circle-check-view') center / contain no-repeat;
-    mask:url('/icons.svg#circle-check-view') center / contain no-repeat
+    -webkit-mask:var(--sign-mask-check-circle) center / contain no-repeat;
+    mask:var(--sign-mask-check-circle) center / contain no-repeat
   }
   .say[data-state='error']:is([role='status'], [role='alert']):not(:empty){background:var(--bad-tint);color:var(--bad)}
   .say[data-state='error']:is([role='status'], [role='alert']):not(:empty)::before{
     background:var(--bad);
-    -webkit-mask-image:url('/icons.svg#triangle-alert-view');mask-image:url('/icons.svg#triangle-alert-view')
+    -webkit-mask-image:var(--sign-mask-alert-triangle);mask-image:var(--sign-mask-alert-triangle)
   }
 }
 

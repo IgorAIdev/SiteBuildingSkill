@@ -27,7 +27,7 @@
 /* Что заказывают — полужирной строкой чернил: это строка, которую уносит
    сообщение, и её отличает вес, а не плашка (плашка брала две строки
    высоты и ещё одну серую площадь). */
-.what{margin:0;font-size:var(--body-size);line-height:var(--body-lead);font-weight:700;font-variant-numeric:tabular-nums}
+.what{margin:0;font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--cardname-weight);font-variant-numeric:tabular-nums}
 
 /* Мессенджеры — вид панели `--quick-look` (И470). Плитки (умолчание) — две
    колонки всегда: ячейка без пола, ряд — ровно две (ручки примитива
@@ -47,14 +47,12 @@
   .name{display:none}
   .via{display:inline}
 }
-/* Знак — краской своей марки (роли `--mark-*` строителя палитры, И471): так
-   мессенджер узнают; фон строки — тихая кнопка сайта, без своей краски
-   («фон у иконок мессенджеров не красят» — слово заказчика 27.09.2026). */
-.row[data-mark='viber'] svg{color:var(--mark-viber)}
-.row[data-mark='telegram'] svg{color:var(--mark-telegram)}
-.row[data-mark='whatsapp'] svg{color:var(--mark-whatsapp)}
-.row[data-mark='instagram'] svg{color:var(--mark-instagram)}
+/* Знак — краской своей марки: класс `mark` списка путей (ReachList.module.css). */
 
 /* Кнопка, открывающая окно, — рядом с «в корзину» (AddToCart): тихий
-   голос, растёт вместе с ней. */
-.trigger{flex:1 1 auto}
+   голос и на пятую часть уже главной — доли 4 : 5 от остатка строки
+   (заказчик 28.09.2026: «кнопку быстрого заказа делай чуть меньше процентов
+   на 20» — про ширину). Ростом — как вся строка покупки, крупный орган:
+   ступень ниже читалась недоделкой (заказчик 28.09.2026: «высота кнопки
+   quick order почему-то меньше соседних»). */
+.trigger{flex:4 1 0}

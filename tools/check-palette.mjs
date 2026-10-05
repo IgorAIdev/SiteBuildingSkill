@@ -28,15 +28,17 @@ import { auditPalette } from './palette.mjs'
  * стороны. Настоящий набор живёт в приложении, `styles/palette.json`:
  * переносимый набор не знает и не должен знать, какого цвета чужая марка.
  */
-const SIGNALS = { error: '#B3261E', sale: '#6A4CA8', warn: '#F76B15', ok: '#30A46C' }
+/* Сигналы и марки пробных наборов — заливки, на которых надпись держит обе
+   меры, WCAG и APCA (И559): названное строитель не двигает, только меряет. */
+const SIGNALS = { error: '#B3261E', sale: '#6A4CA8', warn: '#FF925E', ok: '#008853' }
 const SELFTEST = {
   'тёплая марка': {
-    light: { paper: '#FDFCF8', ink: '#2A2622', accent: '#B07A2E', ...SIGNALS },
-    dark: { paper: '#121110', ink: '#EDEBE8', accent: '#B07A2E', ...SIGNALS, error: '#E5484D' },
+    light: { paper: '#FDFCF8', ink: '#2A2622', accent: '#A06B1B', ...SIGNALS },
+    dark: { paper: '#121110', ink: '#EDEBE8', accent: '#A06B1B', ...SIGNALS, error: '#D83B43' },
   },
   'холодная марка': {
     light: { paper: '#FBFCFD', ink: '#1C2226', accent: '#2C6E8F', ...SIGNALS },
-    dark: { paper: '#0E1114', ink: '#E9ECEE', accent: '#4E9BBE', ...SIGNALS, error: '#E5484D' },
+    dark: { paper: '#0E1114', ink: '#E9ECEE', accent: '#2E7EA0', ...SIGNALS, error: '#D83B43' },
   },
 }
 

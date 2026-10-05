@@ -291,7 +291,7 @@ const factRows = [
   fact('полоса свипа', `<code>${LAYOUT.sweep[0]}…${LAYOUT.sweep[1]}</code> px`, 'M3 extra-large от 1600, Carbon max 1584'),
   fact('шаг свипа', `<code>${LAYOUT.step}</code> px`, 'сетка ширин; вдобавок каждый шов и пиксель над ним'),
   fact('сложенные экраны', `<code>${(LAYOUT.extra ?? []).join(' · ')}</code>`, 'Galaxy Z Fold 5 и Pixel 9 Pro Fold: раскладка там ровно на шве'),
-  fact('низкое окно', `<code>${LAYOUT.shortWindow}</code> px`, 'ноутбук 1366×768 минус полоса браузера'),
+  fact('низкое окно', `<code>${LAYOUT.shortWindow}</code> px`, 'ноутбук 1920×1080 с масштабом 150 % минус полосы Windows и браузера (И659)'),
   fact('ступенька размера', `от <code>${LAYOUT.jump}</code> px`, 'между соседними ширинами свипа: вдвое круче самой крутой кривой — уже не течение'),
   fact('обрезка кадра', `<code>${Math.round(LAYOUT.crop * 100)} %</code>`, 'кадр, оставляющий меньше этой доли снимка, — лента, а не кадр'),
   fact('потолок кадра', `<code>${LAYOUT.frameCap} %</code> малого окна`, `в примитиве выпущено как ${frameCap === null ? '— (не найдено)' : `<code>${frameCap}svh</code>`}`),

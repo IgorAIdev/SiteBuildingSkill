@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>90 · Телефон: страна и номер</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 90 — «Телефон: страна и номер». Источники — daisyUI «Select», shadcn/ui «Input Group», HyperUI «Forms» (MIT).
+  Код страны выбирается из списка слева (родной `select`, список открывает система), номер вписывается справа; между ними — волосок.
+-->
+</head>
+<body>
+  <div class="live">
+    <label class="field" data-voice="line"><select aria-label="Country code"><option>+40</option><option>+359</option><option>+36</option></select><input type="tel" placeholder="712 345 678" aria-label="Phone"></label>
+    <label class="field" data-voice="line" data-shape="pill"><select aria-label="Country code"><option>+40</option><option>+359</option><option>+36</option></select><input type="tel" placeholder="712 345 678" aria-label="Phone"></label>
+  </div>
+</body>
+</html>

@@ -12,12 +12,12 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, cpSync, rmSync } from 'node:fs'
+import { readFileSync, existsSync, mkdtempSync, mkdirSync, writeFileSync, cpSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import { roles, ratio, apca, auditPalette, lightness, groundChecks, deckOf, SOLID_GAP, NEED, redFamily } from '../tools/palette.mjs'
+import { roles, ratio, apca, auditPalette, lightness, groundChecks, deckFor, SOLID_GAP, NEED, redFamily, scale, difference } from '../tools/palette.mjs'
 
 const KIT = fileURLToPath(new URL('..', import.meta.url))
 const shipped = {
@@ -82,14 +82,20 @@ test('npm run palette refuses to write a set the audit rejects, and leaves the o
   } finally { rmSync(dir, { recursive: true, force: true }) }
 })
 
-test('--edge — the control edge that holds 3 : 1 on every background 1–5; --border keeps its look (И252)', () => {
+test('--edge — a quiet control edge, seen but not loud on every background 1–5; --edge-hand holds 3 : 1; --border keeps its look (И252, И588)', () => {
   for (const [name, set] of Object.entries(shipped)) {
     for (const [mode, paints] of themes(set)) {
       const r = roles(paints, mode)
-      assert.ok(r['--edge'], `${name} · ${mode}: нет --edge`)
-      const worst = Math.min(...[1, 2, 3, 4, 5].map((i) => ratio(r['--edge'], r[`--n-${i}`])))
-      assert.ok(worst >= 3, `${name} · ${mode}: --edge ${r['--edge']} даёт ${worst.toFixed(2)}`)
+      assert.ok(r['--edge'] && r['--edge-hand'], `${name} · ${mode}: нет --edge или --edge-hand`)
+      const worst = (paint) => Math.min(...[1, 2, 3, 4, 5].map((i) => ratio(paint, r[`--n-${i}`])))
+      assert.ok(worst(r['--edge']) >= 1.4, `${name} · ${mode}: --edge ${r['--edge']} даёт ${worst(r['--edge']).toFixed(2)}`)
+      /* Тихая: не кромка поля. Кричала краской приглушённого текста (И588). */
+      assert.ok(worst(r['--edge']) < 3, `${name} · ${mode}: --edge ${r['--edge']} громкая — ${worst(r['--edge']).toFixed(2)}`)
+      assert.ok(worst(r['--edge-hand']) >= 3, `${name} · ${mode}: --edge-hand ${r['--edge-hand']} даёт ${worst(r['--edge-hand']).toFixed(2)}`)
       assert.ok(ratio(r['--border'], r['--n-2']) >= 3, `${name} · ${mode}: --border на поле`)
+      /* Полшага между покоем и 3 : 1 (И635): темнее покоя, но не как --edge-hand. */
+      assert.ok(r['--edge-near'], `${name} · ${mode}: нет --edge-near`)
+      assert.ok(worst(r['--edge-near']) >= 2 && worst(r['--edge-near']) < worst(r['--edge-hand']) + 1e-9, `${name} · ${mode}: --edge-near ${r['--edge-near']} даёт ${worst(r['--edge-near']).toFixed(2)}`)
     }
   }
 })
@@ -113,8 +119,11 @@ test('button and hero roles come from the builder with their guarantees, on ever
       assert.ok((ln - lf) * (lr - ln) > 0, `${at}: ближний тон ${near} не между заливкой и дальним`)
       /* палуба: пара палубы и хвост от её знака к её полу */
       const n = Array.from({ length: 12 }, (_, i) => r[`--n-${i + 1}`])
-      const deck = deckOf(n, mode)
-      assert.equal(r['--chrome-bg'], deck.bg)
+      /* палуба — заливка марки в любом наборе: основной цвет один (И694) */
+      const a = Array.from({ length: 12 }, (_, i) => r[`--a-${i + 1}`])
+      const deck = deckFor(n, mode, a)
+      assert.equal(r['--chrome-bg'], r['--a-9'], `${at}: палуба — не заливка марки`)
+      assert.equal(r['--chosen-paper'], r['--a-9'], `${at}: выбранное — не заливка марки`)
       assert.ok(Math.min(...deck.grounds.map((bg) => Math.abs(apca(r['--pop-trail-far-deck'], bg)))) >= NEED.decorLc, `${at}: хвост на палубе`)
       /* выпущенное — роль, а не формула в стилях: краски, а не ссылки */
       for (const k of ['--quiet-paper', '--scrim', '--scrim-near', '--scrim-far', '--sh-near-paper', '--chrome-fg-2']) assert.match(r[k], /^#[0-9A-F]{8}$/, `${at}: ${k} — вуаль строителя #RRGGBBAA`)
@@ -152,8 +161,8 @@ test('a bright brand keeps its colour: the trail steps away from the ground inst
    нейтрали. Тринадцать красок палубы набирались в стилях руками, и тихое
    слово шапки при доле 78 % в тёмной теме давало 3.1 : 1 при норме 4.5. */
 const CBDIN = {
-  light: { paper: '#FFFFFF', ink: '#231F18', accent: '#0C3A46', sale: '#FABC34', deck: 'brand' },
-  dark: { paper: '#141310', ink: '#EEEDEA', accent: '#2E7C8F', sale: '#FABC34', deck: 'brand' },
+  light: { paper: '#FFFFFF', ink: '#231F18', accent: '#0C3A46', sale: '#FABC34' },
+  dark: { paper: '#141310', ink: '#EEEDEA', accent: '#2E7C8F', sale: '#FABC34' },
 }
 const over = (top, floor) => {
   const ch = (h) => [1, 3, 5].map((i) => Number.parseInt(h.slice(i, i + 2), 16))
@@ -185,11 +194,14 @@ test('the brand deck: chrome roles stand on the brand fill and hold their norms 
   const old = `${dark['--chrome-fg']}C7`
   assert.ok(ratio(over(old, dark['--chrome-bg']), dark['--chrome-bg']) < NEED.text, '78 % на марке держали 4.5 — дефект не воспроизведён')
   assert.notEqual(dark['--chrome-fg-2'], old)
-  /* Нейтральная палуба не сдвинулась: 78 % там держат с запасом. */
+  /* Палуба — заливка марки в любом наборе (И694): тихое слово держит 4.5 : 1
+     на каждой, доля поднята там, где 78 % мало. */
   for (const [name, set] of Object.entries(shipped)) {
-    for (const [mode, paints] of themes(set)) assert.match(roles(paints, mode)['--chrome-fg-2'], /C7$/, `${name} · ${mode}`)
+    for (const [mode, paints] of themes(set)) {
+      const r = roles(paints, mode)
+      assert.ok(ratio(over(r['--chrome-fg-2'], r['--chrome-bg']), r['--chrome-bg']) >= NEED.text, `${name} · ${mode}: тихое слово палубы`)
+    }
   }
-  assert.throws(() => roles({ ...CBDIN.light, deck: 'петроль' }, 'light'), /палуба/i)
 })
 
 /* Тень под подписью на снимке (И451). Дефект: краска слоёв стояла у cbdin
@@ -295,6 +307,30 @@ test('quiet tint is the brand veil, except for a red-family brand', () => {
       if (redFamily(set[mode].accent)) assert.equal(tint, r['--n-12'].toUpperCase(), `${name} ${mode}: красная марка — вуаль чернил`)
       else assert.equal(tint, r['--a-9'].toUpperCase(), `${name} ${mode}: тихая марка — вуаль марки ${brand}`)
       assert.equal(r['--pop-tint-paper'], redFamily(set[mode].accent) ? r['--n-3'] : r['--a-3'], `${name} ${mode}: поле тихой марки`)
+    }
+  }
+})
+
+/* Серые шкалы Radix Colors 3.0.0 (снимок в research/): строитель повторяет их с
+   отклонением в среднем меньше 2 ΔE, и в светлой теме, и в тёмной. Замер
+   03.10.2026 при разборе чужих палитр (элементы 80–83, убраны): 0.3–1.7 в
+   светлой, 0.2–1.3 в тёмной. Тест держит это число, чтобы правка лестницы не
+   увела нейтраль от эталона, на котором она стоит. */
+const RADIX = join(KIT, 'research/site-building-2026-09-20/raw/sources/radix-colors/npm-colors@3.0.0')
+test('the neutral ladder reproduces the Radix grays: mean ΔE under 2, light and dark', { skip: !existsSync(RADIX) && 'нет снимка Radix в research/' }, () => {
+  const ground = { light: { paper: '#FCFBF9', ink: '#1F1E1C' }, dark: { paper: '#121110', ink: '#EDEBE8' } }
+  const radix = (file, name) => {
+    const css = readFileSync(join(RADIX, file), 'utf8').split('@supports')[0]
+    return Array.from({ length: 12 }, (_, i) => css.match(new RegExp(`--${name}-${i + 1}:\\s*(#[0-9a-fA-F]{6})`))[1].toUpperCase())
+  }
+  for (const name of ['gray', 'mauve', 'slate', 'sage', 'olive', 'sand']) {
+    for (const mode of ['light', 'dark']) {
+      const real = radix(mode === 'light' ? `${name}.css` : `${name}-dark.css`, name)
+      const { paper, ink } = ground[mode]
+      const ours = scale(paper, ink, real[8], mode, scale(paper, ink, null, mode)[1])
+      const steps = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11]
+      const mean = steps.reduce((sum, i) => sum + difference(ours[i], real[i]), 0) / steps.length
+      assert.ok(mean < 2, `${name} · ${mode}: лестница строителя отстоит от Radix на ${mean.toFixed(2)} ΔE при норме меньше 2`)
     }
   }
 })

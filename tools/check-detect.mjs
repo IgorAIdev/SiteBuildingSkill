@@ -65,7 +65,7 @@ import { createHash } from 'node:crypto'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { loadPlaywright, still } from './browser.mjs'
+import { loadPlaywright, settled, still } from './browser.mjs'
 import {
   VENDOR, DETECTOR, REGISTRY, DETECT_RULES, DETECT_FAMILIES, DETECT_LABELS, DETECT_MAP, DETECT_OFF, DETECT_ADVISORY,
   HIDDEN_AT_REST,
@@ -224,7 +224,7 @@ async function measure({ path, env }) {
     await page.evaluate(sweep)
     await page.waitForLoadState('networkidle').catch(() => {})
     await still(page)
-    await page.evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished.catch(() => {})))).catch(() => {})
+    await settled(page)
     await page.waitForTimeout(150)
 
     phase.set(page, 'detect')
@@ -310,7 +310,15 @@ if (dead) {
 const all = [...byPage.values()].flatMap((m) => [...m.values()])
   .map((f) => ({ ...f, seen: f.seen.sort() }))
   .sort((a, b) => a.page.localeCompare(b.page) || a.rule.localeCompare(b.rule) || a.selector.localeCompare(b.selector))
-const counted = all.filter((f) => DETECT_MAP[f.rule])
+/* Лента товаров стоит в колонке сайта (И598, слово заказчика 01.10.2026: «все
+   плашки выходят за ширину сайта»): первая карточка в покое — на линии текста,
+   без поля, край колонки её и режет. Детектор impeccable называет это «карточка
+   прилипла к краю полосы» — у набора это решение, а не дефект; правый край и
+   нахлёст (отрицательный зазор — карточка срезана) по-прежнему считаются.
+   Сердце карточки, вылезавшее за край на 8 px (И755), этим правилом и нашлось. */
+const inColumn = (f) => f.rule === 'edge-flush-cards'
+  && /flush against the left edge of ul\.[\w-]*__rail\b[^(]*at rest \(0px gap/.test(f.detail ?? '')
+const counted = all.filter((f) => DETECT_MAP[f.rule] && !inColumn(f))
 const advisory = all.filter((f) => DETECT_ADVISORY.includes(f.rule))
 /* Правило, которого нет в таблице судеб, — сборка и запись разошлись. */
 const stray = all.filter((f) => !DETECT_MAP[f.rule] && !DETECT_ADVISORY.includes(f.rule))

@@ -1,6 +1,6 @@
 ---
 name: one-writer-shared-tree
-description: "several sessions share D:\\BusinessProject\\SkillSiteBuilding; elements/ has one owning session, others forward to it instead of writing"
+description: "several sessions share D:\\MyBssinessProject\\sitebuildingskill; elements/ has one owning session, others forward to it instead of writing"
 metadata:
   node_type: memory
   type: project
