@@ -4,7 +4,8 @@
  *   name        — поле без подписи (подсказка внутри поля именем не считается);
  *   fieldZoom   — поле мельче 16px на телефоне (iOS увеличивает страницу);
  *   autofill    — поле оформления без autocomplete (WCAG 1.3.5), личные страницы;
- *   h1Lines     — главный заголовок длиннее трёх строк.
+ *   h1Lines     — главный заголовок длиннее трёх строк;
+ *   edge        — граница поля не видна (3 : 1), счётчик между «−» и «+» — как кнопка.
  *
  * Ошибку скрипта при загрузке ловит `check:detect` (семья `scriptError`,
  * selftest/detect.test.mjs): второго ответа на тот же вопрос здесь нет.
@@ -47,8 +48,10 @@ const shell = (title, body, style = '') => `<!doctype html><html lang="en"><head
 const PAGES = {
   '/home': shell('Dirty',
     '<h1 class="narrow">A very long product name that keeps wrapping line after line</h1>'
-    + '<input type="text" name="q" placeholder="Search">',
-    '.narrow{inline-size:140px;font-size:32px;line-height:40px;margin:0}input{font-size:13px}'),
+    + '<input type="text" name="q" placeholder="Search">'
+    + '<input type="number" aria-label="Qty" class="pale" value="1">',
+    '.narrow{inline-size:140px;font-size:32px;line-height:40px;margin:0}input{font-size:13px}'
+    + '.pale{border:0;box-shadow:inset 0 0 0 1px #c2baab;font-size:16px}'),
   '/checkout': shell('Checkout',
     '<h1>Contact</h1><form>'
     + '<label for="e">Email</label><input id="e" type="email" name="email">'
@@ -58,8 +61,10 @@ const PAGES = {
     + '</form>',
     'input{font-size:16px}'),
   '/clean': shell('Clean',
-    '<h1>Short name</h1><label for="n">Name</label><input id="n" name="name" autocomplete="name">',
-    'input{font-size:16px}'),
+    '<h1>Short name</h1><label for="n">Name</label><input id="n" name="name" autocomplete="name">'
+    + '<div role="group" aria-label="Quantity" class="step"><button type="button" aria-label="Less">-</button>'
+    + '<input type="number" aria-label="Count" value="1"><button type="button" aria-label="More">+</button></div>',
+    'input{font-size:16px}.step{display:inline-flex;box-shadow:inset 0 0 0 1px #c2baab}.step input{border:0;inline-size:3em}'),
 }
 
 const serve = () => new Promise((resolve) => {
@@ -88,11 +93,14 @@ test('craft: поле без подписи, мелкое поле, автоза
   const dir = mkdtempSync(join(tmpdir(), 'kit-craft-'))
   try {
     cpSync(join(KIT, 'tools'), join(dir, 'tools'), { recursive: true })
+    /* Проверка читает роли текста из styles/scale.css (typeRole, И674) — без файла падает до замера. */
+    mkdirSync(join(dir, 'styles'), { recursive: true })
+    cpSync(join(KIT, 'styles/scale.css'), join(dir, 'styles/scale.css'))
     writeFileSync(join(dir, 'package.json'), '{"name":"probe","private":true,"type":"module"}')
     for (const p of ['app/home', 'app/checkout', 'app/clean']) { mkdirSync(join(dir, p), { recursive: true }); writeFileSync(join(dir, p, 'page.tsx'), 'export default () => null\n') }
     writeFileSync(join(dir, 'kit.config.json'), JSON.stringify({ sessions: { cookie: 'sid', pages: { '/checkout': ['s1'] } } }))
     const out = join(dir, 'found.json')
-    const r = await run(dir, base, ['--pages', '/home,/checkout#as=s1,/clean', '--only', 'name,fieldZoom,autofill,h1Lines', '--json', out])
+    const r = await run(dir, base, ['--pages', '/home,/checkout#as=s1,/clean', '--only', 'name,fieldZoom,autofill,h1Lines,edge', '--json', out])
     assert.equal(r.status, 0, r.stdout + r.stderr)
     const { found } = JSON.parse(readFileSync(out, 'utf8'))
     const on = (fam, page) => found[fam].filter((l) => l.startsWith(`${page} `))
@@ -112,6 +120,11 @@ test('craft: поле без подписи, мелкое поле, автоза
 
     assert.ok(on('h1Lines', '/home').length >= 1, 'заголовок в узкой колонке — длиннее трёх строк')
     assert.deepEqual(on('h1Lines', '/clean'), [])
+
+    /* Граница органа (И556): одинокое поле числа с кромкой 1.93 : 1 — находка; счётчик
+       (поле между «−» и «+» в группе) с той же кромкой судится как кнопка — нет. */
+    assert.ok(on('edge', '/home').some((l) => /1\.9\d:1/.test(l)), found.edge.join('\n'))
+    assert.deepEqual(on('edge', '/clean'), [], 'счётчик узнают по «−» и «+», как кнопку по слову')
 
   } finally { server.close(); rmSync(dir, { recursive: true, force: true }) }
 })

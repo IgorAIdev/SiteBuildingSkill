@@ -2636,6 +2636,11 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
        (`--tick-edge`, base.css) на нём не рисуется вовсе. Мерить её — мерить
        невидимое: точка выбора способа доставки давала 1.82 : 1 (05.10.2026). */
     if (el.matches('input[type=radio], input[type=checkbox]') && getComputedStyle(el).appearance !== 'none') continue
+    /* Счётчик — поле числа между «−» и «+» в одной группе — судится как кнопка: его
+       узнают по знакам шага, как кнопку по слову, и кромка у него — тихой кнопки рядом
+       (слово заказчика 06.10.2026: «она ж в одной строке с Quick order, потому нормально,
+       если у них рамки одного оттенка»; И556, поправка). Одинокое поле числа — поле. */
+    if (el.matches('input[type=number]') && el.closest('[role=group]') && el.previousElementSibling?.matches('button') && el.nextElementSibling?.matches('button')) continue
     let seenBy = null
     for (let n = el, i = 0; n && i < 3; n = n.parentElement, i++) {
       const got = bound(n)
