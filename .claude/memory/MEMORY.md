@@ -3,7 +3,7 @@
 - [Take the recommended option](take-recommended.md) — don't ask the owner to pick between options I recommend; take the recommended one and go
 - [Draft per-shop choices](draft-per-shop-choices.md) — carriers and similar vendors: rough draft options, verified per shop at launch
 - [Rendered checks: changed pages only](rendered-checks-changed-pages.md) — fix rounds: touched pages, main language only; full craft/sweep, all languages, once before handover
-- [GitHub flow](work-locally.md) — since 28.09.2026 local only: commit on local main, no push/PR until the owner says; claude/* → PR flow paused
+- [GitHub flow](work-locally.md) — since 06.10.2026 small requested fixes include push, PR, merge and normal publication without repeat confirmation; current explicit local-only requests still win
 - [Look panel architecture](look-panel-architecture.md) — panel holds the variant catalog, site holds one look as values; no rebuild; removable in one command
 - [Only correct architecture](only-correct-architecture.md) — name the owning layer before deciding or briefing; no wrong-layer shortcuts ever
 - [Design through skills](design-with-skills.md) — storefront design goes through impeccable/redesign-skill inside kit rules; owner: «дизайн говно везде, переделай скилами»
@@ -12,10 +12,10 @@
 - [One writer in the shared tree](one-writer-shared-tree.md) — elements/ has one owning session; others check for repeats and forward, never write
 - [Scope: skill, not shop](skill-scope-not-shop.md) — asked about the skill → stay in the kit and upstream repos, not their CBD shop projects
 - [Shared working tree](shared-working-tree.md) — several sessions write in one tree/branch; git add own paths only, message before committing; never switch its branch — own worktree; rules journal: number from the file tail, append only, stage own hunks; a worktree session lands work as a patch (scratch mirror → owner OK → git apply → stage HEAD + own lines); peer has files staged → commit from a temp index, shared files by text
-- [No screenshots, batched PRs](no-screenshots-batch-prs.md) — save tokens: no images at all, not even for my own checking — verify with printed numbers; one PR per batch; merge on the owner's word; no PR subscription
+- [No screenshots, batched PRs](no-screenshots-batch-prs.md) — save tokens: no images at all, not even for my own checking — verify with printed numbers; one PR per batch; small requested fixes merge without repeat confirmation; no PR subscription
 - [Measure before styling](measure-before-styling.md) — type/spacing only from kit research + owner's built storefronts + 3 live shops (И507); think phone-first unprompted
 - [Checks not on the dev server](checks-not-on-dev-server.md) — crawling checks only on a build (dev manifest → all 500); check:part narrow one-lane (И765); never a second browser check beside check:all — 8 GB, GPU crash (06.10.2026)
-- [No history, local only](no-history.md) — owner wants no git history and no pushes to GitHub for now; work locally; main squashed 28.09.2026
+- [No history, local only](no-history.md) — historical cleanup on 28.09.2026; old local-only restriction superseded for small requested fixes on 06.10.2026; no new history cleanup authorized
 - [Site audit unasked](site-audit-unasked.md) — after each look batch and before handover I audit the whole site myself: cross-page sameness + UX path (И523)
 - [Palette as a whole](palette-whole-site.md) — neutral + one brand + red; night keeps the day's order of surfaces (И554)
 - [Template: sample content is fine](template-sample-content.md) — template is design; never report placeholder names/links/socials/payments as open items
