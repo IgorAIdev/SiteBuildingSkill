@@ -246,7 +246,7 @@
    отрисованное. */
 :where(.pane) :where(h1, h2, h3):not(.title){font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--h3-weight);letter-spacing:var(--body-track)}
 .close{--btn-h:var(--ctrl-target);flex:none;inline-size:var(--btn-h);padding:0}
-.close svg{inline-size:1.25em;block-size:1.25em}
+.close svg{inline-size:var(--icon-size);block-size:var(--icon-size)}
 
 .body{
   flex:1 1 auto;min-block-size:0;

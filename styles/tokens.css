@@ -36,6 +36,8 @@
      место с другим кеглем зовёт ту же долю своим кеглем. */
   --icon-stem: .09;
   --icon-stroke: calc(var(--body-size) * var(--icon-stem));
+  /* Navigation glyphs share a size independent of their label's font. */
+  --icon-size: calc(var(--body-size) * 1.25);
 
   /* Radix sage / cyan / amber. The dark side is not the light side inverted:
      on a dark ground the greens have to lose saturation to stop vibrating,

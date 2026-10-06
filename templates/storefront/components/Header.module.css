@@ -380,7 +380,7 @@
    категорий можно использовать»). Ростом с букву, приглушённый, как знак
    строки меню набора (styles/menu.module.css). */
 .nav:is(:popover-open, [data-leaving]) .sign{display:inline-flex;flex:none;color:var(--ink-soft)}
-.nav:is(:popover-open, [data-leaving]) .sign svg{inline-size:1.25em;block-size:1.25em}
+.nav:is(:popover-open, [data-leaving]) .sign svg{inline-size:var(--icon-size);block-size:var(--icon-size)}
 .nav:is(:popover-open, [data-leaving]) .name{flex:1 1 auto}
 /* Слово меню — всегда с заглавной (слово заказчика 25.09.2026: «в меню
    всегда слова с большой буквы»; имена приходят из данных магазина
@@ -389,7 +389,7 @@
    элемент внутри ссылки-флекса: у флекса своей первой буквы нет. */
 .name::first-letter,.pillName::first-letter{text-transform:uppercase}
 .nav:is(:popover-open, [data-leaving]) .chev{display:grid;color:var(--ink-soft)}
-.nav:is(:popover-open, [data-leaving]) .chev svg{inline-size:1.25em;block-size:1.25em}
+.nav:is(:popover-open, [data-leaving]) .chev svg{inline-size:var(--icon-size);block-size:var(--icon-size)}
 /* Текущая страница в шторке выделена (И716, поправка 05.10.2026; слово
    заказчика со снимком меню cbdin.bg: «логику делай такую, текущая страница
    выделена»): строка — плашкой тихой марки `--pop-tint`, слово — марочным
@@ -419,7 +419,7 @@
    запасом наружу (`tap`, LangSwitch) — рисунок не растёт; стоит краем в край строк,
    как их плиты под рукой. */
 .sheetTools{--seg-h:var(--ctrl-face);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;column-gap:0;row-gap:var(--gap-row)}
-.sheetSigns{--sign-box:var(--ctrl-h-sm);display:flex;align-items:center;margin-inline-start:calc(var(--pad-inner) + var(--menu-size) * .625 - var(--sign-box) / 2)}
+.sheetSigns{--sign-box:var(--ctrl-h-sm);display:flex;align-items:center;margin-inline-start:calc(var(--pad-inner) + var(--icon-size) / 2 - var(--sign-box) / 2)}
 .sheetTools .glyph{min-block-size:var(--sign-box);min-inline-size:var(--sign-box)}
 /* Грани полки в шторке — пилюлями под её строкой (меню телефона cbdin.bg,
    И478; слово заказчика 05.10.2026: «пилюлями как на скрине 1»): полки

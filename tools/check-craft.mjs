@@ -551,6 +551,13 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
      запрещала бы мелкие органы вовсе. Требование не в этом: попасть пальцем,
      не увеличивая кнопку. */
   if (phone) {
+    // Native popovers are display:none when shut, so an offscreen rectangle
+    // cannot discover them. This checks installation; behavioral QA is separate.
+    for (const el of document.querySelectorAll('[data-pane="start"], [data-pane="end"], [data-pane="top"], [data-pane="dialog"]')) {
+      if (document.documentElement.dataset.paneGestures !== 'ready') {
+        out.swipe.push(`${name(el)} — движок жестов не подключён; проверить экспорт`)
+      }
+    }
     for (const el of document.querySelectorAll('a, button, [role="button"], input, select')) {
       if (!shown(el)) continue
       /* Заготовка ссылки — не цель нажатия. `<a>` без адреса ничего не

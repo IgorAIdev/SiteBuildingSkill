@@ -1,0 +1,75 @@
+<!doctype html><meta charset="utf-8"><title>Export interaction checks</title>
+<button id="run">Run exported-page checks</button><pre id="result">Not run</pre>
+<iframe id="site" title="Export under test" style="height:800px;border:1px solid"></iframe>
+<script type="module">
+const frame=document.querySelector('iframe'), output=document.querySelector('pre')
+document.querySelector('button').onclick=async()=>{
+  let count=0; const failures=[]
+  const assert=(ok,message)=>{count++; if(!ok)failures.push(message)}
+  const wait=ms=>new Promise(r=>setTimeout(r,ms))
+  for(const variant of ['original','minimal']) for(const width of [390,1440]) {
+    frame.style.width=width+'px'
+    for(const path of ['en/','en/catalog/oil/']) {
+      await new Promise(r=>{frame.onload=r;frame.src='/'+variant+'/'+path})
+      const w=frame.contentWindow,d=frame.contentDocument
+      await wait(100)
+      const label=variant+'/'+path+' @'+width
+      assert(d.documentElement.dataset.paneGestures==='ready',label+' gesture engine missing')
+      const cart=d.querySelector('a[aria-haspopup="dialog"][href$="/cart"]')
+      if(cart) {
+        cart.click();await wait(350)
+        const pane=d.querySelector('[data-pane="end"]')
+        assert(pane?.matches(':popover-open'),label+' cart trigger failed')
+        assert(pane?.querySelector('[data-kind="empty"]'),label+' cart body missing')
+        pane?.hidePopover();await wait(250)
+      }
+      const launch=d.querySelector('button[aria-haspopup="dialog"]')
+      if(launch?.nextElementSibling?.tagName==='DIALOG') {
+        launch.click();await wait(250)
+        const dialog=launch.nextElementSibling
+        assert(dialog.open,label+' form trigger failed')
+        dialog.querySelector('[class*="__close"]').click()
+        assert(!dialog.open,label+' form close button failed')
+      }
+      function touch(el,type,x,y) {
+        const point=new w.Touch({identifier:1,target:el,clientX:x,clientY:y})
+        el.dispatchEvent(new w.TouchEvent(type,{bubbles:true,cancelable:true,touches:type==='touchend'||type==='touchcancel'?[]:[point],changedTouches:[point]}))
+      }
+      for(const pane of d.querySelectorAll('[data-pane]')) {
+        const kind=pane.dataset.pane
+        if(!['start','end','top','dialog'].includes(kind))continue
+        if(kind==='dialog' && width>820)continue
+        const open=()=>pane.tagName==='DIALOG'?pane.showModal():pane.showPopover()
+        const isOpen=()=>pane.matches('[open],:popover-open')
+        open();await wait(250)
+        const b=pane.getBoundingClientRect(),x=b.left+b.width/2,y=b.top+Math.min(50,b.height/2)
+        let dx=0,dy=0
+        if(kind==='start')dx=-b.width*.6
+        if(kind==='end')dx=b.width*.6
+        if(kind==='top')dy=-b.height*.6
+        if(kind==='dialog')dy=b.height*.6
+        touch(pane,'touchstart',x,y);touch(pane,'touchmove',x+dx,y+dy)
+        assert(pane.style.translate!=='',label+' '+kind+' did not follow gesture')
+        touch(pane,'touchcancel',x+dx,y+dy)
+        assert(isOpen() && !pane.style.translate,label+' '+kind+' cancel did not restore')
+        touch(pane,'touchstart',x,y);touch(pane,'touchmove',x+dx,y+dy);touch(pane,'touchend',x+dx,y+dy)
+        assert(!isOpen(),label+' '+kind+' did not close')
+        await wait(250);open();await wait(250)
+        assert(isOpen()&&!pane.style.translate,label+' '+kind+' did not reopen cleanly')
+        if(pane.tagName==='DIALOG')pane.close();else pane.hidePopover()
+        await wait(250)
+      }
+      const menu=d.querySelector('#site-menu');menu.showPopover();await wait(250)
+      const icons=Array.from(d.querySelectorAll('header svg')).filter(s=>{
+        const id=s.querySelector('use')?.getAttribute('href')?.split('#')[1]
+        return ['menu','search','heart','cart','shopping-cart','shop-awning','pipette','pill','vape'].includes(id)&&s.getBoundingClientRect().height>0
+      })
+      const heights=icons.map(s=>s.getBoundingClientRect().height)
+      assert(heights.length>=4,label+' navigation icon sample missing')
+      assert(Math.max(...heights)-Math.min(...heights)<.25,label+' unequal icon heights '+heights.join(','))
+      menu.hidePopover()
+    }
+  }
+  output.textContent=JSON.stringify({checks:count,failures},null,2)
+}
+</script>

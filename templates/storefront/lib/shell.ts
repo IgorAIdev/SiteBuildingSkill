@@ -64,7 +64,7 @@ const DELIVERY = 'livrare-si-plata'
 /* Знак служебной строки в низу шторки меню (И770): строки низа — той же формы,
    что полки над ними, знак + слово. Документ без знака стоит словом. */
 const DOC_SIGN: Record<string, string> = { 'despre-noi': 'info', contact: 'phone', 'livrare-si-plata': 'truck' }
-const BLOG_SIGN = 'list'
+const BLOG_SIGN = 'newspaper'
 
 /** Полки, у которых раскрывающееся подменю с гранями (слово заказчика
  *  02.10.2026: подменю — у «Oil»; у «Capsules», «Paste», «Edibles», «Pets»,
