@@ -61,6 +61,7 @@ const LINK: Record<HomeVariant, string> = {
   mount: `${go.go} ${s.doorGo}`, // look-home:mount
   under: `${go.go} ${s.doorGo}`, // look-home:under
   outline: `${go.go} ${s.doorGo}`, // look-home:outline
+  minimal: `${go.go} ${s.doorGo}`, // look-home:minimal
 }
 /* Плашка, крашенная листом (`--plate`), объявляет себя полом (`data-plate`,
    styles/base.css): лента имени у `bar`, вся дверь у `mount`. */

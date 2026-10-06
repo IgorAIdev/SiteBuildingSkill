@@ -26,6 +26,7 @@
  *                                      вид шаблона по умолчанию
  *   npm run storefront -- --save-look  опубликованный в панели вид — в showcase/
  *   npm run storefront -- --port 3030  свой порт (или PORT=3030)
+ *   npm run storefront -- --variant minimal  отдельная витрина, порт 3021
  *   npm run storefront -- --prepare    только поставить (витрина, вид, зависимости),
  *                                      не запускать — так её собирает сервер
  *                                      (deploy/storefront.Dockerfile, И434)
@@ -49,13 +50,15 @@ import { spawn, spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { randomUUID } from 'node:crypto'
 import { networkInterfaces } from 'node:os'
+import { storefrontVariant } from './storefront-variants.mjs'
 
 const args = process.argv.slice(2)
 const opt = (flag) => { const i = args.indexOf(flag); return i >= 0 ? args[i + 1] : undefined }
 const KIT = fileURLToPath(new URL('..', import.meta.url))
-const SITE = join(KIT, '.storefront')
+const variant = storefrontVariant(KIT, args)
+const SITE = variant.site
 const TEMPLATE = join(KIT, 'templates', 'storefront')
-const SHOWCASE = join(KIT, 'showcase')
+const SHOWCASE = variant.showcase
 const PUBLISHED = join(SITE, 'lib', 'source', 'sample', 'look.json')
 const WIN = process.platform === 'win32'
 const say = (line) => console.log(`[storefront] ${line}`)
@@ -99,14 +102,14 @@ function applyShowcase() {
   const look = join(SHOWCASE, 'look.json')
   if (!existsSync(look)) return
   copyFileSync(look, PUBLISHED)
-  const fonts = join(SHOWCASE, 'fonts')
-  if (existsSync(fonts)) {
+  for (const fonts of new Set([join(KIT, 'showcase', 'fonts'), join(SHOWCASE, 'fonts')])) {
+    if (!existsSync(fonts)) continue
     mkdirSync(join(SITE, 'public', 'fonts'), { recursive: true })
     for (const f of readdirSync(fonts)) copyFileSync(join(fonts, f), join(SITE, 'public', 'fonts', f))
   }
   run(process.execPath, [join(SITE, 'look-panel', 'scripts', 'build-catalog.mjs'), '--from', KIT], SITE, true)
   run(process.execPath, [join(SITE, 'scripts', 'look-slots.mjs')], SITE, true)
-  say('вид витрины шаблона — из showcase/')
+  say(`вид витрины — из ${relative(KIT, SHOWCASE)}/`)
 }
 
 /* Опубликованный в панели вид — в `showcase/`, чтобы его взяли следующая
@@ -131,7 +134,7 @@ async function saveLook() {
   mkdirSync(fonts, { recursive: true })
   writeFileSync(join(SHOWCASE, 'look.json'), body)
   for (const [name, data] of files) writeFileSync(join(fonts, name), data)
-  say(`вид ${from ? `с ${from}` : 'витрины'} сохранён в showcase/ — закоммитьте его`)
+  say(`вид ${from ? `с ${from}` : 'витрины'} сохранён в ${relative(KIT, SHOWCASE)}/ — закоммитьте его`)
 }
 
 /** Файлы витрины, целиком забитые нулями (кроме `node_modules`). Мерится
@@ -159,7 +162,7 @@ function zeroFiles(dir) {
    сохранение просто заканчивается, а остальное не запускается. */
 function start() {
   if (args.includes('--fresh') && existsSync(SITE)) {
-    say('сношу .storefront/ и ставлю заново')
+    say(`сношу ${relative(KIT, SITE)}/ и ставлю заново`)
     rmSync(SITE, { recursive: true, force: true })
   }
   /* Файлы, забитые нулями, — след аварийного выключения (29.09.2026: ноутбук
@@ -247,10 +250,11 @@ function start() {
 
   /* То же, что `npm run dev` витрины, но порт — из `--port` или PORT (по
      умолчанию 3020, как у витрины): где 3020 занят другой витриной — свой. */
-  const PORT = opt('--port') ?? process.env.PORT ?? '3020'
+  const PORT = opt('--port') ?? process.env.PORT ?? variant.port
   run(process.execPath, [join(SITE, 'scripts', 'copy-icons.mjs')], SITE, true)
   run(process.execPath, [join(SITE, 'scripts', 'look-slots.mjs')], SITE, true)
   say(`запускаю: http://localhost:${PORT} (панель вида — полоса «Look» внизу)`)
+  say('localhost открывается на компьютере, где запущена эта команда; облачной среде нужен отдельный внешний адрес')
   /* С телефона в той же сети — по адресу компьютера: сервер слушает все
      адреса, а свои файлы отдаёт только тем, что названы (next.config.ts,
      DEV_ORIGINS). Windows при первом запуске спрашивает про брандмауэр —

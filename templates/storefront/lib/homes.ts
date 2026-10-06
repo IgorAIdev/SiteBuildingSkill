@@ -23,6 +23,7 @@ export const HOMES = [
   'mount', // look-home:mount
   'under', // look-home:under
   'outline', // look-home:outline
+  'minimal', // look-home:minimal
 ] as const
 
 export type HomeVariant = (typeof HOMES)[number]
