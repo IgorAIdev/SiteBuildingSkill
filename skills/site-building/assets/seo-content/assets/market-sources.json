@@ -1,0 +1,15 @@
+{
+  "reviewedAt": "2026-10-06",
+  "audience": "Repository links refer to owner-private sources; raw exports are not bundled in this reusable skill.",
+  "methodSources": [
+    {"repository": "IgorAIdev/HempScale", "commit": "571f7e3f5c948ca805798a44affd667677833a2e", "path": "docs/seo-content-principles.md", "use": "E-commerce content, facts, trust pages, answer-first writing; dated SEO statistics are not adopted as universal rules."},
+    {"repository": "IgorAIdev/HempScale", "commit": "571f7e3f5c948ca805798a44affd667677833a2e", "path": "docs/market-research-recipe.md", "use": "Locale-specific market research, SERP-derived page routing, origins of questions, metrics and freshness."},
+    {"repository": "IgorAIdev/HempScale-seo", "commit": "4d399412402cc6d1bd81f2cd0d706a22110f16cd", "path": "docs/CLIENT_CONTENT_STRATEGY.md", "use": "B2C intent brief and cluster-to-page workflow; automatic publishing and fixed block quotas are not adopted."},
+    {"repository": "IgorAIdev/HempScale-seo", "commit": "4d399412402cc6d1bd81f2cd0d706a22110f16cd", "path": "docs/agents/hempscale-blog-intent.md", "use": "Intent graph, subquestions, outline, entities and internal links; B2B topics are not store keyword research."}
+  ],
+  "markets": [
+    {"country": "BG", "language": "bg", "status": "measured_snapshot_available", "repository": "IgorAIdev/HempScale", "commit": "571f7e3f5c948ca805798a44affd667677833a2e", "path": "packages/seo-audit/src/market/bundled/BG-bg.json", "contextPath": "docs/research/seo-transfer-2026-09/from-shop/bg-copy-brief-2026-09-08/BRIEF.md", "freshness": "Use each row's measuredAt; downloading the export does not refresh it."},
+    {"country": "RO", "language": "ro", "status": "export_not_found_in_reviewed_snapshot", "nextStep": "Locate the measured market in HempScale's database or obtain its existing RO/ro export; do not infer volumes from seeds or another country."},
+    {"country": "IT", "language": "it", "status": "market_overview_available_keyword_export_not_found", "repository": "IgorAIdev/HempScale", "commit": "571f7e3f5c948ca805798a44affd667677833a2e", "path": "docs/research/cbd-markets-dach-south-2026.md", "contextPath": "docs/market.md", "nextStep": "Obtain the existing keyword/SERP export and recheck current legal applicability before commercial publication."}
+  ]
+}

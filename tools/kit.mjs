@@ -216,7 +216,16 @@ for (const f of FILES) put(f)
  * при сохранении текста лицензии — он лежит рядом и едет вместе. */
 const SKILLS = join(ROOT, '.claude/skills')
 cpSync(SKILLS, join(OUT, '.claude/skills'), { recursive: true })
-const kits = readdirSync(SKILLS, { withFileTypes: true }).filter((e) => e.isDirectory()).length
+// Preserve the portable authored root, including its separately installed SEO companion.
+const authoredRoot = [join(ROOT, 'skills/site-building'),
+  join(ROOT, '.agents/skills/site-building'), join(ROOT, '.claude/skills/site-building')]
+  .find((path) => existsSync(join(path, 'SKILL.md')))
+if (!authoredRoot || !existsSync(join(authoredRoot, 'assets/seo-content/SKILL.md'))) {
+  throw new Error('Нет переносимого site-building с seo-content: обновите набор перед сборкой kit.')
+}
+cpSync(authoredRoot, join(OUT, 'skills/site-building'), { recursive: true })
+cpSync(join(authoredRoot, 'assets/seo-content'), join(OUT, '.claude/skills/seo-content'), { recursive: true })
+const kits = readdirSync(join(OUT, '.claude/skills'), { withFileTypes: true }).filter((e) => e.isDirectory()).length
 
 /* Правила и CI — не приложение к набору, а его суть.
  *

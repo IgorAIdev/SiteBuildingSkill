@@ -209,17 +209,24 @@ if (flags.has('--currency') && (!STOREFRONT || !/^[A-Z]{3}$/.test(CURRENCY ?? ''
 }
 
 // A self-contained instruction bundle for any platform; no project config changes.
+// The content companion is authored inside the portable root to keep one source.
+const AUTHORED_SKILLS = [
+  ['site-building', 'skills/site-building'],
+  ['seo-content', 'skills/site-building/assets/seo-content'],
+]
 if (MODE === 'skill-only') {
   if (flags.size !== 1) {
     console.error('--skill-only не смешивается с установкой инструментов или шкал.')
     process.exit(1)
   }
   for (const agent of ['.agents', '.claude']) {
-    /* Зеркалом, как ниже (И607): старые файлы скилла не остаются. */
-    rmSync(join(OUT, agent, 'skills/site-building'), { recursive: true, force: true })
-    copy(join(SRC, 'skills/site-building'), join(OUT, agent, 'skills/site-building'))
+    for (const [name, source] of AUTHORED_SKILLS) {
+      /* Зеркалом, как ниже (И607): старые файлы скилла не остаются. */
+      rmSync(join(OUT, agent, 'skills', name), { recursive: true, force: true })
+      copy(join(SRC, source), join(OUT, agent, 'skills', name))
+    }
   }
-  console.log(`Скилл установлен в ${OUT}: .agents/skills/site-building и .claude/skills/site-building. Файлы сайта не изменены.`)
+  console.log(`Скиллы site-building и seo-content установлены в ${OUT}: .agents/skills и .claude/skills. Файлы сайта не изменены.`)
   process.exit(0)
 }
 
@@ -415,9 +422,13 @@ if (MODE !== 'audit') {
    оставляла файлы, которых в наборе уже нет. Знак Apple Pay переехал из
    `icons/brands/` в `icons/pay/` (И549), а старый остался в проекте — и лист
    знаков падал «имя знака в двух папках» (01.10.2026, И607). */
-const mirror = (to) => { rmSync(to, { recursive: true, force: true }); copy(join(SRC, 'skills/site-building'), to) }
-for (const agent of ['.agents', '.claude']) mirror(join(OUT, agent, 'skills/site-building'))
-moved.push('site-building (Codex и Claude)')
+for (const agent of ['.agents', '.claude']) {
+  for (const [name, source] of AUTHORED_SKILLS) {
+    const to = join(OUT, agent, 'skills', name)
+    rmSync(to, { recursive: true, force: true }); copy(join(SRC, source), to)
+  }
+}
+moved.push('site-building и seo-content (Codex и Claude)')
 
 /* Пара ставщик + список команд неразделима: половина пары — сломанный ввоз. */
 for (const f of ['install.mjs', 'scripts.mjs']) { copy(join(SRC, f), join(OUT, f)); moved.push(f) }
