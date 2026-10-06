@@ -29,7 +29,9 @@ test('трогаются только файлы новее начала пер�
     const stale = put('components/B.tsx', old)
     put('node_modules/pkg/index.js')
     put('.next/cache/x.json')
-    const since = Date.now() - 1000
+    /* Начало берём с файла: подготовка каталогов на загруженном Windows
+       может занять больше секунды и не должна превращать fresh в stale. */
+    const since = statSync(fresh).mtimeMs
     const now = new Date(Date.now() + 5000)
     const touched = retouch(dir, since, now)
     assert.deepEqual(touched, [fresh])
