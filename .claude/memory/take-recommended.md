@@ -12,4 +12,4 @@ When I present choices and one is marked recommended, I proceed with it myself w
 
 **Why:** the owner is non-technical and relies on my judgment for how the work is done; a question with an obvious recommended answer just stalls the session.
 
-**How to apply:** for process/implementation choices (execution mode, tooling, approach), pick the recommended option, say in one line what I picked, and continue. Still ask only when the choice is the owner's by the kit rules (what is shown on the storefront, texts, visual choices shown rendered) or for irreversible/outward actions (push, PR merge, publish). Related: [[skill-goal]].
+**How to apply:** for process/implementation choices (execution mode, tooling, approach), pick the recommended option and continue. For small requested fixes, push, PR, merge and normal publication are already authorized by the owner's standing instruction of 06.10.2026 (AGENTS.md, [[work-locally]]); do not ask again merely because work reaches GitHub or the storefront. Ask only for a material unresolved product choice, a scope expansion or an irreversible action not already authorized. Related: [[skill-goal]].

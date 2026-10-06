@@ -206,6 +206,11 @@
   background-image:linear-gradient(currentColor, currentColor);background-repeat:no-repeat;
   background-size:calc(var(--btn-h) * .4 * var(--ctrl-btn-dash, 0)) var(--line-w);
   background-position:calc(var(--btn-h) * .45) 50%;
+}
+/* Поле тихой — умолчание, весом как .btn. У круга помощи своё padding:0;
+   :not([data-voice]) давал равный вес месту (.dock .knob / .top), и поздний
+   CSS-кусок возвращал только левое поле, сдвигая знак (06.10.2026, И626). */
+.btn:where(:not([data-voice])){
   padding-inline-start:calc(var(--btn-h) * (.45 + .6 * var(--ctrl-btn-dash, 0)));
 }
 /* Ответ тихой на руку весит как общий (`.press`, 0,4,0): класс удвоен
