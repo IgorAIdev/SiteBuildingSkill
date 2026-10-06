@@ -754,6 +754,51 @@
       "local": "assets/vendure/asset.mjs",
       "description": "Original SiteBuildingSkill Vendure adapter helper; Shop API names follow Vendure documentation, checked against vendurehq/nextjs-starter-vendure@7d06ae0.",
       "sha256": "d1896ea0fb067183ecefedd4805a430d14e93744494c0fbe537bc3439ef2bb77"
+    },
+    {
+      "local": "assets/seo-content/SKILL.md",
+      "sha256": "b2dd7fea734bd348467d843f0797f0e0e4c14233c607cc119ec734b326c702a0",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/agents/openai.yaml",
+      "sha256": "ce28a079fcb3a932e2f7c7cac534865c19937cba0df5dc3ae2e6283724c53db6",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/assets/market-sources.json",
+      "sha256": "291726ed9060681c10d2ce509e84e46d0046a960f58a9b9732a4b9ebfe039829",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/assets/page-brief.md",
+      "sha256": "eb8c749cfa5249885584706587844ed57af9fcc22b14fb10de53fbc0502c2336",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/assets/page-copy.md",
+      "sha256": "190a483a9a02811b91f8137ea65cc18ac59e25217747d958d226fa68d03cd6de",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/references/markets.md",
+      "sha256": "9a0c95cb5a36ebaa228aadf1002cdd64528027a508dfb66dbf15a460febca8ff",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/references/pages.md",
+      "sha256": "5cd1021d3838e3f0c0ac6f9f9b0cf0a3b5ab0a9d34c3a74d914683b90683817f",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/references/writing.md",
+      "sha256": "3dda52fb94107f2e731dcf9a23a236d77e0a72b6cf4f0ab1ee533be401d1619f",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/scripts/import-market.mjs",
+      "sha256": "66d688d53f5ac01a72ed8a8537661207e7bcc59a8fc333b9f95802f56abc4463",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
     }
   ]
 }

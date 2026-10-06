@@ -130,6 +130,17 @@ test('собранный набор везёт каждый ввоз своих 
     const out = join(dir, 'kit')
     const r = spawnSync(process.execPath, [join(корень, 'tools/kit.mjs'), out], { encoding: 'utf8', cwd: корень })
     assert.equal(r.status, 0, r.stderr)
+    const php = join(dir, 'existing-php')
+    mkdirSync(php)
+    writeFileSync(join(php, 'index.php'), '<?php echo "owner site";')
+    const install = spawnSync(process.execPath, [join(out, 'install.mjs'), '--skill-only', php], { encoding: 'utf8' })
+    assert.equal(install.status, 0, install.stderr)
+    for (const agent of ['.agents', '.claude']) {
+      assert.equal(readFileSync(join(php, agent, 'skills/seo-content/SKILL.md'), 'utf8'),
+        readFileSync(join(корень, 'skills/site-building/assets/seo-content/SKILL.md'), 'utf8'))
+    }
+    assert.equal(readFileSync(join(php, 'index.php'), 'utf8'), '<?php echo "owner site";')
+    assert.ok(!existsSync(join(php, 'package.json')))
     const IMPORT = /^[ \t]*(?:import|export)\b([^'"`;]*?)\bfrom\s*['"](\.\.?\/[^'"]+\.mjs)['"]/gm
     const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) =>
       e.isDirectory() ? (e.name === 'node_modules' || e.name.startsWith('.') ? [] : walk(join(d, e.name)))

@@ -335,6 +335,9 @@ test('--skill-only: works on a PHP site without changing application files or in
     }
     for (const agent of ['.agents', '.claude']) {
       assert.ok(existsSync(join(dir, agent, 'skills/site-building/references/platforms.md')))
+      assert.equal(readFileSync(join(dir, agent, 'skills/seo-content/SKILL.md'), 'utf8'),
+        readFileSync(join(KIT, 'skills/site-building/assets/seo-content/SKILL.md'), 'utf8'))
+      assert.ok(existsSync(join(dir, agent, 'skills/seo-content/scripts/import-market.mjs')))
       const c = run([join(dir, agent, 'skills/site-building/scripts/check-resources.mjs')], dir)
       assert.equal(c.status, 0, c.stdout + c.stderr)
     }
