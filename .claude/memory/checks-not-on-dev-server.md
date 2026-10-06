@@ -1,6 +1,6 @@
 ---
 name: checks-not-on-dev-server
-description: crawling checks (seo, urls, craft, sweep) only on a build; on Windows they corrupt the dev server's manifest; exception — check:part narrow one-lane run (И765)
+description: crawling checks (seo, urls, craft, sweep) only on a build; on Windows they corrupt the dev server's manifest; exception — check:part narrow one-lane run (И765); never a second browser check beside check:all (8 GB)
 metadata:
   node_type: memory
   type: feedback
@@ -25,3 +25,5 @@ Page-crawling checks (`check:seo`, `check:urls`, `check:craft`, `sweep`) go agai
 **In-work exception (05.10.2026, И765):** `check:part` runs `check:craft --pages <part pages>` against the running storefront with `CRAFT_LANES=1` (one page at a time, like check:open) and `SOURCE=live` (addresses from the server's sitemap, not the sample tree), warms each page first and waits/retries when the launcher restarts the server (any edit under `tools/` or `scripts.mjs` reinstalls `.storefront` and restarts it — batch tool edits, then measure). Whole-tree crawls stay on a build.
 
 **A short 500 is the reinstall, not a defect (05.10.2026):** right after any session edits `tools/`, the launcher rewrites `.storefront` and every page answers 500 for 30–60 s («Reading source code for parsing failed … app/api/revalidate/route.ts»), and `check:part` reports «page.goto: Timeout» or «страница ответила 500». Wait for 200 (curl every few seconds), then measure again; two sessions running `check:part` at once double the load and the timeouts. Batch tool edits so the server restarts once.
+
+**No second browser beside the big check (06.10.2026):** I ran `check:part` (one Chromium) while `check:all --final` was in `check:craft` (four lanes) with the dev storefront up — the 8 GB machine had 1.5 GB free, Chromium's GPU process died («GPU process isn't usable. Goodbye»), `check:craft` crashed, the `.storefront` reinstall landed in the same minute (later steps «Missing script»), and `check:choice`/`check:part` stalled on every page (326 s, 906 s). Alone, `/en` passed in minutes with zero long waits. So: never start another browser check while the chain renders; `check:part` goes after the chain, against its own `next start -p 8099`; re-run failed steps one by one (`CRAFT_LANES=2`, `DETECT_LANES=2`). Also: the launcher process started on 05.10 06:46 predates the sync stamp (И751) and never writes `.storefront/.storefront-sources.json`, so `check:part` waited ~5 min for a «перестановка» that wasn't there — restart `npm run storefront` to load current code (writing the stamp by hand with `writeStamp('.storefront', sources('.'))` unblocks it for the night).

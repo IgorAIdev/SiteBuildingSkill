@@ -92,6 +92,20 @@ test('роли нет на сайте — «не измерено», а не н�
   assert.ok(r.skipped.some((s) => /--band/.test(s)), r.skipped.join('\n'))
 })
 
+/* Правило 5 на готовых наборах красок: страница меряет только опубликованный
+   набор, а заказчик переключает их в панели. Заливка марки (она же палуба,
+   И694) ночью не насыщеннее дневной сверх порога различения. Найдено первым
+   прогоном на сборке 06.10.2026: «Мек остров» ночью 0.080 при 0.052 днём. */
+test('готовые наборы красок: марка ночью не насыщеннее дневной (правило 5)', async () => {
+  const { oklch } = await import('../tools/palette.mjs')
+  const { NIGHT } = await import('../tools/thresholds.mjs')
+  const sets = { ...JSON.parse(readFileSync(join(KIT, 'styles/palette.json'), 'utf8')), ...JSON.parse(readFileSync(join(KIT, 'templates/palette.json'), 'utf8')) }
+  const over = Object.entries(sets).filter(([, s]) => s.light?.accent && s.dark?.accent)
+    .map(([name, s]) => [name, oklch(s.light.accent)[1], oklch(s.dark.accent)[1]])
+    .filter(([, day, night]) => night > day + NIGHT.jnd)
+  assert.deepEqual(over.map(([n, d, c]) => `${n}: ночью ${c.toFixed(3)} против ${d.toFixed(3)} днём`), [])
+})
+
 /* ── проверка целиком на странице набора ─────────────────────────────────── */
 
 const modules = (() => {

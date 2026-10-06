@@ -6,12 +6,15 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { LOCALES } from '../lib/locale.ts'
 import { fontFaces, fontPreloads, withFallback } from '../lib/look-values.ts'
-import { fontTables, metricsOf } from '../scripts/font-fallback.mjs'
+import { fillMetrics, fontTables, metricsOf } from '../scripts/font-fallback.mjs'
 import { lackText, lacking, marketLangs, marketLetters, parseRange } from '../scripts/font-coverage.mjs'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 
-const fonts = [{ family: 'Manrope', metrics: { avg: 0.4578, bold: 0.4739, ascent: 1.066, descent: 0.3, gap: 0 }, files: [
+/* Размеры Manrope 400–700 (scripts/font-fallback.mjs, `lookMetrics`): за
+   диапазоном файла ширина та же, что у его края. */
+const widths = { 100: 0.4601, 200: 0.4601, 300: 0.4601, 400: 0.4601, 500: 0.4684, 600: 0.4768, 700: 0.4852, 800: 0.4852, 900: 0.4852 }
+const fonts = [{ family: 'Manrope', metrics: { widths, ascent: 1.066, descent: 0.3, gap: 0 }, files: [
   { url: '/fonts/manrope-latin-ext.woff2', weight: '400 700', range: 'U+0100-02BA, U+0218-021B, U+1E00-1E9F' },
   { url: '/fonts/manrope-latin.woff2', weight: '400 700', range: 'U+0000-00FF, U+0131, U+20AC' },
 ] }]
@@ -22,15 +25,19 @@ test('fonts: the document preloads every file of the look fonts', () => {
   assert.deepEqual(fontPreloads([]), [])
 })
 
-/* За семейством в стеке — подогнанное запасное начертание, обычное и
-   жирное; без размеров его нет (И608). */
-test('fonts: a family with metrics gets a fitted fallback right after it in the stack', () => {
+/* За семейством в стеке — подогнанное запасное начертание; у каждой
+   толщины своё растяжение: меню и заголовки 500 шире текста 400, а обычный
+   Arial при обеих один (И608, поправка 06.10.2026). Без размеров его нет. */
+test('fonts: a family with metrics gets a fitted fallback per weight right after it in the stack', () => {
   assert.equal(withFallback("'Manrope', var(--face-stack)", fonts), "'Manrope', 'Manrope Fallback', var(--face-stack)")
   assert.equal(withFallback(withFallback("'Manrope', var(--face-stack)", fonts), fonts), "'Manrope', 'Manrope Fallback', var(--face-stack)")
   const faces = fontFaces(fonts, { '--face': "'Manrope', var(--face-stack)" })
-  assert.equal(faces.length, 4)
-  assert.match(faces[2], /font-family:'Manrope Fallback';src:local\('Arial'\);font-weight:100 500;size-adjust:103\.62%;ascent-override:102\.87%/)
-  assert.match(faces[3], /src:local\('Arial Bold'\),local\('Arial-BoldMT'\);font-weight:600 900;size-adjust:99\.23%/)
+  assert.equal(faces.length, 6, 'два файла и четыре полосы: до 400, 500, 600, от 700')
+  for (const file of faces.slice(0, 2)) assert.match(file, /font-display:optional;/, 'опоздавший файл не подменяет запасной')
+  assert.match(faces[2], /font-family:'Manrope Fallback';src:local\('Arial'\);font-weight:1 449;size-adjust:103\.21%;ascent-override:103\.29%/)
+  assert.match(faces[3], /src:local\('Arial'\);font-weight:450 549;size-adjust:105\.07%/)
+  assert.match(faces[4], /src:local\('Arial Bold'\),local\('Arial-BoldMT'\);font-weight:550 649;size-adjust:99\.37%/)
+  assert.match(faces[5], /src:local\('Arial Bold'\),local\('Arial-BoldMT'\);font-weight:650 1000;size-adjust:101\.13%/)
   const bare = [{ ...fonts[0], metrics: undefined }]
   assert.equal(withFallback("'Manrope', var(--face-stack)", bare), "'Manrope', var(--face-stack)")
   assert.equal(fontFaces(bare).length, 2)
@@ -45,6 +52,20 @@ test('fonts: variable-font widths follow the asked weight', (t) => {
   const tables = fontTables(readFileSync(file))
   const [w200, w400, w600] = [200, 400, 600].map((w) => metricsOf(tables, w).avg)
   assert.ok(w200 < w400 && w400 < w600, `${w200} < ${w400} < ${w600}`)
+})
+
+/* Запись вида до 06.10.2026 — две ширины (`avg` при 400, `bold` при 600) по
+   строчным буквам — дополняется заново: по ней меню 500 стояло на запасном
+   уже настоящего (И608). */
+test('fonts: an old metrics record (avg/bold) is refilled with a width per weight', (t) => {
+  const url = '/fonts/manrope-latin-a30ddcd349.woff2'
+  if (!existsSync(join(ROOT, 'public', url))) { t.skip('шрифта вида в public/fonts нет — витрина без шрифта со своего адреса'); return }
+  const look = { fonts: [{ family: 'Manrope', metrics: { avg: 0.4578, bold: 0.4739, ascent: 1.066, descent: 0.3, gap: 0 }, files: [{ url, weight: '400 700', range: 'U+0000-00FF' }] }] }
+  assert.equal(fillMetrics(look, ROOT), 1)
+  const m = look.fonts[0].metrics as unknown as { widths: Record<string, number> }
+  assert.deepEqual(Object.keys(m.widths), ['100', '200', '300', '400', '500', '600', '700', '800', '900'])
+  assert.ok(m.widths['500'] > m.widths['400'] && m.widths['300'] === m.widths['400'] && m.widths['900'] === m.widths['700'], JSON.stringify(m.widths))
+  assert.equal(fillMetrics(look, ROOT), 0, 'новая запись не трогается')
 })
 
 /* Шрифт вида умеет буквы рынка (И769): какие буквы нужны — по языкам рынка

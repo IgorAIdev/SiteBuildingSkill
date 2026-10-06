@@ -57,6 +57,10 @@
    сетки работает без `position`, поэтому растянутая ссылка по-прежнему
    меряет от двери. */
 .doorName{margin:0;min-inline-size:0;z-index:2}
+/* Ссылка двери растянута на всю дверь: точка отсчёта — дверь, не ссылка. Ссылка-выход
+   (`go.go`) сама берёт `position: relative` под запас цели (styles/go.module.css) —
+   у одежд-ссылок (`doorGo`, Doors.tsx `LINK`) он снят, и растяжка меряет от двери (И755). */
+.doorGo{position:static}
 .doorName a::after{content:'';position:absolute;inset:0}
 /* Первая буква имени заглавная всегда (слово заказчика 01.10.2026), как бы оно ни было записано в данных; `::first-letter` работает на блоке, поэтому подпись — inline-block. */
 .doorLabel{display:inline-block}

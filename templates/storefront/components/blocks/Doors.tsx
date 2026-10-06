@@ -53,14 +53,14 @@ export type Door = { key: string; name: string; href: string; image: Image | nul
    под рукой тихая окантовка плашки и сдвиг стрелки, нажатие — окантовка
    сильнее (blocks.module.css, И601). */
 const LINK: Record<HomeVariant, string> = {
-  caption: go.go, // look-home:caption
+  caption: `${go.go} ${s.doorGo}`, // look-home:caption
   button: b.btn, // look-home:button
   glass: b.btn, // look-home:glass
   frost: b.btn, // look-home:frost
-  bar: go.go, // look-home:bar
-  mount: go.go, // look-home:mount
-  under: go.go, // look-home:under
-  outline: go.go, // look-home:outline
+  bar: `${go.go} ${s.doorGo}`, // look-home:bar
+  mount: `${go.go} ${s.doorGo}`, // look-home:mount
+  under: `${go.go} ${s.doorGo}`, // look-home:under
+  outline: `${go.go} ${s.doorGo}`, // look-home:outline
 }
 /* Плашка, крашенная листом (`--plate`), объявляет себя полом (`data-plate`,
    styles/base.css): лента имени у `bar`, вся дверь у `mount`. */

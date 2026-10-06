@@ -82,9 +82,9 @@ export async function fetchFont({ family, weights }, dir, letters) {
   const files = []
   let metrics
   for (const { face, bytes } of loaded) {
-    /* Размеры для запасного начертания — с латиницы, при толщине текста и
-       надписей органов (400 и 600, `lookMetrics`): по ним сайт растягивает системный
-       шрифт под этот, и подмена на свежей странице не сдвигает слова
+    /* Размеры для запасного начертания — с латиницы, при каждой толщине
+       100…900 (`lookMetrics`): по ним сайт растягивает системный шрифт под
+       этот, и подмена на свежей странице не сдвигает слова
        (scripts/font-fallback.mjs, lib/look-values.ts `fontFaces`). */
     if (face.subset === 'latin' && !metrics) metrics = lookMetrics(bytes, Math.min(...face.weights), Math.max(...face.weights))
     const name = `${slug(family)}-${face.subset}-${createHash('sha256').update(bytes).digest('hex').slice(0, 10)}.woff2`

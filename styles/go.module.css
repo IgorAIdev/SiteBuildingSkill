@@ -20,13 +20,24 @@
 
 .go{
   display:inline-flex;align-items:center;gap:.35em;
-  /* Голая ссылка — тоже цель: под пальцем 44, под мышью 24 (роль). Без этой
-     строки «Назад к продуктам» под пальцем была 23 пикселя (свип, И243). */
-  min-block-size:var(--ctrl-target);
   color:inherit;font:inherit;text-decoration:none;cursor:pointer;
   background:none;border:0;padding:0;
   -webkit-tap-highlight-color:transparent;
   transition:color var(--hover-t) var(--ease)
+}
+/* Голая ссылка — тоже цель: под пальцем 44, под мышью 24 (роль `--ctrl-target`).
+   Без цели «Назад к продуктам» под пальцем была 23 пикселя (свип, И243). Цель —
+   невидимым запасом вокруг слова, как у `.tap` (И764), а не ростом коробки:
+   коробка в 44 ставила слово посередине и уносила свой низ на 12 px ниже букв —
+   под последней ссылкой страницы у подвала воздух над краем 60 при 48 под ним
+   (кабинет, статьи, 404 на 390; замер 06.10.2026, И738). Запас — `::before`:
+   `::after` у ссылки берут блоки (растянутая ссылка двери, `.tap`). Точка отсчёта
+   — под `:where()`: блок, у которого ссылка растянута на карточку, ставит её
+   `position: static` (И755). */
+:where(.go){position:relative}
+.go::before{
+  content:'';position:absolute;left:50%;top:50%;translate:-50% -50%;
+  width:max(100%, var(--ctrl-target));height:max(100%, var(--ctrl-target))
 }
 /* Знак соизмерим со строкой рядом, а не своим числом (И-разбор стрелки 38 → 28). */
 .go svg{inline-size:1.15em;block-size:1.15em;flex:none;transition:translate var(--hover-t) var(--ease)}

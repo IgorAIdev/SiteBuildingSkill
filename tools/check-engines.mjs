@@ -9,8 +9,8 @@
  * меня» читалось как «верно».
  *
  * Эта проверка открывает те же страницы всеми браузерами, какие есть на
- * машине (встроенный Chromium — эталон; Chrome и Edge — по их путям;
- * Firefox и WebKit — если у Playwright они поставлены), и сравнивает кадры
+ * машине (`machineEngines` в `browser.mjs`: Chrome и Edge — по их путям, встроенный
+ * Chromium, Firefox — свой у Playwright или системный, WebKit), и сравнивает кадры
  * клеткой за клеткой. Клетка, где другой браузер нарисовал заметно иное, —
  * находка: она называет страницу, браузер, плотность пикселей, место и
  * элемент под ним. Тонкие различия сглаживания шрифта порог не берёт.
@@ -22,8 +22,7 @@
  * проверка, которой не с чем сравнить, молчать не вправе.
  */
 
-import { existsSync } from 'node:fs'
-import { loadPlaywright, loadSharp } from './browser.mjs'
+import { loadPlaywright, loadSharp, machineEngines } from './browser.mjs'
 
 const SITE = (process.env.SITE ?? process.env.CHECK_SITE ?? 'http://localhost:3000').replace(/\/$/, '')
 const PAGES = (process.argv.slice(2).length ? process.argv.slice(2) : (process.env.ENGINE_PAGES ?? '/').split(',')).map((p) => p.trim()).filter(Boolean)
@@ -37,33 +36,14 @@ const LIMIT_OTHER = Number(process.env.ENGINE_LIMIT_OTHER ?? 48)
 /** Сколько клеток-находок на кадр печатать. */
 const SHOW = 8
 
-const KNOWN = {
-  chrome: ['C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe', '/usr/bin/google-chrome', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'],
-  edge: ['C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Microsoft/Edge/Application/msedge.exe', '/usr/bin/microsoft-edge', '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge'],
-}
-
 const pw = await loadPlaywright()
 const sharp = await loadSharp()
 
-/** Браузеры машины: первый — эталон. Эталон — настоящий Chrome, а не встроенный
+/** Браузеры машины (`machineEngines`, И774): первый — эталон. Эталон — настоящий Chrome, а не встроенный
  *  headless-Chromium: рамки с самоподгонкой высоты («Элементы») у него растут иначе
  *  и по ним расходились все остальные браузеры сразу; настоящие Chrome, Edge и WebKit
  *  сходятся между собой. Встроенный — в списке, но не эталон. */
-const engines = []
-for (const [name, paths] of Object.entries(KNOWN)) {
-  const exe = paths.find((p) => existsSync(p))
-  if (exe) engines.push({ name, type: pw.chromium, opts: { executablePath: exe } })
-}
-engines.push({ name: 'chromium (набора)', type: pw.chromium, opts: {} })
-for (const type of ['firefox', 'webkit']) {
-  try {
-    const b = await pw[type].launch()
-    await b.close()
-    engines.push({ name: type, type: pw[type], opts: {} })
-  } catch { /* не поставлен — в отчёт попадёт строкой ниже */ }
-}
-
-const notSet = ['firefox', 'webkit'].filter((t) => !engines.some((e) => e.name === t))
+const { engines, notSet } = await machineEngines(pw, 'chromium (набора)')
 
 async function shoot(engine, path, dpr) {
   const browser = await engine.type.launch(engine.opts)
@@ -155,7 +135,7 @@ if (engines.length < 2) {
 for (const path of PAGES) { try { await fetch(SITE + path) } catch { /* сервера нет — снимок скажет сам */ } }
 
 let bad = 0
-console.log(`Браузеры: ${engines.map((e) => e.name).join(' · ')}${notSet.length ? `   (не поставлены: ${notSet.join(', ')} — по ним не проверено)` : ''}`)
+console.log(`Браузеры: ${engines.map((e) => `${e.name}${e.note ? ` (${e.note})` : ''}`).join(' · ')}${notSet.length ? `   (не поставлены: ${notSet.join(', ')} — по ним не проверено)` : ''}`)
 for (const path of PAGES) {
   for (const dpr of DPRS) {
     const frames = []

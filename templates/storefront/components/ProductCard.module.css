@@ -83,8 +83,19 @@
 /* Плашка наличия — примитив `cut` (метка на кадре, primitives.module.css):
    краску даёт `data-cut` — «мало» и «нет» ролями палитры. Стоит от угла
    карточки — у одежд, где снимок начинается в углу; у вписанного снимка
-   сдвинута на поле (ниже, `outlined`). Слова плашки — одной строкой. */
-.flag{white-space:nowrap}
+   сдвинута на поле (ниже, `outlined`). Слова плашки — в месте слева от
+   сердца: на узкой карточке телефона «Korlátozott készlet» (136 при карточке
+   175) ложилась на сердце и отнимала 11 точек его цели из 28 (большая
+   проверка 06.10.2026, семья `stolen`). Плашка берёт ширину до цели сердца и
+   переносит слова второй строкой; сердце лежит поверх плашки — слой плашки
+   здесь по порядку в карточке, без номера: если и одно слово шире места
+   (венгерский на 320), край плашки уходит под сердце, а не сердце под неё.
+   Два класса — место старше примитива при любом порядке стилей сборки (И755). */
+.card .flag{
+  z-index:auto;block-size:auto;min-block-size:calc(var(--ctrl-h-sm) * .8);
+  padding-block:calc(var(--ctrl-h-sm) * .1);line-height:1.2;
+  max-inline-size:calc(100% - var(--pad-inner) - var(--sp-2) * 2 - var(--ctrl-target))
+}
 
 /* Имя — роль текста, а не ступень подзаголовка: на полке каталога оно стояло
    ростом с заголовок подвала «Ajutor» (h2), и лестница заголовков
@@ -197,7 +208,7 @@
   --line-card:transparent
 }
 .card[data-card='inset'] .shot{border-radius:var(--r-card-inner);background:var(--plate-2)}
-.card[data-card='inset'] .flag{translate:var(--pad-inner) var(--pad-inner)}
+.card[data-card='inset'] .flag{translate:var(--pad-inner) var(--pad-inner);max-inline-size:calc(100% - var(--pad-inner) * 3 - var(--sp-2) * 2 - var(--ctrl-target))}
 .card[data-card='inset'] .save{translate:calc(var(--pad-inner) * -1) var(--pad-inner)}
 @media (hover:hover){ .card[data-card='inset']:hover{--line-card:var(--edge-hand)} }
 .card[data-card='inset']:active{--line-card:var(--edge-hand)}
@@ -222,7 +233,7 @@
 @media (hover:hover){ .card[data-card='sheet']:hover{--line-card:var(--edge-hand);box-shadow:var(--sh-lift)} }
 .card[data-card='sheet']:active{--line-card:var(--edge-hand);box-shadow:var(--sh-lift)}
 .card[data-card='sheet'] .shot{border-radius:var(--r-card-inner)}
-.card[data-card='sheet'] .flag{translate:var(--pad-inner) var(--pad-inner)}
+.card[data-card='sheet'] .flag{translate:var(--pad-inner) var(--pad-inner);max-inline-size:calc(100% - var(--pad-inner) * 3 - var(--sp-2) * 2 - var(--ctrl-target))}
 .card[data-card='sheet'] .save{translate:calc(var(--pad-inner) * -1) var(--pad-inner)}
 /* look-card:sheet:end */
 /* look-card:edged:start */

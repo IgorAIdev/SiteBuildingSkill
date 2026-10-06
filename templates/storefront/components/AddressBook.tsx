@@ -51,9 +51,11 @@ export function AddressBook({ lang, view, permalink, landmark = true }: { lang: 
             <AddressEdit form={view.add.form} action={save} permalink={permalink} cancel={view.cards.length ? view.cancel : null} />
           </section>
         ) : (
-          <div><a className={b.btn} href={view.add.href}><Icon id="plus" />{view.add.label}</a></div>
+          <div className={p.cluster}><a className={b.btn} href={view.add.href}><Icon id="plus" />{view.add.label}</a></div>
         )}
-        <div><a className={`${go.go} ${p.tap}`} data-to="back" href={view.back.href}><Icon id="arrow-left" />{view.back.label}</a></div>
+        {/* Ряд, а не строка: ссылка со знаком первым садится в строке блока по низу знака,
+            и строка добавляла под ней 4 px — у подвала воздух 74 против 69 (замер 06.10.2026, И738). */}
+        <div className={p.cluster}><a className={`${go.go} ${p.tap}`} data-to="back" href={view.back.href}><Icon id="arrow-left" />{view.back.label}</a></div>
       </div>
     </Main>
   )

@@ -14,7 +14,7 @@
 - [Shared working tree](shared-working-tree.md) — several sessions write in one tree/branch; git add own paths only, message before committing; never switch its branch — own worktree; rules journal: number from the file tail, append only, stage own hunks; a worktree session lands work as a patch (scratch mirror → owner OK → git apply → stage HEAD + own lines); peer has files staged → commit from a temp index, shared files by text
 - [No screenshots, batched PRs](no-screenshots-batch-prs.md) — save tokens: no images at all, not even for my own checking — verify with printed numbers; one PR per batch; merge on the owner's word; no PR subscription
 - [Measure before styling](measure-before-styling.md) — type/spacing only from kit research + owner's built storefronts + 3 live shops (И507); think phone-first unprompted
-- [Checks not on the dev server](checks-not-on-dev-server.md) — crawling checks (seo, urls, craft, sweep) only on a build; on Windows they corrupt the dev server's manifest → all pages 500; exception: check:part narrow one-lane run while building a part (И765)
+- [Checks not on the dev server](checks-not-on-dev-server.md) — crawling checks only on a build (dev manifest → all 500); check:part narrow one-lane (И765); never a second browser check beside check:all — 8 GB, GPU crash (06.10.2026)
 - [No history, local only](no-history.md) — owner wants no git history and no pushes to GitHub for now; work locally; main squashed 28.09.2026
 - [Site audit unasked](site-audit-unasked.md) — after each look batch and before handover I audit the whole site myself: cross-page sameness + UX path (И523)
 - [Palette as a whole](palette-whole-site.md) — neutral + one brand + red; night keeps the day's order of surfaces (И554)

@@ -191,11 +191,11 @@ export type ShopFacts = { returnDays: number | null; freeDeliveryFrom: Money | n
  *  шрифты со своих адресов (`fonts`, пусто — системный) и имена вариантов,
  *  из которых вид собран (`names`, для людей и панели; сайт их не читает).
  *  Каталога вариантов в сайте нет — он у панели вида. */
-/** Размеры шрифта в долях кегля (scripts/font-fallback.mjs, `metricsOf`):
+/** Размеры шрифта в долях кегля (scripts/font-fallback.mjs, `lookMetrics`):
  *  по ним сайт растягивает запасной шрифт под настоящий, и подмена не
- *  сдвигает слова. `avg` — средняя ширина знака при 400, `bold` — при 600.
- *  Нет их — запасной стоит как есть. */
-export type FontMetrics = { avg: number; bold: number; ascent: number; descent: number; gap: number }
+ *  сдвигает слова. `widths` — средняя ширина знака при каждой толщине
+ *  100…900 (ключ — толщина). Нет их — запасной стоит как есть. */
+export type FontMetrics = { widths: Record<string, number>; ascent: number; descent: number; gap: number }
 export type LookFont = { family: string; files: { url: string; weight: string; range: string }[]; metrics?: FontMetrics }
 export type Look = { header: HeaderVariant; card: CardVariant; home: HomeVariant; vars: Record<string, string>; fonts: LookFont[]; names: Record<string, string> }
 export type Result<T> = { ok: true; value: T } | { ok: false; reason: 'unavailable' | 'not-found' | 'bad-request' }

@@ -606,7 +606,12 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
          а в списке — нет. Ниже 24 не опускается никто. */
       const claim = el.getAttribute('data-tap')
       const floor = claim ? Math.max(target.floor, Number(claim) || 0) : target.coarse
-      if (w < floor || h < floor) {
+      /* Допуск — один шаг раскладки браузера (1/64 px, LayoutUnit Blink): «View
+         all» на 44 при дробной вертикали 2015.95 отдавал 43.99997 и шёл
+         находкой «69×44 при норме 44» (большая проверка 06.10.2026, И776).
+         Настоящий недобор шагом больше — 43.98 у подвала — ловится. */
+      const EPS = 1 / 64
+      if (w < floor - EPS || h < floor - EPS) {
         out.target.push(`${name(el)} — ${Math.round(w)}×${Math.round(h)} (норма ${floor})`)
       }
     }
@@ -933,6 +938,21 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
       if (own && !box && (parseFloat(cs0.paddingTop) > 0 || parseFloat(cs0.borderTopWidth) > 0)) {
         const rg = document.createRange(); rg.selectNodeContents(el); const rs = [...rg.getClientRects()].filter((x) => x.height > 0)
         if (rs.length) r = { top: Math.min(...rs.map((x) => x.top)), bottom: Math.max(...rs.map((x) => x.bottom)), left: Math.min(...rs.map((x) => x.left)), right: Math.max(...rs.map((x) => x.right)) }
+      } else if (own && !box) {
+        /* Прозрачная коробка выше своих строк — цель под палец ростом
+           `min-block-size` без поля: «View all» шапки ряда на телефоне стоит
+           коробкой 44 при строке 20, и шов полосы «CBD oils» читался 36 при 48
+           по буквам (большая проверка 06.10.2026, поправка И738). Коробку не
+           видно — верх и низ по строкам. Срезанный заголовок — наоборот: строки
+           выше коробки, видна коробка, а у абзаца коробка — это строки с их
+           межстрочьем. Поэтому по строкам — только коробка, которая выше своих
+           строк больше чем на полстроки. */
+        const rg = document.createRange(); rg.selectNodeContents(el); const rs = [...rg.getClientRects()].filter((x) => x.height > 0)
+        if (rs.length) {
+          const tt = Math.min(...rs.map((x) => x.top)), bb = Math.max(...rs.map((x) => x.bottom))
+          const line = parseFloat(cs0.lineHeight) || parseFloat(cs0.fontSize) * 1.2
+          if (r.bottom - r.top - (bb - tt) > line / 2) r = { top: Math.max(r.top, tt), bottom: Math.min(r.bottom, bb), left: r.left, right: r.right }
+        }
       } else if (own && box) {
         const rg = document.createRange(); rg.selectNodeContents(el); const rs = [...rg.getClientRects()].filter((x) => x.height > 0)
         if (rs.length) { const tt = Math.min(...rs.map((x) => x.top)); r = { top: tt, bottom: r.bottom, left: r.left, right: r.right } }
@@ -2784,6 +2804,25 @@ const give = (ctx, p) => {
   idle.set(ctx, rest)
 }
 
+/* Сторож полос (И777). 05.10.2026 большая проверка простояла в этой проверке
+   сорок минут без единого такта процессора — ни она, ни её браузер ничего не
+   делали, сервер отвечал; прогон сняли руками, и что встало, осталось
+   неизвестным (повтор с журналом вызовов дошёл до конца). Ожидание без
+   предела внутри страницы (`page.evaluate` его не имеет) не должно молча
+   держать всю цепочку: страница, которая меряется дольше `CRAFT_STALL_MS`,
+   называется, и проверка выходит с кодом 2 — «не проверено». */
+/* Предел читается при такте: `OPEN_MS` объявлен ниже по файлу. */
+const stallMs = () => Math.max(300000, OPEN_MS * 6, Number(process.env.CRAFT_STALL_MS ?? 0))
+const busy = new Map()
+setInterval(() => {
+  const now = Date.now()
+  const stuck = [...busy.values()].filter((b) => now - b.t > stallMs())
+  if (!stuck.length) return
+  console.error(`\n✗ Замер встал: ${stuck.map((b) => `${b.what} — ${Math.round((now - b.t) / 1000)} с`).join('; ')} — отрисованная проверка НЕ ПРОВЕДЕНА.`)
+  process.exit(2)
+}, 30000).unref()
+const what = (item) => (typeof item === 'string' ? item : JSON.stringify(item) ?? String(item)).slice(0, 160)
+
 /** Пройти список в несколько полос, сохранив порядок САМОГО списка. */
 async function lanes(items, work, n = LANES) {
   let next = 0
@@ -2791,7 +2830,9 @@ async function lanes(items, work, n = LANES) {
     for (;;) {
       const i = next++
       if (i >= items.length) return
-      await work(items[i], i)
+      const key = Symbol(i)
+      busy.set(key, { t: Date.now(), what: what(items[i]) })
+      try { await work(items[i], i) } finally { busy.delete(key) }
     }
   }))
 }
@@ -3399,6 +3440,14 @@ await lanes(coldPages, async (path) => {
         seen.add(first)
         const stack = getComputedStyle(el).fontFamily.split(',').map((x) => x.trim().replace(/^["']|["']$/g, ''))
         if (stack[1] !== `${first} Fallback` || !declared.has(`${first} Fallback`)) out.push(`«${first}» — без подогнанного запасного начертания: подмена сдвинет слова`)
+      }
+      /* Шрифт вида (тот, за которым стоит подогнанное запасное) — `optional`:
+         опоздавший файл не подменяет запасной. При `swap` подмена сдвигает
+         строку, где запасной шире или уже хоть на долю процента, — подгонка
+         средняя, слово нет (И608). */
+      for (const f of document.fonts) {
+        const fam = f.family.replace(/^["']|["']$/g, '')
+        if (!fam.endsWith(' Fallback') && declared.has(`${fam} Fallback`) && f.display !== 'optional') out.push(`«${fam}» — font-display: ${f.display}, не optional: опоздавший файл подменит запасной и сдвинет строки`)
       }
       return { shifts: window.__shifts || [], late: out }
     })

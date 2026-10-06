@@ -130,12 +130,15 @@ export function validFont(x: unknown): x is LookFont {
     return !!r && typeof r.url === 'string' && FONT_URL.test(r.url) && typeof r.weight === 'string' && WEIGHT.test(r.weight) && typeof r.range === 'string' && RANGE.test(r.range)
   })
 }
-/** Размеры шрифта — четыре доли кегля в разумных пределах: в CSS они идут
- *  процентами, и мусор в записи не должен стать мусором в стиле. */
+/** Размеры шрифта — доли кегля в разумных пределах: в CSS они идут
+ *  процентами, и мусор в записи не должен стать мусором в стиле. Ширины —
+ *  по толщинам из сотен 100…900 (ключ — толщина). */
 const within = (v: unknown, lo: number, hi: number) => typeof v === 'number' && Number.isFinite(v) && v >= lo && v <= hi
 const validMetrics = (x: unknown): x is FontMetrics => {
   const m = record(x)
-  return !!m && within(m.avg, 0.2, 1) && within(m.bold, 0.2, 1) && within(m.ascent, 0.5, 2) && within(m.descent, 0, 1) && within(m.gap, 0, 1)
+  const widths = record(m?.widths)
+  return !!m && !!widths && Object.keys(widths).length > 0 && Object.entries(widths).every(([w, v]) => /^[1-9]00$/.test(w) && within(v, 0.2, 1)) &&
+    within(m.ascent, 0.5, 2) && within(m.descent, 0, 1) && within(m.gap, 0, 1)
 }
 
 /** Сохранённый вид → вид, которым можно рисовать, и что отброшено. */
@@ -214,11 +217,12 @@ export function lookCss(look: Look): string {
 /** Опорные системные шрифты запасного начертания: средняя ширина знака
  *  тем же счётом, что у шрифта вида (scripts/font-fallback.mjs, `metricsOf`;
  *  сняты с arial.ttf, arialbd.ttf, times.ttf и timesbd.ttf Windows
- *  01.10.2026). Жирное — своим файлом: синтетический жирный обычного Arial
- *  не шире его, и надписи органов (600) выходили на 4 % уже. */
+ *  06.10.2026, таблицей частот capsize). Жирное — своим файлом: синтетический
+ *  жирный обычного Arial не шире его, и надписи органов (600) выходили на
+ *  4 % уже. */
 export const FALLBACK_REFERENCE = {
-  sans: { regular: { local: "local('Arial')", avg: 0.4418 }, bold: { local: "local('Arial Bold'),local('Arial-BoldMT')", avg: 0.4776 } },
-  serif: { regular: { local: "local('Times New Roman')", avg: 0.4003 }, bold: { local: "local('Times New Roman Bold'),local('TimesNewRomanPS-BoldMT')", avg: 0.4259 } },
+  sans: { regular: { local: "local('Arial')", avg: 0.4458 }, bold: { local: "local('Arial Bold'),local('Arial-BoldMT')", avg: 0.4798 } },
+  serif: { regular: { local: "local('Times New Roman')", avg: 0.4062 }, bold: { local: "local('Times New Roman Bold'),local('TimesNewRomanPS-BoldMT')", avg: 0.4324 } },
 } as const
 const fallbackName = (family: string) => `${family} Fallback`
 
@@ -238,24 +242,47 @@ export function withFallback(value: string, fonts: readonly LookFont[]): string 
 /** Доля кегля → процент CSS. */
 const pct = (x: number) => `${(x * 100).toFixed(2)}%`
 
-/** `@font-face` вида: файлы семейства (`font-display: swap`; заранее их
- *  просит Shell, `fontPreloads`) и запасное начертание, растянутое под
- *  размеры семейства, — слова, набранные им до прихода файла, при подмене
- *  не сдвигаются (слово заказчика 01.10.2026). Формулы next/font: override
+/** `@font-face` вида: файлы семейства и запасное начертание, растянутое под
+ *  размеры семейства (слово заказчика 01.10.2026: слова на свежей странице
+ *  не смещаются). Файлы — `font-display: optional`, и заранее их просит
+ *  Shell (`fontPreloads`): предзагруженный `optional` браузер ждёт до первой
+ *  отрисовки, не дольше 100 мс, а не успевший — не подменяет до конца
+ *  визита (web.dev, «preload optional fonts», Chrome 83+). Подмена
+ *  (`swap`) сдвигала строку всегда, когда запасной шире или уже в ней
+ *  хоть на долю процента: подгонка средняя, слово — нет («Contact» у
+ *  Manrope на 6,7 % шире Arial, «Blog» на 1,7 % уже; подзаголовок статьи
+ *  на 0,7 % короче колонки — запасным в две строки, И608). Запасное
+ *  подогнано всё равно: опоздавший шрифт — визит запасным, и он стоит теми
+ *  же строками, что настоящий. Формулы next/font: override
  *  делится на `size-adjust`, потому что браузер умножает на него и их.
  *  Опора — Times New Roman, если семейство стоит в стеке с засечками, иначе
- *  Arial. */
+ *  Arial; до 500 — обычный, с 600 — жирный. Запасное у каждой толщины
+ *  записи своё (`metrics.widths`): ширина настоящего растёт с толщиной, а у
+ *  обычного Arial при 400 и 500 одна, и одно начертание на 100…500 ставило
+ *  меню и заголовки 500 на 1,5–2 % уже (И608). Толщина отвечает за полосу
+ *  до середины между соседями; соседние полосы с одним файлом и одним
+ *  растяжением (толщины за диапазоном файла) идут одним начертанием. */
 export function fontFaces(fonts: readonly LookFont[], vars: Record<string, string> = {}): string[] {
   return fonts.flatMap((f) => {
     const files = f.files.map((x) =>
-      `@font-face{font-family:'${f.family}';src:url(${x.url}) format('woff2');font-weight:${x.weight};font-style:normal;font-display:swap;unicode-range:${x.range}}`)
+      `@font-face{font-family:'${f.family}';src:url(${x.url}) format('woff2');font-weight:${x.weight};font-style:normal;font-display:optional;unicode-range:${x.range}}`)
     if (!f.metrics) return files
     const m = f.metrics
     const serif = Object.values(vars).some((v) => v.includes(`'${f.family}'`) && /(^|[\s,])serif\s*$/.test(v))
     const ref = serif ? FALLBACK_REFERENCE.serif : FALLBACK_REFERENCE.sans
-    const face = (weight: string, src: string, size: number) =>
-      `@font-face{font-family:'${fallbackName(f.family)}';src:${src};font-weight:${weight};size-adjust:${pct(size)};ascent-override:${pct(m.ascent / size)};descent-override:${pct(m.descent / size)};line-gap-override:${pct(m.gap / size)}}`
-    return [...files, face('100 500', ref.regular.local, m.avg / ref.regular.avg), face('600 900', ref.bold.local, m.bold / ref.bold.avg)]
+    const weights = Object.keys(m.widths).map(Number).sort((a, b) => a - b)
+    const bands: { lo: number; hi: number; src: string; size: number }[] = []
+    weights.forEach((w, i) => {
+      const base = w >= 600 ? ref.bold : ref.regular
+      const size = m.widths[w] / base.avg
+      const lo = i ? (weights[i - 1] + w) / 2 : 1
+      const hi = i < weights.length - 1 ? (w + weights[i + 1]) / 2 - 1 : 1000
+      const last = bands.at(-1)
+      if (last && last.src === base.local && last.size === size) last.hi = hi
+      else bands.push({ lo, hi, src: base.local, size })
+    })
+    return [...files, ...bands.map(({ lo, hi, src, size }) =>
+      `@font-face{font-family:'${fallbackName(f.family)}';src:${src};font-weight:${lo} ${hi};size-adjust:${pct(size)};ascent-override:${pct(m.ascent / size)};descent-override:${pct(m.descent / size)};line-gap-override:${pct(m.gap / size)}}`)]
   })
 }
 

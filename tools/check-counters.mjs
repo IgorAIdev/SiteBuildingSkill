@@ -44,26 +44,14 @@
  * Код 1 — есть находки; 2 — нет браузера или мерить нечего (не проверено).
  */
 
-import { existsSync } from 'node:fs'
-import { loadPlaywright } from './browser.mjs'
+import { loadPlaywright, machineEngines } from './browser.mjs'
 
 const SITE = (process.env.SITE ?? process.env.CHECK_SITE ?? 'http://localhost:3000').replace(/\/$/, '')
 const WANT = (process.env.COUNTER_ENGINES ?? '').split(',').map((x) => x.trim()).filter(Boolean)
 
-const KNOWN = {
-  chrome: ['C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe', '/usr/bin/google-chrome'],
-  edge: ['C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Microsoft/Edge/Application/msedge.exe', '/usr/bin/microsoft-edge'],
-}
 const pw = await loadPlaywright()
-const engines = []
-for (const [name, paths] of Object.entries(KNOWN)) {
-  const exe = paths.find((p) => existsSync(p))
-  if (exe) engines.push({ name, type: pw.chromium, opts: { executablePath: exe } })
-}
-engines.push({ name: 'chromium', type: pw.chromium, opts: {} })
-for (const type of ['firefox', 'webkit']) {
-  try { const b = await pw[type].launch(); await b.close(); engines.push({ name: type, type: pw[type], opts: {} }) } catch { /* не поставлен */ }
-}
+/* Браузеры машины — тот же список, что у `check:engines` (`machineEngines`, И774). */
+const { engines } = await machineEngines(pw)
 const use = engines.filter((e) => !WANT.length || WANT.includes(e.name))
 if (!use.length) { console.error('✗ Нет браузера — проверка счётчиков НЕ ПРОВЕДЕНА.'); process.exit(2) }
 
@@ -100,6 +88,17 @@ const PAGE_KIT = `(() => {
 
 const dist = (a, b) => Math.max(...a.map((v, i) => Math.abs(v - b[i])))
 const changed = (a, b) => dist(a.bg, b.bg) >= 4 || a.shadow !== b.shadow || a.transform !== b.transform || dist(a.color, b.color) >= 12
+
+/* Число в поле — как его вписывает человек: щелчок, выделить всё, набрать (И774,
+   поправка 06.10.2026). `fill` у системного Firefox (WebDriver BiDi) у поля числа
+   ДОПИСЫВАЕТ к прежнему («1» + «99» → «199») и ставит значение мимо события, которое
+   слушает счётчик: проверка видела «"+" на границе не выключен» и «"−" без фокуса» там,
+   где человек получает верный счётчик. */
+async function typeNumber(input, v) {
+  await input.click()
+  await input.press('ControlOrMeta+a')
+  await input.pressSequentially(String(v))
+}
 
 async function measure(page, handle) {
   return handle.evaluate((el, kit) => { const K = (0, eval)(kit); return K.look(el) }, PAGE_KIT)
@@ -158,7 +157,7 @@ async function checkGroup(page, group, spec, tag, found, sample = true) {
   if (isInput) {
     const top = await input.getAttribute('max'), low = await input.getAttribute('min')
     for (const [label, btn, v] of [['«+» на верхней границе', plus, top ?? '9'], ['«−» на нижней границе', minus, low ?? '1']]) {
-      await input.fill(v)
+      await typeNumber(input, v)
       if (!(await btn.isDisabled())) { say(`${label} не выключен`); continue }
       await page.mouse.move(0, 0)
       const dormant = await measure(page, btn)
@@ -167,7 +166,7 @@ async function checkGroup(page, group, spec, tag, found, sample = true) {
       if (changed(dormant, hovered)) say(`${label} выключен, но под рукой оживает`)
       if (Number(dormant.opacity) >= 0.95) say(`${label} выключен, но выглядит живым (прозрачность ${dormant.opacity})`)
     }
-    await input.fill('2')
+    await typeNumber(input, '2')
   }
 
   /* Клавиатура: Tab доходит до «−», числа, «+»; кольцо видно; Enter на «+» шагает. */
@@ -236,7 +235,14 @@ async function discover(engine) {
     if (!shelf) { unchecked.push('полка телефона: на сайте не нашлось карточки с кнопкой «в корзину» — надпись после нажатия не померена'); return at }
     if (page.url() !== shelf) await page.goto(shelf, { waitUntil: 'networkidle', timeout: 150000 })
     const alternates = await page.evaluate(() => [...document.querySelectorAll('link[rel=alternate][hreflang]')].filter((l) => l.hreflang !== 'x-default').map((l) => [l.hreflang, l.href]))
+    /* Ссылки языков записаны полным адресом сайта (`SITE_URL` сборки), а не
+       адресом сервера, который меряется: сборка на 8099 звала на сервер
+       разработки 3020, и проверка мерила его — 12 «полка не открылась» за
+       60 секунд у всех браузеров (большая проверка 06.10.2026, И775). Мерится
+       тот же путь на сервере `SITE`. */
+    const onSite = (href) => { const u = new URL(href); return new URL(u.pathname + u.search, SITE).href }
     const wanted = alternates.filter(([h]) => !SHELF_LANGS.length || SHELF_LANGS.some((w) => h.toLowerCase().startsWith(w.toLowerCase())))
+      .map(([h, href]) => [h, onSite(href)])
     at.shelves = wanted.length ? wanted : [[lang || htmlLang || 'сайт', shelf]]
     const card = await page.locator('[data-product-card]:has(form button[type=submit]) a[href]').first().getAttribute('href')
     at.product = process.env.COUNTER_PRODUCT ? under(`product/${process.env.COUNTER_PRODUCT}`) : card ? new URL(card, SITE).href : null
@@ -311,7 +317,7 @@ async function checkShelf(browser, engine, found, shelves) {
          запись, оборванная переходом, на медленном сервере не доезжала. */
       const buy = page.locator('main').first().locator('form:has(input[name=quantity]):has(button[type=submit][data-voice=loud])').first()
       await buy.locator('input[name=quantity]').waitFor({ timeout: 60000 })
-      await buy.locator('input[name=quantity]').fill('11')
+      await typeNumber(buy.locator('input[name=quantity]'), '11')
       await buy.locator('button[type=submit][data-voice=loud]').click()
       try { await page.waitForFunction((el) => el.innerText.includes('12'), await buy.locator('button[type=submit][data-voice=loud]').elementHandle(), { timeout: 20000 }) } catch { say('карта товара: после 11 штук кнопка не сказала «12»') }
       await page.goto(shelf, { waitUntil: 'networkidle', timeout: 150000 })

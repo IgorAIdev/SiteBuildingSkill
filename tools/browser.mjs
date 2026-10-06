@@ -14,6 +14,7 @@
  * установки. Выход с кодом 2 — «не проверено», а не «найдено нарушение».
  */
 
+import { existsSync } from 'node:fs'
 import { isAbsolute } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
@@ -49,6 +50,47 @@ export async function loadSharp() {
   } catch (error) {
     return missing(`sharp (${spec})`, error)
   }
+}
+
+/** Chrome и Edge системы — по их путям. */
+const SYSTEM = {
+  chrome: ['C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe', '/usr/bin/google-chrome', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'],
+  edge: ['C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Microsoft/Edge/Application/msedge.exe', '/usr/bin/microsoft-edge', '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge'],
+}
+
+/** Чем запускать Firefox: своя сборка Playwright, а не стартует она — Firefox
+ *  системы через WebDriver BiDi (`channel: 'moz-firefox'`, Playwright 1.5x+).
+ *  Заведено 06.10.2026 (И774): сборка Playwright 155 на Windows 10 не
+ *  запускается вовсе — Windows не собирает ей окружение («Dependent Assembly
+ *  mozglue could not be found», у Node это `spawn UNKNOWN`), и переустановка
+ *  не помогает. Проверка ловила это молча и пять дней писала «Firefox не
+ *  поставлен», хотя заказчик его поставил. */
+const FIREFOX = [{}, { channel: 'moz-firefox' }]
+
+const launches = async (type, opts) => {
+  try { await (await type.launch(opts)).close(); return true } catch { return false }
+}
+
+/** Браузеры машины — одним списком для всех проверок, которые сравнивают
+ *  браузеры (`check:engines`, `check:counters`): Chrome и Edge системы,
+ *  встроенный Chromium под именем `bundled`, Firefox и WebKit, если
+ *  запускаются. `notSet` — те из Firefox и WebKit, что не запустились. */
+export async function machineEngines(pw, bundled = 'chromium') {
+  const engines = []
+  for (const [name, paths] of Object.entries(SYSTEM)) {
+    const exe = paths.find((p) => existsSync(p))
+    if (exe) engines.push({ name, type: pw.chromium, opts: { executablePath: exe } })
+  }
+  engines.push({ name: bundled, type: pw.chromium, opts: {} })
+  for (const [name, tries] of [['firefox', FIREFOX], ['webkit', [{}]]]) {
+    for (const opts of tries) {
+      if (!(await launches(pw[name], opts))) continue
+      engines.push({ name, type: pw[name], opts, ...(opts.channel ? { note: 'системный' } : {}) })
+      break
+    }
+  }
+  const notSet = ['firefox', 'webkit'].filter((t) => !engines.some((e) => e.name === t))
+  return { engines, notSet }
 }
 
 /** Остановить показ слайдов перед замером.
