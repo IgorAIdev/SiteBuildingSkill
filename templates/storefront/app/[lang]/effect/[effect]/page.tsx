@@ -10,6 +10,8 @@ import { hrefFor, type Query } from '@/lib/href.ts'
 import { toMetadata } from '@/lib/seo.ts'
 import { cartSubmit, cartCall } from '@/lib/actions/cart.ts'
 import { Catalog } from '@/components/Catalog.tsx'
+import { CatalogCopy } from '@/components/CatalogCopy.tsx'
+import { effectCopy } from '@/lib/content/shop-copy.ts'
 import { Unavailable } from '@/components/StateScreen.tsx'
 
 type Props = { params: Promise<{ lang: string; effect: string }>; searchParams: Promise<Params> }
@@ -31,7 +33,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { effect } = await params
   const e = await effectOf(lang, effect)
   if (!e.ok || !e.value) return {}
-  return toMetadata(lang, { title: e.value.name, description: e.value.description, path: (l) => hrefFor(l, { effect: e.value!.code }) })
+  const copy = effectCopy(lang, effect)
+  return toMetadata(lang, { title: copy?.title ?? e.value.name, description: copy?.description ?? e.value.description, path: (l) => hrefFor(l, { effect: e.value!.code }) })
 }
 
 export default async function EffectPage({ params, searchParams }: Props) {
@@ -46,5 +49,6 @@ export default async function EffectPage({ params, searchParams }: Props) {
   const listing = { ...r.value, facets: r.value.facets.filter((f) => f.code !== EFFECT_FACET) }
   const at = (q: Query) => hrefFor(lang, { effect: code, ...q })
   const scope = { name: e.value.name, wider: (q: Query) => hrefFor(lang, { catalog: true, ...q }) }
-  return <Catalog view={catalogView(lang, { title: e.value.name, lede: e.value.description || null, listing, asked: own, at, filters: true, empty: emptyFor(lang, own, at), scope, counted: { effect: code }, all })} cart={{ submit: cartSubmit, call: cartCall }} />
+  const copy = effectCopy(lang, code)
+  return <Catalog view={catalogView(lang, { title: copy?.heading ?? e.value.name, lede: copy?.lede ?? (e.value.description || null), listing, asked: own, at, filters: true, empty: emptyFor(lang, own, at), scope, counted: { effect: code }, all })} cart={{ submit: cartSubmit, call: cartCall }} after={copy ? <CatalogCopy copy={copy} lang={lang} /> : undefined} />
 }

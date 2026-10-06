@@ -19,9 +19,9 @@ import type { BlockCtx, Place } from './types.ts'
    открыт; строка под рукой — вид «строка» (`row`, И685). Раскрыт один: общее
    имя группы (`name`) — браузер закрывает прежний вопрос, когда открывают новый
    (слово заказчика 05.10.2026; И761); блок вопросов на странице один. */
-export function Faq({ block, place }: { block: Extract<Block, { type: 'faq' }>; ctx?: BlockCtx; place: Place }) {
+export function Faq({ block, place, inset = false }: { block: Extract<Block, { type: 'faq' }>; ctx?: BlockCtx; place: Place; inset?: boolean }) {
   return (
-    <section className={`${p.wrap} ${p.section}`} data-air={place.air ?? undefined}>
+    <section className={`${inset ? '' : p.wrap} ${p.section}`} data-air={place.air ?? undefined}>
       <div className={`${p.sidebar} ${s.split}`}>
         <div className={p.aside}><div className={p.sectionHead}><h2>{block.title}</h2></div></div>
         <div className={`${s.rows} ${s.splitBody}`}>
