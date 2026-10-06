@@ -6,13 +6,14 @@
 # `.github/workflows/` самого набора, GitHub исполнял её на каждом PR в
 # набор и падал на `npm ci` — у набора нет ни package-lock, ни сборки.
 #
-# Репозиторий открытый — минуты GitHub на нём не считаются.
+# По указанию владельца проверки запускаются вручную на собственном раннере.
 name: kit
 
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 concurrency:
   group: kit-${{ github.head_ref || github.ref }}
@@ -20,11 +21,8 @@ concurrency:
 
 jobs:
   self:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    if: github.ref == 'refs/heads/main'
+    runs-on: ${{ fromJSON(vars.SELF_HOSTED_RUNNER_LABELS || '["self-hosted"]') }}
     defaults:
       run:
         shell: bash
@@ -57,7 +55,8 @@ jobs:
       - run: node --test "selftest/**/*.test.mjs"
 
   components:
-    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    runs-on: ${{ fromJSON(vars.SELF_HOSTED_LINUX_RUNNER_LABELS || '["self-hosted", "linux"]') }}
     timeout-minutes: 10
     defaults:
       run:
@@ -73,7 +72,7 @@ jobs:
       - run: npm run verify
       - name: Lighthouse CI on the production component fixture
         run: |
-          # Use the runner's installed Chrome with its supported Linux sandbox.
+          # Chrome and browser system dependencies are provisioned on the owner's runner.
           # Do not disable AppArmor or pass --no-sandbox for Lighthouse.
           export CHROME_PATH="$(command -v google-chrome)"
           test -n "$CHROME_PATH"
@@ -88,7 +87,8 @@ jobs:
             selftest/component-preview/dist/lighthouse-reports
 
   studio:
-    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    runs-on: ${{ fromJSON(vars.SELF_HOSTED_LINUX_RUNNER_LABELS || '["self-hosted", "linux"]') }}
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
