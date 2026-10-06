@@ -11,7 +11,7 @@ import { Icon } from './Icon.tsx'
 import { Turn } from './Turn.tsx'
 
 /* Полки шапки. Каждая строка несёт всё, чем её может нарисовать шапка:
-   знак полки, имя, строку о полке, стрелку. Снимков полок в меню нет —
+   знак полки, имя, строку о полке. Стрелка обозначает только раскрытие. Снимков полок в меню нет —
    знак полки из данных, тот же, что у кнопок категорий (слово заказчика
    05.10.2026: «само меню убирай изображения, иконки категорий можно
    использовать»; И753). Строкой текста в ряду, рядом в
@@ -185,7 +185,6 @@ export function NavLinks({ links, className, more, overflow }: { links: NavLink[
               {l.sign ? <span className={s.sign} aria-hidden="true"><Icon id={l.sign} /></span> : null}
               <span className={s.name}>{l.label}</span>
               {l.line ? <span className={s.line}>{l.line}</span> : null}
-              <span className={s.chev} aria-hidden="true"><Icon id="chevron-right" /></span>
             </a>
             {l.menu ? (
               <>

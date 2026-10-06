@@ -28,6 +28,9 @@ function walk(dir) {
       let html = readFileSync(path, 'utf8')
       if (!/<[^>]+\sdata-pane=/.test(html)) continue
       pages++
+      // Plain navigation links do not imply an expandable submenu. Preserve
+      // the separate Turn control used by actual disclosures (Oil).
+      html = html.replace(/<span\b[^>]*class="[^"]*Header-module__[^" ]+__chev[^"]*"[^>]*>\s*<svg\b[^>]*>[\s\S]*?<\/svg>\s*<\/span>/g, '')
       html = html.replace(/<a\b[^>]*href="[^"]*\/blog\/?"[^>]*>[\s\S]*?<\/a>/g, (link) => link.replace(/(<use\b[^>]*href="[^"#]*#)[^"]+/, `$1${blogSign}`))
       if (!html.includes('</body>')) throw new Error(`No body end: ${path}`)
       save(path, html.includes(tag) ? html : html.replace('</body>', `${tag}</body>`))

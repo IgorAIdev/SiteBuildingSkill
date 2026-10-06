@@ -249,7 +249,7 @@
   }
 }
 /* Знак полки, строка о полке и стрелка — у шторки, не у строки. */
-.sign,.line,.chev{display:none}
+.sign,.line{display:none}
 /* Шапка шторки — только у открытой шторки; сила — местом, а не порядком:
    `bar` окна (styles/pane.module.css) объявляет `flex` тем же весом. */
 .nav:not(:popover-open, [data-leaving]) > .sheetHead{display:none}
@@ -388,8 +388,6 @@
    буква, а не каждое слово — «All products» не станет «All Products». Имя —
    элемент внутри ссылки-флекса: у флекса своей первой буквы нет. */
 .name::first-letter,.pillName::first-letter{text-transform:uppercase}
-.nav:is(:popover-open, [data-leaving]) .chev{display:grid;color:var(--ink-soft)}
-.nav:is(:popover-open, [data-leaving]) .chev svg{inline-size:var(--icon-size);block-size:var(--icon-size)}
 /* Текущая страница в шторке выделена (И716, поправка 05.10.2026; слово
    заказчика со снимком меню cbdin.bg: «логику делай такую, текущая страница
    выделена»): строка — плашкой тихой марки `--pop-tint`, слово — марочным
@@ -473,7 +471,6 @@
 /* Строки подменю, подпись группы и знак полки перед словом — меню набора
    (styles/menu.module.css, И730): своего рисунка у подменю шапки нет. */
 .nav:is(:popover-open, [data-leaving]) .links li[data-params]{display:grid;grid-template-columns:minmax(0, 1fr) auto;align-items:center;column-gap:var(--gap-row)}
-.nav:is(:popover-open, [data-leaving]) li[data-params] .chev{display:none}
 .nav:is(:popover-open, [data-leaving]) .params{display:inline-flex;--btn-h:var(--ctrl-target);inline-size:var(--btn-h);padding:0}
 .nav:is(:popover-open, [data-leaving]) .paramsPanel:not([hidden]){
   display:flex;flex-direction:column;gap:var(--air-row);grid-column:1 / -1;
