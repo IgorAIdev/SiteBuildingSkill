@@ -229,6 +229,26 @@
    полосой (примитив `rail`, вид `wrap`). */
 .heroShelves{margin:0;padding:0;list-style:none}
 
+/* look-home:minimal:start */
+/* Opt-in editorial home: one actual featured product, one main action;
+   categories remain readable text links, with their full touch targets. */
+:global(main[data-home='minimal'] h2){font-size:var(--h2-size);line-height:var(--h2-lead);font-weight:var(--h2-weight);letter-spacing:var(--h2-track)}
+.minimalHero{--lede-air:var(--air-group) 0;--lede-align:center;--lede-stack-align:center}
+.minimalText{align-items:start}
+.minimalShelves{margin:0;padding:0;list-style:none;--cluster-gap:var(--gap-row)}
+.minimalShelves a{min-block-size:var(--ctrl-target);display:inline-flex;align-items:center}
+.minimalProduct{--stack:var(--air-row)}
+.minimalShot{--frame:var(--card-frame);--frame-cap:60svh;background:var(--plate-2);border-radius:var(--r-sheet)}
+.minimalShot img{object-fit:contain;padding:var(--pad-sheet)}
+.minimalCaption{display:flex;align-items:center;gap:var(--gap-row);font-size:var(--cardname-size);line-height:var(--cardname-lead);font-weight:var(--cardname-weight);letter-spacing:var(--cardname-track)}
+.minimalCaption span:first-child{flex:1;min-inline-size:0}
+.minimalCaption span:nth-child(2){white-space:nowrap}
+.doors[data-door='minimal'] .door{gap:var(--gap-row);overflow:visible;border-radius:0}
+.doors[data-door='minimal'] .doorShot{border-radius:var(--r-card)}
+.doors[data-door='minimal'] .door::before{content:none}
+.doors[data-door='minimal'] .doorShot::before{content:''}
+/* look-home:minimal:end */
+
 /* СПРАВОЧНЫЙ РАЗДЕЛ — вопросы: заголовок своей колонкой слева, строки
    справа через волосок (`sidebar`); в узкой коробке — столбиком, и от
    заголовка до строк тот же воздух, что у любой шапки блока. */

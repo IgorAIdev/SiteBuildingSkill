@@ -364,6 +364,7 @@ const HOME_LINES = {
   mount: { name: 'Mount', line: 'The picture inside a white tile, the name under it' },
   under: { name: 'Under', line: 'The picture, the name under it on the page (Aesop)' },
   outline: { name: 'Outline', line: 'The name in white on the picture, a quiet outline round the letters instead of a shadow' },
+  minimal: { name: 'Minimal editorial', line: 'A product from the featured shelf leads the hero; quiet category links and effect names below their pictures' },
 }
 /** Шапки: id — HEADERS в lib/headers.ts. */
 const HEADER_LINES = {

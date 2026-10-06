@@ -7,6 +7,7 @@ import type { BlockCtx, Place } from './types.ts'
 import { shot } from '@/lib/shot.ts'
 import { CategoryButton } from '../CategoryButton.tsx'
 import { heroShelves } from '@/lib/hero-shelves.ts'
+import { MinimalHero } from './MinimalHero.tsx' // look-home:minimal
 
 type Props = { block: Extract<Block, { type: 'hero' }>; ctx: BlockCtx; place: Place }
 
@@ -36,6 +37,9 @@ type Props = { block: Extract<Block, { type: 'hero' }>; ctx: BlockCtx; place: Pl
    переносится вторым рядом; полки нет у магазина — нет кнопки. */
 export function Hero({ block, ctx }: Props) {
   const shelves = heroShelves(block.shelves, ctx.collections)
+  // look-home:minimal:start
+  if (ctx.home === 'minimal') return <MinimalHero block={block} ctx={ctx} />
+  // look-home:minimal:end
   return (
     <section className={`${p.wrap} ${p.lede} ${s.hero}`}>
       <div className={`${p.frame} ${s.heroShot}`}>

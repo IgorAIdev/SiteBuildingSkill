@@ -100,8 +100,8 @@ test('panel sections: every field sits in exactly one sub-tab; System is colour,
   const card = SECTIONS[1].subs.find((s) => s.id === 'card')!
   assert.deepEqual(card.fields.map((f) => f[1]), ['Product card', 'Show more and pages', 'Filter on a laptop', 'Filter on a phone', 'Heart'])
   /* Листание страниц (образец 95): слова по умолчанию, три вида вариантами. */
-  /* Сердце на снимке: стекло по умолчанию, без подложки вариантом. */
-  assert.deepEqual(catalog.groups['save-look'].map((o) => o.id), ['disc', 'bare'], 'сердце — на стекле по умолчанию, без подложки вариантом')
+  /* Сердце на снимке: стекло и bare; siteFirst первым ставит вид профиля. */
+  assert.deepEqual(catalog.groups['save-look'].map((o) => o.id).sort(), ['bare', 'disc'], 'сердце — на стекле или без подложки; первым стоит опубликованный вид сайта')
   assert.deepEqual(catalog.groups['filter-look'].map((o) => o.id), ['drawer', 'bar'], 'фильтр на широком — шторка, как корзина (вид сайта), и строка раскрытий (И739); панель колонками снята 04.10.2026')
   assert.deepEqual(catalog.groups['filter-phone'].map((o) => o.id), ['drawer', 'pills'], 'фильтр на узком — шторка (вид сайта) и пилюли вбок (И739)')
   assert.deepEqual(catalog.groups['pager-look'].map((o) => o.id), ['count', 'rings', 'compact'], 'листание — «Показать ещё» со счётом и полоской по умолчанию, номера в кругах и «2 / 4» вариантами (И721)')

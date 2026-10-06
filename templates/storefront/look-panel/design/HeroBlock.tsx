@@ -4,6 +4,8 @@ import { content, source } from '@/lib/source/index.ts'
 import { Hero } from '@/components/blocks/Hero.tsx'
 import type { BlockCtx } from '@/components/blocks/types.ts'
 import { Part } from './parts.tsx'
+import { lookNow } from '@/lib/look.ts'
+import { shelfCard } from '@/lib/view.ts'
 
 /* Home → Hero Block: варианты героя главной — настоящий блок сайта на
    словах и снимке главной (слово заказчика 01.10.2026: «в дизайн-системе
@@ -14,10 +16,14 @@ import { Part } from './parts.tsx'
    встаёт сюда строкой. Герою из контекста
    нужны только язык и полки — остальное у главной, не у него. */
 export async function HeroBlock({ lang }: { lang: Lang }) {
-  const [page, cols] = await Promise.all([content().page(lang, 'home'), source().collections(lang)])
+  const [page, cols, look] = await Promise.all([content().page(lang, 'home'), source().collections(lang), lookNow()])
   const hero = page.ok ? page.value.blocks.find((b): b is Extract<Block, { type: 'hero' }> => b.type === 'hero') : undefined
   if (!hero) return null
-  const ctx = { lang, collections: cols.ok ? cols.value : [] } as unknown as BlockCtx
+  const ids = page.ok ? page.value.blocks.flatMap((b) => b.type === 'featured' ? b.ids : []) : []
+  const cards = await source().cards(lang, ids)
+  const first = cards.ok ? ids.map((id) => cards.value.find((c) => c.id === id)).find(Boolean) : null
+  const spotlight = first ? shelfCard(lang, first) : null
+  const ctx = { lang, home: look.home, spotlight, collections: cols.ok ? cols.value : [] } as unknown as BlockCtx
   return (
     <Part title="Hero Block" lede="Первый экран главной: один снимок, заголовок, абзац, под ними кнопка «В магазин» и кнопки главных категорий того же роста — «Кнопки категорий» из «Кнопок», кружок со знаком товара. Кнопки стоят в колонке текста и переносятся в ней, вправо за текст не выходят. Слова и снимок — данные главной; какие категории стоят кнопками — тоже данные главной.">
       <Hero block={hero} ctx={ctx} place={{ air: null }} />
