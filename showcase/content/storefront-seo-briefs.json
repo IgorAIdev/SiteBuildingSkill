@@ -1,0 +1,1224 @@
+{
+  "status": "reviewed",
+  "scope": "Current original storefront (3020), not a new design or an indexable launch",
+  "source_method": [
+    "HempScale/docs/seo-content-principles.md",
+    "HempScale/docs/research/seo-transfer-2026-09/from-shop/bg-copy-brief-2026-09-08/BRIEF.md",
+    "skills/site-building/assets/seo-content/SKILL.md"
+  ],
+  "measurement_use": "BG research informs buyer-question themes and editorial method only. No BG volumes or queries are represented as RO, HU or EN measurements. Private raw exports are not copied into this repository.",
+  "pages": [
+    {
+      "status": "reviewed",
+      "url": "/en",
+      "market": "RO storefront; default language EN",
+      "language": "en",
+      "page_type": "home",
+      "primary_query": "CBD oils, capsules and more",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD shop — oils, capsules, edibles and topical care",
+      "h1": "CBD oils, capsules and more",
+      "copy_source": "templates/storefront/lib/content/home-copy.json",
+      "faq_items": 7,
+      "internal_links": [
+        "existing category, effect and guide links"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/en/catalog/oil",
+      "market": "RO storefront; default language EN",
+      "language": "en",
+      "page_type": "categories",
+      "primary_query": "CBD oils",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD oils — compare strengths, sizes and ingredients",
+      "h1": "CBD oils",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/en/catalog",
+        "/en/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/en/catalog/capsules",
+      "market": "RO storefront; default language EN",
+      "language": "en",
+      "page_type": "categories",
+      "primary_query": "CBD capsules",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD capsules — compare CBD per capsule and pack size",
+      "h1": "CBD capsules",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/en/catalog",
+        "/en/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/en/catalog/paste",
+      "market": "RO storefront; default language EN",
+      "language": "en",
+      "page_type": "categories",
+      "primary_query": "CBD paste",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD paste — compare concentrated hemp extracts",
+      "h1": "CBD paste",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/en/catalog",
+        "/en/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/en/catalog/edibles",
+      "market": "RO storefront; default language EN",
+      "language": "en",
+      "page_type": "categories",
+      "primary_query": "CBD edibles",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD edibles — servings, ingredients and CBD content",
+      "h1": "CBD edibles",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/en/catalog",
+        "/en/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/en/catalog/pets",
+      "market": "RO storefront; default language EN",
+      "language": "en",
+      "page_type": "categories",
+      "primary_query": "CBD products for pets",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD for pets — product labels and veterinary advice",
+      "h1": "CBD products for pets",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/en/catalog",
+        "/en/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/en/catalog/vape",
+      "market": "RO storefront; default language EN",
+      "language": "en",
+      "page_type": "categories",
+      "primary_query": "CBD vape products",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD vape products — liquids, ingredients and compatibility",
+      "h1": "CBD vape products",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/en/catalog",
+        "/en/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/en/catalog/cosmetics",
+      "market": "RO storefront; default language EN",
+      "language": "en",
+      "page_type": "categories",
+      "primary_query": "CBD cosmetics",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD cosmetics — skincare ingredients and product formats",
+      "h1": "CBD cosmetics",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/en/catalog",
+        "/en/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/en/catalog/topicals",
+      "market": "RO storefront; default language EN",
+      "language": "en",
+      "page_type": "categories",
+      "primary_query": "CBD topicals",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD topicals — creams, balms and body care",
+      "h1": "CBD topicals",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/en/catalog",
+        "/en/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/en/effect/sleep",
+      "market": "RO storefront; default language EN",
+      "language": "en",
+      "page_type": "effects",
+      "primary_query": "CBD and sleep",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD and sleep — choosing for an evening routine",
+      "h1": "CBD and sleep",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/en/catalog",
+        "/en/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/en/effect/relax",
+      "market": "RO storefront; default language EN",
+      "language": "en",
+      "page_type": "effects",
+      "primary_query": "CBD, stress and relaxation",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD and relaxation — comparing products for your routine",
+      "h1": "CBD, stress and relaxation",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/en/catalog",
+        "/en/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/en/effect/recovery",
+      "market": "RO storefront; default language EN",
+      "language": "en",
+      "page_type": "effects",
+      "primary_query": "CBD for sport and massage",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD for sport and massage — formats and product checks",
+      "h1": "CBD for sport and massage",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/en/catalog",
+        "/en/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/en/effect/balance",
+      "market": "RO storefront; default language EN",
+      "language": "en",
+      "page_type": "effects",
+      "primary_query": "CBD and everyday balance",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD and everyday balance — a practical product guide",
+      "h1": "CBD and everyday balance",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/en/catalog",
+        "/en/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/en/effect/mood-focus",
+      "market": "RO storefront; default language EN",
+      "language": "en",
+      "page_type": "effects",
+      "primary_query": "CBD, mood and focus",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD, mood and focus — ingredients and everyday use",
+      "h1": "CBD, mood and focus",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/en/catalog",
+        "/en/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/en/effect/womens-health",
+      "market": "RO storefront; default language EN",
+      "language": "en",
+      "page_type": "effects",
+      "primary_query": "CBD and women’s wellbeing",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD and women’s wellbeing — choosing with care",
+      "h1": "CBD and women’s wellbeing",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/en/catalog",
+        "/en/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/ro",
+      "market": "RO storefront; default language EN",
+      "language": "ro",
+      "page_type": "home",
+      "primary_query": "Uleiuri CBD, capsule și alte forme",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "Magazin CBD — uleiuri, capsule și îngrijire topică",
+      "h1": "Uleiuri CBD, capsule și alte forme",
+      "copy_source": "templates/storefront/lib/content/home-copy.json",
+      "faq_items": 7,
+      "internal_links": [
+        "existing category, effect and guide links"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/ro/catalog/oil",
+      "market": "RO storefront; default language EN",
+      "language": "ro",
+      "page_type": "categories",
+      "primary_query": "Uleiuri CBD",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "Uleiuri CBD — concentrații, volume și ingrediente",
+      "h1": "Uleiuri CBD",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/ro/catalog",
+        "/ro/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/ro/catalog/capsules",
+      "market": "RO storefront; default language EN",
+      "language": "ro",
+      "page_type": "categories",
+      "primary_query": "Capsule CBD",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "Capsule CBD — cantitatea per capsulă și mărimea cutiei",
+      "h1": "Capsule CBD",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/ro/catalog",
+        "/ro/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/ro/catalog/paste",
+      "market": "RO storefront; default language EN",
+      "language": "ro",
+      "page_type": "categories",
+      "primary_query": "Pastă CBD",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "Pastă CBD — extracte de cânepă concentrate",
+      "h1": "Pastă CBD",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/ro/catalog",
+        "/ro/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/ro/catalog/edibles",
+      "market": "RO storefront; default language EN",
+      "language": "ro",
+      "page_type": "categories",
+      "primary_query": "Produse comestibile CBD",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "Produse comestibile CBD — porții și ingrediente",
+      "h1": "Produse comestibile CBD",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/ro/catalog",
+        "/ro/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/ro/catalog/pets",
+      "market": "RO storefront; default language EN",
+      "language": "ro",
+      "page_type": "categories",
+      "primary_query": "Produse CBD pentru animale",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD pentru animale — etichete și sfatul veterinarului",
+      "h1": "Produse CBD pentru animale",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/ro/catalog",
+        "/ro/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/ro/catalog/vape",
+      "market": "RO storefront; default language EN",
+      "language": "ro",
+      "page_type": "categories",
+      "primary_query": "Produse CBD pentru vaping",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD pentru vaping — lichide, ingrediente și dispozitive",
+      "h1": "Produse CBD pentru vaping",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/ro/catalog",
+        "/ro/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/ro/catalog/cosmetics",
+      "market": "RO storefront; default language EN",
+      "language": "ro",
+      "page_type": "categories",
+      "primary_query": "Cosmetice CBD",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "Cosmetice CBD — ingrediente și îngrijirea pielii",
+      "h1": "Cosmetice CBD",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/ro/catalog",
+        "/ro/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/ro/catalog/topicals",
+      "market": "RO storefront; default language EN",
+      "language": "ro",
+      "page_type": "categories",
+      "primary_query": "Produse topice CBD",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "Produse topice CBD — creme, balsamuri și îngrijirea corpului",
+      "h1": "Produse topice CBD",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/ro/catalog",
+        "/ro/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/ro/effect/sleep",
+      "market": "RO storefront; default language EN",
+      "language": "ro",
+      "page_type": "effects",
+      "primary_query": "CBD și somnul",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD și somnul — alegerea pentru rutina de seară",
+      "h1": "CBD și somnul",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/ro/catalog",
+        "/ro/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/ro/effect/relax",
+      "market": "RO storefront; default language EN",
+      "language": "ro",
+      "page_type": "effects",
+      "primary_query": "CBD, stres și relaxare",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD și relaxarea — comparați produsele pentru rutina zilnică",
+      "h1": "CBD, stres și relaxare",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/ro/catalog",
+        "/ro/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/ro/effect/recovery",
+      "market": "RO storefront; default language EN",
+      "language": "ro",
+      "page_type": "effects",
+      "primary_query": "CBD pentru sport și masaj",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD pentru sport și masaj — forme și verificări",
+      "h1": "CBD pentru sport și masaj",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/ro/catalog",
+        "/ro/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/ro/effect/balance",
+      "market": "RO storefront; default language EN",
+      "language": "ro",
+      "page_type": "effects",
+      "primary_query": "CBD și echilibrul cotidian",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD și echilibrul cotidian — ghid practic de alegere",
+      "h1": "CBD și echilibrul cotidian",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/ro/catalog",
+        "/ro/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/ro/effect/mood-focus",
+      "market": "RO storefront; default language EN",
+      "language": "ro",
+      "page_type": "effects",
+      "primary_query": "CBD, dispoziție și concentrare",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD, dispoziție și concentrare — ingrediente și utilizare",
+      "h1": "CBD, dispoziție și concentrare",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/ro/catalog",
+        "/ro/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/ro/effect/womens-health",
+      "market": "RO storefront; default language EN",
+      "language": "ro",
+      "page_type": "effects",
+      "primary_query": "CBD și bunăstarea femeilor",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD și bunăstarea femeilor — alegere informată",
+      "h1": "CBD și bunăstarea femeilor",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/ro/catalog",
+        "/ro/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/hu",
+      "market": "RO storefront; default language EN",
+      "language": "hu",
+      "page_type": "home",
+      "primary_query": "CBD olajok, kapszulák és más formák",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD bolt — olajok, kapszulák és külsőleges ápolás",
+      "h1": "CBD olajok, kapszulák és más formák",
+      "copy_source": "templates/storefront/lib/content/home-copy.json",
+      "faq_items": 7,
+      "internal_links": [
+        "existing category, effect and guide links"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/hu/catalog/oil",
+      "market": "RO storefront; default language EN",
+      "language": "hu",
+      "page_type": "categories",
+      "primary_query": "CBD olajok",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD olajok — erősség, kiszerelés és összetevők",
+      "h1": "CBD olajok",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/hu/catalog",
+        "/hu/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/hu/catalog/capsules",
+      "market": "RO storefront; default language EN",
+      "language": "hu",
+      "page_type": "categories",
+      "primary_query": "CBD kapszulák",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD kapszulák — CBD-tartalom és kiszerelés",
+      "h1": "CBD kapszulák",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/hu/catalog",
+        "/hu/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/hu/catalog/paste",
+      "market": "RO storefront; default language EN",
+      "language": "hu",
+      "page_type": "categories",
+      "primary_query": "CBD paszta",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD paszta — koncentrált kenderkivonatok",
+      "h1": "CBD paszta",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/hu/catalog",
+        "/hu/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/hu/catalog/edibles",
+      "market": "RO storefront; default language EN",
+      "language": "hu",
+      "page_type": "categories",
+      "primary_query": "Ehető CBD termékek",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "Ehető CBD termékek — adagok és összetevők",
+      "h1": "Ehető CBD termékek",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/hu/catalog",
+        "/hu/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/hu/catalog/pets",
+      "market": "RO storefront; default language EN",
+      "language": "hu",
+      "page_type": "categories",
+      "primary_query": "CBD termékek állatoknak",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD állatoknak — címke és állatorvosi tanács",
+      "h1": "CBD termékek állatoknak",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/hu/catalog",
+        "/hu/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/hu/catalog/vape",
+      "market": "RO storefront; default language EN",
+      "language": "hu",
+      "page_type": "categories",
+      "primary_query": "CBD vape termékek",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD vape termékek — folyadékok és kompatibilitás",
+      "h1": "CBD vape termékek",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/hu/catalog",
+        "/hu/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/hu/catalog/cosmetics",
+      "market": "RO storefront; default language EN",
+      "language": "hu",
+      "page_type": "categories",
+      "primary_query": "CBD kozmetikumok",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "CBD kozmetikumok — összetevők és bőrápolás",
+      "h1": "CBD kozmetikumok",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/hu/catalog",
+        "/hu/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/hu/catalog/topicals",
+      "market": "RO storefront; default language EN",
+      "language": "hu",
+      "page_type": "categories",
+      "primary_query": "Külsőleges CBD termékek",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "choose a format and understand label information",
+      "title": "Külsőleges CBD termékek — krémek és balzsamok",
+      "h1": "Külsőleges CBD termékek",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 4,
+      "internal_links": [
+        "/hu/catalog",
+        "/hu/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/hu/effect/sleep",
+      "market": "RO storefront; default language EN",
+      "language": "hu",
+      "page_type": "effects",
+      "primary_query": "CBD és alvás",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD és alvás — választás az esti rutinhoz",
+      "h1": "CBD és alvás",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/hu/catalog",
+        "/hu/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/hu/effect/relax",
+      "market": "RO storefront; default language EN",
+      "language": "hu",
+      "page_type": "effects",
+      "primary_query": "CBD, stressz és relaxáció",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD és relaxáció — termékek összehasonlítása",
+      "h1": "CBD, stressz és relaxáció",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/hu/catalog",
+        "/hu/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/hu/effect/recovery",
+      "market": "RO storefront; default language EN",
+      "language": "hu",
+      "page_type": "effects",
+      "primary_query": "CBD sporthoz és masszázshoz",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD sporthoz és masszázshoz — formák és ellenőrzések",
+      "h1": "CBD sporthoz és masszázshoz",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/hu/catalog",
+        "/hu/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/hu/effect/balance",
+      "market": "RO storefront; default language EN",
+      "language": "hu",
+      "page_type": "effects",
+      "primary_query": "CBD és mindennapi egyensúly",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD és mindennapi egyensúly — gyakorlati útmutató",
+      "h1": "CBD és mindennapi egyensúly",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/hu/catalog",
+        "/hu/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/hu/effect/mood-focus",
+      "market": "RO storefront; default language EN",
+      "language": "hu",
+      "page_type": "effects",
+      "primary_query": "CBD, hangulat és koncentráció",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD, hangulat és koncentráció — összetevők és használat",
+      "h1": "CBD, hangulat és koncentráció",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/hu/catalog",
+        "/hu/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    },
+    {
+      "status": "reviewed",
+      "url": "/hu/effect/womens-health",
+      "market": "RO storefront; default language EN",
+      "language": "hu",
+      "page_type": "effects",
+      "primary_query": "CBD és női jóllét",
+      "query_origin": "editorial hypothesis, not a measured local keyword",
+      "intent": "compare products and resolve purchase questions",
+      "reader_goal": "understand this collection and compare products without assuming a health benefit",
+      "title": "CBD és női jóllét — körültekintő választás",
+      "h1": "CBD és női jóllét",
+      "copy_source": "templates/storefront/lib/content/shop-copy.json",
+      "faq_items": 3,
+      "internal_links": [
+        "/hu/catalog",
+        "/hu/info/analize-de-laborator"
+      ],
+      "research_date": "2026-09-08 for the BG copy brief; no RO/HU keyword measurements used",
+      "reviewed_at": "2026-10-06",
+      "business_facts": "existing category/effect membership from the Vendure storefront; no new price, COA availability, delivery or payment promises",
+      "needs_before_market_targeted_launch": [
+        "confirmed RO/HU demand export",
+        "product-specific certificates and approved intended uses",
+        "confirmed business and shipping information"
+      ]
+    }
+  ]
+}

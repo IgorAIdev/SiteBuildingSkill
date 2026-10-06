@@ -1,0 +1,209 @@
+{
+  "en": {
+    "title": "CBD shop — oils, capsules, edibles and topical care",
+    "description": "Explore CBD oils, capsules, edibles and skincare. Compare CBD content, ingredients and formats, with guides and answers to help you choose.",
+    "hero": {
+      "title": "CBD oils, capsules and more",
+      "lede": "Find the format that fits your routine. Compare CBD content, ingredients and product instructions, from oils and capsules to edibles and topical care."
+    },
+    "effects": {
+      "title": "Shop by effect",
+      "lede": "Explore the collections by what matters to you, then compare the products. Each page explains its theme and answers questions before you choose."
+    },
+    "oils": {
+      "title": "CBD oils",
+      "lede": "Compare bottle sizes, CBD amounts and carrier oils. Check the stated spectrum and intended use before choosing a strength."
+    },
+    "capsules": {
+      "title": "CBD capsules",
+      "lede": "A measured unit with no drops to count. Compare CBD per capsule, the number in the pack and the ingredients in the capsule shell."
+    },
+    "featured": {
+      "title": "Explore the range",
+      "lede": "Discover different CBD formats in one place. Open a product to compare its ingredients, CBD content, available options and instructions."
+    },
+    "reviews": {
+      "title": "What customers say",
+      "lede": "Sample reviews — the shop’s real reviews will appear here."
+    },
+    "story": {
+      "title": "A few checks before you choose",
+      "body": "Start with intended use and ingredients, then compare the CBD amount and pack size. A higher concentration is one difference between products; it does not make a product suitable for everyone.\n\nWhere a lab report is provided, check which product and batch it covers and what was tested. Read the product instructions and ask a clinician or pharmacist about CBD if you take medicines or have a health condition."
+    },
+    "posts": {
+      "title": "Guides for choosing CBD",
+      "lede": "Understand CBD formats, read strength labels and learn what to look for in a product’s lab report."
+    },
+    "faq": {
+      "title": "Questions about choosing CBD",
+      "items": [
+        {
+          "q": "What is CBD?",
+          "a": "CBD, or cannabidiol, is a compound found in the cannabis plant. It is different from THC, the principal intoxicating cannabinoid. A CBD product can contain other compounds, so check its ingredients and measured cannabinoid content where available."
+        },
+        {
+          "q": "How do I choose a CBD format?",
+          "a": "Start with the intended use on the label. Compare oils, capsules and edibles by their stated amounts and instructions; compare cosmetics and topicals by their ingredients and application areas. Products for external use are not substitutes for oral products."
+        },
+        {
+          "q": "Does a higher CBD percentage mean a better product?",
+          "a": "No. Percentage describes concentration, while pack size and milligrams help you compare the amount. Ingredients, intended use and clear product information also matter. There is no single strength suitable for everyone."
+        },
+        {
+          "q": "How do I read a CBD lab report?",
+          "a": "Match the product and batch identifiers to the pack. Check the date, measured CBD and THC and the tests actually included. A cannabinoid test alone does not establish that pesticides, heavy metals or other contaminants were also checked."
+        },
+        {
+          "q": "Are effect collections a promise of results?",
+          "a": "No. Sleep, relaxation and other collection themes help you browse. They do not guarantee an effect or establish treatment for a health condition. Each collection explains what to compare at product level."
+        },
+        {
+          "q": "Can CBD interact with medicines?",
+          "a": "Yes, CBD can interact with medicines. Ask your clinician or pharmacist about the specific product before using it alongside treatment. Avoid CBD during pregnancy and breastfeeding, and keep adult products away from children and pets."
+        },
+        {
+          "q": "Where do I check delivery, payment and returns?",
+          "a": "Read the Delivery and payment and Returns pages. Available delivery and payment methods depend on the destination and are shown during checkout when ordering is enabled. Check those details before placing an order."
+        }
+      ]
+    }
+  },
+  "ro": {
+    "title": "Magazin CBD — uleiuri, capsule și îngrijire topică",
+    "description": "Descoperiți uleiuri, capsule, produse comestibile și cosmetice CBD. Comparați cantitățile, ingredientele și formele cu ajutorul ghidurilor și întrebărilor.",
+    "hero": {
+      "title": "Uleiuri CBD, capsule și alte forme",
+      "lede": "Găsiți forma potrivită pentru rutina dumneavoastră. Comparați CBD-ul, ingredientele și instrucțiunile: de la uleiuri și capsule la produse comestibile și îngrijire topică."
+    },
+    "effects": {
+      "title": "Cumpără după efect",
+      "lede": "Explorați colecțiile după tema care vă interesează, apoi comparați produsele. Fiecare pagină explică tema și răspunde întrebărilor înainte de alegere."
+    },
+    "oils": {
+      "title": "Uleiuri CBD",
+      "lede": "Comparați volumul flaconului, cantitatea CBD și uleiul purtător. Verificați spectrul declarat și utilizarea indicată înainte de a alege concentrația."
+    },
+    "capsules": {
+      "title": "Capsule CBD",
+      "lede": "O unitate măsurată, fără picături de numărat. Comparați CBD-ul per capsulă, numărul din cutie și ingredientele învelișului."
+    },
+    "featured": {
+      "title": "Descoperiți gama",
+      "lede": "Explorați mai multe forme CBD într-un singur loc. Deschideți produsul pentru ingrediente, cantitatea CBD, opțiuni și instrucțiuni."
+    },
+    "reviews": {
+      "title": "Ce spun clienții",
+      "lede": "Exemple de recenzii — recenziile reale ale magazinului vor apărea aici."
+    },
+    "story": {
+      "title": "Câteva verificări înainte de alegere",
+      "body": "Începeți cu utilizarea indicată și ingredientele, apoi comparați cantitatea CBD și ambalajul. O concentrație mai mare este o diferență între produse; nu face produsul potrivit pentru oricine.\n\nDacă există un buletin de analiză, verificați produsul, lotul și testele incluse. Citiți instrucțiunile și discutați cu medicul sau farmacistul despre CBD dacă luați medicamente ori aveți o afecțiune."
+    },
+    "posts": {
+      "title": "Ghiduri pentru alegerea CBD",
+      "lede": "Înțelegeți formele CBD, etichetele de concentrație și informațiile de urmărit într-un buletin de analiză."
+    },
+    "faq": {
+      "title": "Întrebări despre alegerea CBD",
+      "items": [
+        {
+          "q": "Ce este CBD?",
+          "a": "CBD, sau canabidiolul, este un compus al plantei de canabis. Diferă de THC, principalul canabinoid intoxicant. Produsul poate conține și alți compuși; verificați ingredientele și conținutul măsurat de canabinoizi, dacă este disponibil."
+        },
+        {
+          "q": "Cum aleg forma unui produs CBD?",
+          "a": "Începeți cu utilizarea de pe etichetă. Comparați uleiurile, capsulele și produsele comestibile după cantitățile declarate și instrucțiuni; cosmeticele și produsele topice după ingrediente și zonele de aplicare. Produsele externe nu înlocuiesc produsele orale."
+        },
+        {
+          "q": "Un procent CBD mai mare înseamnă un produs mai bun?",
+          "a": "Nu. Procentul descrie concentrația, iar ambalajul și miligramele ajută la compararea cantității. Contează și ingredientele, utilizarea indicată și informațiile clare. Nu există o concentrație potrivită pentru oricine."
+        },
+        {
+          "q": "Cum citesc un buletin de analiză CBD?",
+          "a": "Comparați identificatorii produsului și lotului cu ambalajul. Verificați data, CBD-ul și THC-ul măsurate și testele incluse efectiv. Un test de canabinoizi nu confirmă automat verificarea pesticidelor, metalelor grele sau a altor contaminanți."
+        },
+        {
+          "q": "Colecțiile după efect promit un rezultat?",
+          "a": "Nu. Somnul, relaxarea și alte teme ajută la navigare. Nu garantează un efect și nu confirmă tratarea unei afecțiuni. Fiecare colecție explică ce informații să comparați la nivelul produsului."
+        },
+        {
+          "q": "CBD poate interacționa cu medicamentele?",
+          "a": "Da, CBD poate interacționa cu medicamentele. Discutați produsul exact cu medicul sau farmacistul înainte de utilizare împreună cu un tratament. Evitați CBD în sarcină și alăptare și păstrați produsele pentru adulți departe de copii și animale."
+        },
+        {
+          "q": "Unde verific livrarea, plata și returul?",
+          "a": "Citiți paginile Livrare și plată și Retur. Metodele disponibile depind de destinație și sunt afișate la finalizarea comenzii când comenzile sunt active. Verificați detaliile înainte de plasarea comenzii."
+        }
+      ]
+    }
+  },
+  "hu": {
+    "title": "CBD bolt — olajok, kapszulák és külsőleges ápolás",
+    "description": "Fedezze fel a CBD olajokat, kapszulákat, ehető termékeket és kozmetikumokat. Hasonlítsa össze a tartalmat, összetevőket és formákat útmutatóinkkal.",
+    "hero": {
+      "title": "CBD olajok, kapszulák és más formák",
+      "lede": "Találja meg a rutinjához illő formát. Hasonlítsa össze a CBD-tartalmat, összetevőket és útmutatót az olajoktól és kapszuláktól az ehető termékekig és külsőleges ápolásig."
+    },
+    "effects": {
+      "title": "Vásároljon hatás szerint",
+      "lede": "Fedezze fel a témákat, majd hasonlítsa össze a termékeket. Minden oldal elmagyarázza a kollekciót, és választ ad a vásárlás előtti kérdésekre."
+    },
+    "oils": {
+      "title": "CBD olajok",
+      "lede": "Hasonlítsa össze az üvegméretet, CBD-mennyiséget és hordozóolajat. Erősség választása előtt ellenőrizze a spektrumot és a rendeltetést."
+    },
+    "capsules": {
+      "title": "CBD kapszulák",
+      "lede": "Kimért egység, cseppszámolás nélkül. Hasonlítsa össze a kapszulánkénti CBD-t, a doboz darabszámát és a kapszulahéj összetevőit."
+    },
+    "featured": {
+      "title": "Fedezze fel a kínálatot",
+      "lede": "Ismerjen meg több CBD-formát egy helyen. Nyissa meg a terméket az összetevők, CBD-tartalom, választható változatok és útmutató összehasonlításához."
+    },
+    "reviews": {
+      "title": "Mit mondanak a vásárlók",
+      "lede": "Minta vélemények — itt jelennek meg majd a bolt valódi véleményei."
+    },
+    "story": {
+      "title": "Néhány ellenőrzés a választás előtt",
+      "body": "Kezdje a rendeltetéssel és összetevőkkel, majd hasonlítsa össze a CBD-tartalmat és kiszerelést. A nagyobb koncentráció egy termékkülönbség; nem tesz egy terméket mindenki számára megfelelővé.\n\nHa van laborjegyzőkönyv, ellenőrizze a terméket, tételt és az elvégzett vizsgálatokat. Olvassa el az útmutatót, és gyógyszerszedés vagy betegség esetén kérdezzen meg orvost vagy gyógyszerészt a CBD-ről."
+    },
+    "posts": {
+      "title": "Útmutatók a CBD választásához",
+      "lede": "Ismerje meg a CBD-formákat, az erősségjelöléseket és a laborjegyzőkönyvben ellenőrizendő adatokat."
+    },
+    "faq": {
+      "title": "Kérdések a CBD választásáról",
+      "items": [
+        {
+          "q": "Mi a CBD?",
+          "a": "A CBD, vagy kannabidiol, a kannabisznövény egyik vegyülete. Eltér a THC-től, a fő bódító kannabinoidtól. Egy CBD termék más vegyületeket is tartalmazhat; ellenőrizze az összetevőket és az elérhető mért kannabinoid-tartalmat."
+        },
+        {
+          "q": "Hogyan válasszak CBD-formát?",
+          "a": "Kezdje a címkén megadott rendeltetéssel. Az olajokat, kapszulákat és ehető termékeket megadott mennyiség és útmutató, a kozmetikumokat és külsőleges termékeket összetevők és alkalmazási terület alapján hasonlítsa össze. A külsőleges termék nem helyettesít szájon át valót."
+        },
+        {
+          "q": "A magasabb CBD-százalék jobb terméket jelent?",
+          "a": "Nem. A százalék koncentrációt jelöl; a kiszerelés és milligramm segít a mennyiség összehasonlításában. Az összetevők, rendeltetés és világos információk is számítanak. Nincs mindenkinek megfelelő egységes erősség."
+        },
+        {
+          "q": "Hogyan olvassak CBD laborjegyzőkönyvet?",
+          "a": "Egyeztesse a termék és tétel azonosítóit a csomagolással. Ellenőrizze a dátumot, mért CBD-t és THC-t, valamint a tényleges vizsgálatokat. A kannabinoid-vizsgálat önmagában nem igazolja növényvédőszerek, nehézfémek vagy más szennyezők ellenőrzését."
+        },
+        {
+          "q": "A hatás szerinti kollekciók eredményt ígérnek?",
+          "a": "Nem. Az alvás, relaxáció és más témák a böngészést segítik. Nem garantálnak hatást vagy betegségkezelést. Minden kollekció elmagyarázza, mit érdemes termékszinten összehasonlítani."
+        },
+        {
+          "q": "Kölcsönhatásba léphet a CBD gyógyszerekkel?",
+          "a": "Igen. Kezelés melletti használat előtt beszélje meg a konkrét terméket orvossal vagy gyógyszerésszel. Várandósság és szoptatás alatt kerülje a CBD-t; a felnőtteknek szánt termékeket tartsa távol gyermekektől és állatoktól."
+        },
+        {
+          "q": "Hol ellenőrizhetem a szállítást, fizetést és visszaküldést?",
+          "a": "Olvassa el a Szállítás és fizetés, valamint a Visszaküldés oldalt. Az elérhető módok a célországtól függenek, és aktív rendelés esetén a pénztárban jelennek meg. Rendelés előtt ellenőrizze a részleteket."
+        }
+      ]
+    }
+  }
+}

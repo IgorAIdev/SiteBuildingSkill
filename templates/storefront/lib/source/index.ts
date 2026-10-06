@@ -9,6 +9,7 @@ import { effectShot, shelfShot } from './sample/shelf-shots.ts'
 import { CATEGORIES, EFFECTS } from '../products.ts'
 import type { Lang } from '../locale.ts'
 import { REVIEWS_ARE_REAL } from '../flags.ts'
+import { categoryCopy, effectCopy } from '../content/shop-copy.ts'
 
 /* Один выбор источника на всю витрину (`SOURCE` в .env):
    · `sample` — образец в lib/ (по умолчанию);
@@ -18,21 +19,24 @@ import { REVIEWS_ARE_REAL } from '../flags.ts'
    · `live` (Vendure + Payload) — план 4, содержание из Payload. */
 const which = () => process.env.SOURCE ?? 'sample'
 
-/* Кадр полки — у движка; у полки без снимка — кадр полки образца её вида
+/* Редакционный лид известных полок — из content/shop-copy.ts на языке страницы.
+   Незнакомые полки сохраняют описание движка. Кадр полки — у движка;
+   у полки без снимка — кадр полки образца её вида
    (`formOf` по адресу, sample/shelf-shots.ts), пока свой кадр не даёт
    Payload (план 4): плашка полки без снимка — пустая плашка. */
-const framed = (c: Collection): Collection => {
+const framed = (c: Collection, lang: Lang): Collection => {
   const form = c.image ? null : formOf([c.slug])
-  return form ? { ...c, image: shelfShot(form, c.name) } : c
+  return { ...c, description: categoryCopy(lang, c.slug)?.lede ?? c.description, image: form ? shelfShot(form, c.name) : c.image }
 }
 
 /* Кадр эффекта — так же: у значения грани в движке снимка нет, и эффект
    берёт кадр образца по своему коду (sample/shelf-shots.ts); кода там нет —
    плитка без снимка. Описания у значения грани в движке тоже нет: эффект
-   берёт описание образца по тому же коду (lib/products.ts, EFFECTS) — его
+   сначала берёт редакционный лид по коду, затем описание движка или образца
+   (lib/products.ts, EFFECTS) — его
    читают строка плитки «Caption», вступление и описание страницы эффекта;
    кода там нет — описание пустое, как было. Пока своё не даст Payload (план 4). */
-const told = (e: Effect, lang: Lang): string => e.description || (EFFECTS.find((x) => x.effect === e.code)?.description[lang] ?? '')
+const told = (e: Effect, lang: Lang): string => effectCopy(lang, e.code)?.lede ?? (e.description || (EFFECTS.find((x) => x.effect === e.code)?.description[lang] ?? ''))
 const shotOf = (e: Effect, lang: Lang): Effect => ({ ...e, image: e.image ?? effectShot(e.code, e.name), description: told(e, lang) })
 
 let trade: { source: Source; commerce: Commerce; content: Content } | null = null
@@ -42,8 +46,8 @@ function vendure() {
     const engine = vendureSource(env)
     const catalog: Source = {
       ...engine,
-      async collections(lang) { const r = await engine.collections(lang); return r.ok ? { ok: true, value: r.value.map(framed) } : r },
-      async collection(lang, slug) { const r = await engine.collection(lang, slug); return r.ok ? { ok: true, value: framed(r.value) } : r },
+      async collections(lang) { const r = await engine.collections(lang); return r.ok ? { ok: true, value: r.value.map((c) => framed(c, lang)) } : r },
+      async collection(lang, slug) { const r = await engine.collection(lang, slug); return r.ok ? { ok: true, value: framed(r.value, lang) } : r },
       async effects(lang) { const r = await engine.effects(lang); return r.ok ? { ok: true, value: r.value.map((e) => shotOf(e, lang)) } : r },
     }
     trade = { source: catalog, commerce: vendureCommerce({ ...env, placeOrders: process.env.VENDURE_PLACE_ORDERS === 'on' }), content: standIn(catalog) }

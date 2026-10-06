@@ -58,7 +58,7 @@ export function ShelfGrid({ cards, eager, cart, fold }: { cards: ShelfCard[]; ea
    И605): корень — раздел, а не второй `main` со вторым якорем `#main`;
    главное на странице одно. `ids` — свои адреса формы граней и порядка у
    второго образца на той же странице. */
-export function Catalog({ view, search, cart, inset = false, ids }: { view: CatalogView; search?: ReactNode; cart: CartActions; inset?: boolean; ids?: { filters: string; sort: string } }) {
+export function Catalog({ view, search, cart, inset = false, ids, after }: { view: CatalogView; search?: ReactNode; cart: CartActions; inset?: boolean; ids?: { filters: string; sort: string }; after?: ReactNode }) {
   const tools = Boolean(view.filters || view.sort || view.chips.length)
   const Root = inset ? 'section' : 'main'
   /* Адрес полки для «Показать ещё» свёртки — свой у образца в дизайн-системе (И754). */
@@ -119,6 +119,7 @@ export function Catalog({ view, search, cart, inset = false, ids }: { view: Cata
           <Shelf title={view.more.title} id="shelf-more" all={view.more.all} cards={view.more.cards} cart={cart} className={s.more} />
         ) : null}
       </div>
+      {after}
     </Root>
   )
 }
