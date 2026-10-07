@@ -1,5 +1,6 @@
 'use client'
 import { useEffect } from 'react'
+import { installPaneViewport } from '../public/pane-viewport.js'
 
 /* Окно за пальцем — одно на сайт (styles/pane.module.css, И494). Слово
    заказчика 27.09.2026: «формы, боковые меню, выскакивающие формы должны
@@ -39,6 +40,7 @@ function shut(pane: HTMLElement) {
 }
 
 export function PaneSwipe() {
+  useEffect(installPaneViewport, [])
   useEffect(() => {
     let pane: HTMLElement | null = null
     let way: Way | null = null
