@@ -33,7 +33,9 @@
   display:inline-flex;align-items:center;justify-content:center;gap:calc(var(--ctrl-target) * .2);
   min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target);padding-inline:calc(var(--ctrl-target) * .1);
   border-radius:50%;color:var(--ink-dim);--state-hover:0%;--state-press:0%;
-  font:inherit;font-size:var(--ctrl-fs-xs);font-weight:var(--label-weight);
+  /* Основные знаки — от обычной надписи органа, как svg общей кнопки.
+     Малый кегль оставлен служебной строке шапки её собственным правилом. */
+  font:inherit;font-size:var(--ctrl-fs);font-weight:var(--label-weight);
   /* Рост знака — ручка: место, которое ставит знак на вертикаль полей
      страницы (меню шапки у края, И753), меряет рамку от него, а не числом. */
   --glyph-h:1.43em
