@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import b from '@/styles/btn.module.css'
 import s from './ProductView.module.css'
-import { Icon } from './Icon.tsx'
+import { AddLabel } from './AddLabel.tsx'
 
 /* Строка покупки у низа окна на телефоне (отложенное заказчиком 27.09.2026
    «в корзину, приклеенная к низу на телефоне», взято по «делай всё»
@@ -11,7 +11,7 @@ import { Icon } from './Icon.tsx'
    кнопка нажимает главную кнопку строки покупки (`buy`) — выбор варианта,
    количество и ответ корзины остаются в одном месте (правило 10). Помнит
    компонент одно — видна ли строка покупки. */
-export function StickyBuy({ buy, label, children }: { buy: string; label: string; children: ReactNode }) {
+export function StickyBuy({ buy, label, variant, added, children }: { buy: string; label: string; variant?: string | null; added: string; children: ReactNode }) {
   const [shown, setShown] = useState(false)
   useEffect(() => {
     const el = document.getElementById(buy)
@@ -36,7 +36,7 @@ export function StickyBuy({ buy, label, children }: { buy: string; label: string
   return (
     <div ref={bar} className={s.bar} data-shown={shown ? '' : undefined} inert={!shown}>
       {children}
-      <button className={b.btn} data-voice="loud" type="button" onClick={press}>{label}<Icon id="shopping-cart" /></button>
+      <button className={b.btn} data-voice="loud" type="button" onClick={press}><AddLabel variant={variant} add={label} added={added} /></button>
     </div>
   )
 }

@@ -83,7 +83,7 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
           </div>
           {view.facts ? <KeyFacts facts={view.facts} /> : null}
         </div>
-        <StickyBuy buy="buy" label={view.buy.add}><Price now={view.price} was={view.was} /></StickyBuy>
+        <StickyBuy buy="buy" label={view.buy.add} variant={view.buy.variant} added={view.buy.addedShort}><Price now={view.price} was={view.was} /></StickyBuy>
       </section>
       <ProductDetails details={view.details} />
       {/* Протокол партии — окном общего модуля (styles/pane.module.css):

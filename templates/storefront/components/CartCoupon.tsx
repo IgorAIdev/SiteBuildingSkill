@@ -23,7 +23,7 @@ export function CartCoupon({ lang, view, submit, call }: { lang: string; view: P
       <CartForm lang={lang} className={s.couponForm} submit={submit} call={call} initial={view.couponNotice} timeout={view.messages.timeout} failed={view.messages.failed}>
         <details className={s.promo} open={view.coupon.open}>
           <summary className={b.word}>{view.coupon.ask}<Turn /></summary>
-          <div className={`${f.send} ${s.code}`}>
+          <div className={`${f.send} ${s.code}`} data-layout="inline">
             <label className={f.field}>
               <span className={p.said}>{view.coupon.label}</span>
               <input className={f.box} name="code" autoComplete="off" autoCapitalize="characters" spellCheck={false} />

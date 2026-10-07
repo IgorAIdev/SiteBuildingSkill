@@ -183,6 +183,7 @@ export const EN: Record<keyof typeof RO, string> = {
   'search.open': 'Open search',
   'search.close': 'Close search',
   'search.all': 'All results for “{q}”',
+  'search.clear': 'Clear',
   'search.found': 'Products',
   'cart.title': 'Your cart',
   'cart.count.one': '{n} item',

@@ -183,6 +183,7 @@ export const HU: Record<keyof typeof RO, string> = {
   'search.open': 'Keresés megnyitása',
   'search.close': 'Keresés bezárása',
   'search.all': 'Összes találat: „{q}”',
+  'search.clear': 'Törlés',
   'search.found': 'Termékek',
   'cart.title': 'Az Ön kosara',
   'cart.count.one': '{n} darab',

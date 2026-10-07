@@ -1,8 +1,8 @@
 /* Окно поиска (SearchPane.tsx; бриф docs/design/поиск.md). Устройство окна —
-   общий модуль (styles/pane.module.css, `data-pane="top"`): шапка с полем
-   стоит, подсказки прокручиваются. Поле и подсказки стоят в мере страницы
+   общий модуль (styles/pane.module.css, `data-pane="top"`): шапка с заголовком
+   стоит, поле, действия и подсказки прокручиваются. Они стоят в мере страницы
    (`wrap`), как строка шапки над ними. */
-.form{display:flex;align-items:center;gap:var(--gap-row);flex:1 1 auto;min-inline-size:0}
+.form{inline-size:100%;display:flex;align-items:center;gap:var(--gap-row);flex:1 1 auto;min-inline-size:0}
 .form > svg{flex:none;inline-size:1.25em;block-size:1.25em;color:var(--ink-soft)}
 .input{flex:1 1 auto;min-inline-size:0}
 .body{display:grid;justify-items:start;gap:var(--air-row);padding-block:var(--air-row) var(--pad-card)}
@@ -29,3 +29,7 @@
 .name{font-weight:var(--prodhead-weight);overflow-wrap:anywhere}
 .price{font-weight:var(--cardprice-weight);font-variant-numeric:tabular-nums;white-space:nowrap}
 .none{margin:0;color:var(--ink-soft)}
+
+
+.actions{justify-self:stretch;align-items:stretch}
+.actions > *{flex-basis:0}
