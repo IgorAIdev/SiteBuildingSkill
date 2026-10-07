@@ -89,6 +89,8 @@ export function QuickOrder({ view }: { view: QuickView }) {
               </li>
             ))}
           </ul>
+        </div>
+        <div className={pn.foot}>
           <div className={f.field}>
             <label className={f.label} htmlFor={`${id}-phone`}>{view.phone.label}</label>
             {/* Номер и «перезвоните» — общая пара поля и кнопки (`f.send`,
