@@ -185,7 +185,6 @@ export function NavLinks({ links, className, more, overflow }: { links: NavLink[
               {l.sign ? <span className={s.sign} aria-hidden="true"><Icon id={l.sign} /></span> : null}
               <span className={s.name}>{l.label}</span>
               {l.line ? <span className={s.line}>{l.line}</span> : null}
-              <span className={s.chev} aria-hidden="true"><Icon id="chevron-right" /></span>
             </a>
             {l.menu ? (
               <>
