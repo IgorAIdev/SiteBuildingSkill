@@ -44,7 +44,7 @@ export type RatingView = { value: string | null; count: string | null; stars: St
 export type AskView = { action: string; keep: [string, string][] }
 /** `quantity`, `less`, `more` — подпись счётчика и имена его «−» и «+»:
  *  счётчик один на сайт (QuantityStepper), корзина и карта берут его. */
-export type BuyView = { variant: string | null; ask: AskView | null; add: string; added: string; quantity: string; less: string; more: string; max: number; timeout: string; failed: string; quick: QuickView }
+export type BuyView = { variant: string | null; ask: AskView | null; add: string; added: string; addedShort: string; quantity: string; less: string; more: string; max: number; timeout: string; failed: string; quick: QuickView }
 /** Быстрый заказ — окно со строками мессенджеров (слово заказчика
  *  25.09.2026, И442). `what` — что заказывают, строкой окна и сообщения:
  *  марка, имя и упаковка выбранного варианта; количество окно берёт из
@@ -242,7 +242,7 @@ export function productView(lang: Lang, product: Product, chosen0: Record<string
     buy: {
       variant: sellable?.id ?? null,
       ask,
-      add: t(lang, 'cart.add'), added: t(lang, 'cart.inCart', { n: '{n}' }) /* шаблон для AddLabel (И469) */,
+      add: t(lang, 'cart.add'), addedShort: t(lang, 'shelf.added', { n: '{n}' }), added: t(lang, 'cart.inCart', { n: '{n}' }) /* шаблон для AddLabel (И469) */,
       quantity: t(lang, 'cart.quantity'),
       less: t(lang, 'cart.less', { name: product.name }), more: t(lang, 'cart.more', { name: product.name }), max: QTY_MAX,
       timeout: t(lang, 'cart.error.timeout'), failed: t(lang, 'cart.error.unavailable'),

@@ -96,7 +96,7 @@ export async function ProductParts({ lang }: { lang: Lang }) {
       </Part>
       <Part title="Полоса покупки внизу экрана" lede="Цена и «в корзину» у низа экрана телефона: появляется, когда строка покупки ушла вверх за край. Здесь — в рамке шириной телефона, пока карта товара выше прокручена из виду.">
         <div lang={lang} className={s.phone}>
-          <StickyBuy buy="buy" label={view.buy.add}><Price now={view.price} was={view.was} /></StickyBuy>
+          <StickyBuy buy="buy" label={view.buy.add} variant={view.buy.variant} added={view.buy.addedShort}><Price now={view.price} was={view.was} /></StickyBuy>
         </div>
       </Part>
       <Part title="Быстрый заказ" lede="Кнопка рядом с «в корзину»: открывает окно с мессенджерами и полем телефона — заказ одним сообщением.">

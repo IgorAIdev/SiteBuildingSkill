@@ -63,9 +63,8 @@ export function Filters({ f: view, id = 'filters' }: { f: FiltersView; id?: stri
           (`display:contents`), и раскрытия стоят в строке примитива. */}
       <form id={id} popover="auto" className={`${p.cluster} ${pn.pane} ${s.filters}`} data-pane="start" data-row action={view.action} method="get" aria-label={view.title}>
         <LiveFilter form={id} live={view.live}>
-        {/* Имя окна несёт полку страницы, выход из неё — словом у крестика (И740). */}
-        <PaneHead className={s.head} title={view.scope ? `${view.title} · ${view.scope.label}` : view.title} close={view.close} target={id}
-          end={view.scope ? <a className={`${b.word} ${s.wider}`} href={view.scope.href} aria-label={view.scope.said}>{view.scope.all}</a> : null} />
+        {/* Заголовок сохраняет выбранную категорию без второго перехода. */}
+        <PaneHead className={s.head} title={view.scope ? `${view.title} · ${view.scope.label}` : view.title} close={view.close} target={id} />
         <div className={`${pn.body} ${s.list}`}>
           {view.facets.map((facet) => (
             <div key={facet.code}>

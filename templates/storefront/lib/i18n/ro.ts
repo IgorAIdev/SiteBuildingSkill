@@ -181,6 +181,7 @@ export const RO = {
   'search.open': 'Deschide căutarea',
   'search.close': 'Închide căutarea',
   'search.all': 'Toate rezultatele pentru „{q}”',
+  'search.clear': 'Șterge',
   'search.found': 'Produse',
   'cart.title': 'Coșul dumneavoastră',
   'cart.count.one': '{n} articol',

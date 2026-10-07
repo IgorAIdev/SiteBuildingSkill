@@ -127,7 +127,7 @@ export async function SiteFrame({ lang }: { lang: Lang }) {
         <SearchPane
           lang={lang} action={hrefFor(lang, { search: '' })} trigger={h.glyph}
           shelves={data.nav}
-          words={{ open: t(lang, 'search.open'), close: t(lang, 'search.close'), label: t(lang, 'search.label'), submit: t(lang, 'search.submit'), all: t(lang, 'search.all', { q: '{q}' }), found: t(lang, 'search.found'), none: t(lang, 'search.none', { q: '{q}' }), shelves: t(lang, 'nav.categories') }}
+          words={{ clear: t(lang, 'search.clear'), open: t(lang, 'search.open'), close: t(lang, 'search.close'), label: t(lang, 'search.label'), submit: t(lang, 'search.submit'), all: t(lang, 'search.all', { q: '{q}' }), found: t(lang, 'search.found'), none: t(lang, 'search.none', { q: '{q}' }), shelves: t(lang, 'nav.categories') }}
         />
       </Part>
 

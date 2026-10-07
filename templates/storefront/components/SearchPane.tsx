@@ -12,7 +12,7 @@ import { Icon } from './Icon.tsx'
 import { PaneHead } from './PaneHead.tsx'
 
 type Found = { q: string; total: number; href: string; cards: ShelfCard[] }
-type Words = { open: string; close: string; label: string; submit: string; all: string; found: string; none: string; shelves: string }
+type Words = { clear: string; open: string; close: string; label: string; submit: string; all: string; found: string; none: string; shelves: string }
 type Shelf = { label: string; href: string; sign: string | null }
 
 /* Поиск из шапки — окно сверху, а не переход на страницу (слово заказчика
@@ -57,19 +57,24 @@ export function SearchPane({ lang, action, words, shelves, trigger }: { lang: st
     <>
       <button className={trigger} type="button" popoverTarget={id} aria-label={words.open} aria-current={here ? 'page' : undefined}><Icon id="search" /></button>
       <div ref={pane} id={id} popover="auto" className={pn.pane} data-pane="top" aria-label={words.label}>
-        <PaneHead wide close={words.close} target={id}>
-          <form className={s.form} action={action} method="get" role="search">
-            <label className={p.said} htmlFor={`${id}-q`}>{words.label}</label>
-            <Icon id="search" />
-            <input ref={field} id={`${id}-q`} className={`${f.box} ${s.input}`} name="q" type="search" value={q} onChange={(e) => setQ(e.target.value)} enterKeyHint="search" placeholder={words.label} autoComplete="off" />
-          </form>
-        </PaneHead>
+        <PaneHead wide title={words.label} close={words.close} target={id} />
         <div className={pn.body}>
-          <div className={`${p.wrap} ${s.body}`} aria-live="polite">
+          <div className={`${p.wrap} ${s.body}`}>
+            <form className={s.form} action={action} method="get" role="search">
+              <label className={p.said} htmlFor={`${id}-q`}>{words.label}</label>
+              <Icon id="search" />
+              <input ref={field} id={`${id}-q`} className={`${f.box} ${s.input}`} name="q" type="search" value={q} onChange={(e) => setQ(e.target.value)} enterKeyHint="search" placeholder={words.label} autoComplete="off" />
+            </form>
+            <p className={s.head} role="status">{shown ? `${words.found} · ${new Intl.NumberFormat(lang).format(shown.total)}` : words.shelves}</p>
+            {q ? (
+              <div className={`${pn.acts} ${s.actions}`}>
+                {shown ? <a className={b.btn} href={shown.href}>{words.all.replace('{q}', shown.q)}<Icon id="arrow-right" /></a> : null}
+                <button className={b.btn} type="button" onClick={() => { setQ(''); field.current?.focus() }}>{words.clear}</button>
+              </div>
+            ) : null}
             {shown ? (
               shown.cards.length ? (
                 <>
-                  <p className={s.head}>{words.found}</p>
                   <ul className={s.found}>
                     {shown.cards.map((c) => (
                       <li key={c.id}>
@@ -81,7 +86,6 @@ export function SearchPane({ lang, action, words, shelves, trigger }: { lang: st
                       </li>
                     ))}
                   </ul>
-                  <a className={b.btn} data-size="lg" href={shown.href}>{words.all.replace('{q}', shown.q)}<Icon id="arrow-right" /></a>
                 </>
               ) : <p className={s.none}>{words.none.replace('{q}', shown.q)}</p>
             ) : (
@@ -92,7 +96,6 @@ export function SearchPane({ lang, action, words, shelves, trigger }: { lang: st
                     виду», затем «не слишком ли это ярко… может текст»; И691).
                     У профессионалов в окне поиска пути — текстом: Apple «Quick
                     Links» строками, предиктивный поиск Shopify — строками. */}
-                <p className={s.head}>{words.shelves}</p>
                 <ul className={s.shelves}>{shelves.map((x) => <li key={x.href}><a className={`${b.row} ${s.shelf}`} href={x.href}><Icon id={x.sign ?? 'arrow-right'} /><span className={s.shelfName}>{x.label}</span></a></li>)}</ul>
               </>
             )}

@@ -86,13 +86,10 @@ export function Footer({ lang, docs, shelves, variant = 'full', idPrefix = '' }:
           <p className={s.tagline}>{t(lang, 'footer.tagline')}</p>
           {/* Соцсети — знаками без слова, тихой кнопкой сайта без плиты
               (`btn`, `bare`): ответ на руку — вида «слово и знак», тот же,
-              что у ссылок рядом (правило 10, И685). Оплата — метками-пилюлями примитива `chip`: не
-              мишень, а сведение «чем платят» (И549). */}
+              что у ссылок рядом (правило 10, И685). Оплата — ниже всех ссылок
+              в основании подвала, метками примитива `chip` (И549). */}
           <ul className={`${p.cluster} ${s.social}`} aria-label={t(lang, 'footer.social')}>
             {SOCIALS.filter((x) => x.href).map((x) => <li key={x.key}><a className={b.btn} data-voice="bare" href={x.href} target="_blank" rel="noopener noreferrer" aria-label={x.label}><Icon id={SIGN[x.key]} /></a></li>)}
-          </ul>
-          <ul className={`${p.cluster} ${s.pay}`} aria-label={t(lang, 'footer.pay')}>
-            {PAYMENTS.map((x) => <li key={x.key}><span className={p.chip} data-chip="pay" role="img" aria-label={x.label}><Icon id={SIGN[x.key]} /></span></li>)}
           </ul>
         </div>
         <div className={`${p.cluster} ${s.cols}`}>
@@ -127,6 +124,9 @@ export function Footer({ lang, docs, shelves, variant = 'full', idPrefix = '' }:
           <ul className={s.legalLinks}>
             {links(LEGAL)}
             <li><a className={b.word} href={ANPC_SAL_URL} rel="noopener">{t(lang, 'footer.anpc')}</a></li>
+          </ul>
+          <ul className={`${p.cluster} ${s.pay}`} aria-label={t(lang, 'footer.pay')}>
+            {PAYMENTS.map((x) => <li key={x.key}><span className={p.chip} data-chip="pay" role="img" aria-label={x.label}><Icon id={SIGN[x.key]} /></span></li>)}
           </ul>
           <address className={s.seller}>
             © {YEAR} <span translate="no">{COMPANY.name}</span> · CUI {COMPANY.cui} · {COMPANY.regCom} · {COMPANY.address}
