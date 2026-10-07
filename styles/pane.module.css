@@ -132,7 +132,7 @@
    края, ростом по содержимому и не выше окна; поле отдаёт мере страницы
    (`--pane-pad:0`, ширину держит `wrap` узла); уезжает вверх на любой
    ширине. */
-.pane[data-pane='top']:is(:popover-open, [data-leaving], :not([data-row])){--pane-pad:0px;position:fixed;inset:0 0 auto;margin:0;inline-size:100%;max-inline-size:none;block-size:auto;max-block-size:100dvh;border-radius:0 0 var(--r-sheet) var(--r-sheet)}
+.pane[data-pane='top']:is(:popover-open, [data-leaving], :not([data-row])){--pane-pad:0px;position:fixed;inset:0 0 auto;margin:0;inline-size:100%;max-inline-size:none;block-size:auto;max-block-size:var(--pane-vh, 100dvh);border-radius:0 0 var(--r-sheet) var(--r-sheet)}
 .pane[data-pane='top']:not(:popover-open){transition:translate var(--open-t) var(--ease-exit),overlay var(--open-t) allow-discrete,display var(--open-t) allow-discrete;translate:0 -100%}
 @starting-style{
   .pane[data-pane='top']:popover-open{translate:0 -100%}
@@ -146,8 +146,8 @@
   --pane-pad:var(--pad-card);
   block-size:fit-content;
   inline-size:min(calc(100% - var(--gut) * 2), var(--measure));
-  max-block-size:calc(100dvh - var(--gut) * 2);
-  position:fixed;inset:0;margin:auto;border-radius:var(--r-sheet)
+  max-block-size:calc(var(--pane-vh, 100dvh) - var(--gut) * 2);
+  position:fixed;inset:var(--pane-vtop, 0px) 0 var(--pane-vbottom, 0px);margin:auto;border-radius:var(--r-sheet)
 }
 /* На телефоне окно — нижняя шторка под большой палец (шов «телефон»,
    И494): во всю ширину, от низа, с ручкой сверху, уходит вниз пальцем.
@@ -158,7 +158,7 @@
     inline-size:100%;max-inline-size:none;
     /* Растёт по содержимому: шапка сайта за модальным окном не задаёт
        потолок формы. Небольшой верхний край оставляет контекст страницы. */
-    max-block-size:calc(100dvh - max(var(--gut), env(safe-area-inset-top)));
+    max-block-size:calc(var(--pane-vh, 100dvh) - max(var(--gut), env(safe-area-inset-top)));
     margin:auto 0 0;border-radius:var(--r-sheet) var(--r-sheet) 0 0;
     padding-block-end:env(safe-area-inset-bottom)
   }
@@ -176,7 +176,7 @@
 .pane[data-pane='dock']:is(:popover-open, [data-leaving], :not([data-row])){
   --pane-pad:var(--pad-inner);
   position:fixed;margin:0;inset:auto var(--page-edge) var(--float-at, var(--gut)) auto;
-  inline-size:min(22rem, 100% - var(--page-edge) * 2);max-block-size:calc(100dvh - var(--float-at, var(--gut)) - var(--gut));
+  inline-size:min(22rem, 100% - var(--page-edge) * 2);max-block-size:calc(var(--pane-vh, 100dvh) - var(--float-at, var(--gut)) - var(--gut));
   border-radius:var(--r-sheet);transform-origin:100% 100%;
   transition:opacity var(--open-t) var(--ease),scale var(--open-t) var(--ease),overlay var(--open-t) allow-discrete,display var(--open-t) allow-discrete
 }
@@ -207,7 +207,7 @@
 .pane:is([data-pane='start'], [data-pane='end']):is(:popover-open, [data-leaving], :not([data-row])){
   --pane-pad:var(--pad-card);
   position:fixed;inset-block:0;margin:0;
-  inline-size:min(25rem, 100% - var(--ctrl-h-lg));block-size:100dvh;max-block-size:none
+  inline-size:min(25rem, 100% - var(--ctrl-h-lg));block-size:var(--pane-vh, 100dvh);max-block-size:none
 }
 .pane[data-pane='start']:is(:popover-open, [data-leaving], :not([data-row])){inset-inline:0 auto;border-radius:0;border-start-end-radius:var(--r-sheet);border-end-end-radius:var(--r-sheet)}
 .pane[data-pane='end']:is(:popover-open, [data-leaving], :not([data-row])){inset-inline:auto 0;border-radius:0;border-start-start-radius:var(--r-sheet);border-end-start-radius:var(--r-sheet)}
@@ -259,7 +259,7 @@
 .body:has(+ .foot){padding-block-end:var(--air-row)}
 
 .foot{
-  flex:none;
+  flex:0 1 auto;min-block-size:0;overflow:auto;overscroll-behavior:contain;
   padding:var(--pad-inner) var(--pane-pad, var(--pad-card)) var(--pane-pad, var(--pad-card));
   border-block-start:var(--line-w) solid var(--rule)
 }

@@ -89,18 +89,16 @@ export function QuickOrder({ view }: { view: QuickView }) {
               </li>
             ))}
           </ul>
-        </div>
-        <div className={pn.foot}>
           <div className={f.field}>
             <label className={f.label} htmlFor={`${id}-phone`}>{view.phone.label}</label>
-            {/* Номер и «перезвоните» — общая пара поля и кнопки (`f.send`,
-                И481); не помещаются — кнопка встаёт под полем. */}
-            <div className={f.send}>
-              <input className={f.box} id={`${id}-phone`} type="tel" inputMode="tel" autoComplete="tel" placeholder={view.phone.hint} value={phone} onChange={(e) => setPhone(e.target.value)} />
-              {call
-                ? <a className={b.btn} data-voice="loud" href={call} target="_blank" rel="noopener noreferrer"><Icon id="arrow-right" />{view.call}</a>
-                : <span className={b.btn} data-voice="loud" aria-disabled="true"><Icon id="arrow-right" />{view.call}</span>}
-            </div>
+            <input className={f.box} id={`${id}-phone`} type="tel" inputMode="tel" autoComplete="tel" placeholder={view.phone.hint} value={phone} onChange={(e) => setPhone(e.target.value)} />
+          </div>
+        </div>
+        <div className={pn.foot}>
+          <div className={pn.acts}>
+            {call
+              ? <a className={b.btn} data-voice="loud" href={call} target="_blank" rel="noopener noreferrer"><Icon id="arrow-right" />{view.call}</a>
+              : <span className={b.btn} data-voice="loud" aria-disabled="true"><Icon id="arrow-right" />{view.call}</span>}
           </div>
         </div>
       </dialog>
