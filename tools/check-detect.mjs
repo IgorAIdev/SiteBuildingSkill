@@ -316,8 +316,10 @@ const all = [...byPage.values()].flatMap((m) => [...m.values()])
    прилипла к краю полосы» — у набора это решение, а не дефект; правый край и
    нахлёст (отрицательный зазор — карточка срезана) по-прежнему считаются.
    Сердце карточки, вылезавшее за край на 8 px (И755), этим правилом и нашлось. */
+/* Имя класса рельсы — как его пишет сборщик: `primitives-module__abc__rail` или,
+   у нынешней сборки Next, `fUaS7G_rail` (08.10.2026: 15 лент посчитаны дефектом). */
 const inColumn = (f) => f.rule === 'edge-flush-cards'
-  && /flush against the left edge of ul\.[\w-]*__rail\b[^(]*at rest \(0px gap/.test(f.detail ?? '')
+  && /flush against the left edge of ul\.[\w-]*?_rail\b[^(]*at rest \(0px gap/.test(f.detail ?? '')
 const counted = all.filter((f) => DETECT_MAP[f.rule] && !inColumn(f))
 const advisory = all.filter((f) => DETECT_ADVISORY.includes(f.rule))
 /* Правило, которого нет в таблице судеб, — сборка и запись разошлись. */

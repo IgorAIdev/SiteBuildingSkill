@@ -325,7 +325,10 @@ function squeeze(v) {
        (краска YouTube, И628). */
     .replace(/#[0-9a-f]{3,6}\b/g, (h) => NAMED[h] ?? h)
   const ld = s.match(/^light-dark\(\s*([^,]+?)\s*,\s*(.+?)\s*\)$/)
-  if (ld) s = `var(--lightningcss-light,${ld[1]})var(--lightningcss-dark,${ld[2]})`
+  /* Пара из одной краски сборщик пишет одной краской: `light-dark(#FFFFFF, #FFFFFF)`
+     → `#fff` (check:look 08.10.2026 — 11 ролей знака на краске и палубы). */
+  if (ld && ld[1] === ld[2]) s = ld[1]
+  else if (ld) s = `var(--lightningcss-light,${ld[1]})var(--lightningcss-dark,${ld[2]})`
   return s.replace(/[\s"']/g, '').replace(/(^|[(,])0\./g, '$1.')
 }
 
