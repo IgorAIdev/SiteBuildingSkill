@@ -11,7 +11,7 @@ import { hrefFor } from '@/lib/href.ts'
 import { source } from '@/lib/source/index.ts'
 import { shelfCard } from '@/lib/view.ts'
 import { cartSubmit, cartCall } from '@/lib/actions/cart.ts'
-import { PAYMENTS } from '@/lib/company.ts'
+import { PayMarks } from '@/components/PayMarks.tsx'
 import { SIGN } from '@/components/marks.ts'
 import { Icon } from '@/components/Icon.tsx'
 import { PaneHead } from '@/components/PaneHead.tsx'
@@ -334,10 +334,8 @@ function Signs({ lang }: { lang: Lang }) {
         </Part>
       ))}
       <Stock lang={lang} />
-      <Part title="Знаки оплаты" lede="Так знаки оплаты стоят в подвале: одной высотой, каждый в своей пилюле.">
-        <ul className={`${p.cluster} ${s.pay}`}>
-          {PAYMENTS.map((x) => <li key={x.key}><span className={p.chip} data-chip="pay" role="img" aria-label={x.label}><Icon id={SIGN[x.key]} /></span></li>)}
-        </ul>
+      <Part title="Знаки оплаты" lede="Так знаки оплаты стоят в подвале: одной высотой, без пилюль — знак оплаты не нажимают, плашка обещала бы действие.">
+        <PayMarks label="Способы оплаты" />
       </Part>
       <SignElements />
     </>

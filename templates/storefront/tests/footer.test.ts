@@ -23,9 +23,25 @@ test('every footer document has a short name in every language, shorter than its
   assert.match(footer, /t\(lang, 'footer\.withdraw'\)/)
 })
 
-test('on the phone the four columns stand two by two', () => {
-  assert.match(css, /@container \(max-width:559px\)\{\s*\.cols\{display:grid;grid-template-columns:repeat\(2, minmax\(0, 1fr\)\)\}\s*\}/)
+/* Первый столбец — по самой длинной своей строке, не шире 60 %: адрес почты в одну строку, а не
+   «contact / @exemplu.ro» в равной ячейке (заказчик 08.10.2026: «email не помещается»). */
+test('on the phone the four columns stand two by two, the first as wide as its longest line', () => {
+  assert.match(css, /@container \(max-width:559px\)\{\s*\.cols\{display:grid;grid-template-columns:fit-content\(60%\) minmax\(0, 1fr\)\}\s*\}/)
   assert.doesNotMatch(css, /\.col:first-child\{grid-column:1 \/ -1\}/)
+})
+
+/* Знаки оплаты — без пилюль (И783): знак не нажимают, плашка обещала бы действие. Один компонент на
+   подвал и дизайн-систему; воздух ряда — между ярусами основания, а не вплотную (восемь пикселей
+   между ссылками, знаками и строкой прав: «с воздухом плохо», заказчик 08.10.2026). */
+test('payment marks stand bare, from one component, with air between the tiers of the base', () => {
+  assert.match(footer, /<PayMarks label=\{t\(lang, 'footer\.pay'\)\} \/>/)
+  assert.doesNotMatch(footer, /data-chip="pay"|PAYMENTS/)
+  const marks = read('../components/PayMarks.module.css')
+  assert.doesNotMatch(marks.replace(/\/\*[\s\S]*?\*\//g, ''), /background|box-shadow|border-radius/)
+  assert.match(marks, /\.mark svg\{[^}]*block-size:calc\(var\(--ctrl-fs-sm\) \* 1\.7\)/)
+  assert.match(css, /\.base\{[^}]*gap:var\(--air-row\)/)
+  assert.match(read('../look-panel/design/DesignPage.tsx'), /<PayMarks label=/)
+  assert.doesNotMatch(read('../styles/primitives.module.css'), /data-chip='pay'/)
 })
 
 test('a footer link keeps its air when its name wraps', () => {

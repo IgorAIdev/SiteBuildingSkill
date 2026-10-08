@@ -5,12 +5,13 @@ import type { Lang } from '@/lib/locale.ts'
 import type { Doc } from '@/lib/source/contract.ts'
 import { isKey, t } from '@/lib/i18n/index.ts'
 import { hrefFor } from '@/lib/href.ts'
-import { COMPANY, ANPC_SAL_URL, TERMS_DOC, PAYMENTS } from '@/lib/company.ts'
+import { COMPANY, ANPC_SAL_URL, TERMS_DOC } from '@/lib/company.ts'
 import { CONTACTS, MESSENGERS, SOCIALS, chatHref, telHref, mailHref } from '@/lib/contacts.ts'
 import { Icon } from './Icon.tsx'
 import { SIGN } from './marks.ts'
 import { Logo } from './Logo.tsx'
 import { Newsletter } from './Newsletter.tsx'
+import { PayMarks } from './PayMarks.tsx'
 import { subscribe } from '@/lib/actions/subscribe.ts'
 import { COMPANY_IS_REAL } from '@/lib/flags.ts'
 
@@ -87,7 +88,7 @@ export function Footer({ lang, docs, shelves, variant = 'full', idPrefix = '' }:
           {/* Соцсети — знаками без слова, тихой кнопкой сайта без плиты
               (`btn`, `bare`): ответ на руку — вида «слово и знак», тот же,
               что у ссылок рядом (правило 10, И685). Оплата — ниже всех ссылок
-              в основании подвала, метками примитива `chip` (И549). */}
+              в основании подвала, знаками без плашки (`PayMarks`, И549, И783). */}
           <ul className={`${p.cluster} ${s.social}`} aria-label={t(lang, 'footer.social')}>
             {SOCIALS.filter((x) => x.href).map((x) => <li key={x.key}><a className={b.btn} data-voice="bare" href={x.href} target="_blank" rel="noopener noreferrer" aria-label={x.label}><Icon id={SIGN[x.key]} /></a></li>)}
           </ul>
@@ -125,9 +126,7 @@ export function Footer({ lang, docs, shelves, variant = 'full', idPrefix = '' }:
             {links(LEGAL)}
             <li><a className={b.word} href={ANPC_SAL_URL} rel="noopener">{t(lang, 'footer.anpc')}</a></li>
           </ul>
-          <ul className={`${p.cluster} ${s.pay}`} aria-label={t(lang, 'footer.pay')}>
-            {PAYMENTS.map((x) => <li key={x.key}><span className={p.chip} data-chip="pay" role="img" aria-label={x.label}><Icon id={SIGN[x.key]} /></span></li>)}
-          </ul>
+          <PayMarks label={t(lang, 'footer.pay')} />
           <address className={s.seller}>
             © {YEAR} <span translate="no">{COMPANY.name}</span> · CUI {COMPANY.cui} · {COMPANY.regCom} · {COMPANY.address}
             {COMPANY_IS_REAL ? null : ` · ${t(lang, 'sample')}`}
