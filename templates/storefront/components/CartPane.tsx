@@ -10,8 +10,7 @@ import { CartLines } from './CartLines.tsx'
 import { CartCoupon } from './CartCoupon.tsx'
 import { GoalMeter } from './GoalMeter.tsx'
 import { OrderTotals } from './OrderTotals.tsx'
-import { StateScreen } from './StateScreen.tsx'
-import { CartShelves } from './CartShelves.tsx'
+import { CartEmpty } from './CartEmpty.tsx'
 import { PaneHead } from './PaneHead.tsx'
 
 type View = Pick<CartPageView, 'title' | 'count' | 'lines' | 'totals' | 'goal' | 'coupon' | 'couponNotice' | 'checkout' | 'open' | 'empty' | 'messages'>
@@ -76,7 +75,7 @@ export function CartPane({ lang, id, src, title, close, pane, shown }: { lang: s
             </CartForm>
           </>
         ) : (
-          <StateScreen level={2} kind="empty" title={view.empty.title} step={view.empty.step} href={view.empty.href} icon="shopping-cart" loud after={view.empty.shelves ? <CartShelves view={view.empty.shelves} /> : null} />
+          <CartEmpty level={2} view={view} />
         )}
       </div>
       {view && filled ? (

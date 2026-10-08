@@ -8,11 +8,10 @@ import { CartForm } from './CartForm.tsx'
 import { CartCoupon } from './CartCoupon.tsx'
 import { OrderTotals } from './OrderTotals.tsx'
 import { Shelf } from './Shelf.tsx'
-import { CartShelves } from './CartShelves.tsx'
+import { CartEmpty } from './CartEmpty.tsx'
 import { CartFresh } from './CartFresh.tsx'
 import { CartLines } from './CartLines.tsx'
 import { GoalMeter } from './GoalMeter.tsx'
-import { StateScreen } from './StateScreen.tsx'
 
 type Actions = { submit: (form: FormData) => Promise<void>; call: (form: FormData) => Promise<Outcome> }
 
@@ -51,7 +50,7 @@ export function CartView({ lang, view, submit, call, landmark = true }: { lang: 
         {/* Строка исхода — та же, что у формы корзины (`f.say`, И476): одна на сайт. */}
         {view.notice ? <p className={f.say} data-state={view.notice.kind === 'error' ? 'error' : undefined} role="status">{view.notice.message}</p> : null}
         <CartFresh lang={lang} stamp={view.stamp} />
-        <StateScreen level={1} kind="empty" title={view.empty.title} step={view.empty.step} href={view.empty.href} icon="shopping-cart" loud after={view.empty.shelves ? <CartShelves view={view.empty.shelves} /> : null} />
+        <CartEmpty level={1} view={view} />
         {view.empty.shelf ? <Popular shelf={view.empty.shelf} cart={{ submit, call }} /> : null}
       </Main>
     )
@@ -61,9 +60,11 @@ export function CartView({ lang, view, submit, call, landmark = true }: { lang: 
       <CartFresh lang={lang} stamp={view.stamp} />
       <div className={p.pagehead}><h1>{view.title}</h1><p className={p.note}>{view.count}</p></div>
       <div className={p.sidebar}>
-        <CartForm lang={lang} submit={submit} call={call} initial={view.notice} {...msgs}>
-          <CartLines lines={view.lines} />
-        </CartForm>
+        <div className={s.sheet}>
+          <CartForm lang={lang} submit={submit} call={call} initial={view.notice} {...msgs}>
+            <CartLines lines={view.lines} />
+          </CartForm>
+        </div>
         <aside className={p.aside} aria-labelledby="cart-summary">
           <h2 id="cart-summary" className={p.said}>{view.summary}</h2>
           <div className={`${p.stack} ${p.pinned} ${s.summary}`}>

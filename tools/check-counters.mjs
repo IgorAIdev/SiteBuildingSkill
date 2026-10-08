@@ -353,6 +353,19 @@ async function checkWindows(browser, engine, found, shelf) {
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [], timestamp: t0 + ms / 1000 })
   }
   const isOpen = (sel) => page.evaluate((s) => !!document.querySelector(s)?.matches(':popover-open'), sel)
+  /* Крестик — у конца строки шапки в любом окне (И784): справа от него в строке нет ничего, кроме поля самой
+     строки. Окно сверху без `space-between` держало заголовок и крестик рядом слева («крестик закрытия у всех
+     форм в одном месте — справа вверху», заказчик 08.10.2026). */
+  const closeAtEnd = async (name, sel) => {
+    const r = await page.evaluate((s) => {
+      const btn = document.querySelector(s)?.querySelector('[data-ground="deck"] button[popovertargetaction="hide"]')
+      if (!btn) return null
+      const row = btn.parentElement; const end = row.getBoundingClientRect().right - parseFloat(getComputedStyle(row).paddingRight)
+      return Math.round((end - btn.getBoundingClientRect().right) * 10) / 10
+    }, sel)
+    if (r === null) say(`${name}: крестика в шапке окна не нашлось`)
+    else if (r > 1.5) say(`${name}: крестик закрытия не у конца строки шапки — справа от него ${r} px свободного места`)
+  }
   const gone = async (sel) => { try { await page.waitForFunction((s) => !document.querySelector(s)?.matches(':popover-open'), sel, { timeout: 2500 }); return true } catch { return false } }
   try {
     await page.goto(shelf, { waitUntil: 'networkidle', timeout: 150000 })
@@ -380,6 +393,7 @@ async function checkWindows(browser, engine, found, shelf) {
       }
       if (!(await reopen())) { say(`${w.name}: не открылась нажатием`); continue }
       const box = await page.evaluate((s) => { const r = document.querySelector(s).getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height, right: r.right } }, w.sel)
+      await closeAtEnd(w.name, w.sel)
       /* Низ окна стоит целиком: не прокручивается, каждое действие внутри окна. */
       const foot = await page.evaluate((s) => {
         const pane = document.querySelector(s); const f = [...pane.children].find((c) => /foot/i.test(String(c.className)))
@@ -410,6 +424,10 @@ async function checkWindows(browser, engine, found, shelf) {
       if (!(await isOpen(w.sel))) say(`${w.name}: вертикальный жест на полосе закрыл шторку — он должен прокручивать страницу`)
       await page.keyboard.press('Escape'); await page.waitForTimeout(300)
     }
+    /* Окно поиска сверху — третье окно шапки; крестик у него там же, где у шторок. */
+    await page.locator('button[popovertarget^="search-"]:visible').first().click({ timeout: 8000 }).catch(() => {})
+    try { await page.waitForFunction(() => document.querySelector('[data-pane="top"]')?.matches(':popover-open'), null, { timeout: 5000 }); await page.waitForTimeout(400); await closeAtEnd('поиск', '[data-pane="top"]') } catch { say('поиск: не открылся нажатием') }
+    await page.keyboard.press('Escape'); await page.waitForTimeout(300)
   } catch (e) { say(`не измерено: ${e.message.split('\n')[0]}`) }
   await ctx.close()
 }

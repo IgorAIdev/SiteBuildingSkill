@@ -1,6 +1,5 @@
 import type { Lang } from './locale.ts'
 import type { Card, Cart, CartLine, Collection, Image, Money } from './source/contract.ts'
-import type { Empty } from './catalog-view.ts'
 import { outcomeOf, type Outcome } from './cart-ops.ts'
 import { t, tn } from './i18n/index.ts'
 import { money } from './money.ts'
@@ -23,8 +22,9 @@ export type CartLineView = {
   remove: { op: string; label: string; text: string }
 }
 export type ShelfView = { title: string; all: string; cards: ShelfCard[] }
-/** Главные полки на пустой корзине — кнопками категорий (И689). */
-export type ShelvesView = { label: string; links: { name: string; sign: string | null; href: string }[] }
+/** Пути с пустой корзины — тихими строками со знаком, как в окне поиска (`ShelfRows`, И689):
+ *  «все товары» первой, дальше главные полки магазина. */
+export type ShelvesView = { label: string; links: { label: string; sign: string | null; href: string }[] }
 /** Полоса до бесплатной доставки. `value` и `max` — копейки (родной `progress`); `left` — слова
  *  тремя кусками «до · сумма · после»: сумма выделяется весом, а порядок слов — языка; `null` —
  *  порог взят, говорит `done`. Порог назначает магазин (`ShopFacts.freeDeliveryFrom`). */
@@ -35,7 +35,7 @@ export type CartPageView = {
   open: { label: string; href: string }
   coupon: { ask: string; label: string; apply: string; open: boolean; applied: { code: string; op: string; label: string }[] }
   notice: Outcome | null; couponNotice: Outcome | null
-  empty: Empty & { shelf: ShelfView | null; shelves: ShelvesView | null }
+  empty: { title: string; shelf: ShelfView | null; shelves: ShelvesView }
   messages: { timeout: string; failed: string }
   /** Отметка корзины (`cartStamp`): страница сверяет её с корзиной (CartFresh, И696). */
   stamp: string
@@ -157,9 +157,15 @@ export function cartView(lang: Lang, cart: Cart | null, result: string | null, e
     notice: outcome && !coupon ? outcome : null,
     couponNotice: outcome && coupon ? outcome : null,
     empty: {
-      title: t(lang, 'cart.empty'), step: t(lang, 'cart.emptyStep'), href: hrefFor(lang, { catalog: true }),
+      title: t(lang, 'cart.empty'),
       shelf: popular.length ? { title: t(lang, 'cart.popular'), all: hrefFor(lang, { catalog: true }), cards: popular } : null,
-      shelves: extras.shelves.length ? { label: t(lang, 'nav.categories'), links: extras.shelves.map((col) => ({ name: col.name, sign: col.sign, href: hrefFor(lang, { category: col.slug }) })) } : null,
+      shelves: {
+        label: t(lang, 'nav.categories'),
+        links: [
+          { label: t(lang, 'nav.catalog'), sign: 'shop-awning', href: hrefFor(lang, { catalog: true }) },
+          ...extras.shelves.map((col) => ({ label: col.name, sign: col.sign, href: hrefFor(lang, { category: col.slug }) })),
+        ],
+      },
     },
     messages: { timeout: t(lang, 'cart.error.timeout'), failed: t(lang, 'cart.error.unavailable') },
     stamp: cartStamp(cart),

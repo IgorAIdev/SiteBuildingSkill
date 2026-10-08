@@ -295,7 +295,6 @@ export const EN: Record<keyof typeof RO, string> = {
   'checkout.back': 'Back to cart',
   'checkout.fix': 'Correct the marked fields.',
   'checkout.summaryShow': 'Order summary',
-  'checkout.help': 'Questions about your order?',
   'field.email': 'Email',
   'field.firstName': 'First name',
   'field.lastName': 'Last name',

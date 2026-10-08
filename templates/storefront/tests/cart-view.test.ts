@@ -50,7 +50,8 @@ test('the notice comes from a known code only; an empty cart says what next', ()
   const empty = cartView('ro', null, 'ok:remove')
   assert.deepEqual(empty.lines, [])
   assert.equal(empty.notice?.message, 'Produsul a fost scos din coș.')
-  assert.deepEqual([empty.empty.title, empty.empty.step, empty.empty.href], ['Coșul este gol', 'Vedeți produsele', '/ro/catalog'])
+  assert.equal(empty.empty.title, 'Coșul este gol')
+  assert.deepEqual([empty.empty.shelves.links[0].label, empty.empty.shelves.links[0].href], ['Toate produsele', '/ro/catalog'])
   assert.equal(empty.empty.shelf, null, 'no data — no shelf')
   assert.equal(cartView('ro', null, 'nonsense').notice, null)
   assert.equal(priceOrFree('ro', { minor: 0, currency: 'EUR' }), 'Gratuit')
@@ -113,19 +114,25 @@ test('the empty cart shows popular products from the source, as shelf cards', as
   assert.match(v.empty.shelf?.cards[0].href ?? '', /^\/en\/product\//)
 })
 
-/* Пустая корзина — не тупик (И689): главные полки кнопками категорий со знаком,
-   в шторке и на странице одной разметкой (CartShelves). Полок нет — нет и ряда. */
-test('the empty cart offers the main shelves as category buttons, in the pane and on the page', async () => {
+/* Пустая корзина — не тупик (И689): слово и тихие строки со знаком, как в окне поиска: «все товары»
+   первой, дальше главные полки; в шторке, на странице и в образце — одним `CartEmpty`. Полок нет —
+   остаётся «все товары»: путь дальше есть всегда. */
+test('the empty cart is a word and quiet category rows, all products first, in the pane and on the page', async () => {
   const cols = await sample.collections('en')
   assert.ok(cols.ok)
   const v = cartView('en', null, null, { freeFrom: null, popular: [], shelves: cols.value.slice(0, 3) })
-  assert.equal(v.empty.shelves?.label, 'Categories')
-  assert.equal(v.empty.shelves?.links.length, 3)
-  assert.match(v.empty.shelves?.links[0].href ?? '', /^\/en\//)
-  assert.equal(v.empty.shelves?.links[0].sign, cols.value[0].sign)
-  assert.equal(cartView('en', null, null).empty.shelves, null)
+  assert.equal(v.empty.title, 'Your cart is empty')
+  assert.equal(v.empty.shelves.label, 'Categories')
+  assert.equal(v.empty.shelves.links.length, 4)
+  assert.deepEqual([v.empty.shelves.links[0].label, v.empty.shelves.links[0].href], ['All products', '/en/catalog'])
+  assert.match(v.empty.shelves.links[1].href, /^\/en\//)
+  assert.equal(v.empty.shelves.links[1].sign, cols.value[0].sign)
+  assert.equal(cartView('en', null, null).empty.shelves.links.length, 1)
   const dir = new URL('../components/', import.meta.url)
-  for (const user of ['CartView.tsx', 'CartPane.tsx']) assert.match(readFileSync(new URL(user, dir), 'utf8'), /<CartShelves /, user)
+  for (const user of ['CartView.tsx', 'CartPane.tsx', '../look-panel/design/CheckoutParts.tsx']) assert.match(readFileSync(new URL(user, dir), 'utf8'), /<CartEmpty /, user)
+  const empty = readFileSync(new URL('CartEmpty.tsx', dir), 'utf8')
+  assert.match(empty, /<ShelfRows /)
+  assert.doesNotMatch(empty, /icon=|loud|CategoryButton/, 'ни знака в круге, ни громкой кнопки, ни кнопок категорий')
 })
 
 /* Полоса до бесплатной доставки: порог — из данных магазина, набрано — товары
@@ -155,4 +162,28 @@ test('the cart page has no pledges plate and gathers no data for one', async () 
   assert.doesNotMatch(page, /paymentMethods|deliveryMethods|returnDays/)
   const v = cartView('en', await fixtureCart(), null)
   assert.ok(!('pledges' in v), 'в виде корзины нет обещаний')
+})
+
+/* Ошибка поля кода («код не подошёл») уходит вместе с полем: вопрос свёрнут — строки нет (заказчик
+   08.10.2026: «недействительный код должен закрываться вместе с полем кода»; И333). Ошибка пилюли и сети
+   остаётся видна: у неё нет кода `e:coupon-…`. */
+test('a bad-code error is part of the code field: folded with it, other errors stay', () => {
+  const form = readFileSync(new URL('../components/CartForm.tsx', import.meta.url), 'utf8')
+  const css = readFileSync(new URL('../components/Cart.module.css', import.meta.url), 'utf8')
+  assert.match(form, /startsWith\('e:coupon-'\)/)
+  assert.match(form, /data-field=\{aboutField \? '' : undefined\}/)
+  assert.match(css, /\.couponForm:has\(\.promo:not\(\[open\]\)\) > p\[data-field\]\{display:none\}/)
+  for (const code of ['coupon-invalid', 'coupon-expired', 'coupon-empty']) assert.ok(cartView('en', null, `e:${code}`).couponNotice, code)
+  assert.equal(cartView('en', null, 'e:request').couponNotice, null, 'сбой сети — не про поле')
+})
+
+/* Страница корзины — два листа одной краски с окнами (И785): строки — на листе `.sheet`, сводка берёт его
+   же через `composes`; ничего не лежит на полу, кроме заголовка страницы. */
+test('the cart page puts the lines on a sheet like the summary', () => {
+  const view = readFileSync(new URL('../components/CartView.tsx', import.meta.url), 'utf8')
+  const css = readFileSync(new URL('../components/Cart.module.css', import.meta.url), 'utf8')
+  assert.match(view, /<div className=\{s\.sheet\}>\s*<CartForm [^>]*>\s*<CartLines lines=\{view\.lines\} \/>/)
+  assert.match(css, /\.sheet\{background:var\(--surface\);border-radius:var\(--r-card\);padding:var\(--pad-card\)\}/)
+  assert.match(css, /\.summary\{composes:sheet;/)
+  assert.match(css, /\.sheet \.line:last-child\{padding-block-end:0;border-block-end:0\}/)
 })

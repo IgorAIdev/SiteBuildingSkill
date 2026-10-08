@@ -40,7 +40,7 @@ const YEAR = new Date().getFullYear()
    навигация, названная подписью (`aria-labelledby`). */
 /* `idPrefix` — приставка к id подписей столбцов: второй подвал на странице
    (образец в дизайн-системе) не повторяет id первого. На сайте — пусто. */
-export function Footer({ lang, docs, shelves, variant = 'full', idPrefix = '' }: { lang: Lang; docs: Doc[]; shelves: { href: string; label: string }[]; variant?: 'full' | 'legal'; idPrefix?: string }) {
+export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; docs: Doc[]; shelves: { href: string; label: string }[]; idPrefix?: string }) {
   /* Документ в подвале — коротким общепринятым именем по адресу (И760; заказчик
      05.10.2026: «сокращай названия до коротких общепринятых»): полное название —
      заголовок его страницы; документа без короткого имени — по заголовку. */
@@ -50,25 +50,6 @@ export function Footer({ lang, docs, shelves, variant = 'full', idPrefix = '' }:
      19.06.2026: видна всё время права на отказ; И748) — ссылкой «Помощи»
      сразу за возвратом. */
   const withdrawLink = <li key="withdraw"><a className={b.word} href={hrefFor(lang, { withdraw: true })}>{t(lang, 'footer.withdraw')}</a></li>
-  /* Подвал кассы — строка на полу страницы, а не тёмная плита: в коридоре
-     оформления нечего выбирать, кроме того, что обязано быть по закону
-     (условия, возврат, данные, ANPC), и того, что помогает довести
-     заказ, — телефона (разбор 24.09.2026, S2; Baymard: контакт поддержки в
-     оформлении). Названия фирмы и CUI здесь нет (слово заказчика 08.10.2026: «эти
-     данные фирмы не нужны тут»): они — в подвале магазина и в условиях. */
-  if (variant === 'legal') {
-    return (
-      <footer className={s.legal}>
-        <div className={`${p.wrap} ${s.legalRow}`}>
-          <p>{t(lang, 'checkout.help')} <a className={b.word} href={telHref()}>{CONTACTS.phone}</a></p>
-          <ul className={s.legalLinks}>
-            {links([...LEGAL, 'retur'])}{withdrawLink}
-            <li><a className={b.word} href={ANPC_SAL_URL} rel="noopener">{t(lang, 'footer.anpc')}</a></li>
-          </ul>
-        </div>
-      </footer>
-    )
-  }
   const chats = MESSENGERS.flatMap((m) => { const href = chatHref(m, ''); return href ? [{ key: m.key, label: m.label, href }] : [] })
   return (
     <footer className={s.foot} data-ground="deck">

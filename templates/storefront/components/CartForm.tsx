@@ -9,7 +9,7 @@ import { heldOf, holdOne } from '@/lib/in-cart.ts'
 import { PendingOp } from './CartPending.ts'
 import type { Outcome } from '@/lib/cart-ops.ts'
 
-type Said = Pick<Outcome, 'kind' | 'message'> & { inCart?: number | null }
+type Said = Pick<Outcome, 'kind' | 'message'> & { inCart?: number | null; code?: string }
 type Props = {
   lang: string; className?: string; refresh?: boolean; quiet?: boolean
   submit: (form: FormData) => Promise<void>
@@ -41,6 +41,10 @@ export function CartForm({ lang, className, refresh = true, quiet = false, submi
   const [busy, setBusy] = useState(false)
   const [said, setSaid] = useState<Said | null>(initial)
   const [pending, setPending] = useState<string | null>(null)
+  /* Ошибка самого поля кода («e:coupon-…», COUPON_CODES в lib/cart-view.ts)
+     говорит про поле: когда вопрос «Have a discount code?» свернут, строка уходит
+     вместе с ним (styles у `.couponForm`, заказчик 08.10.2026, И333). */
+  const aboutField = said?.kind === 'error' && !!said.code?.startsWith('e:coupon-')
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (cartLane.pending) return
@@ -85,7 +89,7 @@ export function CartForm({ lang, className, refresh = true, quiet = false, submi
       <PendingOp.Provider value={pending}>
         <fieldset className={s.bare} disabled={busy}>{children}</fieldset>
       </PendingOp.Provider>
-      <p className={quiet && said?.kind !== 'error' ? `${f.say} ${p.said}` : f.say} data-state={said?.kind === 'error' ? 'error' : undefined} role="status">{said?.message}</p>
+      <p className={quiet && said?.kind !== 'error' ? `${f.say} ${p.said}` : f.say} data-state={said?.kind === 'error' ? 'error' : undefined} data-field={aboutField ? '' : undefined} role="status">{said?.message}</p>
       {said && said.kind !== 'error' ? after : null}
     </form>
   )

@@ -30,14 +30,14 @@ test('on the phone the four columns stand two by two, the first as wide as its l
   assert.doesNotMatch(css, /\.col:first-child\{grid-column:1 \/ -1\}/)
 })
 
-/* Подвал кассы: телефон помощи, условия, возврат, отказ, ANPC — без названия фирмы и CUI (слово
-   заказчика 08.10.2026: «чекаут убирай, эти данные фирмы не нужны тут»). Они остаются в подвале
-   магазина и в условиях. */
-test('the checkout footer carries no firm name or CUI', () => {
-  const legal = footer.split("if (variant === 'legal') {")[1].split('const chats')[0]
-  assert.doesNotMatch(legal, /COMPANY\.|COMPANY_IS_REAL/)
-  assert.match(legal, /telHref\(\)/)
-  assert.match(legal, /ANPC_SAL_URL/)
+/* У кассы подвала нет (слово заказчика 08.10.2026: сначала «чекаут убирай, эти данные фирмы не
+   нужны тут», затем «убирай этот текст внизу, нахуй он тут не нужен»). Условия — ссылкой у кнопки
+   заказа (PaymentForm), остальное — в подвале магазина. */
+test('the checkout page has no footer; the order step still links the terms', () => {
+  assert.doesNotMatch(footer, /variant|'legal'/)
+  assert.match(read('../components/Shell.tsx'), /chrome === 'checkout' \? null : <Footer /)
+  assert.doesNotMatch(css, /\.legal\{|\.legalRow/)
+  assert.match(read('../components/PaymentForm.tsx'), /view\.terms\.link\.href/)
   assert.match(footer, /\{COMPANY\.name\}<\/span> · CUI \{COMPANY\.cui\}/)
 })
 
