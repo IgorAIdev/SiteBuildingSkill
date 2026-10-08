@@ -25,16 +25,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return toMetadata(lang, { title: t(lang, 'cart.title'), description: t(lang, 'cart.lede'), path: (l) => hrefFor(l, { cart: true }), index: false })
 }
 
-/* Страница ходит за данными, вид их складывает: у полной корзины — порог бесплатной
-   доставки для полосы цели; у пустой — главные полки кнопками (И689) и ходовые товары для
-   полки. Молчит источник чего-то из этого — строки нет, корзина стоит. */
-async function extrasOf(lang: Lang, filled: boolean): Promise<CartExtras> {
+/* Страница ходит за данными, вид их складывает: у полной корзины — способы
+   оплаты ЭТОЙ корзины, способы доставки и срок возврата для обещаний у
+   кнопки; у пустой — главные полки кнопками (И689) и ходовые товары для полки. Молчит источник чего-то из
+   этого — строки нет, корзина стоит. */
+async function extrasOf(lang: Lang, session: string | null, filled: boolean): Promise<CartExtras> {
   if (!filled) {
     const [shelf, shelves] = await Promise.all([source().listing(lang, { facets: {}, sort: 'popular', page: null }), mainShelves(lang)])
-    return { freeFrom: null, popular: shelf.ok ? shelf.value.items.slice(0, POPULAR) : [], shelves }
+    return { payments: null, methods: null, returnDays: null, freeFrom: null, popular: shelf.ok ? shelf.value.items.slice(0, POPULAR) : [], shelves }
   }
-  const facts = await content().facts()
-  return { freeFrom: facts.ok ? facts.value.freeDeliveryFrom : null, popular: [], shelves: [] }
+  const [payments, methods, facts] = await Promise.all([
+    session ? commerce().paymentMethods(session, lang) : null,
+    commerce().deliveryMethods(session, lang),
+    content().facts(),
+  ])
+  return {
+    payments: payments?.ok ? payments.value : null,
+    methods: methods.ok ? methods.value : null,
+    returnDays: facts.ok ? facts.value.returnDays : null,
+    freeFrom: facts.ok ? facts.value.freeDeliveryFrom : null,
+    popular: [],
+    shelves: [],
+  }
 }
 
 export default async function CartPage({ params, searchParams }: Props) {
@@ -43,7 +55,7 @@ export default async function CartPage({ params, searchParams }: Props) {
   const r = await commerce().checkout(session, lang)
   if (!r.ok) return <Unavailable lang={lang} />
   const cart = r.value?.cart ?? null
-  const extras = await extrasOf(lang, Boolean(cart?.lines.length))
+  const extras = await extrasOf(lang, session, Boolean(cart?.lines.length))
   const view = cartView(lang, cart, first((await searchParams).r), extras)
   return <CartView lang={lang} view={view} submit={cartSubmit} call={cartCall} />
 }

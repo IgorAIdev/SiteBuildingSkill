@@ -19,10 +19,7 @@
    даёт раздел (`section`, `data-air='head'`), своего поля у экрана нет —
    «не найдено» вставало на полосу ниже имени каталога. Воздух снизу платит
    подвал. */
-.state:is(:has(> h1), :has(> .head > h1), [data-flush]){padding-block:0}
-/* Заголовок и строка под ним — одна мысль: воздух `--air-line`, а не группы (headAir, И524). */
-.head{display:grid;gap:var(--air-line)}
-.head > p{margin:0;font-size:var(--blurb-size);line-height:var(--blurb-lead);color:var(--ink-soft)}
+.state:has(> h1){padding-block:0}
 /* Поле поиска держит меру строки само (SearchForm.module.css): правило о
    поле живёт у поля, а не у каждого, кто его ставит. */
 /* Экран-страница без поля — по центру: знак в тихом круге (полтора роста

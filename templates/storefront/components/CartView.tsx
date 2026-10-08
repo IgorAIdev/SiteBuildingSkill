@@ -7,11 +7,13 @@ import type { Outcome } from '@/lib/cart-ops.ts'
 import { CartForm } from './CartForm.tsx'
 import { CartCoupon } from './CartCoupon.tsx'
 import { OrderTotals } from './OrderTotals.tsx'
+import { Pledges } from './Pledges.tsx'
 import { Shelf } from './Shelf.tsx'
-import { EmptyPaths } from './EmptyPaths.tsx'
+import { CartShelves } from './CartShelves.tsx'
 import { CartFresh } from './CartFresh.tsx'
 import { CartLines } from './CartLines.tsx'
 import { GoalMeter } from './GoalMeter.tsx'
+import { StateScreen } from './StateScreen.tsx'
 
 type Actions = { submit: (form: FormData) => Promise<void>; call: (form: FormData) => Promise<Outcome> }
 
@@ -50,7 +52,7 @@ export function CartView({ lang, view, submit, call, landmark = true }: { lang: 
         {/* Строка исхода — та же, что у формы корзины (`f.say`, И476): одна на сайт. */}
         {view.notice ? <p className={f.say} data-state={view.notice.kind === 'error' ? 'error' : undefined} role="status">{view.notice.message}</p> : null}
         <CartFresh lang={lang} stamp={view.stamp} />
-        <EmptyPaths level={1} title={view.empty.title} lead={view.empty.lead} shelves={view.empty.shelves} />
+        <StateScreen level={1} kind="empty" title={view.empty.title} step={view.empty.step} href={view.empty.href} icon="shopping-cart" loud after={view.empty.shelves ? <CartShelves view={view.empty.shelves} /> : null} />
         {view.empty.shelf ? <Popular shelf={view.empty.shelf} cart={{ submit, call }} /> : null}
       </Main>
     )
@@ -60,17 +62,18 @@ export function CartView({ lang, view, submit, call, landmark = true }: { lang: 
       <CartFresh lang={lang} stamp={view.stamp} />
       <div className={p.pagehead}><h1>{view.title}</h1><p className={p.note}>{view.count}</p></div>
       <div className={p.sidebar}>
-        <div className={s.sheet}>
-          <CartForm lang={lang} submit={submit} call={call} initial={view.notice} {...msgs}>
-            <CartLines lines={view.lines} />
-          </CartForm>
-        </div>
+        <CartForm lang={lang} submit={submit} call={call} initial={view.notice} {...msgs}>
+          <CartLines lines={view.lines} />
+        </CartForm>
         <aside className={p.aside} aria-labelledby="cart-summary">
           <h2 id="cart-summary" className={p.said}>{view.summary}</h2>
           <div className={`${p.stack} ${p.pinned} ${s.summary}`}>
             {view.goal ? <GoalMeter goal={view.goal} /> : null}
             <OrderTotals totals={view.totals} />
-            <a className={b.btn} data-voice="loud" data-size="lg" data-wide href={view.checkout.href}>{view.checkout.label}</a>
+            <div className={s.decide}>
+              <a className={b.btn} data-voice="loud" data-size="lg" data-wide href={view.checkout.href}>{view.checkout.label}</a>
+              <Pledges pledges={view.pledges} />
+            </div>
             <CartCoupon lang={lang} view={view} submit={submit} call={call} />
           </div>
         </aside>

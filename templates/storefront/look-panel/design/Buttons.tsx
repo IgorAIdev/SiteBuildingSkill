@@ -262,11 +262,11 @@ function ShapeSets({ cat, names }: { cat: ButtonAxis[]; names: Record<string, st
 const underSign = (shape: Record<string, string>) => ('--ctrl-btn-fill-pop' in shape && shape['--ctrl-btn-fill-pop'] === 'var(--plate-quiet)' ? { ...shape, '--ctrl-btn-fill-pop': 'var(--plate-sign)' } : shape)
 
 /** Плитка кнопки со знаком в кружке — кнопка сайта (CategoryButton), в красках образца: стандартная и крупная, столбиком. */
-function CircleTile({ name, sign, shape, note, quiet }: { name: string; sign: string; shape?: Record<string, string>; note: string; quiet?: boolean }) {
+function CircleTile({ name, sign, shape, note }: { name: string; sign: string; shape: Record<string, string>; note: string }) {
   return (
     <li className={s.btnStyle}>
       <span className={`${s.famSample} ${s.famStack}`}>
-        {([undefined, 'lg'] as const).map((size) => <CategoryButton key={size ?? 'md'} name={name} sign={sign} size={size} quiet={quiet} style={shape ? roles(underSign(shape)) : undefined} />)}
+        {([undefined, 'lg'] as const).map((size) => <CategoryButton key={size ?? 'md'} name={name} sign={sign} size={size} style={roles(underSign(shape))} />)}
       </span>
       <span className={s.btnName}>{note}</span>
     </li>
@@ -333,13 +333,6 @@ export async function ButtonList({ lang }: { lang: Lang }) {
             </ul>
           </div>
         ))}
-        {/* Тихая — настоящая кнопка сайта, без своих красок: стоит в ряду героя и в пустой корзине рядом с одной яркой (И746, поправка 08.10.2026). */}
-        <div className={s.group}>
-          <h3>Тихая — рядом с яркой «Shop all»</h3>
-          <ul className={`${p.grid} ${s.btnStyles}`}>
-            {categories.filter(({ key }) => key !== 'shop').map(({ key, name, sign }) => <CircleTile key={key} name={name} sign={sign} quiet note="Как все тихие кнопки сайта · ряд героя и пустая корзина" />)}
-          </ul>
-        </div>
       </Part>
       <Part title="Кнопки эффектов" lede="Для чего берут: сон, расслабление, концентрация, бодрость — нейтрально, без лечебных обещаний. Та же кнопка «Кружок со стрелкой» с иконкой эффекта. Это тихий выбор рядом друг с другом, а не главные действия: Outline, Veil, Fill; градиента нет — семь градиентных кнопок в ряд только шумят.">
         {EFFECT_FILLS.map((fill) => (

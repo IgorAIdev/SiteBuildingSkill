@@ -58,9 +58,7 @@ export function Shell({ lang, data, look, chrome = 'full', children }: { lang: L
         <a className={p.skip} href="#main">{t(lang, 'skip')}</a>
         {chrome === 'checkout' ? <CheckoutHeader lang={lang} /> : <Header lang={lang} nav={data.nav} service={data.service} top={data.top} variant={look.header} />}
         {children}
-        {/* У кассы подвала нет: «убирай этот текст внизу» (слово заказчика 08.10.2026) — выход один, «назад в корзину»;
-            условия — ссылкой у кнопки заказа (PaymentForm), остальное — в подвале магазина (И325). */}
-        {chrome === 'checkout' ? null : <Footer lang={lang} docs={data.docs} shelves={data.nav} />}
+        <Footer lang={lang} docs={data.docs} shelves={data.nav} variant={chrome === 'checkout' ? 'legal' : 'full'} />
         {/* Окно помощи у края экрана (И547) — в магазине; касса закрыта, её
             выход один — «назад в корзину». */}
         {chrome === 'full' ? <HelpDock rows={reachRows({ phone: t(lang, 'reach.phone'), email: t(lang, 'reach.email') })} who={{ name: SUPPORT.name, href: supportHref() }} words={{ open: t(lang, 'reach.menu'), online: t(lang, 'reach.online'), top: t(lang, 'reach.top') }} /> : null}

@@ -45,11 +45,12 @@ main:has(> [data-ground='deck']:last-child) + .foot{margin-block-start:0}
 /* Соцсети — знаки без слова ростом органа (40; cbdin.bg 36, знак 22, шаг
    44 — замер 29.09.2026), шагом почти вплотную; рамка цели мыши (24) со
    знаком 13 читалась крошками (слово заказчика: «что за … с размерами»).
-   Знаки оплаты — своим компонентом (PayMarks.tsx), в основании подвала. */
-.social{list-style:none;padding:0;margin:0}
+   Оплата — пилюли меток одним рядом под ними, зазор — соседних целей. */
+.social,.pay{list-style:none;padding:0;margin:0}
 .social{--cluster:var(--sp-1)}
 .social a{--btn-h:var(--ctrl-h);inline-size:var(--btn-h);padding:0}
 .social svg{inline-size:calc(var(--btn-h) * .55);block-size:calc(var(--btn-h) * .55)}
+.pay{--cluster:var(--sp-2)}
 /* Столбцы берут остаток (втрое больше знака) и стоят каждый шириной своей
    самой длинной строки: адрес почты, номер и имя полки не переносятся
    никогда (слово заказчика 29.09.2026: «перенос недопустим» — почта
@@ -57,16 +58,13 @@ main:has(> [data-ground='deck']:last-child) + .foot{margin-block-start:0}
    встаёт на следующий ряд целиком; сколько их в ряду, решает ширина
    (примитив `cluster`, правило 5), а не номер. */
 .cols{flex:3 1 36rem;--cluster:var(--air-group);justify-content:space-between;align-items:start}
-/* Телефон (шов 560): два ряда по два столбца — связь и магазин, о нас и помощь
-   (заказчик 05.10.2026: «в две строки и два блока, а то на три строки растянуто, в
-   строке по одному блоку»; И760). Первый столбец — по самой длинной своей строке, не
-   шире 60 % (`fit-content`), остаток — второму: адрес почты встаёт в одну строку, а не
-   «contact / @exemplu.ro» в равной ячейке (заказчик 08.10.2026: «email не помещается»;
-   замер 360, 390, 412: строка почты 2 → 1, самая длинная ссылка второго столбца прежняя).
-   Если и столбца не хватает, адрес переносится перед «@» (`wbr` в Footer.tsx, И760);
-   от длины адреса в данных раскладка не зависит. Ровные ряды — каждый столбец от своего края. */
+/* Телефон (шов 560): два ряда по два столбца поровну — связь и магазин, о нас и
+   помощь (заказчик 05.10.2026: «в две строки и два блока, а то на три строки
+   растянуто, в строке по одному блоку»; И760). Прежде связь стояла своим рядом во
+   всю ширину, остальные — сеткой по 8rem: три ряда. Ровные ячейки — каждый столбец
+   от своего края, лесенки нет. */
 @container (max-width:559px){
-  .cols{display:grid;grid-template-columns:fit-content(60%) minmax(0, 1fr)}
+  .cols{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr))}
 }
 .col{flex:0 1 auto;display:grid;align-content:start;gap:var(--sp-2)}
 .head{margin:0;font-weight:var(--label-weight);color:var(--ink)}
@@ -120,14 +118,20 @@ main:has(> [data-ground='deck']:last-child) + .foot{margin-block-start:0}
   border-block-start:var(--line-w) solid var(--rule);
   font-size:var(--blurb-size);line-height:var(--blurb-lead);color:var(--ink-soft)
 }
-.base{flex:1 1 20rem;display:grid;gap:var(--air-row)}
+.base{flex:1 1 20rem;display:grid;gap:var(--sp-2)}
 .notice{flex:0 1 26rem;margin:0;text-align:end}
 @container (max-width:819px){ .notice{flex-basis:100%;text-align:start} }
 .seller{font-style:normal}
 /* Цель — квадрат роста цели, как у ссылки списка выше (`.list a`): короткое
    слово закона («ÁSZF», «Sütik» по-венгерски) стояло 33 × 44 на телефоне
    (check:craft, target; замер кабинета 05.10.2026, И771). */
-.base a{display:inline-flex;align-items:center;min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target)}
+.base a,.legal a{display:inline-flex;align-items:center;min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target)}
 .base .legalLinks{column-gap:var(--air-row)}
 
+/* Подвал кассы — строка на полу страницы (Footer.tsx, ). */
+.legal{
+  margin-block-start:var(--air-page);padding-block:var(--air-group);border-block-start:var(--line-w) solid var(--rule);
+  font-size:var(--blurb-size);line-height:var(--blurb-lead);color:var(--ink-soft)
+}
+.legalRow{display:flex;flex-wrap:wrap;align-items:center;gap:var(--gap-row) var(--air-block)}
 .legalLinks{display:flex;flex-wrap:wrap;column-gap:var(--gap-row);list-style:none;padding:0;margin:0}

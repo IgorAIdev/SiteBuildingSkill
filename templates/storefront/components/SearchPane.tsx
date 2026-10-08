@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useId, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import p from '@/styles/primitives.module.css'
 import b from '@/styles/btn.module.css'
@@ -11,7 +11,6 @@ import { shot } from '@/lib/shot.ts'
 import { Icon } from './Icon.tsx'
 import { PaneHandle } from './PaneHandle.tsx'
 import { PaneHead } from './PaneHead.tsx'
-import { ShelfRows } from './ShelfRows.tsx'
 
 type Found = { q: string; total: number; href: string; cards: ShelfCard[] }
 type Words = { clear: string; open: string; close: string; label: string; submit: string; all: string; found: string; none: string; shelves: string }
@@ -55,7 +54,6 @@ export function SearchPane({ lang, action, words, shelves, trigger }: { lang: st
     return () => { window.clearTimeout(wait); stop.abort() }
   }, [q, lang])
   const shown = q.trim().length >= 2 && found?.q === q.trim() ? found : null
-  const all = useMemo(() => (shown ? [{ label: words.all.replace('{q}', shown.q), href: shown.href, sign: 'search' }] : []), [shown, words.all])
   return (
     <>
       <button className={trigger} type="button" popoverTarget={id} aria-label={words.open} aria-current={here ? 'page' : undefined}><Icon id="search" /></button>
@@ -68,34 +66,40 @@ export function SearchPane({ lang, action, words, shelves, trigger }: { lang: st
               <Icon id="search" />
               <input ref={field} id={`${id}-q`} className={`${f.box} ${s.input}`} name="q" type="search" value={q} onChange={(e) => setQ(e.target.value)} enterKeyHint="search" placeholder={words.label} autoComplete="off" />
             </form>
-            <div className={s.list}>
-              <div className={s.lead}>
-                <p className={s.head} role="status">{shown ? `${words.found} · ${new Intl.NumberFormat(lang).format(shown.total)}` : words.shelves}</p>
-                {q ? <button className={`${b.word} ${p.tap} ${s.clear}`} type="button" onClick={() => { setQ(''); field.current?.focus() }}>{words.clear}</button> : null}
+            <p className={s.head} role="status">{shown ? `${words.found} · ${new Intl.NumberFormat(lang).format(shown.total)}` : words.shelves}</p>
+            {q ? (
+              <div className={`${pn.acts} ${s.actions}`}>
+                {shown ? <a className={b.btn} href={shown.href}>{words.all.replace('{q}', shown.q)}<Icon id="arrow-right" /></a> : null}
+                <button className={b.btn} type="button" onClick={() => { setQ(''); field.current?.focus() }}>{words.clear}</button>
               </div>
-              {shown ? (
-                shown.cards.length ? (
-                  <>
-                    <ShelfRows rows={all} />
-                    <ul className={s.found}>
-                      {shown.cards.map((c) => (
-                        <li key={c.id}>
-                          <a className={s.hit} href={c.href}>
-                            <span className={`${p.frame} ${s.thumb}`}><img {...shot(c.image, 'thumb', true)} alt="" decoding="async" /></span>
-                            <span className={s.what}>{c.brand ? <span className={s.brand} translate="no">{c.brand}</span> : null}<span className={s.name}>{c.name}</span></span>
-                            <span className={s.price}>{c.price}</span>
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                ) : <p className={s.none}>{words.none.replace('{q}', shown.q)}</p>
-              ) : (
-                /* Полки — тихими строками со знаком (ShelfRows), как найденные товары
-                   ниже в том же окне, а не кнопками и не фишками (И691). */
-                <ShelfRows rows={shelves} />
-              )}
-            </div>
+            ) : null}
+            {shown ? (
+              shown.cards.length ? (
+                <>
+                  <ul className={s.found}>
+                    {shown.cards.map((c) => (
+                      <li key={c.id}>
+                        <a className={s.hit} href={c.href}>
+                          <span className={`${p.frame} ${s.thumb}`}><img {...shot(c.image, 'thumb', true)} alt="" decoding="async" /></span>
+                          <span className={s.what}>{c.brand ? <span className={s.brand} translate="no">{c.brand}</span> : null}<span className={s.name}>{c.name}</span></span>
+                          <span className={s.price}>{c.price}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : <p className={s.none}>{words.none.replace('{q}', shown.q)}</p>
+            ) : (
+              <>
+                {/* Полки — тихими строками со знаком товара, как найденные товары
+                    ниже в том же окне, а не кнопками и не фишками (слова заказчика
+                    03.10.2026: «кнопки не из дизайн-системы — приведи к единому
+                    виду», затем «не слишком ли это ярко… может текст»; И691).
+                    У профессионалов в окне поиска пути — текстом: Apple «Quick
+                    Links» строками, предиктивный поиск Shopify — строками. */}
+                <ul className={s.shelves}>{shelves.map((x) => <li key={x.href}><a className={`${b.row} ${s.shelf}`} href={x.href}><Icon id={x.sign ?? 'arrow-right'} /><span className={s.shelfName}>{x.label}</span></a></li>)}</ul>
+              </>
+            )}
           </div>
         </div>
         <PaneHandle />

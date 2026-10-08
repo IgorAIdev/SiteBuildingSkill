@@ -22,24 +22,21 @@ type Kind = 'empty' | 'none' | 'unavailable' | 'not-found'
 
    Под заголовком — пути дальше одной группой (`ways`): что передал зовущий
    (поле поиска у «не найдено») и шаг. Экран, который и есть вся страница
-   (пустая страница), может стоять по центру со знаком в круге (`icon`), а шаг —
-   громкой кнопкой (`loud`): на экране это единственное действие. Шага может не быть
-   (`step` не задан): пустая корзина — слово, строка-приглашение (`lead`, под заголовком
-   одним воздухом `--air-line`, И524) и пути (`after`), тихие строки полок (`ShelfRows`, И689).
-   `flush` — без собственного верхнего и нижнего воздуха полосы: экран внутри окна лежит от
-   шапки на поле тела окна, как поле поиска (И786). */
+   (пустая корзина), стоит по центру со знаком в круге (`icon`), а шаг —
+   громкой кнопкой (`loud`): на экране это единственное действие. Под шагом —
+   пути уже (`after`): у пустой корзины — главные полки кнопками (И689). */
 /* Экран сбоя (app/[lang]/error.tsx) — тот же экран: путь дальше у него —
    кнопка повтора (`retry`), а не ссылка. Своя разметка сбоя повторяла
    раскладку этого экрана вручную (разбор 27.09.2026; И476). */
-export function StateScreen({ level, kind, title, lead, flush = false, step, href, icon, loud = false, retry, children, after }: { level: 1 | 2; kind: Kind; title: string; lead?: string; flush?: boolean; step?: string; href?: string; icon?: string; loud?: boolean; retry?: () => void; children?: ReactNode; after?: ReactNode }) {
+export function StateScreen({ level, kind, title, step, href, icon, loud = false, retry, children, after }: { level: 1 | 2; kind: Kind; title: string; step: string; href?: string; icon?: string; loud?: boolean; retry?: () => void; children?: ReactNode; after?: ReactNode }) {
   const H = level === 1 ? 'h1' : 'h2'
   return (
-    <section className={s.state} data-kind={kind} data-center={icon ? '' : undefined} data-flush={flush ? '' : undefined} role={kind === 'unavailable' ? 'alert' : undefined}>
+    <section className={s.state} data-kind={kind} data-center={icon ? '' : undefined} role={kind === 'unavailable' ? 'alert' : undefined}>
       {icon ? <span className={s.mark}><Icon id={icon} /></span> : null}
-      {lead ? <div className={s.head}><H>{title}</H><p>{lead}</p></div> : <H>{title}</H>}
+      <H>{title}</H>
       <div className={`${p.stack} ${s.ways}`}>
         {children}
-        {step === undefined ? null : retry
+        {retry
           ? <button className={b.btn} data-voice={loud ? 'loud' : undefined} data-size={loud ? 'lg' : undefined} type="button" onClick={retry}>{step}</button>
           : loud
             ? <a className={b.btn} data-voice="loud" data-size="lg" href={href}>{step}</a>

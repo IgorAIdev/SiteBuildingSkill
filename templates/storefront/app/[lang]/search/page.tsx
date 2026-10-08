@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /* Поиск — та же полка, что каталог (components/Catalog.tsx): поле в шапке
-   страницы только до слова (после поиска его нет), счёт строкой над полкой. Пусто — заголовок страницы сам говорит
+   страницы, счёт строкой над полкой. Пусто — заголовок страницы сам говорит
    «ничего не нашлось» (второго заголовка «пусто» нет, разбор Q4), дальше —
    шаг ко всем товарам и лучшее магазина полкой: пустой экран не тупик. */
 export default async function SearchPage({ params, searchParams }: Props) {
@@ -45,8 +45,5 @@ export default async function SearchPage({ params, searchParams }: Props) {
   const empty = { title: null, hint: q ? t(lang, 'search.noneHint') : null, step: t(lang, 'catalog.emptyStep'), href: hrefFor(lang, { catalog: true }) }
   const more = best?.ok ? { title: t(lang, 'shelf.popular'), cards: best.value.items.slice(0, BEST) } : null
   const view = catalogView(lang, { title, lede: q ? null : t(lang, 'search.prompt'), listing, asked, at, filters: false, empty, more })
-  /* Поле — только пока слова нет: после поиска второе поле на странице результатов лишнее, новый
-     поиск — знак в шапке (слово заказчика 08.10.2026: «нам тут же повторно поиск не нужен»). */
-  const field = q ? undefined : <SearchForm action={hrefFor(lang, { search: '' })} q="" label={t(lang, 'search.label')} submit={t(lang, 'search.submit')} />
-  return <Catalog view={view} search={field} cart={{ submit: cartSubmit, call: cartCall }} />
+  return <Catalog view={view} search={<SearchForm action={hrefFor(lang, { search: '' })} q={q} label={t(lang, 'search.label')} submit={t(lang, 'search.submit')} />} cart={{ submit: cartSubmit, call: cartCall }} />
 }

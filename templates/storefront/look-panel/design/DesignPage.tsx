@@ -11,7 +11,7 @@ import { hrefFor } from '@/lib/href.ts'
 import { source } from '@/lib/source/index.ts'
 import { shelfCard } from '@/lib/view.ts'
 import { cartSubmit, cartCall } from '@/lib/actions/cart.ts'
-import { PayMarks } from '@/components/PayMarks.tsx'
+import { PAYMENTS } from '@/lib/company.ts'
 import { SIGN } from '@/components/marks.ts'
 import { Icon } from '@/components/Icon.tsx'
 import { PaneHead } from '@/components/PaneHead.tsx'
@@ -20,9 +20,6 @@ import { Rating } from '@/components/Rating.tsx'
 import { Shelf } from '@/components/Shelf.tsx'
 import { Breadcrumbs } from '@/components/Breadcrumbs.tsx'
 import { StateScreen } from '@/components/StateScreen.tsx'
-import { EmptyPaths } from '@/components/EmptyPaths.tsx'
-import { mainShelves } from '@/lib/main-shelves.ts'
-import { shelvesView } from '@/lib/shelves-view.ts'
 import { KeyFacts } from '@/components/KeyFacts.tsx'
 import { Pledges } from '@/components/Pledges.tsx'
 import { MESSENGERS } from '@/lib/contacts.ts'
@@ -337,8 +334,10 @@ function Signs({ lang }: { lang: Lang }) {
         </Part>
       ))}
       <Stock lang={lang} />
-      <Part title="Знаки оплаты" lede="Так знаки оплаты стоят в подвале: одной высотой, без пилюль — знак оплаты не нажимают, плашка обещала бы действие.">
-        <PayMarks label="Способы оплаты" />
+      <Part title="Знаки оплаты" lede="Так знаки оплаты стоят в подвале: одной высотой, каждый в своей пилюле.">
+        <ul className={`${p.cluster} ${s.pay}`}>
+          {PAYMENTS.map((x) => <li key={x.key}><span className={p.chip} data-chip="pay" role="img" aria-label={x.label}><Icon id={SIGN[x.key]} /></span></li>)}
+        </ul>
       </Part>
       <SignElements />
     </>
@@ -396,8 +395,8 @@ async function Blocks({ lang }: { lang: Lang }) {
         <Shelf title={t(lang, 'catalog.title')} id="design-shelf" all={hrefFor(lang, { catalog: true })} cards={cards} cart={{ submit: cartSubmit, call: cartCall }} />
       </Part>
       <Socials />
-      <Part title="Пустой экран" lede="Экран, когда показывать нечего: слово, строка о том, как это наполнить, и тихие строки категорий, как в окне поиска. Так стоят пустое избранное и пустая корзина.">
-        <EmptyPaths level={2} title={t(lang, 'saved.empty')} lead={t(lang, 'saved.emptyLead')} shelves={shelvesView(lang, await mainShelves(lang))} />
+      <Part title="Пустой экран" lede="Экран, когда показывать нечего: что случилось и один шаг дальше.">
+        <StateScreen level={2} kind="empty" title={t(lang, 'saved.empty')} step={t(lang, 'saved.emptyStep')} href={hrefFor(lang, { catalog: true })} icon="heart" />
       </Part>
       <Part title="Экраны состояний" lede="Почему пусто и куда дальше: четыре причины — четыре экрана. Пусто, ничего не найдено, источник не ответил, страницы нет. Шаг — одна ссылка; когда экран и есть вся страница, шаг — громкая кнопка.">
         <div className={`${p.grid} ${s.floors}`}>

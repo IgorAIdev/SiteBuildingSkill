@@ -100,13 +100,7 @@
    прокрутка не утекает на страницу. Без этого содержимое вылезало из коробки:
    на окне ноутбука 587 код скидки стоял ниже края, и увидеть его было нельзя
    никогда (481 при потолке 433, check:craft sticky 05.10.2026). */
-/* Лист страницы корзины — тот же, что у окна меню и шторки (`--surface`, угол карточки, поле
-   карточки): строки товаров лежат на нём, а не прямо на полу («корзину делаем панелью, как
-   меню?», слово заказчика 08.10.2026; И785). Последняя строка без волоска и воздуха под собой:
-   край листа замыкает её сам. */
-.sheet{background:var(--surface);border-radius:var(--r-card);padding:var(--pad-card)}
-.sheet .line:last-child{padding-block-end:0;border-block-end:0}
-.summary{composes:sheet;--stack:var(--air-group);overflow-y:auto;overscroll-behavior:contain}
+.summary{--stack:var(--air-group);background:var(--surface);border-radius:var(--r-card);padding:var(--pad-card);overflow-y:auto;overscroll-behavior:contain}
 .decide{display:flex;flex-direction:column;gap:var(--air-row)}
 
 /* Код скидки — под вопросом (`details`): открытое поле уводит искать коды
@@ -119,9 +113,6 @@
 .couponForm{display:flex;flex-direction:column;gap:var(--air-row)}
 /* Строка исхода пуста, пока сказать нечего, — зазора под себя не берёт. */
 .couponForm > p:empty{display:none}
-/* Ошибка поля кода («код не подошёл») — часть поля: вопрос свернут — строки нет
-   (CartForm, `data-field`). Ошибка снятия пилюли или сети остаётся видна. */
-.couponForm:has(.promo:not([open])) > p[data-field]{display:none}
 /* Вопрос о коде — вид «слово и знак» (`word`, И685): тихое слово в покое, полное под рукой. */
 .promo summary{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);font-weight:var(--label-weight);list-style:none}
 .promo summary::-webkit-details-marker{display:none}
@@ -224,3 +215,7 @@
    сам 21–28, число вровень с заголовком спорило с ним, а не следовало за ним
    (слово заказчика 03.10.2026: «сумма очень велика, на шаг меньше», И668). */
 .paneFoot .grand dd{font-size:var(--parthead-size);line-height:var(--parthead-lead);font-weight:var(--parthead-weight)}
+
+/* Главные полки на пустой корзине (CartShelves.tsx, И689) — кнопки категорий
+   рядом, по центру экрана «пусто», как сам экран; переносятся строками. */
+.shelves > ul{list-style:none;margin:0;padding:0;justify-content:center}

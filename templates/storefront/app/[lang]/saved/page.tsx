@@ -7,11 +7,8 @@ import { hrefFor } from '@/lib/href.ts'
 import { t } from '@/lib/i18n/index.ts'
 import { toMetadata } from '@/lib/seo.ts'
 import { cartSubmit, cartCall } from '@/lib/actions/cart.ts'
-import { mainShelves } from '@/lib/main-shelves.ts'
-import { shelvesView } from '@/lib/shelves-view.ts'
 import { SavedView, savedCards } from '@/components/SavedView.tsx'
-import { Unavailable } from '@/components/StateScreen.tsx'
-import { EmptyPaths } from '@/components/EmptyPaths.tsx'
+import { StateScreen, Unavailable } from '@/components/StateScreen.tsx'
 import { SavedSync } from '@/components/SavedSync.tsx'
 
 type Props = { params: Promise<{ lang: string }>; searchParams: Promise<Params> }
@@ -32,16 +29,14 @@ export default async function SavedPage({ params, searchParams }: Props) {
   const r = ids.length ? await source().cards(lang, ids) : null
   if (r && !r.ok) return <Unavailable lang={lang} />
   const cards = savedCards(lang, r?.value ?? [])
-  /* Пусто — слово, строка о сердце и пути (EmptyPaths, И689): главные полки читаются только тут. */
-  const paths = cards.length ? null : shelvesView(lang, await mainShelves(lang))
   return (
     <main id="main" className={`${p.wrap} ${p.section}`} data-air="head">
       <SavedSync lang={lang} shown={ids.join(',')} />
       {cards.length ? (
         <SavedView lang={lang} cards={cards} cart={{ submit: cartSubmit, call: cartCall }} />
-      ) : paths ? (
-        <EmptyPaths level={1} title={t(lang, 'saved.empty')} lead={t(lang, 'saved.emptyLead')} shelves={paths} />
-      ) : null}
+      ) : (
+        <StateScreen level={1} kind="empty" title={t(lang, 'saved.empty')} step={t(lang, 'saved.emptyStep')} href={hrefFor(lang, { catalog: true })} icon="heart" loud />
+      )}
     </main>
   )
 }

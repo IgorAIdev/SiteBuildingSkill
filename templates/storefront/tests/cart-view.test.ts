@@ -3,7 +3,6 @@ import assert from 'node:assert/strict'
 import { readdirSync, readFileSync } from 'node:fs'
 import { cartView, priceOrFree } from '../lib/cart-view.ts'
 import { pledgesView } from '../lib/pledges.ts'
-import { t } from '../lib/i18n/index.ts'
 import { sampleCommerce, resetSample, FIXTURES } from '../lib/source/sample/commerce.ts'
 import { sampleContent } from '../lib/source/sample/content.ts'
 import { sample } from '../lib/source/sample/catalog.ts'
@@ -51,8 +50,7 @@ test('the notice comes from a known code only; an empty cart says what next', ()
   const empty = cartView('ro', null, 'ok:remove')
   assert.deepEqual(empty.lines, [])
   assert.equal(empty.notice?.message, 'Produsul a fost scos din coș.')
-  assert.equal(empty.empty.title, 'Coșul este gol')
-  assert.deepEqual([empty.empty.shelves.links[0].label, empty.empty.shelves.links[0].href], ['Toate produsele', '/ro/catalog'])
+  assert.deepEqual([empty.empty.title, empty.empty.step, empty.empty.href], ['Coșul este gol', 'Vedeți produsele', '/ro/catalog'])
   assert.equal(empty.empty.shelf, null, 'no data — no shelf')
   assert.equal(cartView('ro', null, 'nonsense').notice, null)
   assert.equal(priceOrFree('ro', { minor: 0, currency: 'EUR' }), 'Gratuit')
@@ -75,15 +73,14 @@ test('a coupon outcome opens the folded code field; a line outcome shows by the 
 
 /* Обещания у кнопки — из данных магазина (разбор 24.09.2026, K4): оплата
    при получении — если она допустима для этой корзины, доставка «от» — из
-   списка способов, возврат — сроком из данных. Строки собирает `pledgesView`; на странице
-   корзины голубой плашки с ними нет (слово заказчика 08.10.2026), они стоят на главной и у
-   кнопки оплаты. */
-test('pledges come from the shop data, not from words in code', async () => {
+   списка способов, возврат — сроком из данных. */
+test('pledges by the button come from the shop data, not from words in code', async () => {
   const pay = await sampleCommerce.paymentMethods(FIXTURES.cart, 'en')
   const methods = await sampleCommerce.deliveryMethods(null, 'en')
   const facts = await sampleContent.facts()
   assert.ok(pay.ok && methods.ok && facts.ok)
-  assert.deepEqual(pledgesView('en', { payments: pay.value, methods: methods.value, returnDays: facts.value.returnDays }).items, [
+  const v = cartView('en', await fixtureCart(), null, { payments: pay.value, methods: methods.value, returnDays: facts.value.returnDays, freeFrom: facts.value.freeDeliveryFrom, popular: [], shelves: [] })
+  assert.deepEqual(v.pledges.items, [
     { icon: 'package', text: 'Cash on delivery' },
     { icon: 'truck', text: 'Delivery from €3.49, pickup free' },
     { icon: 'check-shield', text: '14-day returns' },
@@ -108,34 +105,26 @@ test('one quantity control on the site: the cart and the product page take the s
 test('the empty cart shows popular products from the source, as shelf cards', async () => {
   const shelf = await sample.listing('en', { facets: {}, sort: 'popular', page: null })
   assert.ok(shelf.ok)
-  const v = cartView('en', null, null, { freeFrom: null, popular: shelf.value.items.slice(0, 4), shelves: [] })
+  const v = cartView('en', null, null, { payments: null, methods: null, returnDays: null, freeFrom: null, popular: shelf.value.items.slice(0, 4), shelves: [] })
   assert.equal(v.empty.shelf?.title, 'Popular products')
   assert.equal(v.empty.shelf?.cards.length, 4)
   assert.equal(v.empty.shelf?.all, '/en/catalog')
   assert.match(v.empty.shelf?.cards[0].href ?? '', /^\/en\/product\//)
 })
 
-/* Пустая корзина — не тупик (И689): слово и тихие строки со знаком, как в окне поиска: «все товары»
-   первой, дальше главные полки; в шторке, на странице и в образце — одним `EmptyPaths`. Полок нет —
-   остаётся «все товары»: путь дальше есть всегда. */
-test('the empty cart is a word and quiet category rows, all products first, in the pane and on the page', async () => {
+/* Пустая корзина — не тупик (И689): главные полки кнопками категорий со знаком,
+   в шторке и на странице одной разметкой (CartShelves). Полок нет — нет и ряда. */
+test('the empty cart offers the main shelves as category buttons, in the pane and on the page', async () => {
   const cols = await sample.collections('en')
   assert.ok(cols.ok)
-  const v = cartView('en', null, null, { freeFrom: null, popular: [], shelves: cols.value.slice(0, 3) })
-  assert.equal(v.empty.title, 'Your cart is empty')
-  assert.equal(v.empty.lead, 'Start with a category.', 'одна строка-приглашение, без «!»')
-  for (const lang of ['en', 'ro', 'hu'] as const) assert.doesNotMatch(cartView(lang, null, null).empty.lead, /!/, lang)
-  assert.equal(v.empty.shelves.label, 'Categories')
-  assert.equal(v.empty.shelves.links.length, 4)
-  assert.deepEqual([v.empty.shelves.links[0].label, v.empty.shelves.links[0].href], ['All products', '/en/catalog'])
-  assert.match(v.empty.shelves.links[1].href, /^\/en\//)
-  assert.equal(v.empty.shelves.links[1].sign, cols.value[0].sign)
-  assert.equal(cartView('en', null, null).empty.shelves.links.length, 1)
+  const v = cartView('en', null, null, { payments: null, methods: null, returnDays: null, freeFrom: null, popular: [], shelves: cols.value.slice(0, 3) })
+  assert.equal(v.empty.shelves?.label, 'Categories')
+  assert.equal(v.empty.shelves?.links.length, 3)
+  assert.match(v.empty.shelves?.links[0].href ?? '', /^\/en\//)
+  assert.equal(v.empty.shelves?.links[0].sign, cols.value[0].sign)
+  assert.equal(cartView('en', null, null).empty.shelves, null)
   const dir = new URL('../components/', import.meta.url)
-  for (const user of ['CartView.tsx', 'CartPane.tsx', '../look-panel/design/CheckoutParts.tsx']) assert.match(readFileSync(new URL(user, dir), 'utf8'), /<EmptyPaths /, user)
-  const empty = readFileSync(new URL('EmptyPaths.tsx', dir), 'utf8')
-  assert.match(empty, /<ShelfRows /)
-  assert.doesNotMatch(empty, /icon=|loud|CategoryButton/, 'ни знака в круге, ни громкой кнопки, ни кнопок категорий')
+  for (const user of ['CartView.tsx', 'CartPane.tsx']) assert.match(readFileSync(new URL(user, dir), 'utf8'), /<CartShelves /, user)
 })
 
 /* Полоса до бесплатной доставки: порог — из данных магазина, набрано — товары
@@ -153,52 +142,4 @@ test('the free-delivery strip says what is left, then that it is unlocked; no th
   assert.deepEqual(cartView('hu', cart, null, extras(20000)).goal?.left, ['Még ', `69,77${NB}€`, ', és a szállítás díjmentes'])
   assert.equal(cartView('en', cart, null).goal, null, 'порога у магазина нет')
   assert.equal(cartView('en', null, null, extras(10000)).goal, null, 'пустой корзине полоса не нужна')
-})
-
-/* Страница корзины — белый лист: итог, кнопка оформления, код скидки. Голубой плашки «оплата при
-   получении · доставка от · возврат» под кнопкой нет (слово заказчика 08.10.2026: «это говно, зачем
-   налепил»; плашка тоном внутри листа — И772), и данных на неё страница не собирает. */
-test('the cart page has no pledges plate and gathers no data for one', async () => {
-  const view = readFileSync(new URL('../components/CartView.tsx', import.meta.url), 'utf8')
-  const page = readFileSync(new URL('../app/[lang]/cart/page.tsx', import.meta.url), 'utf8')
-  assert.doesNotMatch(view, /Pledges/)
-  assert.doesNotMatch(page, /paymentMethods|deliveryMethods|returnDays/)
-  const v = cartView('en', await fixtureCart(), null)
-  assert.ok(!('pledges' in v), 'в виде корзины нет обещаний')
-})
-
-/* Ошибка поля кода («код не подошёл») уходит вместе с полем: вопрос свёрнут — строки нет (заказчик
-   08.10.2026: «недействительный код должен закрываться вместе с полем кода»; И333). Ошибка пилюли и сети
-   остаётся видна: у неё нет кода `e:coupon-…`. */
-test('a bad-code error is part of the code field: folded with it, other errors stay', () => {
-  const form = readFileSync(new URL('../components/CartForm.tsx', import.meta.url), 'utf8')
-  const css = readFileSync(new URL('../components/Cart.module.css', import.meta.url), 'utf8')
-  assert.match(form, /startsWith\('e:coupon-'\)/)
-  assert.match(form, /data-field=\{aboutField \? '' : undefined\}/)
-  assert.match(css, /\.couponForm:has\(\.promo:not\(\[open\]\)\) > p\[data-field\]\{display:none\}/)
-  for (const code of ['coupon-invalid', 'coupon-expired', 'coupon-empty']) assert.ok(cartView('en', null, `e:${code}`).couponNotice, code)
-  assert.equal(cartView('en', null, 'e:request').couponNotice, null, 'сбой сети — не про поле')
-})
-
-/* Страница корзины — два листа одной краски с окнами (И785): строки — на листе `.sheet`, сводка берёт его
-   же через `composes`; ничего не лежит на полу, кроме заголовка страницы. */
-test('the cart page puts the lines on a sheet like the summary', () => {
-  const view = readFileSync(new URL('../components/CartView.tsx', import.meta.url), 'utf8')
-  const css = readFileSync(new URL('../components/Cart.module.css', import.meta.url), 'utf8')
-  assert.match(view, /<div className=\{s\.sheet\}>\s*<CartForm [^>]*>\s*<CartLines lines=\{view\.lines\} \/>/)
-  assert.match(css, /\.sheet\{background:var\(--surface\);border-radius:var\(--r-card\);padding:var\(--pad-card\)\}/)
-  assert.match(css, /\.summary\{composes:sheet;/)
-  assert.match(css, /\.sheet \.line:last-child\{padding-block-end:0;border-block-end:0\}/)
-})
-
-/* Пустое избранное — тот же экран, что пустая корзина (`EmptyPaths`): слово, строка о сердце, тихие строки
-   категорий; ни знака в круге, ни громкой кнопки (слово заказчика 08.10.2026: «и пустое избранное так же
-   сделаем»; И689). Образец в дизайн-системе — тот же компонент. */
-test('the empty favourites is the same word-and-rows screen as the empty cart', async () => {
-  const page = readFileSync(new URL('../app/[lang]/saved/page.tsx', import.meta.url), 'utf8')
-  const design = readFileSync(new URL('../look-panel/design/DesignPage.tsx', import.meta.url), 'utf8')
-  assert.match(page, /<EmptyPaths level=\{1\} title=\{t\(lang, 'saved\.empty'\)\} lead=\{t\(lang, 'saved\.emptyLead'\)\}/)
-  assert.doesNotMatch(page, /icon="heart"|loud/)
-  assert.match(design, /<EmptyPaths level=\{2\} title=\{t\(lang, 'saved\.empty'\)\}/)
-  for (const lang of ['en', 'ro', 'hu'] as const) assert.doesNotMatch(t(lang, 'saved.emptyLead'), /!/, lang)
 })

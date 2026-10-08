@@ -1578,6 +1578,26 @@
   box-shadow:none;font-size:var(--ctrl-fs-xs);font-weight:var(--label-weight)
 }
 .chip[data-chip='lab'] svg{stroke:currentColor}
+/* ОПЛАТА — та же пилюля знаком марки платёжной системы (подвал, И549):
+   сведение, не мишень — руку не встречает, ни вуали, ни нажатия. Замер
+   cbdin.bg 29.09.2026: пилюля 30 полным кругом, плашка — белое 10 % на
+   палубе, поле 12, Mastercard 13 в высоту. Здесь — рост самой пилюли (32:
+   метка ступенью ниже вышла 24 — мелко), плашка — тихая пола. Знак —
+   ОДНОЙ высотой на все (доля роста пилюли, как Mastercard у cbdin): окно
+   каждого знака обрезано по его главному рисунку (icons/pay/LICENSE), и
+   круги Mastercard, яблоко и «G» встают вровень; ширина — от рисунка
+   (слово заказчика 29.09.2026: «высотой с Mastercard… единый источник»).
+   Угол — половина роста: пилюля от своей высоты (правило 2), полный круг
+   `--r-pop` — только главному. */
+/* Рост — от надписи органа (`--ctrl-fs-sm`, не течёт), а не от роста
+   органа: тот под пальцем растёт до 44, а пилюлю оплаты не нажимают — на
+   телефоне четыре пилюли вставали 3 + 1 в два ряда. */
+.chip[data-chip='pay']{
+  --chip-h:calc(var(--ctrl-fs-sm) * 2);
+  pointer-events:none;box-shadow:none;background:var(--quiet);
+  block-size:var(--chip-h);padding-inline:calc(var(--chip-h) * .38);border-radius:calc(var(--chip-h) / 2)
+}
+.chip[data-chip='pay'] svg{inline-size:auto;block-size:calc(var(--chip-h) * .42);fill:currentColor;stroke:none;color:var(--ink)}
 
 .cut{
   /* Место и поле — от роли и высоты органа, не числом (И509); вес — в

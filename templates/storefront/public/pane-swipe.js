@@ -46,27 +46,15 @@ export function installPaneSwipe() {
       el.style.removeProperty('translate')
       el.style.removeProperty('--pull')
     }
-    /* Затемнённая полоса рядом с открытой боковой шторкой — тоже шторка под
-       пальцем (заказчик 08.10.2026: меню «не закрывается свайпом»; замер:
-       изнутри шторка закрывалась, с полосы страницы жест не ловился — И781). Полоса
-       отдаёт шторке только движение вдоль её оси: вертикаль остаётся прокрутке
-       страницы, окно посреди экрана и верхнее окно полосу не берут. */
-    const sheetBeside = () => {
-      const open = [...document.querySelectorAll('[data-pane="start"], [data-pane="end"]')].filter((p) => p.matches('[open], :popover-open'))
-      return open.at(-1) ?? null
-    }
-    let beside = false
     const start = (e) => {
       if (pane) reset(pane)
-      pane = null; way = null; lock = null; beside = false
+      pane = null; way = null; lock = null
       if (e.touches.length !== 1) return
       const t = e.target instanceof Element ? e.target : null
-      const own = t?.closest('[data-pane]') ?? null
-      const el = own ?? sheetBeside()
+      const el = t?.closest('[data-pane]') ?? null
       if (!el || !el.matches('[open], :popover-open') || t?.closest('input, textarea, select')) return
       way = wayOf(el)
       if (!way) return
-      beside = !own
       pane = el
       x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = e.timeStamp; pull = 0; lock = null
     }
@@ -85,10 +73,6 @@ export function installPaneSwipe() {
           : lock === 'x'
         if (!mine) { pane = null; return }
       }
-      /* Жест с полосы страницы: если браузер уже занял его своей прокруткой
-         (лента под пальцем), событие неотменяемо — шторку не двигаем, чтобы
-         не было двух движений сразу. */
-      if (beside && !e.cancelable) { cancel(); return }
       e.preventDefault()
       const along = way === 'down' ? dy : way === 'up' ? -dy : way === 'start' ? -dx : dx
       pull = Math.max(0, along)

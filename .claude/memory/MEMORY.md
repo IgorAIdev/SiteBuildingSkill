@@ -56,11 +56,8 @@
 - [One main colour](one-main-colour.md) — strip, loud button, chosen, help knob, category buttons = brand a9 on every palette and theme; measure all palettes, never a per-palette fix (04.10.2026)
 - [Arrow: one direction](arrow-one-direction.md) — disclosure arrow down closed, up open everywhere; no place flips it (04.10.2026)
 - [Filter: drawer, own groups](filter-drawer-four-groups.md) — side drawer like the cart; Categories · Concentration · CBD in total · Type · Effect, no «CBD content»; oils in mg bands; zero values greyed with (0), never hidden (И750); no price; never offer «panel» (04–05.10.2026)
-- [Category buttons: pills, one bright](category-buttons-pill-brand.md) — always pills (exception to Corners); hero row since 08.10.2026: only «Shop all» brand-filled, shelves quiet; variants A/B/C drawn
+- [Category buttons: brand pills](category-buttons-pill-brand.md) — hero category buttons always pill + brand fill, an owner-given exception to Corners (04.10.2026)
 - [cbdshop.bg is the owner's](cbdshop-is-owners.md) — his first storefront (CBD_ecommerce_eu, vendure.cbdshop.bg); texts reusable as rewrites, not copies (04.10.2026)
 - [One window, one sheet](one-pane-one-sheet.md) — menu/filters/cart share deck header + one white sheet + one foot pair (quiet left, loud right); no per-window tones or grey controls; menu foot = icon buttons + language on one plate (05.10.2026, И772)
 - [Codex in the same folder](codex-same-folder.md) — Codex worked here and on GitHub until 08.10.2026; its local folders removed by the owner's word; if it returns: check branch/uncommitted/PRs, merge all lines, one snapshot to main
-- [Window foot + swipe](pane-foot-and-swipe.md) — foot buttons always whole, never scroll; every sheet closes by swipe incl. from the dim strip; owner phone 360 css px; tested with a real finger (08.10.2026, И781)
-- [«On the storefront» = merged](on-storefront-means-merged.md) — he sees localhost:3020 on his machine and cbdin.ro; say «влито в main» only after merge, never «уже на витрине» from my sandbox (08.10.2026)
-- [Payment marks in the footer](footer-payment-marks.md) — bare marks 24 px, no pills (a payment mark is not clickable), air between tiers; email wraps before @ if the column is narrow (08.10.2026, И783)
-- [Window bits 08.10](window-bits-08-10.md) — coupon error folds with its field; empty cart and favourites = word + line + quiet category rows; search pane no big buttons, no repeat field on results; × at the end of every window head; checkout without footer (И333/И689/И687/И784/И325)
+- [SEO copy carries the queries](seo-copy-keywords.md) — texts hold real buyer queries in title/H1/intro/H2/FAQ; HempScale principles are the base; Codex's 06.10 SEO work not trusted, redo from evidence (08.10.2026)

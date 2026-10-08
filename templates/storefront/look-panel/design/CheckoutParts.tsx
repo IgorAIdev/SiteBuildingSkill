@@ -21,7 +21,8 @@ import { CartCoupon } from '@/components/CartCoupon.tsx'
 import { CartPane } from '@/components/CartPane.tsx'
 import { CartLines } from '@/components/CartLines.tsx'
 import { CartForm } from '@/components/CartForm.tsx'
-import { EmptyPaths } from '@/components/EmptyPaths.tsx'
+import { CartShelves } from '@/components/CartShelves.tsx'
+import { StateScreen } from '@/components/StateScreen.tsx'
 import { CheckoutFrame } from '@/components/CheckoutFrame.tsx'
 import { CheckoutSteps } from '@/components/CheckoutSteps.tsx'
 import { MethodForm } from '@/components/MethodForm.tsx'
@@ -138,10 +139,10 @@ export async function CheckoutParts({ lang }: { lang: Lang }) {
 
   /* Корзина до оформления: доставка ещё не выбрана. */
   const cart = cartOf(lines, null)
-  const view = cartView(lang, cart, null, { freeFrom: facts.ok ? facts.value.freeDeliveryFrom : null, popular: [], shelves: [] })
+  const view = cartView(lang, cart, null, { payments: paymentsFor(lang, cart.total), methods, returnDays, freeFrom: facts.ok ? facts.value.freeDeliveryFrom : null, popular: [], shelves: [] })
   const msgs = { timeout: view.messages.timeout, failed: view.messages.failed }
   /* Пустая корзина: «к покупкам» и главные полки кнопками (И689). */
-  const empty = cartView(lang, null, null, { freeFrom: null, popular: [], shelves }).empty
+  const empty = cartView(lang, null, null, { payments: null, methods: null, returnDays: null, freeFrom: null, popular: [], shelves }).empty
 
   /* Оформление: курьер на адрес образца. */
   const delivery: Delivery | null = door ? { method: door, address: ADDRESS, point: null } : null
@@ -193,8 +194,8 @@ export async function CheckoutParts({ lang }: { lang: Lang }) {
         </div>
         <CartPane lang={lang} id="design-cart-pane" src={`/api/cart?lang=${lang}`} title={t(lang, 'cart.title')} close={t(lang, 'nav.close')} shown={view} />
       </Part>
-      <Part title="Пустая корзина" lede="Так выглядит шторка и страница корзины, когда в ней ничего нет: слово и тихие строки категорий, те же, что в окне поиска под пустым полем.">
-        <EmptyPaths level={2} title={empty.title} lead={empty.lead} shelves={empty.shelves} />
+      <Part title="Пустая корзина" lede="Так выглядит шторка и страница корзины, когда в ней ничего нет: под «к покупкам» — главные категории кнопками, те же, что на снимке главной.">
+        <StateScreen level={2} kind="empty" title={empty.title} step={empty.step} href={empty.href} icon="shopping-cart" loud after={empty.shelves ? <CartShelves view={empty.shelves} /> : null} />
       </Part>
       <Part title="Строки корзины" lede="Строка товара — одна на страницу корзины и её шторку: снимок, имя, вариант и цена за штуку, сумма строки, под ними счётчик и «Удалить».">
         <CartForm lang={lang} submit={stillSubmit} call={stillCall} initial={null} {...msgs}>

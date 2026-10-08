@@ -18,8 +18,6 @@ const tell = () => listeners.forEach((f) => f())
 
 export function holdAll(next: Record<string, number>) { held = next; tell() }
 export function holdOne(variant: string, n: number) { held = { ...held, [variant]: n }; tell() }
-/** Сколько штук варианта лежит сейчас — форма берёт «было», чтобы показать надпись сразу и вернуть её при ошибке. */
-export const heldOf = (variant: string): number => held[variant] ?? 0
 
 const subscribe = (f: () => void) => { listeners.add(f); return () => { listeners.delete(f) } }
 export const useInCart = (variant: string | null | undefined): number =>

@@ -5,13 +5,12 @@ import type { Lang } from '@/lib/locale.ts'
 import type { Doc } from '@/lib/source/contract.ts'
 import { isKey, t } from '@/lib/i18n/index.ts'
 import { hrefFor } from '@/lib/href.ts'
-import { COMPANY, ANPC_SAL_URL, TERMS_DOC } from '@/lib/company.ts'
+import { COMPANY, ANPC_SAL_URL, TERMS_DOC, PAYMENTS } from '@/lib/company.ts'
 import { CONTACTS, MESSENGERS, SOCIALS, chatHref, telHref, mailHref } from '@/lib/contacts.ts'
 import { Icon } from './Icon.tsx'
 import { SIGN } from './marks.ts'
 import { Logo } from './Logo.tsx'
 import { Newsletter } from './Newsletter.tsx'
-import { PayMarks } from './PayMarks.tsx'
 import { subscribe } from '@/lib/actions/subscribe.ts'
 import { COMPANY_IS_REAL } from '@/lib/flags.ts'
 
@@ -40,7 +39,7 @@ const YEAR = new Date().getFullYear()
    навигация, названная подписью (`aria-labelledby`). */
 /* `idPrefix` — приставка к id подписей столбцов: второй подвал на странице
    (образец в дизайн-системе) не повторяет id первого. На сайте — пусто. */
-export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; docs: Doc[]; shelves: { href: string; label: string }[]; idPrefix?: string }) {
+export function Footer({ lang, docs, shelves, variant = 'full', idPrefix = '' }: { lang: Lang; docs: Doc[]; shelves: { href: string; label: string }[]; variant?: 'full' | 'legal'; idPrefix?: string }) {
   /* Документ в подвале — коротким общепринятым именем по адресу (И760; заказчик
      05.10.2026: «сокращай названия до коротких общепринятых»): полное название —
      заголовок его страницы; документа без короткого имени — по заголовку. */
@@ -50,6 +49,25 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
      19.06.2026: видна всё время права на отказ; И748) — ссылкой «Помощи»
      сразу за возвратом. */
   const withdrawLink = <li key="withdraw"><a className={b.word} href={hrefFor(lang, { withdraw: true })}>{t(lang, 'footer.withdraw')}</a></li>
+  /* Подвал кассы — строка на полу страницы, а не тёмная плита: в коридоре
+     оформления нечего выбирать, кроме того, что обязано быть по закону
+     (условия, возврат, данные, ANPC), и того, что помогает довести
+     заказ, — телефона (разбор 24.09.2026, S2; Baymard: контакт поддержки в
+     оформлении). */
+  if (variant === 'legal') {
+    return (
+      <footer className={s.legal}>
+        <div className={`${p.wrap} ${s.legalRow}`}>
+          <p>{t(lang, 'checkout.help')} <a className={b.word} href={telHref()}>{CONTACTS.phone}</a></p>
+          <ul className={s.legalLinks}>
+            {links([...LEGAL, 'retur'])}{withdrawLink}
+            <li><a className={b.word} href={ANPC_SAL_URL} rel="noopener">{t(lang, 'footer.anpc')}</a></li>
+          </ul>
+          <p><span translate="no">{COMPANY.name}</span> · CUI {COMPANY.cui}{COMPANY_IS_REAL ? null : ` · ${t(lang, 'sample')}`}</p>
+        </div>
+      </footer>
+    )
+  }
   const chats = MESSENGERS.flatMap((m) => { const href = chatHref(m, ''); return href ? [{ key: m.key, label: m.label, href }] : [] })
   return (
     <footer className={s.foot} data-ground="deck">
@@ -69,7 +87,7 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
           {/* Соцсети — знаками без слова, тихой кнопкой сайта без плиты
               (`btn`, `bare`): ответ на руку — вида «слово и знак», тот же,
               что у ссылок рядом (правило 10, И685). Оплата — ниже всех ссылок
-              в основании подвала, знаками без плашки (`PayMarks`, И549, И783). */}
+              в основании подвала, метками примитива `chip` (И549). */}
           <ul className={`${p.cluster} ${s.social}`} aria-label={t(lang, 'footer.social')}>
             {SOCIALS.filter((x) => x.href).map((x) => <li key={x.key}><a className={b.btn} data-voice="bare" href={x.href} target="_blank" rel="noopener noreferrer" aria-label={x.label}><Icon id={SIGN[x.key]} /></a></li>)}
           </ul>
@@ -107,7 +125,9 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
             {links(LEGAL)}
             <li><a className={b.word} href={ANPC_SAL_URL} rel="noopener">{t(lang, 'footer.anpc')}</a></li>
           </ul>
-          <PayMarks label={t(lang, 'footer.pay')} />
+          <ul className={`${p.cluster} ${s.pay}`} aria-label={t(lang, 'footer.pay')}>
+            {PAYMENTS.map((x) => <li key={x.key}><span className={p.chip} data-chip="pay" role="img" aria-label={x.label}><Icon id={SIGN[x.key]} /></span></li>)}
+          </ul>
           <address className={s.seller}>
             © {YEAR} <span translate="no">{COMPANY.name}</span> · CUI {COMPANY.cui} · {COMPANY.regCom} · {COMPANY.address}
             {COMPANY_IS_REAL ? null : ` · ${t(lang, 'sample')}`}

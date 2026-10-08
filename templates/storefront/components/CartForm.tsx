@@ -5,11 +5,11 @@ import f from '@/styles/form.module.css'
 import p from '@/styles/primitives.module.css'
 import s from './Cart.module.css'
 import { cartLane, isTimeout } from '@/lib/cart-lane.ts'
-import { heldOf, holdOne } from '@/lib/in-cart.ts'
+import { holdOne } from '@/lib/in-cart.ts'
 import { PendingOp } from './CartPending.ts'
 import type { Outcome } from '@/lib/cart-ops.ts'
 
-type Said = Pick<Outcome, 'kind' | 'message'> & { inCart?: number | null; code?: string }
+type Said = Pick<Outcome, 'kind' | 'message'> & { inCart?: number | null }
 type Props = {
   lang: string; className?: string; refresh?: boolean; quiet?: boolean
   submit: (form: FormData) => Promise<void>
@@ -41,10 +41,6 @@ export function CartForm({ lang, className, refresh = true, quiet = false, submi
   const [busy, setBusy] = useState(false)
   const [said, setSaid] = useState<Said | null>(initial)
   const [pending, setPending] = useState<string | null>(null)
-  /* Ошибка самого поля кода («e:coupon-…», COUPON_CODES в lib/cart-view.ts)
-     говорит про поле: когда вопрос «Have a discount code?» свернут, строка уходит
-     вместе с ним (styles у `.couponForm`, заказчик 08.10.2026, И333). */
-  const aboutField = said?.kind === 'error' && !!said.code?.startsWith('e:coupon-')
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (cartLane.pending) return
@@ -55,20 +51,12 @@ export function CartForm({ lang, className, refresh = true, quiet = false, submi
     const op = String(form.get('op') ?? '')
     setPending(op.startsWith('set:') ? op : null)
     setBusy(true)
-    /* «Added · N» — сразу, а не после ответа сервера: у живого магазина ответ идёт
-       0.4–1.1 с, и всё это время кнопка молчала («задержка при нажатии на Add to cart»,
-       заказчик 08.10.2026; И782). Число — прежнее плюс количество формы; ответ
-       поправит его (меньше при нехватке на складе), ошибка вернёт прежнее. Как
-       счётчик количества, И698. */
-    const variant = String(form.get('variant') ?? '')
-    const before = op === 'add' && variant ? heldOf(variant) : 0
-    if (op === 'add' && variant) holdOne(variant, before + (Math.max(1, Math.floor(Number(form.get('quantity') ?? 1))) || 1))
     try {
       const out = await cartLane.run(() => call(form))
       setSaid(out)
       unsure = out.kind === 'error'
       if (out.kind !== 'ok') setPending(null)
-      if (op === 'add' && variant) holdOne(variant, out.inCart !== null ? out.inCart : out.kind === 'error' ? before : heldOf(variant))
+      if (op === 'add' && out.inCart !== null) holdOne(String(form.get('variant') ?? ''), out.inCart)
       if (out.count !== null) window.dispatchEvent(new CustomEvent('cart:count', { detail: out.count }))
       if (!unsure) window.dispatchEvent(new CustomEvent('cart:changed'))
       /* Положено — говорит корзина в шапке (CartLink), а не строка под
@@ -77,7 +65,6 @@ export function CartForm({ lang, className, refresh = true, quiet = false, submi
     } catch (error) {
       setSaid({ kind: 'error', message: isTimeout(error) ? timeout : failed })
       setPending(null)
-      if (op === 'add' && variant) holdOne(variant, before)
       unsure = true
     }
     setBusy(false)
@@ -89,7 +76,7 @@ export function CartForm({ lang, className, refresh = true, quiet = false, submi
       <PendingOp.Provider value={pending}>
         <fieldset className={s.bare} disabled={busy}>{children}</fieldset>
       </PendingOp.Provider>
-      <p className={quiet && said?.kind !== 'error' ? `${f.say} ${p.said}` : f.say} data-state={said?.kind === 'error' ? 'error' : undefined} data-field={aboutField ? '' : undefined} role="status">{said?.message}</p>
+      <p className={quiet && said?.kind !== 'error' ? `${f.say} ${p.said}` : f.say} data-state={said?.kind === 'error' ? 'error' : undefined} role="status">{said?.message}</p>
       {said && said.kind !== 'error' ? after : null}
     </form>
   )

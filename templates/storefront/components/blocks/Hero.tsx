@@ -57,7 +57,7 @@ export function Hero({ block, ctx }: Props) {
         <nav aria-label={t(ctx.lang, 'nav.categories')}>
           <ul className={`${p.rail} ${s.heroShelves}`} data-rail="wrap">
             <li><CategoryButton name={t(ctx.lang, 'nav.shopAll')} sign="shop-awning" href={hrefFor(ctx.lang, { catalog: true })} /></li>
-            {shelves.map((c) => <li key={c.slug}><CategoryButton quiet name={c.name} sign={c.sign} href={hrefFor(ctx.lang, { category: c.slug })} /></li>)}
+            {shelves.map((c) => <li key={c.slug}><CategoryButton name={c.name} sign={c.sign} href={hrefFor(ctx.lang, { category: c.slug })} /></li>)}
           </ul>
         </nav>
       </div>

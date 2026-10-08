@@ -35,32 +35,6 @@ test('the hero path row has no lead button; the catalog button says «Shop all»
   assert.doesNotMatch(read('../styles/btn.module.css'), /\[data-lead\]/)
 })
 
-/* Ряд пути героя: «Shop all» — одна яркая (заливка основного цвета), кнопки полок тихие
-   (слово заказчика 08.10.2026: «только Shop all с заливкой и яркой главной, остальные
-   кнопки категорий тихие»). Тихая берёт роли тихой кнопки каталога, а не свои. */
-test('the hero path row has one bright button — «Shop all»; the shelf buttons are quiet and read the quiet roles', () => {
-  const hero = read('../components/blocks/Hero.tsx')
-  assert.match(hero, /<CategoryButton name=\{t\(ctx\.lang, 'nav\.shopAll'\)\}/)
-  assert.doesNotMatch(hero, /<CategoryButton name=\{t\(ctx\.lang, 'nav\.shopAll'\)\}[^>]*\bquiet\b/)
-  assert.match(hero, /<CategoryButton quiet name=\{c\.name\}/)
-  assert.match(read('../components/CategoryButton.tsx'), /data-cat=\{quiet \? 'quiet' : ''\}/)
-  const css = bare(read('../styles/btn.module.css'))
-  assert.match(css, /\.btn\[data-voice='loud'\]\[data-cat='quiet'\]\{\s*--press-bg:var\(--ctrl-btn-fill, transparent\);\s*--press-ink:var\(--ctrl-btn-ink, var\(--ink\)\);\s*--btn-edge:var\(--ctrl-btn-edge, transparent\)\s*\}/)
-})
-
-/* Одна тихая — на весь сайт: фишка граней в меню, тихая кнопка каталога и тихая кнопка категории
-   читают одни роли — заливку, чернила и кромку оси «Тихая» панели (замер 08.10.2026: кромка
-   #c2baab, заливка нет, надпись #231f18, 14/500 у фишки и у кнопки категории). */
-test('the chip, the quiet button and the quiet category button read the same quiet roles', () => {
-  const chip = bare(read('../styles/primitives.module.css')).match(/(?:^|\})\s*\.chip\{([^}]*)\}/)
-  assert.ok(chip, 'правило .chip есть')
-  assert.match(chip[1], /background:var\(--ctrl-btn-fill, var\(--ctrl\)\)/)
-  assert.match(chip[1], /var\(--ctrl-btn-edge, var\(--rule\)\)/)
-  assert.match(chip[1], /font-size:var\(--ctrl-fs-sm\);font-weight:var\(--label-weight\)/)
-  const btn = bare(read('../styles/btn.module.css'))
-  assert.match(btn, /--btn-edge:var\(--ctrl-btn-edge, transparent\);\s*--press-bg:var\(--ctrl-btn-fill, var\(--quiet\)\)/)
-})
-
 /* Форму кнопки решает панель, а не разметка (заказчик 04.10.2026: «кнопки перестали
    реагировать на панель… ты что, им радиус в коде прописал?»): признака `data-pill`
    у кнопок нет, круг листания берёт угол той же оси. Исключение одно — кнопка
@@ -90,16 +64,4 @@ test('the rail head buttons stay round past the panel; page numbers do not', () 
   const pager = read('../components/RailPager.tsx')
   assert.equal([...pager.matchAll(/<button\b[^>]*\bdata-pager data-rail-nav\b/g)].length, 2)
   assert.doesNotMatch(read('../components/Pagination.tsx'), /\bdata-rail-nav\b/)
-})
-
-/* Окно поиска — две группы, поле и список; внутри списка шаг соседних целей (И786). Слово заказчика
-   08.10.2026: «а нужны ли тут такие большие зазоры?», «ритм поправь». */
-test('the search window keeps two groups: field, then one tight list whose caption and Clear share one text role', () => {
-  const css = readFileSync(new URL('../components/SearchPane.module.css', import.meta.url), 'utf8')
-  const tsx = readFileSync(new URL('../components/SearchPane.tsx', import.meta.url), 'utf8')
-  assert.match(css, /\.body\{display:grid;justify-items:start;gap:var\(--air-line\);padding-block:0 var\(--pad-card\)\}/)
-  assert.match(css, /\.list\{justify-self:stretch;display:grid;justify-items:start;gap:var\(--sp-1\)\}/)
-  assert.match(css, /\.head,\.clear\{font-size:var\(--ctrl-fs-sm\);font-weight:var\(--label-weight\)\}/)
-  assert.match(tsx, /<button className=\{`\$\{b\.word\} \$\{p\.tap\} \$\{s\.clear\}`\}/)
-  assert.match(tsx, /<div className=\{s\.list\}>\s*<div className=\{s\.lead\}>/)
 })

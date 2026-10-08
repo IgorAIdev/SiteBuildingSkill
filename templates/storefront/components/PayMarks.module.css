@@ -1,9 +1,0 @@
-/* Знаки оплаты без плашки (PayMarks.tsx). Одна высота у всех: окно каждого знака обрезано по
-   его главному рисунку (icons/pay/LICENSE), круги Mastercard, яблоко и «G» встают вровень;
-   ширина — от рисунка. Высота — чуть выше буквы строки, на которой знаки стоят, а не высота
-   образцов: 24 рядом с текстом 14 вышло «огромными» (заказчик 08.10.2026), 16 — вровень со
-   строкой. Мера — от надписи органа (`--ctrl-fs-sm`, не течёт), краска — вторичный тон
-   строки: сведение, не мишень. Зазор — воздух строки. */
-.pay{list-style:none;padding:0;margin:0;--cluster:var(--air-row)}
-.mark{display:inline-flex;align-items:center;color:var(--ink-soft);pointer-events:none}
-.mark svg{inline-size:auto;block-size:calc(var(--ctrl-fs-sm) * 1.15);fill:currentColor;stroke:none}
