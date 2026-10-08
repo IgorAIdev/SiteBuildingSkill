@@ -1,0 +1,6 @@
+/* Полоса «сайт строится» (И792): пол страницы, снизу волосок черты — как полоса
+   согласия (ConsentBanner); своей заливки, тени и хода нет («тихое — тонкое и
+   светлое»). Слово — ролью надписи поля (как служебные слова формы входа), по
+   середине строки. */
+.notice{padding-block:var(--pad-inner);border-block-end:var(--line-w) solid var(--rule)}
+.text{text-align:center;font-size:var(--label-size);line-height:var(--label-lead);color:var(--ink)}

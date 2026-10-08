@@ -1412,3 +1412,13 @@ checks-not-on-dev-server). Firefox — впервые (системный 157), 
 - Сердце карточки: рост пишет место (`ProductCard.module.css`, `--ctrl-face`) — в модуль знака (`data-size`, И603).
 - Дизайн-система: «Filters» и порядок над полкой на вкладке Buttons — копии, а не компоненты (`Filters`, `SortMenu`).
 - Умолчание набора `--r-btn` (`tools/scale.mjs`) — пилюля и для следующих магазинов? Решение владельца набора.
+
+## Тексты полок: обещания «у каждого товара» (08.10.2026, слово заказчика)
+
+Заказчик: «все тексты должны быть под реальные запросы, интенты покупателей»; «сравнение по миллиграммам — его нет».
+Главная переписана (И792-пакет). Осталось: описания и ответы полок и эффектов в `templates/storefront/lib/content/shop-copy.json`
+обещают «мг на каплю / цену за мг / состав — у каждого товара» (`on every product`, `la fiecare produs`, `minden terméknél`):
+у товаров движка этого может не быть. Переписать description полок oil, capsules, edibles, pets, vape, cosmetics,
+topicals и эффектов sleep, relax, balance, mood-focus, womens-health (3 языка) — запросом и составом полки; «на каждом
+товаре» → «на этикетке»; главный запрос сна RO — `cbd pentru somn` (подсказки Google). В `lint-copy` — семья `promise`
+(обещание сайта без факта в данных). Затем тот же патч — в cbd-ecommerce `apps/storefront3`.

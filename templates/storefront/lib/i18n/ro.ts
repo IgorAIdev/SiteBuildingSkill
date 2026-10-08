@@ -164,6 +164,7 @@ export const RO = {
   'news.error': 'Nu am putut înregistra abonarea acum. Încearcă din nou.',
   'footer.disclaimer': 'Produsele noastre CBD sunt făcute din cânepă industrială cultivată în UE, cu THC sub limita legală. Nu sunt medicamente și nu diagnostichează, nu tratează și nu previn nicio boală; cere sfatul medicului înainte de folosire dacă ești însărcinată, alăptezi sau iei medicamente. Se vând numai persoanelor de peste 18 ani.',
   'sample': 'Date de exemplu',
+  'notice.building': 'Site-ul este încă în construcție — momentan nu primim comenzi.',
   'nav.cart': 'Coș',
   'nav.saved': 'Favorite',
   'reach.menu': 'Contactați-ne',

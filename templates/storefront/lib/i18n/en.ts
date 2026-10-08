@@ -166,6 +166,7 @@ export const EN: Record<keyof typeof RO, string> = {
   'news.error': 'We could not subscribe you right now. Please try again.',
   'footer.disclaimer': 'Our CBD products are made from EU-grown industrial hemp with THC below the legal limit. They are not medicines and do not diagnose, treat or prevent any disease; ask a doctor before use if you are pregnant, breastfeeding or take medication. Sold only to adults aged 18 and over.',
   'sample': 'Sample data',
+  'notice.building': 'This site is still being built — we are not taking orders yet.',
   'nav.cart': 'Cart',
   'nav.saved': 'Favourites',
   'reach.menu': 'Contact us',

@@ -20,6 +20,11 @@ import { EFFECT_FACET } from './effect.ts'
    · `live` (Vendure + Payload) — план 4, содержание из Payload. */
 const which = () => process.env.SOURCE ?? 'sample'
 
+/** Принимает ли магазин заказы: образец ставит свои, движок — только словом
+ *  `VENDURE_PLACE_ORDERS=on`. Пока нет — сайт говорит об этом полосой над
+ *  шапкой (BuildingNotice, И792), а не только ошибкой у кнопки заказа. */
+export const ordersOpen = (): boolean => which() === 'sample' || process.env.VENDURE_PLACE_ORDERS === 'on'
+
 /* Редакционный лид известных полок — из content/shop-copy.ts на языке страницы.
    Незнакомые полки сохраняют описание движка. Кадр полки — у движка;
    у полки без снимка — кадр полки образца её вида
