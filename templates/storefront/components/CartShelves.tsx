@@ -7,12 +7,14 @@ import { CategoryButton } from './CategoryButton.tsx'
    то нужно предложить товар категории»; И689): под «к покупкам» — главные
    полки магазина кнопками категорий сайта со знаком товара, теми же, что под
    абзацем героя и в окне поиска. Какие полки — данные главной (`mainShelves`);
-   одна разметка на шторку и страницу корзины. */
+   одна разметка на шторку и страницу корзины. Кнопки полок тихие (`quiet`), как под
+   абзацем героя: на экране одна яркая — «к покупкам», выше (слово заказчика
+   08.10.2026: «следи, чтоб на сайте было единообразие»). */
 export function CartShelves({ view }: { view: ShelvesView }) {
   return (
     <nav className={s.shelves} aria-label={view.label}>
       <ul className={p.cluster}>
-        {view.links.map((x) => <li key={x.href}><CategoryButton name={x.name} sign={x.sign} href={x.href} /></li>)}
+        {view.links.map((x) => <li key={x.href}><CategoryButton quiet name={x.name} sign={x.sign} href={x.href} /></li>)}
       </ul>
     </nav>
   )
