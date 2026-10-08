@@ -652,6 +652,18 @@
    (заказчик 04.10.2026: «должны быть только пилюлями вне зависимости от других
    настроек»). Единственное исключение из «угол кнопки — Corners» (И730). */
 .btn[data-voice='loud'][data-cat]{--btn-r:var(--r-pop)}
+/* Тихая кнопка категории (`data-cat='quiet'`, слово заказчика 08.10.2026: «Shop all» —
+   одна яркая, остальные тихие): роли тихой кнопки каталога — заливка, чернила и кромка
+   оси «Тихая» панели, поэтому она одета так же, как «View cart» и «Clear filters», и
+   меняется с ними одной ручкой (контур или вуаль — выбор заказчика). Кружок под знаком —
+   тон `--plate-sign`: белый кружок на пустой пилюле не виден. Наведение и нажатие — общие
+   роли руки (вуаль чернил на заливке). */
+.btn[data-voice='loud'][data-cat='quiet']{
+  --press-bg:var(--ctrl-btn-fill, transparent);
+  --press-ink:var(--ctrl-btn-ink, var(--ink));
+  --btn-edge:var(--ctrl-btn-edge, transparent)
+}
+.btn[data-voice='loud'][data-cat='quiet']:has(> .signDot){--btn-dot:var(--plate-sign)}
 .catName{display:inline-block}
 .catName::first-letter{text-transform:uppercase}
 

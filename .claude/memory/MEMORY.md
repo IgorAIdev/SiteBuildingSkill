@@ -56,7 +56,7 @@
 - [One main colour](one-main-colour.md) — strip, loud button, chosen, help knob, category buttons = brand a9 on every palette and theme; measure all palettes, never a per-palette fix (04.10.2026)
 - [Arrow: one direction](arrow-one-direction.md) — disclosure arrow down closed, up open everywhere; no place flips it (04.10.2026)
 - [Filter: drawer, own groups](filter-drawer-four-groups.md) — side drawer like the cart; Categories · Concentration · CBD in total · Type · Effect, no «CBD content»; oils in mg bands; zero values greyed with (0), never hidden (И750); no price; never offer «panel» (04–05.10.2026)
-- [Category buttons: brand pills](category-buttons-pill-brand.md) — hero category buttons always pill + brand fill, an owner-given exception to Corners (04.10.2026)
+- [Category buttons: pills, one bright](category-buttons-pill-brand.md) — always pills (exception to Corners); hero row since 08.10.2026: only «Shop all» brand-filled, shelves quiet; variants A/B/C drawn
 - [cbdshop.bg is the owner's](cbdshop-is-owners.md) — his first storefront (CBD_ecommerce_eu, vendure.cbdshop.bg); texts reusable as rewrites, not copies (04.10.2026)
 - [One window, one sheet](one-pane-one-sheet.md) — menu/filters/cart share deck header + one white sheet + one foot pair (quiet left, loud right); no per-window tones or grey controls; menu foot = icon buttons + language on one plate (05.10.2026, И772)
 - [Codex in the same folder](codex-same-folder.md) — Codex worked here and on GitHub until 08.10.2026; its local folders removed by the owner's word; if it returns: check branch/uncommitted/PRs, merge all lines, one snapshot to main
