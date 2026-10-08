@@ -1,5 +1,5 @@
 import p from '@/styles/primitives.module.css'
-import go from '@/styles/go.module.css'
+import b from '@/styles/btn.module.css'
 import s from './Cart.module.css'
 import type { CartLineView } from '@/lib/cart-view.ts'
 import { QuantityStepper } from './QuantityStepper.tsx'
@@ -29,7 +29,7 @@ export function CartLines({ lines }: { lines: CartLineView[] }) {
           </div>
           <p className={s.unit}><span aria-hidden="true">{l.unit}</span><span className={p.said}>{l.unitSay}</span></p>
           <div className={s.act}>
-            <button className={`${go.go} ${p.tap} ${s.drop}`} type="submit" name="op" value={l.remove.op} aria-label={l.remove.label} data-remove>{l.remove.text}</button>
+            <button className={`${b.word} ${p.tap} ${s.drop}`} data-hand="bad" type="submit" name="op" value={l.remove.op} aria-label={l.remove.label}>{l.remove.text}</button>
             <QuantityStepper ops={l.stepper} />
             <p className={s.sum}>{l.total}</p>
           </div>

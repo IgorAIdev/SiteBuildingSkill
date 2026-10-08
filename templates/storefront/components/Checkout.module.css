@@ -90,13 +90,18 @@
 .option{
   display:flex;gap:var(--gap-row);align-items:flex-start;padding:var(--pad-inner) var(--pad-card);cursor:pointer;
   border-radius:var(--r-card);box-shadow:inset 0 0 0 var(--line-w) var(--edge);
-  outline:var(--line-w) solid transparent;outline-offset:calc(var(--line-w) * -1)
+  outline:var(--line-w) solid transparent;outline-offset:calc(var(--line-w) * -1);
+  transition:box-shadow var(--hover-t) var(--ease)
 }
 /* Выбранный способ — кольцо той же краской, что отмеченная точка радио
    (`--ctrl-tick-fill`, И392): одно «выбрано» на всю кассу, и оно держит
    3 : 1 к полу, а заливка марки на пяти образцах из семи — нет. */
 .option:has(input:checked){box-shadow:inset 0 0 0 var(--ring-w) var(--ctrl-tick-fill, var(--pop-ink))}
 .option:has(input:disabled){cursor:not-allowed}
+/* Ответ на руку — вида «карточка» (И685), как карточка полки: кромка руки
+   `--edge-hand`; выбранную держит кольцо, погашенная молчит. До 08.10.2026 карточки
+   способов на руку не отвечали вовсе (разбор 08.10.2026; И790). */
+@media (hover:hover){ .option:not(:has(input:checked, input:disabled)):hover{box-shadow:inset 0 0 0 var(--line-w) var(--edge-hand)} }
 .option:has(input:disabled) .optionName{opacity:var(--state-off)}
 .option input{
   flex:none;margin:0;inline-size:calc(var(--ctrl-h) * .45);block-size:calc(var(--ctrl-h) * .45);

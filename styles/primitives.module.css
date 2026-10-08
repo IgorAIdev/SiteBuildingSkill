@@ -1191,7 +1191,8 @@
    только заливка: тихая плашка `--plate-quiet` — ступень пола, и на полу
    страницы она давала 1.14 при норме 1.15, на белом листе ещё меньше.
    Пилюли вариантов на карте товара стояли словами в воздухе (check:craft,
-   `sunk`; И258). Выбранной кромка не нужна: её держит заливка `--pop`. */
+   `sunk`; И258). Выбранной кромка не нужна: её держит заливка выбранного
+   `--chosen` (И706). */
 /* Рост сегмента — ручка `--seg-h` (умолчание — малый орган): выбор, без
    которого не купить (опции варианта), берёт рост кнопки. Поле по бокам —
    доля роста (правило 2). */
@@ -1200,14 +1201,30 @@
    chips 8dp, Shopify Dawn ~8px). Стояла сырая ступень оптики `--sp-1` (4px)
    без замера (заказчик 28.09.2026: «расстояние между кнопками ты думал
    скиллом или случайное?»; И516). */
+/* Одежда невыбранного — заливка и надпись тихой оси каталога (`--ctrl-btn-fill`,
+   `--ctrl-btn-ink`), как у фишки, счётчика и тихой кнопки рядом в ряду покупки
+   (разбор 08.10.2026: серые плашки вариантов рядом с контуром счётчика и «Quick
+   order»; бриф `docs/design/кнопки.md`, И790); без каталога — прежняя тихая плашка.
+   Ответ на руку — тот же, что у тихой кнопки: вуаль её надписи долей состояния на
+   её заливке (`--state-hover`, `--state-press`), а не непрозрачная плашка
+   `--hover-ctrl` — под рукой у контура вырастала серая плита, когда счётчик и
+   «Quick order» рядом отвечали вуалью (разбор 08.10.2026). Кромка — своя, органа
+   (`--edge`, И258): у тихой оси «Вуаль» и «Черта» кромки нет, и варианты снова
+   стояли бы словами в воздухе; в опубликованном контуре она та же, что у тихой
+   кнопки. Под рукой кромка идёт осью «Ответ на руку» (`--ctrl-btn-hand-edge`):
+   «держится» — стоит, «темнеет» — `--edge-hand`. Угол — свой, органа
+   (`--r-ctrl`): выбор варианта — не кнопка (Allbirds). */
 .seg{display:flex;flex-wrap:wrap;gap:var(--gap-targets)}
 :where(ul.seg){list-style:none;padding:0;margin:0}
 .seg :is(button, a){
+  --seg-fill:var(--ctrl-btn-fill, var(--plate-quiet));
+  --seg-ink:var(--ctrl-btn-ink, var(--ink));
+  --seg-edge:var(--edge);
   display:inline-flex;align-items:center;
-  height:var(--seg-h, var(--ctrl-h-sm));padding:0 calc(var(--seg-h, var(--ctrl-h-sm)) * .4);border-radius:var(--r-ctrl);background:var(--plate-quiet);
-  box-shadow:inset 0 0 0 var(--line-w) var(--edge);
-  font-size:var(--ctrl-fs-sm);color:var(--ink-soft);text-decoration:none;
-  transition:background var(--hover-t) var(--ease),color var(--hover-t) var(--ease)
+  height:var(--seg-h, var(--ctrl-h-sm));padding:0 calc(var(--seg-h, var(--ctrl-h-sm)) * .4);border-radius:var(--r-ctrl);background:var(--seg-fill);
+  box-shadow:inset 0 0 0 var(--line-w) var(--seg-edge);
+  font-size:var(--ctrl-fs-sm);color:var(--seg-ink);text-decoration:none;
+  transition:background var(--hover-t) var(--ease),color var(--hover-t) var(--ease),box-shadow var(--hover-t) var(--ease)
 }
 /* Ответ на руку — только у невыбранного, и выбранный исключён ЯВНО, а не
    весом селектора. Стояло `:is(button, a[href])`: `:is()` берёт вес самого
@@ -1216,9 +1233,9 @@
    читалась обычной. Так же устроен лоток выше: `:where()` без веса и
    `:not()` на выбор. */
 @media (hover:hover){
-  .seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):hover{background:var(--hover-ctrl);color:var(--ink)}
+  .seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):hover{background:color-mix(in oklab, var(--seg-fill), var(--seg-ink) var(--state-hover));--seg-edge:color-mix(in oklab, var(--edge), var(--edge-hand) calc(var(--ctrl-btn-hand-edge, 0) * 100%))}
 }
-.seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):active{background:var(--press-ctrl);color:var(--ink);transform:var(--press-move)}
+.seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):active{background:color-mix(in oklab, var(--seg-fill), var(--seg-ink) var(--state-press));--seg-edge:color-mix(in oklab, var(--edge), var(--edge-hand) calc(var(--ctrl-btn-hand-edge, 0) * 100%));transform:var(--press-move)}
 /* Выбранное — ролью выбранного `--chosen` (И706), а не чернилами текста:
    при тёмной марке это та же заливка, что у «в корзину» (тёмное на сайте
    одно, И694; Gymshark, Allbirds — выбранный размер краской кнопки покупки),
@@ -1245,7 +1262,7 @@
     gap:0;inline-size:fit-content;max-inline-size:100%;padding:var(--seg-pad);
     border-radius:calc(var(--r-ctrl) + var(--seg-pad));background:var(--plate-quiet)
   }
-  .seg :is(button, a){background:transparent;box-shadow:none}
+  .seg :is(button, a){--seg-fill:transparent;box-shadow:none}
   .seg :is([aria-pressed="true"], [aria-current="true"]){background:var(--surface);color:var(--ink);box-shadow:var(--sh-raised)}
 }
 /* Плашки размера (элемент 97; HyperUI «Radio Groups», daisyUI «Radio», MIT;
@@ -1254,13 +1271,13 @@
    чернилами (как умолчание `chips`, но плашка на листе, а не на тихой
    плашке), `tint` — выбранная тоном марки с кромкой марки (как у `joined`,
    но не встык). Третий вид образца — те же плашки полным кругом — не
-   заведён: полный круг (`--r-pop`) у набора только у главного действия
-   (семья `popRadius`), выбор размера носит угол органа `--r-ctrl`. Нет в
+   заведён: полный круг (`--r-pop`) у набора — кнопки и кнопки-знака
+   (семья `popRadius`, И790), выбор размера носит угол органа `--r-ctrl`. Нет в
    наличии — зачёркнута, а не только приглушена: размер, которого нет, виден
    без цвета (так недоступный вариант показывают темы Shopify). Под рукой у невыбранной кромка темнеет
    до чернил (ответ на руку исключает выбранный явно — так же, как выше). */
 @container style(--seg-look: tiles) or style(--seg-look: tint){
-  .seg :is(button, a){background:var(--surface);color:var(--ink)}
+  .seg :is(button, a){--seg-fill:var(--surface);--seg-ink:var(--ink)}
   @media (hover:hover){
     .seg :where(button, a[href]):not([aria-pressed="true"], [aria-current="true"]):hover{background:var(--surface);box-shadow:inset 0 0 0 var(--line-w) var(--ink)}
   }
@@ -1539,11 +1556,17 @@
   transition:stroke var(--hover-t) var(--ease)
 }
 /* Под рукой пилюля говорит, что сделает нажатие: снимет. Поэтому краснеет не
-   цвет фирмы, а сам крестик — он и есть действие. */
-@media (hover:hover){ .chip:hover{background:var(--hover-ctrl)} }
-@media (hover:hover){ .chip:hover svg{stroke:var(--ink)} }
-.chip:active{background:var(--press-ctrl);transform:var(--press-move)}
-.chip:active svg{stroke:var(--ink)}
+   цвет фирмы, а сам крестик — он и есть действие. Отвечает руке только пилюля,
+   которую нажимают (ссылка, кнопка): метка статьи (`<p class=chip>`, PostCard,
+   PostParts) — не орган, и под мышью она вела себя как фишка фильтра (разбор
+   08.10.2026; И790). */
+/* Подложка под рукой — ответ тихой кнопки (вуаль её надписи на её заливке), а не
+   непрозрачная `--hover-ctrl`: фишка одета тихой осью и отвечает, как она (разбор
+   08.10.2026, И790). */
+@media (hover:hover){ :where(a, button).chip:hover{background:color-mix(in oklab, var(--ctrl-btn-fill, var(--ctrl)), var(--ctrl-btn-ink, var(--ink)) var(--state-hover))} }
+@media (hover:hover){ :where(a, button).chip:hover svg{stroke:var(--ink)} }
+:where(a, button).chip:active{background:color-mix(in oklab, var(--ctrl-btn-fill, var(--ctrl)), var(--ctrl-btn-ink, var(--ink)) var(--state-press));transform:var(--press-move)}
+:where(a, button).chip:active svg{stroke:var(--ink)}
 /* Пилюля полосы полки (`data-pill`, И707): выбранное фильтра — полным кругом,
    как кнопки граней и порядка над ним (слово заказчика 04.10.2026: «давай А, и
    фишки фильтров тоже пилюлей»). Угол — половина роста, от своей высоты

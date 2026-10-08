@@ -601,10 +601,11 @@
   --on-ok:    var(--on-ok-9);
 
   /* Радиусы с 20.09.2026 выпускает строитель шкал из ключа `радиус` набора
-     (`--r-xs`, `--r-ctrl`, `--r-card`, `--r-sheet`; `--r-pop` — полный круг
-     главного действия), линию и кольцо — из порогов SHAPE (`--line-w`,
-     `--ring-w`, `--ring-off`). Прежняя ручка `--round` и пилюля на каждом
-     органе сняты: полный круг — только у главного действия (И228). */
+     (`--r-xs`, `--r-ctrl`, `--r-card`, `--r-sheet`; `--r-pop` — полный круг),
+     линию и кольцо — из порогов SHAPE (`--line-w`, `--ring-w`, `--ring-off`).
+     Прежняя ручка `--round` и пилюля на каждом органе сняты (И228); полный
+     круг — у кнопки (близнец «· pill» ручки Corners, `--r-btn`) и кнопки-знака
+     (`data-pager`), органы — поле, сегмент, счётчик — носят свой угол (И790). */
 
   /* Shadows carry the cyan-12 hue, never grey. On a dark ground a shadow is
      nearly invisible, so depth comes from a hairline of light as well.

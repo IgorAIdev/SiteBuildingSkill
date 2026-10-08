@@ -27,7 +27,7 @@ export function AddressEdit({ form, action, permalink, cancel }: { form: Address
       </fieldset>
       {form.id ? <input type="hidden" name="id" value={form.id} /> : null}
       <div className={s.acts}>
-        <button className={b.btn} data-voice="loud" type="submit" disabled={pending}>{form.submit}</button>
+        <button className={b.btn} data-voice="loud" data-size="lg" type="submit" disabled={pending}>{form.submit}</button>
         {cancel ? <a className={`${b.word} ${p.tap}`} href={cancel.href}>{cancel.label}</a> : null}
       </div>
     </form>

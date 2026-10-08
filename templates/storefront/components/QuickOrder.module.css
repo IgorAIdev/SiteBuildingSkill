@@ -34,16 +34,15 @@
    `grid`); знак над именем. Строки — одна колонка, знак слева, надпись
    «Order via …», как у cbdin.bg. Геометрия — от роста кнопки (правило 2). */
 .rows{--cols:2;--cols-min:2;--cell-min:0px;--grid-gap:var(--gap-targets);list-style:none;margin:0;padding:0}
-.row{
-  inline-size:100%;block-size:100%;
-  flex-direction:column;gap:calc(var(--btn-h) * .1);
-  padding:calc(var(--btn-h) * .22) calc(var(--btn-h) * .2)
-}
-.row svg{inline-size:1.5em;block-size:1.5em;flex:none}
+/* Плитка — кнопка модуля «знак над словом» (`data-stack`: столбцом, поле и знак от
+   роста); место ставит только ячейку (разбор 08.10.2026, И790: поле и знак плитки
+   весили здесь как `.btn`, и порядок кусков CSS решал, чьи они). */
+.row{inline-size:100%;block-size:100%}
 .via{display:none}
+/* Вид строками — раскладка плитки на месте, весом выше `.btn[data-stack]` (0,2,1). */
 @container style(--quick-look: rows){
   .rows{--cols:1;--cols-min:1}
-  .row{flex-direction:row;justify-content:flex-start;gap:calc(var(--btn-h) * .25);padding-block:0;padding-inline:calc(var(--btn-h) * .4)}
+  .rows > li > .row{flex-direction:row;justify-content:flex-start;gap:calc(var(--btn-h) * .25);padding-block:0;padding-inline:calc(var(--btn-h) * .4)}
   .name{display:none}
   .via{display:inline}
 }

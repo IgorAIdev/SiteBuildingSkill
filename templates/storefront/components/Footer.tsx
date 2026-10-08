@@ -71,7 +71,7 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
               что у ссылок рядом (правило 10, И685). Оплата — ниже всех ссылок
               в основании подвала, знаками без плашки (`PayMarks`, И549, И783). */}
           <ul className={`${p.cluster} ${s.social}`} aria-label={t(lang, 'footer.social')}>
-            {SOCIALS.filter((x) => x.href).map((x) => <li key={x.key}><a className={b.btn} data-voice="bare" href={x.href} target="_blank" rel="noopener noreferrer" aria-label={x.label}><Icon id={SIGN[x.key]} /></a></li>)}
+            {SOCIALS.filter((x) => x.href).map((x) => <li key={x.key}><a className={b.btn} data-voice="bare" data-pager="" href={x.href} target="_blank" rel="noopener noreferrer" aria-label={x.label}><Icon id={SIGN[x.key]} /></a></li>)}
           </ul>
         </div>
         <div className={`${p.cluster} ${s.cols}`}>

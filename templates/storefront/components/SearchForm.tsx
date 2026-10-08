@@ -23,7 +23,7 @@ export function SearchForm({ action, q, label, submit, id = 'search-q', quiet = 
       <label className={quiet ? p.said : f.label} htmlFor={id}>{label}</label>
       <div className={s.box}>
         <input id={id} className={`${f.box} ${s.input}`} name="q" type="search" defaultValue={q} enterKeyHint="search" placeholder={quiet ? label : undefined} />
-        <button className={`${b.btn} ${s.go}`} data-voice="bare" data-size="sm" type="submit" aria-label={submit}><Icon id="search" /></button>
+        <button className={`${b.btn} ${s.go}`} data-voice="bare" data-size="sm" data-pager="" type="submit" aria-label={submit}><Icon id="search" /></button>
       </div>
     </form>
   )

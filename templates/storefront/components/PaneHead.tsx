@@ -41,7 +41,7 @@ export function PaneHead({ title, titleId, tag: Tag = 'h2', aside, end, children
       {aside ? <div className={pn.lead}>{head}<span className={pn.aside}>{aside}</span></div> : head}
       {children}
       {end}
-      <button className={`${b.btn} ${pn.close}`} data-voice="bare" type="button" popoverTarget={target} popoverTargetAction={target ? 'hide' : undefined} onClick={onClose} aria-label={close}><Icon id="x" /></button>
+      <button className={`${b.btn} ${pn.close}`} data-voice="bare" data-pager="" type="button" popoverTarget={target} popoverTargetAction={target ? 'hide' : undefined} onClick={onClose} aria-label={close}><Icon id="x" /></button>
     </>
   )
   return (

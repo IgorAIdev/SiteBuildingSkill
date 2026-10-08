@@ -19,10 +19,11 @@
 .lead{justify-self:stretch;display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row)}
 /* Подпись списка и «Clear» — одна роль текста: тот же кегль и вес (слово заказчика 08.10.2026: «clear таким же
    размером, ролью, как и Products»); «Clear» — тихое слово (`word`, полное под рукой), палец — запасом наружу
-   (`tap`), строка от слова не растёт. */
+   (`tap`), строка от слова не растёт. Краска слова — модуля (`word`: тихое → полное); своя
+   краска здесь весила как `.word`, и порядок кусков CSS решал её (разбор 08.10.2026, И790). */
 .head,.clear{font-size:var(--ctrl-fs-sm);font-weight:var(--label-weight)}
 .head{margin:0;color:var(--ink-soft)}
-.clear{padding:0;color:var(--ink-soft)}
+.clear{padding:0}
 /* Подсказки — строками: снимок, марка и имя, цена; колонок столько,
    сколько встаёт (правило 5), строку отличает плашка под рукой. */
 .found{justify-self:stretch;list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 18rem), 1fr));gap:var(--sp-1) var(--gap-grid)}

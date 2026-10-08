@@ -36,7 +36,7 @@ export function AddressBook({ lang, view, permalink, landmark = true }: { lang: 
                       <a className={`${b.word} ${p.tap}`} href={card.edit.href} aria-label={card.edit.aria}>{card.edit.label}</a>
                       <form action={removeAddress.bind(null, lang)}>
                         <input type="hidden" name="id" value={card.id} />
-                        <button className={`${b.word} ${p.tap}`} type="submit" aria-label={card.remove.aria}>{card.remove.label}</button>
+                        <button className={`${b.word} ${p.tap}`} data-hand="bad" type="submit" aria-label={card.remove.aria}>{card.remove.label}</button>
                       </form>
                     </div>
                   </>

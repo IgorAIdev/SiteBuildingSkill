@@ -144,7 +144,8 @@ test('shelf bar organs: words without a plate, chosen chips as pills (И707, И7
     ['сбросить фильтры', line(shelf, '{view.clear ? <a className=')],
   ]) assert.match(l, /data-voice="bare"/, `${name} — словом без плиты (И740)`)
   assert.match(line(shelf, 'view.chips.map'), /data-pill/, 'фишка выбранного — пилюлей')
-  assert.doesNotMatch(btn, /\.btn\[data-(?:pill|pager)\]\{[^}]*--btn-r/, 'признак формы у кнопки снят: форму всех кнопок решает ось Buttons → Shape (04.10.2026)')
+  assert.doesNotMatch(btn, /\.btn\[data-pill\]\{[^}]*--btn-r/, 'признак формы у кнопки со словом снят: угол решает ось Shape → Corners (--r-btn, 04.10.2026)')
+  assert.match(btn, /\.btn\[data-rail-nav\],\.btn\[data-pager\]\{--btn-r:var\(--r-pop\)\}/, 'кнопка-знак — круг при любом угле (И747, поправка 08.10.2026)')
   const prims = readFileSync(join(KIT, 'styles/primitives.module.css'), 'utf8')
   assert.match(prims, /\.chip\[data-pill\]\{border-radius:calc\(var\(--chip-h\) \/ 2\)\}/, 'фишка-пилюля — угол в половину своего роста (`--chip-h`, И764)')
 })

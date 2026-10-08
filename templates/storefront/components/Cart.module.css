@@ -86,11 +86,13 @@
    Прижата к правому краю; не влезла рядом со счётчиком — переносится вниз
    тоже к правому краю. */
 .sum{margin:0;margin-inline-start:auto;font-size:var(--body-size);font-weight:var(--cardprice-weight);line-height:var(--ctrl-face);color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
-/* «Удалить» — тихая ссылка словом, а не третий серый квадрат со знаком; первым
-   в ряду, слово — у левого края снимка; ширина — до снимка (потолок), а не слова:
-   по ней счётчик встаёт под имя. Сжимается до слова, когда ряд не вмещает. */
-.drop{flex:1 1 0;min-inline-size:min-content;max-inline-size:var(--line-thumb, calc(var(--ctrl-h-lg) * 2));justify-content:flex-start;min-block-size:var(--ctrl-face);font-size:var(--ctrl-fs-sm);color:var(--ink-soft);white-space:nowrap}
-.drop[data-remove]{--go-hover:var(--bad)} /* тихое слово без подчёркивания (И717); под рукой — действие-удаление e11 (roles.md; И472) */
+/* «Удалить» — тихое слово (`word`, разрушительное — `data-hand="bad"`: под рукой
+   краска ошибки, И717, И472, И790), а не третий серый квадрат со знаком и не
+   ссылка «куда ведёт»; краску и ответ решает модуль кнопки, место — только где
+   и какого роста. Первым в ряду, слово — у левого края снимка; ширина — до снимка
+   (потолок), а не слова: по ней счётчик встаёт под имя. Сжимается до слова, когда
+   ряд не вмещает; кнопка сама центрует надпись — слово к началу. */
+.drop{flex:1 1 0;min-inline-size:min-content;max-inline-size:var(--line-thumb, calc(var(--ctrl-h-lg) * 2));min-block-size:var(--ctrl-face);padding:0;text-align:start;font-size:var(--ctrl-fs-sm);white-space:nowrap}
 
 /* СВОДКА — единственный поднятый лист страницы. Порядок решения: код скидки
    свёрнут, итоги, кнопка, под ней обещания. Между группами — воздух группы,
