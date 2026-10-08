@@ -125,3 +125,13 @@ test('category and hub names, tile captions and links come from the editorial co
     assert.equal(oil?.name, categoryCopy(lang, 'oil')?.name)
   }
 })
+
+test('the effect filter names its values like the moment hubs', async () => {
+  for (const lang of LOCALES) {
+    const r = await sample.listing(lang, { facets: {}, sort: 'popular', page: null })
+    assert.ok(r.ok)
+    const effect = r.value.facets.find((f) => f.code === 'effect')
+    const sleep = effect?.values.find((v) => v.code === 'sleep')
+    if (sleep) assert.equal(sleep.name, effectCopy(lang, 'sleep')?.name)
+  }
+})
