@@ -13,3 +13,5 @@ metadata:
 **Why:** the owner reads the arrow by the site-wide convention, not by the geometry of one place.
 
 **How to apply:** `Turn` (styles/turn.module.css) turns only by openness; no place declares its own direction. Guard: `turnFlip` in check:css. Rule И481. Related: [[only-correct-architecture]].
+
+08.10.2026: «правило „стрелка только у раскрывающихся“ — нужно такое правило» → И779: знак раскрытия только внутри `<summary>` или кнопки раскрытия, у ссылок меню ни стрелки, ни уголка; тест `tests/nav-arrow.test.ts`.
