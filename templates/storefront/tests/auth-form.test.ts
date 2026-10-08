@@ -106,3 +106,11 @@ test('sign-in pages do not stand in a foreign frame (clickjacking of the passwor
   assert.match(conf, /frame-ancestors 'self'/)
   assert.match(conf, /X-Frame-Options', value: 'SAMEORIGIN'/)
 })
+
+/* Заказчик 08.10.2026: «похоже не по ролям типографика» — вспомогательные слова формы
+   (забыли пароль, пути под формой, строка о заказе без кабинета) одной ролью подписи. */
+test('the sign-in helper words share the field label role', () => {
+  const css = read('../components/Account.module.css').replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.match(css, /\.forgot,\.ways\{font-size:var\(--label-size\);line-height:var\(--label-lead\)\}/)
+  assert.match(css, /\.ways > p\{font-size:inherit;line-height:inherit\}/)
+})
