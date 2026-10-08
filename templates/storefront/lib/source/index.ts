@@ -26,7 +26,8 @@ const which = () => process.env.SOURCE ?? 'sample'
    Payload (план 4): плашка полки без снимка — пустая плашка. */
 const framed = (c: Collection, lang: Lang): Collection => {
   const form = c.image ? null : formOf([c.slug])
-  return { ...c, description: categoryCopy(lang, c.slug)?.lede ?? c.description, image: form ? shelfShot(form, c.name) : c.image }
+  const copy = categoryCopy(lang, c.slug)
+  return { ...c, name: copy?.name ?? c.name, description: copy?.caption ?? copy?.lede ?? c.description, image: form ? shelfShot(form, c.name) : c.image }
 }
 
 /* Кадр эффекта — так же: у значения грани в движке снимка нет, и эффект
@@ -36,8 +37,8 @@ const framed = (c: Collection, lang: Lang): Collection => {
    (lib/products.ts, EFFECTS) — его
    читают строка плитки «Caption», вступление и описание страницы эффекта;
    кода там нет — описание пустое, как было. Пока своё не даст Payload (план 4). */
-const told = (e: Effect, lang: Lang): string => effectCopy(lang, e.code)?.lede ?? (e.description || (EFFECTS.find((x) => x.effect === e.code)?.description[lang] ?? ''))
-const shotOf = (e: Effect, lang: Lang): Effect => ({ ...e, image: e.image ?? effectShot(e.code, e.name), description: told(e, lang) })
+const told = (e: Effect, lang: Lang): string => { const c = effectCopy(lang, e.code); return c?.caption ?? c?.lede ?? (e.description || (EFFECTS.find((x) => x.effect === e.code)?.description[lang] ?? '')) }
+const shotOf = (e: Effect, lang: Lang): Effect => ({ ...e, name: effectCopy(lang, e.code)?.name ?? e.name, image: e.image ?? effectShot(e.code, e.name), description: told(e, lang) })
 
 let trade: { source: Source; commerce: Commerce; content: Content } | null = null
 function vendure() {

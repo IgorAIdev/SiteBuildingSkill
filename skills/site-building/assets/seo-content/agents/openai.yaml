@@ -1,4 +1,4 @@
 interface:
   display_name: "SEO Content"
-  short_description: "Тексты, заголовки и FAQ по данным рынка"
-  default_prompt: "Используй $seo-content, чтобы подготовить бриф и написать текст страницы на языке её рынка, с заголовками, FAQ и подтверждёнными фактами."
+  short_description: "Продающие SEO/GEO-тексты по настоящим запросам рынка"
+  default_prompt: "Используй $seo-content: собери запросы рынка, назначь страницу, напиши title, description, H1, текст над сеткой и под ней и FAQ словами покупателя, проверь lint-copy."

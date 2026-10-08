@@ -67,9 +67,11 @@ const read = (p) => readFileSync(join(ROOT, p), 'utf8').replace(/\r\n/g, '\n')
 const has = (p) => existsSync(join(ROOT, p))
 
 /* Скиллы набора: у каждого закон в SKILL.md и, где есть, разбор в references/.
-   Пять: вёрстка, палитра, код, магазин, этапы. Чужие скиллы (вкус, движение,
+   Наши: вёрстка, палитра, шкалы, код, магазин, этапы и тексты для поиска
+   (seo-content — источник в skills/site-building, едет в магазин отдельным
+   скиллом). Чужие скиллы (вкус, движение,
    процесс) сюда не входят — их текст не наш и не правится. */
-const SKILL_DIRS = ['.claude/skills/craft', '.claude/skills/palette', '.claude/skills/scale', '.claude/skills/code', '.claude/skills/shop', '.claude/skills/stages']
+const SKILL_DIRS = ['.claude/skills/craft', '.claude/skills/palette', '.claude/skills/scale', '.claude/skills/code', '.claude/skills/shop', '.claude/skills/stages', 'skills/site-building/assets/seo-content']
 const LEDGER = 'docs/rules.md'
 /** С этого номера правило журнала обязано назвать источник (И661). */
 const SOURCED_FROM = 661
