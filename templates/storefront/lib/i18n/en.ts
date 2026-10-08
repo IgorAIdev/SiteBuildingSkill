@@ -3,6 +3,7 @@ import type { RO } from './ro.ts'
 export const EN: Record<keyof typeof RO, string> = {
   'skip': 'Skip to content',
   'nav.catalog': 'All products',
+  'nav.effects': 'By effect',
   'nav.search': 'Search',
   'nav.lang': 'Language',
   'nav.menu': 'Menu',

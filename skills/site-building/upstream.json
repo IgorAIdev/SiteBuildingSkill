@@ -757,7 +757,7 @@
     },
     {
       "local": "assets/seo-content/SKILL.md",
-      "sha256": "1fd15bc4d3435821a1f9f784d6ba59e1a8ce281a5ba471469c7acac94e97a4ee",
+      "sha256": "0904e01dc4def29d66c06c13c3a39fc9b2299eb400c1a9fd4983508f4c2d27c5",
       "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
     },
     {
@@ -792,13 +792,13 @@
     },
     {
       "local": "assets/seo-content/assets/page-copy.md",
-      "sha256": "c81f58e7c36e51148c68769a39866cd7db86be0f94259e4e51d37fb297acc6de",
+      "sha256": "9dc7eb5a37c3554d04e0790820b8cfa137f2e86bfcf8abde7eea7e507441f011",
       "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
     },
     {
       "local": "assets/seo-content/references/compliance.md",
       "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json.",
-      "sha256": "dda1dacdfa5336fe6ead10da90cf907b0688e455f5b9301f6112404091a7ffb3"
+      "sha256": "929b61a9c8748b7911e149d45309cdd4dc307c4257d5828485412992c6ba33f7"
     },
     {
       "local": "assets/seo-content/references/geo.md",
@@ -808,7 +808,7 @@
     {
       "local": "assets/seo-content/references/intent-map.md",
       "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json.",
-      "sha256": "cfe0dc3c1fca7511bf002bef7a4b6bb1c11fc3eb2bbd7b5a68fb1e9674d3c6c5"
+      "sha256": "10b3136daa39de7b9bfcac0424dac8620734b158afe7c4ba5e0890efcc96d1bb"
     },
     {
       "local": "assets/seo-content/references/markets.md",
@@ -822,7 +822,7 @@
     },
     {
       "local": "assets/seo-content/references/pages.md",
-      "sha256": "c0dda3381a02609dbc49a303ebad736452ccc68fab6db761552a8b67cd49546b",
+      "sha256": "3597e7c8487a16935f22d4d39967829a1ac9aaf61418e82d2f83811bcb38ae63",
       "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
     },
     {
@@ -843,7 +843,7 @@
     {
       "local": "assets/seo-content/scripts/lint-copy.mjs",
       "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json.",
-      "sha256": "d470b3b9e6a6ffcb344635ca6daaa44a4292744959f0bc20d8aa5aab7dc53672"
+      "sha256": "248e3a8e2912ba06575498d1e5d5f3db71bfcf9f7b0e0d6a357cc23de0b0fca5"
     },
     {
       "local": "assets/seo-content/scripts/suggest.mjs",

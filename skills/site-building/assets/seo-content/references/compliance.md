@@ -47,6 +47,7 @@
 | запрещено | замена |
 | --- | --- |
 | «Ulei CBD pentru anxietate», «pentru dureri», «pentru somn» в имени и H1 | «Ulei CBD 10 %, 10 ml, full spectrum» — состав и форма |
+| раздел, названный владельцем по рынку («Somn», «Relaxare») | имя-ярлык без глагола результата: «Somn: uleiuri CBD, capsule și ceai pentru rutina de seară»; не «pentru un somn odihnitor» |
 | «somn odihnitor», «adormi mai ușor», «reduce stresul», «relaxează-te» | хаб «Seara»: «uleiuri cu CBN, capsule, ceai pentru rutina de seară» |
 | «împotriva durerilor», «ameliorează», «analgezic», «antiinflamator» | «Cremă de masaj cu CBD și mentol, efect de răcorire pe piele» — ощущение на коже, не результат |
 | «recuperare după antrenament», «pentru mușchi obosiți» | хаб «Sport și masaj»: «creme, balsamuri și ulei de masaj cu CBD» |
