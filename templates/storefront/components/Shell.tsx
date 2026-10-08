@@ -18,6 +18,7 @@ import '@/styles/base.css'
 import '@/styles/buttons.css'
 import '@/styles/storefront.css'
 import '@/styles/look.css'
+import { PressFeedback } from './PressFeedback.tsx'
 import { PaneSwipe } from './PaneSwipe.tsx'
 import { HelpDock } from './HelpDock.tsx'
 import { reachRows, supportHref, SUPPORT } from '@/lib/contacts.ts'
@@ -63,6 +64,7 @@ export function Shell({ lang, data, look, chrome = 'full', children }: { lang: L
         {chrome === 'full' ? <HelpDock rows={reachRows({ phone: t(lang, 'reach.phone'), email: t(lang, 'reach.email') })} who={{ name: SUPPORT.name, href: supportHref() }} words={{ open: t(lang, 'reach.menu'), online: t(lang, 'reach.online'), top: t(lang, 'reach.top') }} /> : null}
         {/* Окна за пальцем — один жест на документ (И494). */}
         <PaneSwipe />
+        <PressFeedback />
         {/* eslint-disable-next-line @next/next/no-css-tags -- look-panel: стили панели — ссылкой на её адрес, сайт файлы панели не импортирует (И413) */}
         {process.env.LOOK_PICKER === 'on' ? <><link rel="stylesheet" href="/look-panel/look.css" precedence="look-panel" /><script src="/look-panel/look.js" async /></> : null}{/* look-panel: стили — до первой отрисовки (резерв --dock), скрипт — после */}
       </body>

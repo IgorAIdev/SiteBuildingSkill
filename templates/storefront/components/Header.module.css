@@ -128,10 +128,10 @@
    22 — крупнее самого знака). Место под число не занимается — шапка от
    него не прыгает. */
 .badge{
-  position:absolute;inset-block-start:0;inset-inline-end:0;translate:50% -50%;
-  min-inline-size:1.6em;padding-inline:.35em;border-radius:50%;
+  position:absolute;inset-block-start:0;inset-inline-end:0;translate:50% -75%;
+  display:grid;place-items:center;min-inline-size:1.6em;block-size:1.6em;padding-inline:.35em;border-radius:50%;
   background:var(--pop);color:var(--on-pop);
-  font-size:.8em;line-height:1.6;text-align:center;font-variant-numeric:tabular-nums
+  font-size:var(--ctrl-fs-xs);text-align:center;font-variant-numeric:tabular-nums
 }
 
 /* ── Полки строкой ───────────────────────────────────────────────────────
@@ -328,12 +328,12 @@
   .nav:not(:popover-open, [data-leaving]),.cartLabel,.cartSum{display:none}
   /* Верхняя строка на узкой коробке — одно обещание по центру; ссылки, язык и
      тема — в шторке меню (бриф, 7 из 7 референсов). */
-  .topLinks,.topTools{display:none}
+  .topLinks,.topLanguage{display:none}
   /* Кабинет — в шторку меню, строкой «моё» (И771): на 360 между знаком и
      знаками остаётся 48, пятый знак (48 и просвет) лёг бы на знак. */
   .contact,.account{display:none}
-  .topRow{grid-template-columns:1fr}
-  .promo{grid-column:1;justify-self:center}
+  .topRow{grid-template-columns:var(--ctrl-target) minmax(0,1fr) var(--ctrl-target);gap:var(--sp-1)}
+  .promo{grid-column:2;justify-self:center}
   /* look-header:classic,search,tray,nested,step:start */
   /* Меню — первым в строке, у начального края (слово заказчика 05.10.2026:
      «мобилка, меню перенеси к левому краю»; И753). Рамка — рост органа, как
@@ -344,7 +344,7 @@
      уходит: на узком поле она не выезжает за край экрана. */
   .menu{display:inline-flex;min-block-size:var(--ctrl-h);min-inline-size:var(--ctrl-h);margin-inline-start:max((var(--glyph-h) - var(--ctrl-h)) / 2, -1 * var(--gut))}
   /* look-header:classic,search,tray,nested,step:end */
-  .util .topLinks,.util .topTools{display:none} /* look-header:tray,nested,step */
+  .util .topLinks,.util .topLanguage{display:none} /* look-header:tray,nested,step */
   .util{justify-content:center} /* look-header:tray,nested,step */
   .head[data-variant='tray'] .row{margin-block-start:0} /* look-header:tray */
   .shop{display:inline-flex} /* look-header:boutique */
@@ -380,7 +380,7 @@
    категорий можно использовать»). Ростом с букву, приглушённый, как знак
    строки меню набора (styles/menu.module.css). */
 .nav:is(:popover-open, [data-leaving]) .sign{display:inline-flex;flex:none;color:var(--ink-soft)}
-.nav:is(:popover-open, [data-leaving]) .sign svg{inline-size:1.25em;block-size:1.25em}
+.nav:is(:popover-open, [data-leaving]) .sign svg{inline-size:var(--icon-size);block-size:var(--icon-size)}
 .nav:is(:popover-open, [data-leaving]) .name{flex:1 1 auto}
 /* Слово меню — всегда с заглавной (слово заказчика 25.09.2026: «в меню
    всегда слова с большой буквы»; имена приходят из данных магазина
@@ -417,7 +417,7 @@
    запасом наружу (`tap`, LangSwitch) — рисунок не растёт; стоит краем в край строк,
    как их плиты под рукой. */
 .sheetTools{--seg-h:var(--ctrl-face);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;column-gap:0;row-gap:var(--gap-row)}
-.sheetSigns{--sign-box:var(--ctrl-h-sm);display:flex;align-items:center;margin-inline-start:calc(var(--pad-inner) + var(--menu-size) * .625 - var(--sign-box) / 2)}
+.sheetSigns{--sign-box:var(--ctrl-h-sm);display:flex;align-items:center;margin-inline-start:calc(var(--pad-inner) + var(--icon-size) / 2 - var(--sign-box) / 2)}
 .sheetTools .glyph{min-block-size:var(--sign-box);min-inline-size:var(--sign-box)}
 /* Грани полки в шторке — пилюлями под её строкой (меню телефона cbdin.bg,
    И478; слово заказчика 05.10.2026: «пилюлями как на скрине 1»): полки

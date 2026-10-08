@@ -73,18 +73,18 @@
   /* Без боковой кромки поле отдаёт её толщину полю внутри: вписанное стоит
      на том же месте при любом виде. */
   padding-inline:calc(var(--ctrl-h) * .3 + var(--line-w) * (1 - var(--ctrl-field-side, 1)));
-  font:inherit;font-size:var(--ctrl-fs-base);line-height:1.3;color:var(--ink);
+  font:inherit;font-size:var(--ctrl-fs-base);line-height:1.3;color:var(--field-ink);
   background:var(--ctrl-field-fill, var(--field));
-  border:var(--line-w) solid var(--ctrl-field-edge, var(--tick-edge));
+  border:var(--line-w) solid var(--ctrl-field-edge, var(--field-edge));
   border-width:calc(var(--line-w) * var(--ctrl-field-side, 1)) calc(var(--line-w) * var(--ctrl-field-side, 1)) var(--line-w);
   border-radius:var(--r-ctrl) var(--r-ctrl) calc(var(--r-ctrl) * var(--ctrl-field-side, 1)) calc(var(--r-ctrl) * var(--ctrl-field-side, 1));
   transition:border-color var(--hover-t) var(--ease)
 }
 textarea.box{padding-block:calc(var(--ctrl-h) * .25);min-block-size:calc(var(--ctrl-h) * 2.5);resize:vertical}
-.box::placeholder{color:var(--ink-soft);opacity:1}
+.box::placeholder{color:var(--field-soft);opacity:1}
 /* Под рукой кромка — чернилами: у контура и тона она уже краской подписи
    (И390), и наведение должно быть видно у каждого вида. */
-@media (hover:hover){ .box:not(:disabled):hover{border-color:var(--ink)} }
+@media (hover:hover){ .box:not(:disabled):hover{border-color:var(--field-ink)} }
 .box:focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:var(--ring-off)}
 .box[aria-invalid='true']{border-color:var(--bad-line)}
 .box:disabled{opacity:var(--state-off);cursor:not-allowed}
@@ -92,10 +92,8 @@ textarea.box{padding-block:calc(var(--ctrl-h) * .25);min-block-size:calc(var(--c
 /* Подпись на кромке (И394; элемент 47 набора): роль вида
    `--ctrl-field-label` — `above` (над полем, умолчание) или `edge`. Пока поле
    пусто и не в фокусе, подпись стоит внутри, как подсказка; пишут — встаёт
-   на верхнюю кромку. Черту кромки под подписью закрывает её подложка: верхняя
-   половина прозрачна — виден пол, на котором поле стоит, каким бы он ни был;
-   нижняя — заливка поля. Черта идёт ровно по середине подписи, и закрыта
-   только она. Список (`select`) всегда показывает выбранное — подпись у него
+   на верхнюю кромку. Подложка и текст подписи берут собственную пару поля,
+   чтобы контраст сохранялся и на тёмной секции. Список (`select`) всегда показывает выбранное — подпись у него
    всегда на кромке. Подсказка «вписанного нет» — `:placeholder-shown`, поэтому
    у ввода подсказка — пробел. Где запрос стиля не поддержан, подпись стоит
    над полем. Место подпись меняет сразу, без движения: движение источника
@@ -107,15 +105,15 @@ textarea.box{padding-block:calc(var(--ctrl-h) * .25);min-block-size:calc(var(--c
     position:absolute;inset-block-start:0;inset-inline-start:calc(var(--ctrl-h) * .3 - .3em);
     translate:0 -50%;padding-inline:.3em;max-inline-size:calc(100% - var(--ctrl-h) * .6);
     font-size:var(--ctrl-fs-xs);line-height:1.3;
-    background:linear-gradient(transparent 50%, var(--ctrl-field-fill, var(--field)) 50%);
+    background:var(--ctrl-field-fill, var(--field));color:var(--field-ink);
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;
     transition:color var(--hover-t) var(--ease)
   }
   .field:has(> input.box:placeholder-shown:not(:focus), > .secret > input.box:placeholder-shown:not(:focus)) > .label{
     inset-block-start:calc(var(--ctrl-h) / 2);
-    font-size:var(--ctrl-fs-base);font-weight:var(--body-weight);color:var(--ink-soft);background:none
+    font-size:var(--ctrl-fs-base);font-weight:var(--body-weight);color:var(--field-soft);background:none
   }
-  .field:focus-within > .label{color:var(--pop-ink)}
+  .field:focus-within > .label{color:var(--field-ink)}
   /* Фокус — сама кромка краской кольца толщиной кольца (так у элемента 47):
      кольцо снаружи с отступом шло бы сквозь подпись на кромке, а кромку
      подложка подписи закрывает. Толщина сверх черты — внутренней тенью:
@@ -132,7 +130,7 @@ textarea.box{padding-block:calc(var(--ctrl-h) * .25);min-block-size:calc(var(--c
    ли поле» спрашивает и его (`> .secret > input`, выше). */
 .secret{position:relative;display:flex}
 .secret > .box{padding-inline-end:var(--ctrl-h)}
-.secret > .reveal{position:absolute;inset-block-start:0;inset-inline-end:0;min-block-size:var(--ctrl-h);min-inline-size:var(--ctrl-h)}
+.secret > .reveal{position:absolute;inset-block-start:0;inset-inline-end:0;min-block-size:var(--ctrl-h);min-inline-size:var(--ctrl-h);color:var(--field-ink)}
 
 /* Список — та же коробка и своя стрелка: системную снимает `appearance`,
    стрелку рисуют два угла тона чернил — она следует теме без картинки. */
@@ -141,8 +139,8 @@ textarea.box{padding-block:calc(var(--ctrl-h) * .25);min-block-size:calc(var(--c
   appearance:none;cursor:pointer;
   padding-inline-end:calc(var(--ctrl-h) * .85);
   background-image:
-    linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%),
-    linear-gradient(135deg, var(--ink-soft) 50%, transparent 50%);
+    linear-gradient(45deg, transparent 50%, var(--field-soft) 50%),
+    linear-gradient(135deg, var(--field-soft) 50%, transparent 50%);
   background-position:
     calc(100% - var(--ctrl-h) * .42) 50%,
     calc(100% - var(--ctrl-h) * .3) 50%;

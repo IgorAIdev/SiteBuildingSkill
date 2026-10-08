@@ -164,7 +164,9 @@ const ROLE = [
      карту, снимки у товара одни; плотность — сколько карточек в ряд на
      полке каталога; место кнопки «в корзину» на карточке. Роли вида («Admin → Card»), читают узлы карточки,
      галереи и полки. */
-  { rx: /^--icon-(stem|stroke)$/, family: 'вес пера знака: доля кегля, равная штриху буквы, и перо от кегля места (И543)', by: 'styles/tokens.css' },
+  { rx: /^--press-hold-t$/, family: 'нажатие: минимальная видимость принятого действия', by: 'styles/tokens.css' },
+  { rx: /^--badge-size$/, family: 'счётчик: размер цифр избранного и корзины', by: 'styles/tokens.css' },
+  { rx: /^--icon-(stem|stroke|size(?:-sm)?)$/, family: 'знак: общий размер навигации, доля кегля и вес пера (И543)', by: 'styles/tokens.css' },
   { rx: /^--quick-look$/, family: 'окно быстрого заказа: мессенджеры плитками или строками (И470)', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--(cart-sign|cart-meta|logo|nav-current)$/, family: 'шапка: знак корзины, сумма у корзины, знак магазина, отметка текущего раздела', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--pair-look$/, family: 'вид пары «поле и кнопка»', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },

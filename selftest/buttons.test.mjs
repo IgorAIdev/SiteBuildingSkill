@@ -44,7 +44,9 @@ test('the button reads every role the catalog may declare, each with a fallback;
   for (const role of Object.keys(ROLES)) assert.ok(btn.includes(`var(${role},`), `btn.module.css не читает ${role}`)
   assert.doesNotMatch(btn, /--ctrl-btn-(r|r-pop|press|sh)\b/, 'угол, нажатие и тень — не роли каталога')
   assert.match(btn, /--btn-r:var\(--r-btn, var\(--r-ctrl\)\)/, 'угол — роль формы --r-btn: ручка Shape → Corners, близнец «· pill» — полный круг (04.10.2026)')
-  assert.match(btn, /\.press:not\(:disabled\):not\(\[aria-disabled='true'\]\):active\{[^}]*transform:var\(--press-move\)/, 'нажатие — одна роль движения (И477)')
+  /* Нажатие одно и у короткого касания пальцем: `data-press-feedback` ставит
+     PressFeedback на миг касания, когда `:active` на телефоне мелькает невидимо. */
+  assert.match(btn, /\.press:not\(:disabled\):not\(\[aria-disabled='true'\]\):active(?:,\s*\.press\[data-press-feedback\])?\{[^}]*transform:var\(--press-move\)/, 'нажатие — одна роль движения (И477)')
   assert.match(readFileSync(join(KIT, 'styles/tokens.css'), 'utf8'), /--press-drop:1px;\s*--press-shrink:\.97;\s*--press-move:translateY\(var\(--press-drop\)\) scale\(var\(--press-shrink\)\)/, 'нажатие: чуть меньше и на пиксель ниже')
   assert.match(btn, /\.btn\{\s*composes:press;/, 'кнопка берёт нажатие, а не рисует своё')
   assert.match(btn, /prefers-reduced-motion:reduce[\s\S]*transform:none/, 'меньше движения — только цвет')
@@ -66,7 +68,7 @@ test('the button reads every role the catalog may declare, each with a fallback;
   assert.match(btn, /--btn-trail-far var\(--hover-t\) var\(--ease\) calc\(var\(--hover-t\) \* \.4\)/, 'хвост наливается волной: дальний — с задержкой')
   assert.match(btn, /--btn-reveal:calc\(var\(--btn-glyph\)/, 'стрелка у конца вытягивается в окне маски')
   assert.match(btn, /var\(--btn-sign\) var\(--btn-arrow-in\)/, 'в кружке — входящая стрелка')
-  assert.match(btn, /:active\{--press-fill:color-mix\(in oklab, var\(--press-bg\), var\(--press-ink\) var\(--state-press\)\);--btn-go:var\(--nudge\);--btn-hand:1;[^}]*transform:translateY\(calc\(var\(--press-drop\) \* \(1 - var\(--ctrl-btn-still, 0\)\)\)\)/, 'кнопка со знаком при нажатии стоит')
+  assert.match(btn, /(?::active|\[data-press-feedback\])\{--press-fill:color-mix\(in oklab, var\(--press-bg\), var\(--press-ink\) var\(--state-press\)\);--btn-go:var\(--nudge\);--btn-hand:1;[^}]*transform:translateY\(calc\(var\(--press-drop\) \* \(1 - var\(--ctrl-btn-still, 0\)\)\)\)/, 'кнопка со знаком при нажатии стоит')
   for (const o of axesOf(catalog)[2].options) for (const k of ['--ctrl-btn-tip', '--ctrl-btn-tip-at', '--ctrl-btn-notch']) assert.ok(Number(o.роли[k]) >= 0 && Number(o.роли[k]) <= 1.5, `${o.id}: ${k} — доля высоты`)
   const css = toCss(catalog)
   assert.match(css, /^:root\{[\s\S]*?--ctrl-btn-fill-pop: var\(--pop\);/m)

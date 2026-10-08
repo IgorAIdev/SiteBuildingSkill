@@ -94,7 +94,15 @@ NavigationMenu из shadcn/ui (Radix/Tailwind v4), лицензия и восе�
 | --- | --- | --- |
 | [Radix Primitives](https://github.com/radix-ui/primitives) | Фокус, клавиатура, раскрытие и композиция контролов | Использовать одну поведенческую основу проекта; не добавлять параллельно Base UI/React Aria без необходимости |
 | [shadcn/ui](https://github.com/shadcn-ui/ui) | Исходники кнопок, меню, полей, tabs и других контролов | Первые три сохранены; дальнейшие выбирать по нужному сценарию и лицензии конкретного registry |
-| [Lucide](https://github.com/lucide-icons/lucide) | Единый рисунок SVG-иконок для разных стеков | Восемь сохранены; расширять существующий набор, не смешивать случайные стили |
+| [Lucide](https://github.com/lucide-icons/lucide) | Единый рисунок SVG-иконок для разных стеков | Расширяемый набор в `assets/icons/lucide`; не смешивать случайные стили |
+
+Навигация по содержимому: `newspaper` — блог и статьи (по умолчанию),
+`book-open` — руководства и библиотека знаний, `info` — «О нас».
+Новые `newspaper.svg` и `book-open.svg` взяты без изменения геометрии из
+`lucide-icons/lucide`, tag `0.468.0`, `icons/`, ISC (лицензия рядом с SVG).
+Генератор общего листа добавляет `non-scaling-stroke`; размер и цвет задаются
+ролями сайта. Проверяйте назначение в потребителе и наличие символа в
+выпущенном листе, включая статический экспорт.
 | [Payload website template](https://github.com/payloadcms/payload/tree/main/templates/website) | Реестр блоков, draft/live-preview, переобновление страниц | Применять в CMS-адаптере. Не копировать `key=index`, подавление типов и молчаливый пропуск неизвестных блоков как правило качества |
 | [Puck](https://github.com/puckeditor/puck) | Отдельные config/data, типизированные поля, обход дерева и вложенных slots | Принять принцип реестра и сериализуемого дерева. Полный drag-and-drop редактор только если нужен пользователю |
 | [Vercel Commerce](https://github.com/vercel/commerce) | Выбор варианта, URL-состояние, server actions и optimistic cart | Адаптирован variant-selection.mjs, внесены правила подтверждённой корзины. Чужая денежная арифметика и Shopify SDK не перенесены |

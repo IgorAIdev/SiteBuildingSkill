@@ -170,7 +170,7 @@ export function problems(vars: Readonly<Record<string, string>>, fonts: readonly
         const r = edge[3] > 0 ? Math.max(contrast(over(edge, floor), floor), contrast(over(edge, floor), under)) : 1
         if (r < need.control) add('field', 'palette', `the field's edge is too faint against its fill and the ${where}: ${say(r, need.control)}`, ['--ctrl-field-edge'])
       }
-      for (const [role, what] of [['--ink', 'text'], ['--ink-soft', 'hint']] as const) {
+      for (const [role, what] of [['--field-ink', 'text'], ['--field-soft', 'hint']] as const) {
         const ink = get(role)
         if (!ink) continue
         const t = contrast(over(ink, under), under)

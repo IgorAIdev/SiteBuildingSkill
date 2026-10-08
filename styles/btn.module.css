@@ -50,13 +50,15 @@
 @media (hover:hover){
   .press:not(:disabled):not([aria-disabled='true']):hover{--press-fill:color-mix(in oklab, var(--press-bg), var(--press-ink) var(--state-hover))}
 }
-.press:not(:disabled):not([aria-disabled='true']):active{
+.press:not(:disabled):not([aria-disabled='true']):active,
+.press[data-press-feedback]{
   --press-fill:color-mix(in oklab, var(--press-bg), var(--press-ink) var(--state-press));
   transform:var(--press-move);
 }
 @media (prefers-reduced-motion:reduce){
   .press{transition:background-color var(--hover-t) var(--ease), border-color var(--hover-t) var(--ease), box-shadow var(--hover-t) var(--ease), color var(--hover-t) var(--ease), backdrop-filter var(--hover-t) var(--ease)}
-  .press:not(:disabled):not([aria-disabled='true']):active{transform:none}
+  .press:not(:disabled):not([aria-disabled='true']):active,
+  .press[data-press-feedback]{transform:none}
 }
 
 /* ОТВЕТ НА РУКУ — ПО ВИДУ ПРЕДМЕТА, ролями (И685). Слово заказчика
@@ -133,7 +135,7 @@
   --press-bg:var(--ctrl-btn-fill, var(--quiet));
   --press-ink:var(--ctrl-btn-ink, var(--ink));
 
-  display:inline-flex;align-items:center;justify-content:center;
+  align-items:center;justify-content:center;
   gap:calc(var(--btn-h) * .2);
   min-block-size:var(--btn-h);
   padding-inline:calc(var(--btn-h) * .45);
@@ -149,6 +151,8 @@
   cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;
 }
 
+:where(.btn){display:inline-flex}
+
 /* Знак без подложки (И495) — крестик окна, стрелка раскрытия, соцсети: в
    покое ни плиты, ни кромки, только знак (слово заказчика 27.09.2026: «кнопки
    как из девяностых» — серые квадраты под каждым крестиком). Под рукой плиты
@@ -158,7 +162,8 @@
    ссылками, отвечавшими краской. */
 .btn[data-voice='bare']{--press-bg:transparent;--btn-edge:transparent;--press-ink:var(--ink-dim);--state-hover:0%;--state-press:0%}
 @media (hover:hover){ .btn[data-voice='bare']:not(:disabled):not([aria-disabled='true']):hover{--press-ink:var(--ink)} }
-.btn[data-voice='bare']:not(:disabled):not([aria-disabled='true']):active{--press-ink:var(--ink)}
+.btn[data-voice='bare']:not(:disabled):not([aria-disabled='true']):active,
+.btn[data-voice='bare'][data-press-feedback]{--press-ink:var(--ink)}
 /* Слово без плиты у края колонки (`data-hang="start"` / `"end"`, И740): поле
    кнопки — только место под палец, плиты под ним нет, и слово стояло бы на
    поле правее линии колонки (у «Filtre» над полкой — на 18 от заголовка).
@@ -195,14 +200,15 @@
 @media (hover:hover){
   .btn:not([data-voice='loud'], [data-voice='bare'], :disabled, [aria-disabled='true']):hover{--btn-edge:var(--btn-edge-on)}
 }
-.btn:not([data-voice='loud'], [data-voice='bare'], :disabled, [aria-disabled='true']):active{--btn-edge:var(--btn-edge-on)}
+.btn:not([data-voice='loud'], [data-voice='bare'], :disabled, [aria-disabled='true']):active,
+.btn:not([data-voice='loud'], [data-voice='bare'])[data-press-feedback]{--btn-edge:var(--btn-edge-on)}
 
 /* Тихая — ещё два ответа каталога (И626): под рукой заливается маркой
    (`--ctrl-btn-hand-fill`, ось «Ответ на руку»; образцы 05, 67) и черта
    перед словом без коробки (`--ctrl-btn-dash`, ось «Тихая»; образец 07) —
    у черты под рукой нет вуали, слово берёт краску марки для текста.
    Смеси долей 0 или 1 — ход между ролями, не новая краска. */
-.btn:not([data-voice]){
+.btn:where(:not([data-voice])){
   background-image:linear-gradient(currentColor, currentColor);background-repeat:no-repeat;
   background-size:calc(var(--btn-h) * .4 * var(--ctrl-btn-dash, 0)) var(--line-w);
   background-position:calc(var(--btn-h) * .45) 50%;
@@ -231,7 +237,8 @@
     color:color-mix(in oklab, var(--btn-ink-flip), var(--pop-ink) calc(var(--ctrl-btn-dash, 0) * 100%));
   }
 }
-.btn.btn:not([data-voice], :disabled, [aria-disabled='true']):active{
+.btn.btn:not([data-voice], :disabled, [aria-disabled='true']):active,
+.btn.btn:not([data-voice])[data-press-feedback]{
   --btn-fill-flip:color-mix(in oklab, var(--btn-veil-press), var(--btn-flip-press) calc(var(--ctrl-btn-hand-fill, 0) * 100%));
   --press-fill:color-mix(in oklab, var(--btn-fill-flip), transparent calc(var(--ctrl-btn-dash, 0) * 100%));
   color:color-mix(in oklab, var(--btn-ink-flip), var(--pop-ink) calc(var(--ctrl-btn-dash, 0) * 100%));
@@ -363,10 +370,12 @@
 @media (hover:hover) and (prefers-reduced-motion:no-preference){ .btn[data-voice='loud']:not(:disabled):not([aria-disabled='true']):hover{--btn-go:var(--nudge);--btn-hand:1} }
 /* Нажатие: кружок на тон темнее, хвост — заливкой кнопки; стрелка в кружке
    дальше не едет (И623). */
-.btn[data-voice='loud']:not(:disabled):not([aria-disabled='true']):active{--press-fill:color-mix(in oklab, var(--press-bg), var(--press-ink) var(--state-press));--btn-go:var(--nudge);--btn-hand:1;--btn-tint-now:color-mix(in oklab, color-mix(in oklab, var(--ctrl-btn-tint-pop, transparent), var(--press-ink) var(--state-press)), transparent calc(var(--ctrl-btn-hollow, 0) * 100%));--btn-dot-now:color-mix(in oklab, var(--btn-dot), var(--ink) var(--state-press));--btn-trail-near:var(--press-fill);--btn-trail-far:var(--pop-trail-near);transform:translateY(calc(var(--press-drop) * (1 - var(--ctrl-btn-still, 0)))) scale(calc(1 - (1 - var(--press-shrink)) * (1 - var(--ctrl-btn-still, 0))))}
+.btn[data-voice='loud']:not(:disabled):not([aria-disabled='true']):active,
+.btn[data-voice='loud'][data-press-feedback]{--press-fill:color-mix(in oklab, var(--press-bg), var(--press-ink) var(--state-press));--btn-go:var(--nudge);--btn-hand:1;--btn-tint-now:color-mix(in oklab, color-mix(in oklab, var(--ctrl-btn-tint-pop, transparent), var(--press-ink) var(--state-press)), transparent calc(var(--ctrl-btn-hollow, 0) * 100%));--btn-dot-now:color-mix(in oklab, var(--btn-dot), var(--ink) var(--state-press));--btn-trail-near:var(--press-fill);--btn-trail-far:var(--pop-trail-near);transform:translateY(calc(var(--press-drop) * (1 - var(--ctrl-btn-still, 0)))) scale(calc(1 - (1 - var(--press-shrink)) * (1 - var(--ctrl-btn-still, 0))))}
 @media (prefers-reduced-motion:reduce){
   .btn[data-voice='loud']{transition:background-color var(--hover-t) var(--ease), border-color var(--hover-t) var(--ease), box-shadow var(--hover-t) var(--ease), color var(--hover-t) var(--ease), backdrop-filter var(--hover-t) var(--ease)}
-  .btn[data-voice='loud']:not(:disabled):not([aria-disabled='true']):active{--btn-go:0px;--btn-hand:0}
+  .btn[data-voice='loud']:not(:disabled):not([aria-disabled='true']):active,
+  .btn[data-voice='loud'][data-press-feedback]{--btn-go:0px;--btn-hand:0}
 }
 .btn[data-voice='loud']::before,
 .btn[data-voice='loud']::after{content:'';position:absolute;inset:calc(-1 * var(--line-w))}
@@ -531,7 +540,8 @@
   backdrop-filter:blur(calc(var(--frost-blur) * var(--btn-blur)))
 }
 @media (hover:hover){ .btn[data-frost]:not(:disabled):hover{--press-fill:transparent} }
-.btn[data-frost]:not(:disabled):active{--press-fill:transparent}
+.btn[data-frost]:not(:disabled):active,
+.btn[data-frost][data-press-feedback]{--press-fill:transparent}
 
 /* Пара (`.pair`) — слово-действие и малая кнопка со знаком встык: «В
    корзину» и сердце, «Купить» и закладка. Две кнопки — две цели; углы
@@ -656,3 +666,6 @@
    выключенная», И464): там орган вида не меняет. */
 .btn:disabled:not([aria-busy='true'] *),
 .btn[aria-disabled='true']{--btn-edge:var(--edge-off)}
+
+/* Accepted press remains visible through pending/disabled; colours stay in existing roles. */
+.btn.btn[data-press-feedback]{transition-duration:0s;opacity:1}

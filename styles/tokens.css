@@ -36,6 +36,9 @@
      место с другим кеглем зовёт ту же долю своим кеглем. */
   --icon-stem: .09;
   --icon-stroke: calc(var(--body-size) * var(--icon-stem));
+  /* Navigation glyphs share a size independent of their label's font. */
+  --icon-size: calc(var(--body-size) * 1.25);
+  --icon-size-sm: var(--body-size);
 
   /* Radix sage / cyan / amber. The dark side is not the light side inverted:
      on a dark ground the greens have to lose saturation to stop vibrating,
@@ -313,7 +316,10 @@
   /* Поле, в котором стоят карточки, когда стоят они не на странице, а внутри
      белого листа: карточка не должна стоять на собственном цвете — краёв
      тогда не видно вовсе. Двигается ручкой «Well» в разделе цвета. */
-  --field:   var(--n-2);
+  --field:   var(--plate);
+  --field-ink:var(--on-plate);
+  --field-soft:var(--on-plate-2);
+  --field-edge:var(--border);
   /* Лист выпадающего меню. Белый — не единственный ответ: панель шириной в
      тысячу пикселей, упавшая на страницу, белым светит сильнее, чем ей
      положено. Тёплый почти-белый в светлой теме, приподнятый над страницей
@@ -380,6 +386,7 @@
      `motionOut`. Двигаются transform и opacity; фон и чернила — только у
      органа под рукой, смена темы не анимируется. */
   --press-t:120ms;
+  --press-hold-t:180ms;
   /* Движение нажатия — одно на всё, что нажимают (И477): чуть меньше и на
      пиксель ниже (слово заказчика 24.09.2026, И273: «уменьшается размер при
      нажатии, кнопка смещается чуть»). Стояло числом в шести местах, у

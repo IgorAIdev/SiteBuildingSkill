@@ -5,6 +5,7 @@
 .form{inline-size:100%;display:flex;align-items:center;gap:var(--gap-row);flex:1 1 auto;min-inline-size:0}
 .form > svg{flex:none;inline-size:1.25em;block-size:1.25em;color:var(--ink-soft)}
 .input{flex:1 1 auto;min-inline-size:0}
+.input::-webkit-search-cancel-button{appearance:none}
 .body{display:grid;justify-items:start;gap:var(--air-row);padding-block:var(--air-row) var(--pad-card)}
 .head{margin:0;font-size:var(--ctrl-fs-sm);font-weight:var(--label-weight);color:var(--ink-soft)}
 /* Полки — строками со знаком, колонок столько, сколько встаёт (правило 5),
@@ -29,7 +30,6 @@
 .name{font-weight:var(--prodhead-weight);overflow-wrap:anywhere}
 .price{font-weight:var(--cardprice-weight);font-variant-numeric:tabular-nums;white-space:nowrap}
 .none{margin:0;color:var(--ink-soft)}
-
 
 .actions{justify-self:stretch;align-items:stretch}
 .actions > *{flex-basis:0}

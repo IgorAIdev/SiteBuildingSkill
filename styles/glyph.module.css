@@ -15,8 +15,9 @@
  *  03.10.2026 под рукой вырастала круглая подложка и знак брал краску марки
  *  — рядом с соцсетями (квадрат) и ссылками подвала (краска) это был третий
  *  ответ на одно и то же.
- *  Знак — от кегля надписи органа (`em`), а не от роста цели: под пальцем
- *  растёт цель, а не рисунок.
+ *  Знак — общей ролью `--icon-size` от тела сайта, независимо от кегля
+ *  подписи органа: в шапке и боковом меню одна высота. Под пальцем растёт
+ *  цель, а не рисунок.
  *
  *  Берут: шапка (`.glyph` в Header.module.css), сердце (SaveToggle). Место,
  *  где знак стоит, решает только где он стоит — не рисует под ним ничего.
@@ -38,7 +39,7 @@
   font:inherit;font-size:var(--ctrl-fs);font-weight:var(--label-weight);
   /* Рост знака — ручка: место, которое ставит знак на вертикаль полей
      страницы (меню шапки у края, И753), меряет рамку от него, а не числом. */
-  --glyph-h:1.43em
+  --glyph-h:var(--icon-size)
 }
 .glyph svg{inline-size:var(--glyph-h);block-size:var(--glyph-h);flex:none}
 @media (hover:hover){ .glyph:not(:disabled):hover{color:var(--ink)} }
@@ -118,3 +119,6 @@
   .glyph[data-over='picture']:not(:disabled):not([aria-disabled='true']):active{--press-fill:transparent;color:var(--pop-ink)}
   .glyph[data-over='picture'][aria-pressed='true'] svg{color:var(--pop)}
 }
+
+/* Secondary icon role: visual size only; the hit target stays unchanged. */
+.glyph[data-icon-size="small"]{--glyph-h:var(--icon-size-sm)}

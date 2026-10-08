@@ -19,3 +19,7 @@ dist/
 /.impeccable/
 # Настройки одной машины: путь к памяти в репозитории и прочее (.claude/rules/memory.md)
 .claude/settings.local.json
+
+# Local agent folders (Codex hooks, logs, copied third-party skills) — machine-local, not kit content
+.codex/
+.agents/

@@ -29,3 +29,4 @@
 .state[data-center]{align-items:center;text-align:center}
 .mark{display:grid;place-items:center;inline-size:calc(var(--ctrl-h-lg) * 1.5);block-size:calc(var(--ctrl-h-lg) * 1.5);border-radius:50%;background:var(--quiet);color:var(--ink-soft)}
 .mark svg{inline-size:45%;block-size:45%}
+

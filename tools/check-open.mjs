@@ -23,6 +23,7 @@
  */
 
 import { spawn, spawnSync } from 'node:child_process'
+import { existsSync } from 'node:fs'
 import { createServer } from 'node:net'
 import { fileURLToPath } from 'node:url'
 import { join } from 'node:path'
@@ -90,7 +91,11 @@ if (!built) {
     stdio: ['ignore', 'pipe', 'pipe'],
     detached: true,
     windowsHide: true,
-    env: { ...process.env, BROWSER: 'none' },
+    /* Как запускатель витрины (tools/storefront.mjs, `LOOK_PICKER`): с панелью вида, пока
+       она стоит у сайта, — иначе страница дизайн-системы (её маршрут лежит в дереве,
+       app/[lang]/(look-panel)/design) отвечала 404 и проверка краснела на своём же
+       сервере (08.10.2026: /en|ro|hu/design — 404, на запущенной витрине — 200). */
+    env: { ...process.env, BROWSER: 'none', ...(existsSync(join(ROOT, 'look-panel')) ? { LOOK_PICKER: process.env.LOOK_PICKER ?? 'on' } : {}) },
   })
   const log = []
   dev.stdout.on('data', (d) => log.push(String(d)))

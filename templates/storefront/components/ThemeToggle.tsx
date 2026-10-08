@@ -18,7 +18,7 @@ const flip = () => {
 
 export function ThemeToggle({ label, className, sun, moon }: { label: string; className: string; sun: string; moon: string }) {
   return (
-    <button className={className} type="button" data-hand="menu" onClick={flip} aria-label={label}>
+    <button className={className} type="button" data-icon-size="small" data-hand="menu" onClick={flip} aria-label={label}>
       <span className={moon}><Icon id="moon" /></span>
       <span className={sun}><Icon id="sun" /></span>
     </button>

@@ -252,7 +252,7 @@
     "--ctrl-btn-swap": "0",
     "--ctrl-btn-hollow": "0",
     "--ctrl-field-fill": "var(--field)",
-    "--ctrl-field-edge": "var(--tick-edge)",
+    "--ctrl-field-edge": "var(--field-edge)",
     "--ctrl-field-side": "1",
     "--ctrl-field-label": "above",
     "--ctrl-tick-fill": "var(--pop-ink)",

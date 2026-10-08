@@ -5,6 +5,7 @@ import p from '@/styles/primitives.module.css'
 import go from '@/styles/go.module.css'
 import d from './DocView.module.css'
 import { Faq } from './blocks/Faq.tsx'
+import s from './CatalogCopy.module.css'
 
 const LINKS = {
   en: { lab: 'How to read a lab report', all: 'Compare all products' },
@@ -16,7 +17,7 @@ const LINKS = {
  * site's prose and FAQ so selection controls and the first screen stay intact. */
 export function CatalogCopy({ copy, lang }: { copy: ShopCopy; lang: Lang }) {
   return (
-    <div data-catalog-copy>
+    <div className={s.copy} data-catalog-copy>
       <div className={`${p.prose} ${p.stack} ${p.section} ${d.parts}`}>
         {copy.sections.map((section) => (
           <section key={section.heading} className={d.part}>

@@ -21,7 +21,7 @@ import { FocusLine } from './FocusLine.tsx'
 export function VariantPicker({ groups, error }: { groups: OptionGroupLinks[]; error: string | null }) {
   const open = error ? groups.find((g) => !g.options.some((o) => o.current)) ?? groups[0] : null
   return groups.map((g) => (
-    <fieldset key={g.code} className={s.group} aria-describedby={g === open ? 'choose-error' : undefined}>
+    <fieldset key={g.code} data-variant-picker={g.code} className={s.group} aria-describedby={g === open ? 'choose-error' : undefined}>
       <legend className={s.legend}>{g.name}</legend>
       <div className={p.seg}>
         {g.options.map((o) => o.href

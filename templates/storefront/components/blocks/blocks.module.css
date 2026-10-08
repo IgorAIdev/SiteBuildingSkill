@@ -235,7 +235,7 @@
 :global(main[data-home='minimal'] h2){font-size:var(--h2-size);line-height:var(--h2-lead);font-weight:var(--h2-weight);letter-spacing:var(--h2-track)}
 .minimalHero{--lede-air:var(--air-group) 0;--lede-align:center;--lede-stack-align:center}
 .minimalText{align-items:start}
-.minimalShelves{margin:0;padding:0;list-style:none;--cluster-gap:var(--gap-row)}
+.minimalShelves{margin:0;padding:0;list-style:none}
 .minimalShelves a{min-block-size:var(--ctrl-target);display:inline-flex;align-items:center}
 .minimalProduct{--stack:var(--air-row)}
 .minimalShot{--frame:var(--card-frame);--frame-cap:60svh;background:var(--plate-2);border-radius:var(--r-sheet)}

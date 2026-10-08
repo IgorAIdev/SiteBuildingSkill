@@ -553,13 +553,13 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
   --pop-trail-near:var(--pop-trail-near-deck);
   --pop-trail-far:var(--pop-trail-far-deck);
   --edge-off:var(--edge-off-deck);
-  /* Поле ввода — тоже пара (И549): светлая заливка поля бумаги с белыми
-     буквами палубы давала поле, в котором набранного не видно (подписка в
-     подвале, 29.09.2026). Заливка — плашка палубы, кромка — её замеренная
-     кромка органа (`--border-deck` строителя). Кромка поля и галочки —
-     `--tick-edge`: на корне она составлена из `--border` и за полом сама
-     не пошла бы. Лист ниже возвращает обе. */
-  --field:var(--field-deck);
+  /* Поле — нейтральная поверхность со своей парой текста (06.10.2026).
+     Палуба не тонирует ввод; кромка поля и галочки — замеренная кромка палубы
+     (`--border-deck`, И549): ночью лист поля тёмный, и от бирюзовой палубы
+     поле отделяет кромка — общая `--border` давала 1.13 : 1, заливка 2.98
+     (check:craft edge, подписка в подвале, 08.10.2026; И778). */
+  --field:var(--plate);
+  --field-edge:var(--border-deck);
   --tick-edge:var(--border-deck);
 
   /* ── и ЖИВАЯ ЛЕСТНИЦА целиком, а не только серая ──────────────────────
@@ -664,7 +664,8 @@ input[type='checkbox'],input[type='radio']{border:var(--line-w) solid var(--tick
   --pop-trail-far:var(--pop-trail-far-paper);
   --edge-off:var(--edge-off-paper);
   /* Поле — бумаги (И549): заливка и кромка, как на корне. */
-  --field:var(--field-paper);
+  --field:var(--plate);
+  --field-edge:var(--border);
   --tick-edge:var(--border);
 
   /* Живая лестница — к своим значениям (см. `--live-*` в tokens.css). */

@@ -9,6 +9,7 @@ import s from './SearchPane.module.css'
 import type { ShelfCard } from '@/lib/view.ts'
 import { shot } from '@/lib/shot.ts'
 import { Icon } from './Icon.tsx'
+import { PaneHandle } from './PaneHandle.tsx'
 import { PaneHead } from './PaneHead.tsx'
 
 type Found = { q: string; total: number; href: string; cards: ShelfCard[] }
@@ -101,6 +102,7 @@ export function SearchPane({ lang, action, words, shelves, trigger }: { lang: st
             )}
           </div>
         </div>
+        <PaneHandle />
       </div>
     </>
   )

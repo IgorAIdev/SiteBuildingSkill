@@ -13,12 +13,21 @@ import { AddLabel } from './AddLabel.tsx'
    компонент одно — видна ли строка покупки. */
 export function StickyBuy({ buy, label, variant, added, children }: { buy: string; label: string; variant?: string | null; added: string; children: ReactNode }) {
   const [shown, setShown] = useState(false)
+  /* Строка покупки целиком над краем окна — по положению при каждой прокрутке (не
+     чаще кадра), а не по пересечению края: переход по якорю («128 отзывов» →
+     отзывы) или открытие страницы уже прокрученной перепрыгивает строку, края она
+     не пересекает, и наблюдатель пересечений молчал — полоса не появлялась
+     (замер 08.10.2026, И778). */
   useEffect(() => {
     const el = document.getElementById(buy)
     if (!el) return
-    const io = new IntersectionObserver(([e]) => setShown(!e.isIntersecting && e.boundingClientRect.top < 0))
-    io.observe(el)
-    return () => io.disconnect()
+    let frame = 0
+    const check = () => { frame = 0; setShown(el.getBoundingClientRect().bottom < 0) }
+    const ask = () => { if (!frame) frame = requestAnimationFrame(check) }
+    check()
+    addEventListener('scroll', ask, { passive: true })
+    addEventListener('resize', ask)
+    return () => { removeEventListener('scroll', ask); removeEventListener('resize', ask); cancelAnimationFrame(frame) }
   }, [buy])
   /* Рост строки — корню (`--bottom-bar`): окно помощи у края экрана
      (HelpDock.tsx, И547) встаёт над строкой, а не на её кнопку. Спрятанная

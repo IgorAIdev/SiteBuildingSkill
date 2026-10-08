@@ -85,8 +85,10 @@ export function Catalog({ view, search, cart, inset = false, ids, after }: { vie
                 {view.count ? <p className={s.count} role="status">{view.count}</p> : null}
                 {/* Выбранное — пилюлями в той же строке, «сбросить» — словом (И740):
                     своей строки у выбранного нет — место по высоте у полки. */}
-                {view.chips.map((c) => <a key={c.href} className={`${p.chip} ${s.picked}`} data-pill href={c.href} aria-label={c.said}>{c.label}<Icon id="x" /></a>)}
-                {view.clear ? <a className={`${b.btn} ${s.picked}`} data-voice="bare" data-size="sm" href={view.clear.href}>{view.clear.label}</a> : null}
+                {view.chips.length || view.clear ? <div className={`${p.cluster} ${s.picked}`}>
+                  {view.chips.map((c) => <a key={c.href} className={p.chip} data-pill href={c.href} aria-label={c.said}>{c.label}<Icon id="x" /></a>)}
+                  {view.clear ? <a className={b.btn} data-voice="bare" data-size="sm" href={view.clear.href}>{view.clear.label}</a> : null}
+                </div> : null}
                 {view.sort ? <SortMenu sort={view.sort} id={ids?.sort} /> : null}
               </div>
             ) : null}

@@ -209,7 +209,9 @@ const copyTree = (from, to) => {
     for (const name of readdirSync(from)) copyTree(join(from, name), join(to, name))
   } else copyFileSync(from, to)
 }
-const HEAVY = new Set(['research', 'elements', 'selftest', 'node_modules', ['.', 'git'].join('')])
+// Installed storefronts and local agent state are not kit source. Copying a
+// running .next build races file replacement and makes this test host-dependent.
+const HEAVY = new Set(['research', 'elements', 'selftest', 'node_modules', '.storefront', '.agents', '.codex', ['.', 'git'].join('')])
 test('--storefront --force removes what the template dropped, and keeps site data, site files, site edits and site baselines', () => {
   const root = mkdtempSync(join(tmpdir(), 'storefront-drop-'))
   const kit = join(root, 'kit')

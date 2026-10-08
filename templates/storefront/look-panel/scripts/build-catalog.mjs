@@ -171,14 +171,14 @@ export const FACES = [
  *  Угол — из Shape. Пилюля (элемент 44) сюда не идёт: полный круг — только у
  *  главного действия (CLAUDE.md, запрет 2, И228). */
 export const FIELD_LOOKS = [
-  { id: 'framed', name: 'Framed', line: 'A light fill inside a full edge', vars: { '--ctrl-field-fill': 'var(--field)', '--ctrl-field-edge': 'var(--tick-edge)', '--ctrl-field-side': '1' } },
+  { id: 'framed', name: 'Framed', line: 'A light fill inside a full edge', vars: { '--ctrl-field-fill': 'var(--field)', '--ctrl-field-edge': 'var(--field-edge)', '--ctrl-field-side': '1' } },
   /* Кромка контура и черта тона — краской подписи: краска рамки
      (`--tick-edge`) замерена строителем к заливке поля, на поверхности
      тёмной темы она 2.75 : 1, на тоне — 2.5; подпись держит 5 : 1 на всех
      наборах. Тон — тихая плашка, а не вуаль: на вуали поверх пола страницы
      подсказка в поле 3.9 : 1 (замер 25.09.2026, все образцы). */
-  { id: 'outline', name: 'Outline', line: 'The card surface inside a darker full edge (element 43)', vars: { '--ctrl-field-fill': 'var(--surface)', '--ctrl-field-edge': 'var(--ink-soft)', '--ctrl-field-side': '1' } },
-  { id: 'tone', name: 'Tone', line: 'A tone fill with one line underneath, no box (element 41)', vars: { '--ctrl-field-fill': 'var(--plate-quiet)', '--ctrl-field-edge': 'var(--ink-soft)', '--ctrl-field-side': '0' } },
+  { id: 'outline', name: 'Outline', line: 'The card surface inside a darker full edge (element 43)', vars: { '--ctrl-field-fill': 'var(--plate)', '--ctrl-field-edge': 'var(--field-soft)', '--ctrl-field-side': '1' } },
+  { id: 'tone', name: 'Tone', line: 'A tone fill with one line underneath, no box (element 41)', vars: { '--ctrl-field-fill': 'var(--plate-quiet-paper)', '--ctrl-field-edge': 'var(--field-soft)', '--ctrl-field-side': '0' } },
 ]
 /** Место подписи поля (И394): над полем или на кромке (элемент 47) —
  *  внутри, пока поле пусто, на верхней кромке, когда в него пишут. Краски

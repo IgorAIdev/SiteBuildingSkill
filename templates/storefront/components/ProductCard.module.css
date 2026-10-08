@@ -92,7 +92,9 @@
    (венгерский на 320), край плашки уходит под сердце, а не сердце под неё.
    Два класса — место старше примитива при любом порядке стилей сборки (И755). */
 .card .flag{
-  z-index:auto;block-size:auto;min-block-size:calc(var(--ctrl-h-sm) * .8);
+  z-index:auto;block-size:auto;min-block-size:var(--ctrl-face);
+  inset-block-start:var(--sp-2);inset-inline-start:var(--sp-2);
+  border-start-start-radius:max(var(--r-ctrl), calc(var(--r-card) - var(--sp-2)));
   padding-block:calc(var(--ctrl-h-sm) * .1);line-height:1.2;
   max-inline-size:calc(100% - var(--pad-inner) - var(--sp-2) * 2 - var(--ctrl-target))
 }
@@ -282,6 +284,7 @@
    карточка, снята 01.10.2026 (заказчик: «фон какой-то под иконкой»; И603);
    карточка говорит только «стоит на снимке» (`over="picture"`), и знак сам
    берёт стекло палитры (И606). */
+.card .save[data-over="picture"]{min-block-size:var(--ctrl-face);min-inline-size:var(--ctrl-face)}
 .save{position:absolute;z-index:1;inset-block-start:var(--sp-2);inset-inline-end:var(--sp-2)}
 /* Сердце без подложки (`--save-look: bare`) стоит от угла снимка на то же поле,
    что плашка скидки (`.cut`, `--pad-inner`): верх знака и верх плашки на одной линии. */

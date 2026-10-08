@@ -31,7 +31,7 @@
   --sh-modal: 0 0 0 1px var(--sh-ring), 0 4px 8px var(--sh-near), 0 36px 80px -28px var(--sh-far-3);
   --sh-in: inset 0 1px 2px var(--sh-inset);
   --ctrl-field-fill: var(--field);
-  --ctrl-field-edge: var(--tick-edge);
+  --ctrl-field-edge: var(--field-edge);
   --ctrl-field-side: 1;
   --ctrl-field-label: above;
   --ctrl-tick-fill: var(--pop-ink);

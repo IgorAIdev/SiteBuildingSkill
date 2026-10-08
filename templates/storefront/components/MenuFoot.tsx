@@ -8,7 +8,6 @@ import { Icon } from './Icon.tsx'
 import { SavedLink } from './SavedLink.tsx'
 import { AccountLink } from './AccountLink.tsx'
 import { LangSwitch } from './LangSwitch.tsx'
-import { ThemeToggle } from './ThemeToggle.tsx'
 
 /* Низ шторки меню — служебное под полками (И770, поправка И772). Слово заказчика
    05.10.2026: «внизу плохо, огромная неаккуратная панель выбора языка, одинокий
@@ -43,7 +42,6 @@ export function MenuFoot({ lang, top, service }: { lang: Lang; top: ServiceLink[
         <div className={s.sheetSigns}>
           <SavedLink lang={lang} label={t(lang, 'nav.saved')} />
           <AccountLink lang={lang} label={t(lang, 'nav.account')} sheet />
-          <ThemeToggle label={t(lang, 'theme.toggle')} className={s.glyph} sun={s.sun} moon={s.moon} />
         </div>
         <LangSwitch lang={lang} label={t(lang, 'nav.lang')} />
       </div>
