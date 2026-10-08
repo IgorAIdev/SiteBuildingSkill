@@ -18044,3 +18044,20 @@ CUI: «эти данные фирмы не нужны тут»; телефон �
 Источник: Google Search Central — title links, snippets, helpful content, ai-optimization-guide (10.07.2026);
 EFSA 09.02.2026; NKFH 24.07.2026; WADA Prohibited List; исследования HempScale (`seo-content-principles.md`,
 `claims-ro.json`); подсказки Google и выдача RO/HU/EN 08.10.2026.
+
+## И789 · Лист каталога 2 и дальше — своя страница для поиска; текст полки — только на первом чистом листе
+
+**Дефект.** Разбор 08.10.2026 по И788: у полки и хаба `?page=2` отдавал canonical на лист 1 — Google в руководстве по
+пагинации прямо просит так не делать: товары со второго листа перестают находиться. Редакционный блок под сеткой
+(разделы и вопросы) рисовался на каждом листе и на каждой выборке фильтра и сортировки — один текст на десятках
+адресов.
+
+**Правило.** `cleanPage(asked)` (`lib/listing.ts`): без граней и в порядке по умолчанию — номер листа, иначе `null`.
+Лист ≥ 2 — canonical и hreflang на себя (`?page=n`); выборка фильтра — canonical на чистую полку, как прежде.
+Блок `CatalogCopy` — только когда `cleanPage === 1`; h1 и строка над сеткой остаются на любом листе.
+
+**Чем меряется.** `tests/shop-copy.test.ts` витрины, «paged lists keep their own canonical page…»; на сборке — ночной
+список (`docs/open.md`).
+
+Источник: Google Search Central, «Pagination, incremental page loading» (ecommerce), canonical на каждую страницу
+листания; HempScale `EDITORIAL_BLOCK.md` — блок только на чистой первой странице.

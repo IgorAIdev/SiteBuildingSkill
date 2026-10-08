@@ -10,6 +10,17 @@ export type Asked = { facets: Record<string, string[]>; sort: SortKey; page: str
 const SORTS = new Set<SortKey>(['popular', 'newest', 'price-asc', 'price-desc'])
 export const first = (v: string | string[] | undefined): string | null => (Array.isArray(v) ? (v[0] ?? null) : (v ?? null))
 
+/** Номер чистой страницы выдачи — без граней и в порядке по умолчанию: 1, если
+ *  не листали, иначе номер листа; `null` — выборка фильтра или сортировки.
+ *  Лист 2 и дальше — своя страница для поиска (canonical на себя, Google
+ *  pagination guide); редакционный текст полки — только на первом чистом
+ *  листе, иначе он повторяется на каждом листе и каждой выборке (И789). */
+export function cleanPage(asked: Asked): number | null {
+  if (Object.values(asked.facets).some((v) => v.length) || asked.sort !== 'popular') return null
+  const n = Number(asked.page)
+  return Number.isInteger(n) && n > 1 ? n : 1
+}
+
 /** Что спрошено адресом. Номер страницы здесь не толкуется: мусор и «за
  *  концом» — решение источника (404), а не тихая первая страница. */
 export function readQuery(params: Params): Asked {

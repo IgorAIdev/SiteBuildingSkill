@@ -39,6 +39,7 @@ FAQ добавляется для полезных ответов; количе�
 | **Разметка товара** — Product, марка, SKU, цена только настоящая, группа вариантов | `lib/ld.ts`: `inProductGroupWithID` у линейки, цена при `PRICES_ARE_REAL` | `check:seo`, `ld`, `sample` |
 | **Крошки** — путь от главной, разметкой `BreadcrumbList` | `Breadcrumbs`, `breadcrumbLd` | `check:seo`, `ld` |
 | **canonical на себя, hreflang на все языки** | `toMetadata` | `check:seo`, `canonical`, `hreflang` |
+| **Лист каталога 2+ — своя страница; текст полки — только на первом чистом листе** (И789) | `cleanPage` в `lib/listing.ts`: canonical на `?page=n`, выборка фильтра — на чистую полку; `CatalogCopy` при `cleanPage === 1` | `tests/shop-copy.test.ts` витрины |
 | **Карта сайта обещает только живые страницы** | `app/sitemap.ts` из `productIds` | `check:urls` |
 | **Язык рынка у всего, что читает машина** | перевод по ключу на сборке | `check:seo`, `market` |
 | **Картинка с alt, факт — текстом** (нейросеть цитирует текст, не картинку) | `alt` у снимков, сила и мера строкой фактов | `check:seo`, `alt` |
