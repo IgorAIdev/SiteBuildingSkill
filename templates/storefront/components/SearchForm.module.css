@@ -8,7 +8,9 @@
    ровно свою высоту — текст не заходит под знак. */
 .box{position:relative}
 .input{padding-inline-end:var(--ctrl-h)}
+/* Сама кнопка — кнопка-знак модуля малого роста (`data-pager`, `data-size="sm"`):
+   ширина и поле — её; место ставит только где (И790). */
 .box > .go{
   position:absolute;inset-block:0;inset-inline-end:calc((var(--ctrl-h) - var(--ctrl-h-sm)) / 2);margin-block:auto;
-  inline-size:var(--ctrl-h-sm);block-size:var(--ctrl-h-sm);padding-inline:0
+  block-size:var(--ctrl-h-sm)
 }

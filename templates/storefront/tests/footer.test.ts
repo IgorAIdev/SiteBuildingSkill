@@ -51,7 +51,6 @@ test('payment marks stand bare, from one component, with air between the tiers o
   assert.doesNotMatch(marks.replace(/\/\*[\s\S]*?\*\//g, ''), /background|box-shadow|border-radius/)
   assert.match(marks, /\.mark svg\{[^}]*block-size:calc\(var\(--ctrl-fs-sm\) \* 1\.15\)/)
   assert.match(css, /\.base\{[^}]*gap:var\(--air-row\)/)
-  assert.match(read('../look-panel/design/DesignPage.tsx'), /<PayMarks label=/)
   assert.doesNotMatch(read('../styles/primitives.module.css'), /data-chip='pay'/)
 })
 

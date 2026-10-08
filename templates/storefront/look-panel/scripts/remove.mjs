@@ -312,7 +312,7 @@ function rootDecls(css) {
 /** Значение так, как его пишет сборщик: light-dark() — парой переменных
  *  lightningcss, краски короче и строчными, без пробелов и кавычек. */
 const NAMED = { '#f00': 'red', '#d2b48c': 'tan', '#000080': 'navy', '#808080': 'gray', '#008080': 'teal', '#dda0dd': 'plum', '#ffd700': 'gold', '#cd853f': 'peru', '#ffc0cb': 'pink', '#fffafa': 'snow', '#f5deb3': 'wheat', '#f0ffff': 'azure', '#f5f5dc': 'beige', '#ffe4c4': 'bisque', '#a52a2a': 'brown', '#ff7f50': 'coral', '#fffff0': 'ivory', '#f0e68c': 'khaki', '#faf0e6': 'linen', '#800000': 'maroon', '#808000': 'olive', '#ffa500': 'orange', '#da70d6': 'orchid', '#a0522d': 'sienna', '#c0c0c0': 'silver', '#ff6347': 'tomato', '#ee82ee': 'violet', '#008000': 'green', '#4b0082': 'indigo' }
-function squeeze(v) {
+export function squeeze(v) {
   const short = (h) => (h[1] === h[2] && h[3] === h[4] && h[5] === h[6] ? `#${h[1]}${h[3]}${h[5]}` : h)
   /* Вуаль строителя палитры `#RRGGBBAA` (И295) сборщик тоже укорачивает:
      `#00000099` → `#0009`. */
@@ -325,7 +325,9 @@ function squeeze(v) {
        (краска YouTube, И628). */
     .replace(/#[0-9a-f]{3,6}\b/g, (h) => NAMED[h] ?? h)
   const ld = s.match(/^light-dark\(\s*([^,]+?)\s*,\s*(.+?)\s*\)$/)
-  if (ld) s = `var(--lightningcss-light,${ld[1]})var(--lightningcss-dark,${ld[2]})`
+  /* Пара с равными половинами — сборщик пишет одну краску: `light-dark(#FFFFFF, #FFFFFF)`
+     → `#fff` (check:look 08.10.2026: ~35 ложных «не то значение» на краске палубы). */
+  if (ld) s = ld[1] === ld[2] ? ld[1] : `var(--lightningcss-light,${ld[1]})var(--lightningcss-dark,${ld[2]})`
   return s.replace(/[\s"']/g, '').replace(/(^|[(,])0\./g, '$1.')
 }
 

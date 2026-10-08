@@ -48,7 +48,7 @@
 - [Owner's window ≈1253 px](owner-window-width.md) — his screenshots are 1880 px at 150 % scaling; reproduce his view at 1253 CSS px first
 - [Variants in chat](variants-in-chat.md) — asked for variants in chat: fix with the recommended one, then draw ≤3 mockups with real content; he picks fast
 - [LUXA is not his](luxa-not-owner.md) — the LUXA screenshot in the home brief was never sent by the owner (04.10.2026); his refs are Allbirds, Gymshark
-- [Round forms only](round-forms-only.md) — buttons pills and circles, no square plates; menu/list row hover = rounded rectangle --r-ctrl, one shape everywhere (04.10.2026); button corner = Shape → Corners (--r-btn, «· pill» twins), no data-pill on buttons
+- [Round forms only](round-forms-only.md) — buttons pills and circles, no square plates; menu/list row hover = rounded rectangle --r-ctrl, one shape everywhere (04.10.2026); button corner = Shape → Corners (--r-btn, «· pill» twins), no data-pill on buttons; since 08.10.2026 the published look is «Standard · pill», every data-pager sign button a circle (И790)
 - [Variants as a menu](variants-as-menu.md) — skills offer every variant for the owner's pick; no «recommend X when N facets» thresholds (04.10.2026)
 - [Phone menu on top](phone-menu-top.md) — top header, burger first at the left edge, drawer from the left, signs not pictures, current page on a light brand plate (05.10.2026); no bottom tab bar
 - [Panel knob reaches all](panel-knob-reaches-all.md) — Corners must change buttons too; no second knob silently overriding a general one (04.10.2026)

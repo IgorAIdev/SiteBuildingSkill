@@ -84,8 +84,8 @@ export function QuickOrder({ view }: { view: QuickView }) {
             {rows.map((r) => (
               <li key={r.key}>
                 {r.href
-                  ? <a className={`${b.btn} ${s.row} ${rl.mark}`} data-size="lg" data-mark={r.key} href={r.href} target="_blank" rel="noopener noreferrer" aria-label={r.label}><Icon id={SIGN[r.key]} /><span className={s.name}>{r.name}</span><span className={s.via}>{r.label}</span></a>
-                  : <span className={`${b.btn} ${s.row} ${rl.mark}`} data-size="lg" data-mark={r.key} aria-disabled="true" aria-label={r.label}><Icon id={SIGN[r.key]} /><span className={s.name}>{r.name}</span><span className={s.via}>{r.label}</span></span>}
+                  ? <a className={`${b.btn} ${s.row} ${rl.mark}`} data-size="lg" data-stack="" data-mark={r.key} href={r.href} target="_blank" rel="noopener noreferrer" aria-label={r.label}><Icon id={SIGN[r.key]} /><span className={s.name}>{r.name}</span><span className={s.via}>{r.label}</span></a>
+                  : <span className={`${b.btn} ${s.row} ${rl.mark}`} data-size="lg" data-stack="" data-mark={r.key} aria-disabled="true" aria-label={r.label}><Icon id={SIGN[r.key]} /><span className={s.name}>{r.name}</span><span className={s.via}>{r.label}</span></span>}
               </li>
             ))}
           </ul>
@@ -97,8 +97,8 @@ export function QuickOrder({ view }: { view: QuickView }) {
         <div className={pn.foot}>
           <div className={pn.acts}>
             {call
-              ? <a className={b.btn} data-voice="loud" href={call} target="_blank" rel="noopener noreferrer"><Icon id="arrow-right" />{view.call}</a>
-              : <span className={b.btn} data-voice="loud" aria-disabled="true"><Icon id="arrow-right" />{view.call}</span>}
+              ? <a className={b.btn} data-voice="loud" href={call} target="_blank" rel="noopener noreferrer">{view.call}<Icon id="arrow-right" /></a>
+              : <span className={b.btn} data-voice="loud" aria-disabled="true">{view.call}<Icon id="arrow-right" /></span>}
           </div>
         </div>
       </dialog>

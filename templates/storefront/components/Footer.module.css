@@ -48,8 +48,9 @@ main:has(> [data-ground='deck']:last-child) + .foot{margin-block-start:0}
    Знаки оплаты — своим компонентом (PayMarks.tsx), в основании подвала. */
 .social{list-style:none;padding:0;margin:0}
 .social{--cluster:var(--sp-1)}
-.social a{--btn-h:var(--ctrl-h);inline-size:var(--btn-h);padding:0}
-.social svg{inline-size:calc(var(--btn-h) * .55);block-size:calc(var(--btn-h) * .55)}
+/* Знак — кнопка-знак модуля (`data-pager`: ширина от роста, круг); место — рост и
+   рост знака (`--btn-icon`), а не своё правило `svg` весом `.btn svg` (И790). */
+.social a{--btn-h:var(--ctrl-h);--btn-icon:calc(var(--btn-h) * .55)}
 /* Столбцы берут остаток (втрое больше знака) и стоят каждый шириной своей
    самой длинной строки: адрес почты, номер и имя полки не переносятся
    никогда (слово заказчика 29.09.2026: «перенос недопустим» — почта
