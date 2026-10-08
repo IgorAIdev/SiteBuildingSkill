@@ -7,7 +7,6 @@ import type { Outcome } from '@/lib/cart-ops.ts'
 import { CartForm } from './CartForm.tsx'
 import { CartCoupon } from './CartCoupon.tsx'
 import { OrderTotals } from './OrderTotals.tsx'
-import { Pledges } from './Pledges.tsx'
 import { Shelf } from './Shelf.tsx'
 import { CartShelves } from './CartShelves.tsx'
 import { CartFresh } from './CartFresh.tsx'
@@ -70,10 +69,7 @@ export function CartView({ lang, view, submit, call, landmark = true }: { lang: 
           <div className={`${p.stack} ${p.pinned} ${s.summary}`}>
             {view.goal ? <GoalMeter goal={view.goal} /> : null}
             <OrderTotals totals={view.totals} />
-            <div className={s.decide}>
-              <a className={b.btn} data-voice="loud" data-size="lg" data-wide href={view.checkout.href}>{view.checkout.label}</a>
-              <Pledges pledges={view.pledges} />
-            </div>
+            <a className={b.btn} data-voice="loud" data-size="lg" data-wide href={view.checkout.href}>{view.checkout.label}</a>
             <CartCoupon lang={lang} view={view} submit={submit} call={call} />
           </div>
         </aside>

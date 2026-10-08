@@ -139,10 +139,10 @@ export async function CheckoutParts({ lang }: { lang: Lang }) {
 
   /* Корзина до оформления: доставка ещё не выбрана. */
   const cart = cartOf(lines, null)
-  const view = cartView(lang, cart, null, { payments: paymentsFor(lang, cart.total), methods, returnDays, freeFrom: facts.ok ? facts.value.freeDeliveryFrom : null, popular: [], shelves: [] })
+  const view = cartView(lang, cart, null, { freeFrom: facts.ok ? facts.value.freeDeliveryFrom : null, popular: [], shelves: [] })
   const msgs = { timeout: view.messages.timeout, failed: view.messages.failed }
   /* Пустая корзина: «к покупкам» и главные полки кнопками (И689). */
-  const empty = cartView(lang, null, null, { payments: null, methods: null, returnDays: null, freeFrom: null, popular: [], shelves }).empty
+  const empty = cartView(lang, null, null, { freeFrom: null, popular: [], shelves }).empty
 
   /* Оформление: курьер на адрес образца. */
   const delivery: Delivery | null = door ? { method: door, address: ADDRESS, point: null } : null
