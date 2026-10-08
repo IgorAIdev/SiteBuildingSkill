@@ -190,6 +190,7 @@ export const RO = {
   'cart.lede': 'Verificați produsele, cantitățile și codul de reducere înainte de comandă.',
   'cart.empty': 'Coșul este gol',
   'cart.emptyStep': 'Vedeți produsele',
+  'cart.emptyLead': 'Începeți cu o categorie.',
   'cart.unit': '{price} / buc.',
   'cart.quantity': 'Cantitate',
   'cart.less': 'Scade cantitatea: {name}',

@@ -192,6 +192,7 @@ export const EN: Record<keyof typeof RO, string> = {
   'cart.lede': 'Check the products, quantities and discount code before you order.',
   'cart.empty': 'Your cart is empty',
   'cart.emptyStep': 'See the products',
+  'cart.emptyLead': 'Start with a category.',
   'cart.unit': '{price} each',
   'cart.quantity': 'Quantity',
   'cart.less': 'Decrease quantity: {name}',
