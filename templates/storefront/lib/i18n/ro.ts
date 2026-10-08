@@ -391,6 +391,15 @@ export const RO = {
   'register.submit': 'Creați contul',
   'register.have': 'Aveți deja cont?',
   'register.verify': 'Dacă adresa {email} e nouă, v-am trimis un email cu linkul de confirmare. Dacă aveți deja cont, intrați în el sau resetați parola.',
+  /* Вход через Google и Facebook (И787): подписи кнопок — строки самих поставщиков
+     (кнопки Google и Facebook на «ты»: «Continuă»); слова — заказчика. */
+  'social.or': 'sau',
+  'social.google': 'Continuă cu Google',
+  'social.facebook': 'Continuă cu Facebook',
+  'social.failed': 'Intrarea cu {provider} nu s-a încheiat. Încercați din nou sau folosiți emailul și parola.',
+  'social.email': '{provider} nu ne-a dat adresa de email. Permiteți accesul la email sau creați un cont cu adresa dumneavoastră.',
+  'social.unverified': 'Adresa de email din contul {provider} nu este încă confirmată. Confirmați-o la {provider} sau creați un cont cu emailul.',
+  'social.taken': 'Există deja un cont cu această adresă de email. Intrați cum l-ați creat: cu emailul și parola sau cu celălalt buton.',
   'password.title': 'Resetați parola',
   'password.lede': 'Scrieți emailul contului — vă trimitem un link pentru o parolă nouă.',
   'password.send': 'Trimiteți linkul',

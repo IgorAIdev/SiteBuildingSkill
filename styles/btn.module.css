@@ -18,6 +18,8 @@
  *    data-open   sign             «открыто» говорит знак: второй знак внутри
  *                кнопки — при открытом соседе-раскрытии, краска не меняется (И733)
  *    data-rail-nav                кнопка шапки ряда: круг и пилюля мимо Corners (И747)
+ *    data-provider google|facebook  вход через поставщика: одежда по его правилам
+ *                мимо осей «Тихая» и «Ответ на руку» (И787)
  *
  *  Одна ручка — высота `--btn-h`. Поле по бокам, просвет до знака и размер
  *  знака — доли высоты (правило 2: геометрия контрола от его высоты); текст —
@@ -242,6 +244,19 @@
   --btn-fill-flip:color-mix(in oklab, var(--btn-veil-press), var(--btn-flip-press) calc(var(--ctrl-btn-hand-fill, 0) * 100%));
   --press-fill:color-mix(in oklab, var(--btn-fill-flip), transparent calc(var(--ctrl-btn-dash, 0) * 100%));
   color:color-mix(in oklab, var(--btn-ink-flip), var(--pop-ink) calc(var(--ctrl-btn-dash, 0) * 100%));
+}
+
+/* Кнопка входа через поставщика (`data-provider`, И787) — одежда по правилам
+   поставщика, а не по осям «Тихая» и «Ответ на руку» панели: Google разрешает
+   кнопку «G» только в рамке — светлой с кромкой, тёмной или нейтральной
+   (developers.google.com/identity/branding-guidelines), и «черта без коробки»
+   (`dash`) или заливка маркой под рукой «G» из рамки вынимали бы. Одежда —
+   кромкой тихой (`--edge`, под рукой `--edge-hand`) на своём полу, чернилами
+   текста: днём это светлая тема Google, ночью — тёмная. Угол — общий (Corners). */
+.btn[data-provider]{
+  --ctrl-btn-fill:transparent;--ctrl-btn-ink:var(--ink);
+  --ctrl-btn-edge:var(--edge);--ctrl-btn-edge-hand:var(--edge-hand);
+  --ctrl-btn-dash:0;--ctrl-btn-hand-fill:0;
 }
 
 /* Форму из каталога (ось «Форма кнопки баннера») носит только кнопка с

@@ -1,7 +1,8 @@
 import { test, beforeEach } from 'node:test'
 import assert from 'node:assert/strict'
 import { sampleCommerce as c, resetSample, FIXTURES } from '../lib/source/sample/commerce.ts'
-import { HISTORY, SAMPLE_EMAIL, SAMPLE_PASSWORD } from '../lib/source/sample/account.ts'
+import { HISTORY, SAMPLE_EMAIL, SAMPLE_PASSWORD, samplePerson } from '../lib/source/sample/account.ts'
+import { sampleCode } from '../lib/social.ts'
 import { vendureEnv } from '../lib/source/vendure/catalog.ts'
 import { vendureCommerce } from '../lib/source/vendure/commerce.ts'
 import { statusOf } from '../lib/source/vendure/account.ts'
@@ -238,4 +239,87 @@ test('vendure: sign-out calls logout WITH the token; orders skip the unplaced ca
 test('vendure: engine order states map onto the storefront list', () => {
   assert.deepEqual(['AddingItems', 'ArrangingPayment', 'PaymentAuthorized', 'PaymentSettled', 'PartiallyShipped', 'Shipped', 'PartiallyDelivered', 'Delivered', 'Cancelled', 'Custom'].map(statusOf),
     ['placed', 'placed', 'placed', 'paid', 'shipped', 'shipped', 'shipped', 'delivered', 'cancelled', 'placed'])
+})
+
+/* ── Вход через Google и Facebook (И787) ── */
+/** Образец показывает кнопки только при `SAMPLE_SOCIAL=on` — на время теста. */
+async function withSampleSocial(run: () => Promise<void>) {
+  const was = process.env.SAMPLE_SOCIAL
+  process.env.SAMPLE_SOCIAL = 'on'
+  try { await run() } finally { if (was === undefined) delete process.env.SAMPLE_SOCIAL; else process.env.SAMPLE_SOCIAL = was }
+}
+const V = 'v'.repeat(64)
+
+test('sample: no buttons unless SAMPLE_SOCIAL=on — on a site without a server they would be dummies', async () => {
+  assert.deepEqual(await c.socialProviders(), [])
+  assert.deepEqual((await c.signInWith(null, 'ro', 'google', { code: sampleCode('s'.repeat(43)), redirectUri: '', codeVerifier: V })).change, { ok: false, error: 'provider' })
+})
+
+test('sample: both providers without a window; each flow its own person without a password; the guest cart stays', () => withSampleSocial(async () => {
+  assert.deepEqual(await c.socialProviders(), [{ provider: 'google', clientId: null }, { provider: 'facebook', clientId: null }])
+  const cart = await c.add(null, 'ro', 'uf-20-10', 1)
+  const grant = { code: sampleCode('a'.repeat(43)), redirectUri: '/api/auth/google/callback', codeVerifier: V }
+  const person = samplePerson('google', grant.code)
+  assert.ok(person)
+  const first = await c.signInWith(cart.session, 'ro', 'google', grant)
+  assert.ok(first.change.ok)
+  assert.equal(first.session, cart.session, 'корзина гостя остаётся')
+  assert.equal(first.change.value.email, person.email)
+  const again = await c.signInWith(null, 'ro', 'google', grant)
+  assert.ok(again.change.ok && again.session)
+  assert.equal(again.change.value.email, person.email, 'тот же код — тот же кабинет, не второй')
+  const other = await c.signInWith(null, 'ro', 'google', { ...grant, code: sampleCode('b'.repeat(43)) })
+  assert.ok(other.change.ok)
+  assert.notEqual(other.change.value.email, person.email, 'другой ход — другой человек: двое посетителей одним кабинетом не входят')
+  assert.deepEqual((await c.signIn(null, 'ro', person.email, 'any-password')).change, { ok: false, error: 'credentials' }, 'у кабинета без пароля пароля нет')
+  assert.deepEqual((await c.signInWith(null, 'ro', 'google', { ...grant, code: 'sample' })).change, { ok: false, error: 'provider' })
+  assert.deepEqual((await c.signInWith(null, 'ro', 'google', { ...grant, code: 'forged' })).change, { ok: false, error: 'provider' })
+}))
+
+test('sample: an account with the provider’s address already exists — no silent linking', () => withSampleSocial(async () => {
+  const code = sampleCode('c'.repeat(43))
+  const person = samplePerson('facebook', code)
+  assert.ok(person)
+  await c.signUp(null, 'en', { email: person.email, password: 'parola-lunga', firstName: 'X', lastName: 'Y' })
+  assert.deepEqual((await c.signInWith(null, 'en', 'facebook', { code, redirectUri: '', codeVerifier: V })).change, { ok: false, error: 'provider-taken' })
+}))
+
+test('vendure: buttons only for providers the server plugin names, in the storefront order; no plugin — no buttons', async () => {
+  const named = engine((q) => (q.includes('socialSignInProviders') ? { socialSignInProviders: [{ name: 'facebook', clientId: '123' }, { name: 'apple', clientId: 'a' }, { name: 'google', clientId: 'g-id' }] } : null))
+  const v = vendureCommerce({ ...ENV, placeOrders: false }, named.fetchImpl)
+  assert.deepEqual(await v.socialProviders(), [{ provider: 'google', clientId: 'g-id' }, { provider: 'facebook', clientId: '123' }])
+  await v.socialProviders()
+  assert.equal(named.seen.filter((x) => x.query.includes('socialSignInProviders')).length, 1, 'список помнится, а не спрашивается на каждой странице')
+  const none = engine(() => ({ errors: [{ message: 'Cannot query field "socialSignInProviders" on type "Query".', extensions: { code: 'GRAPHQL_VALIDATION_FAILED' } }] }))
+  assert.deepEqual(await vendureCommerce({ ...ENV, placeOrders: false }, none.fetchImpl).socialProviders(), [])
+})
+
+test('vendure: the code goes to authenticate with the GUEST token; success takes the new token; plugin refusals become words', async () => {
+  const grant = { code: 'c-1', redirectUri: 'https://cbdin.ro/api/auth/google/callback', codeVerifier: 'v'.repeat(64) }
+  const ok = engine((q, auth) => {
+    if (q.includes('authenticate')) return { authenticate: { __typename: 'CurrentUser', id: '1' } }
+    if (q.includes('activeCustomer')) return { activeCustomer: auth === 'Bearer tok-2' ? CUSTOMER : null }
+    return null
+  })
+  const r = await vendureCommerce({ ...ENV, placeOrders: false }, ok.fetchImpl).signInWith('guest', 'ro', 'google', grant)
+  assert.equal(r.session, 'tok-2', 'вход — новый токен движка')
+  assert.ok(r.change.ok)
+  const sent = ok.seen.find((x) => x.query.includes('authenticate'))
+  assert.equal(sent?.auth, 'Bearer guest', 'с токеном гостя — корзина переезжает')
+  assert.deepEqual(sent?.variables, { i: { google: { code: 'c-1', redirectUri: grant.redirectUri, codeVerifier: grant.codeVerifier } } })
+  assert.match(sent?.query ?? '', /rememberMe: true/)
+  assert.match(sent?.query ?? '', /authenticationError/)
+  const fb = engine((q) => (q.includes('authenticate') ? { authenticate: { __typename: 'CurrentUser', id: '1' } } : q.includes('activeCustomer') ? { activeCustomer: CUSTOMER } : null))
+  await vendureCommerce({ ...ENV, placeOrders: false }, fb.fetchImpl).signInWith(null, 'ro', 'facebook', { code: 'c', redirectUri: 'r', codeVerifier: V })
+  assert.deepEqual(fb.seen.find((x) => x.query.includes('authenticate'))?.variables, { i: { facebook: { code: 'c', redirectUri: 'r', codeVerifier: V } } }, 'у Facebook тоже верификатор PKCE')
+  const said = async (authenticationError: string) => (await vendureCommerce({ ...ENV, placeOrders: false }, engine((q) => (q.includes('authenticate')
+    ? { authenticate: { __typename: 'InvalidCredentialsError', errorCode: 'INVALID_CREDENTIALS_ERROR', message: '', authenticationError } } : null)).fetchImpl).signInWith(null, 'ro', 'google', grant)).change
+  assert.deepEqual(await said('EMAIL_IN_USE'), { ok: false, error: 'provider-taken' })
+  assert.deepEqual(await said('EMAIL_MISSING'), { ok: false, error: 'provider-email' })
+  assert.deepEqual(await said('EMAIL_UNVERIFIED'), { ok: false, error: 'provider-unverified' })
+  assert.deepEqual(await said('PROVIDER_UNAVAILABLE'), { ok: false, error: 'unavailable' })
+  assert.deepEqual(await said('PROVIDER_REJECTED'), { ok: false, error: 'provider' })
+  assert.deepEqual(await said(''), { ok: false, error: 'provider' })
+  const missing = engine(() => ({ errors: [{ message: 'Unknown field "google"', extensions: { code: 'GRAPHQL_VALIDATION_FAILED' } }] }))
+  assert.deepEqual((await vendureCommerce({ ...ENV, placeOrders: false }, missing.fetchImpl).signInWith('guest', 'ro', 'google', grant)), { session: 'guest', change: { ok: false, error: 'unavailable' } }, 'плагина нет — «сервис не отвечает», сессия гостя цела')
 })

@@ -23,3 +23,21 @@ references/icons.md) — тоже Simple Icons, CC0 1.0:
 Вид пером (контуром) у Facebook, Instagram, YouTube — в lucide/
 (facebook-line, instagram-line, youtube-line). Залитого квадрата Instagram,
 вторых видов WhatsApp и Viber в Simple Icons нет — не рисуются.
+
+Знак «G» Google своими красками (08.10.2026, И787: кнопка «Continue with
+Google» под формой входа):
+- google-color — четыре фигуры логотипа «G» ровно из кнопки входа самого
+  Google (Google Identity Services, accounts.google.com/gsi/button, снято
+  08.10.2026); окно 0 0 48 48, прозрачная рамка-подложка файла не взята.
+  Товарный знак Google; правила — developers.google.com/identity/
+  branding-guidelines: «G» только стандартный цветной, размер и краски не
+  меняются, без кнопки и подписи не ставится. Краска места на него не
+  действует.
+- facebook-color — «f» Facebook двумя красками для кнопки «Continue with
+  Facebook» (08.10.2026, И787): силуэт `facebook` (Simple Icons, CC0 —
+  круг с вырезанной «f») краской Facebook Blue #0866FF поверх белого круга
+  r 11.8 — белая «f» в синем круге, как основной логотип в Meta Brand
+  Resource Center (about.meta.com/brand/resources/facebook/logo): синий
+  #0866FF и белый, форма не меняется. Краска места на него не действует —
+  знак виден одинаково днём и ночью; силуэт `facebook` подвала остаётся
+  краской места.

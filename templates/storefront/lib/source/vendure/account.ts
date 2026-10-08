@@ -1,6 +1,6 @@
 import type { Lang } from '../../locale.ts'
-import type { Account, AccountError, Address, Customer, Entry, Order, OrderStatus, OrderSummary, Result, SavedAddress, Signed } from '../contract.ts'
-import { ORDERS_SHOWN } from '../contract.ts'
+import type { Account, AccountError, Address, Customer, Entry, Order, OrderStatus, OrderSummary, Result, SavedAddress, Signed, SocialProvider } from '../contract.ts'
+import { ORDERS_SHOWN, PROVIDERS } from '../contract.ts'
 import { assetImage, type Asset } from './image.ts'
 
 /* Кабинет через Vendure Shop API (И771; references/vendure.md, «Сессия»).
@@ -10,11 +10,13 @@ import { assetImage, type Asset } from './image.ts'
    (`OrderMergeStrategy`). Выход — `logout` С ТОКЕНОМ: без него сессия на
    сервере переживает выход (ошибка стартера Vendure). Каждая мутация
    выбирает `__typename` и `ErrorResult` — нечитанный union выглядел бы
-   успехом. */
+   успехом. Вход через Google и Facebook (И787) — `authenticate` той же
+   породы, что `login`; стратегии и `socialSignInProviders` даёт плагин
+   сервера (assets/vendure/plugins/social-auth). */
 
-type Fetched<T> = { ok: true; data: T; authToken?: string } | { ok: false; kind: string; message: string; errors?: { extensions?: { code?: string } }[] }
+type Fetched<T> = { ok: true; data: T; authToken?: string } | { ok: false; kind: string; message: string; status?: number; errors?: { extensions?: { code?: string } }[] }
 type Ask = <T>(query: string, variables: Record<string, unknown>, session: string | null, languageCode?: string) => Promise<Fetched<T>>
-type Union = { __typename: string; errorCode?: string }
+type Union = { __typename: string; errorCode?: string; authenticationError?: string }
 type VAddress = { id: string; streetLine1: string; city: string | null; province: string | null; postalCode: string | null; country: { code: string }; defaultShippingAddress: boolean | null }
 type VCustomer = { emailAddress: string; firstName: string; lastName: string; phoneNumber: string | null; addresses: VAddress[] | null }
 type VPlaced = {
@@ -38,6 +40,16 @@ const ERRORS: Record<string, AccountError> = {
   PASSWORD_RESET_TOKEN_INVALID_ERROR: 'token', PASSWORD_RESET_TOKEN_EXPIRED_ERROR: 'token',
 }
 const errorOf = (u: Union | null | undefined): AccountError => ERRORS[u?.errorCode ?? ''] ?? 'unavailable'
+/** Отказ плагина входа — код в `InvalidCredentialsError.authenticationError`
+ *  (README плагина); незнакомый код и пустой — «вход не завершился». */
+const SOCIAL_ERRORS: Record<string, AccountError> = {
+  EMAIL_MISSING: 'provider-email', EMAIL_UNVERIFIED: 'provider-unverified', EMAIL_IN_USE: 'provider-taken', PROVIDER_UNAVAILABLE: 'unavailable',
+}
+const socialErrorOf = (u: Union | null | undefined): AccountError =>
+  u?.__typename === 'InvalidCredentialsError' ? SOCIAL_ERRORS[u.authenticationError ?? ''] ?? 'provider' : errorOf(u)
+/** Список поставщиков живёт у сервера — спрашивается не чаще раза в пять
+ *  минут: настроили ключи — кнопки встают без перезапуска витрины. */
+const PROVIDERS_FOR_MS = 5 * 60 * 1000
 
 /** Состояние заказа движка → закрытый список витрины. Своё состояние
  *  магазина (плагин) — «оформлен», пока его не назовут здесь. */
@@ -73,10 +85,10 @@ export function vendureAccount<O extends { code: string; state: string; customer
     return r.ok ? { ok: true, value: r.data.activeCustomer } : { ok: false, reason: 'unavailable' }
   }
   /** Вход по ответу движка: успех — новый токен и кабинет по нему. */
-  const entered = async (r: Fetched<Record<string, Union>>, field: string, session: string | null, lang: Lang): Promise<Entry<Customer>> => {
+  const entered = async (r: Fetched<Record<string, Union>>, field: string, session: string | null, lang: Lang, refusal = errorOf): Promise<Entry<Customer>> => {
     if (!r.ok) return { session, change: { ok: false, error: 'unavailable' } }
     const u = r.data[field]
-    if (u?.__typename !== 'CurrentUser') return { session, change: { ok: false, error: errorOf(u) } }
+    if (u?.__typename !== 'CurrentUser') return { session, change: { ok: false, error: refusal(u) } }
     const next = r.authToken ?? session
     const c = await me(next, await d.speak(lang))
     return { session: next, change: c.ok && c.value ? { ok: true, value: customerOf(c.value) } : { ok: false, error: 'unavailable' } }
@@ -94,6 +106,10 @@ export function vendureAccount<O extends { code: string; state: string; customer
     const c = await signedIn(session, lang)
     return c.ok ? { ok: true, value: customerOf(c.value) } : c
   }
+  /* Сервер ответил — список помнится; без плагина GraphQL не знает поля (ошибка
+     GraphQL или 400 проверки запроса) — пусто, кнопок нет. Не ответил (сеть,
+     5xx) — пусто сейчас и вопрос в следующий раз. */
+  let offered: { at: number; list: SocialProvider[] } | null = null
 
   return {
     async customer(session, lang) {
@@ -125,6 +141,25 @@ export function vendureAccount<O extends { code: string; state: string; customer
     async signOut(session) {
       const r = await d.ask<{ logout: { success: boolean } }>(`mutation { logout { success } }`, {}, session)
       return r.ok ? { ok: true, value: null } : { ok: false, reason: 'unavailable' }
+    },
+    async socialProviders() {
+      if (offered && Date.now() - offered.at < PROVIDERS_FOR_MS) return offered.list
+      const r = await d.ask<{ socialSignInProviders: { name: string; clientId: string }[] }>(`{ socialSignInProviders { name clientId } }`, {}, null)
+      const named = r.ok ? r.data.socialSignInProviders : []
+      /* Порядок — витрины (Google, затем Facebook), а не ответа сервера. */
+      const list = PROVIDERS.flatMap((name): SocialProvider[] => {
+        const p = named.find((x) => x.name === name && x.clientId)
+        return p ? [{ provider: name, clientId: p.clientId }] : []
+      })
+      if (r.ok || r.kind === 'graphql' || (r.kind === 'http' && (r.status ?? 500) < 500)) offered = { at: Date.now(), list }
+      return list
+    },
+    /* С токеном гостя: движок сливает его корзину с заказом покупателя, как
+       при `login`. Ввод — код с адреса возврата и верификатор PKCE хода. */
+    async signInWith(session, lang, provider, grant) {
+      const given = { code: grant.code, redirectUri: grant.redirectUri, codeVerifier: grant.codeVerifier }
+      return entered(await d.ask<Record<string, Union>>(`mutation ($i: AuthenticationInput!) { authenticate(input: $i, rememberMe: true) { ${RESULT} ... on InvalidCredentialsError { authenticationError } } }`,
+        { i: { [provider]: given } }, session, await d.speak(lang)), 'authenticate', session, lang, socialErrorOf)
     },
     async orders(session, lang) {
       if (!session) return { ok: false, error: 'signed-out' }

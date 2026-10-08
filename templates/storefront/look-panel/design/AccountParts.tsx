@@ -3,6 +3,7 @@ import f from '@/styles/form.module.css'
 import type { Lang } from '@/lib/locale.ts'
 import type { AccountState } from '@/lib/actions/account.ts'
 import { sampleCommerce, FIXTURES } from '@/lib/source/sample/commerce.ts'
+import { PROVIDERS } from '@/lib/source/contract.ts'
 import { addressBookView, cabinetView, orderPageView, passwordView, signInView, signUpView } from '@/lib/account-view.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { t } from '@/lib/i18n/index.ts'
@@ -28,13 +29,21 @@ async function still(): Promise<AccountState> {
   'use server'
   return null
 }
+/* Кнопки поставщиков — тоже пустышкой: окна Google и Facebook отсюда не
+   открываются. Показаны оба поставщика при любом источнике (И787): на сайте
+   кнопка стоит только у того, кого называет сервер. */
+async function stillSocial(): Promise<void> {
+  'use server'
+}
+const ALL = [...PROVIDERS]
 
 const Missing = ({ what }: { what: string }) => <p className={p.note}>{what}</p>
 
 /* Форма входа — оба вида (`--auth-look`, панель Look → Admin → Sign in; И780) той
    же страницей входа, что на сайте, одна под другой: страница — целиком, рядом её
    не поставить. Метка «на сайте» — по опубликованному виду. Формы входа, присланные
-   24.09.2026, жили в каталоге элементов (56, 57) и перенесены сюда. */
+   24.09.2026, жили в каталоге элементов (56, 57) и перенесены сюда; вход через
+   Google и Facebook под формой — как в них (И787). */
 const AUTH_LOOKS = [
   ['plain', 'На полу страницы', 'колонка по центру на цвете страницы — Dawn, Gymshark, Allbirds'],
   ['card', 'На листе', 'та же колонка на белом листе с краем волоском — как присланные формы'],
@@ -50,17 +59,17 @@ export async function AccountParts({ lang }: { lang: Lang }) {
   const { names } = await lookNow()
   return (
     <>
-      <Part title="Вход" lede="Знак человека в шапке ведёт сюда гостя. Стандартная форма входа: колонка по центру, имя страницы, почта, пароль с глазом «показать», «забыли пароль» тихим словом под паролем, кнопка во всю колонку; ниже — «нет кабинета — создать» и что заказать можно и без кабинета. Два вида — на полу страницы и на листе; сменить — в панели Look → Admin → Sign in.">
+      <Part title="Вход" lede="Знак человека в шапке ведёт сюда гостя. Стандартная форма входа: колонка по центру, имя страницы, почта, пароль с глазом «показать», «забыли пароль» тихим словом под паролем, кнопка во всю колонку; под ней «или» между волосками и «Continue with Google», «Continue with Facebook» — тихие кнопки ростом главной, знаки самих Google и Facebook; ниже — «нет кабинета — создать» и что заказать можно и без кабинета. Кнопка поставщика стоит на сайте, только когда сервер магазина его называет (плагин входа). Два вида — на полу страницы и на листе; сменить — в панели Look → Admin → Sign in.">
         {AUTH_LOOKS.map(([look, name, line]) => (
           <div key={look} className={s.group} style={cssVar('--auth-look', look)}>
             <h3>{name} <Worn on={look === (names['auth-look'] ?? 'plain')} /></h3>
             <p className={p.note}>{line}</p>
-            <AuthPage view={signInView(lang, null)} action={still} permalink={here} landmark={false} at={`in-${look}-`} />
+            <AuthPage view={signInView(lang, null, ALL)} action={still} social={stillSocial} permalink={here} landmark={false} at={`in-${look}-`} />
           </div>
         ))}
       </Part>
-      <Part title="Создание кабинета" lede="Имя и фамилия парой (по-венгерски фамилия первой), почта, пароль с правилом под полем; как магазин обращается с данными — ссылкой. Создан — сразу вход; движок ждёт подтверждения — слова «проверьте почту» на месте формы.">
-        <AuthPage view={signUpView(lang, null)} action={still} permalink={here} landmark={false} at="up-" />
+      <Part title="Создание кабинета" lede="Имя и фамилия парой (по-венгерски фамилия первой), почта, пароль с правилом под полем; под кнопкой те же «или» и кнопки Google и Facebook — поставщик и заводит кабинет; как магазин обращается с данными — ссылкой. Создан — сразу вход; движок ждёт подтверждения — слова «проверьте почту» на месте формы.">
+        <AuthPage view={signUpView(lang, null, ALL)} action={still} social={stillSocial} permalink={here} landmark={false} at="up-" />
       </Part>
       <Part title="Новый пароль по ссылке из письма" lede="Ссылка из письма сброса открывает одну форму: новый пароль с правилом под полем и кнопка; после неё — сразу вход.">
         <div className={p.wrap}><AuthForm view={passwordView(lang, 'design')} action={still} permalink={here} at="pw-" /></div>

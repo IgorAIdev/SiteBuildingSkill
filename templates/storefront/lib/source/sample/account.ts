@@ -1,10 +1,11 @@
 import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto'
 import type { Lang } from '../../locale.ts'
-import type { Account, Contact, Customer, Order, OrderStatus, PastOrder, SavedAddress } from '../contract.ts'
-import { ORDERS_SHOWN } from '../contract.ts'
+import type { Account, Contact, Customer, Order, OrderStatus, PastOrder, Provider, SavedAddress } from '../contract.ts'
+import { ORDERS_SHOWN, PROVIDERS } from '../contract.ts'
 import { MARKET } from '../../market.ts'
 /* Правило пароля образца — то же, что у формы (lib/account-form.ts). */
 import { PASSWORD_MIN } from '../../account-form.ts'
+import { SAMPLE_CODE } from '../../social.ts'
 
 /* Кабинет образца (И771): кабинеты живут в памяти процесса, как корзины, и
    пропадают при перезапуске. Пароль хранится солью и хешем scrypt — даже у
@@ -12,7 +13,10 @@ import { PASSWORD_MIN } from '../../account-form.ts'
    не взломщик; у живого магазина пароль хранит источник (Vendure — bcrypt). */
 export type SampleAccount = {
   email: string; firstName: string; lastName: string; phone: string
+  /** Пусто — кабинет заведён через поставщика, пароля у него нет. */
   salt: string; hash: string; addresses: SavedAddress[]; orders: string[]; seq: number
+  /** Связи с поставщиками входа: `<поставщик>:<id у него>` (И787). */
+  links: string[]
 }
 /** Что кабинету нужно от хранилища образца (sample/commerce.ts): сессия по
  *  ключу (заготовка — свежей копией), живёт ли запись в ней (`kept`: у
@@ -30,12 +34,26 @@ export type AccountDeps = {
 const COST = { N: 1024 }
 const keyOf = (email: string) => email.trim().toLowerCase()
 const hashOf = (password: string, salt: string) => scryptSync(password, salt, 32, COST).toString('hex')
-const matches = (a: SampleAccount, password: string) => timingSafeEqual(Buffer.from(hashOf(password, a.salt), 'hex'), Buffer.from(a.hash, 'hex'))
+/* У кабинета без пароля (заведён через поставщика) паролем не войти. */
+const matches = (a: SampleAccount, password: string) => !!a.hash && timingSafeEqual(Buffer.from(hashOf(password, a.salt), 'hex'), Buffer.from(a.hash, 'hex'))
 
 export function newAccount(email: string, password: string, name: { firstName: string; lastName: string }, phone = ''): SampleAccount {
   const salt = randomBytes(16).toString('hex')
-  return { email: email.trim(), ...name, phone, salt, hash: hashOf(password, salt), addresses: [], orders: [], seq: 0 }
+  return { email: email.trim(), ...name, phone, salt, hash: hashOf(password, salt), addresses: [], orders: [], seq: 0, links: [] }
 }
+
+/** Подставные лица поставщиков (И787): окна Google и Facebook у образца нет —
+ *  код образца (`sample.<12 hex>` из `state` хода, lib/social.ts) входит
+ *  человеком своего хода: двое посетителей одним кабинетом не входят, а тот же
+ *  код — тот же человек. Адреса — `example.com`: не чьи-то. Кнопки образец
+ *  показывает только при `SAMPLE_SOCIAL=on` (разработка, проверки): на сайте
+ *  без сервера они были бы пустышкой. */
+const NAMES: Record<Provider, { firstName: string; lastName: string }> = { google: { firstName: 'Maria', lastName: 'Ionescu' }, facebook: { firstName: 'Andrei', lastName: 'Pop' } }
+export function samplePerson(provider: Provider, code: string): { subject: string; email: string; firstName: string; lastName: string } | null {
+  const id = code.startsWith(`${SAMPLE_CODE}.`) ? code.slice(SAMPLE_CODE.length + 1) : ''
+  return /^[0-9a-f]{12}$/.test(id) ? { subject: `sample-${provider}-${id}`, email: `${provider}-${id}@example.com`, ...NAMES[provider] } : null
+}
+export const sampleSocialOn = () => process.env.SAMPLE_SOCIAL === 'on'
 
 /** Заготовленная покупательница образца: два прошлых заказа и два адреса —
  *  по ней отрисованные проверки меряют кабинет полным (сессия `sample-account`).
@@ -108,6 +126,24 @@ export function accountOf(d: AccountDeps): Account {
     async forgotPassword() { return { ok: true, value: null } },
     async resetPassword(session) { return noToken(session) },
     async signOut(session) { d.close(session); return { ok: true, value: null } },
+    /* Образец принимает обоих поставщиков без их окна (`clientId: null`) —
+       только при `SAMPLE_SOCIAL=on`; иначе кнопок нет. */
+    async socialProviders() { return sampleSocialOn() ? PROVIDERS.map((provider) => ({ provider, clientId: null })) : [] },
+    /* Как плагин сервера: связанный — тот же кабинет; кабинет с этим адресом
+       есть — образец адрес не доказывает (как Facebook), войти паролем;
+       нет — новый кабинет без пароля. Ответ о занятом адресе получает только
+       тот, кто вошёл к поставщику с этим адресом. */
+    async signInWith(session, _lang, provider, grant) {
+      const person = sampleSocialOn() ? samplePerson(provider, grant.code) : null
+      if (!person) return { session, change: { ok: false, error: 'provider' } }
+      const link = `${provider}:${person.subject}`
+      const linked = [...d.accounts().values()].find((a) => a.links.includes(link))
+      if (linked) return enter(session, linked)
+      if (d.accounts().has(keyOf(person.email))) return { session, change: { ok: false, error: 'provider-taken' } }
+      const a: SampleAccount = { email: person.email, firstName: person.firstName, lastName: person.lastName, phone: '', salt: '', hash: '', addresses: [], orders: [], seq: 0, links: [link] }
+      d.accounts().set(keyOf(a.email), a)
+      return enter(session, a)
+    },
     async orders(session, lang) {
       const a = signedIn(session)
       if (!a) return signedOut
