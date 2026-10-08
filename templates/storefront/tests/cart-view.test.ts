@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { readdirSync, readFileSync } from 'node:fs'
 import { cartView, priceOrFree } from '../lib/cart-view.ts'
 import { pledgesView } from '../lib/pledges.ts'
+import { t } from '../lib/i18n/index.ts'
 import { sampleCommerce, resetSample, FIXTURES } from '../lib/source/sample/commerce.ts'
 import { sampleContent } from '../lib/source/sample/content.ts'
 import { sample } from '../lib/source/sample/catalog.ts'
@@ -115,7 +116,7 @@ test('the empty cart shows popular products from the source, as shelf cards', as
 })
 
 /* Пустая корзина — не тупик (И689): слово и тихие строки со знаком, как в окне поиска: «все товары»
-   первой, дальше главные полки; в шторке, на странице и в образце — одним `CartEmpty`. Полок нет —
+   первой, дальше главные полки; в шторке, на странице и в образце — одним `EmptyPaths`. Полок нет —
    остаётся «все товары»: путь дальше есть всегда. */
 test('the empty cart is a word and quiet category rows, all products first, in the pane and on the page', async () => {
   const cols = await sample.collections('en')
@@ -131,8 +132,8 @@ test('the empty cart is a word and quiet category rows, all products first, in t
   assert.equal(v.empty.shelves.links[1].sign, cols.value[0].sign)
   assert.equal(cartView('en', null, null).empty.shelves.links.length, 1)
   const dir = new URL('../components/', import.meta.url)
-  for (const user of ['CartView.tsx', 'CartPane.tsx', '../look-panel/design/CheckoutParts.tsx']) assert.match(readFileSync(new URL(user, dir), 'utf8'), /<CartEmpty /, user)
-  const empty = readFileSync(new URL('CartEmpty.tsx', dir), 'utf8')
+  for (const user of ['CartView.tsx', 'CartPane.tsx', '../look-panel/design/CheckoutParts.tsx']) assert.match(readFileSync(new URL(user, dir), 'utf8'), /<EmptyPaths /, user)
+  const empty = readFileSync(new URL('EmptyPaths.tsx', dir), 'utf8')
   assert.match(empty, /<ShelfRows /)
   assert.doesNotMatch(empty, /icon=|loud|CategoryButton/, 'ни знака в круге, ни громкой кнопки, ни кнопок категорий')
 })
@@ -188,4 +189,16 @@ test('the cart page puts the lines on a sheet like the summary', () => {
   assert.match(css, /\.sheet\{background:var\(--surface\);border-radius:var\(--r-card\);padding:var\(--pad-card\)\}/)
   assert.match(css, /\.summary\{composes:sheet;/)
   assert.match(css, /\.sheet \.line:last-child\{padding-block-end:0;border-block-end:0\}/)
+})
+
+/* Пустое избранное — тот же экран, что пустая корзина (`EmptyPaths`): слово, строка о сердце, тихие строки
+   категорий; ни знака в круге, ни громкой кнопки (слово заказчика 08.10.2026: «и пустое избранное так же
+   сделаем»; И689). Образец в дизайн-системе — тот же компонент. */
+test('the empty favourites is the same word-and-rows screen as the empty cart', async () => {
+  const page = readFileSync(new URL('../app/[lang]/saved/page.tsx', import.meta.url), 'utf8')
+  const design = readFileSync(new URL('../look-panel/design/DesignPage.tsx', import.meta.url), 'utf8')
+  assert.match(page, /<EmptyPaths level=\{1\} title=\{t\(lang, 'saved\.empty'\)\} lead=\{t\(lang, 'saved\.emptyLead'\)\}/)
+  assert.doesNotMatch(page, /icon="heart"|loud/)
+  assert.match(design, /<EmptyPaths level=\{2\} title=\{t\(lang, 'saved\.empty'\)\}/)
+  for (const lang of ['en', 'ro', 'hu'] as const) assert.doesNotMatch(t(lang, 'saved.emptyLead'), /!/, lang)
 })

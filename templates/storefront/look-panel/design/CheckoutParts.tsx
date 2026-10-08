@@ -21,7 +21,7 @@ import { CartCoupon } from '@/components/CartCoupon.tsx'
 import { CartPane } from '@/components/CartPane.tsx'
 import { CartLines } from '@/components/CartLines.tsx'
 import { CartForm } from '@/components/CartForm.tsx'
-import { CartEmpty } from '@/components/CartEmpty.tsx'
+import { EmptyPaths } from '@/components/EmptyPaths.tsx'
 import { CheckoutFrame } from '@/components/CheckoutFrame.tsx'
 import { CheckoutSteps } from '@/components/CheckoutSteps.tsx'
 import { MethodForm } from '@/components/MethodForm.tsx'
@@ -194,7 +194,7 @@ export async function CheckoutParts({ lang }: { lang: Lang }) {
         <CartPane lang={lang} id="design-cart-pane" src={`/api/cart?lang=${lang}`} title={t(lang, 'cart.title')} close={t(lang, 'nav.close')} shown={view} />
       </Part>
       <Part title="Пустая корзина" lede="Так выглядит шторка и страница корзины, когда в ней ничего нет: слово и тихие строки категорий, те же, что в окне поиска под пустым полем.">
-        <CartEmpty level={2} view={{ empty }} />
+        <EmptyPaths level={2} title={empty.title} lead={empty.lead} shelves={empty.shelves} />
       </Part>
       <Part title="Строки корзины" lede="Строка товара — одна на страницу корзины и её шторку: снимок, имя, вариант и цена за штуку, сумма строки, под ними счётчик и «Удалить».">
         <CartForm lang={lang} submit={stillSubmit} call={stillCall} initial={null} {...msgs}>

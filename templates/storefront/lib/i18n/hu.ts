@@ -179,7 +179,7 @@ export const HU: Record<keyof typeof RO, string> = {
   'saved.title': 'Kedvencek',
   'saved.lede': 'A szívvel megjelölt termékek.',
   'saved.empty': 'Még nincs kedvenced',
-  'saved.emptyStep': 'Termékek megtekintése',
+  'saved.emptyLead': 'A szívvel mentheted a termékeket.',
   'search.open': 'Keresés megnyitása',
   'search.close': 'Keresés bezárása',
   'search.all': 'Összes találat: „{q}”',

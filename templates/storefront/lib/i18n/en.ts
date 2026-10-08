@@ -179,7 +179,7 @@ export const EN: Record<keyof typeof RO, string> = {
   'saved.title': 'Favourites',
   'saved.lede': 'Products you marked with a heart.',
   'saved.empty': 'No favourites yet',
-  'saved.emptyStep': 'See the products',
+  'saved.emptyLead': 'Tap the heart to save a product.',
   'search.open': 'Open search',
   'search.close': 'Close search',
   'search.all': 'All results for “{q}”',
