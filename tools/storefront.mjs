@@ -64,7 +64,10 @@ const WIN = process.platform === 'win32'
 const say = (line) => console.log(`[storefront] ${line}`)
 
 const run = (cmd, argv, cwd, quiet = false) => {
-  const r = spawnSync(cmd, argv, { cwd, stdio: quiet ? 'pipe' : 'inherit', shell: WIN && cmd === 'npm', encoding: 'utf8' })
+  /* На Windows `npm` и `npx` — пакетные файлы (`npm.cmd`, `npx.cmd`): без оболочки spawn их не
+     находит и отдаёт код null. `npx` был забыт: на чистой машине постановка падала на
+     «npx playwright install chromium — код null» (клон с GitHub, 08.10.2026). */
+  const r = spawnSync(cmd, argv, { cwd, stdio: quiet ? 'pipe' : 'inherit', shell: WIN && (cmd === 'npm' || cmd === 'npx'), encoding: 'utf8' })
   if (r.status !== 0) {
     if (quiet) process.stderr.write(`${r.stdout ?? ''}${r.stderr ?? ''}`)
     throw new Error(`${cmd} ${argv.join(' ')} — код ${r.status}`)
