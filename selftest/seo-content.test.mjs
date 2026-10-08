@@ -150,3 +150,13 @@ test('volumes builds a DataForSEO request and keeps unmeasured volume as null', 
   assert.equal(rows[0].volume, 2400); assert.equal(rows[1].volume, null); assert.equal(rows[0].origin, 'VOL')
   assert.throws(() => parseVolumes({ status_code: 40100, status_message: 'auth' }), /DataForSEO/)
 })
+
+test('lint-copy: a section name the owner chose like the market is a label, not a claim; the text around still is checked', () => {
+  const p = good(); p.type = 'hub'; p.name = 'Somn'; p.heading = 'Somn'; p.title = 'Somn: uleiuri CBD, capsule și ceai pentru seară'
+  p.query.primary = 'cbd somn'; p.lede = 'Colecția Somn adună uleiuri CBD, capsule și ceai. Comparați CBD-ul pe porție.'
+  assert.ok(families([p]).includes('condition'), 'without the owner decision the name is a condition')
+  p.nameIsLabel = 'owner 08.10.2026'
+  assert.ok(!families([p]).includes('condition'))
+  p.faq.items[0].q = 'Ajută uleiul CBD la somn?'
+  assert.ok(families([p]).includes('condition'), 'the label does not cover a question about the condition')
+})

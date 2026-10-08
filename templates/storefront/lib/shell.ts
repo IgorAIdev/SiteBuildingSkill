@@ -4,6 +4,7 @@ import { t } from './i18n/index.ts'
 import { hrefFor } from './href.ts'
 import { source, content } from './source/index.ts'
 import { moneyShort } from './money.ts'
+import { effectCopy } from './content/shop-copy.ts'
 
 /* Пустой список — общий на оба провала источника: своя `[]` в JSX-пропе на
    каждый рендер словит react-perf/jsx-no-new-array-as-prop. */
@@ -75,8 +76,8 @@ const BLOG_SIGN = 'newspaper'
 const MENU_SHELVES = new Set(['oil'])
 
 export async function shellData(lang: Lang): Promise<ShellData> {
-  const [cols, docs, facts, posts] = await Promise.all([
-    source().collections(lang), content().docs(lang), content().facts(), content().posts(lang),
+  const [cols, docs, facts, posts, effects] = await Promise.all([
+    source().collections(lang), content().docs(lang), content().facts(), content().posts(lang), source().effects(lang),
   ])
   const shelves = cols.ok ? cols.value : NONE
   /* Общие параметры каждой полки — её грани по её товарам (И478): значения
@@ -92,6 +93,11 @@ export async function shellData(lang: Lang): Promise<ShellData> {
     .map((f) => ({ name: f.name, links: f.values.map((v) => ({ label: v.name, href: to(f.code, v.code) })) }))
   const nav = [
     { href: hrefFor(lang, { catalog: true }), label: t(lang, 'nav.catalog'), sign: 'shop-awning', line: null, facets: NONE, menu: false, kids: shelves.map((c) => ({ href: hrefFor(lang, { category: c.slug }), label: c.name, sign: c.sign })) },
+    /* «By effect» — второй строкой шапки, раскрывающимся списком эффектов (слово
+       заказчика 08.10.2026: «в меню делай пункт By effects и там выбор по
+       эффектам»; И788). Сама строка ведёт к ряду эффектов на главной. Эффектов
+       нет — строки нет. */
+    ...(effects.ok && effects.value.length ? [{ href: `${hrefFor(lang, { home: true })}#effects`, label: t(lang, 'nav.effects'), sign: 'sparkles', line: null, facets: NONE, menu: false, kids: effects.value.map((e) => ({ href: hrefFor(lang, { effect: e.code }), label: e.name, sign: effectCopy(lang, e.code)?.sign ?? null })) }] : []),
     ...shelves.map((c, i) => {
       const r = facetsOf[i]
       const facets = r.ok ? groupsOf(r.value.facets, (code, value) => hrefFor(lang, { category: c.slug, facets: { [code]: [value] } })) : NONE

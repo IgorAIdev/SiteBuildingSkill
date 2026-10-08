@@ -1900,21 +1900,21 @@
   "effects": {
     "sleep": {
       "en": {
-        "name": "Evening",
-        "caption": "Oils, capsules and tea gathered for the end of the day.",
+        "name": "Sleep",
+        "caption": "CBD oils, capsules and tea for the evening routine.",
         "query": {
-          "primary": "evening cbd",
+          "primary": "cbd sleep",
           "secondary": [
             "cbd oil",
             "cbd capsules",
             "cbd tea"
           ],
-          "origin": "H — a moment hub is navigation; demand on states goes to guides (SERP: articles 9 of 10)"
+          "origin": "owner 08.10.2026 (market naming); AC en-RO «cbd for sleep» 2026-10-08"
         },
-        "heading": "CBD for your evening",
-        "title": "Evening CBD: oils, capsules and tea for the end of the day",
-        "description": "Evening CBD products in one place: oils, capsules and hemp tea for the end of the day, with the CBD per drop or per serving on every product.",
-        "lede": "Evening CBD gathers the oils, capsules and hemp tea made for the end of the day. Compare the CBD per serving and the format that fits your evening.",
+        "heading": "Sleep",
+        "title": "Sleep: CBD oils, capsules and tea for the evening routine",
+        "description": "The Sleep collection: CBD oils, capsules and hemp tea for the evening routine, with the CBD per drop or per serving on every product.",
+        "lede": "The Sleep collection gathers CBD oils, capsules and hemp tea for the evening routine. Compare the CBD per serving and the format that fits your evening.",
         "sections": [
           {
             "heading": "CBD oil, capsules or tea in the evening?",
@@ -1930,7 +1930,7 @@
           }
         ],
         "faq": {
-          "title": "Evening CBD: questions and answers",
+          "title": "Sleep collection: questions and answers",
           "items": [
             {
               "q": "What makes a CBD product an evening product?",
@@ -1973,24 +1973,26 @@
             "label": "EFSA, cannabidiol as a novel food, 2026",
             "url": "https://www.efsa.europa.eu/en/news/provisional-safe-level-cannabidiol-novel-food"
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "moon"
       },
       "ro": {
-        "name": "Seara",
-        "caption": "Uleiuri, capsule și ceai adunate pentru sfârșitul zilei.",
+        "name": "Somn",
+        "caption": "Uleiuri CBD, capsule și ceai pentru rutina de seară.",
         "query": {
-          "primary": "produse cbd seara",
+          "primary": "cbd somn",
           "secondary": [
             "ulei cbd",
             "capsule cbd",
             "ceai cbd"
           ],
-          "origin": "H — hub de navigare; cererea pe stări merge la ghiduri (SERP: articole 9 din 10)"
+          "origin": "owner 08.10.2026 (market naming); AC ro-RO «cbd somn» 2026-10-08; VOL «ulei cbd pentru somn» ≈ 10/lună"
         },
-        "heading": "Produse CBD pentru seară",
-        "title": "Produse CBD pentru seară: ulei, capsule și ceai",
-        "description": "Produse CBD pentru seară într-un singur loc: uleiuri, capsule și ceai de cânepă pentru sfârșitul zilei, cu CBD-ul pe picătură sau pe porție la fiecare produs.",
-        "lede": "Produsele CBD pentru seară adună uleiurile, capsulele și ceaiul de cânepă făcute pentru sfârșitul zilei. Comparați CBD-ul pe porție și forma care vi se potrivește seara.",
+        "heading": "Somn",
+        "title": "Somn: uleiuri CBD, capsule și ceai pentru rutina de seară",
+        "description": "Colecția Somn: uleiuri CBD, capsule și ceai de cânepă pentru rutina de seară, cu CBD-ul pe picătură sau pe porție la fiecare produs.",
+        "lede": "Colecția Somn adună uleiuri CBD, capsule și ceai de cânepă pentru rutina de seară. Comparați CBD-ul pe porție și forma care vi se potrivește seara.",
         "sections": [
           {
             "heading": "Ulei CBD, capsule sau ceai seara?",
@@ -2006,7 +2008,7 @@
           }
         ],
         "faq": {
-          "title": "Întrebări despre produsele CBD pentru seară",
+          "title": "Întrebări despre colecția Somn",
           "items": [
             {
               "q": "Ce face dintr-un produs CBD un produs de seară?",
@@ -2049,24 +2051,26 @@
             "label": "EFSA, canabidiolul ca aliment nou, 2026",
             "url": "https://www.efsa.europa.eu/en/news/provisional-safe-level-cannabidiol-novel-food"
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "moon"
       },
       "hu": {
-        "name": "Este",
-        "caption": "Olajok, kapszulák és tea a nap végére.",
+        "name": "Alvás",
+        "caption": "CBD olajok, kapszulák és tea az esti rutinhoz.",
         "query": {
-          "primary": "esti cbd",
+          "primary": "cbd alvás",
           "secondary": [
             "cbd olaj",
             "cbd kapszula",
             "cbd tea"
           ],
-          "origin": "H — navigációs gyűjtemény; az állapotokra vonatkozó keresés cikkekhez megy"
+          "origin": "owner 08.10.2026 (market naming); AC hu «cbd alvás» 2026-10-08"
         },
-        "heading": "Esti CBD termékek",
-        "title": "Esti CBD termékek: olaj, kapszula és tea a nap végére",
-        "description": "Esti CBD termékek egy helyen: olajok, kapszulák és kendertea a nap végére, minden terméknél a cseppenkénti vagy adagonkénti CBD-vel.",
-        "lede": "Az esti CBD gyűjtemény a nap végére készült olajokat, kapszulákat és kenderteát hozza egy helyre. Vesd össze az adagonkénti CBD-t és az estédhez illő formát.",
+        "heading": "Alvás",
+        "title": "Alvás: CBD olajok, kapszulák és tea az esti rutinhoz",
+        "description": "Az Alvás gyűjtemény: CBD olajok, kapszulák és kendertea az esti rutinhoz, minden terméknél a cseppenkénti vagy adagonkénti CBD-vel.",
+        "lede": "Az Alvás gyűjtemény CBD olajokat, kapszulákat és kenderteát hoz egy helyre az esti rutinhoz. Vesd össze az adagonkénti CBD-t és az estédhez illő formát.",
         "sections": [
           {
             "heading": "CBD olaj, kapszula vagy tea este?",
@@ -2082,7 +2086,7 @@
           }
         ],
         "faq": {
-          "title": "Kérdések az esti CBD termékekről",
+          "title": "Kérdések az Alvás gyűjteményről",
           "items": [
             {
               "q": "Mitől esti egy CBD termék?",
@@ -2125,26 +2129,28 @@
             "label": "EFSA, a kannabidiol mint új élelmiszer, 2026",
             "url": "https://www.efsa.europa.eu/en/news/provisional-safe-level-cannabidiol-novel-food"
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "moon"
       }
     },
     "relax": {
       "en": {
-        "name": "Weekend",
-        "caption": "Gummies, flavoured oils and body care for days off.",
+        "name": "Relax",
+        "caption": "CBD gummies, flavoured oils and body care for days off.",
         "query": {
-          "primary": "weekend cbd",
+          "primary": "cbd relax",
           "secondary": [
             "cbd gummies",
             "cbd oil",
             "cbd massage oil"
           ],
-          "origin": "H — navigation hub"
+          "origin": "owner 08.10.2026 (market naming); H"
         },
-        "heading": "CBD for the weekend",
-        "title": "Weekend CBD: gummies, flavoured oils and body care",
-        "description": "Weekend CBD for days off: gummies, flavoured oils, bath and body care, each with the CBD per piece, per drop or per pack stated on the product.",
-        "lede": "Weekend CBD is the wide part of the range for days off: gummies, flavoured oils and body care. Compare the CBD per piece, per drop or per pack, whichever format you pick.",
+        "heading": "Relax",
+        "title": "Relax: CBD gummies, flavoured oils and body care",
+        "description": "The Relax collection: CBD gummies, flavoured oils, bath and body care, each with the CBD per piece, per drop or per pack stated on the product.",
+        "lede": "The Relax collection of CBD gummies, flavoured oils and body care is made for days off. Compare the CBD per piece, per drop or per pack, whichever format you pick.",
         "sections": [
           {
             "heading": "Gummies, oil or body care?",
@@ -2160,10 +2166,10 @@
           }
         ],
         "faq": {
-          "title": "Weekend CBD: questions and answers",
+          "title": "Relax collection: questions and answers",
           "items": [
             {
-              "q": "What is in the weekend collection?",
+              "q": "What is in the Relax collection?",
               "a": "Gummies, flavoured oils, capsules and body care chosen for days off. Every product states its CBD in milligrams and its spectrum."
             },
             {
@@ -2197,24 +2203,26 @@
               "post": "cum-citesti-mg-si-procente"
             }
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "leaf"
       },
       "ro": {
-        "name": "Weekend",
-        "caption": "Jeleuri, uleiuri cu aromă și îngrijire a corpului pentru zilele libere.",
+        "name": "Relaxare",
+        "caption": "Jeleuri CBD, uleiuri cu aromă și îngrijire a corpului.",
         "query": {
-          "primary": "cbd weekend",
+          "primary": "cbd relaxare",
           "secondary": [
             "jeleuri cbd",
             "ulei cbd",
             "ulei cbd masaj"
           ],
-          "origin": "H — hub de navigare"
+          "origin": "owner 08.10.2026 (market naming); AC ro-RO «cbd relaxare» (slab)"
         },
-        "heading": "CBD pentru weekend",
-        "title": "CBD pentru weekend: jeleuri, uleiuri cu aromă și creme",
-        "description": "CBD pentru zilele libere: jeleuri, uleiuri cu aromă, produse de baie și de corp, fiecare cu CBD-ul pe bucată, pe picătură sau pe ambalaj scris la produs.",
-        "lede": "CBD pentru weekend este partea largă a ofertei, pentru zilele libere: jeleuri, uleiuri cu aromă și îngrijire a corpului. Comparați CBD-ul pe bucată, pe picătură sau pe ambalaj, oricare formă alegeți.",
+        "heading": "Relaxare",
+        "title": "Relaxare: jeleuri CBD, uleiuri cu aromă și creme",
+        "description": "Colecția Relaxare: jeleuri CBD, uleiuri cu aromă, produse de baie și de corp, fiecare cu CBD-ul pe bucată, pe picătură sau pe ambalaj scris la produs.",
+        "lede": "Colecția Relaxare adună jeleuri CBD, uleiuri cu aromă și îngrijire a corpului pentru zilele libere. Comparați CBD-ul pe bucată, pe picătură sau pe ambalaj, oricare formă alegeți.",
         "sections": [
           {
             "heading": "Jeleuri, ulei sau îngrijire a corpului?",
@@ -2230,10 +2238,10 @@
           }
         ],
         "faq": {
-          "title": "Întrebări despre colecția CBD pentru weekend",
+          "title": "Întrebări despre colecția Relaxare",
           "items": [
             {
-              "q": "Ce găsesc în colecția CBD pentru weekend?",
+              "q": "Ce găsesc în colecția Relaxare?",
               "a": "Jeleuri, uleiuri cu aromă, capsule și produse de îngrijire a corpului alese pentru zilele libere. Fiecare produs scrie CBD-ul în miligrame și spectrul."
             },
             {
@@ -2267,24 +2275,26 @@
               "post": "cum-citesti-mg-si-procente"
             }
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "leaf"
       },
       "hu": {
-        "name": "Hétvége",
-        "caption": "Gumicukor, ízesített olajok és testápolás a szabadnapokra.",
+        "name": "Relax",
+        "caption": "CBD gumicukor, ízesített olajok és testápolás.",
         "query": {
-          "primary": "cbd hétvégére",
+          "primary": "cbd relax",
           "secondary": [
             "cbd gumicukor",
             "cbd olaj",
             "cbd masszázsolaj"
           ],
-          "origin": "H — navigációs gyűjtemény"
+          "origin": "owner 08.10.2026 (market naming); H"
         },
-        "heading": "CBD hétvégére",
-        "title": "CBD hétvégére: gumicukor, ízesített olaj és testápolás",
-        "description": "CBD hétvégére: gumicukor, ízesített olajok, fürdő- és testápolás, mindegyiknél a darabonkénti, cseppenkénti vagy csomagonkénti CBD-vel.",
-        "lede": "A CBD hétvégére a kínálat tág része a szabadnapokra: gumicukor, ízesített olajok és testápolás. Vesd össze a darabonkénti, cseppenkénti vagy csomagonkénti CBD-t, bármelyik formát is választod.",
+        "heading": "Relax",
+        "title": "Relax: CBD gumicukor, ízesített olaj és testápolás",
+        "description": "A Relax gyűjtemény: CBD gumicukor, ízesített olajok, fürdő- és testápolás, mindegyiknél a darabonkénti, cseppenkénti vagy csomagonkénti CBD-vel.",
+        "lede": "A Relax gyűjtemény CBD gumicukrot, ízesített olajokat és testápolást hoz egy helyre a szabadnapokra. Vesd össze a darabonkénti, cseppenkénti vagy csomagonkénti CBD-t, bármelyik formát is választod.",
         "sections": [
           {
             "heading": "Gumicukor, olaj vagy testápolás?",
@@ -2300,10 +2310,10 @@
           }
         ],
         "faq": {
-          "title": "Kérdések a hétvégi CBD gyűjteményről",
+          "title": "Kérdések a Relax gyűjteményről",
           "items": [
             {
-              "q": "Mit kínál a CBD hétvégére gyűjtemény?",
+              "q": "Mit kínál a Relax gyűjtemény?",
               "a": "Gumicukor, ízesített olajok, kapszulák és testápolók a szabadnapokra. Minden termék milligrammban adja meg a CBD-t és a spektrumot."
             },
             {
@@ -2337,27 +2347,29 @@
               "post": "cum-citesti-mg-si-procente"
             }
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "leaf"
       }
     },
     "recovery": {
       "en": {
-        "name": "Sport & massage",
-        "caption": "Body creams, balms and massage oils with CBD.",
+        "name": "Recovery",
+        "caption": "CBD creams, balms and massage oils for sport and massage.",
         "query": {
-          "primary": "cbd for sport",
+          "primary": "cbd recovery",
           "secondary": [
             "cbd massage oil",
             "cbd cream",
             "cbd balm",
-            "cbd athletes"
+            "cbd for sport"
           ],
-          "origin": "AC en-RO 2026-10-08 (weak); H"
+          "origin": "owner 08.10.2026 (market naming); H"
         },
-        "heading": "CBD for sport and massage",
-        "title": "CBD for sport and massage: creams, balms and massage oils",
-        "description": "CBD for sport and massage: body creams, balms, cooling gels and massage oils with the CBD per pack on every product, and isolate options for tested athletes.",
-        "lede": "CBD for sport and massage means products for the skin: creams, balms, cooling gels and massage oils. Choose by texture and sensation, and by spectrum if you are a tested athlete.",
+        "heading": "Recovery",
+        "title": "Recovery: CBD creams, balms and massage oils for sport",
+        "description": "The Recovery collection: CBD creams, balms, cooling gels and massage oils for sport and massage, with the CBD per pack and isolate options for tested athletes.",
+        "lede": "The Recovery collection gathers CBD creams, balms, cooling gels and massage oils for sport and massage. Choose by texture and sensation, and by spectrum if you are a tested athlete.",
         "sections": [
           {
             "heading": "CBD for sport: massage oil, balm or cooling gel?",
@@ -2373,7 +2385,7 @@
           }
         ],
         "faq": {
-          "title": "CBD for sport and massage: questions and answers",
+          "title": "Recovery collection: questions and answers",
           "items": [
             {
               "q": "Is CBD allowed in sport?",
@@ -2416,26 +2428,28 @@
             "label": "WADA Prohibited List",
             "url": "https://www.wada-ama.org/en/prohibited-list"
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "yoga"
       },
       "ro": {
-        "name": "Sport și masaj",
-        "caption": "Creme, balsamuri și uleiuri de masaj cu CBD pentru corp.",
+        "name": "Recuperare",
+        "caption": "Creme CBD, balsamuri și uleiuri de masaj pentru sport.",
         "query": {
-          "primary": "cbd pentru sport",
+          "primary": "cbd recuperare",
           "secondary": [
             "ulei cbd masaj",
             "crema cbd",
             "balsam cbd",
             "crema sportiva cbd",
-            "cbd sportivi"
+            "cbd pentru sport"
           ],
-          "origin": "AC ro-RO 2026-10-08; SERP proxy 2026-10-08"
+          "origin": "owner 08.10.2026 (market naming); AC ro-RO «cbd recuperare» 2026-10-08"
         },
-        "heading": "CBD pentru sport și masaj",
-        "title": "CBD pentru sport și masaj: creme, balsamuri, ulei de masaj",
-        "description": "CBD pentru sport și masaj: creme, balsamuri, geluri răcoritoare și ulei CBD de masaj, cu CBD-ul pe ambalaj și variante cu izolat pentru sportivii testați.",
-        "lede": "CBD pentru sport și masaj înseamnă produse pentru piele: creme, balsamuri, geluri răcoritoare și uleiuri de masaj. Alegeți după textură și senzație, iar dacă sunteți sportiv testat, după spectru.",
+        "heading": "Recuperare",
+        "title": "Recuperare: creme CBD, balsamuri și ulei de masaj",
+        "description": "Colecția Recuperare: creme CBD, balsamuri, geluri răcoritoare și ulei CBD de masaj pentru sport, cu CBD-ul pe ambalaj și variante cu izolat.",
+        "lede": "Colecția Recuperare adună creme CBD, balsamuri, geluri răcoritoare și uleiuri de masaj pentru sport și masaj. Alegeți după textură și senzație, iar dacă sunteți sportiv testat, după spectru.",
         "sections": [
           {
             "heading": "Ulei de masaj, balsam sau gel răcoritor?",
@@ -2451,7 +2465,7 @@
           }
         ],
         "faq": {
-          "title": "Întrebări despre CBD pentru sport și masaj",
+          "title": "Întrebări despre colecția Recuperare",
           "items": [
             {
               "q": "Este CBD-ul permis în sport?",
@@ -2494,25 +2508,27 @@
             "label": "Lista interzisă WADA",
             "url": "https://www.wada-ama.org/en/prohibited-list"
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "yoga"
       },
       "hu": {
-        "name": "Sport és masszázs",
-        "caption": "Testkrémek, balzsamok és masszázsolajok CBD-vel.",
+        "name": "Regeneráció",
+        "caption": "CBD krémek, balzsamok és masszázsolajok sporthoz.",
         "query": {
-          "primary": "cbd sporthoz",
+          "primary": "cbd regeneráció",
           "secondary": [
             "cbd masszázsolaj",
             "cbd krém",
             "cbd balzsam",
-            "cbd gél"
+            "cbd sporthoz"
           ],
-          "origin": "AC hu-HU 2026-10-08 (gyenge); H"
+          "origin": "owner 08.10.2026 (market naming); H"
         },
-        "heading": "CBD sporthoz és masszázshoz",
-        "title": "CBD sporthoz és masszázshoz: krém, balzsam, masszázsolaj",
-        "description": "CBD sporthoz és masszázshoz: testkrémek, balzsamok, hűsítő gélek és masszázsolajok csomagonkénti CBD-vel, izolátumos változatokkal tesztelt sportolóknak.",
-        "lede": "A CBD sporthoz és masszázshoz bőrre szánt termékeket jelent: krémeket, balzsamokat, hűsítő géleket és masszázsolajokat. Állag és érzet szerint válassz, tesztelt sportolóként pedig spektrum szerint is.",
+        "heading": "Regeneráció",
+        "title": "Regeneráció: CBD krém, balzsam és masszázsolaj sporthoz",
+        "description": "A Regeneráció gyűjtemény: CBD krémek, balzsamok, hűsítő gélek és masszázsolajok sporthoz, csomagonkénti CBD-vel és izolátumos változatokkal.",
+        "lede": "A Regeneráció gyűjtemény CBD krémeket, balzsamokat, hűsítő géleket és masszázsolajokat hoz egy helyre sporthoz és masszázshoz. Állag és érzet szerint válassz, tesztelt sportolóként pedig spektrum szerint is.",
         "sections": [
           {
             "heading": "Masszázsolaj, balzsam vagy hűsítő gél?",
@@ -2528,7 +2544,7 @@
           }
         ],
         "faq": {
-          "title": "Kérdések a sporthoz és masszázshoz való CBD-ről",
+          "title": "Kérdések a Regeneráció gyűjteményről",
           "items": [
             {
               "q": "Megengedett a CBD a sportban?",
@@ -2571,29 +2587,31 @@
             "label": "WADA tiltólista",
             "url": "https://www.wada-ama.org/en/prohibited-list"
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "yoga"
       }
     },
     "balance": {
       "en": {
-        "name": "Everyday",
-        "caption": "Oils and capsules for a regular routine, compared by mg.",
+        "name": "Balance",
+        "caption": "Lower-strength CBD oils and capsules for a regular routine.",
         "query": {
-          "primary": "everyday cbd",
+          "primary": "cbd balance",
           "secondary": [
             "cbd oil",
             "cbd capsules",
             "cbd oil 5%"
           ],
-          "origin": "H — navigation hub"
+          "origin": "owner 08.10.2026 (market naming); H"
         },
-        "heading": "Everyday CBD",
-        "title": "Everyday CBD: oils and capsules for a regular routine",
-        "description": "Everyday CBD for a regular routine: lower-strength oils and capsules with the same amount each time, and the price per milligram on every product.",
-        "lede": "Everyday CBD is the part of the range for a regular routine: lower-strength oils and capsules with a fixed amount. Compare the CBD per drop or per capsule and the price per milligram.",
+        "heading": "Balance",
+        "title": "Balance: CBD oils and capsules for a regular routine",
+        "description": "The Balance collection: lower-strength CBD oils and capsules for a regular routine, with the same amount each time and the price per milligram on every product.",
+        "lede": "The Balance collection of CBD oils and capsules is for a regular routine: lower strengths and the same amount each time. Compare the CBD per drop or per capsule and the price per milligram.",
         "sections": [
           {
-            "heading": "Everyday CBD: oil or capsules?",
+            "heading": "Oil or capsules for every day?",
             "paragraphs": [
               "Capsules give the same amount every time and travel easily; an oil lets you choose the amount drop by drop and usually costs less per milligram. For a regular routine, lower strengths keep each drop small and a bottle lasts longer."
             ]
@@ -2606,7 +2624,7 @@
           }
         ],
         "faq": {
-          "title": "Everyday CBD: questions and answers",
+          "title": "Balance collection: questions and answers",
           "items": [
             {
               "q": "Which strength suits everyday use?",
@@ -2649,25 +2667,27 @@
             "label": "EFSA, cannabidiol as a novel food, 2026",
             "url": "https://www.efsa.europa.eu/en/news/provisional-safe-level-cannabidiol-novel-food"
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "waves"
       },
       "ro": {
-        "name": "Zi de zi",
-        "caption": "Uleiuri și capsule pentru o rutină zilnică, comparate după mg.",
+        "name": "Echilibru",
+        "caption": "Uleiuri CBD cu concentrație mică și capsule pentru folosire zilnică.",
         "query": {
-          "primary": "cbd zilnic",
+          "primary": "cbd echilibru",
           "secondary": [
             "ulei cbd",
             "capsule cbd",
             "ulei cbd 5%",
             "ulei cbd zilnic"
           ],
-          "origin": "AC ro-RO 2026-10-08 (ulei cbd zilnic); H"
+          "origin": "owner 08.10.2026 (market naming); H"
         },
-        "heading": "Produse CBD pentru folosire zilnică",
-        "title": "CBD zilnic: uleiuri și capsule pentru o rutină zilnică",
-        "description": "CBD pentru folosire zilnică: uleiuri cu concentrație mică și capsule cu aceeași cantitate de fiecare dată, cu prețul pe mg scris la fiecare produs.",
-        "lede": "Produsele CBD pentru folosire zilnică sunt partea ofertei pentru o rutină regulată: uleiuri cu concentrație mică și capsule cu cantitate fixă. Comparați CBD-ul pe picătură sau pe capsulă și prețul pe mg.",
+        "heading": "Echilibru",
+        "title": "Echilibru: uleiuri CBD și capsule pentru o rutină zilnică",
+        "description": "Colecția Echilibru: uleiuri CBD cu concentrație mică și capsule cu aceeași cantitate de fiecare dată, cu prețul pe mg scris la fiecare produs.",
+        "lede": "Colecția Echilibru adună uleiuri CBD cu concentrație mică și capsule pentru o rutină zilnică. Comparați CBD-ul pe picătură sau pe capsulă și prețul pe mg.",
         "sections": [
           {
             "heading": "Ulei CBD sau capsule zilnic?",
@@ -2683,7 +2703,7 @@
           }
         ],
         "faq": {
-          "title": "Întrebări despre CBD zilnic",
+          "title": "Întrebări despre colecția Echilibru",
           "items": [
             {
               "q": "Ce concentrație de ulei CBD se potrivește pentru folosire zilnică?",
@@ -2726,27 +2746,29 @@
             "label": "EFSA, canabidiolul ca aliment nou, 2026",
             "url": "https://www.efsa.europa.eu/en/news/provisional-safe-level-cannabidiol-novel-food"
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "waves"
       },
       "hu": {
-        "name": "Minden nap",
-        "caption": "Olajok és kapszulák rendszeres használatra, mg szerint összevetve.",
+        "name": "Egyensúly",
+        "caption": "Alacsonyabb erősségű CBD olajok és kapszulák.",
         "query": {
-          "primary": "cbd minden napra",
+          "primary": "cbd egyensúly",
           "secondary": [
             "cbd olaj",
             "cbd kapszula",
             "cbd olaj 5%"
           ],
-          "origin": "H — navigációs gyűjtemény"
+          "origin": "owner 08.10.2026 (market naming); H"
         },
-        "heading": "CBD minden napra",
-        "title": "CBD minden napra: olajok és kapszulák rendszeres használatra",
-        "description": "CBD minden napra: alacsonyabb erősségű olajok és mindig ugyanannyit adó kapszulák, minden terméknél az ár / mg értékkel.",
-        "lede": "A CBD minden napra a kínálat rendszeres használatra szánt része: alacsonyabb erősségű olajok és fix mennyiségű kapszulák. Vesd össze a cseppenkénti vagy kapszulánkénti CBD-t és az ár / mg értéket.",
+        "heading": "Egyensúly",
+        "title": "Egyensúly: CBD olajok és kapszulák rendszeres használatra",
+        "description": "Az Egyensúly gyűjtemény: alacsonyabb erősségű CBD olajok és mindig ugyanannyit adó kapszulák, minden terméknél az ár / mg értékkel.",
+        "lede": "Az Egyensúly gyűjtemény CBD olajai és kapszulái rendszeres használatra valók: alacsonyabb erősség, mindig ugyanannyi. Vesd össze a cseppenkénti vagy kapszulánkénti CBD-t és az ár / mg értéket.",
         "sections": [
           {
-            "heading": "CBD minden napra: olaj vagy kapszula?",
+            "heading": "Olaj vagy kapszula minden napra?",
             "paragraphs": [
               "A CBD kapszula mindig ugyanannyit ad, és könnyen magaddal viszed; a CBD olajnál cseppenként választasz, és milligrammonként általában olcsóbb. Rendszeres használatra az alacsonyabb erősség kis cseppet ad, és az üveg tovább tart."
             ]
@@ -2759,7 +2781,7 @@
           }
         ],
         "faq": {
-          "title": "Kérdések a mindennapi CBD-ről",
+          "title": "Kérdések az Egyensúly gyűjteményről",
           "items": [
             {
               "q": "Milyen erősségű CBD olaj való mindennapi használatra?",
@@ -2802,26 +2824,28 @@
             "label": "EFSA, a kannabidiol mint új élelmiszer, 2026",
             "url": "https://www.efsa.europa.eu/en/news/provisional-safe-level-cannabidiol-novel-food"
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "waves"
       }
     },
     "mood-focus": {
       "en": {
-        "name": "Daytime",
-        "caption": "Capsules, vape pens and oils that fit the working day.",
+        "name": "Mood & focus",
+        "caption": "CBD capsules, vape pens and oils for the working day.",
         "query": {
-          "primary": "daytime cbd",
+          "primary": "cbd focus",
           "secondary": [
             "cbd capsules",
             "cbd vape pen",
             "cbd oil"
           ],
-          "origin": "H — navigation hub"
+          "origin": "owner 08.10.2026 (market naming); H"
         },
-        "heading": "Daytime CBD",
-        "title": "Daytime CBD: capsules, vape pens and oils for the working day",
-        "description": "Daytime CBD for the working day and the road: capsules, vape pens and small oil bottles, with the CBD per capsule or per drop on every product.",
-        "lede": "Daytime CBD gathers the formats that fit a working day: capsules, vape pens and small oil bottles you can carry. Compare the CBD per serving and how easily the format travels with you.",
+        "heading": "Mood & focus",
+        "title": "Mood & focus: CBD capsules, vape pens and oils for the day",
+        "description": "The Mood & focus collection: CBD capsules, vape pens and small oil bottles for the working day, with the CBD per capsule or per drop on every product.",
+        "lede": "The Mood & focus collection gathers CBD capsules, vape pens and small oil bottles for the working day. Compare the CBD per serving and how easily the format travels with you.",
         "sections": [
           {
             "heading": "Formats that travel well",
@@ -2837,14 +2861,14 @@
           }
         ],
         "faq": {
-          "title": "Daytime CBD: questions and answers",
+          "title": "Mood & focus collection: questions and answers",
           "items": [
             {
               "q": "Which CBD format is easiest to carry?",
               "a": "Capsules: no measuring, no spills, a fixed amount each time. A small oil bottle and a vape pen also fit in a bag."
             },
             {
-              "q": "Does daytime CBD show up on a drug test?",
+              "q": "Do these products show up on a drug test?",
               "a": "Drug tests look for THC, not CBD. Isolate and broad spectrum products are made without detectable THC; full spectrum ones contain traces."
             },
             {
@@ -2852,7 +2876,7 @@
               "a": "Follow the rules of your workplace for vaping. A CBD vape pen is a vaping product, sold to adults over 18 only."
             },
             {
-              "q": "Is daytime CBD the same as CBD for the evening?",
+              "q": "How is this collection different from the evening products?",
               "a": "The CBD is the same; the formats and flavours differ. Daytime products favour capsules and pens, evening products flavoured oils and tea."
             },
             {
@@ -2874,24 +2898,26 @@
               "post": "full-spectrum-broad-sau-izolat"
             }
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "lightbulb"
       },
       "ro": {
-        "name": "Ziua",
-        "caption": "Capsule, vape pen-uri și uleiuri care se potrivesc zilei de lucru.",
+        "name": "Dispoziție și concentrare",
+        "caption": "Capsule CBD, vape pen-uri și uleiuri pentru ziua de lucru.",
         "query": {
-          "primary": "cbd pentru zi",
+          "primary": "cbd concentrare",
           "secondary": [
             "capsule cbd",
             "vape cbd",
             "ulei cbd"
           ],
-          "origin": "H — hub de navigare"
+          "origin": "owner 08.10.2026 (market naming); H"
         },
-        "heading": "CBD pentru zi: la birou și pe drum",
-        "title": "CBD pentru zi: capsule, vape pen-uri și uleiuri de purtat",
-        "description": "CBD pentru zi de lucru și drum: capsule, vape pen-uri și flacoane mici de ulei, cu CBD-ul pe capsulă sau pe picătură scris la fiecare produs.",
-        "lede": "CBD pentru zi adună formele care se potrivesc unei zile de lucru: capsule, vape pen-uri și flacoane mici de ulei pe care le purtați cu dumneavoastră. Comparați CBD-ul pe porție și cât de ușor se transportă.",
+        "heading": "Dispoziție și concentrare",
+        "title": "Dispoziție și concentrare: capsule CBD, vape și uleiuri",
+        "description": "Colecția Dispoziție și concentrare: capsule CBD, vape pen-uri și flacoane mici de ulei pentru ziua de lucru, cu CBD-ul pe capsulă sau pe picătură.",
+        "lede": "Colecția Dispoziție și concentrare adună capsule CBD, vape pen-uri și flacoane mici de ulei pentru ziua de lucru. Comparați CBD-ul pe porție și cât de ușor se transportă.",
         "sections": [
           {
             "heading": "Forme ușor de purtat",
@@ -2907,14 +2933,14 @@
           }
         ],
         "faq": {
-          "title": "Întrebări despre CBD pentru zi",
+          "title": "Întrebări despre colecția Dispoziție și concentrare",
           "items": [
             {
               "q": "Ce formă de CBD se poartă cel mai ușor?",
               "a": "Capsulele: fără măsurare, fără scurgeri, aceeași cantitate de fiecare dată. Un flacon mic de ulei și un vape pen încap și ele în geantă."
             },
             {
-              "q": "Apare CBD-ul pentru zi la testul antidrog?",
+              "q": "Apar aceste produse la testul antidrog?",
               "a": "Testele caută THC, nu CBD. Produsele cu izolat și broad spectrum sunt făcute fără THC detectabil; cele full spectrum conțin urme."
             },
             {
@@ -2922,7 +2948,7 @@
               "a": "Respectați regulile locului de muncă privind vaporizarea. Un vape pen CBD este un produs de vaporizare, vândut doar adulților peste 18 ani."
             },
             {
-              "q": "CBD-ul pentru zi este același cu cel pentru seară?",
+              "q": "Ce diferă între această colecție și produsele de seară?",
               "a": "CBD-ul este același; diferă formele și aromele. Pentru zi sunt capsule și pen-uri, pentru seară uleiuri cu aromă și ceai."
             },
             {
@@ -2944,24 +2970,26 @@
               "post": "full-spectrum-broad-sau-izolat"
             }
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "lightbulb"
       },
       "hu": {
-        "name": "Napközben",
-        "caption": "Kapszulák, vape tollak és olajok a munkanaphoz.",
+        "name": "Hangulat és fókusz",
+        "caption": "CBD kapszula, vape toll és olaj a munkanaphoz.",
         "query": {
-          "primary": "cbd napközben",
+          "primary": "cbd fókusz",
           "secondary": [
             "cbd kapszula",
             "cbd vape",
             "cbd olaj"
           ],
-          "origin": "H — navigációs gyűjtemény"
+          "origin": "owner 08.10.2026 (market naming); H"
         },
-        "heading": "CBD napközben: munkában és úton",
-        "title": "CBD napközben: kapszula, vape toll és olaj magaddal vinni",
-        "description": "CBD napközben, munkához és úthoz: kapszulák, vape tollak és kis olajos üvegek, minden terméknél a kapszulánkénti vagy cseppenkénti CBD-vel.",
-        "lede": "A CBD napközben gyűjtemény a munkanaphoz illő formákat hozza egy helyre: kapszulát, vape tollat és kis olajos üveget, amit magaddal vihetsz. Vesd össze az adagonkénti CBD-t és azt, mennyire könnyű vinni.",
+        "heading": "Hangulat és fókusz",
+        "title": "Hangulat és fókusz: CBD kapszula, vape toll és olaj",
+        "description": "A Hangulat és fókusz gyűjtemény: CBD kapszulák, vape tollak és kis olajos üvegek a munkanaphoz, kapszulánkénti vagy cseppenkénti CBD-vel.",
+        "lede": "A Hangulat és fókusz gyűjtemény CBD kapszulát, vape tollat és kis olajos üveget hoz egy helyre a munkanaphoz. Vesd össze az adagonkénti CBD-t és azt, mennyire könnyű vinni.",
         "sections": [
           {
             "heading": "Könnyen hordozható formák",
@@ -2977,14 +3005,14 @@
           }
         ],
         "faq": {
-          "title": "Kérdések a napközbeni CBD-ről",
+          "title": "Kérdések a Hangulat és fókusz gyűjteményről",
           "items": [
             {
               "q": "Melyik CBD forma a legkönnyebben hordozható?",
               "a": "A kapszula: nincs mérés, nem folyik ki, és mindig ugyanannyi. Egy kis olajos üveg és egy vape toll is elfér a táskában."
             },
             {
-              "q": "Kimutatja a drogteszt a napközbeni CBD-t?",
+              "q": "Kimutatja a drogteszt ezeket a termékeket?",
               "a": "A drogteszt THC-t keres, nem CBD-t. Az izolátumos és széles spektrumú termékek kimutatható THC nélkül készülnek; a teljes spektrumúakban nyomok vannak."
             },
             {
@@ -2992,7 +3020,7 @@
               "a": "Tartsd be a munkahelyed párologtatásra vonatkozó szabályait. A CBD vape toll párologtató termék, csak 18 év feletti felnőtteknek árusítjuk."
             },
             {
-              "q": "Ugyanaz a napközbeni és az esti CBD?",
+              "q": "Miben más ez a gyűjtemény, mint az esti termékek?",
               "a": "A CBD ugyanaz, a forma és az íz más. Napközbenre kapszula és toll, estére ízesített olaj és tea."
             },
             {
@@ -3014,13 +3042,15 @@
               "post": "full-spectrum-broad-sau-izolat"
             }
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "lightbulb"
       }
     },
     "womens-health": {
       "en": {
-        "name": "For women",
-        "caption": "Face care, body care and flavoured oils, compared by mg.",
+        "name": "Women's health",
+        "caption": "CBD face care, body care and flavoured oils.",
         "query": {
           "primary": "cbd for women",
           "secondary": [
@@ -3030,10 +3060,10 @@
           ],
           "origin": "H — navigation hub; health-related queries are not addressed on shop pages"
         },
-        "heading": "CBD for women",
-        "title": "CBD for women: face care, body care and flavoured oils",
-        "description": "CBD for women: face creams and serums, body creams, massage oils and flavoured CBD oils, each with its CBD content and full ingredient list stated.",
-        "lede": "CBD for women brings together face care, body care and flavoured oils from across the range. Compare the CBD content, the texture and the ingredients of each product.",
+        "heading": "Women's health",
+        "title": "Women's health: CBD for women, face care and body care",
+        "description": "Women's health: CBD face creams and serums, body creams, massage oils and flavoured CBD oils, each with its CBD content and full ingredient list stated.",
+        "lede": "This collection puts CBD for women in one place: face care, body care and flavoured oils from across the range. Compare the CBD content, the texture and the ingredients of each product.",
         "sections": [
           {
             "heading": "Face, body or oil?",
@@ -3049,14 +3079,14 @@
           }
         ],
         "faq": {
-          "title": "CBD for women: questions and answers",
+          "title": "Women's health: questions and answers",
           "items": [
             {
               "q": "Can I use CBD during pregnancy or breastfeeding?",
               "a": "No, it is not recommended. EFSA notes that CBD safety during pregnancy and breastfeeding has not been established."
             },
             {
-              "q": "Which products are in CBD for women?",
+              "q": "Which products are in the Women's health collection?",
               "a": "Face creams and serums, body creams, massage oils and flavoured oils. Each product states its CBD content and ingredients."
             },
             {
@@ -3092,11 +3122,13 @@
             "label": "EFSA, cannabidiol as a novel food, 2026",
             "url": "https://www.efsa.europa.eu/en/news/provisional-safe-level-cannabidiol-novel-food"
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "user-heart"
       },
       "ro": {
-        "name": "Pentru femei",
-        "caption": "Îngrijire pentru față și corp și uleiuri cu aromă, comparate după mg.",
+        "name": "Sănătatea femeii",
+        "caption": "Îngrijire CBD pentru față și corp și uleiuri cu aromă.",
         "query": {
           "primary": "cbd pentru femei",
           "secondary": [
@@ -3106,10 +3138,10 @@
           ],
           "origin": "H — hub de navigare; cererile legate de sănătate nu sunt adresate pe paginile magazinului"
         },
-        "heading": "CBD pentru femei",
-        "title": "CBD pentru femei: îngrijire pentru față, corp și uleiuri",
-        "description": "CBD pentru femei: creme și seruri de față, creme de corp, uleiuri de masaj și uleiuri CBD cu aromă, fiecare cu conținutul de CBD și ingredientele scrise.",
-        "lede": "CBD pentru femei adună îngrijirea pentru față, îngrijirea pentru corp și uleiurile cu aromă din toată oferta. Comparați conținutul de CBD, textura și ingredientele fiecărui produs.",
+        "heading": "Sănătatea femeii",
+        "title": "Sănătatea femeii: CBD pentru femei, îngrijire și uleiuri",
+        "description": "Sănătatea femeii: creme și seruri de față cu CBD, creme de corp, uleiuri de masaj și uleiuri CBD cu aromă, fiecare cu CBD-ul și ingredientele scrise.",
+        "lede": "Colecția pune laolaltă CBD pentru femei: îngrijire pentru față și corp și uleiuri cu aromă din toată oferta. Comparați conținutul de CBD, textura și ingredientele fiecărui produs.",
         "sections": [
           {
             "heading": "Față, corp sau ulei?",
@@ -3125,14 +3157,14 @@
           }
         ],
         "faq": {
-          "title": "Întrebări despre CBD pentru femei",
+          "title": "Întrebări despre colecția Sănătatea femeii",
           "items": [
             {
               "q": "Pot folosi CBD în sarcină sau când alăptez?",
               "a": "Nu, nu este recomandat. EFSA arată că siguranța CBD în sarcină și în alăptare nu a fost stabilită."
             },
             {
-              "q": "Ce produse sunt în colecția CBD pentru femei?",
+              "q": "Ce produse sunt în colecția Sănătatea femeii?",
               "a": "Creme și seruri de față, creme de corp, uleiuri de masaj și uleiuri cu aromă. Fiecare produs scrie conținutul de CBD și ingredientele."
             },
             {
@@ -3168,11 +3200,13 @@
             "label": "EFSA, canabidiolul ca aliment nou, 2026",
             "url": "https://www.efsa.europa.eu/en/news/provisional-safe-level-cannabidiol-novel-food"
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "user-heart"
       },
       "hu": {
-        "name": "Nőknek",
-        "caption": "Arc- és testápolás, ízesített olajok, mg szerint összevetve.",
+        "name": "Női egészség",
+        "caption": "CBD arc- és testápolás, ízesített olajok.",
         "query": {
           "primary": "cbd nőknek",
           "secondary": [
@@ -3182,10 +3216,10 @@
           ],
           "origin": "H — navigációs gyűjtemény; egészséggel kapcsolatos keresésekre a bolt oldalai nem válaszolnak"
         },
-        "heading": "CBD nőknek",
-        "title": "CBD nőknek: arcápolás, testápolás és ízesített olajok",
-        "description": "CBD nőknek: arckrémek és szérumok, testkrémek, masszázsolajok és ízesített CBD olajok, mindegyiknél a CBD-tartalommal és az összetevőkkel.",
-        "lede": "A CBD nőknek gyűjtemény a teljes kínálatból hozza egy helyre az arcápolást, a testápolást és az ízesített olajokat. Vesd össze a CBD-tartalmat, az állagot és az összetevőket.",
+        "heading": "Női egészség",
+        "title": "Női egészség: CBD nőknek, arc- és testápolás, olajok",
+        "description": "Női egészség: CBD-s arckrémek és szérumok, testkrémek, masszázsolajok és ízesített CBD olajok, mindegyiknél a CBD-tartalommal és az összetevőkkel.",
+        "lede": "A gyűjtemény egy helyre hozza a CBD-t nőknek: arc- és testápolást és ízesített olajokat a teljes kínálatból. Vesd össze a CBD-tartalmat, az állagot és az összetevőket.",
         "sections": [
           {
             "heading": "Arc, test vagy olaj?",
@@ -3201,14 +3235,14 @@
           }
         ],
         "faq": {
-          "title": "Kérdések a nőknek szóló CBD-ről",
+          "title": "Kérdések a Női egészség gyűjteményről",
           "items": [
             {
               "q": "Használhatok CBD-t várandósan vagy szoptatás alatt?",
               "a": "Nem, nem ajánlott. Az EFSA szerint a CBD biztonságossága várandósság és szoptatás idején nem igazolt."
             },
             {
-              "q": "Milyen termékek vannak a CBD nőknek gyűjteményben?",
+              "q": "Milyen termékek vannak a Női egészség gyűjteményben?",
               "a": "Arckrémek és szérumok, testkrémek, masszázsolajok és ízesített olajok. Minden termék feltünteti a CBD-tartalmat és az összetevőket."
             },
             {
@@ -3244,7 +3278,9 @@
             "label": "EFSA, a kannabidiol mint új élelmiszer, 2026",
             "url": "https://www.efsa.europa.eu/en/news/provisional-safe-level-cannabidiol-novel-food"
           }
-        ]
+        ],
+        "nameIsLabel": "owner 08.10.2026: effect sections are named like the market; the name is a label, the text makes no effect claim",
+        "sign": "user-heart"
       }
     }
   }

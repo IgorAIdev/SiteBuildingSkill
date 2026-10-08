@@ -146,3 +146,17 @@ test('paged lists keep their own canonical page; the shelf text stands only on t
   assert.equal(cleanPage({ ...base, facets: { effect: [] } }), 1)
   assert.equal(cleanPage({ ...base, sort: 'price-asc' }), null)
 })
+
+test('the header menu has «By effect» right after all products, listing the effects by their names', async () => {
+  const { shellData } = await import('../lib/shell.ts')
+  const { t } = await import('../lib/i18n/index.ts')
+  for (const lang of LOCALES) {
+    const shell = await shellData(lang)
+    const byEffect = shell.nav[1]
+    assert.equal(byEffect?.label, t(lang, 'nav.effects'))
+    const effects = await sample.effects(lang)
+    assert.ok(effects.ok && effects.value.length)
+    assert.deepEqual(byEffect.kids.map((k) => k.label), effects.value.map((e) => e.name))
+    assert.ok(byEffect.kids.every((k) => k.href.includes('/effect/')))
+  }
+})

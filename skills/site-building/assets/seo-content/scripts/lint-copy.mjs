@@ -53,6 +53,8 @@ const DEFAULT_PROFILE = { faq: { home: [6, 8], category: [5, 10], hub: [5, 10], 
 const GENERIC = new Set(['descriere', 'informatii', 'detalii', 'description', 'information', 'details', 'leiras', 'informacio', 'reszletek'])
 const ANSWER_DODGE = /^(depinde|it depends|attol fugg|ez attol fugg)\b/
 const CURRENCY = /(€|\$|\beur\b|\blei\b|\bron\b|\bft\b|\bhuf\b)/
+/** Где имя раздела стоит как имя: в подзаголовках и вопросах ярлык не прикрывает состояние. */
+const LABEL_FIELDS = new Set(['title', 'heading', 'name', 'caption', 'faq.title'])
 const SELLING = new Set(['home', 'category', 'hub', 'product', 'slice', 'faq', 'trust'])
 
 function heads(p) {
@@ -117,10 +119,14 @@ export function lintPages(pages, { profile = DEFAULT_PROFILE } = {}) {
         add(p, 'claims', level, field, `${r.id}: «${text.slice(0, 80)}» → ${r.rewrite}`)
       }
     }
-    // condition
+    // condition — имя раздела, которое владелец назвал по рынку («Sleep»), — ярлык,
+    // если у страницы записано `nameIsLabel` (кто и когда решил); остальное держится.
     if (selling) {
+      const label = p.nameIsLabel && p.name ? norm(p.name) : null
+      if (p.nameIsLabel && !p.name) add(p, 'condition', 'fail', 'nameIsLabel', 'ярлык без имени раздела')
       for (const [field, text] of heads(p)) {
         let t = norm(text)
+        if (label && LABEL_FIELDS.has(field)) t = t.replaceAll(label, ' ')
         for (const a of lex.allow) t = t.replaceAll(a, ' ')
         const c = lex.condition.find((re) => re.test(t))
         if (c) add(p, 'condition', 'fail', field, `состояние здоровья на продающей странице: «${text}»`)
