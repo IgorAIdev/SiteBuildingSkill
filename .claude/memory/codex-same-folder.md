@@ -1,6 +1,6 @@
 ---
 name: codex-same-folder
-description: the owner also runs Codex in this folder and on GitHub; before committing check the branch (Codex left the tree on codex/icons-swipe-export), uncommitted Codex work and PRs; bring all lines together, then one snapshot to main
+description: the owner ran Codex here and on GitHub until 08.10.2026 (then «Codex не нужно, удали» — only its local folders removed); before committing check the branch (Codex left the tree on codex/icons-swipe-export), uncommitted Codex work and PRs; bring all lines together, then one snapshot to main
 metadata:
   type: project
 ---
@@ -10,3 +10,5 @@ metadata:
 **Why:** three lines of work that never saw each other; merging blind would lose either Codex's GitHub PRs or his local work, and a push from the wrong branch would publish an old tree.
 
 **How to apply:** at the start of any commit/push work run `git branch --show-current`, `git status --short`, `git fetch` and `gh pr list --state open`; commit Codex's uncommitted work as it lies, bring GitHub in with a three-way merge from the last common snapshot (`git merge-tree --merge-base=<snapshot>` to preview, `git apply -3` to apply), resolve by the rules journal (И758 beat Codex's shelf bar), run `check:all -- --final`, fast-forward `main`, push one snapshot ([[no-history]]), close PRs whose content is in. Codex writes knowledge only into skill references, not docs/rules.md — add the rule entry (И778). `.codex/` and `.agents/` are git-ignored. Fresh clone on Windows: clone into a short folder (research paths up to 177 chars); the launcher's npx fix is in tools/storefront.mjs.
+
+08.10.2026 morning, owner: «Codex нет, не нужно, удали этот кодекс». Asked what exactly; he chose only Codex's local folders: `.codex/` and `.agents/` moved to the Recycle Bin. The Codex preview export (chatgpt.site) and the installer's Codex copies stay; his merged work on the storefront stays. If Codex shows up again in the tree, the checks above still apply.

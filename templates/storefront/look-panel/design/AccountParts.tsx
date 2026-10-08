@@ -13,7 +13,9 @@ import { Cabinet } from '@/components/Cabinet.tsx'
 import { OrderPage } from '@/components/OrderPage.tsx'
 import { AddressBook } from '@/components/AddressBook.tsx'
 import { AddressEdit } from '@/components/AddressEdit.tsx'
-import { Part } from './parts.tsx'
+import { lookNow } from '@/lib/look.ts'
+import { Part, Worn, cssVar } from './parts.tsx'
+import s from './design.module.css'
 
 /* Магазин → «Кабинет» (И771): настоящие страницы кабинета на покупательнице
    образца (заготовка `sample-account`: два прошлых заказа, два адреса) —
@@ -29,6 +31,15 @@ async function still(): Promise<AccountState> {
 
 const Missing = ({ what }: { what: string }) => <p className={p.note}>{what}</p>
 
+/* Форма входа — оба вида (`--auth-look`, панель Look → Admin → Sign in; И780) той
+   же страницей входа, что на сайте, одна под другой: страница — целиком, рядом её
+   не поставить. Метка «на сайте» — по опубликованному виду. Формы входа, присланные
+   24.09.2026, жили в каталоге элементов (56, 57) и перенесены сюда. */
+const AUTH_LOOKS = [
+  ['plain', 'На полу страницы', 'колонка по центру на цвете страницы — Dawn, Gymshark, Allbirds'],
+  ['card', 'На листе', 'та же колонка на белом листе с краем волоском — как присланные формы'],
+] as const
+
 export async function AccountParts({ lang }: { lang: Lang }) {
   const [who, orders] = await Promise.all([sampleCommerce.customer(FIXTURES.account, lang), sampleCommerce.orders(FIXTURES.account, lang)])
   const customer = who.ok ? who.value : null
@@ -36,10 +47,17 @@ export async function AccountParts({ lang }: { lang: Lang }) {
   const first = list[0] ? await sampleCommerce.order(FIXTURES.account, lang, list[0].code) : null
   const order = first?.ok ? first.value : null
   const here = hrefFor(lang, { account: 'home' })
+  const { names } = await lookNow()
   return (
     <>
-      <Part title="Вход" lede="Знак человека в шапке ведёт сюда гостя: почта, пароль с глазом «показать», «забыли пароль» тихим словом под паролем, одна громкая кнопка; ниже — «нет кабинета — создать» и что заказать можно и без кабинета.">
-        <AuthPage view={signInView(lang, null)} action={still} permalink={here} landmark={false} at="in-" />
+      <Part title="Вход" lede="Знак человека в шапке ведёт сюда гостя. Стандартная форма входа: колонка по центру, имя страницы, почта, пароль с глазом «показать», «забыли пароль» тихим словом под паролем, кнопка во всю колонку; ниже — «нет кабинета — создать» и что заказать можно и без кабинета. Два вида — на полу страницы и на листе; сменить — в панели Look → Admin → Sign in.">
+        {AUTH_LOOKS.map(([look, name, line]) => (
+          <div key={look} className={s.group} style={cssVar('--auth-look', look)}>
+            <h3>{name} <Worn on={look === (names['auth-look'] ?? 'plain')} /></h3>
+            <p className={p.note}>{line}</p>
+            <AuthPage view={signInView(lang, null)} action={still} permalink={here} landmark={false} at={`in-${look}-`} />
+          </div>
+        ))}
       </Part>
       <Part title="Создание кабинета" lede="Имя и фамилия парой (по-венгерски фамилия первой), почта, пароль с правилом под полем; как магазин обращается с данными — ссылкой. Создан — сразу вход; движок ждёт подтверждения — слова «проверьте почту» на месте формы.">
         <AuthPage view={signUpView(lang, null)} action={still} permalink={here} landmark={false} at="up-" />

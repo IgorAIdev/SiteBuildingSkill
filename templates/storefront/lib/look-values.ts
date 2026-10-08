@@ -22,7 +22,7 @@ export type SlotType = 'colour' | 'length' | 'number' | 'keyword' | 'shadow' | '
  *  товара — доля ряда под галерею, место миниатюр, край снимка (И278); ручки
  *  товара на полке и карте — пропорция снимка, плотность полки и место
  *  кнопки «в корзину» на карточке (И400). */
-export type Group = 'palette' | 'scale' | 'text-size' | 'head-size' | 'width' | 'corners' | 'shadow' | 'face' | 'button' | 'field' | 'field-label' | 'tick' | 'pdp-gallery' | 'pdp-thumbs' | 'pdp-edge' | 'seg-look' | 'quick-look' | 'go-hover' | 'star' | 'say-look' | 'pair-look' | 'cart-sign' | 'cart-meta' | 'door-case' | 'logo' | 'stock-look' | 'pager-look' | 'filter-look' | 'filter-phone' | 'save-look' | 'nav-current'
+export type Group = 'palette' | 'scale' | 'text-size' | 'head-size' | 'width' | 'corners' | 'shadow' | 'face' | 'button' | 'field' | 'field-label' | 'tick' | 'pdp-gallery' | 'pdp-thumbs' | 'pdp-edge' | 'seg-look' | 'quick-look' | 'go-hover' | 'star' | 'say-look' | 'pair-look' | 'cart-sign' | 'cart-meta' | 'door-case' | 'logo' | 'stock-look' | 'pager-look' | 'filter-look' | 'filter-phone' | 'save-look' | 'nav-current' | 'auth-look'
   /** Подложка секции главной: по группе на блок (`band-<блок>`, И591) — блоки берутся из реестра, список сюда не пишется. */
   | `band-${string}`
 /** Свойство вида: род значения, группа и умолчание стилей сайта. */
@@ -44,7 +44,7 @@ const WORDS: Readonly<Record<SlotType, readonly string[]>> = {
   colour: ['transparent', 'currentcolor', 'in', 'srgb', 'oklab', 'oklch'],
   length: ['normal'],
   number: [],
-  keyword: ['none', 'uppercase', 'lowercase', 'capitalize', 'normal', 'underline', 'block', 'below', 'side', 'dots', 'over', 'inset', 'bleed', 'full', 'beside', 'above', 'edge', 'inside', 'chips', 'joined', 'tray', 'tint', 'disc', 'words', 'tone', 'compact', 'rings', 'bare', 'toned', 'line', 'note', 'apart', 'joined', 'show', 'rows', 'pills', 'tiles', 'cart', 'bag', 'count', 'sum', 'pill', 'word', 'split', 'leaf', 'quiet', 'brand', 'dark', 'sign', 'dot', 'bar', 'panel', 'drawer'],
+  keyword: ['none', 'uppercase', 'lowercase', 'capitalize', 'normal', 'underline', 'block', 'below', 'side', 'dots', 'over', 'inset', 'bleed', 'full', 'beside', 'above', 'edge', 'inside', 'chips', 'joined', 'tray', 'tint', 'disc', 'words', 'tone', 'compact', 'rings', 'bare', 'toned', 'line', 'note', 'apart', 'joined', 'show', 'rows', 'pills', 'tiles', 'cart', 'bag', 'count', 'sum', 'pill', 'word', 'split', 'leaf', 'quiet', 'brand', 'dark', 'sign', 'dot', 'bar', 'panel', 'drawer', 'plain', 'card'],
   shadow: ['none', 'inset', 'transparent', 'in', 'srgb', 'oklab'],
   transform: ['none'],
   font: [],
@@ -108,7 +108,7 @@ const FONT_URL = /^\/fonts\/[a-z0-9-]{1,80}\.woff2$/
 const WEIGHT = /^[1-9]00( [1-9]00)?$/
 const RANGE = /^U\+[0-9A-Fa-f?]{1,6}(-[0-9A-Fa-f]{1,6})?(, ?U\+[0-9A-Fa-f?]{1,6}(-[0-9A-Fa-f]{1,6})?)*$/
 const LABEL = /^[\p{L}\p{N} .+-]{1,60}$/u
-const FIELDS = new Set(['palette', 'face', 'text-size', 'head-size', 'scale', 'width', 'corners', 'shadow', 'field', 'field-label', 'tick', 'header', 'card', 'home', 'pdp-gallery', 'pdp-thumbs', 'pdp-edge', 'seg-look', 'quick-look', 'go-hover', 'star', 'say-look', 'pair-look', 'cart-sign', 'cart-meta', 'door-case', 'logo', 'stock-look', 'pager-look', 'filter-look', 'filter-phone', 'save-look', 'nav-current'])
+const FIELDS = new Set(['palette', 'face', 'text-size', 'head-size', 'scale', 'width', 'corners', 'shadow', 'field', 'field-label', 'tick', 'header', 'card', 'home', 'pdp-gallery', 'pdp-thumbs', 'pdp-edge', 'seg-look', 'quick-look', 'go-hover', 'star', 'say-look', 'pair-look', 'cart-sign', 'cart-meta', 'door-case', 'logo', 'stock-look', 'pager-look', 'filter-look', 'filter-phone', 'save-look', 'nav-current', 'auth-look'])
 /** Оси кнопки — поля `btn-<ось>`: каталог кнопки растёт осями данными (И273). */
 const AXIS = /^(btn|band)-[a-z0-9-]{1,30}$/
 

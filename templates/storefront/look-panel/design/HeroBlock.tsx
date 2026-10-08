@@ -2,18 +2,21 @@ import type { Lang } from '@/lib/locale.ts'
 import type { Block } from '@/lib/source/contract.ts'
 import { content, source } from '@/lib/source/index.ts'
 import { Hero } from '@/components/blocks/Hero.tsx'
+import { MinimalHero } from '@/components/blocks/MinimalHero.tsx'
+import { HOMES } from '@/lib/homes.ts'
 import type { BlockCtx } from '@/components/blocks/types.ts'
-import { Part } from './parts.tsx'
+import { Part, Worn } from './parts.tsx'
+import s from './design.module.css'
 import { lookNow } from '@/lib/look.ts'
 import { shelfCard } from '@/lib/view.ts'
 
 /* Home → Hero Block: варианты героя главной — настоящий блок сайта на
    словах и снимке главной (слово заказчика 01.10.2026: «в дизайн-системе
    делаем страницу Hero Block, где будем размещать варианты этого
-   хероблока»). Сейчас вариант один: снимок, «В магазин» и под ней
-   кнопки главных категорий со знаком товара, все одного роста (И673,
-   И683); новый вариант
-   встаёт сюда строкой. Герою из контекста
+   хероблока»). Вариантов два: снимок и кнопки всех категорий со знаком
+   товара, все одного роста (И673, И683), и минимальный второй витрины —
+   один товар, громкая кнопка и категории словами (`MinimalHero`, главная
+   «minimal»); новый вариант встаёт сюда строкой. Герою из контекста
    нужны только язык и полки — остальное у главной, не у него. */
 export async function HeroBlock({ lang }: { lang: Lang }) {
   const [page, cols, look] = await Promise.all([content().page(lang, 'home'), source().collections(lang), lookNow()])
@@ -26,7 +29,16 @@ export async function HeroBlock({ lang }: { lang: Lang }) {
   const ctx = { lang, home: look.home, spotlight, collections: cols.ok ? cols.value : [] } as unknown as BlockCtx
   return (
     <Part title="Hero Block" lede="Первый экран главной: один снимок, заголовок, абзац, под ними кнопка «В магазин» и кнопки главных категорий того же роста — «Кнопки категорий» из «Кнопок», кружок со знаком товара. Кнопки стоят в колонке текста и переносятся в ней, вправо за текст не выходят. Слова и снимок — данные главной; какие категории стоят кнопками — тоже данные главной.">
-      <Hero block={hero} ctx={ctx} place={{ air: null }} />
+      {/* Оба вида героя, один под другим (страница целиком рядом не встанет): обычный —
+          при любой одежде плиток, минимальный — у главной «minimal» (вторая витрина). */}
+      <div className={s.group}>
+        <h3>Снимок и кнопки категорий <Worn on={look.home !== 'minimal'} /></h3>
+        <Hero block={hero} ctx={{ ...ctx, home: look.home === 'minimal' ? HOMES[0] : look.home }} place={{ air: null }} />
+      </div>
+      <div className={s.group}>
+        <h3>Минимальный: один товар и категории словами <Worn on={look.home === 'minimal'} /></h3>
+        <MinimalHero block={hero} ctx={{ ...ctx, home: 'minimal' }} />
+      </div>
     </Part>
   )
 }

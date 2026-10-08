@@ -176,7 +176,7 @@ export async function handle(request: Request, path: string[]): Promise<Response
     return json({
       home: hrefFor(lang, { home: true }), catalog: hrefFor(lang, { catalog: true }),
       product: first ? hrefFor(lang, { product: first }) : hrefFor(lang, { catalog: true }),
-      cart: hrefFor(lang, { cart: true }), checkout: hrefFor(lang, { checkout: 'contact' }),
+      cart: hrefFor(lang, { cart: true }), checkout: hrefFor(lang, { checkout: 'contact' }), account: hrefFor(lang, { account: 'home' }),
     })
   }
   /* Оформление с пустой корзиной — «корзина пуста», полей нет: вкладке

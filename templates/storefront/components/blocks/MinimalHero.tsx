@@ -16,7 +16,7 @@ export function MinimalHero({ block, ctx }: { block: Extract<Block, { type: 'her
   const image = product?.image ?? block.image
   const shelves = heroShelves(block.shelves, ctx.collections)
   return (
-    <section className={`${p.wrap} ${p.lede} ${s.minimalHero}`}>
+    <section className={`${p.wrap} ${p.lede} ${s.minimalHero}`} data-scene="hero">
       <div className={`${p.ledeText} ${s.minimalText}`}>
         <div className={`${p.stack} ${s.heroWords}`}><h1>{block.title}</h1><p>{block.lede}</p></div>
         <a className={b.btn} data-voice="loud" href={hrefFor(ctx.lang, { catalog: true })}>{t(ctx.lang, 'nav.shopAll')}<Icon id="arrow-right" /></a>

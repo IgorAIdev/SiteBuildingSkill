@@ -175,6 +175,7 @@ const ROLE = [
   { rx: /^--go-hover$/, family: 'краска ссылки «куда ведёт» под рукой', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--seg-look$/, family: 'вид сегментов выбора', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--stock-look$/, family: 'вид строки наличия: знак, точка или слово', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
+  { rx: /^--auth-look$/, family: 'вид формы входа: на полу страницы или на листе (И780)', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--filter-look$/, family: 'вид фильтра полки на широком: кнопка и шторка, как корзина, или строка раскрытий (И739)', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--filter-phone$/, family: 'вид фильтра полки на узком: кнопка и шторка или пилюли граней вбок (И739)', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--pager-look$/, family: 'вид листания под полкой: «Показать ещё» со счётом и полоской, номера в кругах или «2 / 4» (И721)', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
@@ -219,6 +220,7 @@ export const REQUIRED = {
   '--menu-size': 'роль меню шапки — кегль, ступенью ниже тела, не мельче 1rem; регулировки в панели нет (templates/storefront, Header.module.css; И580, И633)',
   '--head-full': 'вся шапка на нуле прокрутки: прилипшая строка, верхняя полоса и линия — от неё герой считает первый экран (templates/storefront, blocks.module.css; И655)',
   '--shot-frame': 'пропорция снимка товара, постоянная 1 / 1 (Gallery, ProductCard, ProductView; decisions.md 01.10.2026)',
+  '--measure-form': 'колонка формы входа по центру страницы, 25rem — в коридоре образцов 320…446 (templates/storefront, Account.module.css; И780)',
   '--sh-far-3': 'дальний слой тени всплывающего — набор теней витрины (templates/storefront/styles/look.css; И593)',
   /* Краски логотипов (MARKS, tools/palette.mjs; И628): цвет компании для её
      знака — читает страница «Знаки» шаблона и место, где логотип стоит в цвете. */

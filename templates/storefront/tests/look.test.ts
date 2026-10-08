@@ -57,7 +57,7 @@ test('look: the site stylesheets are emitted, never a second set; the property l
   assert.ok(!read('components/Shell.tsx').includes('next/font'), 'next/font в сайте нет')
   assert.equal(read('lib/look-slots.json').replace(/\r\n/g, '\n'), render(lookSlots(readSite(ROOT))))
   const groups = new Set(Object.values(SLOTS.slots).map((s) => s.group))
-  assert.deepEqual([...groups].sort(), ['band-effects', 'band-faq', 'band-featured', 'band-posts', 'band-reviews', 'band-story', 'button', 'cart-meta', 'cart-sign', 'corners', 'door-case', 'face', 'field', 'field-label', 'filter-look', 'filter-phone', 'go-hover', 'head-size', 'logo', 'nav-current', 'pager-look', 'pair-look', 'palette', 'pdp-edge', 'pdp-gallery', 'pdp-thumbs', 'quick-look', 'save-look', 'say-look', 'scale', 'seg-look', 'shadow', 'star', 'stock-look', 'text-size', 'tick', 'width'])
+  assert.deepEqual([...groups].sort(), ['auth-look', 'band-effects', 'band-faq', 'band-featured', 'band-posts', 'band-reviews', 'band-story', 'button', 'cart-meta', 'cart-sign', 'corners', 'door-case', 'face', 'field', 'field-label', 'filter-look', 'filter-phone', 'go-hover', 'head-size', 'logo', 'nav-current', 'pager-look', 'pair-look', 'palette', 'pdp-edge', 'pdp-gallery', 'pdp-thumbs', 'quick-look', 'save-look', 'say-look', 'scale', 'seg-look', 'shadow', 'star', 'stock-look', 'text-size', 'tick', 'width'])
   for (const role of ['--page', '--plate', '--quiet', '--pop', '--on-pop']) assert.ok(SLOTS.facts.roles[role], role)
 })
 

@@ -74,7 +74,7 @@ test('panel sections: every field sits in exactly one sub-tab; System is colour,
   assert.deepEqual(catalog.groups['say-look'].map((o) => o.id).sort(), ['line', 'note'].sort())
   /* Место подписи (И394): над полем — умолчание, на кромке — элемент 47. */
   assert.deepEqual(catalog.groups['field-label'].map((o) => o.id).sort(), ['above', 'edge'].sort())
-  assert.deepEqual(SECTIONS[1].subs.map((s) => s.name), ['Header', 'Card', 'Home', 'Sections', 'Product page', 'Checkout', 'Elements'])
+  assert.deepEqual(SECTIONS[1].subs.map((s) => s.name), ['Header', 'Card', 'Home', 'Sections', 'Product page', 'Checkout', 'Sign in', 'Elements'])
   /* Главная — одежда плиток эффектов (lib/homes.ts): варианты каталога — все
      одежды, по порядку; первая, нынешняя, — умолчание. */
   assert.deepEqual(catalog.groups.home.map((o) => o.id), [...HOMES])
@@ -97,6 +97,11 @@ test('panel sections: every field sits in exactly one sub-tab; System is colour,
   assert.deepEqual(catalog.groups['seg-look'].map((o) => o.id).sort(), ['chips', 'joined', 'tray', 'tiles', 'tint'].sort(), 'выбор варианта — пилюли по умолчанию (И396), плашки размера двумя видами (элемент 97)')
   assert.deepEqual(catalog.groups['stock-look'].map((o) => o.id), ['sign', 'dot', 'word'], 'наличие — знак в круге по умолчанию, точка и слово вариантами')
   assert.deepEqual(catalog.groups['quick-look'].map((o) => o.id).sort(), ['tiles', 'rows'].sort(), 'быстрый заказ — плитки по умолчанию, строки вариантом (И470)')
+  /* Форма входа (И780): своя вкладка, открывает страницу входа; на полу страницы по умолчанию, на листе — вариантом. */
+  const signIn = SECTIONS[1].subs.find((s) => s.id === 'account')!
+  assert.deepEqual(signIn.fields, [['auth-look', 'Form']])
+  assert.equal(signIn.place?.page, 'account')
+  assert.deepEqual(catalog.groups['auth-look'].map((o) => o.id).sort(), ['card', 'plain'], 'форма входа — на полу страницы и на листе')
   const card = SECTIONS[1].subs.find((s) => s.id === 'card')!
   assert.deepEqual(card.fields.map((f) => f[1]), ['Product card', 'Show more and pages', 'Filter on a laptop', 'Filter on a phone', 'Heart'])
   /* Листание страниц (образец 95): слова по умолчанию, три вида вариантами. */
@@ -107,7 +112,7 @@ test('panel sections: every field sits in exactly one sub-tab; System is colour,
   assert.deepEqual(catalog.groups['pager-look'].map((o) => o.id), ['count', 'rings', 'compact'], 'листание — «Показать ещё» со счётом и полоской по умолчанию, номера в кругах и «2 / 4» вариантами (И721)')
   assert.deepEqual(catalog.groups['pdp-gallery'].map((o) => o.id).sort(), ['40', '50', '60'])
   assert.deepEqual(catalog.groups['pdp-thumbs'].map((o) => o.name).sort(), ['Below', 'Dots', 'On the picture', 'Side'])
-  for (const f of ['pdp-gallery', 'pdp-thumbs', 'pdp-edge', 'seg-look', 'stock-look', 'quick-look']) assert.equal(catalog.groups[f][0].vars![`--${f}`], slots[`--${f}`].value, `${f}: умолчание — значение сайта`)
+  for (const f of ['pdp-gallery', 'pdp-thumbs', 'pdp-edge', 'seg-look', 'stock-look', 'quick-look', 'auth-look']) assert.equal(catalog.groups[f][0].vars![`--${f}`], slots[`--${f}`].value, `${f}: умолчание — значение сайта`)
   const buttons = SECTIONS[0].subs.find((s) => s.id === 'buttons')!
   assert.deepEqual(buttons.fields.map((f) => f[0]), ['go-hover', ...catalog.axes.map((a) => a.field)], 'Buttons — свои поля подраздела (ссылка под рукой), потом оси каталога кнопки')
   assert.deepEqual(catalog.axes.map((a) => a.name), ['Main button', 'Quiet button', 'Button shape', 'Hand response'])
