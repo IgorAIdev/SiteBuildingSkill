@@ -1,25 +1,42 @@
 /* ═══ КАБИНЕТ ПОКУПАТЕЛЯ (И771) ══════════════════════════════════════════
  *
- *  Бриф — docs/design/кабинет.md. Вход, создание, сброс, подтверждение и
- *  адреса — одна колонка мерой строки формы (`--measure`), как касса и форма
- *  отказа: у образцов колонка 320–446 (Gymshark, Allbirds, Dawn). Колонка —
- *  контейнер, и кнопка формы в ней всегда во всю колонку (шов 560 кассы,
- *  Checkout.module.css `.form`), как «Log In» у Gymshark. Кабинет — заказы
+ *  Бриф — docs/design/кабинет.md. Вход, создание, сброс и подтверждение —
+ *  стандартная форма входа (И780): колонка по центру страницы шириной формы
+ *  (`--measure-form`, 25rem; у образцов 320–446 — Gymshark, Allbirds, Dawn, все
+ *  три по центру), имя страницы и строка под ним по центру. Колонка —
+ *  контейнер уже шва 560, и кнопка формы в ней во всю колонку на любом экране
+ *  (Checkout.module.css `.form`), как «Log In» у Gymshark. Прежде колонка
+ *  стояла мерой текста (637 на 1253) у левого края с кнопкой своей ширины.
+ *  Лист под формой — вид панели (`--auth-look`: `plain` — на полу страницы,
+ *  `card` — на листе, как формы входа, присланные 24.09.2026, — прежде
+ *  элементы 56 и 57, перенесены сюда). Кабинет — заказы
  *  главной колонкой, сбоку лист с данными, адресом и выходом (`sidebar`;
  *  Dawn, `customers/account.liquid`). Заказ и адрес — карточкой: лист на полу
  *  страницы, как строки шторки корзины и лист итога (И671). Тени нет.
  */
-.auth{max-inline-size:var(--measure);container-type:inline-size}
+.auth{max-inline-size:var(--measure-form);margin-inline:auto;container-type:inline-size}
+.head{text-align:center}
+/* Адреса — не форма входа, а список карточек с правкой на месте: колонка мерой
+   строки формы у начала страницы, как главная колонка кабинета. */
+.book{max-inline-size:var(--measure);container-type:inline-size}
+/* На листе (`card`): форма целиком — лист на полу страницы, поле и угол листа
+   (`--pad-sheet`, `--r-sheet`), краска листа и край волоском `--rule`, как у
+   присланных форм (край — волосок, не тень, И336): белый лист на светлом полу без
+   края не читается (пол 250·248·246 против 255). Тени нет. */
+@container style(--auth-look: card){
+  .auth{padding:var(--pad-sheet);border-radius:var(--r-sheet);background:var(--surface);box-shadow:inset 0 0 0 var(--line-w) var(--rule)}
+}
 .form{composes:form from './Checkout.module.css'}
 .plain{composes:plain from './Checkout.module.css'}
 /* «Забыли пароль» — под паролем у начала поля, тихим словом (3 из 3
    образцов), своей шириной, а не полосой во всю меру. */
 .forgot{align-self:flex-start}
 
-/* Пути под формой — вопрос и ссылка одной строкой, переносятся вместе;
-   ссылка — словом полной краски и весом подписи, как «Sign up» у Gymshark. */
-.ways{display:flex;flex-direction:column;gap:var(--air-line)}
-.way{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:var(--gap-row)}
+/* Пути под формой — вопрос и ссылка одной строкой, переносятся вместе, по
+   центру колонки, как «Sign up» у Gymshark и «Create account» у Dawn; ссылка —
+   словом полной краски и весом подписи. */
+.ways{display:flex;flex-direction:column;align-items:center;gap:var(--air-line);text-align:center}
+.way{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;column-gap:var(--gap-row)}
 .way > .wayLink{color:var(--ink);font-weight:var(--label-weight)}
 
 /* Часть кабинета — заголовок и его содержимое одной группой; ссылки — своей

@@ -61,6 +61,7 @@ export const PRODUCT = {
   '--pdp-edge': { type: 'keyword', value: 'inset' },
   '--seg-look': { type: 'keyword', value: 'chips' },
   '--stock-look': { type: 'keyword', value: 'sign' },
+  '--auth-look': { type: 'keyword', value: 'plain' },
   '--pager-look': { type: 'keyword', value: 'count' },
   '--filter-look': { type: 'keyword', value: 'drawer' },
   '--filter-phone': { type: 'keyword', value: 'drawer' },

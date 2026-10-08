@@ -327,6 +327,13 @@ export const PRODUCT_PAGE = {
     { id: 'dot', name: 'Dot', line: 'A full, half or empty dot before the word: the shape tells the state without colour', vars: { '--stock-look': 'dot' } },
     { id: 'word', name: 'Word', line: 'The word alone, in the signal colour', vars: { '--stock-look': 'word' } },
   ],
+  /* Форма входа (слово заказчика 08.10.2026: «sign in нужна стандартная форма… перенеси
+     их в дизайн-систему»; И780): колонка по центру на полу страницы или на листе — как
+     формы входа, присланные 24.09.2026 (были элементами 56 и 57, перенесены сюда). Знаков Google и Apple нет: входа через них у движка нет. */
+  'auth-look': [
+    { id: 'plain', name: 'On the page', line: 'A centred column on the page colour: title, fields and a full-width button, like Dawn, Gymshark and Allbirds', vars: { '--auth-look': 'plain' } },
+    { id: 'card', name: 'On a card', line: 'The same column on a white sheet with a thin edge, like the sign-in forms sent on 24 September', vars: { '--auth-look': 'card' } },
+  ],
   /* Листание страниц каталога и поиска (слово заказчика 03.10.2026; образец 95: daisyUI, HyperUI, shadcn/ui, MIT): слова, стрелки с номерами, номера встык или «2 / 9». */
   /* Сердце «в избранное» на снимке карточки (слово заказчика 03.10.2026: «фон для иконки нужен? может как вариант убрать фон и увеличить сердечко до высоты плашки скидки»): на стекле палитры (умолчание) или без подложки, ростом с плашку скидки, с краем цвета листа. */
   'save-look': [

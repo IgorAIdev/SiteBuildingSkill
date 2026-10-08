@@ -68,7 +68,12 @@
    tools/axes.mjs). */
 @media (pointer:coarse){ .bar{padding-block:var(--sp-2)} }
 :where([data-pointer='coarse']) .bar{padding-block:var(--sp-2)}
-.logo{display:inline-flex;align-items:center;min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target);margin-inline-end:var(--air-row);font-size:var(--logo-size);line-height:var(--logo-lead);font-weight:var(--logo-weight);letter-spacing:var(--logo-track);color:var(--ink)}
+/* Знак марки не сжимается (`flex:none`): до скрипта строка несёт все полки
+   (приоритетное меню прячет хвост под «Ещё» после загрузки, NavLinks.tsx), и
+   сжатый знак (83 при своих 92) отдавал меню место, а после скрипта забирал —
+   меню съезжало на 9 px у гостя на глазах (замер cbdin.ro 08.10.2026, семья
+   `shift`); слово при этом вылезало из своей коробки. */
+.logo{flex:none;display:inline-flex;align-items:center;min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target);margin-inline-end:var(--air-row);font-size:var(--logo-size);line-height:var(--logo-lead);font-weight:var(--logo-weight);letter-spacing:var(--logo-track);color:var(--ink)}
 /* Действия — одна группа у правого края; просвет между целями — роль
    зазора целей (под пальцем вдвое шире). */
 /* Знаки действий — рамкой ростом среднего органа (`--ctrl-h`), вплотную с

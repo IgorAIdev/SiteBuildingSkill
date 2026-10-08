@@ -34,14 +34,18 @@ type Props = { block: Extract<Block, { type: 'hero' }>; ctx: BlockCtx; place: Pl
    вкладки «Кнопки» (CategoryButton): кружок со знаком товара. Какие полки —
    данные блока (`shelves`): `'all'` — все полки магазина в порядке каталога (И735;
    слово заказчика 04.10.2026: «размещай все категории кнопками»), лишнее
-   переносится вторым рядом; полки нет у магазина — нет кнопки. */
+   переносится вторым рядом; полки нет у магазина — нет кнопки. Полосой вбок ряд
+   едет только на телефоне: рядом со снимком колонка бывает уже 560, а ряд всё равно
+   переносится (styles/primitives.module.css, `.rail[data-rail='wrap']`; слово
+   заказчика 08.10.2026). `data-scene="hero"` — сцена первого экрана для проверок
+   (check:craft, `heroLane`, `fold`). */
 export function Hero({ block, ctx }: Props) {
   const shelves = heroShelves(block.shelves, ctx.collections)
   /* look-home:minimal:start */
   if (ctx.home === 'minimal') return <MinimalHero block={block} ctx={ctx} />
   /* look-home:minimal:end */
   return (
-    <section className={`${p.wrap} ${p.lede} ${s.hero}`}>
+    <section className={`${p.wrap} ${p.lede} ${s.hero}`} data-scene="hero">
       <div className={`${p.frame} ${s.heroShot}`}>
         <img {...shot(block.image, 'wide')} alt={block.image.alt} fetchPriority="high" />
       </div>

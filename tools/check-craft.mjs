@@ -1591,27 +1591,40 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
    * полки и подпись блока), и меньший из них ни о чём не говорит.
    *
    * Служебные заголовки, убранные с экрана обрезкой, в счёт не идут: они есть
-   * для скринридера, размера у них нет. */
+   * для скринридера, размера у них нет.
+   *
+   * Лестница — своя у страницы и своя у каждого открытого окна (popover,
+   * dialog): окно стоит поверх страницы своим листом, и его заголовок меряется
+   * с заголовками окна, а не с теми, что под ним (внутри окна — И562). Одной
+   * лестницей открытая шторка меню на телефоне давала «h2 Menu 19 не крупнее
+   * h3 Description 19» — заголовок окна против раздела страницы под шторкой
+   * (check:part 08.10.2026). */
   const painted = (el) => {
     if (!spoken(el)) return false
     const b = el.getBoundingClientRect()
     return b.width > 4 && b.height > 4
   }
-  const big = new Map()
+  const layers = new Map()
   for (const h of hs) {
     if (!painted(h)) continue
+    /* Уходящее окно (`data-leaving`, pane-swipe) — ещё окно: оно на экране, пока уезжает. */
+    const layer = h.closest(':popover-open, dialog[open], [data-leaving]') ?? document
+    if (!layers.has(layer)) layers.set(layer, new Map())
+    const big = layers.get(layer)
     const lvl = Number(h.tagName[1])
     const fs = parseFloat(getComputedStyle(h).fontSize) || 0
     const was = big.get(lvl)
     if (!was || fs > was.fs) big.set(lvl, { fs, el: h })
   }
-  const levels = [...big.keys()].sort((a, b) => a - b)
-  for (let i = 0; i < levels.length - 1; i++) {
-    const up = big.get(levels[i]), down = big.get(levels[i + 1])
-    if (down.fs >= up.fs) {
-      out.ladder.push(
-        `h${levels[i]} «${name(up.el)}» ${Math.round(up.fs)}px — ` +
-        `не крупнее h${levels[i + 1]} «${name(down.el)}» ${Math.round(down.fs)}px`)
+  for (const big of layers.values()) {
+    const levels = [...big.keys()].sort((a, b) => a - b)
+    for (let i = 0; i < levels.length - 1; i++) {
+      const up = big.get(levels[i]), down = big.get(levels[i + 1])
+      if (down.fs >= up.fs) {
+        out.ladder.push(
+          `h${levels[i]} «${name(up.el)}» ${Math.round(up.fs)}px — ` +
+          `не крупнее h${levels[i + 1]} «${name(down.el)}» ${Math.round(down.fs)}px`)
+      }
     }
   }
 
@@ -1625,7 +1638,7 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
    * Признак меряется так: жирный текст (600 и выше) не бывает крупнее
    * заголовка страницы и не совпадает с ним размером. Нежирный не считается —
    * крупная светлая цифра заголовку не соперник. */
-  const h1 = big.get(1)
+  const h1 = layers.get(document)?.get(1)
   if (h1) {
     /* Слайд ленты за её краем не виден: на экране один слайд, и заголовок
        второго слайда в миг показа — единственный крупный (находка 28.09.2026
@@ -3011,12 +3024,13 @@ async function visit(path, w, { finger, dark = false }) {
          прокрутки: заказчик открыл главную на своём ноутбуке (1280 × 587) —
          «изображение не видно полностью, нужно скролить», а замер в 900 и в
          657 этого не видел. Мерится на ширине ноутбука: у телефона свой рост
-         окна и своя раскладка героя (И657). */
+         окна и своя раскладка героя (И657). Сцена — `data-scene="hero"` или
+         прежняя тёмная палуба (см. `heroLane` ниже). */
       if (w >= PHONE) {
         r.fold = await page.evaluate(() => {
           scrollTo(0, 0)
           const h1 = document.querySelector('h1')
-          const stage = h1?.closest('[data-ground="deck"]')
+          const stage = h1?.closest('[data-scene="hero"], [data-ground="deck"]')
           if (!stage) return []
           const out = []
           const b = stage.getBoundingClientRect()
@@ -3040,11 +3054,17 @@ async function visit(path, w, { finger, dark = false }) {
        во всю ширину под снимком, своей колонки у него нет, и мерить нечего —
        поле сцены колонкой не считается. Рост — один у всех кнопок героя
        (И683): «Shop» стояла крупной над обычными полками, заказчик: «кнопка
-       шоп поставь маленькую такую как и другие кнопки». */
+       шоп поставь маленькую такую как и другие кнопки».
+       Сцена — `data-scene="hero"` (светлый герой рядом со снимком, с 04.10.2026)
+       или прежняя тёмная палуба. Узнавала проверка только палубу, и со светлым
+       героем мерила пустоту: на ноутбуке 880…1180 ряд пути стал полосой вбок, пилюля
+       резалась у края колонки, а семья молчала — заказчик 08.10.2026: «пилюли на
+       каких-то ширинах выстраиваются в линию… в линию они должны быть только на
+       мобайле». Пилюля за краем колонки — та же находка: её край вышел из колонки. */
     r.heroLane = await page.evaluate(() => {
       scrollTo(0, 0)
       const h1 = document.querySelector('main h1')
-      const stage = h1?.closest('[data-ground="deck"]')
+      const stage = h1?.closest('[data-scene="hero"], [data-ground="deck"]')
       if (!stage) return []
       const scene = stage.getBoundingClientRect()
       let col = null
