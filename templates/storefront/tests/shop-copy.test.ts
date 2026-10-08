@@ -135,3 +135,14 @@ test('the effect filter names its values like the moment hubs', async () => {
     if (sleep) assert.equal(sleep.name, effectCopy(lang, 'sleep')?.name)
   }
 })
+
+test('paged lists keep their own canonical page; the shelf text stands only on the clean first page', async () => {
+  const { cleanPage } = await import('../lib/listing.ts')
+  const base = { facets: {}, sort: 'popular' as const, page: null }
+  assert.equal(cleanPage(base), 1)
+  assert.equal(cleanPage({ ...base, page: '3' }), 3)
+  assert.equal(cleanPage({ ...base, page: 'x' }), 1)
+  assert.equal(cleanPage({ ...base, facets: { effect: ['sleep'] } }), null)
+  assert.equal(cleanPage({ ...base, facets: { effect: [] } }), 1)
+  assert.equal(cleanPage({ ...base, sort: 'price-asc' }), null)
+})
