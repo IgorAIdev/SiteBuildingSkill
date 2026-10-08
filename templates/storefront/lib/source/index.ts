@@ -1,4 +1,4 @@
-import type { Block, Collection, Commerce, Content, Effect, Source } from './contract.ts'
+import type { Block, Collection, Commerce, Content, Effect, Facet, Source } from './contract.ts'
 import { sample } from './sample/catalog.ts'
 import { sampleContent } from './sample/content.ts'
 import { sampleCommerce } from './sample/commerce.ts'
@@ -10,6 +10,7 @@ import { CATEGORIES, EFFECTS } from '../products.ts'
 import type { Lang } from '../locale.ts'
 import { REVIEWS_ARE_REAL } from '../flags.ts'
 import { categoryCopy, effectCopy } from '../content/shop-copy.ts'
+import { EFFECT_FACET } from './effect.ts'
 
 /* Один выбор источника на всю витрину (`SOURCE` в .env):
    · `sample` — образец в lib/ (по умолчанию);
@@ -38,6 +39,9 @@ const framed = (c: Collection, lang: Lang): Collection => {
    читают строка плитки «Caption», вступление и описание страницы эффекта;
    кода там нет — описание пустое, как было. Пока своё не даст Payload (план 4). */
 const told = (e: Effect, lang: Lang): string => { const c = effectCopy(lang, e.code); return c?.caption ?? c?.lede ?? (e.description || (EFFECTS.find((x) => x.effect === e.code)?.description[lang] ?? '')) }
+/* Значение грани эффекта в фильтре — тем же именем, что хаб в меню и плитке
+   (имя момента из shop-copy.ts, И788); у движка значение названо по-своему. */
+const namedFacets = (facets: Facet[], lang: Lang): Facet[] => facets.map((f) => (f.code === EFFECT_FACET ? { ...f, values: f.values.map((v) => ({ ...v, name: effectCopy(lang, v.code)?.name ?? v.name })) } : f))
 const shotOf = (e: Effect, lang: Lang): Effect => ({ ...e, name: effectCopy(lang, e.code)?.name ?? e.name, image: e.image ?? effectShot(e.code, e.name), description: told(e, lang) })
 
 let trade: { source: Source; commerce: Commerce; content: Content } | null = null
@@ -50,6 +54,7 @@ function vendure() {
       async collections(lang) { const r = await engine.collections(lang); return r.ok ? { ok: true, value: r.value.map((c) => framed(c, lang)) } : r },
       async collection(lang, slug) { const r = await engine.collection(lang, slug); return r.ok ? { ok: true, value: framed(r.value, lang) } : r },
       async effects(lang) { const r = await engine.effects(lang); return r.ok ? { ok: true, value: r.value.map((e) => shotOf(e, lang)) } : r },
+      async listing(lang, query) { const r = await engine.listing(lang, query); return r.ok ? { ok: true, value: { ...r.value, facets: namedFacets(r.value.facets, lang) } } : r },
     }
     trade = { source: catalog, commerce: vendureCommerce({ ...env, placeOrders: process.env.VENDURE_PLACE_ORDERS === 'on' }), content: standIn(catalog) }
   }

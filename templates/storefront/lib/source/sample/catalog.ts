@@ -125,7 +125,7 @@ export function sampleSource(pageSize = PAGE): Source {
         const facet: Facet = {
           code: f.code, name: f.name[lang],
           values: f.values.filter((v) => onSite(f.code, v.code) && (here.has(v.code) || (query.facets[f.code] ?? []).includes(v.code))).map((v) => ({
-            code: v.code, name: v.name[lang],
+            code: v.code, name: f.code === EFFECT_FACET ? effectCopy(lang, v.code)?.name ?? v.name[lang] : v.name[lang],
             count: others.filter((p) => (facetsOf(p)[f.code] ?? []).includes(v.code)).length,
             selected: (query.facets[f.code] ?? []).includes(v.code),
           })),
