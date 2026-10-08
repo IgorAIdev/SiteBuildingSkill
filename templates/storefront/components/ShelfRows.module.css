@@ -8,3 +8,9 @@
 .shelf svg{flex:none;inline-size:1.25em;block-size:1.25em;color:var(--ink-soft)}
 .shelfName::first-letter{text-transform:uppercase}
 .shelfName{display:inline-block}
+/* Строки на странице (пустое избранное, пустая корзина): строка выше своих букв на
+   запас до роста органа, а шов у подвала и у следующего раздела мерится по буквам
+   (И738) — под последней строкой воздух был 78 против 69 (1024, 08.10.2026). Конец
+   списка уходит в этот запас (bleed): подложка строки под рукой ложится в воздух,
+   буквы — на край. Число — из ролей строки, не своё. */
+.shelves[data-bleed]{margin-block-end:calc((var(--menu-size) * var(--menu-lead) - var(--ctrl-h)) / 2)}
