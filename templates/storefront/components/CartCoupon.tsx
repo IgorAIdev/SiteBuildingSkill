@@ -34,7 +34,7 @@ export function CartCoupon({ lang, view, submit, call }: { lang: string; view: P
         {view.coupon.applied.length ? (
           <div className={p.cluster}>
             {view.coupon.applied.map((c) => (
-              <button key={c.code} className={p.chip} type="submit" name="op" value={c.op} aria-label={c.label}>{c.code}<Icon id="x" /></button>
+              <button key={c.code} className={p.chip} data-pill="" type="submit" name="op" value={c.op} aria-label={c.label}>{c.code}<Icon id="x" /></button>
             ))}
           </div>
         ) : null}

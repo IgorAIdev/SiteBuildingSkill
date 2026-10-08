@@ -190,3 +190,55 @@ textarea.box{padding-block:calc(var(--ctrl-h) * .25);min-block-size:calc(var(--c
   inline-size:calc(var(--ctrl-h) * .45);block-size:calc(var(--ctrl-h) * .45)
 }
 .tick:has(input:disabled){opacity:var(--state-off);cursor:not-allowed}
+
+/* Переключатель — да или нет одним нажатием там, где решение действует сразу
+   и по отдельности (категория согласия на cookie, И791). Порт HyperUI Toggles
+   (MIT, © Mark Mead): `label` → галочка, скрытая для глаза, но в фокусе и в
+   форме → дорожка → бегунок. Код не взят — устройство и доли образца
+   (дорожка 32 × 56, бегунок 24, поле 4): высота дорожки — 0.6 роста органа,
+   ширина — 1.75 высоты, поле — восьмая высоты, бегунок — высота без двух
+   полей (геометрия от своей высоты, правило 2). Галочка браузерная, скрыта для
+   глаза примитивом `said` (Switch.tsx) — значит, клавиатура, чтец («флажок», как
+   у образца) и отправка формой без скрипта; кнопка shadcn/ui на Radix формой не
+   отправляется (бриф docs/design/документы-и-куки.md). Цель нажатия — вся строка с подписью,
+   как у галочки выше. Выключен — тихая плашка и кромка галочки (WCAG 1.4.11,
+   3 : 1 — роль `--tick-edge`), включён — краска выбранного (марка, память
+   «One main colour»); бегунок — вторичными чернилами и чернилами на
+   выбранном. Ход — время наведения; без движения по просьбе системы его
+   снимает base.css одним правилом на сайт. */
+.switch{
+  --toggle-h:calc(var(--ctrl-h) * .6);--toggle-pad:calc(var(--toggle-h) / 8);
+  position:relative;display:flex;align-items:center;justify-content:space-between;gap:calc(var(--ctrl-h) * .25);
+  min-block-size:var(--ctrl-target);
+  font-size:var(--ctrl-fs-sm);font-weight:var(--label-weight);color:var(--ink);cursor:pointer
+}
+.track{
+  position:relative;flex:none;
+  inline-size:calc(var(--toggle-h) * 1.75);block-size:var(--toggle-h);
+  border:var(--line-w) solid var(--tick-edge);border-radius:calc(var(--toggle-h) / 2);
+  background:var(--plate-quiet);
+  transition:background-color var(--hover-t) var(--ease), border-color var(--hover-t) var(--ease)
+}
+.thumb{
+  position:absolute;inset-block:0;margin-block:auto;inset-inline-start:calc(var(--toggle-pad) - var(--line-w));
+  inline-size:calc(var(--toggle-h) - var(--toggle-pad) * 2);block-size:calc(var(--toggle-h) - var(--toggle-pad) * 2);
+  border-radius:50%;background:var(--ink-soft);
+  transition:translate var(--hover-t) var(--ease), background-color var(--hover-t) var(--ease)
+}
+.switch input:checked + .track{background:var(--chosen);border-color:var(--chosen)}
+/* Бегунок стоит от кромки на поле без толщины кромки — поле вокруг него ровное
+   со всех сторон; включённый едет к дальнему краю сдвигом, а не местом (раскладка
+   не пересчитывается), ровно на три четверти высоты дорожки (HyperUI: `start-0` →
+   `start-6` при дорожке 56 и бегунке 24). */
+.switch input:checked + .track > .thumb{translate:calc(var(--toggle-h) * .75) 0;background:var(--on-chosen)}
+.switch input:focus-visible + .track{outline:var(--ring-w) solid var(--ring);outline-offset:var(--ring-off)}
+.switch:has(input:disabled){opacity:var(--state-off);cursor:not-allowed}
+/* Принудительные цвета: заливки дорожки и бегунка режим стирает в `Canvas` —
+   бегунок пропадал, «да» и «нет» не различались, а сама галочка скрыта. Ось
+   «контраст» (tools/axes.mjs): только системные цвета, `forced-color-adjust:none`
+   — у выбранного в паре `Highlight` / `HighlightText` и у бегунка `CanvasText`. */
+@media (forced-colors:active){
+  .thumb{forced-color-adjust:none;background:CanvasText}
+  .switch input:checked + .track{forced-color-adjust:none;background:Highlight;border-color:Highlight}
+  .switch input:checked + .track > .thumb{background:HighlightText}
+}

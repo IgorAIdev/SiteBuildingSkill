@@ -59,11 +59,21 @@ export const AXES = {
   },
   contrast: {
     name: 'контраст: усиленный и принудительные цвета',
-    how: '`@media (prefers-contrast: more)` усиливает роли (волосок — сплошной, приглушённые чернила — непрозрачные), а не рисует вторую тему; `@media (forced-colors: active)` — обводки вместо теней, `outline` у фокуса, системные цвета; `forced-color-adjust: none` только для образца цвета и выбранного в системной паре `Highlight` / `HighlightText`',
+    how: '`@media (prefers-contrast: more)` усиливает роли (волосок — сплошной, приглушённые чернила — непрозрачные), а не рисует вторую тему; `@media (forced-colors: active)` — обводки вместо теней, `outline` у фокуса, системные цвета; `forced-color-adjust: none` только для образца цвета, выбранного в системной паре `Highlight` / `HighlightText` и бегунка переключателя (`CanvasText`: заливку режим стирает, а галочка скрыта)',
     features: ['prefers-contrast', 'forced-colors'],
     varies: 'линия, приглушённые чернила, вуали, тень → обводка',
     static: 'раскладка, размеры',
     source: 'MDN prefers-contrast, forced-colors; css-color-adjust §3.1; Edge blog о forced colors',
+  },
+  /* Носитель — тип, а не признак: `@media print` без скобок (И791). */
+  medium: {
+    name: 'носитель: экран / бумага',
+    how: '`@media print` — один блок в основании (base.css): что не печатается, говорит разметка (`data-print="skip"` — шапка, подвал, крошки, оглавление, стопка помощи, полоса согласия), `color-scheme: light` переводит роли `light-dark()` на день — и на выбранной ночи (`:root:root[data-theme]` сильнее `:root[data-theme=dark]` токенов), тени сняты, заголовок не остаётся последней строкой листа; у бегущего текста внешняя ссылка печатается с адресом (`prose`)',
+    features: [],
+    types: ['print'],
+    varies: 'показ служебного, схема цвета, тени, разрывы листа',
+    static: 'роли цвета и шкала — бумага берёт дневные значения тех же ролей, своих красок у печати нет',
+    source: 'MDN @media print, break-after, break-inside; OUG 34/2014 ст. 8 (договор на долговечном носителе); WCAG 1.4.8',
   },
 }
 
@@ -76,6 +86,7 @@ export const axisOf = (query) => {
   const q = query.toLowerCase()
   for (const [key, ax] of Object.entries(AXES)) {
     if (ax.features.some((f) => new RegExp(`\\(\\s*(?:${f})\\s*[:)]`).test(q))) return key
+    if ((ax.types ?? []).some((t) => new RegExp(`(?:^|[\\s,])(?:only\\s+)?${t}\\b`).test(q))) return key
   }
   return null
 }

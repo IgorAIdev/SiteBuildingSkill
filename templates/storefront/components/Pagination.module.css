@@ -18,17 +18,13 @@
 .total{display:none;padding-inline:var(--gap-targets);font-size:var(--body-size);color:var(--ink-soft);font-variant-numeric:tabular-nums}
 .total b{font-weight:var(--label-weight);color:var(--ink)}
 
-/* Вид — роль `--pager-look`. Умолчание `count` — всё выше, номера без
-   кромки: в покое только цифра, под рукой — круг вуали тихой кнопки
-   (Material UI «Pagination», вариант text: наведение — серый круг, текущий
-   залит). Номер носит тихий стиль
-   каталога своей ручкой: кромка и заливка — прозрачные. */
-.numbers [data-pager]:not([aria-current]){--ctrl-btn-edge:transparent;--ctrl-btn-fill:transparent}
-/* `rings` — номера в кромке тихого стиля каталога (Mantine «Pagination»):
-   круг в волоске, текущий залит; полоски нет. */
-@container style(--pager-look: rings){
-  .numbers [data-pager]:not([aria-current]){--ctrl-btn-edge:inherit;--ctrl-btn-fill:inherit}
-}
+/* Вид — роль `--pager-look`. Номер страницы — та же тихая кнопка сайта, что
+   стрелки рядом и «Add to cart» на карточке: кромка и заливка тихой оси
+   каталога (Look → кнопки), кругом; текущий залит краской выбранного
+   (`--chosen`, Mantine «Pagination»); «Показать ещё» рядом — тихая пилюля, марка
+   только под рукой (бриф `docs/design/кнопки.md`, И790). Слово заказчика 08.10.2026: «кнопки
+   пагинации не совпадают по дизайну с другими кнопками по заливке — сделай
+   единый дизайн кнопок»: вариант «номера без кромки» снят (И721, поправка). */
 /* `compact` — вместо номеров «2 / 4» между стрелками; полоски нет. */
 @container style(--pager-look: compact){
   .numbers{display:none}

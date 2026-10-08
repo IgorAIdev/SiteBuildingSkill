@@ -64,7 +64,7 @@ export function ReviewPlay({ video, children }: { video: Video; children: ReactN
     <>
       <button type="button" className={`${p.frame} ${s.media}`} aria-haspopup="dialog" aria-label={video.play} onClick={open}>
         <img {...shot(video.poster, 'shelf', true)} alt="" decoding="async" />
-        <span className={`${b.btn} ${s.play}`} data-pager="" aria-hidden="true"><Icon id="play" /></span>
+        <span className={`${b.btn} ${s.play}`} data-pager="" data-float="" aria-hidden="true"><Icon id="play" /></span>
       </button>
       <dialog ref={box} className={pn.pane} data-pane="dialog" aria-labelledby={`${id}-title`}>
         <PaneHead title={video.heading} titleId={`${id}-title`} close={video.close} onClose={() => box.current?.close()} />

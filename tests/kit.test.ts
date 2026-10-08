@@ -575,12 +575,14 @@ test('реестр имён: ярус по форме, слово по виду 
    скроллбар красился рукой вопреки color-scheme. */
 test('реестр осей: признак → ось; язык и контраст заведены; скроллбар не красится рукой', async () => {
   const { axisOf, AXES } = await import('../tools/axes.mjs')
-  assert.deepEqual(Object.keys(AXES), ['theme', 'pointer', 'width', 'language', 'motion', 'contrast'])
+  assert.deepEqual(Object.keys(AXES), ['theme', 'pointer', 'width', 'language', 'motion', 'contrast', 'medium'])
+  /* Носитель — тип без скобок: печать договора (И791). */
+  assert.equal(axisOf(' print'), 'medium'); assert.equal(axisOf('(orientation: portrait)'), null)
   assert.equal(axisOf('(pointer:coarse)'), 'pointer'); assert.equal(axisOf('(hover: hover)'), 'pointer')
   assert.equal(axisOf('(prefers-contrast: more)'), 'contrast'); assert.equal(axisOf('(forced-colors:active)'), 'contrast')
   assert.equal(axisOf('(max-width:820px)'), 'width'); assert.equal(axisOf('(orientation: landscape)'), null)
   const base = readFileSync(new URL('../styles/base.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
-  for (const need of ['overflow-wrap:anywhere', 'hyphens:auto', 'quotes:auto', 'text-size-adjust:100%', '@media (prefers-contrast:more)', '@media (forced-colors:active)', '@media (prefers-reduced-motion:reduce)']) {
+  for (const need of ['overflow-wrap:anywhere', 'hyphens:auto', 'quotes:auto', 'text-size-adjust:100%', '@media (prefers-contrast:more)', '@media (forced-colors:active)', '@media (prefers-reduced-motion:reduce)', '@media print']) {
     assert.ok(base.includes(need), `в основании нет оси: ${need}`)
   }
   assert.ok(!/scrollbar-color/.test(base), 'скроллбар красится рукой — его красит color-scheme')
@@ -909,8 +911,8 @@ test('пороги раскладки читаются инструментам�
 })
 
 /* И228: форма — роли со смыслом. Радиусы из лестницы и по узлу, полный круг
-   только у главного действия, линия не течёт, тени по работе. */
-test('форма: радиусы из набора и лестницы, полный круг только главному действию, линия из порогов, тени по работе', async () => {
+   у кнопки и кнопки-знака (поправка И790), линия не течёт, тени по работе. */
+test('форма: радиусы из набора и лестницы, полный круг кнопке и кнопке-знаку, линия из порогов, тени по работе', async () => {
   const { SHAPE } = await import('../tools/thresholds.mjs')
   const { resolve, auditScale } = await import('../tools/scale.mjs')
   for (const name of ['--r-xs', '--r-ctrl', '--r-card', '--r-sheet', '--r-pop', '--line-w', '--ring-w', '--ring-off']) {
@@ -1132,10 +1134,12 @@ test('сегмент рисует кнопку и ссылку одним рис
   assert.match(primitives, /\.seg \[aria-disabled="true"\]\{/)
   /* Тихая плашка — ступень пола; на полу страницы она тонула (1.14 при
      норме 1.15, check:craft `sunk`). Орган отличает от пола кромка — роль
-     тихого органа `--edge` (И258). */
+     тихого органа `--edge` (И258), своя у сегмента при любой тихой оси: у «Вуали» и
+     «Черты» кромки нет, и варианты стояли бы словами в воздухе (разбор 08.10.2026, И790). */
   const seg = primitives.match(/\.seg :is\(button, a\)\{[^}]*\}/)?.[0] ?? ''
-  assert.match(seg, /box-shadow:inset 0 0 0 var\(--line-w\) var\(--edge\)/)
-  /* Выбранный держит заливку `--pop`; кромка поверх неё — вторая рамка. */
+  assert.match(seg, /--seg-edge:var\(--edge\);/)
+  assert.match(seg, /box-shadow:inset 0 0 0 var\(--line-w\) var\(--seg-edge\)/)
+  /* Выбранный держит заливку выбранного `--chosen`; кромка поверх неё — вторая рамка. */
   const on = primitives.match(/\.seg :is\(\[aria-pressed="true"\], \[aria-current="true"\]\)\{[^}]*\}/)?.[0] ?? ''
   assert.match(on, /box-shadow:none/)
   /* Принудительные цвета стирают и заливку, и тень: ссылке-сегменту — обводка,

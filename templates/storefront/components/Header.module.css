@@ -131,10 +131,12 @@
    только когда оно больше нуля: центром на верхнем правом углу знака
    (`.cartSign`), кегль — доля надписи органа, кружок ~18 на знаке 20 (было
    22 — крупнее самого знака). Место под число не занимается — шапка от
-   него не прыгает. */
+   него не прыгает. Угол — полукруг от своей высоты (1.6em = 1.6 кегля надписи
+   `--ctrl-fs-xs`, половина — .8 кегля), как у фишки-пилюли: 50 % давало овал на
+   двузначном числе (разбор 08.10.2026; И790). */
 .badge{
   position:absolute;inset-block-start:0;inset-inline-end:0;translate:50% -75%;
-  display:grid;place-items:center;min-inline-size:1.6em;block-size:1.6em;padding-inline:.35em;border-radius:50%;
+  display:grid;place-items:center;min-inline-size:1.6em;block-size:1.6em;padding-inline:.35em;border-radius:calc(var(--ctrl-fs-xs) * .8);
   background:var(--pop);color:var(--on-pop);
   font-size:var(--ctrl-fs-xs);text-align:center;font-variant-numeric:tabular-nums
 }
@@ -476,7 +478,7 @@
 /* Строки подменю, подпись группы и знак полки перед словом — меню набора
    (styles/menu.module.css, И730): своего рисунка у подменю шапки нет. */
 .nav:is(:popover-open, [data-leaving]) .links li[data-params]{display:grid;grid-template-columns:minmax(0, 1fr) auto;align-items:center;column-gap:var(--gap-row)}
-.nav:is(:popover-open, [data-leaving]) .params{display:inline-flex;--btn-h:var(--ctrl-target);inline-size:var(--btn-h);padding:0}
+.nav:is(:popover-open, [data-leaving]) .params{display:inline-flex;--btn-h:var(--ctrl-target)}
 .nav:is(:popover-open, [data-leaving]) .paramsPanel:not([hidden]){
   display:flex;flex-direction:column;gap:var(--air-row);grid-column:1 / -1;
   padding:var(--sp-2) var(--pad-inner) var(--pad-inner)

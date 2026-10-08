@@ -1,5 +1,7 @@
+import type { ReactNode } from 'react'
 import p from '@/styles/primitives.module.css'
 import b from '@/styles/btn.module.css'
+import go from '@/styles/go.module.css'
 import { Icon } from '@/components/Icon.tsx'
 import { Turn } from '@/components/Turn.tsx'
 import { QuantityStepper } from '@/components/QuantityStepper.tsx'
@@ -7,7 +9,6 @@ import { SITE_LOOK, type Look } from '@/lib/counter-look.ts'
 import { VariantPicker } from '@/components/VariantPicker.tsx'
 import { SaveToggle, type SaveSign } from '@/components/SaveToggle.tsx'
 import { Pagination } from '@/components/Pagination.tsx'
-import type { PagesView } from '@/lib/catalog-view.ts'
 import { CategoryButton } from '@/components/CategoryButton.tsx'
 import { HelpDock } from '@/components/HelpDock.tsx'
 import { reachRows, supportHref, SUPPORT } from '@/lib/contacts.ts'
@@ -21,6 +22,7 @@ import { buttonCatalog, type ButtonAxis } from './sheet.ts'
 import { SliderIcon } from './Sliders.tsx'
 import { ElementTiles } from './Elements.tsx'
 import { t } from '@/lib/i18n/index.ts'
+import { showLabel, type PagesView } from '@/lib/catalog-view.ts'
 import s from './design.module.css'
 import product from './product.module.css'
 
@@ -67,7 +69,7 @@ const OPTIONS: OptionGroupLinks[] = [
   { code: 'volume', name: 'Объём', options: [['10', '10 мл', true], ['30', '30 мл', false], ['50', '50 мл', null]].map(([code, name, on]) => ({ code: code as string, name: name as string, href: on === null ? null : '#', current: on === true })) },
 ]
 /** Листание под полкой — «Показать ещё» и номера страниц (`--pager-look`, панель Look → Card, И721; ASOS, Gymshark, Material UI, Mantine). Первый — как на сайте. */
-const PAGER_LOOKS: [string, string][] = [['count', 'Листание: номера'], ['rings', 'Листание: номера в кругах'], ['compact', 'Листание: компактно «1 / 4»']]
+const PAGER_LOOKS: [string, string][] = [['rings', 'Листание: номера'], ['compact', 'Листание: компактно «1 / 4»']]
 /** Первая страница полки из четырёх, как на сайте: 24 товара из 96 показано. */
 const PAGES: PagesView = {
   label: 'Страницы', prev: null, next: '#top', prevLabel: 'Назад', nextLabel: 'Дальше',
@@ -307,6 +309,52 @@ function PairTile({ cat, fill, cart }: { cat: ButtonAxis[]; fill: Fill; cart?: b
   )
 }
 
+/* Роли кнопок — первым на вкладке (бриф `docs/design/кнопки.md`, И790; слово заказчика
+   08.10.2026: «сделай единый дизайн кнопок, мы по дизайн-системе делаем»). Каждая роль
+   таблицы «место → роль» — настоящей кнопкой сайта: классы её модуля и компоненты
+   сайта, без своих красок и угла на плитке — как стоит в магазине (опубликованный вид).
+   Две формы — пилюля со словом и круг со знаком; что важнее, говорит одна заливка. */
+type Role = { key: string; name: string; sample: ReactNode; stack?: boolean }
+const RoleTile = ({ name, sample, stack }: Omit<Role, 'key'>) => (
+  <li className={s.btnStyle}>
+    <span className={stack ? `${s.famSample} ${s.famStack}` : s.famSample}>{sample}</span>
+    <span className={s.btnName}>{name}</span>
+  </li>
+)
+function roleList(lang: Lang, shelf: { name: string; sign: string } | undefined): Role[] {
+  const shopAll = t(lang, 'nav.shopAll')
+  return [
+    { key: 'loud', name: 'Громкая — одна на область; крупная — последнее действие формы', stack: true, sample: <>
+      <button className={b.btn} data-voice="loud" type="button">{t(lang, 'cart.add')}</button>
+      <button className={b.btn} data-voice="loud" data-size="lg" type="button">{t(lang, 'cart.checkout')}</button>
+    </> },
+    { key: 'quiet', name: 'Тихая', sample: <button className={b.btn} type="button">{t(lang, 'cart.open')}</button> },
+    { key: 'quiet-pop', name: 'Тихая · марка под рукой: листание полки и покупка с карточки', sample: <button className={b.btn} data-hand="pop" type="button">{t(lang, 'shelf.all')}<Icon id="arrow-right" /></button> },
+    { key: 'pair', name: 'Пара: тихая и громкая', sample: <>
+      <button className={b.btn} type="button">{t(lang, 'search.clear')}</button>
+      <button className={b.btn} data-voice="loud" type="button">{showLabel(lang, 24)}</button>
+    </> },
+    { key: 'off', name: 'Выключенная', sample: <>
+      <button className={b.btn} data-voice="loud" type="button" disabled>{t(lang, 'cart.add')}</button>
+      <button className={b.btn} type="button" disabled>{t(lang, 'cart.open')}</button>
+    </> },
+    { key: 'bare', name: 'Без плиты', sample: <button className={b.btn} data-voice="bare" type="button"><Icon id="sliders-horizontal" />{t(lang, 'catalog.open')}</button> },
+    { key: 'word', name: 'Слово', sample: <a className={b.word} href="#top">{t(lang, 'checkout.change')}</a> },
+    { key: 'bad', name: 'Слово · удалить', sample: <button className={`${b.word} ${p.tap}`} data-hand="bad" type="button">{t(lang, 'cart.remove')}</button> },
+    { key: 'go', name: 'Куда ведёт: вперёд и назад', stack: true, sample: <>
+      <a className={go.go} href="#top">{t(lang, 'blog.read')}<Icon id="arrow-right" /></a>
+      <a className={go.go} data-to="back" href="#top"><Icon id="arrow-left" />{t(lang, 'blog.back')}</a>
+    </> },
+    /* Кнопка-знак — настоящее листание полки (`Pagination`): стрелки, номер, текущий. */
+    { key: 'sign', name: 'Кнопка-знак: стрелка, номер, текущий', sample: <div className={s.pagerSample}><Pagination pages={PAGES} /></div> },
+    { key: 'chip', name: 'Фишка с крестиком', sample: <a className={p.chip} data-pill="" href="#top">10 %<Icon id="x" /></a> },
+    { key: 'cat', name: 'Кнопка категории: «Shop all» и тихая', stack: true, sample: <>
+      <CategoryButton name={shopAll} sign="shop-awning" />
+      {shelf ? <CategoryButton quiet name={shelf.name} sign={shelf.sign} /> : null}
+    </> },
+  ]
+}
+
 export async function ButtonList({ lang }: { lang: Lang }) {
   const { names } = await lookNow()
   const cat = buttonCatalog()
@@ -323,8 +371,21 @@ export async function ButtonList({ lang }: { lang: Lang }) {
   ]
   return (
     <>
+      <Part title="Роли кнопок" lede="Каждая роль — настоящей кнопкой сайта, как она стоит в магазине. У кнопки две формы: пилюля, если на ней слово, и круг, если на ней только знак; что важнее, говорит заливка — громкая одна на область. Наведите и нажмите.">
+        <ul className={`${p.grid} ${s.btnStyles}`}>
+          {roleList(lang, categories[1]).map(({ key, ...r }) => <RoleTile key={key} {...r} />)}
+          <li className={s.btnStyle}>
+            <span className={s.famSample}>
+              <div className={s.dockSample}>
+                <HelpDock bare rows={reachRows({ phone: t(lang, 'reach.phone'), email: t(lang, 'reach.email') })} who={{ name: SUPPORT.name, href: supportHref() }} words={{ open: t(lang, 'reach.menu'), online: t(lang, 'reach.online'), top: t(lang, 'reach.top') }} />
+              </div>
+            </span>
+            <span className={s.btnName}>Висящая кнопка-знак: связь и «Наверх»</span>
+          </li>
+        </ul>
+      </Part>
       <ShapeSets cat={cat} names={names} />
-      <Part title="Кнопки категорий" lede="Категория — это товар, поэтому в кружке иконка товара вместо стрелки; кружок под ней — цвета пола, знак — чернилами. Кнопка — «Кружок со стрелкой»; у каждой категории два роста: стандартная и крупная. Первой стоит «В магазин» — выход ко всему товару. Стоят на снимке, поэтому без контура: прозрачная кнопка на снимке теряет надпись — Veil, Fill, Gradient.">
+      <Part title="Кнопки категорий" lede="Категория — это товар, поэтому в кружке иконка товара вместо стрелки; кружок под ней — цвета пола, знак — чернилами. Кнопка — «Кружок со стрелкой»; у каждой категории два роста: стандартная и крупная. Первой стоит «В магазин» — выход ко всему товару. На сайте залита маркой одна «Shop all», полки — тихие, как все тихие кнопки; заливки на выбор — Veil, Fill, Gradient.">
         {CATEGORY_FILLS.map((fill) => (
           <div key={fill} className={s.group}>
             <h3>{FILL_NAME[fill]}</h3>
@@ -370,11 +431,11 @@ export async function ButtonList({ lang }: { lang: Lang }) {
               <li key={look} className={s.btnStyle}>
                 <span className={s.famSample}><div className={s.pagerSample} style={cssVar('--pager-look', look)}><Pagination pages={PAGES} /></div></span>
                 <span className={s.btnName}>{name}</span>
-                <Worn on={look === (names['pager-look'] ?? 'count')} />
+                <Worn on={look === (names['pager-look'] ?? 'rings')} />
               </li>
             ))}
             <li className={s.btnStyle}>
-              <span className={s.famSample}><div className={s.pagerSample} style={cssVar('--pager-look', names['pager-look'] ?? 'count')}><Pagination pages={PAGES_FEW} /></div></span>
+              <span className={s.famSample}><div className={s.pagerSample} style={cssVar('--pager-look', names['pager-look'] ?? 'rings')}><Pagination pages={PAGES_FEW} /></div></span>
               <span className={s.btnName}>Листание: две страницы — два круга</span>
             </li>
           </ul>
@@ -434,8 +495,8 @@ export async function ButtonList({ lang }: { lang: Lang }) {
         </div>
         {/* Слово без подложки (И740, И671): у кнопки нет плиты и кромки — только
             слово и знак, тихое → полное под рукой; так стоят «Фильтры» и порядок
-            над полкой (Allbirds, Gymshark), «Открыть корзину» под оформлением
-            (Allbirds) и ссылки подвала. Образцы — настоящие классы сайта. */}
+            над полкой (Allbirds, Gymshark) и ссылки подвала; низ корзины —
+            пара тихой и громкой (И772). Образцы — настоящие классы сайта. */}
         <div className={s.group}>
           <ul className={`${p.grid} ${s.btnStyles}`}>
             <li className={s.btnStyle}>
@@ -446,24 +507,6 @@ export async function ButtonList({ lang }: { lang: Lang }) {
             <li className={s.btnStyle}>
               <span className={s.famSample}><button className={b.btn} data-voice="bare" type="button"><Icon id="list-filter" />Сначала дешёвые</button></span>
               <span className={s.btnName}>Слово: порядок полки</span>
-              <Worn on />
-            </li>
-            <li className={s.btnStyle}>
-              <span className={s.famSample}><a className={b.word} href="#top">Открыть корзину</a></span>
-              <span className={s.btnName}>Слово: под кнопкой оформления</span>
-              <Worn on />
-            </li>
-          </ul>
-        </div>
-        <div className={s.group}>
-          <ul className={`${p.grid} ${s.btnStyles}`}>
-            <li className={s.btnStyle}>
-              <span className={s.famSample}>
-                <div className={s.dockSample}>
-                  <HelpDock bare rows={reachRows({ phone: t(lang, 'reach.phone'), email: t(lang, 'reach.email') })} who={{ name: SUPPORT.name, href: supportHref() }} words={{ open: t(lang, 'reach.menu'), online: t(lang, 'reach.online'), top: t(lang, 'reach.top') }} />
-                </div>
-              </span>
-              <span className={s.btnName}>Связь и «Наверх»</span>
               <Worn on />
             </li>
           </ul>

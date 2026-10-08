@@ -10,5 +10,5 @@ import { StateScreen } from './StateScreen.tsx'
    «все товары» первой, дальше главные полки. Ни знака в круге, ни громкой кнопки, ни кнопок
    категорий — путь есть текст. Одна разметка на все пустые экраны этого рода (правило 10). */
 export function EmptyPaths({ level, title, lead, shelves }: { level: 1 | 2; title: string; lead: string; shelves: ShelvesView }) {
-  return <StateScreen level={level} kind="empty" title={title} lead={lead} flush after={<ShelfRows label={shelves.label} rows={shelves.links} />} />
+  return <StateScreen level={level} kind="empty" title={title} lead={lead} flush after={<ShelfRows label={shelves.label} rows={shelves.links} bleed={level === 1} />} />
 }

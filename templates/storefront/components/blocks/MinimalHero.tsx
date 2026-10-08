@@ -1,3 +1,4 @@
+/* look-home:minimal:file */
 import p from '@/styles/primitives.module.css'
 import b from '@/styles/btn.module.css'
 import go from '@/styles/go.module.css'

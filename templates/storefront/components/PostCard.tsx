@@ -25,7 +25,7 @@ import { shot } from '@/lib/shot.ts'
 export function PostCard({ post, wide = false, label, level = 3 }: { post: PostCardView; wide?: boolean; label?: string; level?: 2 | 3 }) {
   const Title = level === 2 ? 'h2' : 'h3'
   return (
-    <article className={wide ? `${p.switcher} ${s.wide}` : s.card}>
+    <article className={wide ? `${p.switcher} ${s.cardWide}` : s.card}>
       <div className={`${p.frame} ${s.shot}`}>{post.image ? <img {...shot(post.image, 'shelf', true)} alt="" decoding="async" /> : null}</div>
       <div className={s.text}>
         {label ? <p className={p.chip} data-pill>{label}</p> : null}

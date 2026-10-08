@@ -117,7 +117,7 @@ export type PostAuthor = { name: string; role: string; bio: string }
 export type Post = {
   slug: string; date: string; updated: string | null; title: string; subtitle: string | null; summary: string; tldr: string | null
   topic: PostTopic | null; featured: boolean; image: Image | null; author: PostAuthor | null
-  sections: (Omit<DocSection, 'id' | 'form'> & { id?: string })[]; faq: { q: string; a: string }[]
+  sections: (Omit<DocSection, 'id' | 'slot' | 'when'> & { id?: string })[]; faq: { q: string; a: string }[]
   sources: { title: string; url: string }[]; shelf: string | null
 }
 /** Отзыв покупателя (лента отзывов на главной, И728). `product` — о каком
@@ -136,14 +136,30 @@ export type Review = {
  *  `(withdraw)`, `(catalog)` или `(https://…)`, реквизиты — `{company.name}` и
  *  соседи (lib/doc-view.ts заполняет их из lib/company.ts и lib/contacts.ts:
  *  данные магазина в одном месте, текст их не повторяет). `list` и `table` —
- *  после текста; `form: 'withdrawal'` — кнопка отказа от договора (OUG 34/2014,
- *  с 19.06.2026 — ст. 11a Директивы 2011/83). */
-export type DocSection = { id: string; heading: string; body: string; list?: string[]; table?: { head: string[]; rows: string[][] }; note?: string; form?: 'withdrawal' }
+ *  после текста; `slot` — вещь сайта после текста раздела (И791): `withdrawal` —
+ *  кнопка отказа от договора (OUG 34/2014, с 19.06.2026 — ст. 11a Директивы
+ *  2011/83), `cookie-settings` — «Setări cookie», `cookie-optional` — таблицы
+ *  необязательных категорий из реестра (lib/storage.json), `guarantee-notice` —
+ *  уведомление ЕС о законной гарантии (Регл. 2025/1960). `when` — раздел только
+ *  для магазина с необязательными cookie (`consent`) или без них
+ *  (`no-consent`): текст о согласии меняется сам, когда в реестре появляется
+ *  первая необязательная категория (lib/consent-view.ts, `hasOptional`). */
+export type DocSlot = 'withdrawal' | 'cookie-settings' | 'cookie-optional' | 'guarantee-notice'
+export const DOC_SLOTS: readonly DocSlot[] = ['withdrawal', 'cookie-settings', 'cookie-optional', 'guarantee-notice']
+export type DocSection = { id: string; heading: string; body: string; list?: string[]; table?: { head: string[]; rows: string[][] }; note?: string; slot?: DocSlot; when?: 'consent' | 'no-consent' }
 /** Документ магазина: условия, доставка, возврат, гарантия, данные, cookie, о
  *  нас, анализы, доступность. `updated` — дата последней правки (ISO), строкой
  *  под именем; `faq` — вопросы с ответами (разметка FAQPage); `table:
- *  'delivery'` — первым разделом таблица способов из данных оформления. */
-export type Doc = { slug: string; title: string; summary: string; updated: string | null; sections: DocSection[]; faq: { q: string; a: string }[]; table: 'delivery' | null }
+ *  'delivery'` — первым разделом таблица способов из данных оформления,
+ *  `'storage'` — таблица строго необходимых cookie из реестра (lib/storage.json,
+ *  И791); `numbered` — договорный документ: номер раздела в заголовке и в
+ *  оглавлении, на пункт можно сослаться (условия, данные, cookie, возврат,
+ *  гарантия). */
+export type Doc = { slug: string; title: string; summary: string; updated: string | null; numbered: boolean; sections: DocSection[]; faq: { q: string; a: string }[]; table: 'delivery' | 'storage' | null }
+/** Запись согласия на cookie (И791): случайный id из cookie выбора, версия
+ *  реестра, выбранные категории, время. Без IP и без имени — только то, чем
+ *  магазин доказывает согласие (GDPR ст. 7 (1)). */
+export type ConsentRecord = { id: string; revision: number; categories: string[]; at: string }
 export type Block =
   /** Герой — заголовок и абзац ПОВЕРХ широкого снимка (`image`, ≈ 16:10),
    *  под ними большая кнопка «В магазин» и кнопки главных полок. Снимок один:
@@ -240,6 +256,9 @@ export type Content = {
    *  рассылки (выбор — при запуске магазина); письмо-подтверждение шлёт он.
    *  Образец адрес принимает и не хранит. */
   subscribe(lang: Lang, email: string): Promise<Result<null>>
+  /** Журнал согласий на cookie (И791): у Payload — коллекция `consents`
+   *  (план 4, docs/open.md); образец принимает и не хранит. */
+  recordConsent(entry: ConsentRecord): Promise<Result<true>>
 }
 
 /* ── Покупка ─────────────────────────────────────────────────────────────

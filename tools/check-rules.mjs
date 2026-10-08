@@ -71,7 +71,10 @@ const has = (p) => existsSync(join(ROOT, p))
    (seo-content — источник в skills/site-building, едет в магазин отдельным
    скиллом). Чужие скиллы (вкус, движение,
    процесс) сюда не входят — их текст не наш и не правится. */
-const SKILL_DIRS = ['.claude/skills/craft', '.claude/skills/palette', '.claude/skills/scale', '.claude/skills/code', '.claude/skills/shop', '.claude/skills/stages', 'skills/site-building/assets/seo-content']
+/* seo-content: у набора — источник в skills/site-building, у поставленного сайта —
+   копия установщика в .claude/skills (08.10.2026: сайт ругался «скилла нет»). */
+const SEO_CONTENT = existsSync(join(ROOT, 'skills/site-building/assets/seo-content/SKILL.md')) ? 'skills/site-building/assets/seo-content' : '.claude/skills/seo-content'
+const SKILL_DIRS = ['.claude/skills/craft', '.claude/skills/palette', '.claude/skills/scale', '.claude/skills/code', '.claude/skills/shop', '.claude/skills/stages', SEO_CONTENT]
 const LEDGER = 'docs/rules.md'
 /** С этого номера правило журнала обязано назвать источник (И661). */
 const SOURCED_FROM = 661

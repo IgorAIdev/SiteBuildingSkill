@@ -132,7 +132,7 @@ test('the empty cart is a word and quiet category rows, all products first, in t
   assert.equal(v.empty.shelves.links[1].sign, cols.value[0].sign)
   assert.equal(cartView('en', null, null).empty.shelves.links.length, 1)
   const dir = new URL('../components/', import.meta.url)
-  for (const user of ['CartView.tsx', 'CartPane.tsx', '../look-panel/design/CheckoutParts.tsx']) assert.match(readFileSync(new URL(user, dir), 'utf8'), /<EmptyPaths /, user)
+  for (const user of ['CartView.tsx', 'CartPane.tsx']) assert.match(readFileSync(new URL(user, dir), 'utf8'), /<EmptyPaths /, user)
   const empty = readFileSync(new URL('EmptyPaths.tsx', dir), 'utf8')
   assert.match(empty, /<ShelfRows /)
   assert.doesNotMatch(empty, /icon=|loud|CategoryButton/, 'ни знака в круге, ни громкой кнопки, ни кнопок категорий')
@@ -196,9 +196,7 @@ test('the cart page puts the lines on a sheet like the summary', () => {
    сделаем»; И689). Образец в дизайн-системе — тот же компонент. */
 test('the empty favourites is the same word-and-rows screen as the empty cart', async () => {
   const page = readFileSync(new URL('../app/[lang]/saved/page.tsx', import.meta.url), 'utf8')
-  const design = readFileSync(new URL('../look-panel/design/DesignPage.tsx', import.meta.url), 'utf8')
   assert.match(page, /<EmptyPaths level=\{1\} title=\{t\(lang, 'saved\.empty'\)\} lead=\{t\(lang, 'saved\.emptyLead'\)\}/)
   assert.doesNotMatch(page, /icon="heart"|loud/)
-  assert.match(design, /<EmptyPaths level=\{2\} title=\{t\(lang, 'saved\.empty'\)\}/)
   for (const lang of ['en', 'ro', 'hu'] as const) assert.doesNotMatch(t(lang, 'saved.emptyLead'), /!/, lang)
 })

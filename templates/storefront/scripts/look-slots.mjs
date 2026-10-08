@@ -62,7 +62,7 @@ export const PRODUCT = {
   '--seg-look': { type: 'keyword', value: 'chips' },
   '--stock-look': { type: 'keyword', value: 'sign' },
   '--auth-look': { type: 'keyword', value: 'plain' },
-  '--pager-look': { type: 'keyword', value: 'count' },
+  '--pager-look': { type: 'keyword', value: 'rings' },
   '--filter-look': { type: 'keyword', value: 'drawer' },
   '--filter-phone': { type: 'keyword', value: 'drawer' },
   '--save-look': { type: 'keyword', value: 'disc' },

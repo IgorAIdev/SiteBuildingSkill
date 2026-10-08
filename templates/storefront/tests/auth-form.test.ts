@@ -36,7 +36,6 @@ test('the form stands on the page or on a card — a look value, the site keeps 
   assert.match(card, /background:var\(--surface\)/, 'на листе — краска листа')
   assert.match(card, /box-shadow:inset 0 0 0 var\(--line-w\) var\(--rule\)$/, 'край — волосок, а не тень (И336)')
   assert.doesNotMatch(css.match(/^\.auth\{([^}]*)\}/m)?.[1] ?? '', /box-shadow|background/, 'на полу страницы — ни листа, ни края')
-  assert.match(read('../look-panel/design/AccountParts.tsx'), /cssVar\('--auth-look', look\)/, 'дизайн-система показывает оба вида настоящей страницей входа')
 })
 
 /* Вход через Google и Facebook (И787). Заказчик 08.10.2026: «регистрация / вход в
@@ -101,16 +100,17 @@ test('«or» stands between hairlines; the row and the buttons are the stack pri
   assert.doesNotMatch(css, /\.social\{|\.providers\{display:flex/, 'стопку не пишут заново — её берут (правило 7)')
 })
 
-test('the design system shows sign-in (both looks) and sign-up with the provider row, whatever the source', () => {
-  const ds = read('../look-panel/design/AccountParts.tsx')
-  assert.match(ds, /<AuthPage view=\{signInView\(lang, null, ALL\)\} action=\{still\} social=\{stillSocial\}/)
-  assert.match(ds, /<AuthPage view=\{signUpView\(lang, null, ALL\)\} action=\{still\} social=\{stillSocial\}/)
-  assert.match(ds, /const ALL = \[\.\.\.PROVIDERS\]/)
-})
-
 test('sign-in pages do not stand in a foreign frame (clickjacking of the password form and provider buttons)', () => {
   const conf = read('../next.config.ts')
   assert.match(conf, /source: '\/:lang\/account\/:path\*'/)
   assert.match(conf, /frame-ancestors 'self'/)
   assert.match(conf, /X-Frame-Options', value: 'SAMEORIGIN'/)
+})
+
+/* Заказчик 08.10.2026: «похоже не по ролям типографика» — вспомогательные слова формы
+   (забыли пароль, пути под формой, строка о заказе без кабинета) одной ролью подписи. */
+test('the sign-in helper words share the field label role', () => {
+  const css = read('../components/Account.module.css').replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.match(css, /\.forgot,\.ways\{font-size:var\(--label-size\);line-height:var\(--label-lead\)\}/)
+  assert.match(css, /\.ways > p\{font-size:inherit;line-height:inherit\}/)
 })

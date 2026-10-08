@@ -16,7 +16,7 @@
  *    .title  заголовок окна — своя роль (`--panehead-*`): в разметке окна
  *            это h2, но ступенью ниже заголовка раздела — окно в 400, а
  *            не страница (И551); уровень роли знает семья `headRole`;
- *    .close  крестик — кнопка сайта (`btn`) квадратом ростом цели;
+ *    .close  крестик — кнопка-знак сайта (`btn`, `data-pager`) кругом ростом цели;
  *    .body   тело: прокручивается только оно, остаток прокрутки не уходит
  *            на страницу;
  *    .foot   низ (по желанию): действия, которые палец находит, не
@@ -252,8 +252,10 @@
    компонента, решивший своё, перебивает её, но проверка `paneTop` (check:craft) мерит
    отрисованное. */
 :where(.pane) :where(h1, h2, h3):not(.title){font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--h3-weight);letter-spacing:var(--body-track)}
-.close{--btn-h:var(--ctrl-target);flex:none;inline-size:var(--btn-h);padding:0}
-.close svg{inline-size:var(--icon-size);block-size:var(--icon-size)}
+/* Крестик — кнопка-знак модуля (`data-pager`: ширина от роста, круг); место ставит
+   рост цели и рост знака (`--btn-icon`), весом выше `.btn` — не порядком кусков CSS
+   (разбор 08.10.2026, И790). */
+.bar .close{--btn-h:var(--ctrl-target);--btn-icon:var(--icon-size);flex:none}
 
 .body{
   flex:1 1 auto;min-block-size:0;

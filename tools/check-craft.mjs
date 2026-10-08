@@ -298,6 +298,11 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
   const shown = (el) => {
     const cs = getComputedStyle(el)
     if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) < 0.05) return false
+    /* Содержимое закрытого `<details>` у Chromium держит коробку: свёртка
+       прячет его `content-visibility: hidden`, а не `display: none`. Строки
+       оглавления статьи под закрытой «Contents» мерились как видимые, и
+       «мёртвая зона» насчитала 201 точку там, где глазу пусто (08.10.2026). */
+    if (el.checkVisibility && !el.checkVisibility()) return false
     const b = el.getBoundingClientRect()
     if (b.width <= 0 || b.height <= 0) return false
     /* Убранное с экрана обрезкой — заголовок «только для чтения вслух»:
@@ -2217,7 +2222,9 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
    * у которого есть что листать, стоит внутри колонки — между линиями
    * текста обёртки страницы. */
   {
-    const w = document.querySelector('main[class*="__wrap"]:not([class*="flush"]), main [class*="__wrap"]:not([class*="flush"])')
+    /* Класс обёртки — как его пишет сборщик: `primitives-module__x__wrap` или у нынешней
+       сборки Next `fUaS7G_wrap` (08.10.2026: с новым именем лента не мерилась вовсе). */
+    const w = document.querySelector('main[class*="_wrap"]:not([class*="flush"]), main [class*="_wrap"]:not([class*="flush"])')
     if (w) {
       const cs = getComputedStyle(w)
       const wb = w.getBoundingClientRect()

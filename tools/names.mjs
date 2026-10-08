@@ -94,6 +94,9 @@ export const MODIFIERS = new Set([
   /* стрелка у конца главной кнопки без кружка (`--ctrl-btn-glyph`) и вырез
      знака в заливке, общий кружку и стрелке (`--btn-cut`; элемент 03, И423) */
   'glyph', 'cut',
+  /* рост знака в кнопке, который ставит место (`--btn-icon`: крестик окна, соцсети,
+     плитка «знак над словом»; `.btn` её не объявляет — место не спорит весом, И790) */
+  'icon',
   /* второй конец градиента главной кнопки (`--pop-grad`, И424) */
   'grad',
   /* стекло главной кнопки: краска долей, блик кромки, размытие под ней
@@ -133,7 +136,9 @@ export const HOOKS = ['stack', 'cluster', 'switch', 'rail', 'section', 'sheet', 
   /* размер точки указателя слайдов (`--dot`, styles/slides.module.css, И502) */
   'dot',
   /* тихий знак (`--glyph-h`, `--glyph-box`, styles/glyph.module.css, И677): рост знака без подложки и коробка цели вокруг него */
-  'glyph']
+  'glyph',
+  /* переключатель (`--toggle-h`, `--toggle-pad`, styles/form.module.css, И791): высота дорожки и поле бегунка — доли роста органа */
+  'toggle']
 
 const VALUE = [
   { rx: new RegExp(`^--${FAMS(COLOUR_FAMILIES)}-\\d{1,2}$`), family: 'ступень цвета', by: 'tools/palette.mjs' },

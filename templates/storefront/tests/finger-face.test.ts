@@ -21,7 +21,7 @@ test('the cart row draws its organs at the small-organ face, not at finger heigh
   assert.match(cart, /\.drop\{[^}]*min-block-size:var\(--ctrl-face\)/)
   assert.doesNotMatch(cart, /\.(act|sum|drop)\{[^}]*--ctrl-h-sm/)
   /* Палец получает цель запасом: у счётчика — data-hit, у «Удалить» — p.tap. */
-  assert.match(lines, /className=\{`\$\{go\.go\} \$\{p\.tap\} \$\{s\.drop\}`\}/)
+  assert.match(lines, /className=\{`\$\{b\.word\} \$\{p\.tap\} \$\{s\.drop\}`\} data-hand="bad"/)
 })
 
 test('a narrow cart pane puts the unit price on the facts row, not on its own row', () => {

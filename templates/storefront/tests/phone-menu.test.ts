@@ -14,8 +14,9 @@ const css = read('../components/Header.module.css')
 
 test('the menu button stands first in the header row, before the logo', () => {
   const bars = [...header.matchAll(/\{menu\(lang, nav\)\}[\s\S]{0,40}?\{logo\(lang\)\}/g)]
-  /* classic, search и сборка cbdin (tray, nested, step — одна разметка). */
-  assert.equal(bars.length, 3)
+  /* С панелью — classic, search и сборка cbdin (tray, nested, step — одна разметка); в
+     магазине без панели (look:remove) остаётся выбранная шапка — строка с меню первой есть всегда. */
+  assert.ok(bars.length >= 1)
   for (const m of header.matchAll(/<div className=\{s\.actions\}>[\s\S]*?<\/div>/g)) assert.doesNotMatch(m[0], /menu\(lang, nav\)/)
 })
 

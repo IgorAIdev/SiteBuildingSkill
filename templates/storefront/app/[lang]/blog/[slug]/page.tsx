@@ -87,7 +87,7 @@ export default async function PostPage({ params }: Props) {
           <ul className={p.rail} data-rail="goods">{reads.map((c) => <li key={c.slug}><PostCard post={c} /></li>)}</ul>
         </section>
       ) : null}
-      <p className={p.section}><a className={go.go} href={hrefFor(lang, { blog: true })}>{t(lang, 'blog.back')}<Icon id="arrow-right" /></a></p>
+      <p className={`${p.section} ${p.cluster}`}><a className={go.go} data-to="back" href={hrefFor(lang, { blog: true })}><Icon id="arrow-left" />{t(lang, 'blog.back')}</a></p>
     </main>
   )
 }

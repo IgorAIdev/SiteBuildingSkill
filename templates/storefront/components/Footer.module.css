@@ -48,8 +48,9 @@ main:has(> [data-ground='deck']:last-child) + .foot{margin-block-start:0}
    Знаки оплаты — своим компонентом (PayMarks.tsx), в основании подвала. */
 .social{list-style:none;padding:0;margin:0}
 .social{--cluster:var(--sp-1)}
-.social a{--btn-h:var(--ctrl-h);inline-size:var(--btn-h);padding:0}
-.social svg{inline-size:calc(var(--btn-h) * .55);block-size:calc(var(--btn-h) * .55)}
+/* Знак — кнопка-знак модуля (`data-pager`: ширина от роста, круг); место — рост и
+   рост знака (`--btn-icon`), а не своё правило `svg` весом `.btn svg` (И790). */
+.social a{--btn-h:var(--ctrl-h);--btn-icon:calc(var(--btn-h) * .55)}
 /* Столбцы берут остаток (втрое больше знака) и стоят каждый шириной своей
    самой длинной строки: адрес почты, номер и имя полки не переносятся
    никогда (слово заказчика 29.09.2026: «перенос недопустим» — почта
@@ -127,7 +128,13 @@ main:has(> [data-ground='deck']:last-child) + .foot{margin-block-start:0}
 /* Цель — квадрат роста цели, как у ссылки списка выше (`.list a`): короткое
    слово закона («ÁSZF», «Sütik» по-венгерски) стояло 33 × 44 на телефоне
    (check:craft, target; замер кабинета 05.10.2026, И771). */
-.base a{display:inline-flex;align-items:center;min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target)}
+.base :is(a, button){display:inline-flex;align-items:center;min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target)}
 .base .legalLinks{column-gap:var(--air-row)}
 
 .legalLinks{display:flex;flex-wrap:wrap;column-gap:var(--gap-row);list-style:none;padding:0;margin:0}
+/* Знак SAL ANPC (И791) — картинка 250 × 50 без изменений: размер даёт она сама
+   (атрибуты — данные знака, приказ 270/2026), уже коробки — сжимается по ширине
+   с пропорцией (на 320 — 250 < 288, влезает целиком). Своей краски, угла и
+   рамки нет. */
+.sal{inline-size:fit-content}
+.sal img{display:block;max-inline-size:100%;block-size:auto}

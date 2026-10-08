@@ -30,7 +30,7 @@ export function WithdrawForm({ words, action }: { words: Words; action: Action }
       {field('name', words.name, 'text', 'name')}
       {field('order', words.order, 'text', 'off')}
       {field('email', words.email, 'email', 'email')}
-      <div><button className={b.btn} data-voice="loud" type="submit" disabled={pending}>{words.confirm}</button></div>
+      <div><button className={b.btn} data-voice="loud" data-size="lg" type="submit" disabled={pending}>{words.confirm}</button></div>
       {state?.message ? <p className={f.say} data-state="error" id="wd-say" role="alert">{state.message}</p> : null}
     </form>
   )

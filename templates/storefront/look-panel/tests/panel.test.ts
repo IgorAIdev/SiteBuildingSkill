@@ -109,7 +109,7 @@ test('panel sections: every field sits in exactly one sub-tab; System is colour,
   assert.deepEqual(catalog.groups['save-look'].map((o) => o.id).sort(), ['bare', 'disc'], 'сердце — на стекле или без подложки; первым стоит опубликованный вид сайта')
   assert.deepEqual(catalog.groups['filter-look'].map((o) => o.id), ['drawer', 'bar'], 'фильтр на широком — шторка, как корзина (вид сайта), и строка раскрытий (И739); панель колонками снята 04.10.2026')
   assert.deepEqual(catalog.groups['filter-phone'].map((o) => o.id), ['drawer', 'pills'], 'фильтр на узком — шторка (вид сайта) и пилюли вбок (И739)')
-  assert.deepEqual(catalog.groups['pager-look'].map((o) => o.id), ['count', 'rings', 'compact'], 'листание — «Показать ещё» со счётом и полоской по умолчанию, номера в кругах и «2 / 4» вариантами (И721)')
+  assert.deepEqual(catalog.groups['pager-look'].map((o) => o.id), ['rings', 'compact'], 'листание — номера тихой кнопкой сайта по умолчанию и «2 / 4» вариантом; номеров без кромки нет (И721, поправка 08.10.2026)')
   assert.deepEqual(catalog.groups['pdp-gallery'].map((o) => o.id).sort(), ['40', '50', '60'])
   assert.deepEqual(catalog.groups['pdp-thumbs'].map((o) => o.name).sort(), ['Below', 'Dots', 'On the picture', 'Side'])
   for (const f of ['pdp-gallery', 'pdp-thumbs', 'pdp-edge', 'seg-look', 'stock-look', 'quick-look', 'auth-look']) assert.equal(catalog.groups[f][0].vars![`--${f}`], slots[`--${f}`].value, `${f}: умолчание — значение сайта`)

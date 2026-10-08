@@ -48,7 +48,7 @@
 - [Owner's window ≈1253 px](owner-window-width.md) — his screenshots are 1880 px at 150 % scaling; reproduce his view at 1253 CSS px first
 - [Variants in chat](variants-in-chat.md) — asked for variants in chat: fix with the recommended one, then draw ≤3 mockups with real content; he picks fast
 - [LUXA is not his](luxa-not-owner.md) — the LUXA screenshot in the home brief was never sent by the owner (04.10.2026); his refs are Allbirds, Gymshark
-- [Round forms only](round-forms-only.md) — buttons pills and circles, no square plates; menu/list row hover = rounded rectangle --r-ctrl, one shape everywhere (04.10.2026); button corner = Shape → Corners (--r-btn, «· pill» twins), no data-pill on buttons
+- [Round forms only](round-forms-only.md) — buttons pills and circles, no square plates; menu/list row hover = rounded rectangle --r-ctrl, one shape everywhere (04.10.2026); button corner = Shape → Corners (--r-btn, «· pill» twins), no data-pill on buttons; since 08.10.2026 the published look is «Standard · pill», every data-pager sign button a circle (И790)
 - [Variants as a menu](variants-as-menu.md) — skills offer every variant for the owner's pick; no «recommend X when N facets» thresholds (04.10.2026)
 - [Phone menu on top](phone-menu-top.md) — top header, burger first at the left edge, drawer from the left, signs not pictures, current page on a light brand plate (05.10.2026); no bottom tab bar
 - [Panel knob reaches all](panel-knob-reaches-all.md) — Corners must change buttons too; no second knob silently overriding a general one (04.10.2026)
@@ -66,3 +66,4 @@
 - [Window bits 08.10](window-bits-08-10.md) — coupon error folds with its field; empty cart and favourites = word + line + quiet category rows; search pane no big buttons, no repeat field on results; × at the end of every window head; checkout without footer (И333/И689/И687/И784/И325)
 - [SEO copy carries the queries](seo-copy-keywords.md) — texts hold real buyer queries in title/H1/intro/H2/FAQ; HempScale principles are the base; Codex's 06.10 SEO work not trusted, redo from evidence (08.10.2026)
 - [Market research repo](market-research-repo.md) — research lives in private IgorAIdev/CBDSeoMarketResearch, shared with HempScale; first upload blocked as exfiltration — owner uploads; local copy D:\MyBssinessProject\research-2026-10-08
+- [cbdin.ro moved to ecommerce](cbdin-ro-in-ecommerce.md) — 08.10.2026 the finished site went into cbd-ecommerce apps/storefront3 without the panel; after the owner moves the domain, live fixes go there; template stays in the kit

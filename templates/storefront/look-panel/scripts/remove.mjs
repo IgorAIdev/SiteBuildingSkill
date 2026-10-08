@@ -58,6 +58,16 @@ export const VARIANTS = [
   { tag: 'look-card', field: 'card', list: 'lib/cards.ts', name: 'CARDS' },
   { tag: 'look-home', field: 'home', list: 'lib/homes.ts', name: 'HOMES' },
 ]
+/** Файл одного варианта целиком (метка `<метка>:<варианты>:file` комментарием в начале): у невыбранного
+ *  варианта он удаляется, а не остаётся сиротой без своих классов — 08.10.2026 MinimalHero.tsx
+ *  остался в магазине без стилей `minimal*`, и check:css краснел. */
+export function variantFile(text, chosen) {
+  for (const v of VARIANTS) {
+    const m = text.slice(0, 400).match(new RegExp(String.raw`\/\*\s*${v.tag}:([a-z,]+):file\s*\*\/`))
+    if (m && !m[1].split(',').includes(chosen[v.tag])) return true
+  }
+  return false
+}
 /** Как вариант разметки называется в плане снятия — словами для заказчика. */
 const WHAT = { header: 'варианты шапки', card: 'варианты карточки товара', home: 'варианты главной' }
 
@@ -73,7 +83,7 @@ export function stripVariants(text, tag, chosen) {
     const m = line.match(new RegExp(`${tag}:([a-z,]+)`))
     if (!m) return [line]
     if (!keep(m[1])) return []
-    return [line.replace(new RegExp(String.raw`\s*(\/\/|\/\*)\s*${tag}:[a-z,]+(\s*\*\/)?`), '')]
+    return [line.replace(new RegExp(String.raw`\s*(\/\/|\/\*)\s*${tag}:[a-z,]+(?::file)?(\s*\*\/)?`), '')]
   }).join('\n')
 }
 export const stripHeaders = (text, chosen) => stripVariants(text, 'look-header', chosen)
@@ -131,11 +141,13 @@ export function plan(root) {
   const dirs = OWNED.filter((p) => existsSync(join(root, p)))
   /** Переписываемые файлы: [путь, новый текст, какие метки в нём]. */
   const edits = []
+  const variantOnly = []
   for (const dir of ['app', 'components', 'lib', 'styles']) {
     walk(join(root, dir), (file) => {
       const rel = relative(root, file).replace(/\\/g, '/')
       if (!/\.(ts|tsx|css)$/.test(file) || inOwned(rel)) return
       const text = readFileSync(file, 'utf8')
+      if (variantFile(text, chosen)) { variantOnly.push(rel); return }
       let next = text.includes(TAG) ? stripPanel(text) : text
       for (const v of VARIANTS) if (next.includes(v.tag)) next = stripVariants(next, v.tag, chosen[v.tag])
       if (next !== text) edits.push([rel, next, [TAG, ...VARIANTS.map((v) => v.tag)].filter((t) => text.includes(t))])
@@ -153,7 +165,7 @@ export function plan(root) {
     const kept = text.split('\n').filter((line) => !line.includes(TAG) && !/^\s*#?\s*LOOK_PICKER\s*=/.test(line)).join('\n')
     if (kept !== text) edits.push([f, kept, ['LOOK_PICKER']])
   }
-  const files = existsSync(join(root, DRAFT)) ? [DRAFT] : []
+  const files = [...variantOnly, ...(existsSync(join(root, DRAFT)) ? [DRAFT] : [])]
   const used = new Set((look.fonts ?? []).flatMap((f) => f.files.map((x) => basename(x.url))))
   if (existsSync(join(root, 'public/fonts'))) for (const name of readdirSync(join(root, 'public/fonts'))) if (!used.has(name)) files.push(`public/fonts/${name}`)
   return { chosen, dropped, dirs, edits, scripts, files }
@@ -169,6 +181,8 @@ export function describe(p) {
   if (p.scripts.length) lines.push(`команды в package.json: ${p.scripts.join(', ')}`)
   if (where('LOOK_PICKER')) lines.push(`флаг LOOK_PICKER: ${where('LOOK_PICKER')}`)
   if (p.files.includes(DRAFT)) lines.push(`черновик вида: ${DRAFT}`)
+  const only = p.files.filter((f) => f !== DRAFT && !f.startsWith('public/fonts/'))
+  if (only.length) lines.push(`файлы невыбранных вариантов: ${only.join(', ')}`)
   const fonts = p.files.filter((f) => f.startsWith('public/fonts/'))
   if (fonts.length) lines.push(`шрифты, которых опубликованный вид не носит: ${fonts.join(', ')}`)
   for (const v of VARIANTS) {
@@ -312,7 +326,7 @@ function rootDecls(css) {
 /** Значение так, как его пишет сборщик: light-dark() — парой переменных
  *  lightningcss, краски короче и строчными, без пробелов и кавычек. */
 const NAMED = { '#f00': 'red', '#d2b48c': 'tan', '#000080': 'navy', '#808080': 'gray', '#008080': 'teal', '#dda0dd': 'plum', '#ffd700': 'gold', '#cd853f': 'peru', '#ffc0cb': 'pink', '#fffafa': 'snow', '#f5deb3': 'wheat', '#f0ffff': 'azure', '#f5f5dc': 'beige', '#ffe4c4': 'bisque', '#a52a2a': 'brown', '#ff7f50': 'coral', '#fffff0': 'ivory', '#f0e68c': 'khaki', '#faf0e6': 'linen', '#800000': 'maroon', '#808000': 'olive', '#ffa500': 'orange', '#da70d6': 'orchid', '#a0522d': 'sienna', '#c0c0c0': 'silver', '#ff6347': 'tomato', '#ee82ee': 'violet', '#008000': 'green', '#4b0082': 'indigo' }
-function squeeze(v) {
+export function squeeze(v) {
   const short = (h) => (h[1] === h[2] && h[3] === h[4] && h[5] === h[6] ? `#${h[1]}${h[3]}${h[5]}` : h)
   /* Вуаль строителя палитры `#RRGGBBAA` (И295) сборщик тоже укорачивает:
      `#00000099` → `#0009`. */
@@ -325,7 +339,9 @@ function squeeze(v) {
        (краска YouTube, И628). */
     .replace(/#[0-9a-f]{3,6}\b/g, (h) => NAMED[h] ?? h)
   const ld = s.match(/^light-dark\(\s*([^,]+?)\s*,\s*(.+?)\s*\)$/)
-  if (ld) s = `var(--lightningcss-light,${ld[1]})var(--lightningcss-dark,${ld[2]})`
+  /* Пара с равными половинами — сборщик пишет одну краску: `light-dark(#FFFFFF, #FFFFFF)`
+     → `#fff` (check:look 08.10.2026: ~35 ложных «не то значение» на краске палубы). */
+  if (ld) s = ld[1] === ld[2] ? ld[1] : `var(--lightningcss-light,${ld[1]})var(--lightningcss-dark,${ld[2]})`
   return s.replace(/[\s"']/g, '').replace(/(^|[(,])0\./g, '$1.')
 }
 

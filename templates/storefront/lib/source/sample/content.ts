@@ -1,7 +1,7 @@
 import type { Lang } from '../../locale.ts'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import type { Content, Doc, Post, PostTopic, Review } from '../contract.ts'
+import type { Content, Doc, DocSlot, Post, PostTopic, Review } from '../contract.ts'
 import type { Form } from '../details.ts'
 import { PAGES } from '../../pages.ts'
 import { PRODUCTS } from '../../products.ts'
@@ -15,15 +15,15 @@ import REVIEWS from '../../reviews.json' with { type: 'json' }
 
 type L = Record<Lang, string>
 type Ls = Record<Lang, string[]>
-type RawSection = { id: string; heading: L; body: L; list?: Ls; table?: { head: Ls; rows: Record<Lang, string[][]> }; note?: L; form?: 'withdrawal' }
-type RawDoc = { slug: string; updated?: string; title: L; summary: L; sections: RawSection[]; faq?: { q: L; a: L }[]; table?: 'delivery' }
+type RawSection = { id: string; heading: L; body: L; list?: Ls; table?: { head: Ls; rows: Record<Lang, string[][]> }; note?: L; slot?: DocSlot; when?: 'consent' | 'no-consent' }
+type RawDoc = { slug: string; updated?: string; numbered?: boolean; title: L; summary: L; sections: RawSection[]; faq?: { q: L; a: L }[]; table?: 'delivery' | 'storage' }
 const RAW = DOCS as RawDoc[]
 /* `sampleShot` — снимок статьи образца: снимок полки образца по виду
    (shelf-shots.ts), имя поля говорит, что он образец (И729). Настоящий
    снимок статьи даёт Payload. */
 type RawPost = {
   slug: string; date: string; updated?: string | null; topic?: string; featured?: boolean; sampleShot?: Form; shelf?: string | null
-  title: L; subtitle?: L; summary: L; tldr?: L; sections: (Omit<RawSection, 'id' | 'form'> & { id?: string })[]; faq: { q: L; a: L }[]
+  title: L; subtitle?: L; summary: L; tldr?: L; sections: (Omit<RawSection, 'id' | 'slot' | 'when'> & { id?: string })[]; faq: { q: L; a: L }[]
   sources?: { title: string; url: string }[]
 }
 /* Рубрики и автор блога (И749) — данные магазина рядом со статьями. */
@@ -66,13 +66,14 @@ const reviewOf = (r: RawReview, lang: Lang): Review => {
 /** Файл вида образца: опубликованный или черновик. */
 const lookFile = (name: string) => join(process.cwd(), 'lib/source/sample', name)
 const docOf = (d: RawDoc, lang: Lang): Doc => ({
-  slug: d.slug, title: d.title[lang], summary: d.summary[lang], updated: d.updated ?? null,
+  slug: d.slug, title: d.title[lang], summary: d.summary[lang], updated: d.updated ?? null, numbered: Boolean(d.numbered),
   sections: d.sections.map((s) => ({
     id: s.id, heading: s.heading[lang], body: s.body[lang],
     ...(s.list ? { list: s.list[lang] } : {}),
     ...(s.table ? { table: { head: s.table.head[lang], rows: s.table.rows[lang] } } : {}),
     ...(s.note ? { note: s.note[lang] } : {}),
-    ...(s.form ? { form: s.form } : {}),
+    ...(s.slot ? { slot: s.slot } : {}),
+    ...(s.when ? { when: s.when } : {}),
   })),
   faq: (d.faq ?? []).map((f) => ({ q: f.q[lang], a: f.a[lang] })),
   table: d.table ?? null,
@@ -125,5 +126,10 @@ export const sampleContent: Content = {
   /* Образец рассылки не ведёт: адрес принят, нигде не хранится. */
   async subscribe() {
     return { ok: true, value: null }
+  },
+  /* Стенд: согласие принято и не записано. Настоящий журнал — коллекция
+     Payload `consents` (id, версия, категории, время; без IP) — docs/open.md. */
+  async recordConsent() {
+    return { ok: true, value: true }
   },
 }

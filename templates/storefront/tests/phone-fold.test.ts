@@ -39,8 +39,9 @@ test('the phone shelf steps by 24 and loads the next page when the loaded run en
 })
 
 test('a reloaded «Show more» address shows all it asked for; the last page has no next', async () => {
-  const listing = { ...(await shelf(85, 85, 2)), from: 1, first: 1 }
-  const v = catalogView('en', { title: 'T', lede: null, listing, asked: { ...asked, page: '2' }, at, filters: true, empty: none })
+  const last = Math.ceil(85 / PAGE_SIZE)
+  const listing = { ...(await shelf(85, 85, last)), from: 1, first: 1 }
+  const v = catalogView('en', { title: 'T', lede: null, listing, asked: { ...asked, page: String(last) }, at, filters: true, empty: none })
   assert.equal(v.fold?.start, 85)
   assert.equal(v.fold?.next, null)
   assert.equal(v.fold?.at, '/en/catalog')
