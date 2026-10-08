@@ -4,6 +4,8 @@ import { LOCALES } from '../lib/locale.ts'
 import { categoryCopy, effectCopy, type ShopCopy } from '../lib/content/shop-copy.ts'
 import { sample } from '../lib/source/sample/catalog.ts'
 import { source } from '../lib/source/index.ts'
+import { existsSync, readFileSync } from 'node:fs'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const categories = ['oil', 'capsules', 'paste', 'edibles', 'pets', 'vape', 'cosmetics', 'topicals']
 const effects = ['sleep', 'relax', 'recovery', 'balance', 'mood-focus', 'womens-health']
@@ -32,7 +34,7 @@ test('sample category aliases resolve the same copy; unknown routes get no edito
       assert.equal(categoryCopy(lang, slug), categoryCopy(lang, form))
       const category = await sample.collection(lang, slug)
       assert.ok(category.ok)
-      assert.equal(category.value.description, categoryCopy(lang, slug)?.lede)
+      assert.equal(category.value.description, categoryCopy(lang, slug)?.caption)
     }
     assert.equal(categoryCopy(lang, 'future-category'), null)
     assert.equal(effectCopy(lang, 'future-effect'), null)
@@ -65,10 +67,10 @@ test('the Vendure consumer uses local editorial copy even when upstream copy exi
       const collections = await source().collections(lang)
       const facets = await source().effects(lang)
       assert.ok(collection.ok && collections.ok && facets.ok)
-      assert.equal(collection.value.description, categoryCopy(lang, 'oil')?.lede)
+      assert.equal(collection.value.description, categoryCopy(lang, 'oil')?.caption)
       assert.equal(collections.value.find((item) => item.slug === 'oil')?.description, collection.value.description)
       assert.equal(collections.value.find((item) => item.slug === 'future-category')?.description, 'Existing upstream copy')
-      assert.equal(facets.value.find((item) => item.code === 'sleep')?.description, effectCopy(lang, 'sleep')?.lede)
+      assert.equal(facets.value.find((item) => item.code === 'sleep')?.description, effectCopy(lang, 'sleep')?.caption)
       assert.equal(facets.value.find((item) => item.code === 'future-effect')?.description, '')
       assert.ok(!facets.value.some((item) => item.code === 'immunity'))
     }
@@ -77,5 +79,49 @@ test('the Vendure consumer uses local editorial copy even when upstream copy exi
       if (value === undefined) delete process.env[key]
       else process.env[key] = value
     }
+  }
+})
+
+/* Текст страницы проверяется навыком seo-content (scripts/lint-copy.mjs): запрос
+   покупателя в title/H1 и над сеткой, без эха сниппета, без оговорок и
+   состояний здоровья на продающей странице, без литерала валюты; FAQ — по
+   норме проекта (главная 6–8, полка 5–10). Навык ставится в .claude/skills
+   вместе с витриной. */
+const LINT = ['.claude/skills/seo-content/scripts/lint-copy.mjs', '.agents/skills/seo-content/scripts/lint-copy.mjs']
+  .map((p) => fileURLToPath(new URL('../' + p, import.meta.url))).find((p) => existsSync(p))
+const PROFILE = { faq: { home: [6, 8], category: [5, 10], hub: [5, 10] } }
+
+test('every category, moment hub and home text passes the seo-content copy check', async () => {
+  assert.ok(LINT, 'навык seo-content не установлен рядом с витриной — проверке текста нечем работать')
+  const { lintPages } = await import(pathToFileURL(LINT).href)
+  const shop = JSON.parse(readFileSync(new URL('../lib/content/shop-copy.json', import.meta.url), 'utf8'))
+  const home = JSON.parse(readFileSync(new URL('../lib/content/home-copy.json', import.meta.url), 'utf8'))
+  const pages: object[] = []
+  for (const [kind, type] of [['categories', 'category'], ['effects', 'hub']]) {
+    for (const [code, langs] of Object.entries(shop[kind] as Record<string, Record<string, object>>)) {
+      for (const [lang, copy] of Object.entries(langs)) pages.push({ id: `${type}:${code}`, lang, type, level: 'A', ...copy })
+    }
+  }
+  for (const lang of LOCALES) {
+    const h = home[lang]
+    pages.push({ id: 'home', lang, type: 'home', level: 'A', query: h.query, title: h.title, description: h.description, heading: h.hero.title, lede: h.hero.lede, sections: [{ heading: h.story.title, paragraphs: h.story.body.split('\n\n') }], faq: h.faq })
+  }
+  const fails = (lintPages(pages, { profile: PROFILE }) as { level: string; family: string; lang: string; id: string; field: string; message: string }[])
+    .filter((f) => f.level === 'fail')
+  assert.deepEqual(fails.map((f) => `${f.family} ${f.lang} ${f.id} ${f.field}: ${f.message}`), [])
+})
+
+test('category and hub names, tile captions and links come from the editorial copy', async () => {
+  for (const lang of LOCALES) {
+    for (const code of [...categories, ...effects]) {
+      const copy = categoryCopy(lang, code) ?? effectCopy(lang, code)
+      assert.ok(copy?.name && copy.caption && copy.query?.primary, `${lang}/${code}: нет имени, подписи плитки или запроса`)
+      assert.notEqual(copy.caption, copy.lede); assert.notEqual(copy.description, copy.lede)
+      assert.ok(copy.links?.length, `${lang}/${code}: нет ссылок на гиды`)
+    }
+    const shelves = await sample.collections(lang)
+    assert.ok(shelves.ok)
+    const oil = shelves.value.find((c) => categoryCopy(lang, c.slug) === categoryCopy(lang, 'oil'))
+    assert.equal(oil?.name, categoryCopy(lang, 'oil')?.name)
   }
 })

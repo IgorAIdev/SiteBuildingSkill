@@ -83,3 +83,70 @@ test('file import refuses overwrite, leaving both original export and previous e
     assert.equal(readFileSync(input, 'utf8'), original)
   } finally { rmSync(temp, { recursive: true, force: true }) }
 })
+
+/* ── lint-copy, suggest, volumes (переписанный навык, 08.10.2026) ─────────── */
+import { lintPages, hasPhrase } from '../skills/site-building/assets/seo-content/scripts/lint-copy.mjs'
+import { parseSuggest, summarize } from '../skills/site-building/assets/seo-content/scripts/suggest.mjs'
+import { parseVolumes, request } from '../skills/site-building/assets/seo-content/scripts/volumes.mjs'
+
+const good = () => ({
+  id: 'category:oil', lang: 'ro', type: 'category', level: 'A',
+  query: { primary: 'ulei cbd', secondary: ['ulei de canabis', 'ulei cbd full spectrum'], origin: 'AC 2026-10-08' },
+  title: 'Ulei CBD (ulei de canabis): full spectrum, broad și izolat | CBDin',
+  description: 'Ulei CBD și ulei de canabis în mai multe concentrații: full spectrum, broad și izolat, cu miligramele pe picătură scrise la fiecare produs.',
+  heading: 'Ulei CBD (ulei de canabis)',
+  lede: 'Uleiul CBD se alege după trei cifre: procentul, miligramele din flacon și miligramele dintr-o picătură.',
+  caption: 'Full spectrum, broad și izolat, în flacoane cu pipetă.',
+  sections: [{ heading: 'Ce concentrație de ulei CBD să alegeți?', paragraphs: ['Un ulei de 10 % are 100 mg de CBD în fiecare mililitru.'] }],
+  faq: { title: 'Întrebări despre uleiul CBD', items: Array.from({ length: 5 }, (_, i) => ({ q: `Întrebarea ${i + 1} despre ulei CBD?`, a: `Da. Răspunsul ${i + 1} începe cu răspunsul.` })) },
+})
+const families = (pages) => lintPages(pages).filter((f) => f.level === 'fail').map((f) => f.family)
+
+test('lint-copy passes a page that carries the buyer query, facts and distinct snippet texts', () => {
+  assert.deepEqual(families([good()]), [])
+  assert.ok(hasPhrase('Uleiurile CBD de la noi', 'ulei cbd'), 'inflected forms count as the query')
+})
+
+test('lint-copy fails the defects of the 06.10 copy: no query in head, echo, hedge, condition in a heading, currency literal', () => {
+  const p = good()
+  p.title = 'Uleiuri — concentrații și volume | CBDin'; p.heading = 'Uleiuri'
+  assert.ok(families([p]).includes('primary'))
+  const e = good(); e.description = e.lede
+  assert.ok(families([e]).includes('echo'))
+  const h = good(); h.lede = 'Ulei CBD pentru seară, fără a presupune un beneficiu pentru somn.'
+  assert.ok(families([h]).includes('hedge'))
+  const c = good(); c.faq.items[0].q = 'Ajută uleiul CBD la somn?'
+  assert.ok(families([c]).includes('condition'))
+  const m = good(); m.sections[0].paragraphs[0] = 'Livrare gratuită de la 100 €.'
+  assert.ok(families([m]).includes('currency'))
+})
+
+test('lint-copy: a forbidden claim fails even when negated on a selling page; fix-level claims fail only in heads', () => {
+  const p = good(); p.sections[0].paragraphs.push('Nu spunem că ameliorează durerile.')
+  assert.ok(families([p]).includes('claims'))
+  const q = good(); q.sections[0].paragraphs.push('Mod de utilizare: sublingual, conform etichetei.')
+  assert.ok(!families([q]).includes('claims'), 'fix-level in body is a warning')
+  const r = good(); r.sections[0].heading = 'Ulei CBD sublingual'
+  assert.ok(families([r]).includes('claims'))
+})
+
+test('lint-copy counts FAQ by the project profile and rejects a dodge as the first sentence', () => {
+  const p = good(); p.faq.items = p.faq.items.slice(0, 3)
+  assert.ok(families([p]).includes('faq'))
+  const d = good(); d.faq.items[0].a = 'Depinde de produs.'
+  assert.ok(families([d]).includes('faq'))
+  assert.deepEqual(lintPages([good()], { profile: { faq: { category: [3, 4] } } }).filter((f) => f.family === 'faq' && f.level === 'fail').length, 1)
+})
+
+test('suggest parses the autocomplete answer and ranks phrases by seeds and place', () => {
+  assert.deepEqual(parseSuggest('["ulei cbd",["ulei cbd pret","ulei cbd caini"]]'), ['ulei cbd pret', 'ulei cbd caini'])
+  const s = summarize([{ seed: 'ulei cbd', suggestions: ['ulei cbd pret', 'ulei cbd caini'] }, { seed: 'cbd', suggestions: ['ulei cbd pret'] }])
+  assert.equal(s[0].phrase, 'ulei cbd pret'); assert.equal(s[0].seeds.length, 2); assert.equal(s[0].best, 1)
+})
+
+test('volumes builds a DataForSEO request and keeps unmeasured volume as null', () => {
+  assert.deepEqual(request(['ulei cbd'], { location: '2642', language: 'ro' }), [{ keywords: ['ulei cbd'], location_code: 2642, language_code: 'ro' }])
+  const rows = parseVolumes({ status_code: 20000, tasks: [{ status_code: 20000, result: [{ keyword: 'ulei cbd', search_volume: 2400, cpc: 0.4, competition: 'LOW', monthly_searches: [] }, { keyword: 'x', search_volume: null }] }] }, '2026-10-08')
+  assert.equal(rows[0].volume, 2400); assert.equal(rows[1].volume, null); assert.equal(rows[0].origin, 'VOL')
+  assert.throws(() => parseVolumes({ status_code: 40100, status_message: 'auth' }), /DataForSEO/)
+})
