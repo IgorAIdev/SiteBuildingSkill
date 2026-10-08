@@ -84,10 +84,9 @@ export async function SiteFrame({ lang }: { lang: Lang }) {
         <Footer lang={lang} docs={data.docs} shelves={data.nav} idPrefix="design-" />
       </Part>
 
-      <Part title="Шапка и подвал кассы" lede="На шагах оформления заказа рама закрытая: знак и «назад в корзину» сверху, строка закона и телефон помощи снизу — уйти с кассы можно только обратно в корзину.">
+      <Part title="Шапка кассы" lede="На шагах оформления заказа рама закрытая: знак и «назад в корзину» сверху, подвала нет — уйти с кассы можно только обратно в корзину.">
         <div className={`${p.stack} ${s.column}`}>
           <div className={s.frame}><CheckoutHeader lang={lang} /></div>
-          <Footer lang={lang} docs={data.docs} shelves={data.nav} variant="legal" />
         </div>
       </Part>
 

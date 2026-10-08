@@ -63,3 +63,4 @@
 - [Window foot + swipe](pane-foot-and-swipe.md) — foot buttons always whole, never scroll; every sheet closes by swipe incl. from the dim strip; owner phone 360 css px; tested with a real finger (08.10.2026, И781)
 - [«On the storefront» = merged](on-storefront-means-merged.md) — he sees localhost:3020 on his machine and cbdin.ro; say «влито в main» only after merge, never «уже на витрине» from my sandbox (08.10.2026)
 - [Payment marks in the footer](footer-payment-marks.md) — bare marks 24 px, no pills (a payment mark is not clickable), air between tiers; email wraps before @ if the column is narrow (08.10.2026, И783)
+- [Window bits 08.10](window-bits-08-10.md) — coupon error folds with its field; empty cart = word + quiet category rows; search pane no big buttons, no repeat field on results; × at the end of every window head; checkout without footer (И333/И689/И687/И784/И325)

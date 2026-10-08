@@ -293,7 +293,6 @@ export const RO = {
   'checkout.back': 'Înapoi la coș',
   'checkout.fix': 'Corectați câmpurile marcate.',
   'checkout.summaryShow': 'Sumarul comenzii',
-  'checkout.help': 'Întrebări despre comandă?',
   'field.email': 'E-mail',
   'field.firstName': 'Prenume',
   'field.lastName': 'Nume',

@@ -46,9 +46,6 @@ test('the hero path row has one bright button — «Shop all»; the shelf button
   assert.match(read('../components/CategoryButton.tsx'), /data-cat=\{quiet \? 'quiet' : ''\}/)
   const css = bare(read('../styles/btn.module.css'))
   assert.match(css, /\.btn\[data-voice='loud'\]\[data-cat='quiet'\]\{\s*--press-bg:var\(--ctrl-btn-fill, transparent\);\s*--press-ink:var\(--ctrl-btn-ink, var\(--ink\)\);\s*--btn-edge:var\(--ctrl-btn-edge, transparent\)\s*\}/)
-  /* Единообразие (слово заказчика 08.10.2026): под яркой кнопкой на экране кнопки категорий везде тихие —
-     в пустой корзине те же, что под абзацем героя. */
-  assert.match(read('../components/CartShelves.tsx'), /<CategoryButton quiet name=\{x\.name\}/)
 })
 
 /* Одна тихая — на весь сайт: фишка граней в меню, тихая кнопка каталога и тихая кнопка категории

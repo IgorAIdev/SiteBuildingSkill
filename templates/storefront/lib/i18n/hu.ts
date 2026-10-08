@@ -295,7 +295,6 @@ export const HU: Record<keyof typeof RO, string> = {
   'checkout.back': 'Vissza a kosárhoz',
   'checkout.fix': 'Javítsa a megjelölt mezőket.',
   'checkout.summaryShow': 'Rendelés összesítése',
-  'checkout.help': 'Kérdése van a rendelésről?',
   'field.email': 'E-mail-cím',
   'field.firstName': 'Keresztnév',
   'field.lastName': 'Vezetéknév',

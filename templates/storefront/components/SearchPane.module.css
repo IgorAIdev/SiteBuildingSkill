@@ -7,17 +7,11 @@
 .input{flex:1 1 auto;min-inline-size:0}
 .input::-webkit-search-cancel-button{appearance:none}
 .body{display:grid;justify-items:start;gap:var(--air-row);padding-block:var(--air-row) var(--pad-card)}
+/* Строка под полем: подпись списка слева, «Clear» тихим словом справа — как «Clear filters»
+   в строке фильтров каталога (кнопка вида `bare`, малая); большие кнопки под полем
+   отнимали у находок треть окна (слово заказчика 08.10.2026). */
+.lead{justify-self:stretch;display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row)}
 .head{margin:0;font-size:var(--ctrl-fs-sm);font-weight:var(--label-weight);color:var(--ink-soft)}
-/* Полки — строками со знаком, колонок столько, сколько встаёт (правило 5),
-   как подсказки ниже; слово — ролью меню (полка шапки), с заглавной, как в
-   меню (имена приходят из данных строчными); знак — тихий. Под рукой —
-   подложка строки (`row`, И685), её форма — у вида (И730). Не кнопки: в
-   окне поиска путь — текст (И691). */
-.shelves{justify-self:stretch;list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 14rem), 1fr));gap:0 var(--gap-grid)}
-.shelf{display:flex;align-items:center;gap:var(--gap-row);min-block-size:var(--ctrl-h);padding-inline:var(--sp-2);font-size:var(--menu-size);line-height:var(--menu-lead);font-weight:var(--menu-weight);color:var(--ink)}
-.shelf svg{flex:none;inline-size:1.25em;block-size:1.25em;color:var(--ink-soft)}
-.shelfName::first-letter{text-transform:uppercase}
-.shelfName{display:inline-block}
 /* Подсказки — строками: снимок, марка и имя, цена; колонок столько,
    сколько встаёт (правило 5), строку отличает плашка под рукой. */
 .found{justify-self:stretch;list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 18rem), 1fr));gap:var(--sp-1) var(--gap-grid)}
@@ -31,5 +25,3 @@
 .price{font-weight:var(--cardprice-weight);font-variant-numeric:tabular-nums;white-space:nowrap}
 .none{margin:0;color:var(--ink-soft)}
 
-.actions{justify-self:stretch;align-items:stretch}
-.actions > *{flex-basis:0}
