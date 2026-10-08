@@ -4,17 +4,19 @@ import s from './Account.module.css'
 import type { AuthView } from '@/lib/account-view.ts'
 import type { AccountState } from '@/lib/actions/account.ts'
 import { AuthForm } from './AuthForm.tsx'
+import { SocialSignIn } from './SocialSignIn.tsx'
 
 type Action = (prev: AccountState, form: FormData) => Promise<AccountState>
 
 /* Страница входа, создания, сброса и подтверждения (И771) — стандартная форма
    входа (И780): колонка по центру страницы шириной формы, имя страницы и строка
-   под ним (`pagehead`) по центру, форма с кнопкой во всю колонку, под ней
-   пути словами («нет кабинета — создать», «назад ко входу»), что заказать
-   можно и без кабинета, как магазин обращается с данными. Бриф —
+   под ним (`pagehead`) по центру, форма с кнопкой во всю колонку, под ней —
+   «или» и кнопки поставщиков (И787, `social` — их действие), ниже пути
+   словами («нет кабинета — создать», «назад ко входу»), что заказать можно
+   и без кабинета, как магазин обращается с данными. Бриф —
    docs/design/кабинет.md. `landmark={false}` и `at` — образцом в дизайн-
    системе: у неё свой `main`, и форм там несколько. */
-export function AuthPage({ view, action, permalink, landmark = true, at = '' }: { view: AuthView; action: Action; permalink: string; landmark?: boolean; at?: string }) {
+export function AuthPage({ view, action, social, permalink, landmark = true, at = '' }: { view: AuthView; action: Action; social?: (form: FormData) => Promise<void>; permalink: string; landmark?: boolean; at?: string }) {
   const Main = landmark ? 'main' : 'div'
   return (
     <Main id={landmark ? 'main' : undefined} className={`${p.wrap} ${p.section}`} data-air="head">
@@ -24,6 +26,7 @@ export function AuthPage({ view, action, permalink, landmark = true, at = '' }: 
           <p>{view.lede}</p>
         </div>
         <AuthForm view={view} action={action} permalink={permalink} at={at} />
+        {view.social && social ? <SocialSignIn view={view.social} action={social} /> : null}
         {view.links.length || view.note || view.policy ? (
           <div className={s.ways}>
             {view.links.map((w) => (

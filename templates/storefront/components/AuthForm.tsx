@@ -16,9 +16,11 @@ type Action = (prev: AccountState, form: FormData) => Promise<AccountState>
    (`alert`), у поля — его ошибка; дело сделано без перехода (письмо ушло) —
    слова на месте формы (`status`). Без скрипта форма уходит обычной
    отправкой на свою же страницу (`permalink`). Имя формы — имя страницы;
-   `at` — приставка id полей, когда форм на странице несколько. */
+   `at` — приставка id полей, когда форм на странице несколько. Отказ входа
+   через поставщика приходит с адреса возврата (`view.alert`) и стоит в том же
+   слоте ошибки с первого показа (И787). */
 export function AuthForm({ view, action, permalink, at = '' }: { view: AuthView; action: Action; permalink: string; at?: string }) {
-  const [state, formAction, pending] = useActionState(action, null, permalink)
+  const [state, formAction, pending] = useActionState(action, view.alert ? { errors: {}, values: {}, message: view.alert, done: null } : null, permalink)
   if (state?.done) return <p className={f.say} role="status">{state.done}</p>
   return (
     <form className={s.form} action={formAction} noValidate aria-busy={pending} aria-label={view.title}>

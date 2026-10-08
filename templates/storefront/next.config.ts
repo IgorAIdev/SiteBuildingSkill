@@ -22,6 +22,16 @@ const config: NextConfig = {
   async redirects() {
     return [{ source: '/', destination: '/en', permanent: false }]
   },
+  /* Вход и кабинет не встают в чужую рамку (И787): форма пароля и кнопки
+     Google и Facebook под прозрачной чужой страницей — кликджекинг (OWASP
+     «Clickjacking Defense»). Своя рамка того же сайта можно; X-Frame-Options —
+     для браузеров без `frame-ancestors`. */
+  async headers() {
+    return [{ source: '/:lang/account/:path*', headers: [
+      { key: 'Content-Security-Policy', value: "frame-ancestors 'self'" },
+      { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+    ] }]
+  },
 }
 
 export default config

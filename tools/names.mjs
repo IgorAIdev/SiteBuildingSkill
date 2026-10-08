@@ -222,6 +222,7 @@ export const REQUIRED = {
   '--shot-frame': 'пропорция снимка товара, постоянная 1 / 1 (Gallery, ProductCard, ProductView; decisions.md 01.10.2026)',
   '--measure-form': 'колонка формы входа по центру страницы, 25rem — в коридоре образцов 320…446 (templates/storefront, Account.module.css; И780)',
   '--sh-far-3': 'дальний слой тени всплывающего — набор теней витрины (templates/storefront/styles/look.css; И593)',
+  '--sh-far-2': 'средний слой тени подъёма — наборы теней панели (look-panel/scripts/build-catalog.mjs: «Soft» — --sh-lift, «Supersoft» — --sh-modal) и вид шаблона по умолчанию (templates/storefront/styles/look.css); при плоском виде витрины (showcase, тени «flat») его не читает никто, но имя — не про запас (И593)',
   /* Краски логотипов (MARKS, tools/palette.mjs; И628): цвет компании для её
      знака — читает страница «Знаки» шаблона и место, где логотип стоит в цвете. */
   '--mark-messenger': 'краска логотипа Messenger (look-panel/design, «Знаки»; И628)',

@@ -28,6 +28,12 @@
    (`templates/storefront/lib/source/vendure/account.ts`); серверу Vendure — две
    настройки: `authOptions.requireVerification` и адреса писем EmailPlugin
    (references/vendure.md, «Кабинет покупателя»).
+9. `plugins/social-auth/` — плагин СЕРВЕРА Vendure: вход через Google и Facebook
+   (И787) — стратегии `google` и `facebook` для `authenticate` (код с адреса
+   возврата витрины с верификатором PKCE меняет сервер, секреты только у него),
+   кабинет по адресу — только доказанным адресом (недоказанные связи снимает
+   письмо владельца), запрос `socialSignInProviders` — какие кнопки
+   рисовать. Пол — Vendure 3.7.3. Установка — `plugins/social-auth/README.md`.
 
 `product.mjs` частично взят из vendurehq/nextjs-starter-vendure (MIT) —
 лицензия рядом, `VENDURE-STARTER-LICENSE.md`. Остальное — собственный код набора.

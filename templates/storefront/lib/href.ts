@@ -26,8 +26,9 @@ type To =
    *  создание, `password` — сброс (с `token` из письма — новый пароль),
    *  `verify` — подтверждение адреса по `token`, `addresses` — адреса.
    *  `next` — куда вернуться после входа (свой путь, lib/account-form.ts);
-   *  `edit` — открытая правка адреса (`new` — новый). */
-  | { account: 'home' | 'register' | 'password' | 'verify' | 'addresses'; token?: string; next?: string; edit?: string }
+   *  `edit` — открытая правка адреса (`new` — новый). `auth` и `via` — отказ
+   *  входа через поставщика и кто отказал (И787): форма говорит его словами. */
+  | { account: 'home' | 'register' | 'password' | 'verify' | 'addresses'; token?: string; next?: string; edit?: string; auth?: string; via?: string }
   /** Заказ в кабинете — по коду. */
   | { order: string }
 
@@ -79,7 +80,7 @@ export function hrefFor(lang: Lang, to: To): string {
   if ('withdraw' in to) return `/${lang}/withdraw`
   if ('account' in to) {
     const path = to.account === 'home' ? `/${lang}/account` : `/${lang}/account/${to.account}`
-    const query: [string, string | undefined][] = [['token', to.token], ['next', to.next], ['edit', to.edit]]
+    const query: [string, string | undefined][] = [['token', to.token], ['next', to.next], ['edit', to.edit], ['auth', to.auth], ['via', to.via]]
     return withQuery(path, query.filter((q): q is Pair => !!q[1]))
   }
   if ('order' in to) return `/${lang}/account/orders/${seg(to.order)}`

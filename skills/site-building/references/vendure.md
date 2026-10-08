@@ -165,6 +165,23 @@ mutation Add($id: ID!, $qty: Int!) {
    `globalTemplateVars.verifyEmailAddressUrl` = `<сайт>/<язык>/account/verify`,
    `passwordResetUrl` = `<сайт>/<язык>/account/password` (шаблоны писем
    дописывают `?token=…`).
+8. Вход через Google и Facebook (И787) — плагин сервера
+   `assets/vendure/plugins/social-auth/` (пол — Vendure 3.7.3). Витрина
+   спрашивает `socialSignInProviders { name clientId }` и рисует кнопки только
+   для названных; кнопка уводит в окно поставщика (`state` и PKCE у обоих — в
+   httpOnly cookie на 10 минут), возврат — `/api/auth/<поставщик>/callback`, и
+   оттуда `authenticate(input: { google: { code, codeVerifier, redirectUri } },
+   rememberMe: true)` С ТОКЕНОМ гостя — как `login`: новый `vendure-auth-token`,
+   корзина сливается. Отказ — `InvalidCredentialsError.authenticationError` с
+   кодом плагина (`EMAIL_IN_USE`, `EMAIL_MISSING`, `EMAIL_UNVERIFIED`,
+   `PROVIDER_REJECTED`, `PROVIDER_UNAVAILABLE`); без плагина — ошибка GraphQL,
+   кнопок нет. Пароль на кабинет из Google ставится только через письмо
+   (3.7.3+): `registerCustomerAccount` отвечает успехом и шлёт ссылку.
+   Кабинет по адресу (таблица в README плагина): Google привязывается к
+   подтверждённому, перехватывает неподтверждённый; Facebook заводит только
+   новый, и его связь снимается, когда владелец подтвердит адрес письмом
+   (`AccountVerifiedEvent`). Нужны `requireVerification: true` и
+   `allowGuestCheckoutForRegisteredCustomers: false` (умолчания Vendure).
 
 ## Кэш (Next 16, `cacheComponents`)
 
