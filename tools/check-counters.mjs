@@ -31,6 +31,14 @@
  * одной строкой до нажатия и после, число видно, после перезагрузки число
  * берётся из корзины (И469, И763).
  *
+ * Окна телефона — пальцем (И780, 08.10.2026: «нижняя часть с кнопками скролится»,
+ * «меню не закрывается свайпом»). Chromium на 360 × 670 с настоящим касанием
+ * (через CDP — оно идёт тем же путём, что палец, и слушает `touch-action`): корзина
+ * наполняется нажатием на полке; открытая — её низ стоит целиком (не прокручивается,
+ * обе кнопки внутри окна), тело длиннее окна; корзина и меню закрываются свайпом
+ * изнутри и с затемнённой полосы рядом с шторкой; вертикаль на полосе окно не
+ * закрывает. WebKit и Firefox касание из проверки не получают — там «не проверено».
+ *
  * Где мерить, сайт говорит сам (05.10.2026: адреса стояли от витрины-образца,
  * и на другом магазине проверка мерила бы 404): язык — от главной, полка —
  * первая страница из ссылок шапки с кнопками «в корзину» на узкой карточке,
@@ -329,6 +337,83 @@ async function checkShelf(browser, engine, found, shelves) {
   }
 }
 
+/** Окна телефона пальцем (И780): низ корзины целиком, свайп закрывает меню и корзину — изнутри
+ *  и с затемнённой полосы. Только Chromium: касание — через CDP. */
+async function checkWindows(browser, engine, found, shelf) {
+  const say = (what) => found.push(`[${engine.name}] окна телефона: ${what}`)
+  const ctx = await noHmr(await browser.newContext({ viewport: { width: 360, height: 670 }, deviceScaleFactor: 2, hasTouch: true, isMobile: true }))
+  const page = await ctx.newPage()
+  await page.addInitScript(() => { const s = document.createElement('style'); s.textContent = '*,*::before,*::after{transition:none!important;animation:none!important}'; document.addEventListener('DOMContentLoaded', () => document.head.appendChild(s)) })
+  const cdp = await ctx.newCDPSession(page)
+  /* Палец: путь с настоящими метками времени — скорость та, что задана, а не та, что дала связь с браузером. */
+  const drag = async (x0, y0, x1, y1, ms = 300, steps = 14) => {
+    const t0 = Date.now() / 1000
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x0, y: y0, id: 1 }], timestamp: t0 })
+    for (let i = 1; i <= steps; i++) await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x0 + (x1 - x0) * i / steps, y: y0 + (y1 - y0) * i / steps, id: 1 }], timestamp: t0 + ms * i / steps / 1000 })
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [], timestamp: t0 + ms / 1000 })
+  }
+  const isOpen = (sel) => page.evaluate((s) => !!document.querySelector(s)?.matches(':popover-open'), sel)
+  const gone = async (sel) => { try { await page.waitForFunction((s) => !document.querySelector(s)?.matches(':popover-open'), sel, { timeout: 2500 }); return true } catch { return false } }
+  try {
+    await page.goto(shelf, { waitUntil: 'networkidle', timeout: 150000 })
+    /* Корзина — нажатием, как у человека: по три раза на первых четырёх карточках полки. */
+    const cards = page.locator('[data-product-card]:has(form button[type=submit])')
+    const n = Math.min(await cards.count(), 4)
+    for (let r = 0; r < 3; r++) for (let i = 0; i < n; i++) {
+      const btn = cards.nth(i).locator('form button[type=submit]')
+      await btn.scrollIntoViewIfNeeded().catch(() => {})
+      await btn.click({ timeout: 8000 }).catch(() => {})
+      await page.waitForTimeout(250)
+    }
+    await page.evaluate(() => scrollTo(0, 0))
+    const windows = [
+      { name: 'корзина', sel: '[data-pane="end"]', open: () => page.locator('header a[href*="/cart"]:visible').first().click({ timeout: 8000 }) },
+      { name: 'меню', sel: '[data-pane="start"]', open: () => page.locator('button[popovertarget$="site-menu"]:visible').first().click({ timeout: 8000 }) },
+    ]
+    for (const w of windows) {
+      const reopen = async () => {
+        if (await isOpen(w.sel)) return true
+        await w.open().catch(() => {})
+        try { await page.waitForFunction((s) => document.querySelector(s)?.matches(':popover-open'), w.sel, { timeout: 5000 }) } catch { return false }
+        await page.waitForTimeout(500)
+        return true
+      }
+      if (!(await reopen())) { say(`${w.name}: не открылась нажатием`); continue }
+      const box = await page.evaluate((s) => { const r = document.querySelector(s).getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height, right: r.right } }, w.sel)
+      /* Низ окна стоит целиком: не прокручивается, каждое действие внутри окна. */
+      const foot = await page.evaluate((s) => {
+        const pane = document.querySelector(s); const f = [...pane.children].find((c) => /foot/i.test(String(c.className)))
+        if (!f) return null
+        const pr = pane.getBoundingClientRect()
+        const body = [...pane.children].find((c) => /body/i.test(String(c.className)))
+        return { scroll: f.scrollHeight - f.clientHeight, out: [...f.querySelectorAll('a, button')].filter((a) => { const r = a.getBoundingClientRect(); return r.width && (r.bottom > pr.bottom + 0.5 || r.top < pr.top) }).map((a) => a.textContent.trim().slice(0, 24) || a.getAttribute('aria-label')), long: body ? body.scrollHeight > body.clientHeight + 40 : false }
+      }, w.sel)
+      if (foot) {
+        if (foot.scroll > 1) say(`${w.name}: низ окна прокручивается (на ${foot.scroll} px) — кнопки видны только после прокрутки`)
+        if (foot.out.length) say(`${w.name}: ${foot.out.map((t) => `«${t}»`).join(', ')} — за краем окна`)
+        if (!foot.long) unchecked.push(`${w.name}: в корзине мало строк — тело короче окна, низ мерился без нажима`)
+      } else if (w.sel.includes('"end"')) unchecked.push('корзина: у открытой окна нет низа (пустая?) — низ не померен')
+      /* Свайп изнутри и с затемнённой полосы. */
+      const side = w.sel.includes('"start"') ? 'start' : 'end'
+      const dir = side === 'start' ? -1 : 1
+      const innerX = side === 'start' ? box.right - 50 : box.x + 50
+      await drag(innerX, 400, innerX + dir * 190, 400)
+      if (!(await gone(w.sel))) say(`${w.name}: свайп по самой шторке не закрыл её`)
+      if (!(await reopen())) { say(`${w.name}: не открылась снова`); continue }
+      const stripW = side === 'start' ? 360 - box.right : box.x
+      if (stripW < 24) { unchecked.push(`${w.name}: затемнённой полосы у шторки нет (${Math.round(stripW)} px) — свайп с полосы не мерился`); continue }
+      const stripX = side === 'start' ? box.right + stripW / 2 : box.x / 2
+      await drag(stripX, 400, stripX + dir * 120, 400)
+      if (!(await gone(w.sel))) say(`${w.name}: свайп с затемнённой полосы рядом со шторкой не закрыл её`)
+      if (!(await reopen())) { say(`${w.name}: не открылась снова`); continue }
+      await drag(stripX, 450, stripX, 250)
+      if (!(await isOpen(w.sel))) say(`${w.name}: вертикальный жест на полосе закрыл шторку — он должен прокручивать страницу`)
+      await page.keyboard.press('Escape'); await page.waitForTimeout(300)
+    }
+  } catch (e) { say(`не измерено: ${e.message.split('\n')[0]}`) }
+  await ctx.close()
+}
+
 const at = await discover(use[0])
 const found = []
 for (const engine of use) {
@@ -394,6 +479,8 @@ for (const engine of use) {
       await ctx.close()
     }
     await checkShelf(browser, engine, found, at.shelves)
+    if (engine.type.name?.() === 'chromium' && at.shelves[0]) await checkWindows(browser, engine, found, at.shelves[0][1])
+    else if (!unchecked.some((u) => u.startsWith('окна телефона пальцем'))) unchecked.push('окна телефона пальцем: только Chromium (касание идёт через CDP) — в этом браузере не мерились')
   } finally { await browser.close() }
 }
 
@@ -406,4 +493,4 @@ if (found.length) {
   process.exit(1)
 }
 if (!at.shelves.length) process.exit(2)
-console.log('✓ Все виды счётчика отвечают руке, держат границы и читаются; строка покупки — одной линией; надпись «в корзину» на полке телефона — одной строкой и с числом из корзины.')
+console.log('✓ Все виды счётчика отвечают руке, держат границы и читаются; строка покупки — одной линией; надпись «в корзину» на полке телефона — одной строкой и с числом из корзины; окна телефона: низ корзины стоит целиком, меню и корзина закрываются свайпом изнутри и с затемнённой полосы.')

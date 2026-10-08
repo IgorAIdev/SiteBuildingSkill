@@ -60,3 +60,4 @@
 - [cbdshop.bg is the owner's](cbdshop-is-owners.md) — his first storefront (CBD_ecommerce_eu, vendure.cbdshop.bg); texts reusable as rewrites, not copies (04.10.2026)
 - [One window, one sheet](one-pane-one-sheet.md) — menu/filters/cart share deck header + one white sheet + one foot pair (quiet left, loud right); no per-window tones or grey controls; menu foot = icon buttons + language on one plate (05.10.2026, И772)
 - [Codex in the same folder](codex-same-folder.md) — Codex works here and on GitHub too; check branch/uncommitted/PRs first, merge all lines, one snapshot to main (08.10.2026)
+- [Window foot + swipe](pane-foot-and-swipe.md) — foot buttons always whole, never scroll; every sheet closes by swipe incl. from the dim strip; owner phone 360 css px; tested with a real finger (08.10.2026, И780)
