@@ -73,14 +73,15 @@ test('a coupon outcome opens the folded code field; a line outcome shows by the 
 
 /* Обещания у кнопки — из данных магазина (разбор 24.09.2026, K4): оплата
    при получении — если она допустима для этой корзины, доставка «от» — из
-   списка способов, возврат — сроком из данных. */
-test('pledges by the button come from the shop data, not from words in code', async () => {
+   списка способов, возврат — сроком из данных. Строки собирает `pledgesView`; на странице
+   корзины голубой плашки с ними нет (слово заказчика 08.10.2026), они стоят на главной и у
+   кнопки оплаты. */
+test('pledges come from the shop data, not from words in code', async () => {
   const pay = await sampleCommerce.paymentMethods(FIXTURES.cart, 'en')
   const methods = await sampleCommerce.deliveryMethods(null, 'en')
   const facts = await sampleContent.facts()
   assert.ok(pay.ok && methods.ok && facts.ok)
-  const v = cartView('en', await fixtureCart(), null, { payments: pay.value, methods: methods.value, returnDays: facts.value.returnDays, freeFrom: facts.value.freeDeliveryFrom, popular: [], shelves: [] })
-  assert.deepEqual(v.pledges.items, [
+  assert.deepEqual(pledgesView('en', { payments: pay.value, methods: methods.value, returnDays: facts.value.returnDays }).items, [
     { icon: 'package', text: 'Cash on delivery' },
     { icon: 'truck', text: 'Delivery from €3.49, pickup free' },
     { icon: 'check-shield', text: '14-day returns' },
@@ -105,7 +106,7 @@ test('one quantity control on the site: the cart and the product page take the s
 test('the empty cart shows popular products from the source, as shelf cards', async () => {
   const shelf = await sample.listing('en', { facets: {}, sort: 'popular', page: null })
   assert.ok(shelf.ok)
-  const v = cartView('en', null, null, { payments: null, methods: null, returnDays: null, freeFrom: null, popular: shelf.value.items.slice(0, 4), shelves: [] })
+  const v = cartView('en', null, null, { freeFrom: null, popular: shelf.value.items.slice(0, 4), shelves: [] })
   assert.equal(v.empty.shelf?.title, 'Popular products')
   assert.equal(v.empty.shelf?.cards.length, 4)
   assert.equal(v.empty.shelf?.all, '/en/catalog')
@@ -117,7 +118,7 @@ test('the empty cart shows popular products from the source, as shelf cards', as
 test('the empty cart offers the main shelves as category buttons, in the pane and on the page', async () => {
   const cols = await sample.collections('en')
   assert.ok(cols.ok)
-  const v = cartView('en', null, null, { payments: null, methods: null, returnDays: null, freeFrom: null, popular: [], shelves: cols.value.slice(0, 3) })
+  const v = cartView('en', null, null, { freeFrom: null, popular: [], shelves: cols.value.slice(0, 3) })
   assert.equal(v.empty.shelves?.label, 'Categories')
   assert.equal(v.empty.shelves?.links.length, 3)
   assert.match(v.empty.shelves?.links[0].href ?? '', /^\/en\//)
@@ -142,4 +143,16 @@ test('the free-delivery strip says what is left, then that it is unlocked; no th
   assert.deepEqual(cartView('hu', cart, null, extras(20000)).goal?.left, ['Még ', `69,77${NB}€`, ', és a szállítás díjmentes'])
   assert.equal(cartView('en', cart, null).goal, null, 'порога у магазина нет')
   assert.equal(cartView('en', null, null, extras(10000)).goal, null, 'пустой корзине полоса не нужна')
+})
+
+/* Страница корзины — белый лист: итог, кнопка оформления, код скидки. Голубой плашки «оплата при
+   получении · доставка от · возврат» под кнопкой нет (слово заказчика 08.10.2026: «это говно, зачем
+   налепил»; плашка тоном внутри листа — И772), и данных на неё страница не собирает. */
+test('the cart page has no pledges plate and gathers no data for one', async () => {
+  const view = readFileSync(new URL('../components/CartView.tsx', import.meta.url), 'utf8')
+  const page = readFileSync(new URL('../app/[lang]/cart/page.tsx', import.meta.url), 'utf8')
+  assert.doesNotMatch(view, /Pledges/)
+  assert.doesNotMatch(page, /paymentMethods|deliveryMethods|returnDays/)
+  const v = cartView('en', await fixtureCart(), null)
+  assert.ok(!('pledges' in v), 'в виде корзины нет обещаний')
 })

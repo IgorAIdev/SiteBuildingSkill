@@ -1,5 +1,5 @@
 import type { Lang } from './locale.ts'
-import type { Card, Cart, CartLine, Collection, DeliveryMethod, Image, Money, PaymentMethod } from './source/contract.ts'
+import type { Card, Cart, CartLine, Collection, Image, Money } from './source/contract.ts'
 import type { Empty } from './catalog-view.ts'
 import { outcomeOf, type Outcome } from './cart-ops.ts'
 import { t, tn } from './i18n/index.ts'
@@ -7,7 +7,6 @@ import { money } from './money.ts'
 import { hrefFor } from './href.ts'
 import { MARKET } from './market.ts'
 import { shelfCard, type ShelfCard } from './view.ts'
-import { pledgesView, type PledgesView } from './pledges.ts'
 import { factsLine } from './facts.ts'
 
 export type TotalsView = { rows: { label: string; value: string }[]; total: { label: string; value: string }; note: string }
@@ -35,24 +34,23 @@ export type CartPageView = {
   checkout: { label: string; href: string }
   open: { label: string; href: string }
   coupon: { ask: string; label: string; apply: string; open: boolean; applied: { code: string; op: string; label: string }[] }
-  pledges: PledgesView
   notice: Outcome | null; couponNotice: Outcome | null
   empty: Empty & { shelf: ShelfView | null; shelves: ShelvesView | null }
   messages: { timeout: string; failed: string }
   /** Отметка корзины (`cartStamp`): страница сверяет её с корзиной (CartFresh, И696). */
   stamp: string
 }
-/** Что страница корзины собрала у источника сверх самой корзины: способы
- *  оплаты этой корзины, способы доставки, срок возврата — для обещаний у
- *  кнопки; ходовые товары — для полки пустой корзины. Нет — строки нет. */
-export type CartExtras = { payments: PaymentMethod[] | null; methods: DeliveryMethod[] | null; returnDays: number | null; freeFrom: Money | null; popular: Card[]; shelves: Collection[] }
+/** Что страница корзины собрала у источника сверх самой корзины: порог бесплатной
+ *  доставки — для полосы цели; ходовые товары и главные полки — для пустой корзины.
+ *  Нет — строки нет. Обещаний у кнопки на странице корзины нет (слово заказчика 08.10.2026). */
+export type CartExtras = { freeFrom: Money | null; popular: Card[]; shelves: Collection[] }
 
 /** Предел количества в строке — один на корзину и карту товара (в договоре
  *  его пока нет, docs/open.md, «Предел количества»). */
 export const QTY_MAX = 99
 const zero = (): Money => ({ minor: 0, currency: MARKET.currency })
 const EMPTY: Cart = { lines: [], quantity: 0, subtotal: zero(), discounts: [], delivery: null, total: zero() }
-const NO_EXTRAS: CartExtras = { payments: null, methods: null, returnDays: null, freeFrom: null, popular: [], shelves: [] }
+const NO_EXTRAS: CartExtras = { freeFrom: null, popular: [], shelves: [] }
 
 /* Исход кода скидки живёт у поля кода, а не у списка товаров: по имени
    исхода (после «:») — свой блок кодов купона, остальное — линии корзины. */
@@ -156,7 +154,6 @@ export function cartView(lang: Lang, cart: Cart | null, result: string | null, e
       open: coupon && outcome.kind === 'error',
       applied: c.discounts.map((d) => ({ code: d.code, op: `uncoupon:${d.code}`, label: t(lang, 'cart.couponRemove', { code: d.code }) })),
     },
-    pledges: pledgesView(lang, extras),
     notice: outcome && !coupon ? outcome : null,
     couponNotice: outcome && coupon ? outcome : null,
     empty: {

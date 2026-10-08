@@ -20,3 +20,6 @@ On 26.09.2026 the owner decided to move everything from GitHub to another laptop
 **Why:** GitHub minutes cost the owner money (CI runs only on PRs). GitHub `main` is the source of truth for every machine and the cloud.
 
 **How to apply:** use a task branch from current `main`, apply relevant checks, push the completed change, and merge its PR yourself with a merge commit. For small requested fixes this includes the existing automatic publication; verify the deployed result and report what changed. Tool permissions remain independent. The repo `IgorAIdev/SiteBuildingSkill` is public. Related: [[take-recommended]], [[shared-working-tree]].
+
+**08.10.2026, evening — local only again:** after the owner's anger about a plate on the cart page («это говно, зачем налепил…») he wrote: «давай на локальном сервере смотреть буду результат, а не на проде, на GitHub не заливай пока что». The explicit «не заливай» beats the standing merge authorisation until he lifts it: no push, no PR, no merge. My cloud sandbox cannot reach his machine, so each batch goes as a commit on the local branch plus a patch file (`git format-patch`) he gives his local session («примени патч»); never promise «на витрине» for it. Lift: only his word («заливай», «можно на прод»).
+

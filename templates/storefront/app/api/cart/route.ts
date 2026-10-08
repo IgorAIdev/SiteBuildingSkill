@@ -35,6 +35,6 @@ export async function GET(request: Request) {
   const facts = query.has('view') && r.ok ? await content().facts() : null
   const freeFrom = facts?.ok ? facts.value.freeDeliveryFrom : null
   const shelves = query.has('view') && r.ok && !cart?.lines.length ? await mainShelves(lang) : []
-  const view = query.has('view') && r.ok ? cartView(lang, cart, null, { payments: null, methods: null, returnDays: null, freeFrom, popular: [], shelves }) : null
+  const view = query.has('view') && r.ok ? cartView(lang, cart, null, { freeFrom, popular: [], shelves }) : null
   return Response.json({ count, sum, held: r.ok ? cartHeld(cart) : null, stamp: r.ok ? cartStamp(cart) : null, view }, { headers: { 'Cache-Control': 'private, no-store' } })
 }
