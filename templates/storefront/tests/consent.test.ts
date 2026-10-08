@@ -148,8 +148,6 @@ test('design-system samples never write the site choice; a withdrawal waits for 
   assert.match(banner, /const choose = \(cats: Optional\[\]\) => \(sample \? setDone\(kindOf\(cats, optional\)\) : saveChoice\(cats\)\)/, 'полоса-образец — своё состояние, не saveChoice')
   assert.match(banner, /useEffect\(\(\) => \{\s*if \(sample\) return/, 'образец не слушает выбор сайта')
   assert.match(read('components/ConsentPrefs.tsx'), /const save = \(cats: Optional\[\]\) => \{ if \(sample\) setPicked\(cats\); else saveChoice\(cats\)/, 'окно-образец не пишет выбор')
-  const design = read('look-panel/design/CatalogPages.tsx')
-  for (const m of design.matchAll(/<Consent(?:Banner|Prefs) [^>]*\/>/g)) assert.match(m[0], /\bsample\b/, `образец без sample: ${m[0]}`)
   const save = read('lib/consent-save.ts')
   assert.match(save, /if \(revoked\.length\) void Promise\.race\(\[recorded, [^\]]+\]\)\.then\(\(\) => location\.reload\(\)\)/, 'перезагрузка после отзыва ждёт записи об отзыве')
   assert.match(read('lib/actions/consent.ts'), /at: new Date\(\)\.toISOString\(\)/, 'время записи — часы сервера, не браузера')

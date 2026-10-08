@@ -206,7 +206,7 @@ test('the contents fold into one line on a narrow box; dates are machine-readabl
   const view = at('../components/DocView.tsx')
   const css = at('../components/DocView.module.css')
   assert.match(view, /<nav className=\{s\.peek\} aria-label=\{view\.toc\.label\} data-print="skip">\s*<details className=\{m\.fold\}>\s*<summary>\{view\.toc\.label\} \(\{view\.toc\.items\.length\}\)<Turn \/><\/summary>/, 'свёртка оглавления — вид свёртки меню, в своём ориентире nav')
-  assert.match(css, /\.peek\{display:none\}\s*@container \(max-width:819px\)\{\s*\.toc\{display:none\}\s*\.peek\{display:block\}/, 'свёртка — только ниже шва 820, колонка — только выше')
+  assert.match(css, /\.peek\{display:none\}\s*@container \(max-width:819px\)\{\s*\.toc\{display:none\}\s*\.peek\{display:block;margin-block-start:var\(--air-row\)\}/, 'свёртка — только ниже шва 820, колонка — только выше; свёртка — в шапке документа, шагом строки группы')
   assert.match(view, /<time dateTime=\{view\.updatedIso \?\? undefined\}>\{view\.updated\}<\/time>/)
   assert.match(view, /aria-labelledby="doc-toc" data-print="skip"/)
   assert.match(at('../styles/base.css'), /@media print\{\s*\[data-print='skip'\]\{display:none !important\}\s*:root, :root:root\[data-theme\]\{color-scheme:light\}/, 'бумага — дневные роли и у выбравшего ночь ([data-theme] токенов сильнее голого :root)')

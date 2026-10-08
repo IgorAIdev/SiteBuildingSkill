@@ -10,6 +10,7 @@ import { saveChoice } from '@/lib/consent-save.ts'
 import { DocTable } from './DocTable.tsx'
 import { PaneHead } from './PaneHead.tsx'
 import { Switch } from './Switch.tsx'
+import s from './ConsentPrefs.module.css'
 import { Turn } from './Turn.tsx'
 
 /* Окно настроек cookie — второй слой согласия (И791). Окно — `<dialog>` +
@@ -56,7 +57,7 @@ export function ConsentPrefs({ view, id = CONSENT_PREFS, sample = false }: { vie
           const key = `${id}-${c.key}`
           const on = c.key === 'necessary' || picked.includes(c.key)
           return (
-            <div key={c.key} className={p.stack}>
+            <div key={c.key} className={`${p.stack} ${s.cat}`}>
               <Switch
                 label={c.readOnly ? `${c.name} · ${view.prefs.always}` : c.name}
                 name={c.key} checked={on} disabled={c.readOnly} aria-describedby={`${key}-desc`}

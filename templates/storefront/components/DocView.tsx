@@ -81,15 +81,18 @@ export function DocView({ view, table, meta, head, intro, slots, children }: {
             {meta}
           </>
         )}
+        {/* Свёрнутое оглавление узкой коробки — в шапке, а не соседом шапки: скрытый на
+            широкой сосед менял шаг стопки между шапкой и вступлением статьи (шов дважды,
+            check:craft 08.10.2026), а раскрытый уходил под обложку. */}
+        {view.toc ? (
+          <nav className={s.peek} aria-label={view.toc.label} data-print="skip">
+            <details className={m.fold}>
+              <summary>{view.toc.label} ({view.toc.items.length})<Turn /></summary>
+              <ul className={m.list}>{items}</ul>
+            </details>
+          </nav>
+        ) : null}
       </div>
-      {view.toc ? (
-        <nav className={s.peek} aria-label={view.toc.label} data-print="skip">
-          <details className={m.fold}>
-            <summary>{view.toc.label} ({view.toc.items.length})<Turn /></summary>
-            <ul className={m.list}>{items}</ul>
-          </details>
-        </nav>
-      ) : null}
       {intro}
       {view.toc ? (
         <div className={`${p.sidebar} ${s.body}`}>

@@ -22,3 +22,12 @@ test('the design system shows the empty cart, the empty favourites and the payme
   assert.match(page, /<EmptyPaths level=\{2\} title=\{t\(lang, 'saved\.empty'\)\}/)
   assert.match(page, /<PayMarks label=/)
 })
+
+/* Образцы согласия на cookie в дизайн-системе не пишут выбор сайта (И667, И791) — перенесено
+   из tests/consent.test.ts 08.10.2026: в тестах сайта следа панели нет (check:look). */
+test('the design system cookie samples carry sample and never write the site choice', () => {
+  const design = read('CatalogPages.tsx')
+  const samples = [...design.matchAll(/<Consent(?:Banner|Prefs) [^>]*\/>/g)]
+  assert.ok(samples.length, 'образцы согласия стоят в дизайн-системе')
+  for (const m of samples) assert.match(m[0], /\bsample\b/, `образец без sample: ${m[0]}`)
+})

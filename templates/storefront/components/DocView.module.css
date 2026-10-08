@@ -53,7 +53,7 @@
 .peek{display:none}
 @container (max-width:819px){
   .toc{display:none}
-  .peek{display:block}
+  .peek{display:block;margin-block-start:var(--air-row)}
 }
 
 /* Текст, список и таблица — колонкой текста `prose` (мера строки, ссылки в

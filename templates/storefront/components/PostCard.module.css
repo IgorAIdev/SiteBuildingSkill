@@ -44,5 +44,5 @@
    две колонки, снимок слева): снимок и слова рядом — примитив `switcher`, на
    узкой коробке столбиком. Слова — по низу снимка не тянутся; ярлык — фишка
    сайта над строкой данных. */
-.wide{--switch-at:40rem;--switch-gap:var(--air-group);position:relative;align-items:center}
-.wide .text{justify-content:center}
+.cardWide{--switch-at:40rem;--switch-gap:var(--air-group);position:relative;align-items:center}
+.cardWide .text{justify-content:center}
