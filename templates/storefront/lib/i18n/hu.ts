@@ -166,6 +166,7 @@ export const HU: Record<keyof typeof RO, string> = {
   'news.error': 'A feliratkozás most nem sikerült. Próbálja újra.',
   'footer.disclaimer': 'CBD-termékeink az EU-ban termesztett ipari kenderből készülnek, THC-tartalmuk a törvényes határ alatt van. Nem gyógyszerek, és nem diagnosztizálnak, nem kezelnek és nem előznek meg semmilyen betegséget; terhesség, szoptatás vagy gyógyszerszedés esetén használat előtt kérd ki orvosod véleményét. Csak 18 éven felülieknek értékesítjük.',
   'sample': 'Mintaadatok',
+  'notice.building': 'Az oldal még készül — rendelést egyelőre nem fogadunk.',
   'nav.cart': 'Kosár',
   'nav.saved': 'Kedvencek',
   'reach.menu': 'Írjon nekünk',

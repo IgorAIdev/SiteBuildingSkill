@@ -12,10 +12,10 @@
       "origin": "AC en-RO 2026-10-08; SERP proxy: Romanian shop home pages 10 of 10"
     },
     "title": "CBD shop in Romania: CBD oil, capsules, gummies and creams",
-    "description": "Online CBD shop for Romania: CBD oil by strength and spectrum, capsules, gummies, creams and cosmetics, with the CBD in milligrams on every product.",
+    "description": "Online CBD shop in Romania: CBD oil (full spectrum, broad spectrum, isolate), CBD capsules, gummies, creams and cosmetics. Buy CBD products online.",
     "hero": {
-      "title": "CBD shop, compared by the milligram",
-      "lede": "A CBD shop where every product lists its CBD in milligrams. Compare oils, capsules and creams by numbers, not by labels."
+      "title": "CBD shop in Romania",
+      "lede": "A CBD shop for Romania: CBD oil, capsules, gummies, creams and cosmetics to choose by strength, spectrum and effect."
     },
     "effects": {
       "title": "Shop by effect",
@@ -23,7 +23,7 @@
     },
     "oils": {
       "title": "CBD oil",
-      "lede": "Full spectrum, broad spectrum and isolate — compare the mg per drop and the price per mg."
+      "lede": "Full spectrum, broad spectrum and isolate CBD oil in several strengths."
     },
     "capsules": {
       "title": "CBD capsules",
@@ -31,15 +31,15 @@
     },
     "featured": {
       "title": "From the range",
-      "lede": "Oils, capsules, gummies and creams, each with its CBD stated in milligrams."
+      "lede": "CBD products from the range: oil, capsules, gummies and creams."
     },
     "reviews": {
       "title": "What customers say",
       "lede": "Sample reviews — the shop’s real reviews will appear here."
     },
     "story": {
-      "title": "Why we compare CBD by the milligram",
-      "body": "A percentage on the front of a bottle says little on its own: 10 % in a 10 ml bottle is 1000 mg, in a 30 ml bottle it is 3000 mg. That is why every product here states its CBD in milligrams — per bottle, per drop, per capsule or per piece — and the oils show the price per milligram.\n\nThe spectrum and the THC measured in the batch report are written next to the numbers, so choosing a CBD product is a matter of comparing facts."
+      "title": "Percent or milligrams: how to read a CBD label",
+      "body": "A percentage on the front of a bottle says little on its own: 10 % in a 10 ml bottle is 1000 mg of CBD, in a 30 ml bottle it is 3000 mg. To compare two CBD oils, multiply the percentage by the volume, or look for the milligrams per bottle and per drop.\n\nThe spectrum — full spectrum, broad spectrum or isolate — and the measured THC are given in the batch lab report."
     },
     "posts": {
       "title": "CBD guides",
@@ -50,7 +50,7 @@
       "items": [
         {
           "q": "What is CBD?",
-          "a": "CBD (cannabidiol) is a compound of the hemp plant. Unlike THC, it does not make you high. Here it comes as oils, capsules, gummies, creams and cosmetics, each with its CBD stated in milligrams."
+          "a": "CBD (cannabidiol) is a compound of the hemp plant. Unlike THC, it does not make you high. Here it comes as oils, capsules, gummies, creams and cosmetics."
         },
         {
           "q": "Is CBD legal in Romania?",
@@ -96,10 +96,10 @@
       "origin": "AC ro-RO 2026-10-08; SERP proxy: pagini principale de magazine 10 din 10"
     },
     "title": "Magazin CBD online în România: ulei CBD, capsule, creme",
-    "description": "Magazin CBD online pentru România: ulei CBD pe concentrații și spectre, capsule, jeleuri, creme și cosmetice, cu CBD-ul în miligrame la fiecare produs.",
+    "description": "Magazin CBD online în România: ulei CBD full spectrum, broad spectrum și izolat, capsule CBD, jeleuri, creme și cosmetice. Cumpărați produse CBD online.",
     "hero": {
-      "title": "Magazin CBD, comparat după miligrame",
-      "lede": "Un magazin CBD în care fiecare produs își scrie CBD-ul în miligrame. Comparați uleiuri, capsule și creme după cifre, nu după etichete."
+      "title": "Magazin CBD online în România",
+      "lede": "Magazin CBD pentru România: ulei CBD, capsule, jeleuri, creme și cosmetice, alese după concentrație, spectru și efect."
     },
     "effects": {
       "title": "Alegeți după efect",
@@ -107,7 +107,7 @@
     },
     "oils": {
       "title": "Ulei CBD",
-      "lede": "Full spectrum, broad spectrum și izolat — comparați mg pe picătură și prețul pe mg."
+      "lede": "Ulei CBD full spectrum, broad spectrum și izolat, în mai multe concentrații."
     },
     "capsules": {
       "title": "Capsule CBD",
@@ -115,15 +115,15 @@
     },
     "featured": {
       "title": "Din ofertă",
-      "lede": "Uleiuri, capsule, jeleuri și creme, fiecare cu CBD-ul scris în miligrame."
+      "lede": "Produse CBD din ofertă: ulei, capsule, jeleuri și creme."
     },
     "reviews": {
       "title": "Ce spun clienții",
       "lede": "Recenzii exemplu — aici vor apărea recenziile reale ale magazinului."
     },
     "story": {
-      "title": "De ce comparăm CBD-ul după miligrame",
-      "body": "Procentul de pe flacon spune puțin singur: 10 % într-un flacon de 10 ml înseamnă 1000 mg, într-unul de 30 ml — 3000 mg. De aceea fiecare produs de aici își scrie CBD-ul în miligrame — pe flacon, pe picătură, pe capsulă sau pe bucată —, iar uleiurile arată și prețul pe mg.\n\nSpectrul și THC-ul măsurat în buletinul de analiză al lotului sunt scrise lângă cifre, așa că alegerea unui produs CBD înseamnă să comparați fapte."
+      "title": "Procent sau miligrame: cum citiți eticheta CBD",
+      "body": "Procentul de pe flacon spune puțin singur: 10 % într-un flacon de 10 ml înseamnă 1000 mg CBD, într-unul de 30 ml — 3000 mg. Ca să comparați două uleiuri CBD, înmulțiți procentul cu volumul sau căutați miligramele pe flacon și pe picătură.\n\nSpectrul — full spectrum, broad spectrum sau izolat — și THC-ul măsurat sunt trecute în buletinul de analiză al lotului."
     },
     "posts": {
       "title": "Ghiduri CBD",
@@ -134,7 +134,7 @@
       "items": [
         {
           "q": "Ce este CBD?",
-          "a": "CBD (canabidiolul) este un compus al plantei de cânepă. Spre deosebire de THC, nu are efect psihoactiv. Aici îl găsiți în uleiuri, capsule, jeleuri, creme și cosmetice, fiecare cu CBD-ul scris în miligrame."
+          "a": "CBD (canabidiolul) este un compus al plantei de cânepă. Spre deosebire de THC, nu are efect psihoactiv. Aici îl găsiți în uleiuri, capsule, jeleuri, creme și cosmetice."
         },
         {
           "q": "Este CBD legal în România?",
@@ -180,10 +180,10 @@
       "origin": "AC hu-HU, hu-RO 2026-10-08; SERP proxy: webshop-főoldalak 9 / 10"
     },
     "title": "CBD webshop Romániában: CBD olaj, kapszula, gumicukor, krém",
-    "description": "CBD webshop Romániában: CBD olaj erősség és spektrum szerint, kapszula, gumicukor, krém és kozmetikum, minden terméknél milligrammban megadott CBD-vel.",
+    "description": "CBD webshop Romániában: CBD olaj (teljes és széles spektrum, izolátum), CBD kapszula, gumicukor, krém és kozmetikum. CBD termékek online.",
     "hero": {
-      "title": "CBD webshop milligramm szerint",
-      "lede": "CBD webshop, ahol minden termék milligrammban adja meg a CBD-t. Olajat, kapszulát és krémet számok alapján hasonlíts össze, ne címke alapján."
+      "title": "CBD webshop Romániában",
+      "lede": "CBD webshop: CBD olaj, kapszula, gumicukor, krém és kozmetikum, erősség, spektrum és hatás szerint válogatva."
     },
     "effects": {
       "title": "Válassz hatás szerint",
@@ -191,7 +191,7 @@
     },
     "oils": {
       "title": "CBD olaj",
-      "lede": "Teljes és széles spektrum, izolátum — vesd össze a mg / csepp és az ár / mg értéket."
+      "lede": "Teljes és széles spektrumú CBD olaj és izolátum, több erősségben."
     },
     "capsules": {
       "title": "CBD kapszula",
@@ -199,15 +199,15 @@
     },
     "featured": {
       "title": "A kínálatból",
-      "lede": "Olajok, kapszulák, gumicukrok és krémek, mindegyik milligrammban megadott CBD-vel."
+      "lede": "CBD termékek a kínálatból: olaj, kapszula, gumicukor és krém."
     },
     "reviews": {
       "title": "Mit mondanak a vásárlók",
       "lede": "Mintavélemények — itt jelennek meg a bolt valódi véleményei."
     },
     "story": {
-      "title": "Miért milligramm szerint hasonlítjuk össze a CBD-t",
-      "body": "Az üveg elején álló százalék önmagában keveset mond: a 10% egy 10 ml-es üvegben 1000 mg, egy 30 ml-esben 3000 mg. Ezért itt minden termék milligrammban adja meg a CBD-t — üvegenként, cseppenként, kapszulánként vagy darabonként —, az olajoknál pedig az ár / mg is ott van.\n\nA spektrum és a tételvizsgálatban mért THC a számok mellett szerepel, így a CBD termék kiválasztása tények összevetése."
+      "title": "Százalék vagy milligramm: így olvasd a CBD címkét",
+      "body": "Az üveg elején álló százalék önmagában keveset mond: a 10% egy 10 ml-es üvegben 1000 mg CBD, egy 30 ml-esben 3000 mg. Két CBD olaj összevetéséhez szorozd meg a százalékot a térfogattal, vagy keresd az üvegenkénti és cseppenkénti milligrammot.\n\nA spektrum — teljes, széles vagy izolátum — és a mért THC a tétel laborvizsgálatában szerepel."
     },
     "posts": {
       "title": "CBD útmutatók",
@@ -218,7 +218,7 @@
       "items": [
         {
           "q": "Mi a CBD?",
-          "a": "A CBD (kannabidiol) a kenderből származó vegyület. A THC-vel ellentétben nem bódít. Nálunk olajban, kapszulában, gumicukorban, krémben és kozmetikumban kapható, mindegyik milligrammban megadott CBD-vel."
+          "a": "A CBD (kannabidiol) a kenderből származó vegyület. A THC-vel ellentétben nem bódít. Nálunk olajban, kapszulában, gumicukorban, krémben és kozmetikumban kapható."
         },
         {
           "q": "Legális a CBD Romániában?",

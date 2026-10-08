@@ -30,6 +30,8 @@ import { COOKIE_DOC } from '@/lib/company.ts'
 import { ConsentBanner } from './ConsentBanner.tsx'
 import { ConsentPrefs } from './ConsentPrefs.tsx'
 import { ConsentScripts } from './ConsentScripts.tsx'
+import { BuildingNotice } from './BuildingNotice.tsx'
+import { ordersOpen } from '@/lib/source/index.ts'
 
 /* Документ витрины: язык, вид, пропуск к содержимому, шапка, подвал и общие
    стили. Один на двоих — макет языка (app/[lang]/layout.tsx) и страницу
@@ -73,6 +75,8 @@ export function Shell({ lang, data, look, chrome = 'full', children }: { lang: L
         {fontPreloads(look.fonts).map((href) => <link key={href} rel="preload" as="font" type="font/woff2" href={href} crossOrigin="" />)}
         {consent ? <ConsentBanner view={consent} optional={optional} /> : null}
         <a className={p.skip} href="#main" data-print="skip">{t(lang, 'skip')}</a>
+        {/* Заказы не принимаются — полоса над шапкой в обеих рамах (И792): касса тоже говорит заранее, а не ошибкой у кнопки. */}
+        {ordersOpen() ? null : <BuildingNotice text={t(lang, 'notice.building')} />}
         {chrome === 'checkout' ? <CheckoutHeader lang={lang} /> : <Header lang={lang} nav={data.nav} service={data.service} top={data.top} variant={look.header} />}
         {children}
         {/* У кассы подвала нет: «убирай этот текст внизу» (слово заказчика 08.10.2026) — выход один, «назад в корзину»;
