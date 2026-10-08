@@ -54,7 +54,8 @@ export function Footer({ lang, docs, shelves, variant = 'full', idPrefix = '' }:
      оформления нечего выбирать, кроме того, что обязано быть по закону
      (условия, возврат, данные, ANPC), и того, что помогает довести
      заказ, — телефона (разбор 24.09.2026, S2; Baymard: контакт поддержки в
-     оформлении). */
+     оформлении). Названия фирмы и CUI здесь нет (слово заказчика 08.10.2026: «эти
+     данные фирмы не нужны тут»): они — в подвале магазина и в условиях. */
   if (variant === 'legal') {
     return (
       <footer className={s.legal}>
@@ -64,7 +65,6 @@ export function Footer({ lang, docs, shelves, variant = 'full', idPrefix = '' }:
             {links([...LEGAL, 'retur'])}{withdrawLink}
             <li><a className={b.word} href={ANPC_SAL_URL} rel="noopener">{t(lang, 'footer.anpc')}</a></li>
           </ul>
-          <p><span translate="no">{COMPANY.name}</span> · CUI {COMPANY.cui}{COMPANY_IS_REAL ? null : ` · ${t(lang, 'sample')}`}</p>
         </div>
       </footer>
     )
