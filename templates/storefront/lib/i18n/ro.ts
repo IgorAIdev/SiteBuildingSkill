@@ -177,7 +177,7 @@ export const RO = {
   'saved.title': 'Favorite',
   'saved.lede': 'Produsele marcate cu inimă.',
   'saved.empty': 'Încă nu ai favorite',
-  'saved.emptyStep': 'Vezi produsele',
+  'saved.emptyLead': 'Atinge inima ca să salvezi un produs.',
   'search.open': 'Deschide căutarea',
   'search.close': 'Închide căutarea',
   'search.all': 'Toate rezultatele pentru „{q}”',

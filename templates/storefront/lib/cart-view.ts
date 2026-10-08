@@ -7,6 +7,7 @@ import { hrefFor } from './href.ts'
 import { MARKET } from './market.ts'
 import { shelfCard, type ShelfCard } from './view.ts'
 import { factsLine } from './facts.ts'
+import { shelvesView, type ShelvesView } from './shelves-view.ts'
 
 export type TotalsView = { rows: { label: string; value: string }[]; total: { label: string; value: string }; note: string }
 /** Шаг счётчика строки корзины: «−» и «+» — кнопки записи (`op`), без
@@ -22,9 +23,6 @@ export type CartLineView = {
   remove: { op: string; label: string; text: string }
 }
 export type ShelfView = { title: string; all: string; cards: ShelfCard[] }
-/** Пути с пустой корзины — тихими строками со знаком, как в окне поиска (`ShelfRows`, И689):
- *  «все товары» первой, дальше главные полки магазина. */
-export type ShelvesView = { label: string; links: { label: string; sign: string | null; href: string }[] }
 /** Полоса до бесплатной доставки. `value` и `max` — копейки (родной `progress`); `left` — слова
  *  тремя кусками «до · сумма · после»: сумма выделяется весом, а порядок слов — языка; `null` —
  *  порог взят, говорит `done`. Порог назначает магазин (`ShopFacts.freeDeliveryFrom`). */
@@ -159,13 +157,7 @@ export function cartView(lang: Lang, cart: Cart | null, result: string | null, e
     empty: {
       title: t(lang, 'cart.empty'), lead: t(lang, 'cart.emptyLead'),
       shelf: popular.length ? { title: t(lang, 'cart.popular'), all: hrefFor(lang, { catalog: true }), cards: popular } : null,
-      shelves: {
-        label: t(lang, 'nav.categories'),
-        links: [
-          { label: t(lang, 'nav.catalog'), sign: 'shop-awning', href: hrefFor(lang, { catalog: true }) },
-          ...extras.shelves.map((col) => ({ label: col.name, sign: col.sign, href: hrefFor(lang, { category: col.slug }) })),
-        ],
-      },
+      shelves: shelvesView(lang, extras.shelves),
     },
     messages: { timeout: t(lang, 'cart.error.timeout'), failed: t(lang, 'cart.error.unavailable') },
     stamp: cartStamp(cart),
