@@ -91,3 +91,15 @@ test('the rail head buttons stay round past the panel; page numbers do not', () 
   assert.equal([...pager.matchAll(/<button\b[^>]*\bdata-pager data-rail-nav\b/g)].length, 2)
   assert.doesNotMatch(read('../components/Pagination.tsx'), /\bdata-rail-nav\b/)
 })
+
+/* Окно поиска — две группы, поле и список; внутри списка шаг соседних целей (И786). Слово заказчика
+   08.10.2026: «а нужны ли тут такие большие зазоры?», «ритм поправь». */
+test('the search window keeps two groups: field, then one tight list whose caption and Clear share one text role', () => {
+  const css = readFileSync(new URL('../components/SearchPane.module.css', import.meta.url), 'utf8')
+  const tsx = readFileSync(new URL('../components/SearchPane.tsx', import.meta.url), 'utf8')
+  assert.match(css, /\.body\{display:grid;justify-items:start;gap:var\(--air-line\);padding-block:0 var\(--pad-card\)\}/)
+  assert.match(css, /\.list\{justify-self:stretch;display:grid;justify-items:start;gap:var\(--sp-1\)\}/)
+  assert.match(css, /\.head,\.clear\{font-size:var\(--ctrl-fs-sm\);font-weight:var\(--label-weight\)\}/)
+  assert.match(tsx, /<button className=\{`\$\{b\.word\} \$\{p\.tap\} \$\{s\.clear\}`\}/)
+  assert.match(tsx, /<div className=\{s\.list\}>\s*<div className=\{s\.lead\}>/)
+})

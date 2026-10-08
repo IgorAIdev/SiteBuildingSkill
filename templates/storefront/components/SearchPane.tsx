@@ -68,32 +68,34 @@ export function SearchPane({ lang, action, words, shelves, trigger }: { lang: st
               <Icon id="search" />
               <input ref={field} id={`${id}-q`} className={`${f.box} ${s.input}`} name="q" type="search" value={q} onChange={(e) => setQ(e.target.value)} enterKeyHint="search" placeholder={words.label} autoComplete="off" />
             </form>
-            <div className={s.lead}>
-              <p className={s.head} role="status">{shown ? `${words.found} · ${new Intl.NumberFormat(lang).format(shown.total)}` : words.shelves}</p>
-              {q ? <button className={b.btn} data-voice="bare" data-size="sm" type="button" onClick={() => { setQ(''); field.current?.focus() }}>{words.clear}</button> : null}
+            <div className={s.list}>
+              <div className={s.lead}>
+                <p className={s.head} role="status">{shown ? `${words.found} · ${new Intl.NumberFormat(lang).format(shown.total)}` : words.shelves}</p>
+                {q ? <button className={`${b.word} ${p.tap} ${s.clear}`} type="button" onClick={() => { setQ(''); field.current?.focus() }}>{words.clear}</button> : null}
+              </div>
+              {shown ? (
+                shown.cards.length ? (
+                  <>
+                    <ShelfRows rows={all} />
+                    <ul className={s.found}>
+                      {shown.cards.map((c) => (
+                        <li key={c.id}>
+                          <a className={s.hit} href={c.href}>
+                            <span className={`${p.frame} ${s.thumb}`}><img {...shot(c.image, 'thumb', true)} alt="" decoding="async" /></span>
+                            <span className={s.what}>{c.brand ? <span className={s.brand} translate="no">{c.brand}</span> : null}<span className={s.name}>{c.name}</span></span>
+                            <span className={s.price}>{c.price}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : <p className={s.none}>{words.none.replace('{q}', shown.q)}</p>
+              ) : (
+                /* Полки — тихими строками со знаком (ShelfRows), как найденные товары
+                   ниже в том же окне, а не кнопками и не фишками (И691). */
+                <ShelfRows rows={shelves} />
+              )}
             </div>
-            {shown ? (
-              shown.cards.length ? (
-                <>
-                  <ShelfRows rows={all} />
-                  <ul className={s.found}>
-                    {shown.cards.map((c) => (
-                      <li key={c.id}>
-                        <a className={s.hit} href={c.href}>
-                          <span className={`${p.frame} ${s.thumb}`}><img {...shot(c.image, 'thumb', true)} alt="" decoding="async" /></span>
-                          <span className={s.what}>{c.brand ? <span className={s.brand} translate="no">{c.brand}</span> : null}<span className={s.name}>{c.name}</span></span>
-                          <span className={s.price}>{c.price}</span>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              ) : <p className={s.none}>{words.none.replace('{q}', shown.q)}</p>
-            ) : (
-              /* Полки — тихими строками со знаком (ShelfRows), как найденные товары
-                 ниже в том же окне, а не кнопками и не фишками (И691). */
-              <ShelfRows rows={shelves} />
-            )}
           </div>
         </div>
         <PaneHandle />

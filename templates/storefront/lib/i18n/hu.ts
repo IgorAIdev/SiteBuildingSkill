@@ -192,6 +192,7 @@ export const HU: Record<keyof typeof RO, string> = {
   'cart.lede': 'Rendelés előtt ellenőrizze a termékeket, a mennyiséget és a kedvezménykódot.',
   'cart.empty': 'A kosár üres',
   'cart.emptyStep': 'Termékek megtekintése',
+  'cart.emptyLead': 'Kezdje egy kategóriával.',
   'cart.unit': '{price} / db',
   'cart.quantity': 'Mennyiség',
   'cart.less': 'Mennyiség csökkentése: {name}',

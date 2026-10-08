@@ -122,6 +122,8 @@ test('the empty cart is a word and quiet category rows, all products first, in t
   assert.ok(cols.ok)
   const v = cartView('en', null, null, { freeFrom: null, popular: [], shelves: cols.value.slice(0, 3) })
   assert.equal(v.empty.title, 'Your cart is empty')
+  assert.equal(v.empty.lead, 'Start with a category.', 'одна строка-приглашение, без «!»')
+  for (const lang of ['en', 'ro', 'hu'] as const) assert.doesNotMatch(cartView(lang, null, null).empty.lead, /!/, lang)
   assert.equal(v.empty.shelves.label, 'Categories')
   assert.equal(v.empty.shelves.links.length, 4)
   assert.deepEqual([v.empty.shelves.links[0].label, v.empty.shelves.links[0].href], ['All products', '/en/catalog'])

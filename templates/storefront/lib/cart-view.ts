@@ -35,7 +35,7 @@ export type CartPageView = {
   open: { label: string; href: string }
   coupon: { ask: string; label: string; apply: string; open: boolean; applied: { code: string; op: string; label: string }[] }
   notice: Outcome | null; couponNotice: Outcome | null
-  empty: { title: string; shelf: ShelfView | null; shelves: ShelvesView }
+  empty: { title: string; lead: string; shelf: ShelfView | null; shelves: ShelvesView }
   messages: { timeout: string; failed: string }
   /** Отметка корзины (`cartStamp`): страница сверяет её с корзиной (CartFresh, И696). */
   stamp: string
@@ -157,7 +157,7 @@ export function cartView(lang: Lang, cart: Cart | null, result: string | null, e
     notice: outcome && !coupon ? outcome : null,
     couponNotice: outcome && coupon ? outcome : null,
     empty: {
-      title: t(lang, 'cart.empty'),
+      title: t(lang, 'cart.empty'), lead: t(lang, 'cart.emptyLead'),
       shelf: popular.length ? { title: t(lang, 'cart.popular'), all: hrefFor(lang, { catalog: true }), cards: popular } : null,
       shelves: {
         label: t(lang, 'nav.categories'),
