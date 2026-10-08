@@ -4,7 +4,7 @@ import { langOf } from '@/lib/route.ts'
 import type { Lang } from '@/lib/locale.ts'
 import { source } from '@/lib/source/index.ts'
 import { EFFECT_FACET } from '@/lib/source/effect.ts'
-import { frameTotal, readQuery, shownListing, type Params } from '@/lib/listing.ts'
+import { cleanPage, frameTotal, readQuery, shownListing, type Params } from '@/lib/listing.ts'
 import { catalogView, emptyFor } from '@/lib/catalog-view.ts'
 import { hrefFor, type Query } from '@/lib/href.ts'
 import { toMetadata } from '@/lib/seo.ts'
@@ -28,13 +28,14 @@ const effectOf = async (lang: Lang, code: string) => {
   return r.ok ? { ok: true as const, value: r.value.find((e) => e.code === code) ?? null } : r
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const lang = await langOf(params)
   const { effect } = await params
+  const n = cleanPage(readQuery(await searchParams))
   const e = await effectOf(lang, effect)
   if (!e.ok || !e.value) return {}
   const copy = effectCopy(lang, effect)
-  return toMetadata(lang, { title: copy?.title ?? e.value.name, description: copy?.description ?? e.value.description, path: (l) => hrefFor(l, { effect: e.value!.code }) })
+  return toMetadata(lang, { title: copy?.title ?? e.value.name, description: copy?.description ?? e.value.description, path: (l) => hrefFor(l, { effect: e.value!.code, ...(n && n > 1 ? { page: n } : {}) }) })
 }
 
 export default async function EffectPage({ params, searchParams }: Props) {
@@ -50,5 +51,5 @@ export default async function EffectPage({ params, searchParams }: Props) {
   const at = (q: Query) => hrefFor(lang, { effect: code, ...q })
   const scope = { name: e.value.name, wider: (q: Query) => hrefFor(lang, { catalog: true, ...q }) }
   const copy = effectCopy(lang, code)
-  return <Catalog view={catalogView(lang, { title: copy?.heading ?? e.value.name, lede: copy?.lede ?? (e.value.description || null), listing, asked: own, at, filters: true, empty: emptyFor(lang, own, at), scope, counted: { effect: code }, all })} cart={{ submit: cartSubmit, call: cartCall }} after={copy ? <CatalogCopy copy={copy} lang={lang} /> : undefined} />
+  return <Catalog view={catalogView(lang, { title: copy?.heading ?? e.value.name, lede: copy?.lede ?? (e.value.description || null), listing, asked: own, at, filters: true, empty: emptyFor(lang, own, at), scope, counted: { effect: code }, all })} cart={{ submit: cartSubmit, call: cartCall }} after={copy && cleanPage(own) === 1 ? <CatalogCopy copy={copy} lang={lang} /> : undefined} />
 }

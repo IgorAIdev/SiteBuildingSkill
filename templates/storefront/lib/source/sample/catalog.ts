@@ -79,7 +79,7 @@ const ORDER: Record<SortKey, (a: SampleProduct, b: SampleProduct) => number> = {
 }
 
 const collection = (c: (typeof CATEGORIES)[number], lang: Lang): Collection => ({
-  slug: c.slug, name: c.name[lang], description: categoryCopy(lang, c.slug)?.lede ?? c.description[lang],
+  slug: c.slug, name: categoryCopy(lang, c.slug)?.name ?? c.name[lang], description: categoryCopy(lang, c.slug)?.caption ?? categoryCopy(lang, c.slug)?.lede ?? c.description[lang],
   image: shelfShot(c.form, c.name[lang]), sign: c.sign, form: c.form,
 })
 
@@ -102,7 +102,7 @@ export function sampleSource(pageSize = PAGE): Source {
        обещание без полки. */
     async effects(lang) {
       const used = new Set(PRODUCTS.flatMap((p) => p.facets[EFFECT_FACET] ?? []))
-      return ok(EFFECTS.filter((e) => used.has(e.effect) && onSite(EFFECT_FACET, e.effect)).map((e) => ({ code: e.effect, name: e.name[lang], description: effectCopy(lang, e.effect)?.lede ?? e.description[lang], image: effectShot(e.effect, e.name[lang]) })))
+      return ok(EFFECTS.filter((e) => used.has(e.effect) && onSite(EFFECT_FACET, e.effect)).map((e) => ({ code: e.effect, name: effectCopy(lang, e.effect)?.name ?? e.name[lang], description: effectCopy(lang, e.effect)?.caption ?? effectCopy(lang, e.effect)?.lede ?? e.description[lang], image: effectShot(e.effect, e.name[lang]) })))
     },
     async listing(lang, query) {
       const paging = pageVariables({ page: query.page ?? undefined }, { pageSize }) as Paging
@@ -125,7 +125,7 @@ export function sampleSource(pageSize = PAGE): Source {
         const facet: Facet = {
           code: f.code, name: f.name[lang],
           values: f.values.filter((v) => onSite(f.code, v.code) && (here.has(v.code) || (query.facets[f.code] ?? []).includes(v.code))).map((v) => ({
-            code: v.code, name: v.name[lang],
+            code: v.code, name: f.code === EFFECT_FACET ? effectCopy(lang, v.code)?.name ?? v.name[lang] : v.name[lang],
             count: others.filter((p) => (facetsOf(p)[f.code] ?? []).includes(v.code)).length,
             selected: (query.facets[f.code] ?? []).includes(v.code),
           })),

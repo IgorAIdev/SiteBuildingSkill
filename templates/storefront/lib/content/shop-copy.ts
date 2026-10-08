@@ -7,6 +7,18 @@ import { CATEGORIES } from '../products.ts'
 /** Editorial content shared by the sample, Vendure and the rendered pages.
  * Unknown collections/effects keep their source copy and get no invented FAQ. */
 export type ShopCopy = {
+  /** Короткое имя полки или хаба для меню, плиток, крошек — словом рынка. */
+  name?: string
+  /** Подпись плитки: одна строка, не равна `lede` и `description`. */
+  caption?: string
+  /** Имя раздела названо владельцем по рынку («Sleep») — ярлык, а не обещание: кто и когда решил (И788). */
+  nameIsLabel?: string
+  /** Знак строки в меню «By effect» — имя знака из листа (`styles/icons.svg`). */
+  sign?: string
+  /** Запрос покупателя этой страницы (навык seo-content): не выводится, держит проверку текста. */
+  query?: { primary: string; secondary: string[]; origin: string }
+  /** Ссылки под текстом: гиды, соседние полки — словами запроса цели. */
+  links?: { label: string; to: { doc: string } | { post: string } | { category: string } }[]
   heading: string
   title: string
   description: string

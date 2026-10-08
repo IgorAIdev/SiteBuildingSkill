@@ -1,6 +1,7 @@
 export const RO = {
   'skip': 'Sari la conținut',
   'nav.catalog': 'Toate produsele',
+  'nav.effects': 'După efect',
   'nav.search': 'Căutare',
   'nav.lang': 'Limba',
   'nav.menu': 'Meniu',

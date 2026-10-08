@@ -63,12 +63,14 @@ test('the chip, the quiet button and the quiet category button read the same qui
 
 /* Форму кнопки решает панель, а не разметка (заказчик 04.10.2026: «кнопки перестали
    реагировать на панель… ты что, им радиус в коде прописал?»): признака `data-pill`
-   у кнопок нет, круг листания берёт угол той же оси. Исключение одно — кнопка
-   категории (И746): «должны быть только пилюлями вне зависимости от других настроек»
-   и «основного цвета, серый тут не подходит». */
-test('no button forces its form past the panel, except the category pill in the main colour', () => {
+   у кнопок нет. Исключения — кнопка категории (И746): «должны быть только
+   пилюлями вне зависимости от других настроек» и «основного цвета, серый тут не
+   подходит»; и кнопки-знаки без слова — шапка ряда и `data-pager` (И747 с поправкой
+   08.10.2026: «на отзывах квадратные кнопки»). Кнопка со словом угол берёт у панели. */
+test('no button with a word forces its form past the panel, except the category pill in the main colour', () => {
   const css = bare(read('../styles/btn.module.css'))
-  assert.doesNotMatch(css, /\.btn\[data-(?:pill|pager)\]\{[^}]*--btn-r/)
+  assert.doesNotMatch(css, /\.btn\[data-pill\]\{[^}]*--btn-r/)
+  assert.doesNotMatch(css, /(^|\})\.btn\[data-pager\]\{[^}]*--btn-r/, 'круг знака — одним правилом вместе с шапкой ряда')
   assert.match(css, /\.btn\[data-voice='loud'\]\[data-cat\]\{--btn-r:var\(--r-pop\)\}/)
   assert.match(css, /\.btn\[data-cat\]\{[^}]*--ctrl-btn-fill-pop:var\(--pop\);--ctrl-btn-ink-pop:var\(--on-pop\)/)
   const dir = new URL('../components/', import.meta.url)
@@ -78,11 +80,13 @@ test('no button forces its form past the panel, except the category pill in the 
 
 /* Второе исключение — кнопки шапки ряда (И747; заказчик 04.10.2026: «эти кнопки
    квадратные — плохо… тут нужны пилюли, чтоб не такие массивные были»): листание
-   ‹ › и «View all» — круг и пилюля при любом угле Corners; круги номеров листания
-   полки угол берут из Corners, как все. */
-test('the rail head buttons stay round past the panel; page numbers do not', () => {
+   ‹ › и «View all» — круг и пилюля при любом угле Corners. Поправка 08.10.2026
+   («на отзывах квадратные кнопки»): кругом и любая кнопка-знак `data-pager` —
+   номера и стрелки листания полки, «пуск» видео-отзыва. */
+test('the rail head buttons and every sign button (data-pager) stay round past the panel', () => {
   const css = bare(read('../styles/btn.module.css'))
-  assert.match(css, /\.btn\[data-rail-nav\]\{--btn-r:var\(--r-pop\)\}/)
+  assert.match(css, /\.btn\[data-rail-nav\],\.btn\[data-pager\]\{--btn-r:var\(--r-pop\)\}/)
+  assert.match(read('../components/ReviewPlay.tsx'), /data-pager=""/)
   const head = read('../components/RailHead.tsx')
   assert.match(head, /<a className=\{`\$\{b\.btn\} \$\{s\.wide\}`\} data-rail-nav data-hand="pop" href=\{all\}>/)
   /* На узкой шапке выход — слово (И761): пилюля рядом с кругами листания не помещалась. */

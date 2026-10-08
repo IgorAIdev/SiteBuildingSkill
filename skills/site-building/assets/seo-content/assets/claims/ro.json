@@ -1,0 +1,25 @@
+{
+  "lang": "ro",
+  "note": "Own lexicon of the seo-content skill, written from Reg. 1924/2006, 432/2012, 2015/2283, Dir. 2001/83/EC and the Romanian practice described in references/compliance.md. Patterns run on lower-case text without diacritics. fail = never on a shop page; fix = rewrite (fails in names, headings, questions and captions).",
+  "condition": ["somn", "insomni", "anxiet", "stres", "durer", "articulat", "inflam", "menstru", "menopauz", "depresi", "epilep", "cancer", "diabet", "imunit", "tratament", "vindec", "boala", "boli", "afectiun", "migren", "tensiun", "colesterol"],
+  "conditionAllow": ["fara stres", "livrare fara stres"],
+  "hedge": ["\\bnu (dovedeste|garanteaza|stabileste|confirma|inseamna automat)\\b", "\\bfara a presupune\\b", "\\bverificati eticheta\\b", "\\bnu poate fi garantat", "\\bnu este o dovada\\b"],
+  "rules": [
+    { "id": "ro-treats", "level": "fail", "patterns": ["\\b(trateaza|vindeca|vindecare|tratament(ul)? (pentru|impotriva)|remediu|medicament natural|leac)\\b"], "rewrite": "CBD nu este un medicament — o singură frază în blocul de avertizări" },
+    { "id": "ro-pain", "level": "fail", "patterns": ["\\b(impotriva durerilor|amelioreaza|ameliorarea|analgezic|calmeaza durerea|reduce durerea|antiinflamator|reduce inflamatia)\\b"], "rewrite": "senzația pe piele sau locul aplicării: «cremă de masaj cu CBD și mentol, efect de răcorire»" },
+    { "id": "ro-proven", "level": "fail", "patterns": ["\\b(dovedit clinic|clinic dovedit|studiile arata|stiinta confirma|recomandat de medici|recomandat de farmacisti)\\b"], "rewrite": "articol de tip «ce se știe și ce nu se știe», poziția EFSA cu dată" },
+    { "id": "ro-safety", "level": "fail", "patterns": ["\\b(fara efecte secundare|100 ?% sigur|complet sigur|sigur pentru copii|sigure si pentru copii|ideal pentru femeile insarcinate)\\b"], "rewrite": "«Nu este recomandat sub 18 ani, femeilor însărcinate sau care alăptează»" },
+    { "id": "ro-approved", "level": "fail", "patterns": ["\\baprobat de (ansvsa|efsa|ministerul)\\b", "\\bcertificat de ansvsa\\b"], "rewrite": "fără aprobare inventată; notificarea CPNP nu este aprobare" },
+    { "id": "ro-guarantee", "level": "fail", "patterns": ["\\b(rezultate garantate|efect garantat|efectul apare in)\\b"], "rewrite": "—" },
+    { "id": "ro-replace", "level": "fail", "patterns": ["\\b(inlocuieste (somniferele|medicamentele|antidepresivele)|alternativa la (medicamente|antidepresive|somnifere)|mai eficient decat)\\b"], "rewrite": "—" },
+    { "id": "ro-sleep", "level": "fix", "patterns": ["\\b(somn odihnitor|adormi(ti)? mai usor|imbunatateste (calitatea )?somnul|pentru somn)\\b"], "rewrite": "momentul, nu efectul: «pentru rutina de seară», ulei cu CBN" },
+    { "id": "ro-calm", "level": "fix", "patterns": ["\\b(reduce stresul|anti ?stres|relaxeaza-te|relaxare profunda|mai putin stres|echilibru interior|calm interior|liniste interioara)\\b"], "rewrite": "compoziție și moment: «ulei CBD 5 %, 10 ml, pentru folosire zilnică»" },
+    { "id": "ro-recovery", "level": "fix", "patterns": ["\\b(recuperare(a)? (dupa antrenament|musculara)|pentru muschi obositi|refacere musculara)\\b"], "rewrite": "«creme, balsamuri și ulei de masaj cu CBD»" },
+    { "id": "ro-function", "level": "fix", "patterns": ["\\b(sustine|sprijina|intareste|echilibreaza) (sanatatea|sistemul|imunitatea|articulatiile|sistemul endocanabinoid)\\b"], "rewrite": "locul aplicării, fără funcție a corpului" },
+    { "id": "ro-dose", "level": "fix", "patterns": ["\\b(luati|administrati|incepeti cu) \\d+[–-]?\\d* (picaturi|capsule)\\b", "\\bcresteti doza\\b", "\\bdoza (zilnica )?recomandata\\b"], "rewrite": "«Mod de utilizare: conform etichetei»; aritmetica etichetei este permisă" },
+    { "id": "ro-best", "level": "fix", "patterns": ["\\b(cel mai bun|cele mai bune|cele mai mici preturi|numarul 1|nr\\. ?1)\\b"], "rewrite": "fapt comparabil: «comparați după prețul pe mg»" },
+    { "id": "ro-legal", "level": "fix", "patterns": ["\\b(100 ?% legal|legal peste tot|0 ?% thc|complet legal)\\b", "\\blegal pana la 0[,.]2\\b"], "rewrite": "«THC conform buletinului lotului»; legea cu dată" },
+    { "id": "ro-supplement", "level": "fix", "patterns": ["\\bsupliment alimentar\\b"], "rewrite": "statutul produsului îl decide juristul" },
+    { "id": "ro-intake", "level": "fix", "patterns": ["\\b(sub limba|sublingual|uz intern|se inghite)\\b"], "rewrite": "uleiurile vândute drept cosmetice nu au «administrare internă»" }
+  ]
+}

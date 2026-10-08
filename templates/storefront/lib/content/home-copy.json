@@ -1,207 +1,252 @@
 {
   "en": {
-    "title": "CBD shop — oils, capsules, edibles and topical care",
-    "description": "Explore CBD oils, capsules, edibles and skincare. Compare CBD content, ingredients and formats, with guides and answers to help you choose.",
+    "query": {
+      "primary": "cbd shop",
+      "secondary": [
+        "cbd shop romania",
+        "cbd oil romania",
+        "buy cbd oil online",
+        "cbd capsules",
+        "cbd gummies"
+      ],
+      "origin": "AC en-RO 2026-10-08; SERP proxy: Romanian shop home pages 10 of 10"
+    },
+    "title": "CBD shop in Romania: CBD oil, capsules, gummies and creams",
+    "description": "Online CBD shop for Romania: CBD oil by strength and spectrum, capsules, gummies, creams and cosmetics, with the CBD in milligrams on every product.",
     "hero": {
-      "title": "CBD oils, capsules and more",
-      "lede": "Find the format that fits your routine. Compare CBD content, ingredients and product instructions, from oils and capsules to edibles and topical care."
+      "title": "CBD shop: oil, capsules and creams, compared by the milligram",
+      "lede": "A CBD shop where every product lists its CBD in milligrams. Compare oils, capsules and creams by numbers, not by labels."
     },
     "effects": {
       "title": "Shop by effect",
-      "lede": "Explore the collections by what matters to you, then compare the products. Each page explains its theme and answers questions before you choose."
+      "lede": "Sleep, Relax, Recovery and more: the range grouped into collections."
     },
     "oils": {
-      "title": "CBD oils",
-      "lede": "Compare bottle sizes, CBD amounts and carrier oils. Check the stated spectrum and intended use before choosing a strength."
+      "title": "CBD oil",
+      "lede": "Full spectrum, broad spectrum and isolate — compare the mg per drop and the price per mg."
     },
     "capsules": {
       "title": "CBD capsules",
-      "lede": "A measured unit with no drops to count. Compare CBD per capsule, the number in the pack and the ingredients in the capsule shell."
+      "lede": "The same amount of CBD in every capsule, with no drops to count."
     },
     "featured": {
-      "title": "Explore the range",
-      "lede": "Discover different CBD formats in one place. Open a product to compare its ingredients, CBD content, available options and instructions."
+      "title": "From the range",
+      "lede": "Oils, capsules, gummies and creams, each with its CBD stated in milligrams."
     },
     "reviews": {
       "title": "What customers say",
       "lede": "Sample reviews — the shop’s real reviews will appear here."
     },
     "story": {
-      "title": "A few checks before you choose",
-      "body": "Start with intended use and ingredients, then compare the CBD amount and pack size. A higher concentration is one difference between products; it does not make a product suitable for everyone.\n\nWhere a lab report is provided, check which product and batch it covers and what was tested. Read the product instructions and ask a clinician or pharmacist about CBD if you take medicines or have a health condition."
+      "title": "Why we compare CBD by the milligram",
+      "body": "A percentage on the front of a bottle says little on its own: 10 % in a 10 ml bottle is 1000 mg, in a 30 ml bottle it is 3000 mg. That is why every product here states its CBD in milligrams — per bottle, per drop, per capsule or per piece — and the oils show the price per milligram.\n\nThe spectrum and the THC measured in the batch report are written next to the numbers, so choosing a CBD product is a matter of comparing facts."
     },
     "posts": {
-      "title": "Guides for choosing CBD",
-      "lede": "Understand CBD formats, read strength labels and learn what to look for in a product’s lab report."
+      "title": "CBD guides",
+      "lede": "How to read mg and %, hemp seed oil versus CBD oil, and what the law says in Romania."
     },
     "faq": {
-      "title": "Questions about choosing CBD",
+      "title": "CBD shop: questions and answers",
       "items": [
         {
           "q": "What is CBD?",
-          "a": "CBD, or cannabidiol, is a compound found in the cannabis plant. It is different from THC, the principal intoxicating cannabinoid. A CBD product can contain other compounds, so check its ingredients and measured cannabinoid content where available."
+          "a": "CBD (cannabidiol) is a compound of the hemp plant. Unlike THC, it does not make you high. Here it comes as oils, capsules, gummies, creams and cosmetics, each with its CBD stated in milligrams."
         },
         {
-          "q": "How do I choose a CBD format?",
-          "a": "Start with the intended use on the label. Compare oils, capsules and edibles by their stated amounts and instructions; compare cosmetics and topicals by their ingredients and application areas. Products for external use are not substitutes for oral products."
+          "q": "Is CBD legal in Romania?",
+          "a": "The rules depend on the product type — cosmetics, oils, food — and on the THC content. Our guide sets out what Romanian and EU law say, with dates and sources."
         },
         {
-          "q": "Does a higher CBD percentage mean a better product?",
-          "a": "No. Percentage describes concentration, while pack size and milligrams help you compare the amount. Ingredients, intended use and clear product information also matter. There is no single strength suitable for everyone."
+          "q": "Is hemp seed oil the same as CBD oil?",
+          "a": "No. Hemp seed oil is pressed from the seeds and contains almost no CBD. CBD oil is made from hemp extract and states its CBD in milligrams."
         },
         {
-          "q": "How do I read a CBD lab report?",
-          "a": "Match the product and batch identifiers to the pack. Check the date, measured CBD and THC and the tests actually included. A cannabinoid test alone does not establish that pesticides, heavy metals or other contaminants were also checked."
+          "q": "Will CBD show up on a drug test?",
+          "a": "Drug tests look for THC, not CBD. Full spectrum products contain THC traces that can show up with regular use; broad spectrum and isolate products are made without detectable THC."
         },
         {
-          "q": "Are effect collections a promise of results?",
-          "a": "No. Sleep, relaxation and other collection themes help you browse. They do not guarantee an effect or establish treatment for a health condition. Each collection explains what to compare at product level."
+          "q": "What is the difference between full spectrum, broad spectrum and isolate?",
+          "a": "Full spectrum keeps all hemp compounds, including THC traces; broad spectrum removes the THC; isolate is pure CBD. The batch report shows the measured THC."
         },
         {
-          "q": "Can CBD interact with medicines?",
-          "a": "Yes, CBD can interact with medicines. Ask your clinician or pharmacist about the specific product before using it alongside treatment. Avoid CBD during pregnancy and breastfeeding, and keep adult products away from children and pets."
+          "q": "How do I choose a CBD oil strength?",
+          "a": "By the milligrams per drop. 10 % means 100 mg per millilitre, about 5 mg per drop; 5 % gives about 2.5 mg per drop. Every oil shows its mg per drop and its price per milligram."
         },
         {
-          "q": "Where do I check delivery, payment and returns?",
-          "a": "Read the Delivery and payment and Returns pages. Available delivery and payment methods depend on the destination and are shown during checkout when ordering is enabled. Check those details before placing an order."
+          "q": "Can I use CBD if I take medication?",
+          "a": "Ask your doctor first. CBD can interact with some medicines, and it is not recommended under 18, during pregnancy or while breastfeeding."
+        },
+        {
+          "q": "How do delivery and payment work?",
+          "a": "Delivery options, times and payment methods, including payment on delivery where it is offered, are listed on the delivery and payment page and at checkout."
         }
       ]
     }
   },
   "ro": {
-    "title": "Magazin CBD — uleiuri, capsule și îngrijire topică",
-    "description": "Descoperiți uleiuri, capsule, produse comestibile și cosmetice CBD. Comparați cantitățile, ingredientele și formele cu ajutorul ghidurilor și întrebărilor.",
+    "query": {
+      "primary": "magazin cbd",
+      "secondary": [
+        "magazin cbd online",
+        "cbd romania",
+        "cumpara cbd online",
+        "ulei cbd",
+        "produse cbd"
+      ],
+      "origin": "AC ro-RO 2026-10-08; SERP proxy: pagini principale de magazine 10 din 10"
+    },
+    "title": "Magazin CBD online în România: ulei CBD, capsule, creme",
+    "description": "Magazin CBD online pentru România: ulei CBD pe concentrații și spectre, capsule, jeleuri, creme și cosmetice, cu CBD-ul în miligrame la fiecare produs.",
     "hero": {
-      "title": "Uleiuri CBD, capsule și alte forme",
-      "lede": "Găsiți forma potrivită pentru rutina dumneavoastră. Comparați CBD-ul, ingredientele și instrucțiunile: de la uleiuri și capsule la produse comestibile și îngrijire topică."
+      "title": "Magazin CBD: ulei, capsule și creme, comparate după miligrame",
+      "lede": "Un magazin CBD în care fiecare produs își scrie CBD-ul în miligrame. Comparați uleiuri, capsule și creme după cifre, nu după etichete."
     },
     "effects": {
-      "title": "Cumpără după efect",
-      "lede": "Explorați colecțiile după tema care vă interesează, apoi comparați produsele. Fiecare pagină explică tema și răspunde întrebărilor înainte de alegere."
+      "title": "Alegeți după efect",
+      "lede": "Somn, Relaxare, Recuperare și altele: oferta grupată în colecții."
     },
     "oils": {
-      "title": "Uleiuri CBD",
-      "lede": "Comparați volumul flaconului, cantitatea CBD și uleiul purtător. Verificați spectrul declarat și utilizarea indicată înainte de a alege concentrația."
+      "title": "Ulei CBD",
+      "lede": "Full spectrum, broad spectrum și izolat — comparați mg pe picătură și prețul pe mg."
     },
     "capsules": {
       "title": "Capsule CBD",
-      "lede": "O unitate măsurată, fără picături de numărat. Comparați CBD-ul per capsulă, numărul din cutie și ingredientele învelișului."
+      "lede": "Aceeași cantitate de CBD în fiecare capsulă, fără picături de numărat."
     },
     "featured": {
-      "title": "Descoperiți gama",
-      "lede": "Explorați mai multe forme CBD într-un singur loc. Deschideți produsul pentru ingrediente, cantitatea CBD, opțiuni și instrucțiuni."
+      "title": "Din ofertă",
+      "lede": "Uleiuri, capsule, jeleuri și creme, fiecare cu CBD-ul scris în miligrame."
     },
     "reviews": {
       "title": "Ce spun clienții",
-      "lede": "Exemple de recenzii — recenziile reale ale magazinului vor apărea aici."
+      "lede": "Recenzii exemplu — aici vor apărea recenziile reale ale magazinului."
     },
     "story": {
-      "title": "Câteva verificări înainte de alegere",
-      "body": "Începeți cu utilizarea indicată și ingredientele, apoi comparați cantitatea CBD și ambalajul. O concentrație mai mare este o diferență între produse; nu face produsul potrivit pentru oricine.\n\nDacă există un buletin de analiză, verificați produsul, lotul și testele incluse. Citiți instrucțiunile și discutați cu medicul sau farmacistul despre CBD dacă luați medicamente ori aveți o afecțiune."
+      "title": "De ce comparăm CBD-ul după miligrame",
+      "body": "Procentul de pe flacon spune puțin singur: 10 % într-un flacon de 10 ml înseamnă 1000 mg, într-unul de 30 ml — 3000 mg. De aceea fiecare produs de aici își scrie CBD-ul în miligrame — pe flacon, pe picătură, pe capsulă sau pe bucată —, iar uleiurile arată și prețul pe mg.\n\nSpectrul și THC-ul măsurat în buletinul de analiză al lotului sunt scrise lângă cifre, așa că alegerea unui produs CBD înseamnă să comparați fapte."
     },
     "posts": {
-      "title": "Ghiduri pentru alegerea CBD",
-      "lede": "Înțelegeți formele CBD, etichetele de concentrație și informațiile de urmărit într-un buletin de analiză."
+      "title": "Ghiduri CBD",
+      "lede": "Cum citiți mg și procente, ulei de cânepă sau ulei CBD și ce spune legea în România."
     },
     "faq": {
-      "title": "Întrebări despre alegerea CBD",
+      "title": "Întrebări despre magazinul CBD",
       "items": [
         {
           "q": "Ce este CBD?",
-          "a": "CBD, sau canabidiolul, este un compus al plantei de canabis. Diferă de THC, principalul canabinoid intoxicant. Produsul poate conține și alți compuși; verificați ingredientele și conținutul măsurat de canabinoizi, dacă este disponibil."
+          "a": "CBD (canabidiolul) este un compus al plantei de cânepă. Spre deosebire de THC, nu are efect psihoactiv. Aici îl găsiți în uleiuri, capsule, jeleuri, creme și cosmetice, fiecare cu CBD-ul scris în miligrame."
         },
         {
-          "q": "Cum aleg forma unui produs CBD?",
-          "a": "Începeți cu utilizarea de pe etichetă. Comparați uleiurile, capsulele și produsele comestibile după cantitățile declarate și instrucțiuni; cosmeticele și produsele topice după ingrediente și zonele de aplicare. Produsele externe nu înlocuiesc produsele orale."
+          "q": "Este CBD legal în România?",
+          "a": "Regulile depind de tipul produsului — cosmetic, ulei, aliment — și de conținutul de THC. Ghidul nostru arată ce spun legea română și cea europeană, cu date și surse."
         },
         {
-          "q": "Un procent CBD mai mare înseamnă un produs mai bun?",
-          "a": "Nu. Procentul descrie concentrația, iar ambalajul și miligramele ajută la compararea cantității. Contează și ingredientele, utilizarea indicată și informațiile clare. Nu există o concentrație potrivită pentru oricine."
+          "q": "Uleiul de cânepă este același lucru cu uleiul CBD?",
+          "a": "Nu. Uleiul de cânepă se presează din semințe și aproape nu conține CBD. Uleiul CBD are extract de cânepă și scrie CBD-ul în miligrame."
         },
         {
-          "q": "Cum citesc un buletin de analiză CBD?",
-          "a": "Comparați identificatorii produsului și lotului cu ambalajul. Verificați data, CBD-ul și THC-ul măsurate și testele incluse efectiv. Un test de canabinoizi nu confirmă automat verificarea pesticidelor, metalelor grele sau a altor contaminanți."
+          "q": "Apare CBD la testul antidrog?",
+          "a": "Testele caută THC, nu CBD. Produsele full spectrum au urme de THC care pot apărea la folosire regulată; produsele broad spectrum și izolat sunt făcute fără THC detectabil."
         },
         {
-          "q": "Colecțiile după efect promit un rezultat?",
-          "a": "Nu. Somnul, relaxarea și alte teme ajută la navigare. Nu garantează un efect și nu confirmă tratarea unei afecțiuni. Fiecare colecție explică ce informații să comparați la nivelul produsului."
+          "q": "Ce înseamnă full spectrum, broad spectrum și izolat?",
+          "a": "Full spectrum păstrează toți compușii cânepei, inclusiv urme de THC; broad spectrum elimină THC-ul; izolatul este CBD pur. Buletinul lotului arată THC-ul măsurat."
         },
         {
-          "q": "CBD poate interacționa cu medicamentele?",
-          "a": "Da, CBD poate interacționa cu medicamentele. Discutați produsul exact cu medicul sau farmacistul înainte de utilizare împreună cu un tratament. Evitați CBD în sarcină și alăptare și păstrați produsele pentru adulți departe de copii și animale."
+          "q": "Cum aleg concentrația uleiului CBD?",
+          "a": "După miligramele pe picătură. 10 % înseamnă 100 mg la mililitru, adică în jur de 5 mg pe picătură; 5 % dă circa 2,5 mg pe picătură. Fiecare ulei arată mg pe picătură și prețul pe mg."
         },
         {
-          "q": "Unde verific livrarea, plata și returul?",
-          "a": "Citiți paginile Livrare și plată și Retur. Metodele disponibile depind de destinație și sunt afișate la finalizarea comenzii când comenzile sunt active. Verificați detaliile înainte de plasarea comenzii."
+          "q": "Pot folosi CBD dacă iau medicamente?",
+          "a": "Întrebați întâi medicul. CBD poate interacționa cu unele medicamente și nu este recomandat sub 18 ani, în sarcină sau în alăptare."
+        },
+        {
+          "q": "Cum funcționează livrarea și plata?",
+          "a": "Opțiunile de livrare, termenele și metodele de plată, inclusiv plata la livrare acolo unde este oferită, sunt pe pagina Livrare și plată și la finalizarea comenzii."
         }
       ]
     }
   },
   "hu": {
-    "title": "CBD bolt — olajok, kapszulák és külsőleges ápolás",
-    "description": "Fedezze fel a CBD olajokat, kapszulákat, ehető termékeket és kozmetikumokat. Hasonlítsa össze a tartalmat, összetevőket és formákat útmutatóinkkal.",
+    "query": {
+      "primary": "cbd webshop",
+      "secondary": [
+        "cbd bolt",
+        "cbd olaj",
+        "cbd kapszula",
+        "cbd gumicukor",
+        "cbd krém"
+      ],
+      "origin": "AC hu-HU, hu-RO 2026-10-08; SERP proxy: webshop-főoldalak 9 / 10"
+    },
+    "title": "CBD webshop Romániában: CBD olaj, kapszula, gumicukor, krém",
+    "description": "CBD webshop Romániában: CBD olaj erősség és spektrum szerint, kapszula, gumicukor, krém és kozmetikum, minden terméknél milligrammban megadott CBD-vel.",
     "hero": {
-      "title": "CBD olajok, kapszulák és más formák",
-      "lede": "Találja meg a rutinjához illő formát. Hasonlítsa össze a CBD-tartalmat, összetevőket és útmutatót az olajoktól és kapszuláktól az ehető termékekig és külsőleges ápolásig."
+      "title": "CBD webshop: olaj, kapszula és krém milligramm szerint",
+      "lede": "CBD webshop, ahol minden termék milligrammban adja meg a CBD-t. Olajat, kapszulát és krémet számok alapján hasonlíts össze, ne címke alapján."
     },
     "effects": {
-      "title": "Vásároljon hatás szerint",
-      "lede": "Fedezze fel a témákat, majd hasonlítsa össze a termékeket. Minden oldal elmagyarázza a kollekciót, és választ ad a vásárlás előtti kérdésekre."
+      "title": "Válassz hatás szerint",
+      "lede": "Alvás, Relax, Regeneráció és a többi: a kínálat gyűjteményekbe rendezve."
     },
     "oils": {
-      "title": "CBD olajok",
-      "lede": "Hasonlítsa össze az üvegméretet, CBD-mennyiséget és hordozóolajat. Erősség választása előtt ellenőrizze a spektrumot és a rendeltetést."
+      "title": "CBD olaj",
+      "lede": "Teljes és széles spektrum, izolátum — vesd össze a mg / csepp és az ár / mg értéket."
     },
     "capsules": {
-      "title": "CBD kapszulák",
-      "lede": "Kimért egység, cseppszámolás nélkül. Hasonlítsa össze a kapszulánkénti CBD-t, a doboz darabszámát és a kapszulahéj összetevőit."
+      "title": "CBD kapszula",
+      "lede": "Minden kapszulában ugyanannyi CBD, cseppszámolás nélkül."
     },
     "featured": {
-      "title": "Fedezze fel a kínálatot",
-      "lede": "Ismerjen meg több CBD-formát egy helyen. Nyissa meg a terméket az összetevők, CBD-tartalom, választható változatok és útmutató összehasonlításához."
+      "title": "A kínálatból",
+      "lede": "Olajok, kapszulák, gumicukrok és krémek, mindegyik milligrammban megadott CBD-vel."
     },
     "reviews": {
       "title": "Mit mondanak a vásárlók",
-      "lede": "Minta vélemények — itt jelennek meg majd a bolt valódi véleményei."
+      "lede": "Mintavélemények — itt jelennek meg a bolt valódi véleményei."
     },
     "story": {
-      "title": "Néhány ellenőrzés a választás előtt",
-      "body": "Kezdje a rendeltetéssel és összetevőkkel, majd hasonlítsa össze a CBD-tartalmat és kiszerelést. A nagyobb koncentráció egy termékkülönbség; nem tesz egy terméket mindenki számára megfelelővé.\n\nHa van laborjegyzőkönyv, ellenőrizze a terméket, tételt és az elvégzett vizsgálatokat. Olvassa el az útmutatót, és gyógyszerszedés vagy betegség esetén kérdezzen meg orvost vagy gyógyszerészt a CBD-ről."
+      "title": "Miért milligramm szerint hasonlítjuk össze a CBD-t",
+      "body": "Az üveg elején álló százalék önmagában keveset mond: a 10% egy 10 ml-es üvegben 1000 mg, egy 30 ml-esben 3000 mg. Ezért itt minden termék milligrammban adja meg a CBD-t — üvegenként, cseppenként, kapszulánként vagy darabonként —, az olajoknál pedig az ár / mg is ott van.\n\nA spektrum és a tételvizsgálatban mért THC a számok mellett szerepel, így a CBD termék kiválasztása tények összevetése."
     },
     "posts": {
-      "title": "Útmutatók a CBD választásához",
-      "lede": "Ismerje meg a CBD-formákat, az erősségjelöléseket és a laborjegyzőkönyvben ellenőrizendő adatokat."
+      "title": "CBD útmutatók",
+      "lede": "Hogyan olvasd a mg-ot és a %-ot, kendermagolaj vagy CBD olaj, és mit mond a román jog."
     },
     "faq": {
-      "title": "Kérdések a CBD választásáról",
+      "title": "Kérdések a CBD webshopról",
       "items": [
         {
           "q": "Mi a CBD?",
-          "a": "A CBD, vagy kannabidiol, a kannabisznövény egyik vegyülete. Eltér a THC-től, a fő bódító kannabinoidtól. Egy CBD termék más vegyületeket is tartalmazhat; ellenőrizze az összetevőket és az elérhető mért kannabinoid-tartalmat."
+          "a": "A CBD (kannabidiol) a kenderből származó vegyület. A THC-vel ellentétben nem bódít. Nálunk olajban, kapszulában, gumicukorban, krémben és kozmetikumban kapható, mindegyik milligrammban megadott CBD-vel."
         },
         {
-          "q": "Hogyan válasszak CBD-formát?",
-          "a": "Kezdje a címkén megadott rendeltetéssel. Az olajokat, kapszulákat és ehető termékeket megadott mennyiség és útmutató, a kozmetikumokat és külsőleges termékeket összetevők és alkalmazási terület alapján hasonlítsa össze. A külsőleges termék nem helyettesít szájon át valót."
+          "q": "Legális a CBD Romániában?",
+          "a": "A szabályok a termék típusától — kozmetikum, olaj, élelmiszer — és a THC-tartalomtól függenek. Útmutatónk dátummal és forrással mutatja be, mit mond a román és az uniós jog."
         },
         {
-          "q": "A magasabb CBD-százalék jobb terméket jelent?",
-          "a": "Nem. A százalék koncentrációt jelöl; a kiszerelés és milligramm segít a mennyiség összehasonlításában. Az összetevők, rendeltetés és világos információk is számítanak. Nincs mindenkinek megfelelő egységes erősség."
+          "q": "Ugyanaz a kendermagolaj és a CBD olaj?",
+          "a": "Nem. A kendermagolajat a magokból préselik, és szinte nincs benne CBD. A CBD olaj kenderkivonatból készül, és milligrammban adja meg a CBD-t."
         },
         {
-          "q": "Hogyan olvassak CBD laborjegyzőkönyvet?",
-          "a": "Egyeztesse a termék és tétel azonosítóit a csomagolással. Ellenőrizze a dátumot, mért CBD-t és THC-t, valamint a tényleges vizsgálatokat. A kannabinoid-vizsgálat önmagában nem igazolja növényvédőszerek, nehézfémek vagy más szennyezők ellenőrzését."
+          "q": "Kimutatja a drogteszt a CBD-t?",
+          "a": "A drogteszt THC-t keres, nem CBD-t. A teljes spektrumú termékekben THC-nyom van, ami rendszeres használatnál kimutatható; a széles spektrumú és az izolátum termékek kimutatható THC nélkül készülnek."
         },
         {
-          "q": "A hatás szerinti kollekciók eredményt ígérnek?",
-          "a": "Nem. Az alvás, relaxáció és más témák a böngészést segítik. Nem garantálnak hatást vagy betegségkezelést. Minden kollekció elmagyarázza, mit érdemes termékszinten összehasonlítani."
+          "q": "Mi a különbség a teljes spektrum, a széles spektrum és az izolátum között?",
+          "a": "A teljes spektrum a kender minden összetevőjét megtartja, THC-nyomokkal együtt; a széles spektrumból a THC-t eltávolítják; az izolátum tiszta CBD. A mért THC-t a tételvizsgálat mutatja."
         },
         {
-          "q": "Kölcsönhatásba léphet a CBD gyógyszerekkel?",
-          "a": "Igen. Kezelés melletti használat előtt beszélje meg a konkrét terméket orvossal vagy gyógyszerésszel. Várandósság és szoptatás alatt kerülje a CBD-t; a felnőtteknek szánt termékeket tartsa távol gyermekektől és állatoktól."
+          "q": "Hogyan válasszam ki a CBD olaj erősségét?",
+          "a": "Az egy cseppre jutó milligramm alapján. A 10% milliliterenként 100 mg, cseppenként kb. 5 mg; az 5% cseppenként kb. 2,5 mg. Minden olajnál ott a mg / csepp és az ár / mg."
         },
         {
-          "q": "Hol ellenőrizhetem a szállítást, fizetést és visszaküldést?",
-          "a": "Olvassa el a Szállítás és fizetés, valamint a Visszaküldés oldalt. Az elérhető módok a célországtól függenek, és aktív rendelés esetén a pénztárban jelennek meg. Rendelés előtt ellenőrizze a részleteket."
+          "q": "Használhatok CBD-t, ha gyógyszert szedek?",
+          "a": "Előbb kérdezd meg az orvosodat. A CBD kölcsönhatásba léphet egyes gyógyszerekkel, és 18 év alatt, várandósság és szoptatás idején nem ajánlott."
+        },
+        {
+          "q": "Hogyan működik a szállítás és a fizetés?",
+          "a": "A szállítási módokat, határidőket és fizetési lehetőségeket — köztük az utánvétet, ahol elérhető — a Szállítás és fizetés oldal és a pénztár mutatja."
         }
       ]
     }

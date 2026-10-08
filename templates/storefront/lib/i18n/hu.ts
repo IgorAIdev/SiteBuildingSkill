@@ -3,6 +3,7 @@ import type { RO } from './ro.ts'
 export const HU: Record<keyof typeof RO, string> = {
   'skip': 'Ugrás a tartalomra',
   'nav.catalog': 'Összes termék',
+  'nav.effects': 'Hatás szerint',
   'nav.search': 'Keresés',
   'nav.lang': 'Nyelv',
   'nav.menu': 'Menü',
