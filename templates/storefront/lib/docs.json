@@ -2,6 +2,7 @@
  {
   "slug": "despre-noi",
   "updated": "2026-10-04",
+  "numbered": false,
   "title": {
    "ro": "Despre noi",
    "en": "About us",
@@ -274,6 +275,7 @@
  {
   "slug": "livrare-si-plata",
   "updated": "2026-10-04",
+  "numbered": false,
   "title": {
    "ro": "Livrare și plată",
    "en": "Delivery and payment",
@@ -448,6 +450,7 @@
  {
   "slug": "retur",
   "updated": "2026-10-04",
+  "numbered": true,
   "title": {
    "ro": "Retur și dreptul de retragere",
    "en": "Returns and the right of withdrawal",
@@ -514,7 +517,7 @@
      "en": "The button is below and stays available for the whole 14 days. It has two steps.\n\nStep 1: enter your name, the order number and the e-mail address used for the order. Step 2: press “Confirm withdrawal”.\n\nYou immediately receive a confirmation by e-mail with the content of your statement and the date and time we received it. Keep the e-mail: it shows you withdrew in time.",
      "hu": "A gomb alább található, és a 14 nap alatt végig elérhető. Két lépésből áll.\n\nElső lépés: adja meg a nevét, a rendelésszámot és a rendeléshez használt e-mail-címet. Második lépés: nyomja meg az „Elállás megerősítése” gombot.\n\nAzonnal megkapja e-mailben a visszaigazolást a nyilatkozat tartalmával, valamint beérkezésének dátumával és időpontjával. Őrizze meg az e-mailt: ez igazolja, hogy időben elállt."
     },
-    "form": "withdrawal"
+    "slot": "withdrawal"
    },
    {
     "id": "formular",
@@ -652,7 +655,8 @@
  },
  {
   "slug": "garantie",
-  "updated": "2026-10-04",
+  "updated": "2026-10-08",
+  "numbered": true,
   "title": {
    "ro": "Garanția legală de conformitate",
    "en": "Legal guarantee of conformity",
@@ -767,7 +771,8 @@
      "ro": "Din 27 septembrie 2026, magazinele online din UE afișează informarea armonizată a UE despre garanția legală (Regulamentul (UE) 2025/1960). Noi o arătăm pe această pagină și la finalizarea comenzii, înainte de a plăti.\n\nEa vă explică drepturile în aceleași cuvinte în toate țările UE.",
      "en": "Since 27 September 2026, online shops in the EU show the EU harmonised notice on the legal guarantee (Regulation (EU) 2025/1960). We show it on this page and at checkout, before you pay.\n\nIt explains your rights in the same words in every EU country.",
      "hu": "2026. szeptember 27-től az uniós webáruházak megjelenítik a jogszabályi szavatosságról szóló egységes uniós tájékoztatót ((EU) 2025/1960 rendelet). Mi ezen az oldalon és a pénztárban, fizetés előtt mutatjuk.\n\nA tájékoztató az EU minden országában ugyanazokkal a szavakkal ismerteti a jogait."
-    }
+    },
+    "slot": "guarantee-notice"
    },
    {
     "id": "comerciala",
@@ -838,6 +843,7 @@
  {
   "slug": "contact",
   "updated": "2026-10-04",
+  "numbered": false,
   "title": {
    "ro": "Contact",
    "en": "Contact",
@@ -919,7 +925,8 @@
  },
  {
   "slug": "termeni",
-  "updated": "2026-10-04",
+  "updated": "2026-10-08",
+  "numbered": true,
   "title": {
    "ro": "Termeni și condiții",
    "en": "Terms and conditions",
@@ -1030,6 +1037,19 @@
     }
    },
    {
+    "id": "cont",
+    "heading": {
+     "ro": "Contul de client",
+     "en": "Customer account",
+     "hu": "Vásárlói fiók"
+    },
+    "body": {
+     "ro": "Puteți comanda și fără cont. Dacă vă creați unul, cu e-mail și parolă sau prin Google ori Facebook, vedeți acolo comenzile și adresele salvate. Păstrați parola doar pentru dvs. și anunțați-ne la {contacts.email} dacă cineva a intrat în cont fără acordul dvs.\n\nPuteți închide contul oricând, scriindu-ne la {contacts.email}. Comenzile deja plasate rămân valabile, iar facturile le păstrăm cât cere legea. Cum folosim datele contului aflați din [Politica de confidențialitate](doc:confidentialitate).",
+     "en": "You can order without an account. If you create one, with an e-mail and password or through Google or Facebook, you can see your orders and saved addresses there. Keep your password to yourself and tell us at {contacts.email} if someone has entered your account without your consent.\n\nYou can close your account at any time by writing to {contacts.email}. Orders already placed remain valid, and we keep invoices for as long as the law requires. How we use account data is explained in the [Privacy policy](doc:confidentialitate).",
+     "hu": "Fiók nélkül is rendelhet. Ha fiókot hoz létre e-mail-címmel és jelszóval, vagy Google- illetve Facebook-fiókkal, ott látja rendeléseit és mentett címeit. A jelszavát tartsa titokban, és írjon nekünk a {contacts.email} címre, ha valaki az Ön engedélye nélkül belépett a fiókjába.\n\nA fiókot bármikor megszüntetheti, ha ír nekünk a {contacts.email} címre. A már leadott rendelések érvényesek maradnak, a számlákat pedig a törvényben előírt ideig megőrizzük. A fiókadatok kezeléséről az [Adatvédelmi tájékoztató](doc:confidentialitate) szól."
+    }
+   },
+   {
     "id": "preturi",
     "heading": {
      "ro": "Prețuri",
@@ -1050,9 +1070,9 @@
      "hu": "Fizetés"
     },
     "body": {
-     "ro": "Puteți plăti ramburs, numerar sau cu cardul la curier, ori prin transfer bancar. Plata ramburs are o limită de valoare, afișată la finalizarea comenzii; la transfer bancar, comanda pleacă după ce banii ajung în cont.\n\nPlata online cu cardul (Visa, Mastercard, Apple Pay, Google Pay) apare la finalizarea comenzii când magazinul o activează. Factura vine pe e-mail; toate detaliile sunt pe pagina [Livrare și plată](doc:livrare-si-plata).",
-     "en": "You can pay cash on delivery, in cash or by card to the courier, or by bank transfer. Cash on delivery has an upper limit shown at checkout; with bank transfer, the order ships once the money arrives.\n\nOnline card payment (Visa, Mastercard, Apple Pay, Google Pay) appears at checkout when the shop enables it. The invoice comes by e-mail; all the details are on the [Delivery and payment](doc:livrare-si-plata) page.",
-     "hu": "Fizethet utánvéttel, készpénzzel vagy kártyával a futárnál, illetve banki átutalással. Az utánvétnek felső határa van, ezt a rendelés véglegesítésekor látja; átutalásnál a rendelést a pénz beérkezése után adjuk fel.\n\nAz online kártyás fizetés (Visa, Mastercard, Apple Pay, Google Pay) akkor jelenik meg a rendelés véglegesítésekor, amikor az áruház bekapcsolja. A számlát e-mailben küldjük; minden részlet a [Szállítás és fizetés](doc:livrare-si-plata) oldalon található."
+     "ro": "Puteți plăti ramburs, numerar sau cu cardul la curier, ori prin transfer bancar. Plata ramburs are o limită de valoare, afișată la finalizarea comenzii; la transfer bancar, comanda pleacă după ce banii ajung în cont.\n\nPlata online cu cardul (Visa, Mastercard, Apple Pay, Google Pay) apare la finalizarea comenzii când magazinul o activează. Factura vine pe e-mail; toate detaliile sunt pe pagina [Livrare și plată](doc:livrare-si-plata). Nu percepem nicio taxă în plus pentru metoda de plată aleasă (OUG 34/2014).",
+     "en": "You can pay cash on delivery, in cash or by card to the courier, or by bank transfer. Cash on delivery has an upper limit shown at checkout; with bank transfer, the order ships once the money arrives.\n\nOnline card payment (Visa, Mastercard, Apple Pay, Google Pay) appears at checkout when the shop enables it. The invoice comes by e-mail; all the details are on the [Delivery and payment](doc:livrare-si-plata) page. We charge no extra fee for the payment method you choose (GEO 34/2014).",
+     "hu": "Fizethet utánvéttel, készpénzzel vagy kártyával a futárnál, illetve banki átutalással. Az utánvétnek felső határa van, ezt a rendelés véglegesítésekor látja; átutalásnál a rendelést a pénz beérkezése után adjuk fel.\n\nAz online kártyás fizetés (Visa, Mastercard, Apple Pay, Google Pay) akkor jelenik meg a rendelés véglegesítésekor, amikor az áruház bekapcsolja. A számlát e-mailben küldjük; minden részlet a [Szállítás és fizetés](doc:livrare-si-plata) oldalon található. A választott fizetési módért nem számítunk fel többletdíjat (34/2014. sz. sürgősségi kormányrendelet)."
     }
    },
    {
@@ -1092,6 +1112,19 @@
      "ro": "Răspundem pentru orice lipsă de conformitate descoperită în 2 ani de la livrare; în primul an se presupune că defectul exista deja la livrare (OUG 140/2021). Repararea sau înlocuirea este gratuită și se face în cel mult 15 zile calendaristice de când ne anunțați; dacă nu se poate, primiți o reducere de preț sau încetăm contractul.\n\nUn produs ajuns deteriorat sau greșit este o reclamație în garanție, nu o retragere, iar transportul îl plătește magazinul. Detaliile sunt pe pagina [Garanție](doc:garantie).",
      "en": "We are liable for any lack of conformity found within 2 years of delivery; in the first year the defect is presumed to have existed at delivery (GEO 140/2021). Repair or replacement is free and done within 15 calendar days of you telling us; if that is not possible, you get a price reduction or we end the contract.\n\nA product that arrives damaged or wrong is a guarantee claim, not a withdrawal, and the shop pays the shipping. The details are on the [Guarantee](doc:garantie) page.",
      "hu": "Felelünk minden olyan hibáért, amely a szállítástól számított 2 éven belül derül ki; az első évben vélelmezzük, hogy a hiba már a szállításkor megvolt (140/2021. sz. sürgősségi kormányrendelet). A javítás vagy csere ingyenes, és legfeljebb 15 naptári napon belül megtörténik attól számítva, hogy jelezte nekünk; ha ez nem lehetséges, árleszállítást kap, vagy megszüntetjük a szerződést.\n\nA sérülten vagy tévesen megérkezett termék szavatossági igény, nem elállás, és a szállítás költségét az áruház fizeti. A részleteket a [Szavatosság](doc:garantie) oldal írja le."
+    }
+   },
+   {
+    "id": "recenzii",
+    "heading": {
+     "ro": "Recenzii",
+     "en": "Reviews",
+     "hu": "Értékelések"
+    },
+    "body": {
+     "ro": "Marca „Cumpărător verificat” apare doar la recenziile legate de o comandă livrată de magazinul nostru; celelalte recenzii apar fără această marcă.\n\nPublicăm și recenziile negative. Nu publicăm recenziile ilegale, jignitoare, cu datele personale ale altor persoane sau fără legătură cu produsul și nu plătim pentru recenzii (Legea 363/2007).",
+     "en": "The “Verified buyer” mark appears only on reviews linked to an order delivered by our shop; other reviews appear without it.\n\nWe also publish negative reviews. We do not publish reviews that are unlawful, offensive, contain other people's personal data or are unrelated to the product, and we do not pay for reviews (Law 363/2007).",
+     "hu": "Az „Igazolt vásárló” jelölés csak a boltunk által kiszállított rendeléshez kapcsolódó értékeléseknél jelenik meg; a többi értékelés e jelölés nélkül látható.\n\nA negatív értékeléseket is közzétesszük. Nem tesszük közzé a jogellenes, sértő, mások személyes adatait tartalmazó vagy a termékhez nem kapcsolódó értékeléseket, és nem fizetünk értékelésekért (363/2007. sz. törvény)."
     }
    },
    {
@@ -1177,7 +1210,8 @@
  },
  {
   "slug": "confidentialitate",
-  "updated": "2026-10-04",
+  "updated": "2026-10-08",
+  "numbered": true,
   "title": {
    "ro": "Politica de confidențialitate",
    "en": "Privacy policy",
@@ -1272,6 +1306,24 @@
         "Dovada retragerii din contract și rambursarea",
         "Obligație legală, art. 6 alin. (1) lit. c) GDPR",
         "3 ani"
+       ],
+       [
+        "Contul de client: nume, e-mail, parola (păstrată doar criptată), adrese, istoricul comenzilor",
+        "Contul dvs.: comenzi mai rapide și istoricul lor",
+        "Executarea contractului, GDPR art. 6 alin. (1) lit. b)",
+        "Până închideți contul; facturile rămân cât cere legea"
+       ],
+       [
+        "Conectarea cu Google sau Facebook: datele de profil primite de la ei",
+        "Să vă conectați fără parolă, când alegeți asta",
+        "Executarea contractului, GDPR art. 6 alin. (1) lit. b)",
+        "Cât există contul"
+       ],
+       [
+        "Adresa IP, browserul, paginile cerute și ora (jurnalele serverului)",
+        "Securitatea site-ului și găsirea erorilor",
+        "Interes legitim: un site sigur și funcțional, GDPR art. 6 alin. (1) lit. f)",
+        "30 de zile"
        ]
       ],
       "en": [
@@ -1310,6 +1362,24 @@
         "Proof of withdrawal and the refund",
         "Legal obligation, GDPR art. 6(1)(c)",
         "3 years"
+       ],
+       [
+        "Customer account: name, e-mail, password (stored only encrypted), addresses, order history",
+        "Your account: faster orders and their history",
+        "Performance of the contract, GDPR art. 6(1)(b)",
+        "Until you close the account; invoices stay as long as the law requires"
+       ],
+       [
+        "Signing in with Google or Facebook: the profile data they send us",
+        "Letting you sign in without a password, when you choose to",
+        "Performance of the contract, GDPR art. 6(1)(b)",
+        "As long as the account exists"
+       ],
+       [
+        "IP address, browser, pages requested and time (server logs)",
+        "Keeping the site secure and finding errors",
+        "Legitimate interest in a secure, working site, GDPR art. 6(1)(f)",
+        "30 days"
        ]
       ],
       "hu": [
@@ -1348,9 +1418,40 @@
         "Az elállás igazolása és a visszatérítés",
         "Jogi kötelezettség, GDPR 6. cikk (1) bek. c) pont",
         "3 év"
+       ],
+       [
+        "Vásárlói fiók: név, e-mail-cím, jelszó (csak titkosítva tárolva), címek, rendelési előzmények",
+        "Az Ön fiókja: gyorsabb rendelés és a rendelések előzményei",
+        "Szerződés teljesítése, GDPR 6. cikk (1) b)",
+        "A fiók megszüntetéséig; a számlák a törvényben előírt ideig megmaradnak"
+       ],
+       [
+        "Bejelentkezés Google- vagy Facebook-fiókkal: a tőlük kapott profiladatok",
+        "Hogy jelszó nélkül jelentkezhessen be, ha ezt választja",
+        "Szerződés teljesítése, GDPR 6. cikk (1) b)",
+        "Amíg a fiók létezik"
+       ],
+       [
+        "IP-cím, böngésző, lekért oldalak és időpont (szervernaplók)",
+        "Az oldal biztonsága és a hibák felderítése",
+        "Jogos érdek: biztonságos, működő oldal, GDPR 6. cikk (1) f)",
+        "30 nap"
        ]
       ]
      }
+    }
+   },
+   {
+    "id": "sursa",
+    "heading": {
+     "ro": "De unde avem datele",
+     "en": "Where we get your data",
+     "hu": "Honnan kapjuk az adatait"
+    },
+    "body": {
+     "ro": "Aproape toate datele le primim chiar de la dvs., când comandați, vă creați cont sau ne scrieți. Când alegeți să vă conectați cu Google sau Facebook, primim de la ei datele de profil de bază: numele, adresa de e-mail, un identificator al contului și, dacă există, poza de profil. Parola dvs. de acolo nu o primim niciodată (GDPR, art. 14).",
+     "en": "Almost all your data come from you, when you order, create an account or write to us. When you choose to sign in with Google or Facebook, we receive basic profile data from them: your name, e-mail address, an account identifier and, if there is one, your profile picture. We never receive your password there (GDPR, art. 14).",
+     "hu": "Szinte minden adatot közvetlenül Öntől kapunk, amikor rendel, fiókot hoz létre vagy ír nekünk. Ha a Google- vagy Facebook-bejelentkezést választja, tőlük az alapvető profiladatokat kapjuk meg: a nevét, e-mail-címét, egy fiókazonosítót és – ha van – a profilképét. Az ottani jelszavát soha nem kapjuk meg (GDPR, 14. cikk)."
     }
    },
    {
@@ -1384,21 +1485,27 @@
       "Furnizorul de găzduire a site-ului.",
       "Procesatorul de plăți, când plătiți online cu cardul.",
       "Contabilul sau firma de contabilitate.",
-      "Autoritățile publice, doar când legea o cere."
+      "Autoritățile publice, doar când legea o cere.",
+      "Serviciul de e-mail care trimite confirmările comenzilor și newsletterul.",
+      "Google sau Meta (Facebook), doar dacă alegeți să vă conectați prin ei."
      ],
      "en": [
       "Courier companies, for delivery.",
       "The site's hosting provider.",
       "The payment processor, when you pay online by card.",
       "Our accountant or accounting firm.",
-      "Public authorities, only when the law requires it."
+      "Public authorities, only when the law requires it.",
+      "The e-mail service that sends order confirmations and the newsletter.",
+      "Google or Meta (Facebook), only if you choose to sign in with them."
      ],
      "hu": [
       "Futárszolgálatok a kézbesítéshez.",
       "A weboldal tárhelyszolgáltatója.",
       "A fizetési szolgáltató, ha online kártyával fizet.",
       "Könyvelőnk vagy könyvelőirodánk.",
-      "Hatóságok, kizárólag ha jogszabály előírja."
+      "Hatóságok, kizárólag ha jogszabály előírja.",
+      "Az e-mail-szolgáltató, amely a rendelés-visszaigazolásokat és a hírlevelet küldi.",
+      "A Google vagy a Meta (Facebook), csak ha velük jelentkezik be."
      ]
     }
    },
@@ -1484,6 +1591,19 @@
     }
    },
    {
+    "id": "minori",
+    "heading": {
+     "ro": "Minori",
+     "en": "Children",
+     "hu": "Kiskorúak"
+    },
+    "body": {
+     "ro": "Magazinul vinde doar persoanelor de peste 18 ani și nu adună cu bună știință date despre minori. Dacă aflăm că am primit date de la cineva sub 18 ani, le ștergem.",
+     "en": "The shop sells only to people aged 18 or over and does not knowingly collect data about minors. If we learn that we have received data from someone under 18, we delete them.",
+     "hu": "A bolt csak 18 éven felülieknek értékesít, és tudatosan nem gyűjt adatot kiskorúakról. Ha kiderül, hogy 18 év alatti személytől kaptunk adatot, töröljük."
+    }
+   },
+   {
     "id": "securitate",
     "heading": {
      "ro": "Securitatea datelor",
@@ -1507,6 +1627,21 @@
      "ro": "Site-ul folosește doar cookie-uri și stocare locală strict necesare, fără analiză de trafic și fără publicitate. Lista completă, cu scopul și durata fiecăruia, este în [Politica de cookie-uri](doc:cookie-uri).",
      "en": "The site uses only strictly necessary cookies and local storage, with no traffic analytics and no advertising. The full list, with the purpose and lifetime of each item, is in the [Cookie policy](doc:cookie-uri).",
      "hu": "A weboldal csak feltétlenül szükséges sütiket és helyi tárhelyet használ, forgalomelemzés és reklám nélkül. A teljes lista az egyes elemek céljával és időtartamával a [Süti-tájékoztatóban](doc:cookie-uri) található."
+    },
+    "when": "no-consent"
+   },
+   {
+    "id": "cookie",
+    "when": "consent",
+    "heading": {
+     "ro": "Cookie-uri",
+     "en": "Cookies",
+     "hu": "Sütik"
+    },
+    "body": {
+     "ro": "Cookie-urile strict necesare le folosim fără acord; pe celelalte doar cu acordul dvs., separat pe categorii. Alegerea o păstrăm cu un identificator aleator, versiunea, categoriile alese, data și ora, ca să putem dovedi acordul (GDPR, art. 7 alin. (1)). Lista completă, cu furnizorul, scopul și durata fiecărui cookie, este în [Politica de cookie-uri](doc:cookie-uri); acordul îl retrageți oricând din „Setări cookie”, în subsolul paginii. Furnizorii acestor cookie-uri primesc date doar pentru categoriile la care v-ați dat acordul.",
+     "en": "We use strictly necessary cookies without consent, and the others only with your consent, separately for each category. We keep your choice with a random identifier, the version, the categories chosen, the date and the time, so that we can prove consent (GDPR, art. 7(1)). The full list, with the provider, purpose and lifetime of each cookie, is in the [Cookie policy](doc:cookie-uri); you can withdraw consent at any time under “Cookie settings” at the bottom of the page. The providers of these cookies receive data only for the categories you have consented to.",
+     "hu": "A feltétlenül szükséges sütiket hozzájárulás nélkül használjuk, a többit csak az Ön hozzájárulásával, kategóriánként külön. A döntését egy véletlen azonosítóval, a verzióval, a választott kategóriákkal, a dátummal és az időponttal őrizzük meg, hogy a hozzájárulást igazolni tudjuk (GDPR, 7. cikk (1) bekezdés). A teljes lista – az egyes sütik szolgáltatójával, céljával és időtartamával – a [Süti-tájékoztatóban](doc:cookie-uri) található; hozzájárulását bármikor visszavonhatja az oldal alján, a „Süti-beállítások” alatt. E sütik szolgáltatói csak azokhoz a kategóriákhoz kapnak adatot, amelyekhez hozzájárult."
     }
    },
    {
@@ -1527,7 +1662,8 @@
  },
  {
   "slug": "cookie-uri",
-  "updated": "2026-10-04",
+  "updated": "2026-10-08",
+  "numbered": true,
   "title": {
    "ro": "Politica de cookie-uri",
    "en": "Cookie policy",
@@ -1540,100 +1676,16 @@
   },
   "sections": [
    {
-    "id": "ce-folosim",
+    "id": "fara-acord",
     "heading": {
-     "ro": "Ce folosim",
-     "en": "What we use",
-     "hu": "Mit használunk"
+     "ro": "De ce nu cerem acord pentru ele",
+     "en": "Why we do not ask consent for them",
+     "hu": "Miért nem kérünk hozzájárulást ezekhez"
     },
     "body": {
-     "ro": "Folosim doar trei elemente, toate strict necesare ca magazinul să funcționeze sau să țină minte o alegere făcută de dvs. Nu folosim cookie-uri de analiză, de publicitate sau pixeli de urmărire (Legea 506/2004).",
-     "en": "We use only three items, all strictly necessary for the shop to work or to remember a choice you made. We use no analytics or advertising cookies and no tracking pixels (Law 506/2004).",
-     "hu": "Mindössze három elemet használunk; mindegyik feltétlenül szükséges ahhoz, hogy az áruház működjön, vagy megjegyezzen egy Ön által hozott döntést. Nem használunk elemző vagy reklámcélú sütiket, sem követőpixeleket (506/2004. sz. törvény)."
-    },
-    "table": {
-     "head": {
-      "ro": [
-       "Nume",
-       "Tip",
-       "Scop",
-       "Durată"
-      ],
-      "en": [
-       "Name",
-       "Type",
-       "Purpose",
-       "Lifetime"
-      ],
-      "hu": [
-       "Név",
-       "Típus",
-       "Cél",
-       "Időtartam"
-      ]
-     },
-     "rows": {
-      "ro": [
-       [
-        "shop_session",
-        "Cookie (HTTP-only)",
-        "Păstrează coșul și comanda în curs",
-        "30 de zile"
-       ],
-       [
-        "theme",
-        "Cookie",
-        "Ține minte alegerea între tema luminoasă și cea întunecată",
-        "1 an"
-       ],
-       [
-        "saved",
-        "Stocare locală în browser",
-        "Ține minte lista de favorite pe acest dispozitiv",
-        "Până o ștergeți"
-       ]
-      ],
-      "en": [
-       [
-        "shop_session",
-        "Cookie (HTTP-only)",
-        "Keeps your cart and the order in progress",
-        "30 days"
-       ],
-       [
-        "theme",
-        "Cookie",
-        "Remembers your choice of light or dark theme",
-        "1 year"
-       ],
-       [
-        "saved",
-        "Browser local storage",
-        "Remembers your favourites list on this device",
-        "Until you delete it"
-       ]
-      ],
-      "hu": [
-       [
-        "shop_session",
-        "Süti (HTTP-only)",
-        "Megőrzi a kosarat és a folyamatban lévő rendelést",
-        "30 nap"
-       ],
-       [
-        "theme",
-        "Süti",
-        "Megjegyzi, hogy világos vagy sötét témát választott",
-        "1 év"
-       ],
-       [
-        "saved",
-        "Böngésző helyi tárhelye",
-        "Megjegyzi a kedvencek listáját ezen az eszközön",
-        "Amíg Ön nem törli"
-       ]
-      ]
-     }
+     "ro": "Legea nu cere acord pentru cookie-urile fără de care serviciul cerut de dvs. nu poate fi oferit: coșul, comanda, conectarea la cont și alegerile pe care le faceți chiar dvs., cum ar fi tema (Legea 506/2004, art. 4 alin. (6)). Le setăm doar noi, doar pe acest site, și nu le folosim ca să vă urmărim.",
+     "en": "The law does not require consent for cookies without which the service you asked for cannot be provided: the cart, checkout, signing in to your account and choices you make yourself, such as the theme (Law 506/2004, art. 4(6)). Only we set them, only on this site, and we do not use them to track you.",
+     "hu": "A törvény nem ír elő hozzájárulást azokhoz a sütikhez, amelyek nélkül az Ön által kért szolgáltatás nem nyújtható: a kosár, a rendelés, a fiókba való bejelentkezés és az Ön által hozott döntések, például a téma (506/2004. sz. törvény, 4. cikk (6) bekezdés). Ezeket csak mi helyezzük el, csak ezen az oldalon, és nem követjük velük Önt."
     }
    },
    {
@@ -1647,6 +1699,37 @@
      "ro": "Pentru cookie-urile strict necesare legea nu cere consimțământ, de aceea site-ul nu afișează acum un banner de cookie-uri (Legea 506/2004, art. 4).\n\nDacă vom adăuga măsurarea traficului sau alte cookie-uri care nu sunt strict necesare, vă vom cere mai întâi acordul printr-un banner. Odată cu el apare și linkul „Setări cookie”, de unde vă puteți schimba oricând alegerea, iar tabelul de mai sus va fi actualizat.",
      "en": "The law does not require consent for strictly necessary cookies, so the site does not show a cookie banner at the moment (Law 506/2004, art. 4).\n\nIf we ever add traffic measurement or other cookies that are not strictly necessary, we will first ask for your consent through a banner. Together with it, a “Cookie settings” link appears where you can change your choice at any time, and the table above will be updated.",
      "hu": "A feltétlenül szükséges sütikhez a törvény nem ír elő hozzájárulást, ezért a weboldal jelenleg nem jelenít meg sütisávot (506/2004. sz. törvény, 4. cikk).\n\nHa egyszer forgalommérést vagy más, nem feltétlenül szükséges sütit vezetünk be, előbb egy sávon kérjük a hozzájárulását. Vele együtt megjelenik a „Süti-beállítások” link is, ahol bármikor módosíthatja a döntését, és a fenti táblázatot is frissítjük."
+    },
+    "when": "no-consent"
+   },
+   {
+    "id": "optionale",
+    "when": "consent",
+    "slot": "cookie-optional",
+    "heading": {
+     "ro": "Cookie-uri opționale",
+     "en": "Optional cookies",
+     "hu": "Nem kötelező sütik"
+    },
+    "body": {
+     "ro": "Pe acestea le folosim doar după ce vă dați acordul, separat pentru fiecare categorie. Până atunci nu se încarcă nici scripturile furnizorilor. Tabelele de mai jos arată, pentru fiecare cookie, cine îl setează, la ce folosește și cât durează.",
+     "en": "We use these only after you give consent, separately for each category. Until then, not even the providers' scripts are loaded. The tables below show who sets each cookie, what it is for and how long it lasts.",
+     "hu": "Ezeket csak az Ön hozzájárulása után használjuk, kategóriánként külön. Addig a szolgáltatók szkriptjei sem töltődnek be. Az alábbi táblázatok megmutatják, ki helyezi el az egyes sütiket, mire valók és meddig maradnak meg."
+    }
+   },
+   {
+    "id": "schimbare",
+    "when": "consent",
+    "slot": "cookie-settings",
+    "heading": {
+     "ro": "Cum vă schimbați alegerea",
+     "en": "How to change your choice",
+     "hu": "Hogyan módosíthatja a döntését"
+    },
+    "body": {
+     "ro": "Vă puteți schimba alegerea sau retrage acordul oricând, la fel de simplu cum l-ați dat: din butonul de mai jos sau din „Setări cookie”, în subsolul fiecărei pagini. Când retrageți acordul pentru o categorie, ștergem cookie-urile ei de pe acest site; retragerea nu afectează ce s-a întâmplat înainte (GDPR, art. 7 alin. (3)).\n\nVă întrebăm din nou după 6 luni sau când adăugăm un furnizor nou.",
+     "en": "You can change your choice or withdraw consent at any time, as easily as you gave it: with the button below or under “Cookie settings” at the bottom of every page. When you withdraw consent for a category, we delete its cookies from this site; withdrawal does not affect what happened before (GDPR, art. 7(3)).\n\nWe ask you again after 6 months or when we add a new provider.",
+     "hu": "Döntését bármikor módosíthatja, hozzájárulását bármikor visszavonhatja – ugyanolyan egyszerűen, ahogy megadta: az alábbi gombbal vagy minden oldal alján, a „Süti-beállítások” alatt. Ha egy kategóriához visszavonja a hozzájárulását, töröljük annak sütijeit erről az oldalról; a visszavonás nem érinti a korábbiakat (GDPR, 7. cikk (3) bekezdés).\n\n6 hónap után, illetve új szolgáltató bevezetésekor újra megkérdezzük."
     }
    },
    {
@@ -1676,11 +1759,13 @@
     }
    }
   ],
-  "faq": []
+  "faq": [],
+  "table": "storage"
  },
  {
   "slug": "analize-de-laborator",
   "updated": "2026-10-04",
+  "numbered": false,
   "title": {
    "ro": "Analize de laborator",
    "en": "Lab reports",
@@ -1851,7 +1936,8 @@
  },
  {
   "slug": "accesibilitate",
-  "updated": "2026-10-04",
+  "updated": "2026-10-08",
+  "numbered": false,
   "title": {
    "ro": "Declarație de accesibilitate",
    "en": "Accessibility statement",
@@ -1946,9 +2032,9 @@
      "hu": "Illetékes hatóság"
     },
     "body": {
-     "ro": "Dacă nu sunteți mulțumit de răspunsul nostru, puteți depune o sesizare la autoritatea de supraveghere a pieței desemnată prin Legea 232/2022 (ANPC).",
-     "en": "If you are not satisfied with our answer, you can file a complaint with the market surveillance authority designated under Law 232/2022 (ANPC).",
-     "hu": "Ha nem elégedett a válaszunkkal, panaszt tehet a 232/2022. sz. törvény által kijelölt piacfelügyeleti hatóságnál (ANPC)."
+     "ro": "Dacă nu sunteți mulțumit de răspunsul nostru, puteți depune o sesizare la Autoritatea pentru Digitalizarea României (ADR), autoritatea de supraveghere a pieței desemnată pentru comerțul electronic prin Legea 232/2022, art. 19 alin. (1) lit. d).",
+     "en": "If you are not satisfied with our answer, you can complain to the Romanian Digitalisation Authority (Autoritatea pentru Digitalizarea României, ADR), the market surveillance authority designated for e-commerce by Law 232/2022, art. 19(1)(d).",
+     "hu": "Ha nem elégedett a válaszunkkal, panaszt tehet a Román Digitalizációs Hatóságnál (Autoritatea pentru Digitalizarea României, ADR), amelyet a 232/2022. sz. törvény 19. cikk (1) bekezdés d) pontja jelöl ki az e-kereskedelem piacfelügyeleti hatóságaként."
     }
    },
    {

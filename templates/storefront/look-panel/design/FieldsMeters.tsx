@@ -6,6 +6,7 @@ import { goalOf } from '@/lib/cart-view.ts'
 import { MARKET } from '@/lib/market.ts'
 import { content } from '@/lib/source/index.ts'
 import { GoalMeter } from '@/components/GoalMeter.tsx'
+import { Switch } from '@/components/Switch.tsx'
 import { Part } from './parts.tsx'
 import { FieldElements, ProgressElements } from './Elements.tsx'
 
@@ -37,6 +38,13 @@ export async function FieldsMeters({ lang }: { lang: Lang }) {
           <label className={f.field}><span className={f.label}>Недоступно</span><input className={f.box} disabled defaultValue="Bucharest" /></label>
           <label className={f.tick}><input type="checkbox" defaultChecked />Согласен с условиями</label>
           <label className={f.tick}><input type="radio" name="design-radio" defaultChecked />Курьером</label>
+        </div>
+      </Part>
+      <Part title="Переключатель" lede="Да или нет одним нажатием, когда решение действует сразу и по отдельности, — категории cookie в окне настроек. Подпись слева, дорожка справа, нажимается вся строка. Выключен — тихая плашка, включён — главный цвет; погашенный — включён всегда (необходимые cookie). Порт HyperUI.">
+        <div className={s.form}>
+          <Switch label="Выключен" name="design-switch-off" defaultChecked={false} />
+          <Switch label="Включён" name="design-switch-on" defaultChecked />
+          <Switch label="Включён всегда · погашен" name="design-switch-lock" defaultChecked disabled />
         </div>
       </Part>
       <FieldElements />

@@ -635,6 +635,10 @@
 .prose a{color:var(--pop-ink);text-underline-offset:.2em}
 @media (hover:hover){ .prose a:hover{color:var(--pop-ink-hover)} }
 .prose a:active{color:var(--pop-ink-hover)}
+/* На бумаге ссылки не нажать: внешняя ссылка текста печатается со своим
+   адресом в скобках (печать — base.css, И791). Внутренние — без адреса: они
+   названы словами документа. */
+@media print{ .prose a[href^='http']::after{content:' (' attr(href) ')'} }
 
 /* Tap — запас нажатия вокруг мелкого органа.
    Палец это 44×44: столько просят и Apple, и Material, и WCAG 2.5.8. Но

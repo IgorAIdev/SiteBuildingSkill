@@ -57,7 +57,7 @@ export function HelpDock({ rows, who, words, bare }: { rows: ReachRow[]; who: { 
     return () => window.removeEventListener('scroll', on)
   }, [])
   return (
-    <div className={s.dock}>
+    <div className={s.dock} data-print="skip">
       <button className={`${b.btn} ${s.top}`} type="button" data-pager="" data-float="" data-shown={far || bare ? '' : undefined} inert={!far && !bare} aria-label={words.top} onClick={bare ? undefined : up}><Icon id="arrow-up" /></button>
       <button className={`${b.btn} ${s.knob}`} type="button" data-open="sign" data-pager="" data-float="deck" popoverTarget={bare ? undefined : id} aria-label={words.open}><Icon id="message-circle" /><Icon id="x" /></button>
       {bare ? null : <div id={id} popover="auto" className={pn.pane} data-pane="dock" data-scroll-shut aria-label={words.online}>

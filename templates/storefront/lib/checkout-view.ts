@@ -9,6 +9,7 @@ import { hrefFor } from './href.ts'
 import { intlLocale, MARKET } from './market.ts'
 import { lineFacts, priceOrFree, totalsView, type TotalsView } from './cart-view.ts'
 import { pledgesView, type PledgesView } from './pledges.ts'
+import { PRIVACY_DOC } from './company.ts'
 
 /** Поле формы готовыми строками. `short` — ввод короткий по природе
  *  (индекс): поле шириной с ожидаемый ввод, а не во всю колонку (Baymard).
@@ -23,7 +24,8 @@ export type FieldView = {
  *  населённый пункт). Что с чем в паре — решает вид, как лечь паре — узел. */
 export type FieldRow = FieldView[]
 export type StepsView = { label: string; title: string; items: { name: string; href: string | null; current: boolean; done: boolean }[] }
-export type ContactView = { rows: FieldRow[]; submit: string }
+/** `policy` — «Cum folosim datele» под полями (GDPR ст. 13; И791). */
+export type ContactView = { rows: FieldRow[]; submit: string; policy: { label: string; href: string } }
 export type MethodView = { id: string; name: string; meta: string; description: string; price: string; checked: boolean }
 export type PointView = { id: string; name: string; meta: string; hours: string | null; checked: boolean }
 export type AddressDetails = { kind: 'address'; method: string; title: string; rows: FieldRow[]; country: { label: string; value: string }; submit: string }
@@ -101,6 +103,7 @@ export function contactView(lang: Lang, contact: Contact | null): ContactView {
       [field(lang, 'phone', c.phone, { key: 'field.phone', type: 'tel', auto: 'tel' })],
     ],
     submit: t(lang, 'checkout.continue'),
+    policy: { label: t(lang, 'account.policy'), href: hrefFor(lang, { doc: PRIVACY_DOC }) },
   }
 }
 

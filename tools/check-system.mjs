@@ -125,6 +125,7 @@ const INSIDE = {
   'components/PaneHandle.tsx': ['components/SearchPane.tsx', 'ручка свайпа — полоска у края окна поиска на телефоне (pane-swipe), без окна она не вещь; окно показано в рамке сайта'],
   'components/ShelfRows.tsx': ['components/EmptyPaths.tsx', 'тихие строки полок — под пустой корзиной и под пустым полем окна поиска; показаны настоящей пустой корзиной (И691)'],
   'components/SocialSignIn.tsx': ['components/AuthPage.tsx', 'кнопки Google и Facebook под формой входа и создания — часть страницы входа; показаны настоящей страницей в обоих видах (И787)'],
+  'components/DocTable.tsx': ['components/ConsentPrefs.tsx', 'таблица документа — своим файлом, чтобы окно в браузере не тянуло DocView (разбор 08.10.2026); показана настоящими таблицами cookie в окне настроек и разделами страницы-документа (И791)'],
   'components/AddLabel.tsx': ['components/AddToCart.tsx', 'надпись кнопки «в корзину» — слово, «Added · n» и уступка места внутри кнопки страницы товара и карточки, не вещь сама по себе (И469, И763)'],
 }
 const used = new Set(siteCode.flatMap((f) => imports(f).map((i) => i.path)))

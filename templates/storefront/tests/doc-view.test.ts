@@ -1,12 +1,15 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { badLinks, docView, fill, runsOf, TOC_MIN, unknownMarks } from '../lib/doc-view.ts'
 import { COMPANY } from '../lib/company.ts'
+import { DOC_SLOTS } from '../lib/source/contract.ts'
+import { sampleContent } from '../lib/source/sample/content.ts'
 import { LOCALES } from '../lib/locale.ts'
 import DOCS from '../lib/docs.json' with { type: 'json' }
 
 type L = Record<string, string>
-type Raw = { slug: string; updated?: string; title: L; summary: L; sections: { id: string; heading: L; body: L; list?: Record<string, string[]>; table?: { head: Record<string, string[]>; rows: Record<string, string[][]> }; form?: string }[]; faq?: { q: L; a: L }[]; table?: string }
+type Raw = { slug: string; updated?: string; numbered?: boolean; title: L; summary: L; sections: { id: string; heading: L; body: L; list?: Record<string, string[]>; table?: { head: Record<string, string[]>; rows: Record<string, string[][]> }; slot?: string; when?: string }[]; faq?: { q: L; a: L }[]; table?: string }
 const RAW = DOCS as Raw[]
 
 /* Документы магазина (И748): реквизиты — подстановкой из одного места, ссылки —
@@ -47,7 +50,13 @@ test('the three languages of a document have the same shape', () => {
         }
       }
     }
-    assert.equal(new Set(d.sections.map((s) => s.id)).size, d.sections.length, `${d.slug}: якоря разделов повторяются`)
+    /* Один якорь — дважды только парой «с согласием / без» (`when`, И791): после
+       отбора по состоянию реестра якоря уникальны. */
+    for (const optional of [false, true]) {
+      const shown = d.sections.filter((s) => !s.when || (s.when === 'consent') === optional)
+      assert.equal(new Set(shown.map((s) => s.id)).size, shown.length, `${d.slug}: якоря разделов повторяются (optional=${optional})`)
+    }
+    for (const s of d.sections) if (s.when) assert.ok(['consent', 'no-consent'].includes(s.when), `${d.slug}/${s.id}: when «${s.when}»`)
   }
 })
 
@@ -57,7 +66,7 @@ test('the Romanian shop has its mandatory documents and the withdrawal button', 
   const slugs = RAW.map((d) => d.slug)
   for (const need of ['termeni', 'livrare-si-plata', 'retur', 'garantie', 'confidentialitate', 'cookie-uri', 'contact']) assert.ok(slugs.includes(need), `нет документа «${need}»`)
   const retur = RAW.find((d) => d.slug === 'retur')!
-  assert.ok(retur.sections.some((s) => s.form === 'withdrawal'), 'на странице возврата нет кнопки отказа')
+  assert.ok(retur.sections.some((s) => s.slot === 'withdrawal'), 'на странице возврата нет кнопки отказа')
   assert.ok(RAW.find((d) => d.slug === 'termeni')!.sections.some((s) => /reclamatiisal\.anpc\.ro/.test(s.body.ro)), 'в условиях нет SAL ANPC')
   assert.ok(!JSON.stringify(RAW).includes('ec.europa.eu/consumers/odr'), 'ссылка на закрытую платформу ODR')
 })
@@ -97,5 +106,111 @@ test('every link in the blog posts leads somewhere', async () => {
         assert.doesNotMatch(x, /[şţŞŢ]/, `${post.slug}: седиль`)
       }
     }
+  }
+})
+
+/* Правовые страницы (И791): каждая — на трёх языках со своими обязательными
+   разделами; договорные — с номерами подряд в заголовках и в оглавлении; разделы
+   о согласии — по состоянию реестра; вещи сайта в разделах — только из списка. */
+const REQUIRED: Record<string, string[]> = {
+  termeni: ['vanzator', 'definitii', 'produse', 'comanda', 'cont', 'preturi', 'plata', 'livrare', 'retragere', 'garantie', 'recenzii', 'reclamatii', 'restrictii', 'legea', 'modificari'],
+  confidentialitate: ['operator', 'date-si-scopuri', 'sursa', 'destinatari', 'transfer', 'drepturi', 'plangere', 'automat', 'minori', 'securitate', 'cookie'],
+  'cookie-uri': ['fara-acord', 'stergere', 'intrebari'],
+  retur: ['termen', 'cum', 'buton', 'formular', 'rambursare', 'exceptii', 'defecte'],
+  garantie: ['ce-este', 'ce-acopera', 'cum', 'remedii', 'eticheta-ue', 'litigii'],
+  'livrare-si-plata': ['unde-livram', 'cost', 'plata'],
+  contact: ['cum-ne-contactati', 'firma', 'reclamatii', 'retragere'],
+  'despre-noi': ['date-firma'],
+  accesibilitate: ['nivel', 'semnalare', 'autoritate'],
+}
+const NUMBERED = ['termeni', 'confidentialitate', 'cookie-uri', 'retur', 'garantie']
+type Sec = Raw['sections'][number]
+const inLang = (d: Raw, lang: string, keep: (s: Sec) => boolean = () => true) => ({
+  title: d.title[lang], summary: d.summary[lang], numbered: d.numbered,
+  sections: d.sections.filter(keep).map((s) => ({ id: s.id, heading: s.heading[lang], body: s.body[lang], slot: s.slot as never, when: s.when as never })),
+})
+
+test('every legal page exists in every language with its required sections', async () => {
+  for (const [slug, ids] of Object.entries(REQUIRED)) {
+    for (const lang of LOCALES) {
+      const r = await sampleContent.doc(lang, slug)
+      assert.ok(r.ok, `${lang}: нет документа «${slug}»`)
+      if (!r.ok) continue
+      assert.ok(r.value.title && r.value.summary, `${lang}/${slug}: без имени или строки о нём`)
+      for (const id of ids) {
+        const s = r.value.sections.find((x) => x.id === id)
+        assert.ok(s?.heading && s.body, `${lang}/${slug}: нет раздела «${id}»`)
+      }
+    }
+  }
+  const ro = (slug: string, id: string) => RAW.find((d) => d.slug === slug)!.sections.find((s) => s.id === id)!.body.ro
+  assert.match(ro('termeni', 'plata'), /Nu percepem nicio taxă în plus pentru metoda de plată aleasă \(OUG 34\/2014\)/, 'условия: без доплаты за способ оплаты')
+  /* Номер статьи — только прочитанный в первоисточнике: «19^1» взят из вторичных (разбор 08.10.2026, docs/open.md «Юристу»). */
+  for (const d of RAW) for (const s of d.sections) for (const lang of LOCALES) assert.doesNotMatch(s.body[lang] ?? '', /19\^1/, `${d.slug}/${s.id}/${lang}: статья 19^1 не сверена`)
+  assert.match(ro('termeni', 'recenzii'), /Legea 363\/2007/, 'условия: как проверяем отзывы')
+  assert.match(ro('accesibilitate', 'autoritate'), /Autoritatea pentru Digitalizarea României/, 'доступность: орган надзора — ADR (Legea 232/2022 ст. 19)')
+  assert.match(ro('confidentialitate', 'minori'), /18 ani/)
+})
+
+test('contract documents carry section numbers in a row, in the heading and in the contents', () => {
+  for (const d of RAW) assert.equal(Boolean(d.numbered), NUMBERED.includes(d.slug), `${d.slug}: numbered`)
+  for (const slug of NUMBERED) {
+    const d = RAW.find((x) => x.slug === slug)!
+    for (const lang of LOCALES) {
+      for (const [optional, notice] of [[false, false], [true, true]]) {
+        const lead = d.table ? { id: 'doc-table', heading: 'Lead' } : null
+        const v = docView(lang, inLang(d, lang), lead, { optional, notice })
+        const nums = [...(v.lead ? [v.lead.num] : []), ...v.sections.map((s) => s.num)]
+        assert.deepEqual(nums, nums.map((_, i) => String(i + 1)), `${lang}/${slug}: номера подряд`)
+        assert.ok(v.toc, `${lang}/${slug}: оглавление`)
+        assert.ok(v.toc!.items.every((it, i) => it.label.startsWith(`${i + 1}. `)), `${lang}/${slug}: номер в оглавлении`)
+      }
+    }
+  }
+  const plain = docView('ro', { title: 'T', summary: 'S', updated: '2026-10-08', sections: [{ id: 'a', heading: 'A', body: 'x' }] })
+  assert.equal(plain.sections[0].num, null, 'без numbered — без номеров')
+  assert.equal(plain.updatedIso, '2026-10-08', 'дата правки машиночитаемо (<time datetime>)')
+})
+
+test('consent sections follow the registry: no optional cookies — why there is no banner; with them — tables and the settings button', () => {
+  const ck = RAW.find((d) => d.slug === 'cookie-uri')!
+  assert.equal(ck.table, 'storage', 'первым разделом — таблица из реестра')
+  assert.ok(!ck.sections.some((s) => s.table), 'рукописная таблица cookie')
+  const off = docView('ro', inLang(ck, 'ro'), null, { optional: false })
+  assert.ok(off.sections.some((s) => s.id === 'fara-banner'))
+  assert.ok(!off.sections.some((s) => s.slot === 'cookie-settings' || s.slot === 'cookie-optional'))
+  const on = docView('ro', inLang(ck, 'ro'), null, { optional: true })
+  assert.ok(!on.sections.some((s) => s.id === 'fara-banner'))
+  assert.ok(on.sections.some((s) => s.slot === 'cookie-settings') && on.sections.some((s) => s.slot === 'cookie-optional'))
+  const privacy = RAW.find((d) => d.slug === 'confidentialitate')!.sections.filter((s) => s.id === 'cookie')
+  assert.deepEqual(privacy.map((s) => s.when).toSorted(), ['consent', 'no-consent'], 'раздел о cookie в политике данных — парой')
+})
+
+test('a section slot is one of the site things a document may hold', () => {
+  for (const d of RAW) for (const s of d.sections) if (s.slot) assert.ok((DOC_SLOTS as readonly string[]).includes(s.slot), `${d.slug}/${s.id}: slot «${s.slot}»`)
+  const g = RAW.find((d) => d.slug === 'garantie')!
+  assert.ok(g.sections.some((s) => s.slot === 'guarantee-notice'), 'гарантия обещает уведомление ЕС — слот на месте')
+  /* Раздел обещает показ уведомления — без файла на этом языке раздела нет (разбор 08.10.2026). */
+  for (const lang of LOCALES) {
+    const has = (notice: boolean) => docView(lang, inLang(g, lang), null, { notice }).sections.some((s) => s.slot === 'guarantee-notice')
+    assert.equal(has(false), false, `${lang}: файла уведомления нет — раздел «${g.sections.find((s) => s.slot === 'guarantee-notice')!.heading[lang]}» не стоит`)
+    assert.equal(has(true), true, `${lang}: файл есть — раздел и картинка на месте`)
+  }
+})
+
+/* Телефон и бумага (И791): ниже шва 820 оглавление — одной свёрнутой строкой меню под шапкой
+   (колонка сбоку там не встаёт); дата правки — машиночитаемо; шапка, крошки, оглавление,
+   подвал, стопка помощи и ссылка «к содержимому» не печатаются — одним правилом основания. */
+test('the contents fold into one line on a narrow box; dates are machine-readable; print skips the chrome', () => {
+  const at = (path: string) => readFileSync(new URL(path, import.meta.url), 'utf8')
+  const view = at('../components/DocView.tsx')
+  const css = at('../components/DocView.module.css')
+  assert.match(view, /<nav className=\{s\.peek\} aria-label=\{view\.toc\.label\} data-print="skip">\s*<details className=\{m\.fold\}>\s*<summary>\{view\.toc\.label\} \(\{view\.toc\.items\.length\}\)<Turn \/><\/summary>/, 'свёртка оглавления — вид свёртки меню, в своём ориентире nav')
+  assert.match(css, /\.peek\{display:none\}\s*@container \(max-width:819px\)\{\s*\.toc\{display:none\}\s*\.peek\{display:block\}/, 'свёртка — только ниже шва 820, колонка — только выше')
+  assert.match(view, /<time dateTime=\{view\.updatedIso \?\? undefined\}>\{view\.updated\}<\/time>/)
+  assert.match(view, /aria-labelledby="doc-toc" data-print="skip"/)
+  assert.match(at('../styles/base.css'), /@media print\{\s*\[data-print='skip'\]\{display:none !important\}\s*:root, :root:root\[data-theme\]\{color-scheme:light\}/, 'бумага — дневные роли и у выбравшего ночь ([data-theme] токенов сильнее голого :root)')
+  for (const [file, mark] of [['../components/Header.tsx', /<header className=\{s\.head\} data-variant="classic" data-print="skip">/], ['../components/Breadcrumbs.tsx', /data-print="skip"/], ['../components/HelpDock.tsx', /className=\{s\.dock\} data-print="skip"/], ['../components/Shell.tsx', /<a className=\{p\.skip\} href="#main" data-print="skip">/]] as const) {
+    assert.match(at(file), mark, `${file}: печатается служебное`)
   }
 })
