@@ -26,7 +26,7 @@ export { fitPalette, intentOf }
  *  catalog, product, cart, checkout; нет — та, что открыта), `block` — что на
  *  ней показать (селектор). Вкладки общего вида сайта (краска, шрифт,
  *  ритм…) места не имеют: они везде. */
-/** @typedef {{ page?: 'home' | 'catalog' | 'product' | 'cart' | 'checkout', block: string }} Place */
+/** @typedef {{ page?: 'home' | 'catalog' | 'product' | 'cart' | 'checkout' | 'account', block: string }} Place */
 /* `page` — вкладка страницы дизайн-системы (`/<язык>/design?t=<page>`, у подвкладки — `system&s=color`), где
    этот выбор стоит ЕЩЁ И рядом со своим образцом. Выбор вида живёт в
    панели; на странице дизайн-системы — только палитра, со строителем своей
@@ -68,6 +68,9 @@ export const SECTIONS = [
        там, где полей больше всего, — на оформлении заказа (заказчик
        28.09.2026: «поля для чекаута должны быть на вкладке чекаута»). */
     { id: 'fields', name: 'Checkout', hint: 'The fields of the whole shop, shown on the checkout: the same field is the search in the header and the email box. One colour for every ticked box and radio, and how a form says «done» or «error». Corners come from Shape. A sample product is put in your cart so the checkout has its fields.', fields: [['field', 'Field'], ['field-label', 'Label'], ['tick', 'Ticked boxes'], ['pair-look', 'Field and button'], ['say-look', 'Messages']], place: { page: 'checkout', block: 'main form' } },
+    /* Форма входа (И780): колонка по центру — на полу страницы или на листе;
+       вкладка открывает страницу входа. */
+    { id: 'account', name: 'Sign in', hint: 'The sign-in form: a centred column with the title, the fields and a full-width button. It stands on the page colour or on a white card. The same form serves creating an account and a new password.', fields: [['auth-look', 'Form']], place: { page: 'account', block: 'main form' } },
     /* Нарисованные элементы набора (build-catalog.mjs, copyElements): все
        живьём; у стоящего выбором — где он в панели, у прочих — «места на
        витрине пока нет». */

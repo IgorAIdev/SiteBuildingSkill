@@ -7,8 +7,9 @@ import { AuthForm } from './AuthForm.tsx'
 
 type Action = (prev: AccountState, form: FormData) => Promise<AccountState>
 
-/* Страница входа, создания, сброса и подтверждения (И771) — одна рама: имя
-   страницы и строка под ним (`pagehead`), форма мерой строки формы, под ней
+/* Страница входа, создания, сброса и подтверждения (И771) — стандартная форма
+   входа (И780): колонка по центру страницы шириной формы, имя страницы и строка
+   под ним (`pagehead`) по центру, форма с кнопкой во всю колонку, под ней
    пути словами («нет кабинета — создать», «назад ко входу»), что заказать
    можно и без кабинета, как магазин обращается с данными. Бриф —
    docs/design/кабинет.md. `landmark={false}` и `at` — образцом в дизайн-
@@ -18,7 +19,7 @@ export function AuthPage({ view, action, permalink, landmark = true, at = '' }: 
   return (
     <Main id={landmark ? 'main' : undefined} className={`${p.wrap} ${p.section}`} data-air="head">
       <div className={`${p.stack} ${s.auth}`}>
-        <div className={p.pagehead}>
+        <div className={`${p.pagehead} ${s.head}`}>
           <h1>{view.title}</h1>
           <p>{view.lede}</p>
         </div>

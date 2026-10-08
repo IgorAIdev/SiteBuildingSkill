@@ -1246,6 +1246,11 @@
       "group": "stock-look",
       "value": "sign"
     },
+    "--auth-look": {
+      "type": "keyword",
+      "group": "auth-look",
+      "value": "plain"
+    },
     "--pager-look": {
       "type": "keyword",
       "group": "pager-look",

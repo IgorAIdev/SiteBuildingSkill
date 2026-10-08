@@ -102,8 +102,18 @@
     if (!have) document.head.appendChild(el('link', { rel: 'stylesheet', href: sheet }))
     /* Шрифты-кандидаты — только в предпросмотре панели: образцы шрифтов
        набраны своим шрифтом. Опубликованный вид несёт свой шрифт с адреса
-       сайта, к Google страница покупателя не ходит. */
-    catalog.groups.face.forEach(function (f) { if (f.google) document.head.appendChild(el('link', { rel: 'stylesheet', href: f.google })) })
+       сайта, к Google страница покупателя не ходит. Шрифт, который страница
+       уже несёт со своего адреса (опубликованный вид, `optional`), второй раз
+       из Google не просится: одноимённое семейство с `swap` перебивало свой
+       шрифт сайта, и опоздавший файл сдвигал строки страницы под панелью
+       (check:part 08.10.2026: «Manrope — font-display: swap», меню сдвинулось
+       на 8 px; И608). */
+    var own = {}
+    if (document.fonts && document.fonts.forEach) document.fonts.forEach(function (x) { own[x.family.replace(/^["']|["']$/g, '')] = true })
+    catalog.groups.face.forEach(function (f) {
+      var family = (f.fonts && f.fonts[0] && f.fonts[0].family) || f.name
+      if (f.google && !own[family]) document.head.appendChild(el('link', { rel: 'stylesheet', href: f.google }))
+    })
 
     var status = el('output', { class: 'lp-status', 'aria-live': 'polite' })
     /* Строка итога публикации — одной фразой; отчёт проверки — под

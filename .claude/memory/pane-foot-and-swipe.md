@@ -1,6 +1,6 @@
 ---
 name: pane-foot-and-swipe
-description: window foot (cart «Continue to checkout» / «View cart») must show whole, never scroll; every sheet closes by swipe, also from the dimmed strip beside it; owner's phone is 360 css px, DPR 2, Chrome (08.10.2026, И780)
+description: window foot (cart «Continue to checkout» / «View cart») must show whole, never scroll; every sheet closes by swipe, also from the dimmed strip beside it; owner's phone is 360 css px, DPR 2, Chrome (08.10.2026, И781)
 metadata:
   type: feedback
 ---
@@ -9,4 +9,4 @@ metadata:
 
 **Why:** a foot that shrinks is the one defect he cannot forgive on a phone — the buttons are the point of the window. Same day: «левое меню не закрывается свайпом… формы все из одного места и должны одинаково работать» — in a real-touch test the sheet closed from inside, but a drag that began on the dimmed strip beside the sheet was never caught.
 
-**How to apply:** foot = `flex:none`, cap 60 % of the window, body yields (`styles/pane.module.css`); the swipe engine is one for all windows and also takes the dimmed strip beside a side sheet (`public/pane-swipe.js`). Verify windows with a real finger (CDP touch, 360 × 670) — `check:counters` block «окна телефона». When he says a form «не закрывается», test every start point (inside, header, strip) before concluding it works. Rule И780. Related: [[one-pane-one-sheet]], [[verify-states-by-pressing]], [[codex-same-folder]].
+**How to apply:** foot = `flex:none`, cap 60 % of the window, body yields (`styles/pane.module.css`); the swipe engine is one for all windows and also takes the dimmed strip beside a side sheet (`public/pane-swipe.js`). Verify windows with a real finger (CDP touch, 360 × 670) — `check:counters` block «окна телефона». When he says a form «не закрывается», test every start point (inside, header, strip) before concluding it works. Rule И781. Related: [[one-pane-one-sheet]], [[verify-states-by-pressing]], [[codex-same-folder]].

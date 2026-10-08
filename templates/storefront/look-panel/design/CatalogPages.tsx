@@ -18,6 +18,8 @@ import { t } from '@/lib/i18n/index.ts'
 import { cartSubmit, cartCall } from '@/lib/actions/cart.ts'
 import { saveContact } from '@/lib/actions/checkout.ts'
 import { Catalog } from '@/components/Catalog.tsx'
+import { CatalogCopy } from '@/components/CatalogCopy.tsx'
+import { categoryCopy } from '@/lib/content/shop-copy.ts'
 import { SavedView, savedCards } from '@/components/SavedView.tsx'
 import { SortMenu } from '@/components/SortMenu.tsx'
 import { Featured } from '@/components/blocks/Featured.tsx'
@@ -95,10 +97,12 @@ const storyOf = (about: Doc | null, image: Extract<Block, { type: 'hero' }>['ima
 
 export async function CatalogPages({ lang }: { lang: Lang }) {
   const at = (q: Query) => hrefFor(lang, { catalog: true, ...q })
-  const [listing, page, doc, about, methods, sample, { names }, posts, topics] = await Promise.all([
+  const [listing, page, doc, about, methods, sample, { names }, posts, topics, cols] = await Promise.all([
     source().listing(lang, ASKED), content().page(lang, 'home'), content().doc(lang, DOC), content().doc(lang, ABOUT), methodsFor(lang), filterSample(lang), lookNow(),
-    content().posts(lang), content().topics(lang),
+    content().posts(lang), content().topics(lang), source().collections(lang),
   ])
+  /* Текст полки — первой полки магазина, у которой он есть (lib/content/shop-copy.ts). */
+  const shelfCopy = cols.ok ? cols.value.map((c) => categoryCopy(lang, c.slug)).find((x) => x) ?? null : null
   /* Статья образца — первая с источниками: видны все части статьи. */
   const post = posts.ok ? posts.value.find((x) => x.sources.length) ?? posts.value[0] ?? null : null
   const base = { title: t(lang, 'catalog.title'), lede: t(lang, 'catalog.lede'), at, filters: true }
@@ -121,6 +125,9 @@ export async function CatalogPages({ lang }: { lang: Lang }) {
     <>
       <Part title="Каталог" lede="Страница всех товаров: имя и строка о ней, над полкой — фильтры слева и сортировка справа, под ними — сколько товаров; дальше полка карточек и листание страниц. Так же устроены страницы категорий и поиска.">
         {view ? <div lang={lang}><Catalog view={view} cart={CART} inset /></div> : null}
+      </Part>
+      <Part title="Текст полки" lede="Под полкой категории и эффекта — текст о ней для покупателя и поиска: разделы с заголовком и абзацами, ссылки «как читать анализ» и «все товары», ниже — вопросы с ответами. Слова — данные магазина; у полки без текста его нет.">
+        {shelfCopy ? <div lang={lang}><CatalogCopy copy={shelfCopy} lang={lang} /></div> : null}
       </Part>
       <Part title="Фильтр полки" lede="Виды фильтра на одной полке категории с одним выбранным значением. Категорию называет заголовок, в фильтре — имя окна и слово «All products» в его шапке; выбранное — пилюлями в строке фильтра; «9 din 16» — сколько осталось из полки. На ноутбуке — кнопка «Filtre» и шторка сбоку, как корзина, или строка раскрытий над полкой. На телефоне — кнопка и шторка сбоку, или пилюли параметров вбок под кнопкой. Кнопка «применить» сама пересчитывает, сколько товаров даст выбор. Колонки сбоку здесь нет: это другое устройство страницы — её строят, когда её выбрали. Какой вид стоит на сайте — помечено; сменить — панель Look → Card. Нажмите кнопки.">
         {sample ? (

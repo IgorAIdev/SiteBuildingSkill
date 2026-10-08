@@ -19,7 +19,7 @@ export function AddressBook({ lang, view, permalink, landmark = true }: { lang: 
   const Main = landmark ? 'main' : 'div'
   return (
     <Main id={landmark ? 'main' : undefined} className={`${p.wrap} ${p.section}`} data-air="head">
-      <div className={`${p.stack} ${s.auth}`}>
+      <div className={`${p.stack} ${s.book}`}>
         <div className={p.pagehead}>
           <h1>{view.title}</h1>
           <p>{view.lede}</p>
