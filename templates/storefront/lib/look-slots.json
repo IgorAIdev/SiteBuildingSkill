@@ -1254,7 +1254,7 @@
     "--pager-look": {
       "type": "keyword",
       "group": "pager-look",
-      "value": "count"
+      "value": "rings"
     },
     "--filter-look": {
       "type": "keyword",

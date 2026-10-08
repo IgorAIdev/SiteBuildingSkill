@@ -341,7 +341,6 @@ export const PRODUCT_PAGE = {
     { id: 'bare', name: 'Bare', line: 'No disc: the heart is as tall as the discount tag, ink with a thin edge in the sheet colour so it reads over a light and a dark picture', vars: { '--save-look': 'bare' } },
   ],
   'pager-look': [
-    { id: 'count', name: 'Numbers', line: 'Round page numbers without an edge, the current one filled; «Show more» and «Showing 24 of 96» in the same row (Material UI)', vars: { '--pager-look': 'count' } },
     { id: 'rings', name: 'Rings', line: 'Every page number in a hairline circle, the current one filled; «Show more» and the count in the same row (Mantine)', vars: { '--pager-look': 'rings' } },
     { id: 'compact', name: 'Compact', line: 'Round arrows around «2 / 4» instead of the numbers; «Show more» and the count in the same row', vars: { '--pager-look': 'compact' } },
   ],

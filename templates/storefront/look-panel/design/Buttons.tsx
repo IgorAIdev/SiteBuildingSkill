@@ -67,7 +67,7 @@ const OPTIONS: OptionGroupLinks[] = [
   { code: 'volume', name: 'Объём', options: [['10', '10 мл', true], ['30', '30 мл', false], ['50', '50 мл', null]].map(([code, name, on]) => ({ code: code as string, name: name as string, href: on === null ? null : '#', current: on === true })) },
 ]
 /** Листание под полкой — «Показать ещё» и номера страниц (`--pager-look`, панель Look → Card, И721; ASOS, Gymshark, Material UI, Mantine). Первый — как на сайте. */
-const PAGER_LOOKS: [string, string][] = [['count', 'Листание: номера'], ['rings', 'Листание: номера в кругах'], ['compact', 'Листание: компактно «1 / 4»']]
+const PAGER_LOOKS: [string, string][] = [['rings', 'Листание: номера'], ['compact', 'Листание: компактно «1 / 4»']]
 /** Первая страница полки из четырёх, как на сайте: 24 товара из 96 показано. */
 const PAGES: PagesView = {
   label: 'Страницы', prev: null, next: '#top', prevLabel: 'Назад', nextLabel: 'Дальше',
@@ -370,11 +370,11 @@ export async function ButtonList({ lang }: { lang: Lang }) {
               <li key={look} className={s.btnStyle}>
                 <span className={s.famSample}><div className={s.pagerSample} style={cssVar('--pager-look', look)}><Pagination pages={PAGES} /></div></span>
                 <span className={s.btnName}>{name}</span>
-                <Worn on={look === (names['pager-look'] ?? 'count')} />
+                <Worn on={look === (names['pager-look'] ?? 'rings')} />
               </li>
             ))}
             <li className={s.btnStyle}>
-              <span className={s.famSample}><div className={s.pagerSample} style={cssVar('--pager-look', names['pager-look'] ?? 'count')}><Pagination pages={PAGES_FEW} /></div></span>
+              <span className={s.famSample}><div className={s.pagerSample} style={cssVar('--pager-look', names['pager-look'] ?? 'rings')}><Pagination pages={PAGES_FEW} /></div></span>
               <span className={s.btnName}>Листание: две страницы — два круга</span>
             </li>
           </ul>
