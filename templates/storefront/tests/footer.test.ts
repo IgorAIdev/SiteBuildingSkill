@@ -30,6 +30,17 @@ test('on the phone the four columns stand two by two, the first as wide as its l
   assert.doesNotMatch(css, /\.col:first-child\{grid-column:1 \/ -1\}/)
 })
 
+/* Подвал кассы: телефон помощи, условия, возврат, отказ, ANPC — без названия фирмы и CUI (слово
+   заказчика 08.10.2026: «чекаут убирай, эти данные фирмы не нужны тут»). Они остаются в подвале
+   магазина и в условиях. */
+test('the checkout footer carries no firm name or CUI', () => {
+  const legal = footer.split("if (variant === 'legal') {")[1].split('const chats')[0]
+  assert.doesNotMatch(legal, /COMPANY\.|COMPANY_IS_REAL/)
+  assert.match(legal, /telHref\(\)/)
+  assert.match(legal, /ANPC_SAL_URL/)
+  assert.match(footer, /\{COMPANY\.name\}<\/span> · CUI \{COMPANY\.cui\}/)
+})
+
 /* Знаки оплаты — без пилюль (И783): знак не нажимают, плашка обещала бы действие. Один компонент на
    подвал и дизайн-систему; воздух ряда — между ярусами основания, а не вплотную (восемь пикселей
    между ссылками, знаками и строкой прав: «с воздухом плохо», заказчик 08.10.2026). */
@@ -38,7 +49,7 @@ test('payment marks stand bare, from one component, with air between the tiers o
   assert.doesNotMatch(footer, /data-chip="pay"|PAYMENTS/)
   const marks = read('../components/PayMarks.module.css')
   assert.doesNotMatch(marks.replace(/\/\*[\s\S]*?\*\//g, ''), /background|box-shadow|border-radius/)
-  assert.match(marks, /\.mark svg\{[^}]*block-size:calc\(var\(--ctrl-fs-sm\) \* 1\.7\)/)
+  assert.match(marks, /\.mark svg\{[^}]*block-size:calc\(var\(--ctrl-fs-sm\) \* 1\.15\)/)
   assert.match(css, /\.base\{[^}]*gap:var\(--air-row\)/)
   assert.match(read('../look-panel/design/DesignPage.tsx'), /<PayMarks label=/)
   assert.doesNotMatch(read('../styles/primitives.module.css'), /data-chip='pay'/)
