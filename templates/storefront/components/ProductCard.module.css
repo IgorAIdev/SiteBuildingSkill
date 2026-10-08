@@ -170,7 +170,7 @@
    Crisp не закругляет угол самого изображения внутри карточки»). У набора
    Square `--r-xs` — ноль, и снимок прямой, как карточка. Одна ручка на
    все одежды со вписанным снимком. */
-.card{--r-card-inner:max(var(--r-xs), calc(var(--r-card) - var(--pad-inner)))}
+.card{--r-card-inner:max(var(--r-xs), calc(var(--r-card) - var(--pad-inner)))} /* look-card:inset,sheet */
 /* look-card:framed:start */
 /* framed — своя поверхность с тенью: карточка лежит над полом страницы.
    Снимок — во всю ширину карточки, до её верхнего края, текст — в поле
