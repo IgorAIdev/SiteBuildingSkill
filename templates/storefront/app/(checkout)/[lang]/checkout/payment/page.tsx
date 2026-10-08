@@ -12,6 +12,7 @@ import { TERMS_DOC } from '@/lib/company.ts'
 import { placeOrder } from '@/lib/actions/checkout.ts'
 import { CheckoutFrame, CheckoutEmpty } from '@/components/CheckoutFrame.tsx'
 import { PaymentForm } from '@/components/PaymentForm.tsx'
+import { GuaranteeNotice } from '@/components/GuaranteeNotice.tsx'
 import { OrderReview } from '@/components/OrderReview.tsx'
 import { Unavailable } from '@/components/StateScreen.tsx'
 
@@ -39,7 +40,7 @@ export default async function PaymentStep({ params }: Props) {
   })
   return (
     <CheckoutFrame steps={stepsView(lang, 'payment')} summary={null}>
-      <PaymentForm view={view} action={placeOrder.bind(null, lang)} permalink={hrefFor(lang, { checkout: 'payment' })}>
+      <PaymentForm view={view} action={placeOrder.bind(null, lang)} permalink={hrefFor(lang, { checkout: 'payment' })} notice={<GuaranteeNotice lang={lang} />}>
         <OrderReview title={view.review} recaps={view.recaps} itemsTitle={view.itemsTitle} items={view.items} />
       </PaymentForm>
     </CheckoutFrame>

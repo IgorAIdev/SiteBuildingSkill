@@ -134,7 +134,7 @@ const shelves = (lang: Lang, nav: Menu, title: string) => (
 /* look-header:classic:start */
 /* classic — знак, полки строкой рядом; справа язык, поиск, корзина. */
 const classic = (lang: Lang, nav: Menu) => (
-  <header className={s.head} data-variant="classic">
+  <header className={s.head} data-variant="classic" data-print="skip">
     {topBar(lang, nav.top)}
     <div className={`${p.wrap} ${s.bar}`}>
       {menu(lang, nav)}
@@ -152,7 +152,7 @@ const classic = (lang: Lang, nav: Menu) => (
 /* search — полоса обещания магазина с языком; строка знака, широкого
    поиска и корзины со словом; строка полок. */
 const search = (lang: Lang, nav: Menu) => (
-  <header className={s.head} data-variant="search">
+  <header className={s.head} data-variant="search" data-print="skip">
     {topBar(lang, nav.top)}
     <div className={`${p.wrap} ${s.bar}`}>
       {menu(lang, nav)}
@@ -172,7 +172,7 @@ const search = (lang: Lang, nav: Menu) => (
    слово заказчика 25.09.2026 — «так не делают, меню в верхней полосе должно
    быть». */
 const boutique = (lang: Lang, nav: Menu) => (
-  <header className={s.head} data-variant="boutique">
+  <header className={s.head} data-variant="boutique" data-print="skip">
     {topBar(lang, nav.top)}
     <div className={`${p.wrap} ${s.bar}`}>
       <button className={`${s.glyph} ${s.shop}`} type="button" popoverTarget={`${nav.at}site-menu`}><Icon id="menu" />{t(lang, 'nav.shop')}</button>
@@ -210,13 +210,13 @@ const board = (lang: Lang, nav: Menu) => (
 )
 /* look-header:tray,nested,step:end */
 /* look-header:tray:start */
-const tray = (lang: Lang, nav: Menu) => <header className={s.head} data-variant="tray">{board(lang, nav)}</header>
+const tray = (lang: Lang, nav: Menu) => <header className={s.head} data-variant="tray" data-print="skip">{board(lang, nav)}</header>
 /* look-header:tray:end */
 /* look-header:nested:start */
-const nested = (lang: Lang, nav: Menu) => <header className={s.head} data-variant="nested">{board(lang, nav)}</header>
+const nested = (lang: Lang, nav: Menu) => <header className={s.head} data-variant="nested" data-print="skip">{board(lang, nav)}</header>
 /* look-header:nested:end */
 /* look-header:step:start */
-const step = (lang: Lang, nav: Menu) => <header className={s.head} data-variant="step">{board(lang, nav)}</header>
+const step = (lang: Lang, nav: Menu) => <header className={s.head} data-variant="step" data-print="skip">{board(lang, nav)}</header>
 /* look-header:step:end */
 
 const DRAW: Record<HeaderVariant, (lang: Lang, nav: Menu) => ReactNode> = {
@@ -240,7 +240,7 @@ export function Header({ lang, nav, service, top, variant, idPrefix = '' }: Prop
    подлежит. */
 export function CheckoutHeader({ lang }: { lang: Lang }) {
   return (
-    <header className={s.head} data-variant="checkout">
+    <header className={s.head} data-variant="checkout" data-print="skip">
       <div className={`${p.wrap} ${s.bar}`}>
         {logo(lang)}
         <div className={s.actions}>

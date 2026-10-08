@@ -23,6 +23,13 @@ import { PaneSwipe } from './PaneSwipe.tsx'
 import { HelpDock } from './HelpDock.tsx'
 import { reachRows, supportHref, SUPPORT } from '@/lib/contacts.ts'
 import { THEME_BOOT } from '@/lib/theme.ts'
+import { CONSENT_BOOT } from '@/lib/consent.ts'
+import { consentView, optionalOf } from '@/lib/consent-view.ts'
+import { hrefFor } from '@/lib/href.ts'
+import { COOKIE_DOC } from '@/lib/company.ts'
+import { ConsentBanner } from './ConsentBanner.tsx'
+import { ConsentPrefs } from './ConsentPrefs.tsx'
+import { ConsentScripts } from './ConsentScripts.tsx'
 
 /* Документ витрины: язык, вид, пропуск к содержимому, шапка, подвал и общие
    стили. Один на двоих — макет языка (app/[lang]/layout.tsx) и страницу
@@ -38,8 +45,16 @@ import { THEME_BOOT } from '@/lib/theme.ts'
    `full` — шапка с полками и подвал магазина; `checkout` — закрытая касса,
    знак и «назад в корзину», подвал строкой закона и помощи. Касса — свой
    корневой макет группы `app/(checkout)/[lang]` (разбор 24.09.2026, S2):
-   вложенный макет шапку родителя не снимает. */
+   вложенный макет шапку родителя не снимает.
+
+   Согласие на cookie (И791) — только у магазина с необязательной категорией в
+   реестре (lib/storage.json): скрипт до отрисовки (`CONSENT_BOOT`, как тема),
+   полоса в потоке до ссылки «к содержимому», окно настроек и службы — в обеих
+   рамах: закон о cookie действует и в кассе. Нет необязательных — нет ничего. */
 export function Shell({ lang, data, look, chrome = 'full', children }: { lang: Lang; data: ShellData; look: Look; chrome?: 'full' | 'checkout'; children: ReactNode }) {
+  const optional = optionalOf()
+  const policy = data.docs.find((d) => d.slug === COOKIE_DOC)
+  const consent = optional.length ? consentView(lang, policy ? { label: policy.title, href: hrefFor(lang, { doc: COOKIE_DOC }) } : null) : null
   /* `suppressHydrationWarning` — только на атрибуты самого <html>: скрипт
      панели вида ставит `data-look-panel` до оживления страницы, и React в
      разработке показывал «1 Issue» поверх витрины (28.09.2026). Так принято
@@ -50,12 +65,14 @@ export function Shell({ lang, data, look, chrome = 'full', children }: { lang: L
       <body>
         {/* Выбранная тема — до первой отрисовки (lib/theme.ts). */}
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+        {consent ? <script dangerouslySetInnerHTML={{ __html: CONSENT_BOOT }} /> : null}
         <style href="look" precedence="look">{lookCss(look)}</style>
         {/* Шрифты вида — заранее (`fontPreloads`): React
             поднимает `<link>` в `<head>`, и файл приходит до первой
             отрисовки, а не после неё (подмена сдвигала слова). */}
         {fontPreloads(look.fonts).map((href) => <link key={href} rel="preload" as="font" type="font/woff2" href={href} crossOrigin="" />)}
-        <a className={p.skip} href="#main">{t(lang, 'skip')}</a>
+        {consent ? <ConsentBanner view={consent} optional={optional} /> : null}
+        <a className={p.skip} href="#main" data-print="skip">{t(lang, 'skip')}</a>
         {chrome === 'checkout' ? <CheckoutHeader lang={lang} /> : <Header lang={lang} nav={data.nav} service={data.service} top={data.top} variant={look.header} />}
         {children}
         {/* У кассы подвала нет: «убирай этот текст внизу» (слово заказчика 08.10.2026) — выход один, «назад в корзину»;
@@ -64,6 +81,7 @@ export function Shell({ lang, data, look, chrome = 'full', children }: { lang: L
         {/* Окно помощи у края экрана (И547) — в магазине; касса закрыта, её
             выход один — «назад в корзину». */}
         {chrome === 'full' ? <HelpDock rows={reachRows({ phone: t(lang, 'reach.phone'), email: t(lang, 'reach.email') })} who={{ name: SUPPORT.name, href: supportHref() }} words={{ open: t(lang, 'reach.menu'), online: t(lang, 'reach.online'), top: t(lang, 'reach.top') }} /> : null}
+        {consent ? <><ConsentPrefs view={consent} /><ConsentScripts /></> : null}
         {/* Окна за пальцем — один жест на документ (И494). */}
         <PaneSwipe />
         <PressFeedback />

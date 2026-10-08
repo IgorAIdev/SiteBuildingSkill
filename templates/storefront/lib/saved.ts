@@ -7,7 +7,9 @@ import { read, useStored, write } from './store.ts'
    браузера номерами товаров, новые — первыми; товары читает страница
    избранного у источника (`/api/cards`), так цена и наличие всегда
    свежие. */
-const KEY = 'saved'
+/** Имя строки склада — его же называет реестр хранилищ (lib/storage.json, И791). */
+export const SAVED_KEY = 'saved'
+const KEY = SAVED_KEY
 const NONE: string[] = []
 
 /* Образцы страницы дизайн-системы (`design-…` у `SaveToggle`) нажимаются по-

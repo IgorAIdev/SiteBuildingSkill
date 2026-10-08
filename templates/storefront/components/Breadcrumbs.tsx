@@ -22,7 +22,7 @@ export const trailTo = (path: { name: string; href: string }[], name: string) =>
 export function Breadcrumbs({ trail, label }: { trail: { name: string; href?: string }[]; label: string }) {
   const parent = trail.findLast((c) => c.href)
   return (
-    <nav aria-label={label} className={s.crumbs}>
+    <nav aria-label={label} className={s.crumbs} data-print="skip">
       <ol>
         {trail.map((c) => <li key={c.href ?? c.name}>{c.href ? <a className={p.tap} href={c.href}><span className={s.name}>{c.name}</span></a> : <span aria-current="page"><span className={s.name}>{c.name}</span></span>}</li>)}
       </ol>

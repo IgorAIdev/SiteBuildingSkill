@@ -575,12 +575,14 @@ test('реестр имён: ярус по форме, слово по виду 
    скроллбар красился рукой вопреки color-scheme. */
 test('реестр осей: признак → ось; язык и контраст заведены; скроллбар не красится рукой', async () => {
   const { axisOf, AXES } = await import('../tools/axes.mjs')
-  assert.deepEqual(Object.keys(AXES), ['theme', 'pointer', 'width', 'language', 'motion', 'contrast'])
+  assert.deepEqual(Object.keys(AXES), ['theme', 'pointer', 'width', 'language', 'motion', 'contrast', 'medium'])
+  /* Носитель — тип без скобок: печать договора (И791). */
+  assert.equal(axisOf(' print'), 'medium'); assert.equal(axisOf('(orientation: portrait)'), null)
   assert.equal(axisOf('(pointer:coarse)'), 'pointer'); assert.equal(axisOf('(hover: hover)'), 'pointer')
   assert.equal(axisOf('(prefers-contrast: more)'), 'contrast'); assert.equal(axisOf('(forced-colors:active)'), 'contrast')
   assert.equal(axisOf('(max-width:820px)'), 'width'); assert.equal(axisOf('(orientation: landscape)'), null)
   const base = readFileSync(new URL('../styles/base.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
-  for (const need of ['overflow-wrap:anywhere', 'hyphens:auto', 'quotes:auto', 'text-size-adjust:100%', '@media (prefers-contrast:more)', '@media (forced-colors:active)', '@media (prefers-reduced-motion:reduce)']) {
+  for (const need of ['overflow-wrap:anywhere', 'hyphens:auto', 'quotes:auto', 'text-size-adjust:100%', '@media (prefers-contrast:more)', '@media (forced-colors:active)', '@media (prefers-reduced-motion:reduce)', '@media print']) {
     assert.ok(base.includes(need), `в основании нет оси: ${need}`)
   }
   assert.ok(!/scrollbar-color/.test(base), 'скроллбар красится рукой — его красит color-scheme')

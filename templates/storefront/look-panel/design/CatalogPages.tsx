@@ -32,6 +32,14 @@ import { PostHead, PostIntro, PostSources } from '@/components/PostParts.tsx'
 import { WithdrawForm } from '@/components/WithdrawForm.tsx'
 import { DeliveryTable } from '@/components/DeliveryTable.tsx'
 import { ContactForm } from '@/components/ContactForm.tsx'
+import { ConsentBanner } from '@/components/ConsentBanner.tsx'
+import { ConsentOpen } from '@/components/ConsentOpen.tsx'
+import { ConsentPrefs } from '@/components/ConsentPrefs.tsx'
+import { GuaranteeNotice } from '@/components/GuaranteeNotice.tsx'
+import { PolicyLine } from '@/components/PolicyLine.tsx'
+import { STORAGE_ROWS, consentView, optionalOf } from '@/lib/consent-view.ts'
+import type { StorageRow } from '@/lib/consent.ts'
+import { COOKIE_DOC, EU_GUARANTEE_NOTICE, PRIVACY_DOC } from '@/lib/company.ts'
 import { Part, Worn, cssVar } from './parts.tsx'
 import s from './catalogPages.module.css'
 
@@ -89,6 +97,17 @@ async function filterSample(lang: Lang): Promise<CatalogView | null> {
   return { ...view, cards: view.cards.slice(0, 4), pages: null, more: null }
 }
 
+/* Согласие на cookie (И791) у шаблона не спрашивается: необязательных cookie нет,
+   полосы и «Setări cookie» на сайте нет. Образец — на реестре сайта и двух
+   строках-образцах (аналитика и реклама), чтобы было видно, как полоса и окно
+   встанут, когда магазин их добавит. Строки-образцы живут здесь, в панели, — в
+   реестр сайта они не идут. */
+const CONSENT_SAMPLE: StorageRow[] = [
+  ...STORAGE_ROWS,
+  { name: '_ga', kind: 'cookie', category: 'analytics', provider: { name: 'Google Analytics', policy: 'https://policies.google.com/privacy' }, purpose: { ro: 'Numără vizitele și paginile văzute', en: 'Counts visits and pages viewed', hu: 'Megszámolja a látogatásokat és a megtekintett oldalakat' }, lifetime: { ro: '2 ani', en: '2 years', hu: '2 év' } },
+  { name: '_fbp', kind: 'cookie', category: 'marketing', provider: { name: 'Meta', policy: 'https://www.facebook.com/privacy/policy/' }, purpose: { ro: 'Măsoară reclamele noastre pe Facebook și Instagram', en: 'Measures our ads on Facebook and Instagram', hu: 'Méri hirdetéseinket a Facebookon és az Instagramon' }, lifetime: { ro: '3 luni', en: '3 months', hu: '3 hónap' } },
+]
+
 /* История марки на главной пуста, пока магазин не написал своих слов, — и
    блок тогда молчит. Образец — на словах страницы «О нас» и снимке первого
    экрана главной: те же данные магазина, в форме блока. */
@@ -120,6 +139,8 @@ export async function CatalogPages({ lang }: { lang: Lang }) {
   const ctx = { lang, cart: CART, cards: cards?.ok ? Object.fromEntries(cards.value.map((c) => [c.id, shelfCard(lang, c)])) : {} } as Pick<BlockCtx, 'lang' | 'cart' | 'cards'> as BlockCtx
   const table = methods.ok ? deliveryTable(lang, methods.value) : null
   const saved = savedCards(lang, cards?.ok ? cards.value.slice(0, 3) : [])
+  const consent = consentView(lang, { label: t(lang, 'footer.doc.cookie-uri'), href: hrefFor(lang, { doc: COOKIE_DOC }) }, CONSENT_SAMPLE)
+  const optional = optionalOf(CONSENT_SAMPLE)
 
   return (
     <>
@@ -166,7 +187,7 @@ export async function CatalogPages({ lang }: { lang: Lang }) {
       <Part title="Вопросы и ответы" lede="Внизу главной: заголовок слева, вопросы справа; ответ раскрывается нажатием на вопрос. Поисковики читают эти же вопросы.">
         {faq ? <div lang={lang}><Faq block={faq} ctx={ctx} place={PLACE} /></div> : null}
       </Part>
-      <Part title="Страница-документ" lede="Условия, возврат, гарантия, конфиденциальность, cookie, «О нас», доставка, анализы: имя, строка о странице и дата правки; у длинного документа на ноутбуке — оглавление ссылками сбоку, приклеенное; разделы — заголовок над своим текстом; списки и таблицы — в тексте. Здесь — страница возврата.">
+      <Part title="Страница-документ" lede="Условия, возврат, гарантия, конфиденциальность, cookie, «О нас», доставка, анализы: имя, строка о странице и дата правки; у длинного документа на ноутбуке — оглавление ссылками сбоку, приклеенное, на телефоне — одной свёрнутой строкой под шапкой; у договорных (условия, данные, cookie, возврат, гарантия) — номер у каждого раздела и в оглавлении; разделы — заголовок над своим текстом; списки и таблицы — в тексте. При печати шапка, подвал и оглавление не печатаются. Здесь — страница возврата.">
         {doc.ok ? <div lang={lang}><DocView view={docView(lang, doc.value)} /></div> : null}
       </Part>
       <Part title="Блог" lede="Список статей: имя, строка о блоге и счёт с датой последней правки; рубрики ссылками, текущая отмечена; закреплённая статья «Începe de aici» первой и крупно, остальные — сеткой карточек, новые первыми. Так же устроена страница рубрики, только без закреплённой.">
@@ -190,6 +211,31 @@ export async function CatalogPages({ lang }: { lang: Lang }) {
           <h3>{t(lang, 'withdraw.title')}</h3>
           <WithdrawForm action={withdraw.bind(null, lang)} words={withdrawWords(lang)} />
         </div>
+      </Part>
+      <Part title="Согласие на cookie — полоса" lede="Первое, что видит посетитель, когда магазин ставит аналитику или рекламу: полоса над шапкой, в потоке страницы, не поверх. Заголовок, две строки — что и зачем, со ссылкой на политику cookie; «Принять все» и «Отказаться от всех» — одной кнопкой одной ширины, «Настройки» — словом. После выбора — строка «что выбрано и что его можно изменить», под ней «Настройки» словом и «Скрыть». У шаблона необязательных cookie нет — на сайте полосы нет; здесь — на образце с аналитикой и рекламой. Кнопки нажимаются, но выбор сайта не трогают: образец.">
+        <div className={p.stack}>
+          <div lang={lang}><ConsentBanner view={consent} optional={optional} target="design-consent-prefs" idPrefix="design-ask-" sample /></div>
+          <div lang={lang}><ConsentBanner view={consent} optional={optional} target="design-consent-prefs" idPrefix="design-done-" sample done="some" /></div>
+        </div>
+      </Part>
+      <Part title="Согласие на cookie — настройки" lede="Второй слой — окно: на ноутбуке посреди экрана, на телефоне шторкой снизу. Строка на категорию — имя и переключатель, описание, «Какие cookie (n)» свёрткой с таблицей. Необходимые включены и погашены, остальные выключены, пока человек сам не включит. Внизу — «Отказаться от всех» тихой и «Сохранить выбор» громкой. Открывается словом «Настройки» — в полосе, в подвале и на странице cookie. Нажмите.">
+        <div className={p.cluster} lang={lang}>
+          <ConsentOpen label={consent.open} voice="quiet" target="design-consent-prefs" />
+          <ConsentOpen label={consent.open} voice="word" target="design-consent-prefs" />
+          <ConsentPrefs view={consent} id="design-consent-prefs" sample />
+        </div>
+      </Part>
+      {/* Файла уведомления на этом языке нет — на сайте не стоит ничего (ни картинки, ни раздела о ней), и плитки нет. */}
+      {EU_GUARANTEE_NOTICE[lang] ? (
+        <Part title="Уведомление ЕС о гарантии" lede="Картинка ЕС о законной гарантии 2 года — без изменений, на языке страницы: на странице гарантии в разделе «Informarea armonizată a UE» и в кассе у кнопки заказа словом «Garanție legală 2 ani», открывающим окно с картинкой.">
+          <div className={p.cluster} lang={lang}>
+            <GuaranteeNotice lang={lang} inline />
+            <GuaranteeNotice lang={lang} id="design-eu-guarantee" />
+          </div>
+        </Part>
+      ) : null}
+      <Part title="Строка о данных" lede="«Как мы используем данные» — тихой сноской там, где собирают данные: под формой кабинета и под полями контакта в кассе. Одна строка на оба места.">
+        <div lang={lang}><PolicyLine link={{ label: t(lang, 'account.policy'), href: hrefFor(lang, { doc: PRIVACY_DOC }) }} /></div>
       </Part>
       <Part title="Таблица доставки" lede="Первый раздел страницы «Доставка и оплата»: способ, срок и цена — строкой на способ. Способы — те же, что покупатель выбирает при оформлении.">
         {table ? (

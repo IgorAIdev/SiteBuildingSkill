@@ -5,7 +5,9 @@ import type { Lang } from '@/lib/locale.ts'
 import type { Doc } from '@/lib/source/contract.ts'
 import { isKey, t } from '@/lib/i18n/index.ts'
 import { hrefFor } from '@/lib/href.ts'
-import { COMPANY, ANPC_SAL_URL, TERMS_DOC } from '@/lib/company.ts'
+import { COMPANY, ANPC_SAL_BADGE, ANPC_SAL_URL, ANPC_URL, TERMS_DOC } from '@/lib/company.ts'
+import { hasOptional } from '@/lib/consent-view.ts'
+import { ConsentOpen } from './ConsentOpen.tsx'
 import { CONTACTS, MESSENGERS, SOCIALS, chatHref, telHref, mailHref } from '@/lib/contacts.ts'
 import { Icon } from './Icon.tsx'
 import { SIGN } from './marks.ts'
@@ -32,8 +34,12 @@ const YEAR = new Date().getFullYear()
    И549); знак и четыре
    столбца — связь с мессенджерами подписью, магазин (полки из данных), о
    нас, помощь (порядок — слово заказчика 29.09.2026); основание — правила,
-   SAL ANPC, год и продавец (закон 365/2002) слева, оговорка о CBD справа. Ссылки на платформу ЕС (SOL/ODR) нет:
-   платформа закрыта 20.07.2025, пиктограмму SOL снял приказ ANPC 270/2026.
+   «Setări cookie» (только у магазина с необязательными cookie, И791), «ANPC»
+   (anpc.ro, приказ 505/2026), знак SAL картинкой 250 × 50 под рядом (приказ
+   270/2026; файла нет — ссылкой в ряду), год и продавец (закон 365/2002) слева,
+   оговорка о CBD справа. Ссылки на платформу ЕС (SOL/ODR) нет: платформа закрыта
+   20.07.2025, пиктограмму SOL снял приказ ANPC 270/2026. Подвал не печатается
+   (`data-print`, base.css).
 
    Весь подвал — одним кеглем подписи; подпись столбца отличают вес и
    чернила, ссылки — вторичный тон (И540, И542). Столбцы ссылок —
@@ -48,11 +54,13 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
   const links = (slugs: string[]) => slugs.flatMap((slug) => docs.filter((d) => d.slug === slug)).map((d) => <li key={d.slug}><a className={b.word} href={hrefFor(lang, { doc: d.slug })}>{name(d)}</a></li>)
   /* Кнопка отказа от договора — первый шаг (ст. 11a Директивы 2011/83, с
      19.06.2026: видна всё время права на отказ; И748) — ссылкой «Помощи»
-     сразу за возвратом. */
-  const withdrawLink = <li key="withdraw"><a className={b.word} href={hrefFor(lang, { withdraw: true })}>{t(lang, 'footer.withdraw')}</a></li>
+     сразу за возвратом. Надпись — та же, что на кнопке страницы возврата
+     (`withdraw.button`, «Retrageți-vă din contract aici»): у одной функции одна
+     надпись, однозначная по ст. 11a (И791). */
+  const withdrawLink = <li key="withdraw"><a className={b.word} href={hrefFor(lang, { withdraw: true })}>{t(lang, 'withdraw.button')}</a></li>
   const chats = MESSENGERS.flatMap((m) => { const href = chatHref(m, ''); return href ? [{ key: m.key, label: m.label, href }] : [] })
   return (
-    <footer className={s.foot} data-ground="deck">
+    <footer className={s.foot} data-ground="deck" data-print="skip">
       {/* Языка в подвале нет (И484): он в шапке и в меню — там, где его
           ищут. Слово заказчика 27.09.2026: «я в жизни никогда не видел выбора
           языка в подвале — убирай». */}
@@ -105,8 +113,13 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
         <div className={s.base}>
           <ul className={s.legalLinks}>
             {links(LEGAL)}
-            <li><a className={b.word} href={ANPC_SAL_URL} rel="noopener">{t(lang, 'footer.anpc')}</a></li>
+            {hasOptional() ? <li><ConsentOpen label={t(lang, 'consent.open')} voice="word" /></li> : null}
+            <li><a className={b.word} href={ANPC_URL} rel="noopener">{t(lang, 'footer.anpcHome')}</a></li>
+            {ANPC_SAL_BADGE.src ? null : <li><a className={b.word} href={ANPC_SAL_URL} rel="noopener">{t(lang, 'footer.anpc')}</a></li>}
           </ul>
+          {/* Знак SAL — официальная картинка без изменений (приказ 270/2026): своей
+              краски, угла и рамки у знака нет, размер — его данные. */}
+          {ANPC_SAL_BADGE.src ? <a className={s.sal} href={ANPC_SAL_URL} rel="noopener"><img src={ANPC_SAL_BADGE.src} width={ANPC_SAL_BADGE.width} height={ANPC_SAL_BADGE.height} alt={t(lang, 'footer.salAlt')} loading="lazy" decoding="async" /></a> : null}
           <PayMarks label={t(lang, 'footer.pay')} />
           <address className={s.seller}>
             © {YEAR} <span translate="no">{COMPANY.name}</span> · CUI {COMPANY.cui} · {COMPANY.regCom} · {COMPANY.address}

@@ -30,7 +30,7 @@ type Action = (prev: FormState, form: FormData) => Promise<FormState>
 
    Имя форме даёт заголовок шага рамки (`step-title`); вне рамки (дизайн-
    система) — свой заголовок, его адрес — `labelledBy`. */
-export function PaymentForm({ view, action, permalink, children, labelledBy = 'step-title' }: { view: PaymentPageView; action: Action; permalink: string; children: ReactNode; labelledBy?: string }) {
+export function PaymentForm({ view, action, permalink, children, notice, labelledBy = 'step-title' }: { view: PaymentPageView; action: Action; permalink: string; children: ReactNode; notice?: ReactNode; labelledBy?: string }) {
   const [state, formAction, pending] = useActionState(action, null, permalink)
   return (
     <form aria-busy={pending} className={`${p.sidebar} ${s.frame}`} action={formAction} aria-labelledby={labelledBy}>
@@ -56,6 +56,8 @@ export function PaymentForm({ view, action, permalink, children, labelledBy = 's
           <OrderTotals totals={view.totals} />
           <div className={c.decide}>
             <p className={s.terms}>{view.terms.note} <a href={view.terms.link.href}>{view.terms.link.label}</a></p>
+            {/* Уведомление ЕС о гарантии — у кнопки заказа (Регл. 2025/1960; И791): страница кладёт его сама. */}
+            {notice}
             <button className={b.btn} data-voice="loud" data-size="lg" data-wide type="submit" disabled={pending}>{view.submit}</button>
             <Pledges pledges={view.pledges} />
           </div>

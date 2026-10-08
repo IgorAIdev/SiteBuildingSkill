@@ -5,6 +5,7 @@ import type { AuthView } from '@/lib/account-view.ts'
 import type { AccountState } from '@/lib/actions/account.ts'
 import { AuthForm } from './AuthForm.tsx'
 import { SocialSignIn } from './SocialSignIn.tsx'
+import { PolicyLine } from './PolicyLine.tsx'
 
 type Action = (prev: AccountState, form: FormData) => Promise<AccountState>
 
@@ -36,7 +37,7 @@ export function AuthPage({ view, action, social, permalink, landmark = true, at 
               </p>
             ))}
             {view.note ? <p className={p.note}>{view.note}</p> : null}
-            {view.policy ? <p className={p.note}><a className={p.tap} href={view.policy.href}>{view.policy.label}</a></p> : null}
+            {view.policy ? <PolicyLine link={view.policy} /> : null}
           </div>
         ) : null}
       </div>
