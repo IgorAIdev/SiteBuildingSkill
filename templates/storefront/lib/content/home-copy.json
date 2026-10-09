@@ -37,10 +37,6 @@
       "title": "What customers say",
       "lede": "Sample reviews — the shop’s real reviews will appear here."
     },
-    "story": {
-      "title": "Percent or milligrams: how to read a CBD label",
-      "body": "A percentage on the front of a bottle says little on its own: 10 % in a 10 ml bottle is 1000 mg of CBD, in a 30 ml bottle it is 3000 mg. To compare two CBD oils, multiply the percentage by the volume, or look for the milligrams per bottle and per drop.\n\nThe spectrum — full spectrum, broad spectrum or isolate — and the measured THC are given in the batch lab report."
-    },
     "posts": {
       "title": "CBD guides",
       "lede": "How to read mg and %, hemp seed oil versus CBD oil, and what the law says in Romania."
@@ -70,7 +66,7 @@
         },
         {
           "q": "How do I choose a CBD oil strength?",
-          "a": "By the milligrams per drop. 10 % means 100 mg per millilitre, about 5 mg per drop; 5 % gives about 2.5 mg per drop. Every oil shows its mg per drop and its price per milligram."
+          "a": "By the milligrams per drop. 10 % means 100 mg per millilitre, about 5 mg per drop; 5 % gives about 2.5 mg per drop. The label gives the milligrams in the bottle; divide them by the drops to get the mg per drop."
         },
         {
           "q": "Can I use CBD if I take medication?",
@@ -121,10 +117,6 @@
       "title": "Ce spun clienții",
       "lede": "Recenzii exemplu — aici vor apărea recenziile reale ale magazinului."
     },
-    "story": {
-      "title": "Procent sau miligrame: cum citiți eticheta CBD",
-      "body": "Procentul de pe flacon spune puțin singur: 10 % într-un flacon de 10 ml înseamnă 1000 mg CBD, într-unul de 30 ml — 3000 mg. Ca să comparați două uleiuri CBD, înmulțiți procentul cu volumul sau căutați miligramele pe flacon și pe picătură.\n\nSpectrul — full spectrum, broad spectrum sau izolat — și THC-ul măsurat sunt trecute în buletinul de analiză al lotului."
-    },
     "posts": {
       "title": "Ghiduri CBD",
       "lede": "Cum citiți mg și procente, ulei de cânepă sau ulei CBD și ce spune legea în România."
@@ -154,7 +146,7 @@
         },
         {
           "q": "Cum aleg concentrația uleiului CBD?",
-          "a": "După miligramele pe picătură. 10 % înseamnă 100 mg la mililitru, adică în jur de 5 mg pe picătură; 5 % dă circa 2,5 mg pe picătură. Fiecare ulei arată mg pe picătură și prețul pe mg."
+          "a": "După miligramele pe picătură. 10 % înseamnă 100 mg la mililitru, adică în jur de 5 mg pe picătură; 5 % dă circa 2,5 mg pe picătură. Eticheta dă miligramele din flacon; împărțiți-le la numărul de picături ca să aflați mg pe picătură."
         },
         {
           "q": "Pot folosi CBD dacă iau medicamente?",
@@ -205,10 +197,6 @@
       "title": "Mit mondanak a vásárlók",
       "lede": "Mintavélemények — itt jelennek meg a bolt valódi véleményei."
     },
-    "story": {
-      "title": "Százalék vagy milligramm: így olvasd a CBD címkét",
-      "body": "Az üveg elején álló százalék önmagában keveset mond: a 10% egy 10 ml-es üvegben 1000 mg CBD, egy 30 ml-esben 3000 mg. Két CBD olaj összevetéséhez szorozd meg a százalékot a térfogattal, vagy keresd az üvegenkénti és cseppenkénti milligrammot.\n\nA spektrum — teljes, széles vagy izolátum — és a mért THC a tétel laborvizsgálatában szerepel."
-    },
     "posts": {
       "title": "CBD útmutatók",
       "lede": "Hogyan olvasd a mg-ot és a %-ot, kendermagolaj vagy CBD olaj, és mit mond a román jog."
@@ -238,7 +226,7 @@
         },
         {
           "q": "Hogyan válasszam ki a CBD olaj erősségét?",
-          "a": "Az egy cseppre jutó milligramm alapján. A 10% milliliterenként 100 mg, cseppenként kb. 5 mg; az 5% cseppenként kb. 2,5 mg. Minden olajnál ott a mg / csepp és az ár / mg."
+          "a": "Az egy cseppre jutó milligramm alapján. A 10% milliliterenként 100 mg, cseppenként kb. 5 mg; az 5% cseppenként kb. 2,5 mg. A címke megadja az üvegben lévő milligrammot; told el a cseppek számával, és megkapod a cseppenkénti mg-ot."
         },
         {
           "q": "Használhatok CBD-t, ha gyógyszert szedek?",

@@ -25,7 +25,6 @@ export const PAGES: Record<string, SamplePage> = {
         { type: 'featured', ...words.capsules, ids: CAPSULES, to: 'capsule' },
         { type: 'featured', ...words.featured, ids: FEATURED },
         { type: 'reviews', ...words.reviews, all: null },
-        { type: 'story', ...words.story, image: null },
         { type: 'posts', ...words.posts },
         { type: 'faq', ...words.faq },
       ]

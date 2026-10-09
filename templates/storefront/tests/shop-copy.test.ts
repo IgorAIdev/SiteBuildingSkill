@@ -104,7 +104,7 @@ test('every category, moment hub and home text passes the seo-content copy check
   }
   for (const lang of LOCALES) {
     const h = home[lang]
-    pages.push({ id: 'home', lang, type: 'home', level: 'A', query: h.query, title: h.title, description: h.description, heading: h.hero.title, lede: h.hero.lede, sections: [{ heading: h.story.title, paragraphs: h.story.body.split('\n\n') }], faq: h.faq })
+    pages.push({ id: 'home', lang, type: 'home', level: 'A', query: h.query, title: h.title, description: h.description, heading: h.hero.title, lede: h.hero.lede, faq: h.faq })
   }
   const fails = (lintPages(pages, { profile: PROFILE }) as { level: string; family: string; lang: string; id: string; field: string; message: string }[])
     .filter((f) => f.level === 'fail')

@@ -93,7 +93,7 @@ const good = () => ({
   id: 'category:oil', lang: 'ro', type: 'category', level: 'A',
   query: { primary: 'ulei cbd', secondary: ['ulei de canabis', 'ulei cbd full spectrum'], origin: 'AC 2026-10-08' },
   title: 'Ulei CBD (ulei de canabis): full spectrum, broad și izolat | CBDin',
-  description: 'Ulei CBD și ulei de canabis în mai multe concentrații: full spectrum, broad și izolat, cu miligramele pe picătură scrise la fiecare produs.',
+  description: 'Ulei CBD și ulei de canabis în mai multe concentrații: full spectrum, broad și izolat, cu miligramele de CBD scrise pe etichetă.',
   heading: 'Ulei CBD (ulei de canabis)',
   lede: 'Uleiul CBD se alege după trei cifre: procentul, miligramele din flacon și miligramele dintr-o picătură.',
   caption: 'Full spectrum, broad și izolat, în flacoane cu pipetă.',
@@ -128,6 +128,26 @@ test('lint-copy: a forbidden claim fails even when negated on a selling page; fi
   assert.ok(!families([q]).includes('claims'), 'fix-level in body is a warning')
   const r = good(); r.sections[0].heading = 'Ulei CBD sublingual'
   assert.ok(families([r]).includes('claims'))
+})
+
+test('lint-copy: a promise «on every product» fails in all three languages; «on the label» does not (И788, п. 5)', () => {
+  const ro = good(); ro.description = 'Ulei CBD și ulei de canabis, cu miligramele pe picătură și prețul pe mg la fiecare produs.'
+  assert.ok(families([ro]).includes('promise'))
+  const hu = good(); hu.lang = 'hu'; hu.faq.items[0].a = 'Minden terméknél ott a mg / csepp.'
+  assert.ok(families([hu]).includes('promise'))
+  const en = good(); en.lang = 'en'; en.sections[0].paragraphs[0] = 'Every product shows the mg per drop and the price per milligram.'
+  assert.ok(families([en]).includes('promise'))
+  const ok = good(); ok.lang = 'en'; ok.sections[0].paragraphs[0] = 'The label gives the milligrams in the bottle; divide them by the drops.'
+  assert.ok(!families([ok]).includes('promise'))
+})
+
+test('lint-copy: claimAllow lifts exactly one dictionary rule on that page and nothing else', () => {
+  const p = good(); p.title = 'Ulei CBD pentru somn și rutina de seară | CBDin'
+  assert.ok(families([p]).includes('claims'), 'pentru somn in a title is a claim')
+  p.claimAllow = { 'ro-sleep': 'owner 09.10.2026' }
+  assert.ok(!families([p]).includes('claims'))
+  p.sections[0].paragraphs.push('Ameliorează durerile.')
+  assert.ok(families([p]).includes('claims'), 'other rules still hold')
 })
 
 test('lint-copy counts FAQ by the project profile and rejects a dodge as the first sentence', () => {
