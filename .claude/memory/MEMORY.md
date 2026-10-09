@@ -15,7 +15,7 @@
 - [No screenshots, batched PRs](no-screenshots-batch-prs.md) — save tokens: no images at all, not even for my own checking — verify with printed numbers; one PR per batch; small requested fixes merge without repeat confirmation; no PR subscription
 - [Measure before styling](measure-before-styling.md) — type/spacing only from kit research + owner's built storefronts + 3 live shops (И507); think phone-first unprompted
 - [Checks not on the dev server](checks-not-on-dev-server.md) — crawling checks only on a build (dev manifest → all 500); check:part narrow one-lane (И765); never a second browser check beside check:all — 8 GB, GPU crash (06.10.2026)
-- [No history, local only](no-history.md) — historical cleanup on 28.09.2026; old local-only restriction superseded for small requested fixes on 06.10.2026; no new history cleanup authorized
+- [History resets](no-history.md) — reset on 28.09.2026 and again 09.10.2026 (kit + cbd-ecommerce, bundle backup, steps recorded); only on his word naming the repo; small fixes publish without repeat confirmation
 - [Site audit unasked](site-audit-unasked.md) — after each look batch and before handover I audit the whole site myself: cross-page sameness + UX path (И523)
 - [Palette as a whole](palette-whole-site.md) — neutral + one brand + red; night keeps the day's order of surfaces (И554)
 - [Template: sample content is fine](template-sample-content.md) — template is design; never report placeholder names/links/socials/payments as open items
