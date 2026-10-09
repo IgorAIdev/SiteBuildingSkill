@@ -67,3 +67,4 @@
 - [SEO copy carries the queries](seo-copy-keywords.md) — texts hold real buyer queries in title/H1/intro/H2/FAQ; HempScale principles are the base; Codex's 06.10 SEO work not trusted, redo from evidence (08.10.2026)
 - [Market research repo](market-research-repo.md) — research lives in private IgorAIdev/CBDSeoMarketResearch, shared with HempScale; first upload blocked as exfiltration — owner uploads; local copy D:\MyBssinessProject\research-2026-10-08
 - [cbdin.ro moved to ecommerce](cbdin-ro-in-ecommerce.md) — 08.10.2026 the finished site went into cbd-ecommerce apps/storefront3 without the panel; after the owner moves the domain, live fixes go there; template stays in the kit
+- [Home: no explainers](home-no-explainers.md) — guides go to the blog, not a home block; copy never promises «on every product» data, say «on the label» (09.10.2026, И788 п. 5)

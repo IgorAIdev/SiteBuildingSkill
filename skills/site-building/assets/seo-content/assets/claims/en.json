@@ -34,6 +34,11 @@
     "\\bcannot be guaranteed\\b",
     "\\bis not evidence\\b"
   ],
+  "promise": [
+    "\\b(on|at|in) (every|each) product\\b",
+    "\\b(every|each) (product|oil|item) (shows|states|gives|carries)\\b",
+    "\\b(shows|shown|states|stated) (the )?price per (mg|milligram)\\b"
+  ],
   "rules": [
     {
       "id": "en-treats",

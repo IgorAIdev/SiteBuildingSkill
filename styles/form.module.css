@@ -40,7 +40,7 @@
    встаёт под полем во всю строку. Встык пара не переносится — это одна
    коробка, угол только у внешних краёв. Поиск по сайту — другое устройство:
    знак отправки внутри поля (SearchForm). */
-.send{display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--gap-targets)}
+.send{display:flex;flex-wrap:wrap;align-items:flex-end;gap:max(var(--gap-targets),var(--gap-row))}
 .send > :first-child{flex:1 1 12rem;min-inline-size:0}
 .send > :last-child{flex:1 0 auto}
 /* Короткое поле с действием (купон): одна строка и на телефоне.

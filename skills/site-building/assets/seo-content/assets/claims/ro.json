@@ -4,6 +4,7 @@
   "condition": ["somn", "insomni", "anxiet", "stres", "durer", "articulat", "inflam", "menstru", "menopauz", "depresi", "epilep", "cancer", "diabet", "imunit", "tratament", "vindec", "boala", "boli", "afectiun", "migren", "tensiun", "colesterol"],
   "conditionAllow": ["fara stres", "livrare fara stres"],
   "hedge": ["\\bnu (dovedeste|garanteaza|stabileste|confirma|inseamna automat)\\b", "\\bfara a presupune\\b", "\\bverificati eticheta\\b", "\\bnu poate fi garantat", "\\bnu este o dovada\\b"],
+  "promise": ["\\bla fiecare (produs|ulei|flacon)\\b", "\\bfiecare (produs|ulei) (scrie|arata|are|da|poarta)\\b"],
   "rules": [
     { "id": "ro-treats", "level": "fail", "patterns": ["\\b(trateaza|vindeca|vindecare|tratament(ul)? (pentru|impotriva)|remediu|medicament natural|leac)\\b"], "rewrite": "CBD nu este un medicament — o singură frază în blocul de avertizări" },
     { "id": "ro-pain", "level": "fail", "patterns": ["\\b(impotriva durerilor|amelioreaza|ameliorarea|analgezic|calmeaza durerea|reduce durerea|antiinflamator|reduce inflamatia)\\b"], "rewrite": "senzația pe piele sau locul aplicării: «cremă de masaj cu CBD și mentol, efect de răcorire»" },

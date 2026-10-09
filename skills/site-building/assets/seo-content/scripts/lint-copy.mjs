@@ -40,6 +40,7 @@ function lexicon(lang) {
     const f = join(CLAIMS, `${lang}.json`)
     const d = existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : { condition: [], conditionAllow: [], hedge: [], rules: [] }
     lexicons.set(lang, {
+      promise: (d.promise ?? []).map((p) => new RegExp(p)),
       condition: d.condition.map((c) => new RegExp(`(^|[^\\p{L}])${c}`, 'u')),
       allow: (d.conditionAllow ?? []).map(norm),
       hedge: d.hedge.map((h) => new RegExp(h)),
@@ -115,8 +116,18 @@ export function lintPages(pages, { profile = DEFAULT_PROFILE } = {}) {
       const t = norm(text)
       for (const r of lex.rules) {
         if (!r.re.some((re) => re.test(t))) continue
+        if (p.claimAllow?.[r.id]) continue // запрет снят решением владельца: запись «кто и когда» лежит в поле
         const level = r.level === 'fail' ? 'fail' : (isHead.has(field) && selling ? 'fail' : 'warn')
         add(p, 'claims', level, field, `${r.id}: «${text.slice(0, 80)}» → ${r.rewrite}`)
+      }
+    }
+    // promise — обещание «у каждого товара есть X»: страница не знает, что лежит в данных
+    // движка; сказать можно «на этикетке» или «на упаковке», а не «на каждом товаре»
+    if (selling) {
+      for (const [field, text] of [...heads(p), ...bodies(p)]) {
+        const t = norm(text)
+        const re = lex.promise.find((r) => r.test(t))
+        if (re) add(p, 'promise', 'fail', field, `обещание сайта без факта в данных: «${t.match(re)[0]}» → «на этикетке» / «на упаковке»`)
       }
     }
     // condition — имя раздела, которое владелец назвал по рынку («Sleep»), — ярлык,

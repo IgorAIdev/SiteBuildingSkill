@@ -18090,8 +18090,10 @@ account per email»; docs.vendure.io «Authentication»; RFC 7636, RFC 9700 §4.
    эффекта, назови по типу Sleep, т.к. все остальные так делают»): Sleep, Relax, Recovery, Balance, Mood & focus,
    Women's health; имя — ярлык (`nameIsLabel`), текст вокруг — о товарах, без обещаний результата. Тем же именем —
    значение грани «Effect» в фильтре полки; образец не называет эффект болью («Pain and joints» → «Body care»).
+5. Нет обещаний о данных движка (поправка 09.10.2026; заказчик 08.10: «сравнения по миллиграммам — его нет»): не «мг
+   на каплю и цена за мг на каждом товаре», а «на этикетке» и счёт читателя; блок `story` главной такого не несёт.
 
-**Чем меряется.** `lint-copy.mjs` навыка (семьи `primary`, `secondary`, `echo`, `claims`, `condition`, `hedge`,
+**Чем меряется.** `lint-copy.mjs` навыка (семьи `primary`, `secondary`, `echo`, `claims`, `promise`, `condition`, `hedge`,
 `currency`, `faq`, `generic`, `dup`) — в `tests/shop-copy.test.ts` витрины по всем 45 страницам; проверено поломкой
 (лид «Verificați eticheta…» и h1 «CBD for better sleep» → четыре находки). Тесты навыка — `selftest/seo-content.test.mjs`.
 

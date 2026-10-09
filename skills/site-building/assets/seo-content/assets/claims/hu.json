@@ -4,6 +4,7 @@
   "condition": ["alvas", "elalvas", "almatlan", "szorong", "fajdalom", "fajdalm", "izulet", "gyullad", "stressz", "depresszi", "menstrua", "menopauz", "migren", "ekcema", "pikkelysomor", "epilep", "rak ", "cukorbeteg", "immun", "gyogyit", "gyogymod"],
   "conditionAllow": ["stresszmentes szallitas"],
   "hedge": ["\\bnem (bizonyitja|garantalja|garantal|jelenti automatikusan)\\b", "\\bellenorizze a cimket", "\\bnem garantalhato\\b"],
+  "promise": ["\\bminden (termeknel|termeken|uvegen|olajnal)\\b", "\\bminden (termek|olaj) (feltunteti|megadja|mutatja|tartalmazza)\\b"],
   "rules": [
     { "id": "hu-treats", "level": "fail", "patterns": ["\\b(gyogyit|gyogyitja|kezeli a|kezelesere|gyogymod|termeszetes gyogyszer)\\b"], "rewrite": "«A CBD nem gyógyszer» — egy mondat a figyelmeztetésekben" },
     { "id": "hu-pain", "level": "fail", "patterns": ["\\b(fajdalomcsillapito|fajdalomcsillapitas|enyhiti|csillapitja|gyulladascsokkento)\\b"], "rewrite": "«hűsítő masszázskrém CBD-vel» — érzet a bőrön" },
