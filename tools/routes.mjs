@@ -1,0 +1,432 @@
+/**
+ * Список адресов, которые публикует сайт, — из дерева маршрутов и данных.
+ *
+ * Заведён по дефекту, и дефект был молчаливый. В отрисованной проверке
+ * список страниц стоял рукой:
+ *
+ *     const PAGES = ['/bg', '/bg/catalog', '/bg/product/zelenika-15',
+ *                    '/bg/cart', '/bg/checkout']
+ *
+ * А в дереве маршрутов их семь форм и два языка. Полка категории
+ * (`/bg/catalog/oils`) и страница «не найдено» не мерились НИ РАЗУ — ни на
+ * контраст, ни на цель нажатия, ни на меру строки. Английская половина
+ * сайта — тоже ни разу, при том что дефект «81 знак в строке» записан в
+ * скилле именно из английского текста в болгарской коробке.
+ *
+ * Список, набранный рукой, хуже неполного: он не растёт вообще. Заведённая
+ * завтра страница попадёт под проверку тогда, когда о ней вспомнят, — то
+ * есть после того, как заказчик найдёт на ней дефект глазом.
+ *
+ * Поэтому список задаёт ДЕРЕВО, а значения динамических сегментов — ДАННЫЕ.
+ * Новая страница попадает под проверку в день, когда её завели.
+ *
+ *     import { all, sample } from './routes.mjs'
+ *     all()      // каждый адрес: 108 штук, для дешёвых проверок
+ *     sample()   // по одному на форму маршрута и язык, для дорогих
+ *
+ * Данные читаются РАЗБОРОМ ИСХОДНИКА, а не импортом: `lib/products.ts` —
+ * это TypeScript, и ради списка категорий поднимать сборщик незачем.
+ * Признак поломки разбора — пустой список; поэтому пустой список валит
+ * проверку, а не проходит тихо (см. `assertData`).
+ */
+
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { sessionUrls } from './sessions.mjs'
+import { SESSIONS, QUERIES } from './kit-config.mjs'
+
+const ROOT = fileURLToPath(new URL('..', import.meta.url))
+/* Файла может не быть вовсе: набор переезжает в новый проект, где `lib/`
+   ещё пуст. Пустая строка тут значит «данных нет», и это не поломка — а вот
+   данные, которые ЕСТЬ и не разобрались, поломка (см. ниже). */
+const src = (p) => existsSync(join(ROOT, p)) ? readFileSync(join(ROOT, p), 'utf8') : ''
+
+const locale = src('lib/locale.ts')
+const site = src('lib/site.server.ts')
+const catalogue = src('lib/products.ts')
+/* Марки лежат своим файлом, и разбираются они отдельно от каталога нарочно:
+   регулярка полок ищет `slug:` по всему тексту, и марка, положенная рядом с
+   товарами, молча стала бы десятой полкой. */
+const brands = src('lib/brands.ts')
+/* Кабинет образца — коды прошлых заказов заготовленной покупательницы
+   (И771): у них страницы `/[lang]/account/orders/[code]`. */
+const accountSample = src('lib/source/sample/account.ts')
+
+/** Языки. Язык — это адрес: `/bg/...` и `/en/...`, по маршруту на язык. */
+const staticLocales = [...(locale.match(/LOCALES\s*=\s*\[([^\]]*)\]/)?.[1] ?? '')
+  .matchAll(/'([a-z-]+)'/g)].map((m) => m[1])
+const envLocales = (process.env.SITE_LOCALES ?? '')
+  .split(',').map((one) => one.trim().toLowerCase().split('-')[0]).filter(Boolean)
+const siteLocales = (site.match(/SITE_LOCALES\s*\?\?\s*'([^']+)'/)?.[1] ?? '')
+  .split(',').map((one) => one.trim().toLowerCase().split('-')[0]).filter(Boolean)
+export const LOCALES = [...new Set(
+  envLocales.length ? envLocales : staticLocales.length ? staticLocales : siteLocales,
+)]
+
+export const DEFAULT_LANG =
+  process.env.SITE_DEFAULT_LOCALE?.toLowerCase().split('-')[0]
+  ?? locale.match(/DEFAULT_LANG[^=]*=\s*'([a-z-]+)'/)?.[1]
+  ?? site.match(/SITE_DEFAULT_LOCALE\s*\?\?\s*'([^']+)'/)?.[1]?.toLowerCase().split('-')[0]
+  ?? LOCALES[0]
+
+/* У доменной витрины главный язык живёт в корне, остальные — приставкой. */
+const LOCALE_PATHS = LOCALES.map((one) => one === DEFAULT_LANG ? '' : one)
+
+/** Документы — доставка, возврат, анализы, правовое. Читаются данными, а не
+ *  разбором кода: они и лежат данными (`lib/docs.json`). Регулярка тут была
+ *  бы вторым разбором JSON, и первым же документом с фигурной скобкой в
+ *  тексте он бы соврал. */
+/* Файла может не быть — на новом сайте документов ещё нет, и это «нет данных», а не поломка (тот же договор, что у `src`). */
+export const DOCS = JSON.parse(src('lib/docs.json') || '[]')
+
+/** Статьи наръчника — тем же способом, что документы: данные, а не разбор
+ *  кода (`lib/blog.json`). */
+export const POSTS = JSON.parse(src('lib/blog.json') || '[]')
+/** Рубрики блога со статьями (И749): у рубрики без статей страницы нет. */
+export const TOPICS = [...new Set(POSTS.map((p) => p.topic).filter(Boolean))]
+
+/** Источник данных витрины (И414): образец в файлах (`SOURCE` пуст или
+ *  `sample`) или внешний движок (`SOURCE=vendure` в окружении или в `.env`
+ *  сайта). У внешнего полок и товаров в файлах нет — адреса знает сам сайт,
+ *  его карта (`/sitemap.xml`). Тогда адреса с полкой и товаром берутся из
+ *  карты поднятого сайта (`SITE=`), по языку ровно те, что сайт публикует:
+ *  подставлять образцовые имена значило стучаться в «не найдено» (дефект
+ *  25.09.2026: 48 из 96 адресов `check:open` — полки и товары образца на
+ *  витрине с каталогом cbdin). */
+const dotenv = Object.fromEntries(src('.env').split(/\r?\n/).map((l) => l.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/)).filter(Boolean).map((m) => [m[1], m[2]]))
+/* Пустая переменная окружения — «не задано»: иначе `SOURCE=` в оболочке
+   молча перебивал источник из `.env` сайта. */
+export const SOURCE = (process.env.SOURCE || dotenv.SOURCE || '').trim() || 'sample'
+export const EXTERNAL = SOURCE !== 'sample'
+/** Значение настройки сайта: окружение, затем `.env` сайта. */
+export const siteEnv = (key) => process.env[key] || dotenv[key]
+
+/** Пути из карты поднятого сайта. */
+export async function livePaths(base) {
+  const res = await fetch(`${base.replace(/\/+$/, '')}/sitemap.xml`)
+  if (!res.ok) throw new Error(`${base}/sitemap.xml — ${res.status}`)
+  return [...(await res.text()).matchAll(/<loc>([^<]*)<\/loc>/g)].map((m) => new URL(m[1]).pathname.replace(/\/+$/, '') || '/')
+}
+let LIVE = EXTERNAL && process.env.SITE ? await livePaths(process.env.SITE) : null
+/** Карта сайта для внешнего источника, когда сайт подняли после загрузки
+ *  этого модуля (`check:open` поднимает `next dev` сам). */
+/** `force` — карта чужого поднятого сайта, какой бы источник ни стоял у этого
+ *  процесса: `check:open`, обходящий уже работающую витрину на 3020, не знает её
+ *  источника (его даёт запускатель, а не `.env`) и брал адреса образца — 57 из
+ *  177 «не найдено» на витрине с движком cbdin (05.10.2026). */
+let FORCED = false
+export async function useLive(base, force = false) {
+  if (EXTERNAL || force) { LIVE = await livePaths(base); FORCED = force }
+}
+
+/** Полки. Порядок тот же, что в данных: он по спросу, и первая полка — самая
+ *  полная. */
+export const CATEGORIES = [...catalogue.matchAll(/\{\s*slug:\s*'([a-z-]+)'/g)]
+  .map((m) => m[1])
+
+/** Эффекты — страницы `/[lang]/effect/[effect]`: значения грани эффекта
+ *  образца, записанные ключом `effect:` (lib/products.ts, `EFFECTS`). Грань
+ *  у товара пишется `effect: [` после запятой — её регулярка не берёт. */
+export const EFFECTS = [...catalogue.matchAll(/\{\s*effect:\s*'([a-z-]+)'/g)]
+  .map((m) => m[1])
+
+/** Товары. Нужны три поля: адрес, полка и семья вариантов — по ним
+ *  выбираются образцы для дорогих проверок. */
+export const PRODUCTS = [...catalogue.matchAll(/^ *\{ id:'([^']+)'(.*)$/gm)]
+  .map((m) => ({
+    id: m[1],
+    cat: m[2].match(/cat:'([a-z-]+)'/)?.[1] ?? '',
+    brand: m[2].match(/brand:'([^']+)'/)?.[1] ?? '',
+    family: m[2].match(/family:'([^']+)'/)?.[1] ?? '',
+  }))
+
+/** Марки. У каждой своя страница со всеми её товарами. Нужны оба поля:
+ *  адрес — чтобы построить его, имя — чтобы сосчитать товары марки.
+ *
+ *  Реестр бывает двух видов. Список `{ slug, name }` в `lib/brands.ts` — или
+ *  счёт из каталога, когда марка — грань движка: адрес — ключ из имени
+ *  (`brandKeyOf`: строчные, всё, что не буква и не цифра, — дефис) или
+ *  поле `brandKey` товара, если оно есть. У второго вида списка в файле нет,
+ *  и разбор давал пусто — `assertData` честно ронял обход дерева, а проект
+ *  чинил это своей копией разбора (И455). Признак второго вида — сам файл
+ *  зовёт `brandKeyOf`: без него пустой список по-прежнему сломанный разбор. */
+const listedBrands = [...brands.matchAll(/\{ slug: '([a-z0-9-]+)', name: '([^']+)' \}/g)]
+  .map((m) => ({ slug: m[1], name: m[2] }))
+const brandKeyOf = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+const countedBrands = () => {
+  const seen = new Map()
+  for (const m of catalogue.matchAll(/^ *\{ id:'[^']+'(.*)$/gm)) {
+    const name = m[1].match(/brand:'([^']+)'/)?.[1]
+    if (!name) continue
+    const slug = m[1].match(/brandKey:'([a-z0-9-]+)'/)?.[1] ?? brandKeyOf(name)
+    if (!seen.has(slug)) seen.set(slug, { slug, name })
+  }
+  return [...seen.values()]
+}
+/** Заказы кабинета образца — по записи `{ code: 'EXEMPLU2', days: …`. */
+export const ORDERS = [...accountSample.matchAll(/\{ code: '([A-Z0-9]+)', days:/g)].map((m) => m[1])
+
+export const BRANDS = listedBrands.length || !/\bbrandKeyOf\b/.test(brands) ? listedBrands : countedBrands()
+
+/** Есть файл, а данных из него не вышло — это сломанный разбор, а не пустой
+ *  магазин. Молчаливо неполный замер выглядит как результат: ровно так три
+ *  страницы из пяти не мерились вовсе и проверка была зелёной.
+ *
+ *  Отсутствующий файл — другое дело: в новом проекте `lib/` пуст, и требовать
+ *  от него сорок товаров значит не дать набору завестись. */
+export function assertData() {
+  const empty = [
+    ['LOCALES', locale, LOCALES], ['CATEGORIES', catalogue, CATEGORIES],
+    ['PRODUCTS', catalogue, PRODUCTS], ['BRANDS', brands, BRANDS], ['ORDERS', accountSample, ORDERS],
+  ].filter(([, file, v]) => file && !v.length).map(([n]) => n)
+  if (empty.length) {
+    console.error(`\n✗ tools/routes.mjs: разбор данных дал пусто — ${empty.join(', ')}.`)
+    console.error('  Изменилась запись в lib/. Список адресов сейчас неполон, и любая')
+    console.error('  проверка на нём зелёная по той же причине, по какой пуста.')
+    process.exit(1)
+  }
+}
+
+/** Язык магазина — тот, на котором его читают. Языков нет вовсе (нет
+ *  сегмента `[lang]`) — родным считается всё: иначе проходы, идущие «по
+ *  родному языку», молча не пошли бы никуда. */
+export const isNative = (url) =>
+  !LOCALES.length || !LOCALES.includes(url.split('/')[1]) || url.split('/')[1] === DEFAULT_LANG
+
+/** Формы маршрутов из дерева `app/**\/page.tsx`: `/[lang]`, `/[lang]/catalog`,
+ *  `/[lang]/catalog/[cat]`, … Группы `(x)`, приватные `_x` и параллельные
+ *  `@x` папки адреса не дают и отбрасываются. */
+export function shapes() {
+  const out = []
+  walk(join(ROOT, 'app'), '')
+  function walk(dir, url) {
+    if (!existsSync(dir)) return
+    for (const name of readdirSync(dir).sort()) {
+      const path = join(dir, name)
+      if (statSync(path).isDirectory()) {
+        if (name.startsWith('_') || name.startsWith('@')) continue
+        walk(path, /^\(.*\)$/.test(name) ? url : `${url}/${name}`)
+      } else if (/^page\.(tsx|ts|jsx|js)$/.test(name)) {
+        out.push(url || '/')
+      }
+    }
+  }
+  return out.sort()
+}
+
+/** Как язык стоит в адресе: `[lang]` — у каждого языка своя приставка,
+ *  `[locale]` — основной в корне, остальные приставкой; `null` — языка в
+ *  адресе нет. Одно место на `check:open` и `sweep` (И257). */
+export function langSegment() {
+  const tree = shapes()
+  return tree.some((s) => s.startsWith('/[lang]')) ? '[lang]'
+    : tree.some((s) => s.startsWith('/[locale]')) ? '[locale]' : null
+}
+
+/** Главная основного языка — страница, а не перенаправление: у `[lang]` это
+ *  `/<основной>`, у `[locale]` и у сайта без языка в адресе — корень. */
+export const homePath = () => (langSegment() === '[lang]' && DEFAULT_LANG ? `/${DEFAULT_LANG}` : '/')
+
+/** Чем заполняются динамические сегменты. Ключ — сегмент, как он записан в
+ *  дереве; значение — все существующие величины. */
+const FILL = {
+  '[lang]': () => LOCALES,
+  '[locale]': () => LOCALE_PATHS,
+  '[cat]': () => CATEGORIES,
+  '[id]': () => PRODUCTS.map((p) => p.id),
+  '[doc]': () => DOCS.map((d) => d.slug),
+  '[brand]': () => BRANDS.map((b) => b.slug),
+  '[slug]': () => POSTS.map((p) => p.slug),
+  '[topic]': () => TOPICS,
+  '[effect]': () => EFFECTS,
+  '[code]': () => ORDERS,
+}
+
+/** Образцы для дорогих проверок: не «первое попавшееся», а два конца.
+ *
+ *  Полка: самая полная и самая пустая. Тринадцать товаров и два — это две
+ *  разные раскладки одной сетки, и ломается всегда вторая: `auto-fit` при
+ *  двух карточках растягивает их во всю строку.
+ *
+ *  Товар: с самой большой семьёй вариантов (там есть селектор крепости,
+ *  отчёт лаборатории и полка «сравните с») и без семьи вовсе — на одиночном
+ *  товаре половины страницы нет, и её отсутствие тоже вёрстка. */
+const SAMPLE = {
+  '[lang]': () => LOCALES,
+  '[locale]': () => LOCALE_PATHS,
+  /* Марка: самая полная и самая пустая. У первой шесть полок и пятнадцать
+     карточек, у второй одна полка и три — и ломается всегда вторая: блок из
+     двух карточек в сетке на пять это другая раскладка, а не та же. */
+  '[brand]': () => {
+    const size = (b) => PRODUCTS.filter((p) => p.brand === b.name).length
+    const sorted = [...BRANDS].sort((a, b) => size(b) - size(a))
+    return [...new Set([sorted[0]?.slug, sorted[sorted.length - 1]?.slug])].filter(Boolean)
+  },
+  /* Документ: самый длинный и самый короткий. Длинный — это оглавление в
+     десять пунктов, таблица и выноски; короткий — три абзаца. Ломается
+     всегда первый, но проверять надо оба: у короткого оглавление рискует
+     оказаться длиннее самого текста. */
+  '[doc]': () => {
+    const size = (d) => JSON.stringify(d).length
+    const sorted = [...DOCS].sort((a, b) => size(b) - size(a))
+    return [...new Set([sorted[0]?.slug, sorted[sorted.length - 1]?.slug])].filter(Boolean)
+  },
+  '[cat]': () => {
+    const size = (c) => PRODUCTS.filter((p) => p.cat === c).length
+    const sorted = [...CATEGORIES].sort((a, b) => size(b) - size(a))
+    return [...new Set([sorted[0], sorted[sorted.length - 1]])].filter(Boolean)
+  },
+  /* Статья: самая длинная и самая короткая — та же логика, что у документа.
+     Длинная несёт таблицу, цитату и оглавление в шесть пунктов; короткая —
+     три раздела и ни одной таблицы. */
+  '[slug]': () => {
+    const size = (post) => JSON.stringify(post).length
+    const sorted = [...POSTS].sort((a, b) => size(b) - size(a))
+    return [...new Set([sorted[0]?.slug, sorted[sorted.length - 1]?.slug])].filter(Boolean)
+  },
+  /* Рубрика блога: первая и последняя (И749) — у них разное число статей. */
+  '[topic]': () => [...new Set([TOPICS[0], TOPICS[TOPICS.length - 1]])].filter(Boolean),
+  /* Эффект: первый и последний по данным — у образца это самый полный
+     (четыре товара) и самый пустой (один): одна карточка в сетке — своя
+     раскладка, как у пустой полки. */
+  '[effect]': () => [...new Set([EFFECTS[0], EFFECTS[EFFECTS.length - 1]])].filter(Boolean),
+  /* Заказ кабинета: первый и последний — отправленный и доставленный. */
+  '[code]': () => [...new Set([ORDERS[0], ORDERS[ORDERS.length - 1]])].filter(Boolean),
+  '[id]': () => {
+    const count = {}
+    for (const p of PRODUCTS) if (p.family) count[p.family] = (count[p.family] ?? 0) + 1
+    const biggest = Object.entries(count).sort((a, b) => b[1] - a[1])[0]?.[0]
+    const pick = [
+      PRODUCTS.find((p) => p.family === biggest)?.id,
+      PRODUCTS.find((p) => !p.family)?.id,
+    ]
+    return [...new Set(pick.filter(Boolean))]
+  },
+}
+
+const expand = (fill) => (url) => {
+  let rows = ['']
+  for (const seg of url.split('/').filter(Boolean)) {
+    const dynamic = /^\[.*\]$/.test(seg)
+    const values = fill[seg] ? fill[seg]() : dynamic ? [] : [seg]
+    /* Сегмент, который нечем подставить, — это НЕ пустой список адресов.
+       Промолчав, проверка выбросила бы из обхода целую ветку дерева и
+       осталась бы зелёной: ровно тот молчаливо неполный замер, ради
+       которого весь этот файл и написан. */
+    if (!values.length) {
+      console.error(`\n✗ tools/routes.mjs: сегмент ${seg} в маршруте ${url} нечем подставить.`)
+      console.error('  Научите FILL/SAMPLE, откуда брать его значения, — иначе эта ветка')
+      console.error('  дерева не проверяется вовсе, а проверка выглядит зелёной.')
+      process.exit(1)
+    }
+    rows = rows.flatMap((prefix) => values.map((v) => `${prefix}/${v}`.replace(/\/{2,}/g, '/')))
+  }
+  return rows.length ? rows : ['/']
+}
+
+/** Полка с гранью фильтра в адресе (И22) — форма без своего `page.tsx`: та
+ *  же страница `[cat]`, только со строкой запроса. Дерево строится по
+ *  файлам `app/**\/page.tsx`, и параметр к файлу не привязан — без явной
+ *  строки здесь эта форма не открылась бы ни разу ни в одной проверке.
+ *
+ *  Один адрес хватает: он не про то, какая грань выбрана, а про то, что
+ *  адрес с параметром вообще открывается и рисует ту же полку, что и без
+ *  него. */
+function queried() {
+  const cat = CATEGORIES[0]
+  const brand = BRANDS[0]?.name
+  if (!cat || !brand) return []
+  const suffix = `/catalog/${cat}?brand=${encodeURIComponent(brand)}`
+  return LOCALES.length ? LOCALES.map((l) => `/${l}${suffix}`) : [suffix]
+}
+
+/** Страницы с запросом из `kit.config.json` (`queries`, И345): форма
+ *  маршрута → строки запроса. Поиск с запросом — та же страница
+ *  `/[lang]/search`, но другая раскладка: полка результатов или «ничего не
+ *  нашлось»; без записи здесь `check:craft`, `check:detect` и свип мерили
+ *  только поиск без запроса. Форма не из дерева (переименовали, опечатка) не
+ *  меряется — она названа предупреждением. */
+function asked(fill) {
+  const tree = new Set(shapes())
+  const out = []
+  for (const [shape, list] of Object.entries(QUERIES)) {
+    if (!tree.has(shape)) { console.warn(`kit.config.json: форма «${shape}» из «queries» — не из дерева маршрутов app/, не меряется`); continue }
+    for (const url of expand(fill)(shape)) for (const q of list) out.push(`${url}?${q}`)
+  }
+  return out
+}
+
+/** Каждый адрес, который публикует сайт. Для дешёвых проверок: открывается
+ *  ли страница, обещана ли она картой сайта. */
+export function all() {
+  if (EXTERNAL || FORCED) return liveList(FILL, (list) => list)
+  assertData()
+  return [...new Set([...shapes().flatMap(expand(FILL)), ...queried(), ...asked(FILL)])].sort()
+}
+
+/** По одному адресу на форму маршрута и язык. Для дорогих проверок —
+ *  отрисованных, где каждая страница стоит шести открытий. */
+export function sample() {
+  if (EXTERNAL || FORCED) return liveList(SAMPLE, (list) => [...new Set([list[0], list[list.length - 1]])])
+  assertData()
+  return [...new Set([...shapes().flatMap(expand(SAMPLE)), ...queried(), ...asked(SAMPLE)])].sort()
+}
+
+/** Внешний источник (И414): формы без полки и товара — из дерева, как
+ *  всегда (язык, документы, корзина, поиск, касса); формы с сегментом,
+ *  которого в файлах нет, — адресами из карты сайта, по форме и языку;
+ *  `pick` выбирает из них все (`all`) или два конца (`sample`); формы из
+ *  дерева заполняются тем же, чем без внешнего источника (`fill`: все
+ *  документы или два конца). Карты нет —
+ *  адресов не выдумывают: проверка останавливается и говорит, чего ей
+ *  нужно. Части адреса в дереве — слова (`catalog`, `product`): группы
+ *  `(x)` в адрес не входят, поэтому в образце карты они стоят как есть. */
+const LOCAL = new Set(['[lang]', '[locale]', '[doc]', '[slug]', '[topic]'])
+const dynamic = (seg) => seg.startsWith('[') && seg.endsWith(']')
+function liveList(fill, pick) {
+  if (!LIVE) {
+    console.error(`\n✗ tools/routes.mjs: источник витрины — ${SOURCE}; адреса полок и товаров знает сам сайт.`)
+    console.error('  Поднимите сайт и передайте его адрес: SITE=http://localhost:3020 …')
+    process.exit(1)
+  }
+  const out = []
+  for (const shape of shapes()) {
+    const segs = shape.split('/').filter(Boolean)
+    if (segs.every((seg) => !dynamic(seg) || LOCAL.has(seg))) { out.push(...expand(fill)(shape)); continue }
+    const byLang = new Map()
+    for (const path of LIVE) {
+      const parts = path.split('/').filter(Boolean)
+      if (parts.length !== segs.length || !segs.every((seg, i) => dynamic(seg) || seg === parts[i])) continue
+      const lang = segs[0] === '[lang]' || segs[0] === '[locale]' ? parts[0] : ''
+      byLang.set(lang, [...(byLang.get(lang) ?? []), path])
+    }
+    for (const list of byLang.values()) out.push(...pick(list))
+  }
+  /* Страницы с запросом (`queries`, И345) — у тех форм, что уже в списке. */
+  const queries = asked(fill).filter((u) => out.includes(u.split('?')[0]))
+  return [...new Set([...out, ...queries])].sort()
+}
+
+/** Личные страницы полными — для дорогих проверок (И263): формы из
+ *  `sessions.pages` в kit.config.json, по адресу на язык и сессию, хвостом
+ *  `#as=…`. Нет cookie в конфиге — нет и личных страниц. Форма, которой нет
+ *  в дереве маршрутов (страницу переименовали, опечатка), не меряется —
+ *  она названа предупреждением, остальные отдаются. */
+export function personal() {
+  if (!SESSIONS.cookie) return []
+  assertData()
+  const tree = new Set(shapes())
+  const pages = {}
+  for (const [shape, list] of Object.entries(SESSIONS.pages)) {
+    if (tree.has(shape)) pages[shape] = list
+    else console.warn(`kit.config.json: форма «${shape}» из «sessions.pages» — не из дерева маршрутов app/, не меряется`)
+  }
+  return sessionUrls(pages, expand(SAMPLE))
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const list = process.argv.includes('--sample') ? sample() : all()
+  for (const url of list) console.log(url)
+  console.error(`\n${list.length} адресов, форм маршрута ${shapes().length}`)
+}

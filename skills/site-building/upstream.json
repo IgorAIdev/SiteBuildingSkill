@@ -1,0 +1,859 @@
+{
+  "version": 1,
+  "checkedAt": "2026-09-22",
+  "hashNormalization": "UTF-8, CRLF normalized to LF",
+  "sources": [
+    {
+      "sha": "98a1fe67b439324ddc857f47fbdce056600a4329",
+      "date": "2026-09-21T09:05:58Z",
+      "repo": "shadcn-ui/ui",
+      "archived": false,
+      "branch": "main",
+      "license": "MIT",
+      "status": "selected-files-vendored"
+    },
+    {
+      "sha": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "date": "2026-09-22T05:54:14Z",
+      "repo": "lucide-icons/lucide",
+      "archived": false,
+      "branch": "main",
+      "license": "ISC; MIT for Feather-derived icons",
+      "status": "selected-files-vendored"
+    },
+    {
+      "sha": "93111ff435e2deb81923bc9025310b9c7f61d485",
+      "date": "2026-09-18T18:46:37Z",
+      "repo": "payloadcms/payload",
+      "archived": false,
+      "branch": "v3.90.1",
+      "license": "MIT",
+      "status": "source-patterns-reviewed",
+      "reviewedPaths": [
+        "templates/website/src/blocks/RenderBlocks.tsx",
+        "templates/website/src/collections/Pages/hooks/revalidatePage.ts",
+        "templates/website/src/app/(frontend)/next/preview/route.ts",
+        "templates/website/src/utilities/generateMeta.ts",
+        "templates/website/src/collections/Media.ts",
+        "templates/website/src/components/PayloadRedirects/index.tsx",
+        "packages/plugin-seo/src/defaults.ts",
+        "packages/plugin-redirects/src/redirectTypes.ts",
+        "packages/live-preview/src/isDocumentEvent.ts",
+        "packages/payload/src/utilities/slugify.ts",
+        "docs/versions/drafts.mdx",
+        "docs/configuration/localization.mdx"
+      ]
+    },
+    {
+      "sha": "cccf0a72ec1b88a4e00ea3cffad4d30b35aaf7e7",
+      "date": "2026-09-22T00:15:12Z",
+      "repo": "vendure-ecommerce/vendure",
+      "archived": false,
+      "branch": "master",
+      "license": "GPL-3.0 or Vendure Commercial License (LICENSE.md)",
+      "status": "license-reviewed-api-contract-only"
+    },
+    {
+      "sha": "449f42df3abd2193ad3e740287dc0bcf044b2bfb",
+      "date": "2026-09-21T15:16:09Z",
+      "repo": "puckeditor/puck",
+      "archived": false,
+      "branch": "main",
+      "license": "MIT",
+      "status": "source-patterns-reviewed"
+    },
+    {
+      "sha": "f7ecd5ab16f5e1e820eb5786a1419a98a2d594ae",
+      "date": "2026-07-31T21:03:26Z",
+      "repo": "radix-ui/primitives",
+      "archived": false,
+      "branch": "main",
+      "license": "MIT",
+      "status": "candidate-metadata-reviewed"
+    },
+    {
+      "sha": "3761e52e60df9c6a316e067dbfd7032e494d3634",
+      "date": "2026-06-10T20:55:29Z",
+      "repo": "vercel/commerce",
+      "archived": false,
+      "branch": "main",
+      "license": "MIT",
+      "status": "adapted-files-and-patterns",
+      "reviewedPaths": [
+        "components/product/variant-selector.tsx",
+        "components/cart/actions.ts",
+        "components/cart/cart-context.tsx",
+        "lib/utils.ts",
+        "license.md"
+      ]
+    },
+    {
+      "sha": "15cc3dfee387fd2ada3476d7f441a498e45f87e8",
+      "date": "2026-09-11T13:25:07Z",
+      "repo": "Shopify/hydrogen",
+      "archived": false,
+      "branch": "main",
+      "license": "MIT",
+      "status": "adapted-files-and-patterns",
+      "reviewedPaths": [
+        "packages/hydrogen/src/cache/strategies.ts",
+        "packages/hydrogen/src/pagination/Pagination.ts#getPaginationVariables",
+        "packages/hydrogen/LICENSE.md"
+      ]
+    },
+    {
+      "sha": "d871b32233642be3a7afa556009d5956bb655c12",
+      "date": "2026-09-17T07:13:28Z",
+      "repo": "medusajs/dtc-starter",
+      "archived": false,
+      "branch": "main",
+      "license": "MIT",
+      "status": "adapted-files-and-patterns",
+      "reviewedPaths": [
+        "apps/storefront/src/lib/util/product-option-filters.ts",
+        "apps/storefront/src/lib/util/money.ts",
+        "apps/storefront/src/lib/util/get-product-price.ts",
+        "apps/storefront/src/modules/products/components/product-actions/index.tsx",
+        "LICENSE"
+      ]
+    },
+    {
+      "sha": "82f1bf576d20b34b3fd35f2a65c25b75dd62939a",
+      "date": "2026-09-15T09:45:16Z",
+      "repo": "saleor/storefront",
+      "archived": false,
+      "branch": "main",
+      "license": "FSL-1.1-ALv2",
+      "status": "patterns-adopted-no-fsl-code-copied",
+      "reviewedPaths": [
+        "src/checkout/lib/payment/integrated-gateways.ts",
+        "src/checkout/lib/payment-gateways.ts",
+        "src/lib/cache-manifest.ts",
+        "LICENSE"
+      ]
+    },
+    {
+      "sha": "ebee453dad3f8acacd657a62ccc65e3296afb7d0",
+      "date": "2025-06-26T00:01:33Z",
+      "repo": "GoogleChrome/lighthouse-ci",
+      "archived": false,
+      "branch": "main",
+      "license": "Apache-2.0",
+      "status": "api-integrated-and-runtime-tested",
+      "reviewedPaths": [
+        "docs/configuration.md",
+        ".lighthouserc.js",
+        "packages/cli/test/fixtures/autorun-static-dir/lighthouserc.json"
+      ]
+    },
+    {
+      "sha": "25140f7c7dfe64c72cfd1b3a254192ada40ec41b",
+      "date": "2026-09-20T10:42:50Z",
+      "repo": "opencart/opencart",
+      "archived": false,
+      "branch": "master",
+      "license": "NOASSERTION",
+      "status": "candidate-metadata-reviewed"
+    },
+    {
+      "sha": "7d06ae00e09684512ad13ef45077f06de838dc3d",
+      "date": "2026-08-19T13:25:43Z",
+      "repo": "vendurehq/nextjs-starter-vendure",
+      "archived": false,
+      "branch": "main",
+      "license": "MIT",
+      "status": "adapted-files-and-patterns",
+      "reviewedPaths": [
+        "src/platform/vendure/api.ts",
+        "src/platform/vendure/auth-token.ts",
+        "src/platform/vendure/channel.ts",
+        "src/features/products/product-options.ts",
+        "src/features/products/graphql.ts",
+        "src/features/search/search-helpers.ts",
+        "src/features/cart/routes/actions.ts",
+        "src/features/checkout/routes/actions.ts",
+        "src/features/checkout/routes/page.tsx",
+        "src/features/currency/currency-server.ts",
+        "src/platform/revalidation/handler.ts",
+        "tests/architecture/boundaries.test.mjs",
+        "tests/i18n/messages.test.mjs",
+        ".upgrades/changes/improve-storefront-performance.md",
+        "LICENSE"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "local": "assets/components/shadcn/LICENSE.md",
+      "repo": "shadcn-ui/ui",
+      "commit": "98a1fe67b439324ddc857f47fbdce056600a4329",
+      "upstreamPath": "LICENSE.md",
+      "license": "MIT",
+      "licenseFile": "assets/components/shadcn/LICENSE.md",
+      "changes": "Unmodified",
+      "sha256": "1564074e13439397221ffd522e2e504d56561994a23d371aa5e3ad43e4f5423f"
+    },
+    {
+      "local": "assets/components/shadcn/button.tsx",
+      "repo": "shadcn-ui/ui",
+      "commit": "98a1fe67b439324ddc857f47fbdce056600a4329",
+      "upstreamPath": "apps/v4/registry/new-york-v4/ui/button.tsx",
+      "license": "MIT",
+      "licenseFile": "assets/components/shadcn/LICENSE.md",
+      "changes": "Use sibling cn helper and explicit React client boundary. Styling remains upstream candidate; map project tokens before use.",
+      "sha256": "da1584b1d93a1da63b01a9fb787e8db811e1dab8223954408bafb34ac9302062"
+    },
+    {
+      "local": "assets/components/shadcn/dropdown-menu.tsx",
+      "repo": "shadcn-ui/ui",
+      "commit": "98a1fe67b439324ddc857f47fbdce056600a4329",
+      "upstreamPath": "apps/v4/registry/new-york-v4/ui/dropdown-menu.tsx",
+      "license": "MIT",
+      "licenseFile": "assets/components/shadcn/LICENSE.md",
+      "changes": "Use sibling cn helper and explicit React client boundary. Styling remains upstream candidate; map project tokens before use.",
+      "sha256": "4910fc0d93f356239c69107458229c26a39e646dd510b33dc53f2eff433fcc8a"
+    },
+    {
+      "local": "assets/components/shadcn/navigation-menu.tsx",
+      "repo": "shadcn-ui/ui",
+      "commit": "98a1fe67b439324ddc857f47fbdce056600a4329",
+      "upstreamPath": "apps/v4/registry/new-york-v4/ui/navigation-menu.tsx",
+      "license": "MIT",
+      "licenseFile": "assets/components/shadcn/LICENSE.md",
+      "changes": "Use sibling cn helper and explicit React client boundary. Styling remains upstream candidate; map project tokens before use.",
+      "sha256": "234b4b87c4198d5255476cdcdb2b05543a8a9aad815286ab4c9be6581e2722ff"
+    },
+    {
+      "local": "assets/icons/lucide/LICENSE",
+      "repo": "lucide-icons/lucide",
+      "commit": "5a92b9ba262de5bf10e864219883267672c05db8",
+      "upstreamPath": "LICENSE",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Upstream LICENSE at tag 1.49.0 (ISC plus the MIT notice for Feather-derived icons) unmodified; a local provenance note in Russian is appended after a '---' line: icons come from lucide-static via jsDelivr, unmodified drawing, only the license comment and class removed, and the list of icons added on 01.10.2026 from lucide-static 1.49.0 with their local names. No Simple Icons text here (brand icons carry their own assets/icons/brands/LICENSE).",
+      "sha256": "c102c5de3f9f77e716305c6fb139bda5231d844b58e9a777b4163465ed78986e"
+    },
+    {
+      "local": "assets/icons/lucide/menu.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/menu.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "af6491988ac1ba30dc5414f485bc48713e957e1edb0fbef4a0dd8691c3c21598"
+    },
+    {
+      "local": "assets/icons/lucide/x.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/x.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "4a9cdab38fbb96162e7dace28e33f4ca0e49d8963a6162abc3d4691b7d675117"
+    },
+    {
+      "local": "assets/icons/lucide/sun.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/sun.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "a3955c8b0425fcc5c9ba12d2bdd77fe53b2cd5dd05e7742a56f342e996fb2ef8"
+    },
+    {
+      "local": "assets/icons/lucide/moon.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/moon.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "205b959e940d5841f0ce1d09c933153da9d9c94130a54d5cc0c68c2af1d403da"
+    },
+    {
+      "local": "assets/icons/lucide/search.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/search.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "283d371c2e433817bb9c0c8310caa6c77fa4177c0f4f1168d9c83b97af7389dc"
+    },
+    {
+      "local": "assets/icons/lucide/chevron-down.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/chevron-down.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "66ea878e72ed3488bb3b464c39dfdccee8d1f78e560dccea40e5e12da0e87e87"
+    },
+    {
+      "local": "assets/icons/lucide/check.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/check.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "7f33acc9a77a61659531044525fc008edebe215bf4dcf1c789c8674ad3277db0"
+    },
+    {
+      "local": "assets/icons/lucide/shopping-cart.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/shopping-cart.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "7cdc07053044af9e5fd24fff5e089ce97b2a39ea978933a160c4bbfebf8a167c"
+    },
+    {
+      "local": "assets/commerce/variant-selection.mjs",
+      "repo": "vercel/commerce",
+      "commit": "3761e52e60df9c6a316e067dbfd7032e494d3634",
+      "upstreamPath": "components/product/variant-selector.tsx",
+      "license": "MIT",
+      "changes": "Extracted backend-neutral selection and URL helpers; stable IDs, invalid/ambiguous states; no React/Next/Shopify.",
+      "sha256": "41cdd516c56540317ce2b7f54cdaf3cc8118aea87551f87e39bc67754b919505",
+      "licenseFile": "assets/commerce/VERCEL-LICENSE.md"
+    },
+    {
+      "local": "assets/commerce/pagination.mjs",
+      "repo": "Shopify/hydrogen",
+      "commit": "15cc3dfee387fd2ada3476d7f441a498e45f87e8",
+      "upstreamPath": "packages/hydrogen/src/pagination/Pagination.ts",
+      "license": "MIT",
+      "changes": "Extracted getPaginationVariables to ESM; bounds validation and scoped reset helper.",
+      "sha256": "681e3cd226fab50449eb10f3c0099b2202b3ed5696ef66f7b9e88281f058dfc9",
+      "licenseFile": "assets/commerce/SHOPIFY-LICENSE.md"
+    },
+    {
+      "local": "assets/commerce/cache-policy.mjs",
+      "repo": "Shopify/hydrogen",
+      "commit": "15cc3dfee387fd2ada3476d7f441a498e45f87e8",
+      "upstreamPath": "packages/hydrogen/src/cache/strategies.ts",
+      "license": "MIT",
+      "changes": "Adapted header mapping; public opt-in, mutations/personal no-store, directive validation, no copied fixed TTL.",
+      "sha256": "fbf8be8fde3a7756ff2b720ffba781ac1be45e89b70da134b06e76fe656f7754",
+      "licenseFile": "assets/commerce/SHOPIFY-LICENSE.md"
+    },
+    {
+      "local": "assets/commerce/option-filters.mjs",
+      "repo": "medusajs/dtc-starter",
+      "commit": "d871b32233642be3a7afa556009d5956bb655c12",
+      "upstreamPath": "apps/storefront/src/lib/util/product-option-filters.ts",
+      "license": "MIT",
+      "changes": "ESM extraction; consistent repeated/comma parsing, trim/deduplication across input formats. Rejects unawaited Promise searchParams (Next 15+).",
+      "sha256": "342aad5e7036f1900a4497ad67152c1f87500c56de64e710d5c494d32886e853",
+      "licenseFile": "assets/commerce/MEDUSA-LICENSE.md"
+    },
+    {
+      "local": "assets/commerce/VERCEL-LICENSE.md",
+      "repo": "vercel/commerce",
+      "commit": "3761e52e60df9c6a316e067dbfd7032e494d3634",
+      "upstreamPath": "license.md",
+      "license": "MIT",
+      "changes": "Unmodified license text.",
+      "sha256": "ee765244e2d59f5234d474f62e0766fa0c8b99af967fdd4c0cb8dcb0c76ea224",
+      "licenseFile": "assets/commerce/VERCEL-LICENSE.md"
+    },
+    {
+      "local": "assets/commerce/SHOPIFY-LICENSE.md",
+      "repo": "Shopify/hydrogen",
+      "commit": "15cc3dfee387fd2ada3476d7f441a498e45f87e8",
+      "upstreamPath": "packages/hydrogen/LICENSE.md",
+      "license": "MIT",
+      "changes": "Unmodified license text.",
+      "sha256": "f1d90feb56b8aa52e19600b158efe60d0e157c7d95fcc7c171002b1e221c1293",
+      "licenseFile": "assets/commerce/SHOPIFY-LICENSE.md"
+    },
+    {
+      "local": "assets/commerce/MEDUSA-LICENSE.md",
+      "repo": "medusajs/dtc-starter",
+      "commit": "d871b32233642be3a7afa556009d5956bb655c12",
+      "upstreamPath": "LICENSE",
+      "license": "MIT",
+      "changes": "Unmodified license text.",
+      "sha256": "770a61c897d73cdeb53ff2a367d537a80eccf57b31f81e4a5fe951fecc40c632",
+      "licenseFile": "assets/commerce/MEDUSA-LICENSE.md"
+    },
+    {
+      "local": "assets/vendure/VENDURE-STARTER-LICENSE.md",
+      "repo": "vendurehq/nextjs-starter-vendure",
+      "commit": "7d06ae00e09684512ad13ef45077f06de838dc3d",
+      "upstreamPath": "LICENSE",
+      "license": "MIT",
+      "licenseFile": "assets/vendure/VENDURE-STARTER-LICENSE.md",
+      "changes": "Unmodified",
+      "sha256": "aa532736dbbb7db60536dab3354bd6c8ed1e69dd5efe157e29e236bed0626e4f"
+    },
+    {
+      "local": "assets/vendure/product.mjs",
+      "repo": "vendurehq/nextjs-starter-vendure",
+      "commit": "7d06ae00e09684512ad13ef45077f06de838dc3d",
+      "upstreamPath": "src/features/products/product-options.ts",
+      "license": "MIT",
+      "licenseFile": "assets/vendure/VENDURE-STARTER-LICENSE.md",
+      "changes": "getDisplayOptionGroups ported to plain ESM with input validation; toSelection (mapping to the neutral variant-selection contract) is original.",
+      "sha256": "b303e410a144615500e717ca578350a51140b683661eb687b17030dbc2f653e9"
+    },
+    {
+      "local": "assets/icons/lucide/arrow-left.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/arrow-left.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "c5f4b88076108eb1a0d95336e1aa7e7bb1419a3a92af96f6247d88cd3456f933"
+    },
+    {
+      "local": "assets/icons/lucide/arrow-right.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/arrow-right.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "288397fdb73bb4f783cf9eabb726ff47357df1d4e3f1201dd748090579f108b9"
+    },
+    {
+      "local": "assets/icons/lucide/chevron-left.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/chevron-left.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "83b0681aa38bf55e9d52a1e4b4cced624abe1fe7678ecafda133a574f1161d93"
+    },
+    {
+      "local": "assets/icons/lucide/chevron-right.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/chevron-right.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "2758143d7b2434e4aa7307dfd34405c87909ff4052f21b5f3f40d45224b4f19b"
+    },
+    {
+      "local": "assets/icons/lucide/chevron-up.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/chevron-up.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "d09f13fcbef3c493ead7e4663b5ee91804fec38d5edb5e7cc3acfbd547641cf4"
+    },
+    {
+      "local": "assets/icons/lucide/check-circle.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/circle-check.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "9711e045a5999f8a3b0782eb88e09b04e0559bc7b379dcc0a4ae645223e10345"
+    },
+    {
+      "local": "assets/icons/lucide/external-link.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/external-link.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "3891241b8c3bfc3a8a930078f26ffc5a7e9763da6d0162ace2050b28d4c1d1fe"
+    },
+    {
+      "local": "assets/icons/lucide/flask.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/flask-conical.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "a2ce857c159bef4c128a6d9f0b6dcbd6504ecf1a2a670ee220efd14fd032b561"
+    },
+    {
+      "local": "assets/icons/lucide/globe.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/globe.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "82c6b8fa0b8e8d775ec9becd86f74a4e50bff7bee4c81f7362de45348504f14d"
+    },
+    {
+      "local": "assets/icons/lucide/heart.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/heart.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "70af5f30be9fcb500b852556b38dcdf8c04a4ba81fd262534fb0336bd39b3b52"
+    },
+    {
+      "local": "assets/icons/lucide/info.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/info.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "bc977a64eb96f3e9c1041ffd09a3fceb70e3e65c02b571f76064062ed31f3cb9"
+    },
+    {
+      "local": "assets/icons/lucide/leaf.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/leaf.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "ac2b65d8d35b5038c9388cd1f161e74570fce6ef6a4c3d99a6b0c2bd68e0cb28"
+    },
+    {
+      "local": "assets/icons/lucide/log-out.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/log-out.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "f24b5b45c05a3acc346af8095408f6ba197ff58ea1641a4f2cb25a9702d2c0ac"
+    },
+    {
+      "local": "assets/icons/lucide/mail.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/mail.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "3236a51d5b8ce9b0528cf2e6ad07e527bd636dded6f5a9d656072052b99caea8"
+    },
+    {
+      "local": "assets/icons/lucide/map-pin.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/map-pin.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "16f1042a62f1bda20ebab8bfc1cb79c0be285c980dea6c2c733a17902631405b"
+    },
+    {
+      "local": "assets/icons/lucide/minus.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/minus.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "a0c743ab6dbf545d8a6e19ef3874f48ede686ce68d25e231bd81f540d97b1f19"
+    },
+    {
+      "local": "assets/icons/lucide/package.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/package.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "69d6bc7650d26c4d24dd55eb22791607b982ce7637073944c256f1f61575509d"
+    },
+    {
+      "local": "assets/icons/lucide/phone.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/phone.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "bd59dd10667cbe410a69e2fbbf4d9645d08abe862c8d89082bd4f533957859a8"
+    },
+    {
+      "local": "assets/icons/lucide/plus.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/plus.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "7f6af73bf1ff6c4bca3f18351c8d1bdec6749c0c2530c4de5da85d520c21df17"
+    },
+    {
+      "local": "assets/icons/lucide/check-shield.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/shield-check.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "8d4fcdbde5bba4abb1a2f6fe53e37ceb6343a1d5449a9d88f6f97c1971d26c4e"
+    },
+    {
+      "local": "assets/icons/lucide/sliders-horizontal.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/sliders-horizontal.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "e43a00e5eb684e6cbb61083bed2528d7a3fa5f265693eb2b5f314cd432aa65f4"
+    },
+    {
+      "local": "assets/icons/lucide/star.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/star.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "c59da86b889569387db28e69ad00a89f96af22863ad9eea9aa12c4876a14338c"
+    },
+    {
+      "local": "assets/icons/lucide/trash.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/trash.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "27299f69ad7c6272be64b1b8e2d48cbd6dcf0ef0d4f92827a1affa945c91700e"
+    },
+    {
+      "local": "assets/icons/lucide/alert-triangle.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/triangle-alert.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "4866f38b8560d410f21e3226413e0b77997b6dfbb6931fadfe0a0d5aef9ffeb4"
+    },
+    {
+      "local": "assets/icons/lucide/truck.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/truck.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "1476faa56b56414ba5d5f01d15e851b8bfd79bef6c36f5855811c27590136e50"
+    },
+    {
+      "local": "assets/icons/lucide/user.svg",
+      "repo": "lucide-icons/lucide",
+      "commit": "b0b1a4f8abcb46833d2f6f89952602ddd39c889a",
+      "upstreamPath": "icons/user.svg",
+      "license": "ISC and MIT for Feather-derived icons",
+      "licenseFile": "assets/icons/lucide/LICENSE",
+      "changes": "Unmodified",
+      "sha256": "eae3b3b2400031ddd5ec869327d127a96014e5f63aa6e06658dd5d4e90661aa8"
+    }
+  ],
+  "localFiles": [
+    {
+      "local": "assets/components/shadcn/cn.ts",
+      "sha256": "52d2f4d6499a84b38e197755a32b5796e7eba6c92fa73592c179d5d9f7df70c9",
+      "origin": "Original local helper; uses clsx and tailwind-merge APIs"
+    },
+    {
+      "local": "assets/commerce/mutation-lane.mjs",
+      "description": "Original local utility/configuration; not copied from Saleor.",
+      "sha256": "eb479a49fc65b06c8645f80577612e29f4a0abadfd8546e589a0949c5d7b60c0"
+    },
+    {
+      "local": "assets/quality/lighthouserc.cjs",
+      "description": "Original local utility/configuration; not copied from Saleor.",
+      "sha256": "0b49e2aac94f850d7163deeb547738784bb0e96fd40657bb2afff836f7b078b8"
+    },
+    {
+      "local": "assets/quality/package-fragment.json",
+      "description": "Pinned tested development-only Lighthouse toolchain; merge rather than replace target package.json.",
+      "sha256": "add469d2cb128e0d4e4861e6adbbeff58a0401ff7d1e7ce4244b98f43805c06c"
+    },
+    {
+      "local": "assets/studio/snapshot.mjs",
+      "sha256": "b154830a0554d46b93a79d588c1519fb3380bf1f87d94b84aa54e36dcd3e35c3",
+      "origin": "Original portable runtime extracted and generalized from the owner’s CBD studio; no third-party implementation copied."
+    },
+    {
+      "local": "assets/studio/store.mjs",
+      "sha256": "009e9550798e29da732300271cd516ea2c320da536531cd3d33fbe4d75cc8a92",
+      "origin": "Original portable runtime extracted and generalized from the owner’s CBD studio; no third-party implementation copied."
+    },
+    {
+      "local": "assets/studio/document.mjs",
+      "sha256": "1b302fa1ae9e7217c9e3c478aba65652f2b8d9bad3102610554d8a23cb03a3fc",
+      "origin": "Original portable runtime extracted and generalized from the owner’s CBD studio; no third-party implementation copied."
+    },
+    {
+      "local": "assets/studio/handoff.mjs",
+      "sha256": "5d8473255926e236bd3782efb9ab78c11e50e3439157020291ecde602028ae9c",
+      "origin": "Original portable runtime extracted and generalized from the owner’s CBD studio; no third-party implementation copied."
+    },
+    {
+      "local": "assets/studio/selection.mjs",
+      "sha256": "f25e6fd7285445d9cedd2dbb3ce07d678a22096133a082124caf4a020a78f7f4",
+      "origin": "Original portable runtime extracted and generalized from the owner’s CBD studio; no third-party implementation copied."
+    },
+    {
+      "local": "assets/studio/engine/scale.mjs",
+      "sha256": "0ec0a305e98d853dee9ea01ea926e9e86c3bb710daad487e6ee6f9b595bca377",
+      "origin": "Generated from the canonical SiteBuildingSkill tools; Node I/O replaced for browser portability. Not imported from a commerce repository."
+    },
+    {
+      "local": "assets/studio/engine/palette.mjs",
+      "sha256": "074638d18daff825828df40352cd80bc4e774eb522c6944a486eeac7aef206f7",
+      "origin": "Generated from the canonical SiteBuildingSkill tools; Node I/O replaced for browser portability. Not imported from a commerce repository."
+    },
+    {
+      "local": "assets/studio/engine/thresholds.mjs",
+      "sha256": "da679f70bb592969002b702af54e3c8169a78c57eae963670f525492c52e2822",
+      "origin": "Generated from the canonical SiteBuildingSkill tools; Node I/O replaced for browser portability. Not imported from a commerce repository."
+    },
+    {
+      "local": "assets/studio/engine/palette-profile.json",
+      "sha256": "b035500c6154a6bbba47be54b62764637b87d8db7b4db29b5e9721e22e86ab7e",
+      "origin": "Generated from the canonical SiteBuildingSkill tools; Node I/O replaced for browser portability. Not imported from a commerce repository."
+    },
+    {
+      "local": "assets/vendure/request.mjs",
+      "description": "Original SiteBuildingSkill Vendure adapter helper; Shop API names follow Vendure documentation, checked against vendurehq/nextjs-starter-vendure@7d06ae0.",
+      "sha256": "f74ab993fc827d28252dfe6bac02b6b90a3d869502be583dc96b1c7851691c27"
+    },
+    {
+      "local": "assets/vendure/result.mjs",
+      "description": "Original SiteBuildingSkill Vendure adapter helper; Shop API names follow Vendure documentation, checked against vendurehq/nextjs-starter-vendure@7d06ae0.",
+      "sha256": "54d8a02db9f65678803ad4b711915a113ecc7d9fe76279263500f0b31dd1174b"
+    },
+    {
+      "local": "assets/vendure/money.mjs",
+      "description": "Original SiteBuildingSkill Vendure adapter helper; Shop API names follow Vendure documentation, checked against vendurehq/nextjs-starter-vendure@7d06ae0.",
+      "sha256": "0e26c5d47c25b21b61f57dc3edf4608cfe05f12aad4c3e113b56bbce9213b953"
+    },
+    {
+      "local": "assets/vendure/search.mjs",
+      "description": "Original SiteBuildingSkill Vendure adapter helper; Shop API names follow Vendure documentation, checked against vendurehq/nextjs-starter-vendure@7d06ae0.",
+      "sha256": "f4e3418f09d58f8cb86ae557501f2c21d0c792f14130e065b481b103ae619576"
+    },
+    {
+      "local": "assets/vendure/asset.mjs",
+      "description": "Original SiteBuildingSkill Vendure adapter helper; Shop API names follow Vendure documentation, checked against vendurehq/nextjs-starter-vendure@7d06ae0.",
+      "sha256": "d1896ea0fb067183ecefedd4805a430d14e93744494c0fbe537bc3439ef2bb77"
+    },
+    {
+      "local": "assets/seo-content/SKILL.md",
+      "sha256": "0904e01dc4def29d66c06c13c3a39fc9b2299eb400c1a9fd4983508f4c2d27c5",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/agents/openai.yaml",
+      "sha256": "ddabdaccabc65fea63b07422c47d069cbcb97b2a51878d92e27a7d1c3a0d2d69",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/assets/claims/en.json",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json.",
+      "sha256": "ff174e223540741068d53c66c1591343986b28ce7d3385a2fd8f45b6fe8563f9"
+    },
+    {
+      "local": "assets/seo-content/assets/claims/hu.json",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json.",
+      "sha256": "0b5f4a56f285569f7cabbe063dfcfd5c5c3587a2235249021b9ba6c00a8aea5f"
+    },
+    {
+      "local": "assets/seo-content/assets/claims/ro.json",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json.",
+      "sha256": "c74e181f17a5ea4de12af93c957073e99d60803dcd373de69e3b56c45e9c6149"
+    },
+    {
+      "local": "assets/seo-content/assets/market-sources.json",
+      "sha256": "63c4b26d4965070e76e410e62ec8f9d8b35db5f7beee3cd41e4c8869610ce6ea",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/assets/page-brief.md",
+      "sha256": "0243ffb40e8af1922be2102481ffe97d25de06ae7c7e2427261fceb69b08ea2b",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/assets/page-copy.md",
+      "sha256": "9dc7eb5a37c3554d04e0790820b8cfa137f2e86bfcf8abde7eea7e507441f011",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/references/compliance.md",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json.",
+      "sha256": "929b61a9c8748b7911e149d45309cdd4dc307c4257d5828485412992c6ba33f7"
+    },
+    {
+      "local": "assets/seo-content/references/geo.md",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json.",
+      "sha256": "a6db319d2768590c0e40ab02cb894230535dff2ab7bef89fa832a7b9160f804a"
+    },
+    {
+      "local": "assets/seo-content/references/intent-map.md",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json.",
+      "sha256": "10b3136daa39de7b9bfcac0424dac8620734b158afe7c4ba5e0890efcc96d1bb"
+    },
+    {
+      "local": "assets/seo-content/references/markets.md",
+      "sha256": "1b069159d47484e2a3fc357bf2a2b86c0eac60f89a1c46000a7f21ec849ef0db",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/references/measure.md",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json.",
+      "sha256": "0e9ffa3bc99984560e236b52a7c75b5c7a8b45ae9d19e57b73167a0cc9b9629c"
+    },
+    {
+      "local": "assets/seo-content/references/pages.md",
+      "sha256": "3597e7c8487a16935f22d4d39967829a1ac9aaf61418e82d2f83811bcb38ae63",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/references/snippets.md",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json.",
+      "sha256": "0c124a62ab80884c85de15ea73ffd1b03b44049ac12a9e6adacf29fa2ec391b3"
+    },
+    {
+      "local": "assets/seo-content/references/writing.md",
+      "sha256": "06e0bc011efb4090881656fcfc4443c57b0d446b5ea7dbf03f5ad33b80d4c3bb",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/scripts/import-market.mjs",
+      "sha256": "66d688d53f5ac01a72ed8a8537661207e7bcc59a8fc333b9f95802f56abc4463",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json."
+    },
+    {
+      "local": "assets/seo-content/scripts/lint-copy.mjs",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json.",
+      "sha256": "248e3a8e2912ba06575498d1e5d5f3db71bfcf9f7b0e0d6a357cc23de0b0fca5"
+    },
+    {
+      "local": "assets/seo-content/scripts/suggest.mjs",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json.",
+      "sha256": "c61d8c5501990d5c8abd74e6bdfa96b0012af9ae979e50bf74799c20856c6547"
+    },
+    {
+      "local": "assets/seo-content/scripts/volumes.mjs",
+      "origin": "Original SiteBuildingSkill SEO-content companion. Editorial method informed by owner-authorized HempScale research; private raw exports and upstream code are not redistributed. Source revisions are recorded in assets/seo-content/assets/market-sources.json.",
+      "sha256": "4f5211fa38dc621e09bdd82941c09dac56a0c34553b7cf8d300e9fb510fadb8d"
+    }
+  ]
+}

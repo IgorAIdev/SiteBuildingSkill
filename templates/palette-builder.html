@@ -1,0 +1,2470 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Строитель палитры</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F2F3F5; --sf:#FFFFFF; --ink:#15181C; --mut:#5D6673; --ln:#D9DEE4; --ui:#2456D9; --ui-ink:#FFFFFF;
+  --good:#1E8E5A; --good-bg:#E6F4EC; --bad:#C63B2C; --bad-bg:#FBE9E6; --warn:#9A5B00; --warn-bg:#FBF1DF;
+  --chip:#E9ECF0; --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#0E1013; --sf:#171A1F; --ink:#E9ECF0; --mut:#98A2AE; --ln:#2B313A; --ui:#6B93FF; --ui-ink:#0B1020;
+  --good:#5DD397; --good-bg:#12291D; --bad:#F08A7B; --bad-bg:#33191A; --warn:#F0B95A; --warn-bg:#302410; --chip:#222730; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0E1013; --sf:#171A1F; --ink:#E9ECF0; --mut:#98A2AE; --ln:#2B313A; --ui:#6B93FF; --ui-ink:#0B1020;
+  --good:#5DD397; --good-bg:#12291D; --bad:#F08A7B; --bad-bg:#33191A; --warn:#F0B95A; --warn-bg:#302410; --chip:#222730; color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.5 var(--sans);padding-block:0 72px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:16px;display:flex;flex-direction:column;gap:40px}
+h1{font-size:clamp(28px,2.2vw + 18px,40px);line-height:1.08;font-weight:800;letter-spacing:-0.02em;text-wrap:balance}
+h2{font-size:clamp(20px,1.2vw + 14px,26px);line-height:1.2;font-weight:700;letter-spacing:-0.01em;text-wrap:balance}
+h3{font-size:15px;font-weight:700}
+p{max-width:70ch}
+.lede{color:var(--mut);font-size:16.5px;max-width:64ch}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ui);font-weight:500}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--mut)}
+a{color:var(--ui)}
+code{font-family:var(--mono);font-size:0.92em;background:var(--chip);padding:1px 5px;border-radius:5px}
+
+/* верхняя полоса: выбор набора и красок */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--ln);padding-block:12px}
+.top .wrap{gap:12px}
+.bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.bar label{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600}
+select,button,input[type=text]{font:inherit;color:inherit}
+select{min-height:40px;padding:0 12px;border:1px solid var(--ln);border-radius:10px;background:var(--sf)}
+.seg{display:inline-flex;border:1px solid var(--ln);border-radius:10px;overflow:hidden;background:var(--sf)}
+.seg button{min-height:40px;padding:0 14px;border:0;background:transparent;cursor:pointer;font-weight:600;color:var(--mut)}
+.seg button[aria-pressed="true"]{background:var(--ui);color:var(--ui-ink)}
+.paints{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:10px 24px}
+.paint-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.paint-row .t{font-weight:700;min-width:64px}
+.paint{display:inline-flex;align-items:center;gap:6px}
+.paint input[type=color]{inline-size:34px;block-size:34px;border:1px solid var(--ln);border-radius:8px;padding:2px;background:var(--sf);cursor:pointer}
+.paint input[type=text]{inline-size:6.4em;min-height:34px;padding:0 8px;border:1px solid var(--ln);border-radius:8px;background:var(--sf);font-family:var(--mono);font-size:13px}
+.paint small{color:var(--mut);font-size:12.5px}
+button.ghost{min-height:40px;padding:0 14px;border:1px solid var(--ln);border-radius:10px;background:var(--sf);cursor:pointer;font-weight:600}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ui);outline-offset:2px}
+
+section{display:flex;flex-direction:column;gap:16px}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));gap:16px}
+.pair.only-light [data-mode="dark"],.pair.only-dark [data-mode="light"]{display:none}
+.panel{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.panel > h3{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.panel > h3 small{color:var(--mut);font-weight:500;font-size:13px}
+
+/* краски и проверка */
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.sw{border-radius:12px;padding:10px;min-height:88px;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;border:1px solid color-mix(in srgb,var(--ink) 12%,transparent)}
+.sw b{font-size:13px}
+.sw span{font-family:var(--mono);font-size:12px;opacity:.85}
+.checks{display:flex;flex-direction:column;gap:8px}
+.check{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:start;padding:8px 0;border-top:1px solid var(--ln);font-size:14px}
+.check .k{font-weight:600}
+.check .d{color:var(--mut);font-size:13px;grid-column:1/-1}
+.v{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:999px;font-size:12.5px;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.v.ok{background:var(--good-bg);color:var(--good)} .v.no{background:var(--bad-bg);color:var(--bad)} .v.warn{background:var(--warn-bg);color:var(--warn)}
+
+/* лестницы */
+.ladder{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:3px}
+.step{aspect-ratio:1/1.15;max-block-size:74px;border-radius:7px;display:flex;flex-direction:column;justify-content:flex-end;padding:4px;font-family:var(--mono);font-size:10.5px;line-height:1.15;border:1px solid color-mix(in srgb,var(--ink) 10%,transparent)}
+.step b{font-size:12px}
+.step.fixed{outline:2px solid var(--ui);outline-offset:-2px}
+.jobs{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:3px;font-size:10px;color:var(--mut);text-align:center;line-height:1.15;overflow-wrap:anywhere;hyphens:manual}
+@media (max-width:640px){ .jobs{display:none} .step{font-size:9.5px} .step span{display:none} }
+.extra{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-size:13px}
+.ex{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.dot{inline-size:26px;block-size:26px;border-radius:7px;border:1px solid color-mix(in srgb,var(--ink) 12%,transparent);display:inline-grid;place-items:center;font-family:var(--mono);font-size:11px;font-weight:600}
+.note{font-size:13px;color:var(--mut)}
+
+/* сигналы */
+.sig{display:grid;grid-template-columns:8.5em repeat(4,minmax(0,1fr)) auto;gap:6px;align-items:center;font-size:13px}
+@media (max-width:560px){ .sig{grid-template-columns:6.5em repeat(4,minmax(0,1fr))} .sig .de{grid-column:1/-1;text-align:right} }
+.sig .nm{font-weight:600;line-height:1.2}
+.sig .nm small{display:block;color:var(--mut);font-weight:500;font-size:11.5px}
+.cell{min-height:36px;border-radius:8px;display:grid;place-items:center;font-family:var(--mono);font-size:11px;border:1px solid color-mix(in srgb,var(--ink) 10%,transparent)}
+.sig .de{font-family:var(--mono);font-size:12px;white-space:nowrap}
+.sighead{display:grid;grid-template-columns:8.5em repeat(4,minmax(0,1fr)) auto;gap:6px;font-size:11.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+@media (max-width:560px){ .sighead{grid-template-columns:6.5em repeat(4,minmax(0,1fr))} .sighead .de{display:none} }
+
+/* витрина на выпущенных ролях */
+.shop{background:var(--n-1);color:var(--n-12);border-radius:14px;overflow:hidden;border:1px solid var(--n-6);font-family:var(--sans)}
+.shop-bar{display:flex;align-items:center;gap:14px;padding:12px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.shop-brand{font-weight:800;letter-spacing:.14em;font-size:13px}
+.shop-bar nav{display:flex;gap:12px;font-size:13.5px;color:var(--n-11)}
+.shop-bar nav .active{color:var(--n-12);font-weight:700;box-shadow:inset 0 -2px 0 var(--a-9)}
+.shop-cart{margin-left:auto;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.badge{display:inline-grid;place-items:center;min-inline-size:20px;block-size:20px;padding-inline:5px;border-radius:999px;background:var(--a-9);color:var(--on-a-9);font-size:11.5px;font-weight:700;box-shadow:0 0 0 2px var(--n-1)}
+.shop-body{padding:14px;display:grid;gap:14px}
+.pcard{background:var(--n-2);border:1px solid var(--n-6);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.pmedia{aspect-ratio:16/9;max-block-size:120px;border-radius:9px;background:var(--a-3);position:relative}
+.cut{position:absolute;inset:8px auto auto 8px;padding:2px 8px;border-radius:999px;background:var(--sale-9);color:var(--on-sale-9);font-size:12px;font-weight:700}
+.pbrand{color:var(--a-11);font-size:12.5px;font-weight:600}
+.ptitle{font-size:16px;font-weight:700}
+.psub{color:var(--n-11);font-size:12.5px}
+.prow{display:flex;align-items:baseline;gap:8px}
+.now{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums}
+.was{color:var(--n-11);text-decoration:line-through;font-size:12.5px;font-variant-numeric:tabular-nums}
+.stock{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;font-weight:600}
+.stock span{padding:2px 8px;border-radius:999px}
+.stock .ok{background:var(--ok-2);color:var(--ok-11)} .stock .warn{background:var(--warn-2);color:var(--warn-11)} .stock .err{background:var(--e-9);color:var(--on-e-9)}
+.states{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.state{display:flex;flex-direction:column;gap:4px;align-items:stretch}
+.state small{color:var(--n-11);font-size:11.5px;text-align:center}
+.buy{min-height:38px;border:0;border-radius:9px;background:var(--a-9);color:var(--on-a-9);font:600 13px var(--sans);cursor:default}
+.buy.hover{background:var(--a-10)} .buy.press{background:var(--a-press)}
+.buy.focus{outline:2px solid var(--ring);outline-offset:2px}
+.buy.off{background:var(--n-3);color:var(--n-9);border:1px solid var(--n-6)}
+.quiet{min-height:38px;border:0;border-radius:9px;background:var(--n-3);color:var(--n-12);font:600 13px var(--sans)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chipw{display:flex;flex-direction:column;gap:3px;align-items:center}
+.chipw small{color:var(--n-11);font-size:11px}
+.chip{padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:600;background:var(--n-3);color:var(--n-11)}
+.chip.hv{background:var(--n-4);color:var(--n-12)} .chip.pr{background:var(--n-5);color:var(--n-12)}
+.chip.tonal{background:var(--a-5);color:var(--a-11)} .chip.solid{background:var(--a-9);color:var(--on-a-9)}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.field{display:flex;flex-direction:column;gap:4px}
+.field .in{min-height:38px;border:1px solid var(--border);border-radius:9px;background:var(--n-1);color:var(--n-11);padding:0 10px;display:flex;align-items:center;font-size:13px}
+.field .in.filled{color:var(--n-12)}
+.field .in.focus{outline:2px solid var(--ring);outline-offset:2px}
+.field .in.bad{border-color:var(--e-9)}
+.field small{font-size:11.5px;color:var(--n-11)} .field small.bad{color:var(--e-11)}
+.banners{display:grid;gap:6px}
+.bn{padding:8px 10px;border-radius:9px;font-size:12.5px;border-left:3px solid}
+.bn.info{background:var(--info-2);color:var(--info-11);border-color:var(--info-9)}
+.bn.ok{background:var(--ok-2);color:var(--ok-11);border-color:var(--ok-9)}
+.bn.warn{background:var(--warn-2);color:var(--warn-11);border-color:var(--warn-9)}
+.deck{background:var(--n-12);color:var(--n-1);padding:12px 14px;font-size:12.5px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.deck .hair{opacity:.64}
+.hr{height:1px;background:var(--line);margin-block:2px}
+
+/* замер */
+table{border-collapse:collapse;inline-size:100%;font-size:13px}
+th{text-align:left;color:var(--mut);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;padding:6px 6px;border-bottom:1px solid var(--ln)}
+td{padding:7px 6px;border-bottom:1px solid var(--ln);vertical-align:top}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.tbl{overflow-x:auto}
+.finds{display:flex;flex-direction:column;gap:6px}
+.find{padding:8px 10px;border-radius:9px;background:var(--bad-bg);color:var(--bad);font-size:13px}
+.find.none{background:var(--good-bg);color:var(--good)}
+
+details{border:1px solid var(--ln);border-radius:12px;background:var(--sf)}
+summary{cursor:pointer;padding:12px 16px;font-weight:700}
+pre{margin:0;padding:0 16px 16px;overflow-x:auto;font-family:var(--mono);font-size:12px;line-height:1.45;color:var(--mut)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:10px}
+.stepc{border:1px solid var(--ln);border-radius:12px;padding:12px 14px;background:var(--sf);display:flex;flex-direction:column;gap:4px;font-size:14px}
+.stepc b{font-family:var(--mono);color:var(--ui);font-size:12px}
+footer{color:var(--mut);font-size:13px;border-top:1px solid var(--ln);padding-top:16px}
+</style>
+</head><body>
+
+
+<div class="top">
+  <div class="wrap">
+    <div class="bar">
+      <label for="set">Набор <select id="set"></select></label>
+      <button class="ghost" id="reset" type="button">Вернуть краски набора</button>
+      <div class="seg" role="group" aria-label="Какие темы показывать">
+        <button type="button" data-show="both" aria-pressed="true">Обе темы</button>
+        <button type="button" data-show="light" aria-pressed="false">Светлая</button>
+        <button type="button" data-show="dark" aria-pressed="false">Тёмная</button>
+      </div>
+    </div>
+    <div class="paints" id="paints"></div>
+  </div>
+</div>
+
+<div class="wrap" style="padding-top:28px">
+  <header style="display:flex;flex-direction:column;gap:12px">
+    <p class="eyebrow">Скилл palette · тот же код, что красит сайт</p>
+    <h1>Строитель палитры</h1>
+    <p class="lede">Заказчик называет три краски на тему — фон, текст, фирменный. Всё остальное, сорок с лишним красок магазина, считается и меряется. Ниже — как именно, шаг за шагом, на живом строителе: меняйте краски вверху, и вся страница пересчитается.</p>
+    <div class="steps">
+      <div class="stepc"><b>Шаги 1–4</b>три краски и проверка до построения</div>
+      <div class="stepc"><b>Шаг 5</b>лестницы: двенадцать ступеней на нейтраль и марку</div>
+      <div class="stepc"><b>Шаг 5</b>пять сигналов: ошибка, скидка, внимание, успех, сведение</div>
+      <div class="stepc"><b>Шаг 7</b>роли на элементах магазина</div>
+      <div class="stepc"><b>Шаг 6</b>замер: WCAG, APCA, расстояния, лестница</div>
+      <div class="stepc"><b>Шаги 9–10</b>что уезжает в проект</div>
+    </div>
+  </header>
+
+  <section id="s1">
+    <p class="eyebrow">Шаги 1–4</p>
+    <h2>Три краски — и проверка до построения</h2>
+    <p class="muted">Марка должна стоять в коридоре светлоты, где на ней читается знак; бумага — почти-белая с едва заметным тоном; чернила — не чёрные и не белые. Красный, оранжевый и зелёный не зависят от набора, скидка выводится из марки поворотом тона, сведение — синее эталона. Все семь красок обязаны быть различимы попарно: ΔE не меньше 25.</p>
+    <div class="pair" id="p1"></div>
+  </section>
+
+  <section id="s2">
+    <p class="eyebrow">Шаг 5 · лестницы</p>
+    <h2>Двенадцать ступеней, у каждой одна работа</h2>
+    <p class="muted">Концы лестницы — краски заказчика как есть (обведены): первая ступень — бумага, девятая цветного ряда — марка, двенадцатая — чернила. Светлота остальных — из профиля эталона Radix, тон держится у марки, насыщенность идёт дугой ближайшей породы. Тёмная тема — своя лестница, не инверсия: ступени идут от тёмной бумаги вверх.</p>
+    <div class="pair" id="p2"></div>
+  </section>
+
+  <section id="s3">
+    <p class="eyebrow">Шаг 5 · сигналы</p>
+    <h2>Пять сигналов — по три ступени и знак</h2>
+    <p class="muted">У плашки три работы: тихий фон, заливка и текст на бумаге, плюс знак на заливке, который выбирается замером. Двенадцать ступеней сигналу не нужны — у него нет органов управления.</p>
+    <div class="pair" id="p3"></div>
+  </section>
+
+  <section id="s4">
+    <p class="eyebrow">Шаг 7 · роли</p>
+    <h2>Те же краски на элементах магазина</h2>
+    <p class="muted">Лист, карточка, кнопка покупки в трёх состояниях, фокус, недоступное, фишки в покое и выбранные — тональное против сплошного, — поля с границей и кольцом, ошибка у поля, плашки наличия и скидки, сведение, подвал обратной парой. Ни одного числа мимо палитры: всё, что вы видите, читает переменные из выпущенного CSS.</p>
+    <div class="pair" id="p4"></div>
+  </section>
+
+  <section id="s5">
+    <p class="eyebrow">Шаг 6 · замер</p>
+    <h2>Числа, а не мнение</h2>
+    <p class="muted">WCAG — ворота (4.5 на текст, 3 на органы управления), APCA — обещание эталона (Lc 60 приглушённому, Lc 90 основному), ΔE 25 между красками, шаг лестницы не меньше 0.6 L*. Находка чинится краской или правилом строителя, никогда порогом.</p>
+    <div class="pair" id="p5"></div>
+  </section>
+
+  <section id="s6">
+    <p class="eyebrow">Шаги 9–10</p>
+    <h2>Что уезжает в проект</h2>
+    <p class="muted">Три краски на тему лежат в <code>styles/palette.json</code>; <code>npm run palette</code> выпускает <code>styles/palette.css</code> — ровно этот текст. Роли в <code>tokens.css</code> читают ступени, узлы читают роли. В новый проект набор приезжает одним ключом: <code>node install.mjs --palette "Имя" ../сайт</code>.</p>
+    <details><summary>Выпущенный CSS текущего набора</summary><pre id="css"></pre></details>
+  </section>
+
+  <footer>Строитель — <code>tools/palette.mjs</code> набора SiteBuildingSkill, вшит сюда без изменений; профиль ступеней снят с шкалы <code>sand</code> пакета @radix-ui/colors 3.0.0; пороги — WCAG 2.2 и APCA 0.0.98G. Наборы-образцы — <code>templates/palette.json</code>.</footer>
+</div>
+
+<script>
+const PROFILE_JSON = {
+  "source": "@radix-ui/themes 3.3.0",
+  "scales": {
+    "amber": {"light":{"steps":[99.3,98.4,96.7,93.8,90.7,86.2,79.8,71.3,82.7,79.9,49.2,24.4],"chroma":[0.018,0.151,0.435,0.658,0.844,0.784,0.779,0.892,1,1.068,0.821,0.309],"hue":84.1},"dark":{"steps":[5.7,8.6,13.7,18,22.6,28.4,36.3,45.7,82.7,86.7,83.7,92.4],"chroma":[0.085,0.117,0.281,0.399,0.456,0.499,0.524,0.613,1,1.148,1.1,0.456],"hue":84.1}},
+    "blue": {"light":{"steps":[99.2,98,95.4,93.1,89.3,84.4,78.3,69.5,59.1,56,48.3,21.3],"chroma":[0.018,0.048,0.104,0.181,0.266,0.353,0.459,0.629,1,0.949,0.84,0.499],"hue":251.8},"dark":{"steps":[6.6,8.7,15.8,21,26.5,32.2,38.9,46.6,59.1,63.8,72.9,89.5],"chroma":[0.132,0.157,0.343,0.501,0.549,0.587,0.631,0.723,1,0.877,0.651,0.264],"hue":251.8}},
+    "bronze": {"light":{"steps":[99,97.6,94.4,91.3,87.6,83.6,77.9,69.7,56.3,51.7,42.8,21.9],"chroma":[0.023,0.152,0.23,0.301,0.382,0.501,0.636,0.844,1,0.992,0.952,0.639],"hue":44.2},"dark":{"steps":[5.3,9,13.6,17.6,22,27.2,33.6,41.6,56.3,61,75.4,90],"chroma":[0.117,0.133,0.155,0.226,0.276,0.366,0.449,0.513,1,1.008,0.938,0.373],"hue":44.2}},
+    "brown": {"light":{"steps":[99.4,98.1,94.5,91.2,88,83.7,78.3,70.1,56.8,52.8,42.9,22.3],"chroma":[0.022,0.065,0.162,0.252,0.364,0.502,0.685,0.912,1,0.922,0.742,0.231],"hue":61},"dark":{"steps":[5.1,8.6,13.4,17.4,21.5,26.8,33.4,42.6,56.8,61.6,76.2,90.3],"chroma":[0.055,0.095,0.166,0.232,0.311,0.409,0.525,0.676,1,0.943,0.799,0.456],"hue":61}},
+    "crimson": {"light":{"steps":[99.2,97.8,94.2,90.8,86.8,82.1,76.6,69.4,54.3,51.3,44.9,21.8],"chroma":[0.016,0.037,0.12,0.188,0.249,0.307,0.366,0.47,1,0.989,0.973,0.53],"hue":1.3},"dark":{"steps":[5.9,7.6,12.7,16.6,20.9,26.7,34.4,44.8,54.3,57.9,72.8,88.6],"chroma":[0.068,0.109,0.281,0.439,0.491,0.507,0.567,0.695,1,0.927,0.628,0.254],"hue":1.3}},
+    "cyan": {"light":{"steps":[99.1,97.7,95.5,92.6,89.1,84.3,78.3,69.6,61.6,57.7,48.3,22.9],"chroma":[0.028,0.07,0.216,0.336,0.443,0.542,0.671,0.906,1,0.939,0.794,0.433],"hue":221.7},"dark":{"steps":[6.5,9,16.1,21.2,26.6,32.6,40.1,49.4,61.6,66.2,76.3,90.2],"chroma":[0.147,0.153,0.357,0.487,0.558,0.614,0.679,0.809,1,0.982,0.952,0.468],"hue":221.7}},
+    "gold": {"light":{"steps":[99.3,97.8,94.7,91.3,87.8,83.7,78.1,69.6,55.8,52.2,42.4,22.5],"chroma":[0.027,0.189,0.247,0.312,0.373,0.502,0.661,0.86,1,0.938,0.803,0.385],"hue":77.7},"dark":{"steps":[5.4,9.3,13.7,17.6,22.2,27.3,33.8,41.9,55.8,60.8,76,90.1],"chroma":[0.041,0.121,0.152,0.19,0.258,0.262,0.323,0.418,1,0.951,0.835,0.28],"hue":77.7}},
+    "grass": {"light":{"steps":[99.4,98,95.6,93,89.1,84.2,77.7,68.9,61.3,57.1,46.6,22.6],"chroma":[0.034,0.069,0.15,0.259,0.354,0.483,0.643,0.891,1,0.969,0.882,0.361],"hue":147.4},"dark":{"steps":[6.1,8.5,15.4,21.6,27.3,33.2,39.3,45.9,61.3,65.8,76.2,90.6],"chroma":[0.091,0.091,0.205,0.359,0.421,0.493,0.562,0.663,1,0.988,0.967,0.532],"hue":147.4}},
+    "green": {"light":{"steps":[99.4,98,95.5,92.8,88.9,84.2,77.8,68.6,60.1,56.7,48.6,22],"chroma":[0.031,0.074,0.168,0.28,0.368,0.482,0.626,0.853,1,0.953,0.84,0.357],"hue":157.7},"dark":{"steps":[6.1,8.8,16.1,21.6,27.3,32.9,39.3,46.6,60.1,64.2,76.7,90.1],"chroma":[0.092,0.116,0.298,0.428,0.497,0.543,0.62,0.725,1,1.058,1.245,0.624],"hue":157.7}},
+    "indigo": {"light":{"steps":[99.3,97.9,95.4,92.4,88.5,83.8,77.2,68.3,45.9,41.9,42,19.8],"chroma":[0.007,0.043,0.089,0.162,0.247,0.354,0.458,0.588,1,1.023,0.903,0.449],"hue":267},"dark":{"steps":[6.2,8.1,15.2,20.4,25.5,30.2,35.5,41.5,45.9,51.3,73.5,89.6],"chroma":[0.129,0.158,0.369,0.495,0.546,0.582,0.629,0.715,1,0.92,0.596,0.224],"hue":267}},
+    "iris": {"light":{"steps":[99.4,97.8,95.4,92.2,88.6,83.7,77.3,67.8,45,41.3,41.7,19.6],"chroma":[0.014,0.05,0.094,0.176,0.26,0.376,0.474,0.642,1,1.015,0.944,0.537],"hue":278.3},"dark":{"steps":[6.3,8,15.1,20.1,24.5,29.5,35,41.7,45,50.6,72.9,89.8],"chroma":[0.12,0.16,0.377,0.555,0.595,0.606,0.651,0.748,1,0.933,0.66,0.228],"hue":278.3}},
+    "jade": {"light":{"steps":[99.4,98,95.8,92.9,89.3,84.6,77.9,69.2,60.2,56.7,48.9,22.3],"chroma":[0.03,0.079,0.193,0.295,0.405,0.523,0.663,0.892,1,0.953,0.855,0.353],"hue":170.7},"dark":{"steps":[6,9.2,16.4,21.5,26.8,32.9,39.4,47.5,60.2,64.4,77.3,89.8],"chroma":[0.118,0.143,0.377,0.497,0.555,0.597,0.659,0.76,1,1.092,1.355,0.674],"hue":170.7}},
+    "lime": {"light":{"steps":[99.2,98,95.6,92.6,88.8,83.8,77.2,69.3,88.4,85.2,48.1,25.5],"chroma":[0.023,0.054,0.245,0.391,0.501,0.567,0.639,0.773,1,1.075,0.638,0.328],"hue":126.1},"dark":{"steps":[5.5,8.4,15.2,21.2,26.6,32.2,38.5,45.7,88.4,94.6,86,94.5],"chroma":[0.081,0.117,0.2,0.272,0.329,0.386,0.454,0.541,1,1.006,0.888,0.469],"hue":126.1}},
+    "mauve": {"light":{"steps":[99.1,98,94.8,92,89.3,86.8,82.9,76,58.8,54.9,42.5,12.2],"chroma":[0.087,0.147,0.321,0.384,0.536,0.586,0.729,0.949,1,0.936,0.822,0.698],"hue":292.9},"dark":{"steps":[5.2,8.9,13.4,16.9,20.2,24.5,30.6,40.9,46.5,51.7,73.1,94.1],"chroma":[0.254,0.243,0.336,0.452,0.539,0.645,0.694,0.945,1,0.98,0.844,0.156],"hue":294.2}},
+    "mint": {"light":{"steps":[99.3,97.9,95.8,93,89.3,84.4,77.7,69.3,86.3,82.9,44.8,25.3],"chroma":[0.054,0.099,0.306,0.476,0.611,0.721,0.842,1.064,1,0.989,0.956,0.506],"hue":178},"dark":{"steps":[6.2,8.7,15.7,21.3,26.5,32.6,39.6,48,86.3,91.4,78,92.8],"chroma":[0.106,0.17,0.392,0.542,0.621,0.663,0.726,0.854,1,0.791,1.182,0.571],"hue":178}},
+    "olive": {"light":{"steps":[99.2,98.1,94.9,92.1,89.6,86.7,82.8,75.9,58.4,54.5,42.2,12.2],"chroma":[0.143,0.286,0.288,0.29,0.437,0.44,0.444,0.549,1,1.013,0.951,0.937],"hue":136.6},"dark":{"steps":[5.3,8.6,13.1,16.8,20,24.1,30.2,40.8,46.3,51.6,73,93.9],"chroma":[0.238,0.229,0.22,0.336,0.329,0.405,0.504,0.732,1,0.875,0.719,0.187],"hue":139.4}},
+    "orange": {"light":{"steps":[99.1,97.6,95.1,90.5,86.6,82.4,76.6,69.2,61.9,58.5,49.8,23.8],"chroma":[0.013,0.083,0.194,0.341,0.458,0.56,0.588,0.693,1,1.019,0.913,0.359],"hue":45},"dark":{"steps":[5.8,8,13.6,17.4,21.9,27.8,35.6,45.5,61.9,67.1,74.2,91],"chroma":[0.06,0.097,0.234,0.373,0.436,0.454,0.495,0.606,1,0.952,0.751,0.274],"hue":45}},
+    "pink": {"light":{"steps":[99.2,97.9,94.3,90.7,86.8,82.3,76.7,69.6,52.4,49.9,45.5,22.6],"chroma":[0.02,0.044,0.133,0.203,0.266,0.323,0.4,0.516,1,0.999,0.996,0.621],"hue":346},"dark":{"steps":[6,7.6,13.4,17.1,21.6,27.4,35.3,45.2,52.4,56.3,72.7,88.2],"chroma":[0.084,0.152,0.301,0.472,0.504,0.518,0.576,0.698,1,0.949,0.747,0.283],"hue":346}},
+    "plum": {"light":{"steps":[99.2,97.8,94.7,91.1,87.5,82.9,76.7,68.4,48.4,45.4,42,21.3],"chroma":[0.024,0.054,0.145,0.233,0.308,0.378,0.488,0.64,1,0.965,0.92,0.667],"hue":322.1},"dark":{"steps":[6,7.9,14.1,18.4,22.5,27.7,35.4,45.4,48.4,52.9,73.1,88.4],"chroma":[0.095,0.17,0.324,0.465,0.515,0.518,0.572,0.682,1,0.968,0.818,0.293],"hue":322.1}},
+    "purple": {"light":{"steps":[99.2,97.7,94.9,91.8,87.9,82.8,76.2,67.6,46,42.5,41.6,19.9],"chroma":[0.018,0.055,0.136,0.211,0.292,0.393,0.502,0.67,1,0.959,0.948,0.603],"hue":305.9},"dark":{"steps":[6.1,8.4,14.3,18.7,22.8,27.9,34.7,45.1,46,50.8,72.8,89.1],"chroma":[0.123,0.164,0.335,0.447,0.503,0.527,0.59,0.725,1,0.966,0.794,0.266],"hue":305.9}},
+    "red": {"light":{"steps":[99.2,97.8,94.5,90.4,86.7,82.4,76.4,68.8,53.8,50.8,45.8,21.7],"chroma":[0.017,0.044,0.107,0.207,0.294,0.383,0.459,0.586,1,1.007,1.021,0.563],"hue":23},"dark":{"steps":[5.9,7.4,12.2,16.2,21,26.6,34.5,45,53.8,58.5,72.8,87.9],"chroma":[0.07,0.112,0.336,0.492,0.552,0.573,0.626,0.754,1,0.917,0.663,0.272],"hue":23}},
+    "ruby": {"light":{"steps":[99.2,97.9,94.3,90.7,87.1,82.6,76.9,69.4,54,50.8,44.7,21.9],"chroma":[0.018,0.044,0.113,0.202,0.288,0.341,0.41,0.524,1,1.009,1.019,0.562],"hue":13.2},"dark":{"steps":[5.9,7.9,12.6,16.6,21.3,26.7,34.3,44.9,54,58.4,72.8,88.3],"chroma":[0.071,0.078,0.314,0.458,0.512,0.544,0.594,0.743,1,0.925,0.661,0.271],"hue":13.2}},
+    "sage": {"light":{"steps":[99.1,97.8,94.9,92.1,89.6,86.8,82.8,75.9,58.3,54.4,42.2,12],"chroma":[0.24,0.241,0.335,0.337,0.406,0.341,0.499,0.508,1,1.013,0.782,1.13],"hue":171.6},"dark":{"steps":[5.3,8.5,13,16.7,20,24.4,30.5,40.9,46,51.3,73,93.9],"chroma":[0.216,0.208,0.2,0.267,0.261,0.367,0.42,0.567,1,0.885,0.565,0.144],"hue":170.5}},
+    "sand": {"light":{"steps":[99.3,97.9,94.8,92,89.5,86.7,82.7,75.8,58.4,54.2,41.8,12.2],"chroma":[0.129,0.129,0.168,0.283,0.409,0.412,0.546,0.823,1,0.87,0.761,0.739],"hue":106.7},"dark":{"steps":[5,8.7,13.2,17,20.2,24.4,30.6,40.8,46,51.5,72.9,94],"chroma":[0.184,0.176,0.169,0.326,0.478,0.483,0.611,0.75,1,0.96,0.794,0.242],"hue":93.7}},
+    "sky": {"light":{"steps":[99.3,97.7,95.6,92.9,89.2,84.3,78.1,69.2,84.9,82.2,45.6,24.9],"chroma":[0.053,0.101,0.234,0.342,0.454,0.556,0.697,0.936,1,1.011,1.051,0.557],"hue":217.8},"dark":{"steps":[6.2,9,15.5,21.3,27.5,33.7,41,49.1,84.9,90.2,76.6,92.9],"chroma":[0.243,0.283,0.521,0.684,0.761,0.855,0.956,1.115,1,0.712,0.965,0.512],"hue":217.8}},
+    "slate": {"light":{"steps":[99,98,94.9,92.1,89.6,86.9,82.9,76,58.8,54.8,42.3,12],"chroma":[0.08,0.161,0.243,0.326,0.416,0.578,0.672,0.948,1,0.939,0.828,0.589],"hue":277.7},"dark":{"steps":[5.1,8.7,13.2,16.9,20.2,24.2,30.3,40.8,46.3,51.6,73.2,94.1],"chroma":[0.265,0.275,0.38,0.456,0.542,0.672,0.787,1.013,1,0.949,0.629,0.189],"hue":262.3}},
+    "teal": {"light":{"steps":[99.3,98,95.8,93,89.1,84.2,77.5,69.1,60.9,57.4,49.5,22.7],"chroma":[0.039,0.078,0.228,0.371,0.468,0.566,0.669,0.857,1,0.963,0.889,0.446],"hue":182},"dark":{"steps":[6.1,9.2,16.2,21.6,27,33,39.9,47.6,60.9,65.6,77.6,90.1],"chroma":[0.107,0.14,0.332,0.478,0.529,0.577,0.649,0.758,1,1.081,1.292,0.635],"hue":182}},
+    "tomato": {"light":{"steps":[99.2,98.1,94.4,90.4,86.4,82,75.9,68.5,54.2,51.4,47.1,23.1],"chroma":[0.016,0.039,0.111,0.212,0.305,0.398,0.488,0.612,1,1.006,1.022,0.412],"hue":33.3},"dark":{"steps":[5.7,7.9,12.8,16.5,21.1,26.7,34.4,44.8,54.2,58.8,72.8,87.7],"chroma":[0.061,0.088,0.283,0.447,0.504,0.518,0.549,0.668,1,0.923,0.677,0.24],"hue":33.3}},
+    "violet": {"light":{"steps":[99.1,97.9,95.5,91.9,88.4,83.6,76.7,67.6,44.9,41.3,41.2,19.3],"chroma":[0.016,0.053,0.106,0.206,0.291,0.403,0.504,0.666,1,0.991,0.888,0.545],"hue":288},"dark":{"steps":[6.1,8.2,14.7,19.1,23.5,28,34.4,42.8,44.9,50.5,73.1,89.4],"chroma":[0.146,0.179,0.366,0.519,0.554,0.57,0.616,0.729,1,0.945,0.696,0.251],"hue":288}},
+    "yellow": {"light":{"steps":[99.2,98.7,97.3,94.9,91.5,86.3,80.9,72.7,90.8,88.2,49.5,25.5],"chroma":[0.029,0.136,0.456,0.636,0.767,0.729,0.655,0.746,1,1.007,0.648,0.251],"hue":100.9},"dark":{"steps":[5.5,8.3,14.2,18,22.8,28.6,36.4,46,90.8,97.4,88.8,93.5],"chroma":[0.076,0.094,0.257,0.327,0.373,0.422,0.44,0.515,1,0.99,0.905,0.407],"hue":100.9}}
+  }
+};
+/*
+ * Пороги набора — слой 0, «что нельзя нарушать ни одним слоем».
+ *
+ * Одно место на все проверки. До 20.09.2026 те же числа стояли литералами в
+ * пяти инструментах: 44 и 4.5 в отрисованной проверке, 8 в файловой, 2.5 и
+ * 16 в строителе шкал, 4.5 и 3 в строителе палитры, — и слой 0 из
+ * исследования (`docs/layers.md`, §2: «Пороги в одном месте, каждый слой
+ * проверяется против них») не имел реализации. Правило без реализации хуже
+ * отсутствующего (CLAUDE.md).
+ *
+ * У каждого порога — откуда он. Число без источника сюда не ставится.
+ * Файл не ввозит ничего: его вставляют в браузер как есть (строитель
+ * палитры глазами), и ввоз там не запустится.
+ */
+
+/** Контраст текста и органа. WCAG 2.2, 1.4.3 (AA): текст 4.5 : 1, крупный
+ *  текст и части органов 3 : 1 (1.4.11). Крупный — от 24px, или от 18.66px
+ *  при весе 700. */
+const CONTRAST = { text: 4.5, control: 3, largePx: 24, largeBoldPx: 18.66 }
+
+/** Расстояние между марками палитры (ΔE76) и обещание читаемости по APCA
+ *  (Lc): приглушённый текст 60, основной 90 — из строителя палитры (И189).
+ *  Украшение — Lc 15: «the point of invisibility for many users … the
+ *  minimum for any non-semantic non-text that needs to be discernible and
+ *  is at least 5px in its smallest dimension» (APCA Readability Criterion,
+ *  Myndex, таблица уровней Lc «Bronze simple mode»). Им мерятся тона хвоста
+ *  главной кнопки: шеврон толщиной 0.3 высоты кнопки (12px при 40) —
+ *  украшение, смысла не несёт, но обязан быть виден на своём полу (И295). */
+const COLOUR = { brandApart: 25, mutedLc: 60, mainLc: 90, decorLc: 15 }
+
+/** Тёмная тема — правила `.claude/skills/craft/references/color.md`, «Шесть
+ *  правил»; меряет `check:theme` (И766). Мера — OKLab: светлота ×100,
+ *  насыщенность как есть. Нейтральная поверхность ночью: предмет над полом
+ *  (карточка, меню) от 6, предмет внутри предмета (плашка, орган) и полоса
+ *  от 2 — числа правила 1, купленного замером заказчика: ступени ночью были
+ *  вдвое мельче дневных, заливка стояла в 11 от листа против 59; на тёмном
+ *  полу тень не отделяет (Carbon, Atlassian: глубина ночью — светлотой).
+ *  Цветная (палуба, заливка марки) — от 20 до страницы в обеих темах
+ *  (правило 2); серая палуба ночью — предмет над полом, от 6 (И293, И568).
+ *  Края: пол ночью не ниже 10, текст не выше 96 (правило 4;
+ *  Material Design, Dark theme: поверхность тёмно-серая, а не чёрная, текст
+ *  не чисто белый). Порог различения `jnd` — 0.02 ΔE OKLab (CSS Color 4,
+ *  «Gamut mapping», JND): ступень ночью «не мельче дневной» и насыщенность
+ *  ночью «не выше дневной» прощают его, но не больше. */
+const NIGHT = { lift: 6, inner: 2, colour: 20, floor: 10, ink: 96, jnd: 0.02 }
+
+/** Стекло тихого органа на снимке (`--plate-glass`, И601): наименьшая доля
+ *  непрозрачности, ниже которой строитель палитры не опускается. Сама доля —
+ *  наименьшая, при которой тёмная надпись держит 4.5 : 1 над чёрным снимком
+ *  (53 %); пол выше неё — слово заказчика 02.10.2026: «подними до 64%»
+ *  (светлая подложка под тёмным именем на тёмном снимке была слабой), и ещё
+ *  раз тем же днём: «давай 80 непрозрачность»; затем 90 %, и «давай сделаем 86%». */
+const PLATE_GLASS = { floor: 0.86 }
+
+/** Красная семья (И463): тон Oklch от середины «пурпур ↔ красный» до
+ *  середины «красный ↔ оранжевый» именованных красок CSS (CSS Color 4:
+ *  `magenta` 328.4°, `red` 29.2°, `orange` 70.7° в Oklch) — 358.8…50°; и
+ *  насыщенность не ниже 0.06 — середины между потолком бумаги (0.02, закон
+ *  палитры) и вином `#722F37` (0.095): ниже краска читается тёплым серым, а
+ *  не красным. Терракота `#A34627` (38.5°), бордо `#800020` (18.6°), вино
+ *  (15.1°), коралл (40.2°) — красная семья; латунь (82°) — нет. Красное
+ *  читают как беду (Apple HIG, Color: «red … to indicate errors or
+ *  destructive actions»; Material 3, error role), и марка этой семьи на
+ *  большой площади говорит тревогу там, где тревоги нет. */
+const RED = { hue: [358.8, 50], chroma: 0.06 }
+
+/** Цель под пальцем и просвет между целями. WCAG 2.2, 2.5.8 «Target Size
+ *  (Minimum)»: 24 — пол, ниже которого не опускается никто; 44 — 2.5.5 (AAA)
+ *  и Primer `control.minTarget` под грубым указателем; зазор 16 — Primer
+ *  `controlStack.gap` под пальцем, 8 под курсором. */
+const TARGET = { coarse: 44, floor: 24, gap: { fine: 8, coarse: 16 } }
+
+/** Ритм. Клетка ступенчатая — так у Tailwind 4: шаг 2 до 16, дальше 4, выше
+ *  64 — 8 (docs/layers.md, §3.2). Ниже 8 — доводка, не ступень: единственное
+ *  признанное отступление — «волосок» ≤ 1px под рамку. Поле не бывает нулём.
+ *  Соседние ступени различимы от 8% (семья `nearStep`). Верх ступени не
+ *  больше 2.5 низов — Utopia роняет ступень выше этого: при зуме 200% рампа
+ *  упирается в потолок раньше, чем текст вырастет вдвое (WCAG 1.4.4). */
+const RHYTHM = {
+  cell: (px) => (px < 16 ? 2 : px < 64 ? 4 : 8),
+  floor: 8,
+  near: 1.08,
+  spread: 2.5,
+}
+
+/** Воздух к полю и рост роли от телефона к макету — замер семи живых
+ *  люкс-магазинов на 375 и 1440 (Apple Store, Le Labo, Byredo, Diptyque,
+ *  Muji US, Cuyana, Glossier; `research/site-building-2026-09-20/raw/
+ *  findings/space/pro_luxury-measured.json`). Воздух между полосами больше
+ *  поля карточки в 3–5 раз (Muji 2.6…3.5, Glossier 5). Воздух МЕЖДУ
+ *  РАЗДЕЛАМИ растёт ×1.33…1.5 (Muji ×1.35, Glossier ×1.33, Diptyque ×1.4);
+ *  прочие расстояния — шире: шапки ×1.36…1.74, край страницы Byredo ×1.75,
+ *  а зазоры сетки до ×3 — их коридор не держит. Пары ступеней Utopia для
+ *  этого же магазина дают ×1.13…1.7 на соседних ступенях. Отсюда два
+ *  коридора: разделы — как замерено, остальной воздух — от роста текста
+ *  (Spectrum: макет к телефону 1 : 1.25) до самого широкого замеренного
+ *  расстояния, не считая сеток. УМЕРЕННО: семь сайтов, две ширины, и 375
+ *  нет в первой шестёрке ширин ни у Румынии, ни у Хорватии (StatCounter,
+ *  08.2026) — замер на 393 / 414 ещё впереди. */
+const AIR = { toPad: 3, growth: { page: [1.33, 1.5], other: [1.25, 1.75] } }
+
+/** Кегль. Нижний конец ступени — телефонный размер по нормам: тело 16
+ *  (Material Body Large; iOS Body 17; ниже 16 Safari на телефоне зумит
+ *  страницу при фокусе на поле), вторичный 14 (Material Body Medium), мелкий
+ *  12 (ниже текст не читают, а разбирают), заголовок раздела 24 (контраст к
+ *  телу не меньше 1.5 : 1). Отношение лестницы — от малой секунды (1.067) до
+ *  квинты (1.5): ниже ступени неразличимы, выше между телом и заголовком
+ *  не помещается подзаголовок. */
+const TYPE = {
+  floor: { base: 16, sm: 14, xs: 12, h2: 24 },
+  ratio: [1.067, 1.5],
+  headContrast: 1.5,
+  /* Заголовок страницы к заголовку раздела — не меньше 1.25 : 1 на обоих
+     концах: Material 3 — Headline Large 32 к Headline Small 24 (1.33), Apple
+     HIG — Large Title 34 к Title 1 28 (1.21). Ближе — два заголовка одного
+     веса, и страница читается без главного (разбор impeccable 27.09.2026:
+     h1 30 и h2 25.5 на телефоне, 42 и 35.3 на макете — 1.18). И498. */
+  pageToSection: 1.25,
+  /* Мера строки в знаках: Butterick 45…90, Refactoring UI 40…80, Spectrum
+     50…120 «лучше ~70», Every Layout «не больше 60». Коридор — где сходятся. */
+  measure: [45, 80],
+  /* Подпись под заголовком — одна-три строки, читается одним взглядом с
+     заголовком, не сплошным чтением: потолок — верх коридора Баттерика (90).
+     Ширину подписи заказчик взял у Gymshark (вводный текст категории 798px,
+     03.10.2026; И680). */
+  measureCaption: 90,
+  /* Крупный текст, мерящий свою колонку (`cqi`), растёт при увеличении
+     страницы только нижним концом: верх к низу не больше 2.5 — тогда при
+     500 % масштаба он достигает двойного размера (Utopia, «Designing with
+     fluid type scales», WCAG 1.4.4). И245. */
+  displaySpread: 2.5,
+  /* Ярусы текста — доля основного текста (И561). Вторичный — 0.8 и не
+     мельче 14, третичный — 0.7 и не мельче 12; подзаголовок и цена — 0.8
+     заголовка. При теле 16 это ровно Material 3 (Body Large 16 → Body Medium
+     14 → Body Small 12: 0.875 и 0.75, полы берут своё); Apple HIG — Body 17
+     → Subheadline 15 → Footnote 13 (0.88, 0.76); при теле 20 — 16 и 14,
+     слово заказчика 29.09.2026: «рейтинг, лаб репорт 16, если остальной
+     текст 20»; мелкий был 0.65 (13 при 20) — «увеличь до 14»: 0.7. 0.8 — большая терция вниз (1.25), та же доля у ступени
+     заголовок → подзаголовок: Apple Large Title 34 → Title 1 28 (0.82). */
+  /* Заголовок раздела и полки — ступенью ниже имени страницы (И712; слово
+     заказчика 04.10.2026 по замеру карты товара: имя 36 и «Similar products»
+     36 — два главных на странице). Ручка «заголовок» — ступень `h1`, имя
+     страницы и товара; раздел `h2` — 0.8 её и не мельче 24 (пол заголовка
+     раздела, TYPE.floor): Apple Large Title 34 → Title 1 28 (0.82), Material
+     Headline Large 32 → Medium 28; у Allbirds имя 30 при разделах 16–24,
+     у Gymshark 31 при 20 (замер 04.10.2026). Подзаголовок `h3` — между
+     текстом и разделом (среднее геометрическое), но не ниже 0.8 раздела:
+     ступень обязана отстоять от обоих соседей — доля одной ручки при крупном
+     тексте прижималась к телу, среднее при мелком — к вводному абзацу. */
+  tiers: {
+    sm: { от: 'тело', доля: 0.8, пол: 14 },
+    xs: { от: 'тело', доля: 0.7, пол: 12 },
+    h2: { от: 'заголовок', доля: 0.8, пол: 24 },
+    h3: { между: ['base', 'h2'], доля: 0.8 },
+  },
+  /* Ручки типографики панели (И561) — размер основного текста и размер
+     заголовков на макете, заказчик 29.09.2026: «размер текстов 16 / 18 / 20
+     (ноут), заголовков 34 / 36 / 39». Телефонный конец — у текста не мельче
+     16 (iOS увеличивает страницу при фокусе на поле мельче, IOS_ZOOM); у
+     заголовка — три четверти макета (Material 3: Headline Large 32 на
+     телефоне, Display Small 36 на планшете). Каждая ручка несёт и крупный
+     текст первого экрана, который растёт вместе с ней: вводный абзац — с
+     текстом, герой и заголовок витрины — с заголовками; тогда порядок
+     «герой ≥ витрина ≥ заголовок раздела» держится при любом выборе. */
+  knobs: {
+    текст: {
+      16: { тело: [16, 16], крупные: { ввод: { низ: 18, верх: 21, наклон: 3, основа: 2 } } },
+      18: { тело: [16, 18], крупные: { ввод: { низ: 18, верх: 21, наклон: 3, основа: 2 } } },
+      20: { тело: [17, 20], крупные: { ввод: { низ: 20, верх: 23, наклон: 3, основа: 3 } } },
+    },
+    заголовок: {
+      34: { заголовок: [26, 34], крупные: { герой: { низ: 32, верх: 54, наклон: 7.1, основа: 4 }, заголовок: { низ: 38, верх: 54, наклон: 6.5, основа: 14 } } },
+      36: { заголовок: [27, 36], крупные: { герой: { низ: 32, верх: 54, наклон: 7.1, основа: 4 }, заголовок: { низ: 38, верх: 54, наклон: 6.5, основа: 14 } } },
+      39: { заголовок: [29, 39], крупные: { герой: { низ: 32, верх: 54, наклон: 7.1, основа: 4 }, заголовок: { низ: 38, верх: 54, наклон: 6.5, основа: 14 } } },
+    },
+  },
+}
+
+/** Поле ввода на телефоне не мельче 16px: iOS Safari при фокусе на поле
+ *  мельче увеличивает страницу и назад не возвращает. Это факт браузера, а
+ *  не вкус (Эмиль Ковальский, mobile-native, исправление 4; тот же порог —
+ *  пол тела `TYPE.floor.base`). Семья `fieldZoom` в check:craft. */
+const IOS_ZOOM = 16
+
+/** Главный заголовок — не больше трёх строк на любой ширине: мера держится
+ *  ролью заголовка, а не длиной текста (taste-skill, gpt-tasteskill: «The H1
+ *  MUST NEVER exceed 2 to 3 lines»; impeccable, правило oversized-h1).
+ *  Считаются строки, а не размер — со строителем шкал это не спорит. Семья
+ *  `h1Lines` в check:craft. */
+const H1_LINES = 3
+
+/** Роли текста. Межстрочье заголовка 1.1…1.3 (Spectrum: 1.3 у заголовков),
+ *  текста 1.25…1.6 (Butterick: 120…145 % от кегля; Spectrum 1.5; 1.5 обязан
+ *  не ломать вёрстку — WCAG 1.4.12). Веса 400…700 (M3: 400 / 500 / 700;
+ *  800 и выше — счётчик на органе, не роль). Разрядка больше 0.05em в любую
+ *  сторону — приём, а не набор. */
+/* `voices` — сколько толщин у ролей текста, кроме логотипа (И674): у
+   Glossier, Dawn, Byredo, Gymshark, Allbirds в тексте 1–2 веса (замер
+   03.10.2026, 1920 и 1280); Material 3 — два веса, выделенный только у
+   главного; Atlassian — «heading styles, rather than bold». */
+const TEXT = { headLead: [1.1, 1.3], textLead: [1.25, 1.6], weights: [400, 500, 600, 700], trackMax: 0.05, voices: 2 }
+
+/** Размер органа (слой 7): три размера — «two or (at most) three sizes»
+ *  (Curtis). Под курсором 32 / 40 / 48 — ряд Carbon `container` (24 / 32 /
+ *  40 / 48 / 64), Radix `--base-button-height` (24 / 32 / 40 / 48), Spectrum
+ *  «шаг 8 на десктопе»; своя семья, не ступень ритма (Carbon: «44px-class
+ *  touch targets don't land cleanly on 8px multiples»). Под пальцем 44 / 48
+ *  / 56: малый — 44 (WCAG 2.5.5, HIG, Primer `control.minTarget` coarse 44,
+ *  правило набора И15), средний — 48 (M3: «consider making touch targets at
+ *  least 48 x 48dp»; слой состояния 40, цель 48), крупный — следующая
+ *  ступень клетки 8. Цель у знака мельче органа: 24 под курсором (WCAG
+ *  2.5.8 AA), 44 под пальцем. Надпись — ступени лестницы управления. */
+/*  `face` — рисунок малого органа, чья цель пальца вынесена наружу запасом
+ *  (`data-hit='out'` счётчика, `.tap`, знак на снимке): под пальцем он не
+ *  растёт, растёт невидимая цель. M3: «icon button» XS — контейнер 32 при
+ *  цели 48; Gymshark (телефон 390, замер 05.10.2026) — сердце карточки 32 при
+ *  цели 44; cbdin.bg — счётчик строки шторки около 30. Без этой роли счётчик
+ *  корзины и кружок сердца рисовались ростом пальца, 44–48: счётчик крупнее
+ *  снимка товара, сердце — треть карточки (слово заказчика 05.10.2026:
+ *  «огромный счётчик», «размер иконки сердца меньше для моб.»). */
+/*  `faceMd` — рисунок кнопки с надписью в тесной ячейке (кнопка карточки
+ *  полки): 40 и под пальцем, цель 44 запасом (`.tap`). M3: кнопка 40 при цели
+ *  48; Allbirds (телефон 390, замер 05.10.2026) — «Add to cart» карточки 40,
+ *  cbdin.bg — «Добави» карточки 40; Gymshark кнопки на карточке не ставит.
+ *  Ростом пальца (48) кнопка повторялась на полке двадцать четыре раза и
+ *  весила как кнопка страницы товара (заказчик 05.10.2026: «кнопки Add для
+ *  мобайла нужно делать меньше?»; поправка И764). */
+const CONTROL = {
+  heights: { fine: [32, 40, 48], coarse: [44, 48, 56] },
+  target: { fine: 24, coarse: 44 },
+  face: 32,
+  faceMd: 40,
+  text: ['xs', 'sm', 'base'],
+}
+
+/** Движение (слой 10). Три длительности по работе — ответ на нажатие,
+ *  смена под рукой (цвет, тень), раскрытие всплывающего — и две кривые:
+ *  вход ease-out, уход ease-in (Atlassian: «interactions 50–150 ms,
+ *  transitions 150–400 ms», «ease-out на ввод, ease-in на уход»; Carbon
+ *  `duration-fast-01` 70 … `slow-02` 700; M3 {fast, default, slow} ×
+ *  {spatial, effects} — не больше шести). Дольше 700 — не переход, а
+ *  ожидание. Двигаются только `transform` и `opacity` (Vercel WIG); смена
+ *  темы не анимируется (next_theming); отклик на нажатие — INP ≤ 200 мс. */
+/*  Перелёт кривой: `cubic-bezier(x1, y1, x2, y2)` с y вне −0.1…1.1 — пружина,
+ *  проскакивающая цель и возвращающаяся; в интерфейсе магазина это «прыжок»
+ *  (impeccable, правило bounce-easing, коридор его детектора; Эмиль
+ *  Ковальский, STANDARDS.md, «Springs»: «avoid bounce in most UI»). Семья
+ *  `motion` в check:css. */
+const MOTION = { press: [50, 150], hover: [150, 400], open: [150, 400], max: 700, tokens: 6, curves: 2, overshoot: [-0.1, 1.1] }
+
+/** Состояния (слой 10). Вуаль наведения и нажатия — доля чернил поверх
+ *  поверхности: M3 слой состояния 8 % наведение, 10 % фокус и нажатие, 16 %
+ *  перетаскивание; замер тихой кнопки набора — 1.16 : 1 на листе при 4…5 %
+ *  (palette, «Тихий голос»), отсюда коридор наведения 4…8 %, нажатия — вдвое
+ *  дальше (Carbon: hover полступени, active две). Выключенное — 38 %
+ *  содержимого (M3), но не ниже Lc 30 (APCA) и не ниже 3 : 1 для «нет в
+ *  наличии» (замечание проекта к M3): коридор 0.38…0.5 непрозрачности.
+ *  Кольцо фокуса 2px и не ниже 3 : 1 (Spectrum, WCAG 2.2 1.4.11 / 2.4.13). */
+/*  Орган, закрашенный вуалью или тоном, виден на своём полу от 1.15 : 1 —
+ *  замер набора (craft, controls.md, «Кнопка: голос»): 1.10 не видно, 1.15
+ *  видно; норматива нет. Им же меряет семья `sunk` в check:craft.
+ *  Вуаль тихого голоса — 8 % чернил, верх коридора наведения: её выпускает
+ *  строитель палитры ролью `--quiet-paper` (tools/palette.mjs, VEIL), и
+ *  тот же расчёт меряет, что тихая кнопка видна на каждом полу (И285,
+ *  И295). Выключенное меряется на нижнем краю коридора `off`: кромка
+ *  выключенной кнопки (`--edge-off-*`) видна при любой непрозрачности,
+ *  которую коридор разрешает.
+ *  Кромка органа С НАДПИСЬЮ или знаком в покое (`edge`) — тихая линия, не
+ *  опознание: орган опознаёт надпись, а 3 : 1 WCAG 1.4.11 требует лишь от
+ *  того, без чего орган не опознать (кромка поля, галочка). Замер живых
+ *  систем 30.09.2026: Primer, кромка кнопки #D1D9E0 — 1.43 : 1 на белом;
+ *  Polaris #E3E3E3 — 1.28. Под рукой кромка темнеет до 3 : 1 (`--edge-hand`
+ *  строителя палитры; И588). Где руке отвечает не сама кромка, а плашка
+ *  (имя на снимке, И635), кромка темнеет на полшага — до 2 : 1
+ *  (`--edge-near`, `edgeNear`), посередине между покоем и 3 : 1.
+ *  Шаг руки (`step`, И702) — ОДНА доля слоя состояния у всех органов,
+ *  как у M3 (наведение 8 %, нажатие 10…12 % — у залитой, контурной, строки и
+ *  поля одна): шаг светлоты под рукой у залитой кнопки, тихой, строки и
+ *  половинки счётчика выходит одним (заказчик 04.10.2026: «у add to cart
+ *  оттенок меняется немного, у быстрого заказа — сильнее… и у счётчика на
+ *  такую же величину»). Роли `--state-hover`, `--state-press` равны им
+ *  (`stateOut`, check:css). `stepSpread` — меньший шаг не меньше этой доли
+ *  большего (замер `hand-step` строителя палитры днём, пункты OKLab; ночь
+ *  открыта — docs/open.md). */
+const STATE = { hover: [0.04, 0.08], press: [0.08, 0.16], step: { hover: 0.08, press: 0.12 }, stepSpread: 0.6, off: [0.38, 0.5], focus: 0.1, drag: 0.16, ring: 2, visible: 1.15, quiet: 0.08, edge: 1.4, edgeNear: 2 }
+
+/** Знаки (слой 11): Carbon 16 / 20 / 24 / 32, Spectrum 18 на десктопе / 22 под
+ *  пальцем, M3 24 при цели 48; цель у знака без текста — не меньше 44
+ *  (Carbon) … 48 (Spectrum, M3). */
+const ICON = { sizes: [16, 20, 24, 32], target: 44 }
+
+/** Раскладка (слой 8). Швов — не больше трёх (CLAUDE.md, запрет 3): M3
+ *  держит пять классов окна, Carbon пять швов, cbdshop дошёл до девяти —
+ *  «мало, с именем и причиной, в реестре» (`tools/seams.mjs`). Переток —
+ *  320 CSS px (WCAG 2.2, 1.4.10: 320 = 1280 при зуме 400 %), отсюда и первая
+ *  ширина свипа; последняя — 1600 (M3 extra-large от 1600, Carbon max 1584).
+ *  Свип идёт шагом 40 и вдобавок встаёт на каждый шов и на пиксель выше него
+ *  (ступенька живёт на 820 / 821), и на сложенные внутренние экраны — 690 /
+ *  829 (Galaxy Z Fold 5), 836 / 842 (Pixel 9 Pro Fold): раскладка там ровно
+ *  на шве (`next_responsive.json`, rules[19]). Низкое окно — ноутбук заказчика:
+ *  экран 1920×1080 с масштабом Windows 150 % минус панель задач и полоса
+ *  Chrome — 1280×587 (снимок 03.10.2026, И659; прежде 657 — 1366×768 без
+ *  масштаба, и герой, вылезший за край на 587, проверку прошёл). Ступенька размера между соседними ширинами
+ *  свипа — от 6px (самая крутая кривая, герой 8.5 % колонки, даёт 3.4 на
+ *  шаг 40; вдвое больше — не течение). Кадр под `cover`, оставляющий меньше
+ *  45 % снимка, — лента (950×300 под 1100×1200 оставляли 31 %). Край
+ *  страницы от телефона к макету растёт не больше чем в 2.5 раза: люкс
+ *  держит его постоянным (Diptyque 12 / 12, Muji 10 / 10) или ×1.75
+ *  (Byredo), Atlassian 16 → 32 (×2), Utopia s→l 18 → 40 (×2.2); Carbon —
+ *  16 фиксировано внутри шва. Потолок кадра — 60 % малого окна (svh):
+ *  телефон в альбоме 360…430 по высоте, и кадр без потолка съел бы экран. */
+const LAYOUT = {
+  seams: 3,
+  reflow: 320,
+  sweep: [320, 1600],
+  step: 40,
+  extra: [690, 829, 836, 842],
+  shortWindow: 587,
+  jump: 6,
+  crop: 0.45,
+  edgeGrowth: [1, 2.5],
+  frameCap: 60,
+  /* Товарная полка cbd-витрины: решение владельца 21.09.2026 после
+     отрисованной проверки storefront3 и сверки с каталогом, у которого
+     есть постоянная боковая панель фильтров. Полная полка держит 4–5
+     товаров, полка рядом с панелью — 3–4. Не относится к редакционным
+     карточкам и лентам — только к [data-catalog-grid]. */
+  catalogue: {
+    desktop: 1200,
+    full: { min: 4, max: 5, maxCard: 340 },
+    withRail: { min: 3, max: 4, maxCard: 380 },
+  },
+}
+/** Форма (слой 9). Радиусы — из лестницы: M3 «size-based scale with ten
+ *  styles» 0 / 4 / 8 / 12 / 16 / 20 / 28 / 32 / 48 / full, Carbon 2 / 4 / 8 /
+ *  16 / 24; витрина берёт себе три-четыре ступени и записывает, какой узел
+ *  какую (M3, «готов, когда»). Полный круг — только главное действие
+ *  (Spectrum: «Full rounding … meant to draw attention to calls to action»).
+ *  Линия не масштабируется (Spectrum: «border width remains the same for
+ *  desktop scale and mobile scale»): 1 — поле, разделитель, тег; 2 — главная
+ *  кнопка, фокус (WCAG 2.4.13: кольцо не тоньше 2px). Теней — три роли по
+ *  работе (Atlassian raised / overlay; Refactoring UI: небольшой набор, один
+ *  источник света), и тень — только у всплывающего и у того, что зовут
+ *  нажать (Spectrum: «Shadows are reserved for transient components that
+ *  appear elevated and are dismissible»; M3: «protect element, call to
+ *  action»). Глубина в тёмной теме — светлотой, не тенью (Carbon, Atlassian). */
+const SHAPE = {
+  radii: [0, 2, 4, 8, 12, 16, 20, 24, 28, 32, 48],
+  line: { hair: 1, strong: 2 },
+  ring: { width: STATE.ring, offset: 3 },
+  shadows: ['raised', 'lift', 'overlay', 'in'],
+  /* Стекло (И427): размытие того, что под органом, и насыщенность —
+     apple.com, полоса навигации: `saturate(180%) blur(20px)`; Fluent
+     Acrylic — размытие 30. Не течёт: это устройство материала, не ритм. */
+  frost: { blur: 20, saturate: 1.8 },
+}
+
+/*
+ * Палитра: построение шкалы и её замер. Один файл на всё.
+ *
+ * До 21.09.2026 математика жила внутри `check-palette.mjs` и никуда из него
+ * не выходила: набор можно было ПРОВЕРИТЬ, но нельзя ПОСТРОИТЬ. Двенадцать
+ * ступеней считались, чтобы тут же быть выброшенными, а цвета сайта стояли
+ * в `styles/tokens.css` набранными рукой — то есть закон о шкале и краски
+ * магазина не встречались нигде. Отсюда и вышло: сторож зелёный, правила
+ * записаны, а собрать по ним сайт нечем.
+ *
+ * Теперь считают здесь, а читают трое: `check-palette.mjs` (замер),
+ * `palette-css.mjs` (выпуск `styles/palette.css`, из которого собран сайт)
+ * и тесты набора.
+ *
+ * Разбор, числа и источники — `.claude/skills/palette/references/palette.md`.
+ * Закон — `SKILL.md`, «Палитра — это шкала из двенадцати ступеней».
+ */
+
+
+/* Профиль светлоты ступеней — L* эталонной шкалы `sand` пакета
+   @radix-ui/colors 3.0.0. Числа снятые, а не назначенные. */
+const PROFILE = {
+  light: [99.3, 97.9, 94.8, 92.0, 89.5, 86.7, 82.7, 75.8, 58.4, 54.2, 41.8, 12.2],
+  dark: [5.0, 8.7, 13.2, 17.0, 20.2, 24.4, 30.6, 40.8, 46.0, 51.5, 72.9, 94.0],
+}
+
+/* Шаг между девятой и десятой ступенями самого эталона. */
+const SOLID_GAP = { light: 4.2, dark: 5.5 }
+
+/* Первые два порога — WCAG 2.2 (SC 1.4.3 и 1.4.11). Третий наш: разбор в
+   palette.md, «Фирменный цвет совпал с красным». */
+/* Четвёртый и пятый — обещание САМОГО эталона, снятое с его файлов: 11-я
+   ступень даёт Lc 60 на 2-й той же шкалы, 12-я — Lc 90. Это единственная
+   метрика, в которой эталон вообще что-то обещает (И191). */
+const NEED = { text: CONTRAST.text, control: CONTRAST.control, brandApart: COLOUR.brandApart, mutedLc: COLOUR.mutedLc, mainLc: COLOUR.mainLc, decorLc: COLOUR.decorLc }
+
+/* ── Краски: перевод и замер ─────────────────────────────────────────── */
+
+/* Краска читается так, как записана (И246): `#FFF` — белый, а не `#000FFF`;
+   имя цвета, прозрачность и опечатка — отказ с именем, а не молча мусор. */
+const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i
+const channels = (hex) => {
+  if (typeof hex !== 'string' || !HEX.test(hex)) throw new Error(`Не краска: ${JSON.stringify(hex)} — нужна краска вида #RRGGBB или #RGB`)
+  const full = hex.length === 4 ? `#${[...hex.slice(1)].map((c) => c + c).join('')}` : hex
+  const n = Number.parseInt(full.slice(1), 16)
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255]
+}
+const toHex = (parts) =>
+  `#${parts.map((v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('').toUpperCase()}`
+/** Вуаль поверх пола так, как её кладёт браузер: `color-mix(in srgb, X p%,
+ *  transparent)` на полу — доля краски в каналах sRGB, целыми. */
+const veil = (top, floor, share) => { const [t, f] = [channels(top), channels(floor)]; return toHex(t.map((v, i) => v * share + f[i] * (1 - share))) }
+/** Шаг светлоты (пункты OKLab) вуали знака `sign` на полу `floor` от доли
+ *  `from` к доле `to` (И702). */
+const handStep = (sign, floor, from, to) => Math.abs(oklch(veil(sign, floor, seen(to)))[0] - oklch(veil(sign, floor, seen(from)))[0]) * 100
+/** Смесь двух сплошных так, как её кладёт браузер: `color-mix(in oklab, floor,
+ *  top p%)` — заливка главной под рукой (styles/btn.module.css; И702). */
+const okMix = (top, floor, share) => {
+  const [t, f] = [top, floor].map((c) => rgbToOklab(channels(c).map((v) => v / 255)))
+  return toHex(oklabToRgb(t.map((v, i) => v * share + f[i] * (1 - share))).map((v) => v * 255))
+}
+const linear = (v) => (v / 255 <= 0.04045 ? v / 255 / 12.92 : ((v / 255 + 0.055) / 1.055) ** 2.4)
+const unlinear = (v) => (v <= 0.0031308 ? v * 12.92 : 1.055 * v ** (1 / 2.4) - 0.055)
+const luminance = (hex) => {
+  const [r, g, b] = channels(hex).map(linear)
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+const ratio = (a, b) => {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x)
+  return (hi + 0.05) / (lo + 0.05)
+}
+/* APCA 0.0.98G-4g (Myndex) — РЯДОМ с WCAG, а не вместо неё. WCAG остаётся
+   воротами (она в основе EN 301 549), APCA нужна по двум причинам: обещание
+   эталона дано только в ней, и она ловит то, что формула WCAG в ТЁМНЫХ парах
+   завышает контраст. Сверено с задокументированными числами эталона: 11-я на
+   2-й — light 66.2–76.9, dark 60.0–86.2; 12-я в тёмной — минимум tomato 84.2
+   и 19 шкал ниже 90. Совпало до десятой. */
+const screenY = (hex) => {
+  const [r, g, b] = channels(hex).map((v) => (v / 255) ** 2.4)
+  return 0.2126729 * r + 0.7151522 * g + 0.072175 * b
+}
+const softBlack = (y) => (y < 0.022 ? y + (0.022 - y) ** 1.414 : y)
+/* loClip 0.1 и deltaYmin 0.0005 — как в apca-w3 0.0.98G (И246): с 0.001 и без
+   deltaYmin почти одинаковые краски давали не ноль, а случайное число. */
+const apca = (text, bg) => {
+  const yt = softBlack(screenY(text))
+  const yb = softBlack(screenY(bg))
+  if (Math.abs(yb - yt) < 0.0005) return 0
+  if (yb > yt) {
+    const s = (yb ** 0.56 - yt ** 0.57) * 1.14
+    return s < 0.1 ? 0 : Math.abs((s - 0.027) * 100)
+  }
+  const s = (yb ** 0.65 - yt ** 0.62) * 1.14
+  return s > -0.1 ? 0 : Math.abs((s + 0.027) * 100)
+}
+const lightness = (hex) => {
+  const y = luminance(hex)
+  return y > 0.008856 ? 116 * Math.cbrt(y) - 16 : 903.3 * y
+}
+const lab = (hex) => {
+  const [r, g, b] = channels(hex).map(linear)
+  const f = (t) => (t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116)
+  const x = f((0.4124 * r + 0.3576 * g + 0.1805 * b) / 0.95047)
+  const y = f(0.2126 * r + 0.7152 * g + 0.0722 * b)
+  const z = f((0.0193 * r + 0.1192 * g + 0.9505 * b) / 1.08883)
+  return [116 * y - 16, 500 * (x - y), 200 * (y - z)]
+}
+/* Тон для этого не годится: золото в 43° от красного и спутать его нельзя,
+   а вино — в 3° и сливается. */
+const difference = (a, b) => {
+  const [x, y] = [lab(a), lab(b)]
+  return Math.hypot(x[0] - y[0], x[1] - y[1], x[2] - y[2])
+}
+
+/* Oklab/Oklch (Björn Ottosson). Нужен он ровно за одним: в нём у краски
+   есть ТОН отдельно от светлоты и насыщенности, и ступень можно поставить
+   на нужную светлоту, НЕ РАСТЕРЯВ тон. Прямая в sRGB так не умеет — из-за
+   неё и обесцвечивалась середина лестницы. Проверено обратным переводом:
+   шесть наших красок возвращаются в тот же шестнадцатеричный код. */
+const rgbToOklab = ([r, g, b]) => {
+  const R = linear(r * 255)
+  const G = linear(g * 255)
+  const B = linear(b * 255)
+  const l = Math.cbrt(0.4122214708 * R + 0.5363325363 * G + 0.0514459929 * B)
+  const m = Math.cbrt(0.2119034982 * R + 0.6806995451 * G + 0.1073969566 * B)
+  const s = Math.cbrt(0.0883024619 * R + 0.2817188376 * G + 0.6299787005 * B)
+  return [
+    0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s,
+    1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+    0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s,
+  ]
+}
+const oklabToRgb = ([L, a, b]) => {
+  const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3
+  const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3
+  const s = (L - 0.0894841775 * a - 1.2914855480 * b) ** 3
+  return [
+    unlinear(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s),
+    unlinear(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s),
+    unlinear(-0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s),
+  ]
+}
+/** [светлота 0–1, насыщенность, тон в градусах]. */
+const oklch = (hex) => {
+  const [L, a, b] = rgbToOklab(channels(hex).map((v) => v / 255))
+  return [L, Math.hypot(a, b), (Math.atan2(b, a) * 180) / Math.PI < 0
+    ? (Math.atan2(b, a) * 180) / Math.PI + 360
+    : (Math.atan2(b, a) * 180) / Math.PI]
+}
+const inGamut = (rgb) => rgb.every((v) => v >= -0.0008 && v <= 1.0008)
+const fromOklch = ([L, C, H]) => {
+  const h = (H * Math.PI) / 180
+  return oklabToRgb([L, C * Math.cos(h), C * Math.sin(h)])
+}
+/** Краска вне охвата экрана гасится насыщенностью, а не светлотой: светлота
+ *  несёт все пороги контраста, и уступать обязано то, что порогов не несёт. */
+const clampChroma = ([L, C, H]) => {
+  if (inGamut(fromOklch([L, C, H]))) return fromOklch([L, C, H])
+  let low = 0
+  let high = C
+  for (let i = 0; i < 18; i += 1) {
+    const mid = (low + high) / 2
+    if (inGamut(fromOklch([L, mid, H]))) low = mid
+    else high = mid
+  }
+  return fromOklch([L, low, H])
+}
+
+const blend = (from, to, amount) => {
+  const a = channels(from)
+  const b = channels(to)
+  return toHex([0, 1, 2].map((i) => a[i] + (b[i] - a[i]) * amount))
+}
+const atLightness = (from, to, want) => {
+  let low = 0
+  let high = 1
+  const rising = lightness(to) > lightness(from)
+  for (let i = 0; i < 22; i += 1) {
+    const mid = (low + high) / 2
+    if (rising ? lightness(blend(from, to, mid)) < want : lightness(blend(from, to, mid)) > want) low = mid
+    else high = mid
+  }
+  return blend(from, to, (low + high) / 2)
+}
+
+/** Ступень: заданная светлота в CIE L*, заданные тон и насыщенность.
+ *
+ *  Светлота ищется подбором по Oklch-светлоте, потому что пороги контраста
+ *  и весь набор замеров стоят на CIE L*, а тон и насыщенность держатся в
+ *  Oklch. Смешивать нельзя — но и выбрасывать одно ради другого тоже:
+ *  каждое отвечает за своё. */
+const atStep = (wantL, chroma, hue) => {
+  let low = 0
+  let high = 1
+  for (let i = 0; i < 24; i += 1) {
+    const mid = (low + high) / 2
+    if (lightness(toHex(clampChroma([mid, chroma, hue]).map((v) => v * 255))) < wantL) low = mid
+    else high = mid
+  }
+  return toHex(clampChroma([(low + high) / 2, chroma, hue]).map((v) => v * 255))
+}
+
+/* Знак на заливке выбирается, а не хранится: у трёх чужих наборов из трёх
+   назначенный ими знак на кнопке не читался. */
+/** Надпись на заливке держит ОБЕ меры: WCAG 4.5 (ворота закона) и APCA
+ *  Lc 60 (обещание, п. 10). До 29.09.2026 знак выбирался по одной WCAG, и на
+ *  заливке средней светлоты чёрное проходило её впритык (латунь 4.75), а
+ *  глазом не читалось (APCA Lc 36) — слово заказчика: «чёрный на этой
+ *  бронзе плохо различим» (И559). Держит обе одна из двух — она; ни одна —
+ *  заливку двигает `solidFor`. */
+const bothHold = (fg, bg) => ratio(fg, bg) >= NEED.text && Math.abs(apca(fg, bg)) >= NEED.mutedLc
+const inkOn = (bg) => {
+  if (bothHold('#FFFFFF', bg)) return '#FFFFFF'
+  if (bothHold('#111111', bg)) return '#111111'
+  const preferred = ratio('#FFFFFF', bg) >= ratio('#111111', bg) ? '#FFFFFF' : '#111111'
+  // Mid-tone backgrounds can fail 4.5 with BOTH white and soft black.
+  // Pure black is limited to this measured on-colour role, never page ink.
+  return ratio(preferred, bg) >= NEED.text ? preferred : '#000000'
+}
+
+/** Заливка, на которой стоит надпись (плашка скидки и наличия, сведение):
+ *  та же краска — тон и насыщенность, — сдвинутая по светлоте до первой
+ *  точки, где белая или чёрная надпись держит обе меры (`bothHold`). Шаг
+ *  светлоты — вниз к белой и вверх к чёрной поочерёдно: берётся ближайшая
+ *  (И559). Держит уже — краска как есть. */
+const solidFor = (hex) => {
+  if (bothHold('#FFFFFF', hex) || bothHold('#111111', hex)) return hex
+  const [L, C, h] = oklch(hex)
+  for (let d = 0.005; d <= 0.5; d += 0.005) {
+    const dark = toHex(clampChroma([L - d, C, h]).map((v) => v * 255))
+    if (bothHold('#FFFFFF', dark)) return dark
+    const light = toHex(clampChroma([L + d, C, h]).map((v) => v * 255))
+    if (bothHold('#111111', light)) return light
+  }
+  return hex
+}
+
+/* ── Форма лестницы ──────────────────────────────────────────────────── */
+
+/* Слепок 30 шкал эталона: светлота, дуга насыщенности и тон девятой у
+   каждой. Собран `palette-profile.mjs`, правится только им. */
+/* Читается по первому спросу, а не при загрузке: слепок собирает
+   `palette-profile.mjs`, и тот в свой черёд считает этим же файлом. */
+const FAMILIES = () => PROFILE_JSON.scales
+
+/* Нейтральные породы эталона — у них дуга пологая, у цветных крутая. Брать
+   цветную породу под нейтраль значит выкрасить карточки и контролы. */
+const NEUTRAL = new Set(['sand', 'sage', 'olive', 'slate', 'mauve'])
+
+/** Ближайшая по тону порода эталона. Дуга берётся у неё, а не назначается:
+ *  у `amber` пятая ступень держит 78% своей вершины, у `blue` 27%, и
+ *  упирается это в охват экрана, а не во вкус. */
+function nearestFamily(hue, neutral, mode) {
+  let best = null
+  let gap = 360
+  for (const [name, row] of Object.entries(FAMILIES())) {
+    if (NEUTRAL.has(name) !== neutral) continue
+    const d = Math.abs(((row[mode].hue - hue + 540) % 360) - 180)
+    if (180 - d < gap) {
+      gap = 180 - d
+      best = name
+    }
+  }
+  return best
+}
+
+/* ── Лестница ────────────────────────────────────────────────────────── */
+
+/** Двенадцать ступеней.
+ *
+ *  Концы лестницы — то, что дал заказчик, и ничем не подменяются: первая
+ *  ступень ЕСТЬ бумага, девятая цветного ряда ЕСТЬ краска, двенадцатая ЕСТЬ
+ *  чернила. До 21.09.2026 первая и двенадцатая считались из профиля, и белая
+ *  бумага `#FFFFFF` выходила на странице как `#FDFDFD`: заказчик задавал
+ *  цвет, а получал соседний.
+ *
+ *  Десятая отмеряется ОТ ЗАЛИВКИ, а не гонится к отметке эталона.
+ *
+ *  Лестница идёт от бумаги через краску к чернилам и НЕ РАЗВОРАЧИВАЕТСЯ:
+ *  ступени 1–8 держатся профиля, но не ближе 1.5 L* к краске со стороны
+ *  бумаги; 11 и 12 — профиля, но каждая не ближе шага заливки к предыдущей
+ *  со стороны чернил. До 20.09.2026 это держалось только в светлой теме и
+ *  только у краски светлее отметки 11-й: в тёмной все восемь первых ступеней
+ *  совпадали с краской, а у тёмной краски в светлой 11-я равнялась 9-й и
+ *  стояла светлее 10-й (palette.md, «Шкала строится в обе стороны»).
+ *
+ *  Тон и насыщенность — из Oklch: тон краски держится на всех ступенях,
+ *  насыщенность идёт дугой породы. Прямая в sRGB, стоявшая тут до
+ *  21.09.2026, обесцвечивала середину впятеро против эталона, и тёплая
+ *  марка давала серый сайт (palette.md, «Середина лестницы держит тон»). */
+function scale(paper, ink, seed, mode, on = null) {
+  const toward = mode === 'light' ? '#0A0A0A' : '#FAFAFA'
+  const dir = mode === 'light' ? -1 : 1 /* куда идёт L* от бумаги к чернилам */
+  const gap = dir * SOLID_GAP[mode]
+  const solid = seed ? lightness(seed) : 0
+  const ahead = (a, b) => (dir < 0 ? Math.min(a, b) : Math.max(a, b)) /* дальше по лестнице */
+  const behind = (a, b) => (dir < 0 ? Math.max(a, b) : Math.min(a, b)) /* ближе к бумаге */
+
+  /* Якорь — та ступень, краску которой заказчик назвал сам: девятая у
+     цветного ряда, двенадцатая у нейтрального. От неё берутся тон и
+     насыщенность, и на неё нормируется дуга. */
+  const anchor = seed ?? ink
+  const at = seed ? 8 : 11
+  const [, peak, hue] = oklch(anchor)
+  const arc = FAMILIES()[nearestFamily(hue, !seed, mode)][mode].chroma
+  const chromaAt = (i) => (arc[at] > 0 ? (arc[i] / arc[at]) * peak : 0)
+
+  /* Ход лестницы после заливки. У цветного ряда отсчёт идёт от десятой,
+     у нейтрального — от девятой: девятой краски там никто не называл, и
+     взятая с потолка она уводила десятую и одиннадцатую в чёрный. */
+  let last = seed ? solid + gap : PROFILE[mode][8]
+  /* Пол шага держится ПРИ ПОСТРОЕНИИ, а не только в замере. Ступень 1 —
+     бумага заказчика, и она не обязана стоять там, где стоит первая
+     ступень профиля: у «Латуни на угле» бумага светлее второй ступени на
+     0.5 L* при поле 0.6, и лестница схлопывалась на первой же паре. Замер
+     это ловил и был прав — но чинить каждый набор руками значит вернуть
+     подбор на глаз. */
+  let prev = lightness(paper)
+  /* Меряется ПОЛУЧЕННАЯ краска, а не заданная отметка. Экран знает 256
+     уровней на канал, и у белого конца один уровень стоит 0.2 L*: отметка
+     97.9 превращается в 98.1, и пол в 0.6 проседает до 0.59. Именно так
+     «Латунь на угле» и краснела — на сотую, из-за округления до цвета,
+     который экран умеет показать. Отметка двигается, пока полученное не
+     возьмёт пол; упёрлись в краску — оставляем как есть, это уже
+     настоящая находка, и её назовёт замер. */
+  const stepped = (want, cap, i) => {
+    // A reference profile is a preference, not permission to move backwards
+    // when the owner's paper is darker/lighter than the reference paper.
+    const monotone = ahead(want, prev + dir * STEP_MIN)
+    let target = cap === null ? monotone : behind(monotone, cap)
+    let hex = atStep(target, chromaAt(i), hue)
+    for (let n = 0; n < 12 && dir * (lightness(hex) - prev) < STEP_MIN; n += 1) {
+      const next = target + dir * 0.1
+      if (cap !== null && behind(next, cap) !== next) break
+      target = next
+      hex = atStep(target, chromaAt(i), hue)
+    }
+    prev = lightness(hex)
+    return hex
+  }
+  const row = PROFILE[mode].map((want, i) => {
+    if (i === 0) return paper
+    if (!seed && i === 11) return ink
+    if (seed && i === 8) { prev = solid; return seed }
+    if (seed && i === 9) { prev = solid + gap; return atLightness(seed, toward, solid + gap) }
+    // Reserve room for EVERY remaining pre-solid step, including sRGB
+    // quantisation. One fixed cap made the last four steps of lime identical.
+    if (i < 8) return stepped(want, seed ? solid - dir * (8 - i) * (STEP_MIN + .25) : null, i)
+    if (i === 8) return stepped(want, null, i)
+    // Bright accents must leave two distinct text steps before the gamut end.
+    const endpoint = dir < 0 ? .2 + (11 - i) * .8 : 99.8 - (11 - i) * .8
+    last = behind(ahead(want, last + gap), endpoint)
+    return stepped(last, null, i)
+  })
+  return withMutedText(row, on ?? row[1], hue, chromaAt(10), dir)
+}
+
+/** Одиннадцатая ступень — ЗАМЕРОМ, как граница и кольцо фокуса, а не номером
+ *  из профиля.
+ *
+ *  Эталон обещает на ней Lc 60 на второй ступени, и `sand`, чей профиль мы
+ *  заняли, стоит на этом обещании РОВНО: 60.0 — худшая его шкала из 31. С
+ *  нашей бумагой и нашими чернилами запаса не осталось, и обещание
+ *  переставало выполняться: в тёмной теме приглушённый текст давал Lc 59.7
+ *  при WCAG 8.35 — та самая пара, где WCAG завышает, а глазом видно (И191).
+ *
+ *  Уводится от бумаги ровно настолько, чтобы обещание выполнить, и не ближе
+ *  шага лестницы к двенадцатой. Держится и порядок лестницы — ступень идёт
+ *  только ОТ бумаги.
+ *
+ *  Поверхность приходит снаружи, а не берётся у своего же ряда: цена
+ *  фирменным цветом лежит на КАРТОЧКЕ, а не на второй ступени фирменного
+ *  ряда, которой на странице вообще нигде нет. Пока строитель правил
+ *  ступень против своей второй, а замер мерил против карточки, «Аптечный
+ *  синий» в тёмной теме расходился на сотые и был красным (И193). */
+function withMutedText(row, on, hue, chroma, dir) {
+  if (apca(row[10], on) >= NEED.mutedLc) return row
+  const limit = lightness(row[11]) - dir * STEP_MIN
+  const out = row.slice()
+  for (let push = 0.1; push <= 40; push += 0.1) {
+    const want = lightness(row[10]) + dir * push
+    if (dir < 0 ? want < limit : want > limit) break
+    out[10] = atStep(want, chroma, hue)
+    if (apca(out[10], on) >= NEED.mutedLc) break
+  }
+  return out
+}
+
+/** Самая тесная пара самого эталона — 1 → 2 у `sand`: 0.6 L* в тёмной.
+ *  Меньше — две ступени с разной работой стали одной краской. */
+const STEP_MIN = 0.6
+
+/** Наименьший шаг лестницы по ходу от бумаги к чернилам; отрицательный —
+ *  лестница развернулась. */
+function tightest(row, mode) {
+  const dir = mode === 'light' ? -1 : 1
+  let worst = Number.POSITIVE_INFINITY
+  for (let i = 1; i < row.length; i += 1) {
+    worst = Math.min(worst, dir * (lightness(row[i]) - lightness(row[i - 1])))
+  }
+  return worst
+}
+
+/** Ступень нажатия — та, которой в шкале нет. Вдвое дальше наведения. */
+function press(accent, mode) {
+  const toward = mode === 'light' ? '#0A0A0A' : '#FAFAFA'
+  return atLightness(accent[8], toward, lightness(accent[8]) + (mode === 'light' ? -2 : 2) * SOLID_GAP[mode])
+}
+
+/** Первая ступень, которая берёт порог. Именно так выбираются кольцо фокуса и
+ *  граница органа управления: у эталона седьмая даёт 1.49 при требуемых трёх.
+ *  Мера — WCAG по умолчанию; хвост кнопки меряется APCA, кромка выключенного
+ *  — под прозрачностью выключенного (И295): ступень та же, мерка своя. */
+function firstReaching(row, against, need, from, measure = ratio) {
+  let found = row[from]
+  for (let i = from; i < row.length; i += 1) {
+    found = row[i]
+    if ([against].flat().every((bg) => measure(row[i], bg) >= need)) break
+  }
+  return found
+}
+
+/** Фоны, на которых стоит орган: ступени 1–5 нейтрали (у Radix 1–2 — фоны
+ *  страницы, 3–5 — фоны органов). Кольцо фокуса обязано держать 3 : 1 на
+ *  каждой: в тёмной теме карточка — ступень 4, и кольцо, подобранное против
+ *  одной первой, давало на ней 2,31 : 1 (И246). */
+const GROUNDS = (n) => n.slice(0, 5)
+
+/* ── Роли по полу: кнопка, вуали, тени, сцена героя (И295) ───────────────
+
+   До 24.09.2026 эти краски рождались в стилях: хвост главной кнопки —
+   `color-mix(… 60% …)` в btn.module.css, кромка выключенной — 20 % чернил
+   там же, вуаль героя — 86 / 72 % в стилях блока, тени, черта, тихая вуаль
+   и вся палуба — долями в tokens.css и base.css. Их контраст не считал
+   никто, панель не могла их гарантировать, а смена палитры меняла их по
+   чужой формуле. Слово заказчика: «цвета для кнопок — это в палитре цветов
+   должно быть описано». Теперь каждую выпускает строитель ролью, а стили её
+   только читают (CLAUDE.md, «Делается только правильно»); цвет, рождённый в
+   стилях, — находка семьи `colorOut` в check:css.
+
+   Полов два рода. БУМАГА — страница, полоса, лист, карточка (ступени 1–5):
+   на ней пишут чернила. ПАЛУБА — тёмная полоса шапки, подвала и сцены
+   героя: на ней пишет её знак. У каждой роли, которая за полом идёт, две
+   краски — `-paper` и `-deck`; роль переназначает пол (`data-ground`,
+   `data-plate` в base.css), значения выпускаются здесь. */
+
+/** Краска с прозрачностью — вуаль, которую браузер кладёт поверх любого
+ *  пола: `#RRGGBBAA`. Ровно так она и уходит на экран: сборщик стилей
+ *  (Lightning CSS) сворачивает `color-mix(… p%, transparent)` с постоянной
+ *  краской в те же восемь бит, и доля 8 % становится 20/255 = 7.84 % —
+ *  тихая вуаль «Аптеки» теряла на этом порог. Поэтому доля переводится в
+ *  восьмибитную ВВЕРХ (`seen`: 8 % → 21/255) и меряется та, что покажет
+ *  экран. Доля — число строителя, в стилях сайта её нет (семья `colorOut`). */
+const seen = (share) => Math.ceil(share * 255 - 1e-9) / 255
+const translucent = (hex, share) => `${hex.toUpperCase()}${Math.round(seen(share) * 255).toString(16).padStart(2, '0').toUpperCase()}`
+
+/** Палуба. Светлая тема: обратная пара нейтрали — пол из чернил, знак из
+ *  бумаги. Тёмная: знак — чернила; пол — вторая ступень, одна у шапки
+ *  (`--chrome-bg`) и подвала (`--page-deck`, И293), на ступень над страницей;
+ *  первая — у сцены героя (`--scrim-deck`, самая тёмная нейтраль темы).
+ *  До 29.09.2026 шапка ночью стояла на седьмой ступени — середине лестницы,
+ *  светло-коричневой полосой светлее карточек, а подвал — на второй: днём
+ *  одна полоса, ночью две разные (слово заказчика: «палитра на темах
+ *  день/ночь выбрана архитектурно неверно»; И554). У профессионалов ночью
+ *  полоса остаётся тёмной и стоит на том же месте лестницы, что днём
+ *  (cbdin.bg ночью: страница #141310, плашки шапки на ступень светлее;
+ *  Apple HIG — панели ночью цветом фона). Замер палубы берёт все её полы;
+ *  `stage` — сцена героя, под текстом на снимке. */
+/** Наименьшее расстояние полосы (палубы) от страницы, 1.25 : 1 (И568): лист
+ *  над страницей днём даёт 1.31 и читается другой плоскостью; 1.06 ночью —
+ *  нет. */
+const DECK_APART = 1.25
+const deckOf = (n, mode, a = null, kind = 'neutral') => {
+  if (kind === 'brand') {
+    /* Палуба марки (И450): пол — заливка марки (a9), знак — знак на ней
+       (`inkOn`), пол один — шапка, подвал и нижняя полоса стоят на
+       `--chrome-bg`. Сцена героя днём — тот же пол (И697: тёмное одно — у
+       большого тёмного блока первого экрана нет второй, нейтральной чёрной,
+       когда подвал и полосы — марка; cbdin.bg: герой петролем); ночью — самая
+       тёмная нейтраль. Затемнение под окнами (`--scrim`) остаётся нейтральным
+       при любой палубе. Кромка выключенного ищется по нейтрали от пола к
+       знаку — той стороной, где знак. */
+    if (!a) throw new Error('Палуба марки строится от ряда марки: deckOf(n, mode, a, "brand")')
+    const bg = a[8]
+    const ink = inkOn(bg)
+    const up = lightness(ink) > lightness(bg)
+    const edges = n.filter((c) => lightness(c) > lightness(bg) === up)
+      .sort((x, y) => Math.abs(lightness(x) - lightness(bg)) - Math.abs(lightness(y) - lightness(bg)))
+    return { bg, ink, stage: mode === 'light' ? bg : n[0], grounds: [bg], edges, kind }
+  }
+  return mode === 'light'
+    ? { bg: n[11], ink: n[0], stage: n[11], grounds: [n[11]], edges: n.slice(0, 11).reverse(), kind: 'neutral' }
+    /* Ночью палуба поднята на уровень листа карточек (ступень 4), страница —
+       самая тёмная (И568): на второй ступени подвал отстоял от страницы на
+       1.06 : 1, а главный баннер совпадал с ней вовсе — «тело сайта и
+       футер почти одного цвета» (слово заказчика 29.09.2026). Днём полоса
+       отстоит от страницы на 12.5, ночью ниже самой тёмной ступени места
+       нет — поэтому всё, что лежит на странице (шапка, полосы, подвал,
+       карточки), ночью поднимается светлотой на один уровень: так cbdin.bg
+       ночью (плашки шапки #2C2A24 над страницей #141310), Apple и Material. */
+    : { bg: n[3], ink: n[11], stage: n[0], grounds: [n[3], n[0]], edges: n.slice(4), kind: 'neutral' }
+}
+
+/** Основной цвет один (И694): палуба — шапка шторки, подвал, тёмные полосы,
+ *  кнопка связи — всегда заливка марки, та же краска, что у главной кнопки и
+ *  выбранного варианта, в любом наборе и в обеих темах. Заказчик 03.10.2026 со
+ *  снимком шторки: «в шапке корзины один цвет, а в кнопке другой — это
+ *  глупость, это ошибка». Тогда палуба становилась маркой, только когда марка
+ *  ей родня по темноте (ближе 2 : 1), и чинилась одна палитра: 04.10.2026
+ *  заказчик сменил палитру — «я меняю палитру и все неправильно… не системно
+ *  решил»; «кнопки процентов, кнопка связи, add to cart тоже должны быть
+ *  одного основного цвета». У профессионалов главная краска одна: Ritual —
+ *  марка (20 43 111) и в полосе, и в кнопке, и в тексте; Gymshark — «Add to
+ *  bag» и выбранный размер одной краской (замер 03.10.2026). Нейтральная
+ *  палуба (`deckOf` без марки) осталась сценой героя и затемнением. */
+const deckFor = (n, mode, a) => deckOf(n, mode, a, 'brand')
+/** Сцена героя — вуаль под текстом на снимке — тёмная всегда: она берёт пол
+ *  палубы, только когда марка ей родня по темноте (ближе `DARK_KIN` к
+ *  нейтральной палубе, И697) — иначе латунь легла бы на снимок жёлтой вуалью. */
+const DARK_KIN = 2
+
+/** Тень под подписью на снимке (И451): два слоя чёрного — ближний у края
+ *  буквы и дальний ореол, доли 0.75 и 0.5 полной силы; сила — ключ набора
+ *  `caption` (1–100, доля от полной), по умолчанию 40 — сила, которую
+ *  заказчик подобрал глазом на живой витрине 25.09.2026. Геометрия (сдвиг,
+ *  размытие) — роль тени в стилях, краска — здесь. */
+const CAPTION = { layers: [0.75, 0.5], strength: 40 }
+const captionStrength = (set) => {
+  const s = set.caption ?? CAPTION.strength
+  if (typeof s !== 'number' || !(s > 0 && s <= 100)) throw new Error(`Не сила тени: caption ${JSON.stringify(set.caption)} — нужно число от 1 до 100`)
+  return s
+}
+
+/** Вуали — краска пола долей поверх того, что под ней: на бумаге — чернила
+ *  (ступень 12), на палубе — её знак. Доли перенесены из tokens.css и
+ *  base.css, где стояли числом (И295), и не менялись; обещание есть у тихой
+ *  вуали (видна на каждом полу, STATE.visible) — его меряет замер ниже.
+ *    paper: тихая кнопка — порог STATE.quiet; выбранная тихая — вдвое
+ *           глубже; черта — 16 %; вдавленная тень (`--sh-in`) — 18 %.
+ *    deck:  орган в покое 10 % (`--chrome-hover`), под рукой 18, нажатый 30;
+ *           тихая 12, выбранная 22; черта 14; строка под рукой 8, нажатая
+ *           14; вдавленная тень 18; знак в покое — 78 % (`--chrome-fg-2`:
+ *           «степень реагирования … единый источник, чтоб системно», слово
+ *           заказчика) — нижняя граница: на полу, где 78 % не держат 4.5 : 1,
+ *           доля растёт (`dimShare`, И450).
+ *    жёлоб (лоток над полкой, оба пола): половина под рукой — шаг руки
+ *           (`STATE.step`, И702: одна доля слоя состояния у всех органов;
+ *           до 04.10.2026 — 12 %, шаг светлоты в полтора раза больше, чем
+ *           у кнопки рядом); открытая створка 14 %, под рукой — на шаг
+ *           руки глубже (`--ctrl-hand`, `--ctrl-in`, `--ctrl-in-hand`;
+ *           лежат поверх жёлоба `--ctrl`). Орган палубы в покое 10 %, под
+ *           рукой и при нажатии — на шаг руки глубже покоя; строка палубы —
+ *           шаг руки от нуля. */
+const HAND = STATE.step
+const ORGAN = 0.1
+const TROUGH = { 'ctrl-hand': HAND.hover, 'ctrl-in': 0.14, 'ctrl-in-hand': 0.14 + HAND.hover }
+const VEIL = {
+  paper: { quiet: STATE.quiet, 'quiet-on': 2 * STATE.quiet, rule: 0.16, 'sh-inset': 0.18, ...TROUGH },
+  deck: { quiet: 0.12, 'quiet-on': 0.22, rule: 0.14, 'hover-row': HAND.hover, 'press-row': HAND.press, 'hover-ctrl': ORGAN + HAND.hover, 'press-ctrl': ORGAN + HAND.press, 'sh-inset': 0.18, ...TROUGH },
+  ctrl: ORGAN,
+  dim: 0.78,
+  /* Плашка на палубе (`--chrome-plate`, И450): палуба, посветлевшая к
+     своему знаку на 14 % — доля, которую заказчик выбрал глазом у cbdin
+     («белая плашка на палубе — вырвиглазно»). Тихая плашка на заливке
+     (`--quiet-pop`, И452) — доля выбранной тихой на палубе: заливка кнопки —
+     такой же цветной пол со своим знаком. */
+  plate: 0.14,
+  pop: 0.22,
+  /* Тихая марка органа (И462): нижняя доля вуали марки на полу — та же,
+     что у выбранной тихой вуали чернил; растёт, пока вуаль не видна. */
+  tint: 2 * STATE.quiet,
+}
+/** Тени: в светлой теме — самая тёмная ступень нейтрали долями (волосок,
+ *  ближний слой, три дальних по высоте), в тёмной и на палубе — белый
+ *  волосок и чёрные слои: тень цвета своего пола не отбрасывает тени (И100,
+ *  И114). До 29.09.2026 светлая тень была маркой долями, и у марки
+ *  тёмно-бирюзовой тень окна ложилась на бежевую страницу синим ореолом —
+ *  слово заказчика: «а тени тут какие, синие что ли?» (И549). Тень —
+ *  затемнение, а не краска: чернила нейтрали тёплые, как текст. */
+const SHADE = {
+  names: ['ring', 'near', 'far-1', 'far-2', 'far-3'],
+  paper: [0.18, 0.18, 0.4, 0.55, 0.7],
+  deep: [['#FFFFFF', 0.05], ['#000000', 0.5], ['#000000', 0.6], ['#000000', 0.68], ['#000000', 0.75]],
+}
+/** Затемнение под окном и шторкой: самая тёмная нейтраль темы долей — в
+ *  обеих темах тёмное (из чернил вышла бы белая вуаль в тёмной), в тёмной
+ *  гуще: у тёмной страницы меньше своего контраста. */
+const SCRIM = { light: 0.55, dark: 0.72 }
+/** Чужие марки (И471): знаки мессенджеров в окне заказа — краской своей
+ *  марки, а не нашей: так их узнают (cbdin.bg: строка нейтральная, знак —
+ *  Viber #7360F2, Telegram #26A5E4, WhatsApp #25D366, Instagram #E4405F;
+ *  WhatsApp Brand Guidelines — «green on white or white on green», знак не
+ *  перекрашивать). Роль «чужие марки» — palette/references/roles.md (у
+ *  кошельков та же). Краска чужой марки — факт о ней, а не ступень палитры:
+ *  одна на обе темы, контраст не меряется — знак стоит рядом со словом,
+ *  которое и несёт смысл (WCAG 1.4.11 требует его от знака, без которого не
+ *  понять орган). */
+/* Краски логотипов — официальные цвета компаний (Simple Icons 16.33.0, поле hex).
+   Facebook, Messenger, YouTube и Gmail — 01.10.2026: «соцсети цветные…
+   почта — есть цветная Gmail, мессенджер цветной» (И628). TikTok своей
+   краски не несёт: его цвет — чёрный, в ночи знак исчез бы; стоит краской
+   текста. */
+const MARKS = { viber: '#7360F2', telegram: '#26A5E4', whatsapp: '#25D366', instagram: '#E4405F', facebook: '#0866FF', messenger: '#0866FF', youtube: '#FF0000', gmail: '#EA4335' }
+/** Золото звезды оценки (И516) — краска, принятая в торговле, а не ступень
+ *  марки: Amazon #FFA41C (Google #FBBC04, Etsy — тот же жёлто-оранжевый). Как
+ *  чужая марка: одна на обе темы, контраст не меряется — оценку несёт число
+ *  рядом (WCAG 1.4.11 — знак не единственный носитель). Выбор в панели —
+ *  это золото или янтарь палитры (`--warn-fill`); заказчик 28.09.2026: «для
+ *  звёзд делай отдельный цвет, который принят для звёзд, и на панели выбор
+ *  из палитры или отдельный золотой». */
+const STAR = '#FFA41C'
+/** Стекло главной кнопки (И427): доля краски стекла — от 0.6 (Fluent
+ *  Acrylic: «tint opacity» 0.6…0.8 у светлой и тёмной темы; ниже стекло
+ *  читается пустым местом) и выше, пока надпись не держит 4.5 : 1 над
+ *  каждым полом и любым снимком; кромка-
+ *  блик — светлая краска долей 0.4 (Apple Materials: светлый волосок по
+ *  краю стекла отделяет его от фона). */
+const GLASS = { tint: [0.6, 1], rim: 0.4 }
+
+const lcApart = (a, b) => Math.abs(apca(a, b))
+const offSeen = (edge, bg) => ratio(veil(edge, bg, STATE.off[0]), bg)
+
+/** Хвост главной кнопки (И276): два тона ряда марки рядом с заливкой (a9) —
+ *  на том полу, где кнопка стоит. Дальний — первая ступень марки ОТ ПОЛА К
+ *  ЗАЛИВКЕ, которая видна на каждом полу (APCA Lc ≥ COLOUR.decorLc —
+ *  украшение от 5px) и отстоит от заливки не меньше её шага (SOLID_GAP — шаг
+ *  заливки к наведению); ближний — ступень, которой в шкале нет: середина
+ *  светлоты между дальним и заливкой (так же выведено нажатие, `press`).
+ *  Сторона пола — по светлоте: на светлой бумаге — ступени светлее a9, на
+ *  тёмной палубе светлой темы — темнее.
+ *
+ *  Заливка может стоять вплотную к полу — светлая марка на светлой бумаге,
+ *  тёмная на тёмной, — и тогда со стороны пола видной ступени нет, или она
+ *  той же светлоты, что заливка. Хвост тогда идёт по другую сторону
+ *  заливки: украшение подстраивается под марку, а не марка под украшение.
+ *  Иначе строитель двигал бы саму марку ради шеврона — жёлтая #FFE600
+ *  уходила в горчицу на ΔE 21. */
+function trailOf(a, grounds, mode) {
+  const fill = a[8]
+  const lf = lightness(fill)
+  const far = (c) => Math.abs(lightness(c) - lf)
+  const up = grounds.reduce((s, bg) => s + lightness(bg), 0) / grounds.length > lf
+  const steps = a.filter((_, i) => i !== 8)
+  const toward = steps.filter((c) => lightness(c) > lf === up).sort((x, y) => far(y) - far(x))
+  const beyond = steps.filter((c) => lightness(c) > lf !== up).sort((x, y) => far(x) - far(y))
+  const apart = (c, bg) => (far(c) >= SOLID_GAP[mode] ? lcApart(c, bg) : 0)
+  const tone = firstReaching([...toward, ...beyond], grounds, NEED.decorLc, 0, apart)
+  return { near: atLightness(fill, tone, (lightness(tone) + lf) / 2), far: tone, got: Math.min(...grounds.map((bg) => apart(tone, bg))) }
+}
+
+/** Вуаль героя (И280): текст сцены лежит на снимке заказчика, и снимок
+ *  может быть любым, вплоть до белого. Дальняя ступень — наименьшая доля
+ *  (шагом в сотую), при которой самая тихая строка героя — знак палубы
+ *  долей `VEIL.dim` — держит 4.5 : 1 на белом снимке под вуалью; ближняя —
+ *  на полпути от неё к сплошной. До 24.09.2026 стояли 86 / 72 % на все
+ *  палитры, и у трёх наборов из семи тихая строка героя проваливала порог
+ *  (Аптека — 4.15 : 1). */
+function scrimOf(deck) {
+  const on = (share) => {
+    const bg = veil(deck.stage, '#FFFFFF', seen(share))
+    return ratio(veil(deck.ink, bg, seen(VEIL.dim)), bg)
+  }
+  let far = 1
+  for (let k = 50; k <= 100; k += 1) if (on(k / 100) >= NEED.text) { far = k / 100; break }
+  const near = Math.round((far + (1 - far) / 2) * 100) / 100
+  return { far, near, got: on(far) }
+}
+
+/** Знак пола в покое (`--chrome-fg-2`, И450): доля знака от `VEIL.dim` и
+ *  выше — наименьшая, при которой тихое слово держит 4.5 : 1 на каждом полу
+ *  палубы. На нейтральной палубе запас знака велик, и доля остаётся 78 %; на
+ *  палубе марки знак держит 4.5 : 1 впритык, и 78 % роняли тихое слово шапки
+ *  cbdin в тёмной теме до 3.1 : 1. Не держит и сплошной — знак целиком
+ *  (`inkOn` гарантирует 4.5 : 1). */
+function dimShare(sign, grounds, need = NEED.text) {
+  for (let k = Math.round(VEIL.dim * 100); k <= 100; k += 1) {
+    if (dimGot(sign, grounds, k / 100) >= need) return k / 100
+  }
+  return 1
+}
+const dimGot = (sign, grounds, share) => Math.min(...grounds.map((bg) => ratio(veil(sign, bg, seen(share)), bg)))
+
+/** Поверхность на цветном полу со своим знаком (И450, И452): орган и
+ *  плашка на палубе, тихая плашка на заливке кнопки. Сначала — к знаку на
+ *  долю `share` и ниже, пока знак на ней держит 4.5 : 1, а сама она видна
+ *  на полу (STATE.visible). У пола, где знак держит 4.5 : 1 впритык, так не
+ *  выходит ни при какой доле: всякая видимая вуаль знака роняет надпись.
+ *  Тогда плашка идёт от знака — наименьшая видимая доля чёрного (знак
+ *  светлее пола) или белого: надпись важнее того, в какую сторону плашка
+ *  светлеет. Меряется на каждом полу из `grounds`. */
+function surfaceOn(sign, grounds, share, invert = false) {
+  const holds = (paint, s) => {
+    const under = grounds.map((bg) => veil(paint, bg, seen(s)))
+    return { text: Math.min(...under.map((u) => ratio(sign, u))), seen: Math.min(...under.map((u, i) => ratio(u, grounds[i]))), ink: sign }
+  }
+  for (let k = Math.round(share * 100); k >= 1; k -= 1) {
+    const m = holds(sign, k / 100)
+    if (m.seen < STATE.visible) break
+    if (m.text >= NEED.text) return { paint: sign, s: k / 100, ...m }
+  }
+  const away = lightness(sign) > lightness(grounds[0]) ? '#000000' : '#FFFFFF'
+  for (let k = 1; k <= 100; k += 1) {
+    const m = holds(away, k / 100)
+    if (m.seen >= STATE.visible) return { paint: away, s: k / 100, ...m }
+  }
+  /* Пол — сам край (белая пилюля, чёрная палуба): от знака идти некуда.
+     Плашка с надписью (`invert`) тогда выворачивается: заливка — знак,
+     надпись — пол; пара та же, что у пола со знаком, и держит то же. */
+  if (invert && grounds.length === 1) {
+    const [floor] = grounds
+    return { paint: sign, s: 1, text: ratio(floor, sign), seen: ratio(sign, floor), ink: floor }
+  }
+  return { paint: sign, s: share, ...holds(sign, share) }
+}
+
+/** Красная семья (И463): тон и насыщенность краски в секторе красного
+ *  (`RED` в tools/thresholds.mjs). Сектор переходит через 0°. */
+const redFamily = (hex) => {
+  const [, C, H] = oklch(hex)
+  const [from, to] = RED.hue
+  return C >= RED.chroma && (from > to ? H >= from || H <= to : H >= from && H <= to)
+}
+
+/** Тихая марка (И462): доля вуали марки `paint` — первая от `VEIL.tint`
+ *  вверх, при которой вуаль видна на каждом полу (STATE.visible); знак —
+ *  первый из `inks`, который читается на ней на всех полах. */
+function tintOn(paint, inks, grounds, from = VEIL.tint) {
+  for (let k = Math.round(from * 100); k <= 100; k += 1) {
+    const under = grounds.map((bg) => veil(paint, bg, seen(k / 100)))
+    const seenMin = Math.min(...under.map((u, i) => ratio(u, grounds[i])))
+    if (seenMin < STATE.visible) continue
+    const text = (ink) => Math.min(...under.map((u) => ratio(ink, u)))
+    const ink = inks.find((c) => text(c) >= NEED.text) ?? inks[inks.length - 1]
+    return { s: k / 100, seen: seenMin, ink, text: text(ink) }
+  }
+  return { s: 1, seen: 0, ink: inks[0], text: 0 }
+}
+
+/** Подпись на снимке у края буквы (И451): оба слоя тени под подписью
+ *  складываются на белом снимке — худшем для светлой подписи. Норма —
+ *  3 : 1 крупного текста (WCAG 1.4.3): подпись без вуали бывает только
+ *  крупной; мелкий текст на снимке лежит под вуалью героя (`--scrim-*`).
+ *  Сила набора — нижняя граница, а не приговор: не держит подпись — сила
+ *  растёт на единицу, пока не удержит (так же подбирается вуаль героя).
+ *  Светлая подпись тёмной темы — чернила, а не белый, — при силе 40 давала
+ *  2.75 : 1. */
+function captionOf(ink, named) {
+  const at = (strength) => {
+    const [near, far] = CAPTION.layers.map((k) => (k * strength) / 100)
+    const bg = veil('#000000', veil('#000000', '#FFFFFF', seen(far)), seen(near))
+    return { strength, near, far, got: ratio(ink, bg) }
+  }
+  for (let s = named; s < 100; s += 1) if (at(s).got >= NEED.control) return at(s)
+  return at(100)
+}
+
+/** Роли по полу и их замер — одним расчётом: выпуск (`roles`), замер
+ *  (`auditPalette`) и панель вида («Guaranteed») читают одни и те же
+ *  краски и одни и те же числа. `checks` — строки замера: id для панели,
+ *  имя для отчёта, число и норма. */
+function groundRoles(n, a, mode, set = {}) {
+  const out = {}
+  const checks = []
+  const check = (id, rule, got, need, unit = ':1') => checks.push({ id, rule, got, need, unit })
+  /* Палуба — заливка марки, основной цвет один (И694). */
+  const deck = deckFor(n, mode, a)
+  /* Сцена героя — пол палубы, когда марка тёмная, как нейтральная палуба
+     (И697); иначе нейтральная палуба темы. Затемнение под окнами — всегда
+     нейтральное. */
+  const neutral = deckOf(n, mode)
+  /* Ночью сцена — самая тёмная нейтраль и при палубе марки (И697, п. 1; `deckOf`):
+     её знак — светлые чернила, а не знак на заливке марки; иначе подпись на снимке
+     и вуаль героя мерились тёмным знаком ночной марки. */
+  const hero = mode === 'light' && ratio(a[8], neutral.bg) < DARK_KIN ? deck : neutral
+  const G = GROUNDS(n)
+  const ink = n[11]
+
+  /* Палуба: пол, знак, знак в покое, орган в покое, плашка; сцена героя.
+     Знак в покое и орган в покое меряются на полу палубы (И450): до
+     26.09.2026 их доли стояли одним числом на любую палубу и не мерились. */
+  out['--chrome-bg'] = deck.bg
+  out['--chrome-fg'] = deck.ink
+  const dim = dimShare(deck.ink, deck.grounds)
+  out['--chrome-fg-2'] = translucent(deck.ink, dim)
+  check('chrome-fg-2', 'тихое слово палубы читается', Math.min(...deck.grounds.map((bg) => ratio(veil(deck.ink, bg, seen(dim)), bg))), NEED.text)
+  const organ = surfaceOn(deck.ink, deck.grounds, VEIL.ctrl)
+  out['--chrome-hover'] = translucent(organ.paint, organ.s)
+  check('chrome-hover', 'орган в покое на палубе виден', organ.seen, STATE.visible)
+  check('chrome-hover-text', 'знак палубы читается на органе в покое', organ.text, NEED.text)
+  const plate = surfaceOn(deck.ink, [deck.bg], VEIL.plate)
+  out['--chrome-plate'] = veil(plate.paint, deck.bg, seen(plate.s))
+  check('chrome-plate', 'плашка на палубе видна', plate.seen, STATE.visible)
+  check('chrome-plate-text', 'знак палубы читается на плашке', plate.text, NEED.text)
+  /* Кольцо фокуса на палубе (И450): первая ступень марки от a8, берущая
+     3 : 1 на каждом полу палубы; нет такой (палуба марки — сама a9) — знак
+     палубы. На бумаге кольцо то же, что `--ring`: пара для листа. */
+  out['--ring-paper'] = firstReaching(a, G, NEED.control, 7)
+  out['--ring-deck'] = firstReaching([...a.slice(7), deck.ink], deck.grounds, NEED.control, 0)
+  check('ring-deck', 'кольцо фокуса видно на палубе', Math.min(...deck.grounds.map((bg) => ratio(out['--ring-deck'], bg))), NEED.control)
+  out['--scrim-deck'] = hero.stage
+
+  /* Вуали обоих полов. */
+  for (const [job, share] of Object.entries(VEIL.paper)) out[`--${job}-paper`] = translucent(ink, share)
+  for (const [job, share] of Object.entries(VEIL.deck)) out[`--${job}-deck`] = translucent(deck.ink, share)
+  check('quiet', 'тихая вуаль видна на всех поверхностях', Math.min(...G.map((bg) => ratio(veil(ink, bg, seen(VEIL.paper.quiet)), bg))), STATE.visible)
+  check('quiet-deck', 'тихая вуаль видна на палубе', Math.min(...deck.grounds.map((bg) => ratio(veil(deck.ink, bg, seen(VEIL.deck.quiet)), bg))), STATE.visible)
+  /* Шаг руки один (И702): вуали руки, которые выпускает строитель, — не одна
+     доля на все полы, а доля под шаг светлоты тихой кнопки на странице той же
+     темы (`STATE.step`): светлая вуаль на тёмной палубе и та же доля на светлом
+     жёлобе шагают по-разному (замер 04.10.2026: палуба 7.4, счётчик 5.2 при
+     тихой 5.4 пункта OKLab). Половинка счётчика — на жёлобе `--ctrl` (n4 днём,
+     n6 ночью), открытая створка — на шаг глубже своей вуали; орган палубы —
+     на шаг глубже своего покоя. */
+  const page = mode === 'dark' ? n[0] : n[1]
+  const trough = mode === 'dark' ? n[5] : n[3]
+  const goal = { hover: handStep(ink, page, 0, HAND.hover), press: handStep(ink, page, 0, HAND.press) }
+  /* Доля перебирается шагом экрана (1/255, `seen`), а не процентом: на палубе
+     марки середины лестницы (латунь) процент вуали — 0.75 пункта, и строка
+     палубы перескакивала цель до 6.0 при главной 3.5 (`hand-step` 0.59, И694). */
+  const shareFor = (sign, floor, want, from = 0) => {
+    for (let k = 1; k <= 153; k += 1) if (handStep(sign, floor, from, from + k / 255) >= want) return from + k / 255
+    return from + 0.6
+  }
+  out['--ctrl-hand-paper'] = translucent(ink, shareFor(ink, trough, goal.hover))
+  out['--ctrl-in-hand-paper'] = translucent(ink, shareFor(ink, trough, goal.hover, TROUGH['ctrl-in']))
+  out['--hover-row-deck'] = translucent(deck.ink, shareFor(deck.ink, deck.bg, goal.hover))
+  out['--press-row-deck'] = translucent(deck.ink, shareFor(deck.ink, deck.bg, goal.press))
+  out['--hover-ctrl-deck'] = translucent(deck.ink, shareFor(deck.ink, deck.bg, goal.hover, ORGAN))
+  out['--press-ctrl-deck'] = translucent(deck.ink, shareFor(deck.ink, deck.bg, goal.press, ORGAN))
+  out['--ctrl-hand-deck'] = translucent(deck.ink, shareFor(deck.ink, deck.bg, goal.hover))
+  out['--ctrl-in-hand-deck'] = translucent(deck.ink, shareFor(deck.ink, deck.bg, goal.hover, TROUGH['ctrl-in']))
+
+  /* Тихая марка органа (И462): вуаль марки (a9) на полу — заливка тихой
+     кнопки тоном марки, надпись и знак на ней — марочный текст (a11). Доля
+     — от `VEIL.tint` вверх, пока вуаль не видна на каждом полу; надпись
+     меряется на самой светлой из них. Не держит a11 — a12. Слово заказчика
+     27.09.2026: «сайт и форма слишком серые… только кнопка имеет цвет»:
+     тихий орган был только вуалью чернил, и марка на экране жила в одной
+     кнопке. На палубе тон марки не читается (палуба сама бывает маркой) —
+     там тихая марка та же, что тихая вуаль палубы, со знаком палубы. */
+  /* Марка красной семьи (терракота, бордо, вино; И463) тоном на тихие органы
+     не идёт: красное — краска беды, и треть экрана розовым читается
+     тревогой. Её место — одно главное действие; тихая марка такой палитры —
+     тихая вуаль чернил. */
+  const tint = redFamily(a[8]) ? { ...tintOn(ink, [ink], G, VEIL.paper.quiet), paint: ink } : { ...tintOn(a[8], [a[10], a[11]], G), paint: a[8] }
+  out['--quiet-tint-paper'] = translucent(tint.paint, tint.s)
+  /* Тихая марка поля (`--pop-tint`: поле параметров, выбранный сегмент,
+     тонированная карточка) — ступень a3; у марки красной семьи — n3 (И463):
+     розовое поле параметров на карте товара было той же тревогой на трети
+     экрана. */
+  out['--pop-tint-paper'] = redFamily(a[8]) ? n[2] : a[2]
+  /* Чужие марки (И471) — не по полу, но краски строителя: лист их показывает. */
+  for (const [name, hex] of Object.entries(MARKS)) out[`--mark-${name}`] = hex
+  out['--star-trade'] = STAR
+  out['--on-quiet-tint-paper'] = tint.ink
+  out['--quiet-tint-deck'] = translucent(deck.ink, VEIL.deck.quiet)
+  out['--on-quiet-tint-deck'] = deck.ink
+  check('tint', 'тихая марка видна на всех поверхностях', tint.seen, STATE.visible)
+  check('tint-text', 'марочный текст читается на тихой марке', tint.text, NEED.text)
+
+  /* Заливка выбранного (сегмент варианта, текущая страница листания; И706) —
+     заливка марки в любом наборе: основной цвет один (И694), выбранный размер
+     и кнопка покупки — одной краской (Gymshark, Allbirds). До 04.10.2026 светлая
+     марка отдавала выбранное чернилам, и у «Ледяного шалфея» 15 % и 10 ml
+     стояли чёрными рядом с зелёной «Add to cart» (заказчик: «кнопки процентов…
+     тоже должны быть одного основного цвета»). */
+  const chosen = a[8]
+  out['--chosen-paper'] = chosen
+  out['--on-chosen-paper'] = inkOn(a[8])
+  check('chosen', 'знак на заливке выбранного читается', ratio(out['--on-chosen-paper'], chosen), NEED.text)
+  check('chosen-one-main', 'заливка выбранного — заливка марки', chosen === a[8] ? 1 : 0, 1, '')
+
+  /* Тени обоих полов. */
+  SHADE.names.forEach((job, i) => {
+    const deep = translucent(...SHADE.deep[i])
+    out[`--sh-${job}-paper`] = mode === 'light' ? translucent(n[11], SHADE.paper[i]) : deep
+    out[`--sh-${job}-deck`] = deep
+  })
+
+  /* Затемнение под окном и вуаль героя. */
+  out['--scrim'] = translucent(neutral.stage, SCRIM[mode])
+  const scrim = scrimOf(hero)
+  out['--scrim-near'] = translucent(hero.stage, scrim.near)
+  out['--scrim-far'] = translucent(hero.stage, scrim.far)
+  check('scrim', 'текст героя читается на любом снимке', scrim.got, NEED.text)
+
+  /* Тень под подписью на снимке (И451): краска слоёв — чёрный долями силы
+     набора; подпись — светлый знак сцены героя. */
+  const caption = captionOf(hero.ink, captionStrength(set))
+  out['--sh-caption-near'] = translucent('#000000', caption.near)
+  out['--sh-caption-far'] = translucent('#000000', caption.far)
+  check('caption', 'подпись на снимке читается у края буквы', caption.got, NEED.control)
+
+  /* Кнопка. Громкая — `--pop` / `--on-pop` (ступень 9 марки и знак на ней;
+     на палубе — обратная пара), их роли уже есть. Под рукой на палубе —
+     знак палубы на шаг заливки к её полу, как ступень 10 от 9; под пальцем —
+     на два (И450). Шаг не идёт дальше, чем надпись пилюли — краска пола —
+     держит 4.5 : 1: у палубы марки запас знака узкий, и полный шаг ронял бы
+     надпись. */
+  const pill = (steps) => {
+    const way = lightness(deck.bg) > lightness(deck.ink) ? 1 : -1
+    for (let d = steps * SOLID_GAP[mode]; d > 0; d -= 0.1) {
+      const c = atLightness(deck.ink, deck.bg, lightness(deck.ink) + way * d)
+      if (ratio(deck.bg, c) >= NEED.text) return c
+    }
+    return deck.ink
+  }
+  out['--pop-hover-deck'] = pill(1)
+  out['--pop-press-deck'] = pill(2)
+  check('pop-deck', 'светлая пилюля палубы под рукой читается', ratio(deck.bg, out['--pop-hover-deck']), NEED.text)
+  check('pop-press-deck', 'светлая пилюля палубы под пальцем читается', ratio(deck.bg, out['--pop-press-deck']), NEED.text)
+
+  /* Тихая плашка на заливке кнопки (И452): счётчик на кнопке покупки —
+     вуаль знака кнопки на её заливке, на бумаге (a9, знак on-a-9) и на
+     палубе (пилюля — знак палубы, надпись — её пол). Строитель выпускал
+     вуали только из чернил пола, и знак на заливке брался смесью в стилях. */
+  const quietPop = (sign, fill) => {
+    const q = surfaceOn(sign, [fill], VEIL.pop, true)
+    return { fill: translucent(q.paint, q.s), ...q }
+  }
+  const qp = quietPop(inkOn(a[8]), a[8])
+  const qd = quietPop(deck.bg, deck.ink)
+  out['--quiet-pop-paper'] = qp.fill
+  out['--quiet-pop-deck'] = qd.fill
+  /* Надпись на тихой плашке — знак кнопки; у белой пилюли палубы марки
+     (тёмная тема cbdin: надпись 4.78 : 1) любая видимая вуаль роняла её
+     до 3.6 : 1, и плашка выворачивается — надпись тогда пол пилюли. */
+  out['--on-quiet-pop-paper'] = qp.ink
+  out['--on-quiet-pop-deck'] = qd.ink
+  check('quiet-pop', 'тихая плашка видна на заливке кнопки', qp.seen, STATE.visible)
+  check('quiet-pop-text', 'знак кнопки читается на тихой плашке', qp.text, NEED.text)
+  check('quiet-pop-deck', 'тихая плашка видна на пилюле палубы', qd.seen, STATE.visible)
+  check('quiet-pop-deck-text', 'надпись пилюли читается на тихой плашке', qd.text, NEED.text)
+
+  /* Тихое слово не у знака палубы (И486): доля `VEIL.dim` — ступень ответа
+     «покой → под рукой» всего сайта, — а строитель выпускал её только к
+     знаку палубы (`--chrome-fg-2`). У cbdin ещё три места стояли смесью
+     `color-mix(… var(--dim) …)` в стилях: полоса настроек на бумаге, метка
+     полной корзины на палубе и подсказка в светлом поле подвала. Каждая —
+     та же доля от 78 % и выше, пока держит свою норму на своём полу:
+       чернила на бумаге (`--ink-dim-paper`, на палубе — знак палубы, то же
+       значение, что `--chrome-fg-2`) — 4.5 : 1 на полах 1–5;
+       тихое слово на заливке (`--on-pop-dim-*`, подсказка в поле-пилюле) —
+       знак заливки на ней, 4.5 : 1; на палубе заливка — светлая пилюля, её
+       знак — пол палубы;
+       метка скидки на палубе (`--chrome-sale`, знак полной корзины; в покое
+       — `--chrome-sale-2`) — знак, не текст: 3 : 1 (WCAG 1.4.11) на каждом
+       полу палубы уже в покое. Краска — ступень лестницы скидки: девятая,
+       а где она на палубе не видна (жёлтая на бирюзе тёмной темы cbdin —
+       2.80 : 1 даже целиком), ближайшая к ней со стороны знака палубы;
+       нет и такой — знак палубы. */
+  const dimRole = (name, sign, grounds, need, id, rule) => {
+    const share = dimShare(sign, grounds, need)
+    out[name] = translucent(sign, share)
+    check(id, rule, dimGot(sign, grounds, share), need)
+  }
+  dimRole('--ink-dim-paper', ink, G, NEED.text, 'ink-dim', 'тихие чернила читаются на всех поверхностях')
+  out['--ink-dim-deck'] = out['--chrome-fg-2']
+  dimRole('--on-pop-dim-paper', inkOn(a[8]), [a[8]], NEED.text, 'on-pop-dim', 'тихое слово читается на заливке')
+  dimRole('--on-pop-dim-deck', deck.bg, [deck.ink], NEED.text, 'on-pop-dim-deck', 'тихое слово читается на пилюле палубы')
+  /* Лестница скидки; выпуск ролей без набора (лист палитры берёт одни
+     имена) — лестница марки на её месте. */
+  const saleRow = set.paper && set.sale ? scale(set.paper, set.ink, set.sale, mode, n[1]) : a
+  const saleFill = saleRow[8]
+  const signSide = lightness(deck.ink) > lightness(deck.bg)
+  const toSign = saleRow.filter((c, i) => i !== 8 && lightness(c) > lightness(saleFill) === signSide)
+    .sort((x, y) => Math.abs(lightness(x) - lightness(saleFill)) - Math.abs(lightness(y) - lightness(saleFill)))
+  const atRest = (c, bg) => ratio(veil(c, bg, seen(VEIL.dim)), bg)
+  out['--chrome-sale'] = firstReaching([saleFill, ...toSign, deck.ink], deck.grounds, NEED.control, 0, atRest)
+  dimRole('--chrome-sale-2', out['--chrome-sale'], deck.grounds, NEED.control, 'chrome-sale-2', 'метка скидки на палубе в покое видна')
+
+  /* Тихая плашка на плашке скидки (И488): вуаль знака скидки на её заливке —
+     чип и счётчик на метке, где пол — `--sale-9`, а слово — `--on-sale-9`.
+     Та же поверхность, что тихая плашка на заливке кнопки: у каждой пары
+     «заливка и знак» своя тихая плашка, и собирать её в стилях из
+     `currentColor` долей — цвет мимо палитры. */
+  const qs = quietPop(inkOn(saleFill), saleFill)
+  out['--quiet-sale'] = qs.fill
+  out['--on-quiet-sale'] = qs.ink
+  check('quiet-sale', 'тихая плашка видна на плашке скидки', qs.seen, STATE.visible)
+  check('quiet-sale-text', 'знак скидки читается на тихой плашке', qs.text, NEED.text)
+
+  /* Хвост — ступени марки на обоих полах: заливка главной кнопки и на
+     палубе — марка (роль кнопки из каталога посчитана на корне), меняется
+     только пол, к которому хвост сходит. */
+  const paper = trailOf(a, G, mode)
+  const onDeck = trailOf(a, deck.grounds, mode)
+  out['--pop-trail-near-paper'] = paper.near
+  out['--pop-trail-far-paper'] = paper.far
+  out['--pop-trail-near-deck'] = onDeck.near
+  out['--pop-trail-far-deck'] = onDeck.far
+  check('trail', 'хвост главной кнопки виден на полу', paper.got, NEED.decorLc, 'Lc')
+  check('trail-deck', 'хвост на палубе виден', onDeck.got, NEED.decorLc, 'Lc')
+
+  /* Второй конец градиента главной (И424; элементы 06, 19): заливка,
+     сдвинутая по светлоте на два шага заливки — от надписи, а где в ту
+     сторону нет запаса, к ней, пока надпись держит 4.5 : 1. Готовой краски
+     для этого нет: нажатая краска марки и тона хвоста роняли надпись до
+     3.1–3.3 : 1 на части образцов. Пары «бумага / палуба» нет (И443): роль
+     каталога раскрывается на корне, и на палубе кнопка несёт ту же заливку
+     и тот же второй конец, что на бумаге; оба непрозрачны, пол сквозь них
+     не виден — надпись меряется на них самих. */
+  const gradOf = (fill, onFill) => {
+    const gap = SOLID_GAP[mode] * 2
+    const L = lightness(fill)
+    const away = lightness(onFill) < L ? ['#FFFFFF', 1] : ['#000000', -1]
+    const back = away[1] > 0 ? ['#000000', -1] : ['#FFFFFF', 1]
+    const tries = [away, back].map(([to, dir]) => atLightness(fill, to, L + dir * gap))
+    const ok = tries.filter((c) => ratio(onFill, c) >= NEED.text)
+    return (ok.length ? ok : tries).sort((x, y) => Math.abs(lightness(y) - L) - Math.abs(lightness(x) - L))[0]
+  }
+  out['--pop-grad'] = gradOf(a[8], inkOn(a[8]))
+  check('pop-grad', 'надпись главной читается на втором конце градиента', ratio(inkOn(a[8]), out['--pop-grad']), NEED.text)
+
+  /* Стекло главной (И427; элемент 66): заливка просвечивает — сквозь неё
+     видно размытое то, что под кнопкой. Краска главной раскрывается на
+     корне и одна на всех полах: на бумаге, на карточке, на палубе и поверх
+     снимка героя — стекло держит надпись над каждым из них и над любым
+     снимком (чёрное и белое — края любого), а на бумаге видно само
+     (STATE.visible). Краска — ступень марки, доля — наименьшая в коридоре
+     GLASS.tint, при которой это выполнено; при равной доле — ступень
+     ближе к заливке. Не хватает коридора ни у одной — надпись важнее
+     просвета: заливка марки целиком. Кромка — блик: светлый конец
+     нейтрали долей GLASS.rim; на светлом полу он не виден и не должен —
+     он для снимка. */
+  const glassOf = (label) => {
+    const under = [...G, ...deck.grounds, deck.stage, '#000000', '#FFFFFF']
+    const worst = (paint, s) => Math.min(...under.map((bg) => ratio(label, veil(paint, bg, seen(s)))))
+    const seenOn = (paint, s) => Math.min(...G.map((bg) => ratio(veil(paint, bg, seen(s)), bg)))
+    let best = { paint: a[8], s: 1 }
+    a.forEach((paint, i) => {
+      for (let s = GLASS.tint[0]; s < best.s || (s === best.s && Math.abs(i - 8) < Math.abs(a.indexOf(best.paint) - 8)); s = Math.round((s + 0.01) * 100) / 100) {
+        if (worst(paint, s) >= NEED.text && seenOn(paint, s) >= STATE.visible) { best = { paint, s }; break }
+      }
+    })
+    return { fill: translucent(best.paint, best.s), got: worst(best.paint, best.s), seen: seenOn(best.paint, best.s) }
+  }
+  const glass = glassOf(inkOn(a[8]))
+  out['--pop-glass'] = glass.fill
+  out['--pop-rim'] = translucent(lightness(n[0]) > lightness(n[11]) ? n[0] : n[11], GLASS.rim)
+  check('pop-glass', 'надпись главной читается на стекле над каждым полом и любым снимком', glass.got, NEED.text)
+  check('pop-glass-seen', 'стекло главной видно на всех поверхностях', glass.seen, STATE.visible)
+
+  /* Стекло тихого органа на снимке (И601; слово заказчика 01.10.2026:
+     «полупрозрачная кнопка, с прозрачностью например 20% или посчитай, какой,
+     чтоб чёрный текст был виден») — плашка категории «Glass»: светлый конец
+     нейтрали долей, надпись — тёмный конец, в обеих темах одинаково (снимок
+     темы не знает). Доля — наименьшая, при которой надпись держит NEED.text
+     над любым снимком: худший — чёрный (над белым светлое стекло только
+     светлеет). 20 % над чёрным дают 1.3 : 1 — надписи не было бы. */
+  const [glassLight, glassDark] = lightness(n[0]) > lightness(n[11]) ? [n[0], n[11]] : [n[11], n[0]]
+  let glassShare = 1
+  for (let k = 1; k <= 100; k += 1) if (ratio(glassDark, veil(glassLight, '#000000', k / 100)) >= NEED.text) { glassShare = k / 100; break }
+  glassShare = Math.max(glassShare, PLATE_GLASS.floor)
+  out['--plate-glass'] = translucent(glassLight, glassShare)
+  out['--on-plate-glass'] = glassDark
+  /* Под рукой стекло непрозрачно (слово заказчика 01.10.2026: «при наведении
+     делай нулевую прозрачность»): та же краска целиком. Смена плавная —
+     роль `--hover-t`, как у всякой смены краски под рукой. */
+  out['--plate-glass-hand'] = glassLight
+  check('glass', 'надпись на стекле тихого органа читается над любым снимком', ratio(glassDark, veil(glassLight, '#000000', glassShare)), NEED.text)
+  /* То же стекло держит знак на снимке — сердце в углу карточки (И606):
+     пустое — краской стекла (замер выше), отмеченное — залито краской марки
+     (`--pop`, ступень 9). Знак — не текст: норма органа (3 : 1) над худшим
+     из снимков — чёрным и белым. */
+  const glassOver = (bg) => veil(glassLight, bg, glassShare)
+  const onGlass = (c) => Math.min(ratio(c, glassOver('#000000')), ratio(c, glassOver('#ffffff')))
+  /* Ступень марки, ближайшая к краске марки (9), которая это держит: у
+     светлой марки (латунь) ступень 9 на светлом стекле давала 1.2 : 1 —
+     отмеченное сердце пропадало. Ни одна не держит — краска стекла. */
+  const popSteps = [8, 9, 10, 11, 7, 6, 5].map((i) => a[i])
+  const popOnGlass = popSteps.find((c) => onGlass(c) >= NEED.control) ?? glassDark
+  out['--pop-on-glass'] = popOnGlass
+  check('glass-pop', 'отмеченный знак (краска марки) на стекле читается над любым снимком', onGlass(popOnGlass), NEED.control)
+
+  /* Кромка выключенного органа: видна и под прозрачностью выключенного —
+     на нижнем краю коридора STATE.off; первая ступень нейтрали от пола,
+     которая это держит. Выключенное читается кромкой, не только тоном. */
+  out['--edge-off-paper'] = firstReaching(n.slice(5), G, STATE.visible, 0, offSeen)
+  out['--edge-off-deck'] = firstReaching(deck.edges, deck.grounds, STATE.visible, 0, offSeen)
+  check('edge-off', 'кромка выключенного органа видна на всех поверхностях', Math.min(...G.map((bg) => offSeen(out['--edge-off-paper'], bg))), STATE.visible)
+  check('edge-off-deck', 'кромка выключенного органа видна на палубе', Math.min(...deck.grounds.map((bg) => offSeen(out['--edge-off-deck'], bg))), STATE.visible)
+
+  /* Поле на палубе (И549; дефект 29.09.2026 — подписка в подвале): пол
+     переодевал чернила, а заливку поля и его кромку — нет, и светлое поле
+     бумаги стояло на тёмной палубе с белыми буквами внутри — набранного не
+     видно. Заливка поля на палубе — плашка палубы (`--chrome-plate`, выше);
+     кромка — первая ступень края палубы, которая держит порог органа
+     (3 : 1) и на полу палубы, и на самой плашке: по кромке поле находят.
+     Заливка — парой пола, как вуали: бумаге — вторая ступень нейтрали (та
+     же, что `--field` корня), палубе — её плашка; лист на палубе
+     возвращает бумажную. */
+  out['--field-paper'] = n[1]
+  out['--field-deck'] = out['--chrome-plate']
+  const deckFields = [...deck.grounds, out['--field-deck']]
+  out['--border-deck'] = firstReaching(deck.edges, deckFields, NEED.control, 0)
+  check('border-deck', 'кромка поля видна на палубе и на плашке поля', Math.min(...deckFields.map((bg) => ratio(out['--border-deck'], bg))), NEED.control)
+
+  return { roles: out, checks }
+}
+
+/** Шаг светлоты под рукой у каждого органа (И702), в пунктах L*: залитая
+ *  главная — краска надписи долей шага в oklab поверх заливки; тихая кнопка и
+ *  строка — вуаль чернил на странице; половинка счётчика — вуаль на жёлобе
+ *  (`--ctrl`: n4 днём, n6 ночью); строка палубы — вуаль знака палубы. */
+function handSteps(n, a, deck, page, mode, r, share = STATE.step.hover) {
+  const d = (from, to) => Math.abs(oklch(to)[0] - oklch(from)[0]) * 100
+  const alpha = (hex) => Number.parseInt(hex.slice(7, 9), 16) / 255
+  const trough = mode === 'dark' ? n[5] : n[3]
+  return [
+    { of: 'главная', d: d(a[8], okMix(inkOn(a[8]), a[8], share)) },
+    { of: 'тихая', d: d(page, veil(n[11], page, seen(share))) },
+    { of: 'счётчик', d: d(trough, veil(n[11], trough, alpha(r['--ctrl-hand-paper']))) },
+    { of: 'палуба', d: d(deck.bg, veil(deck.ink, deck.bg, alpha(r['--hover-row-deck']))) },
+  ]
+}
+
+/** Замер ролей по полу для одного набора в теме — то же, что меряет
+ *  `auditPalette`, числами: его строки читает панель вида («Guaranteed»). */
+function groundChecks(rawSet, mode) {
+  const set = withSale(rawSet, mode)
+  const n = scale(set.paper, set.ink, null, mode)
+  const a = scale(set.paper, set.ink, set.accent, mode, n[1])
+  const checks = groundRoles(n, a, mode, set).checks
+  /* Целое, а не роль (И554): каждая роль выше мерится на своём полу, но
+     картину сайта не мерил никто — ночью полоса шапки встала светлее
+     карточек, скидка вышла третьим тоном. Две строки держат целое:
+     ночная палуба — не светлее листа карточек (ступень 4 тёмной), как днём
+     она темнее всего; скидка — красной семьи (`redFamily`) или названа
+     набором сама. Меряется как доля правды: 1 — держит, 0 — нет. */
+  const deck = deckFor(n, mode, a)
+  const sheet = mode === 'dark' ? n[3] : n[0]
+  const deckOk = mode === 'dark' ? lightness(deck.bg) <= lightness(sheet) || deck.kind === 'brand' : true
+  checks.push({ id: 'deck-order', rule: 'полоса шапки и подвала стоит на том же месте лестницы, что днём: ночью не светлее карточек', got: deckOk ? 1 : 0, need: 1, unit: '' })
+  /* Расстояние, а не только порядок (И568): полоса отстоит от страницы не
+     меньше, чем лист от страницы днём читается «другой плоскостью». Страница —
+     n2 днём (И699; до 04.10.2026 — n5), n1 ночью (tokens.css `--page`). */
+  const page = mode === 'dark' ? n[0] : n[1]
+  checks.push({ id: 'deck-apart', rule: 'полоса шапки и подвала отличима от страницы', got: ratio(deck.bg, page), need: DECK_APART, unit: ':1' })
+  /* Основной цвет один (И694): полоса и главная заливка — одна краска в любом
+     наборе и в обеих темах. */
+  /* Сцена героя днём — пол палубы, когда марка тёмная, как нейтральная палуба
+     (И697): у первого экрана нет второй, нейтральной чёрной рядом с тёмной маркой. */
+  const darkMain = ratio(a[8], deckOf(n, mode).bg) < DARK_KIN
+  checks.push({ id: 'hero-one-dark', rule: 'сцена героя днём — пол палубы, когда марка тёмная', got: !darkMain || mode !== 'light' || deck.stage === deck.bg ? 1 : 0, need: 1, unit: '' })
+  checks.push({ id: 'one-main', rule: 'полоса (палуба) и главная заливка — одна краска', got: deck.bg === a[8] ? 1 : 0, need: 1, unit: '' })
+  checks.push({ id: 'sale-kin', rule: 'скидка — красной семьи или своя краска набора, не третий тон', got: rawSet.sale || redFamily(set.sale) ? 1 : 0, need: 1, unit: '' })
+  /* Шаг руки один (И702): под рукой светлота меняется на одну величину у всего,
+     что рука меняет, — залитая главная (`color-mix` в oklab краски надписи на
+     заливку), тихая кнопка и строка на странице, половинка счётчика на жёлобе,
+     строка палубы (вуаль чернил поверх пола). Меряется шаг L* CIELAB; меньший
+     не меньше `STATE.stepSpread` большего. До 04.10.2026 долей было три (5, 8,
+     12 %), и заказчик глазом увидел: «у быстрого заказа оттенок меняется
+     сильнее, чем у add to cart». */
+  const steps = handSteps(n, a, deck, page, mode, roles(rawSet, mode))
+  const [low, high] = [Math.min(...steps.map((x) => x.d)), Math.max(...steps.map((x) => x.d))]
+  /* Ночью светлая вуаль на тёмном полу шагает крупнее заливки главной, а доля по
+     теме ролью не ставится (тема ставит только краски, `axisTheme`) — замер ночи
+     открыт (docs/open.md, И702); держится день. */
+  if (mode === 'light') checks.push({ id: 'hand-step', rule: `шаг светлоты под рукой один у всех органов (${steps.map((x) => `${x.of} ${x.d.toFixed(1)}`).join(', ')})`, got: Number((low / high).toFixed(2)), need: STATE.stepSpread, unit: '' })
+  /* Каждый пол, а не один (И556): роль органа и тихий текст держат порог на
+     всех ступенях 1–5, где их может поставить tokens.css (лист, карточка,
+     поле, орган, страница) — в обеих темах. Мерить одну ступень значит
+     пропустить ту, куда элемент поставили потом. */
+  const floors = GROUNDS(n)
+  const worst = (paint) => Math.min(...floors.map((bg) => ratio(paint, bg)))
+  const r = roles(rawSet, mode)
+  checks.push({ id: 'border-floors', rule: 'кромка поля, галочки и счётчика видна на каждом полу 1–5', got: worst(r['--border']), need: NEED.control, unit: ':1' })
+  checks.push({ id: 'soft-floors', rule: 'приглушённый текст читается на каждом полу 1–5', got: worst(n[10]), need: NEED.text, unit: ':1' })
+  return checks
+}
+
+/* ── Роли: что из лестницы чем работает ──────────────────────────────── */
+
+/** Краски магазина сверх фирменной. Заведены 21.09.2026 по вопросу
+ *  заказчика: «есть же плашка скидки — она какого цвета?».
+ *
+ *  Смысл каждой взят не с потолка, а из правила админки, которое заказчик
+ *  записал раньше (CLAUDE.md, «Админка», п. 8): красный — деньги теряются
+ *  СЕЙЧАС, оранжевый — будут стоить ПОТОМ, зелёный — проверено и в порядке.
+ *  На витрине это те же три работы: «нет в наличии», «осталось двое»,
+ *  «в наличии, доставим завтра».
+ *
+ *  Скидка стоит отдельно от всех четырёх, и это не украшение. Плашка
+ *  скидки, покрашенная фирменным, пропадает рядом с кнопкой покупки —
+ *  а покрашенная красным читается как предупреждение. Поэтому она своя
+ *  краска и держит от остальных то же расстояние, что и марка от красного.
+ *
+ *  Лестницы поверхностей у статусных красок нет намеренно: у плашки три
+ *  работы — тихий фон, заливка и текст, — и ступени 3–8 ей негде применить.
+ *  Заводить их значит заводить места, где правда разойдётся. */
+const STATUS = ['error', 'sale', 'warn', 'ok', 'info']
+const STATUS_STEPS = [1, 8, 10] /* тихая плашка, заливка, текст */
+
+/**
+ * Плашка скидки — красная семья, одна краска на обе темы: рубиновый
+ *  (Radix ruby 9; у Radix ступень 9 одна в обеих темах).
+ *
+ * До 29.09.2026 скидка выводилась из марки поворотом тона на 60° (Material,
+ * третья краска схемы TONAL_SPOT; И211) — и у каждой марки выходила краской,
+ * которой на сайте больше нет нигде: индиго у бирюзовой, бирюза у латунной.
+ * Слово заказчика: «тут … куча цветов, ты что подобрать не можешь» (И554).
+ * Замер 29.09.2026: у Allbirds, Glossier, naturecan и cbdin.bg на сайте
+ * нейтраль и одна марка — третьего тона нет; скидку красят маркой или
+ * красным. Красный скидке разрешил заказчик 27.09.2026: «красный допустим
+ * там, где внимание требуется, например нет в наличии, или скидка».
+ *
+ * От ошибки скидку отличает светлота, а не тон: ошибка днём тёмно-красная,
+ * ночью светлая (`FIXED.error`), скидка — яркая в обеих; расстояние 25 ΔE
+ * до каждого сигнала держится, как у всех (И196). Марка красной семьи
+ * (терракота, вино) ближе 25 к рубину — тогда скидка берётся той же
+ * красной семьёй светлее или глубже рубина (коралл, вино), и только если
+ * не держит и она — прежним поворотом от марки.
+ */
+const SALE = '#E54666'
+function saleFrom(accent, others = []) {
+  const apart = (hex) => [accent, ...others].every((other) => difference(solidFor(hex), other) >= NEED.brandApart)
+  const [, sC, sh] = oklch(SALE)
+  const kin = [SALE, ...[0.72, 0.36, 0.76, 0.33, 0.8, 0.3].map((l) => toHex(clampChroma([l, sC, sh]).map((v) => v * 255)))].find(apart)
+  if (kin) return kin
+  const [L, C, h] = oklch(accent)
+  /* Насыщенность не ниже марки и не ниже 0.09: плашка скидки, вышедшая
+     серой, перестаёт быть плашкой. */
+  const paint = (turn) => toHex(clampChroma([L, Math.max(C, 0.09), (h + turn) % 360]).map((v) => v * 255))
+  for (let turn = 60; turn <= 300; turn += 30) {
+    const hex = paint(turn)
+    if (others.every((other) => difference(hex, other) >= NEED.brandApart)) return hex
+  }
+  return paint(60)
+}
+
+/** Краски, которые обязаны быть различимы между собой. */
+const SIGNALS = ['accent', ...STATUS]
+
+/** Как краска называется в отчёте. Заказчик читает находки с телефона, и
+ *  «accent отличим от error» ему не говорит ничего. */
+const SIGNAL_NAMES = {
+  accent: 'фирменный',
+  error: 'красный «нет в наличии»',
+  sale: 'плашка скидки',
+  warn: 'оранжевый «мало осталось»',
+  ok: 'зелёный «в наличии»',
+  info: 'синий «просто сведение»',
+}
+
+const short = { accent: 'a', error: 'e', sale: 'sale', warn: 'warn', ok: 'ok', info: 'info' }
+
+/** Все краски одного набора в одной теме, готовые к печати в CSS.
+ *
+ *  Считается ВСЁ, кроме пяти красок, которые назвал заказчик. Знак на
+ *  заливке, наведение, нажатие, граница и кольцо фокуса не хранятся: каждое
+ *  из них однажды было записано рукой и однажды разошлось с правдой. */
+function roles(rawSet, mode) {
+  const set = withSale(rawSet, mode)
+  const n = scale(set.paper, set.ink, null, mode)
+  const out = {}
+  n.forEach((hex, i) => { out[`--n-${i + 1}`] = hex })
+
+  const a = scale(set.paper, set.ink, set.accent, mode, n[1])
+  a.forEach((hex, i) => { out[`--a-${i + 1}`] = hex })
+  out['--on-a-9'] = inkOn(a[8])
+  out['--a-press'] = press(a, mode)
+  out['--on-a-10'] = inkOn(a[9])
+  out['--on-a-press'] = inkOn(out['--a-press'])
+
+  for (const job of STATUS) {
+    if (!set[job]) continue
+    const row = scale(set.paper, set.ink, set[job], mode, n[1])
+    for (const i of STATUS_STEPS) out[`--${short[job]}-${i + 1}`] = row[i]
+    out[`--on-${short[job]}-9`] = inkOn(row[8])
+  }
+
+  /* Разделитель ничего не опознаёт и остаётся на тихой шестой; граница и
+     кольцо опознают орган управления — и потому берутся замером. */
+  out['--line'] = n[5]
+  /* Кромка поля, галочки, счётчика — 3 : 1 на КАЖДОМ полу 1–5, как у
+     `--edge` (И556). До 29.09.2026 она подбиралась к одной ступени — полю
+     (вторая), а карточка ночью стоит на четвёртой (`--plate`, tokens.css):
+     кромка на ночной карточке давала 2.76 при норме 3, и замер это
+     пропускал — мерил тот же единственный пол. Какой пол у карточки, решает
+     tokens.css; строитель не знает и знать не должен — держит все. */
+  out['--border'] = firstReaching(n, GROUNDS(n), NEED.control, 6)
+  /* Кромка органа, который стоит на ЛЮБОМ полу (тихая кнопка с кромкой,
+     фишка выбора, вариант доставки). В покое — тихая линия, 1.4 : 1 на
+     фонах 1–5 (`STATE.edge`): орган опознаёт надпись, а кромка краской
+     приглушённого текста (3 : 1, И252) кричала — слово заказчика 30.09.2026:
+     «окантовки у нас слишком кричащие, это неверно установленная роль»
+     (И588). Под рукой — `--edge-hand`, прежние 3 : 1: кромка темнеет, когда
+     её трогают (ось «Ответ на руку» каталога кнопок). */
+  out['--edge'] = firstReaching(n, GROUNDS(n), STATE.edge, 6)
+  out['--edge-hand'] = firstReaching(n, GROUNDS(n), NEED.control, 6)
+  /* Кромка на полшага темнее покоя — 2 : 1 (`STATE.edgeNear`): ответ руке
+     там, где сильный скачок до 3 : 1 громок (имя на снимке под рукой, И635). */
+  out['--edge-near'] = firstReaching(n, GROUNDS(n), STATE.edgeNear, 6)
+  out['--ring'] = firstReaching(a, GROUNDS(n), NEED.control, 7)
+  /* Палуба, вуали, тени, сцена героя, хвост и кромка выключенной кнопки —
+     роли по полу (И295). */
+  Object.assign(out, groundRoles(n, a, mode, set).roles)
+  return out
+}
+
+/** Набор краской в CSS.
+ *
+ *  Первый набор файла стоит на корне — он показывается, когда никто ничего
+ *  не выбирал. И **каждый** набор, первый в том числе, стоит ещё и под своим
+ *  именем: без этого переключатель не может к первому вернуться, а кружок с
+ *  его краской в ленте выбора показывает не его, а тот набор, который сейчас
+ *  включён. Найдено 21.09.2026 на стенде выбора цвета третьей витрины.
+ *
+ *  Цена — четыре десятка строк на набор, и она платится один раз при выпуске;
+ *  цена обратного — переключатель, который работает во все стороны, кроме
+ *  одной. */
+/* Три сигнала, которые ни от набора, ни от марки не зависят: красный
+ * «нет в наличии», оранжевый «мало осталось», зелёный «в наличии». Их
+ * узнают не по набору, а по цвету вообще: зелёная кнопка «в наличии»
+ * зелёная и в аптечном наборе, и в оливковом.
+ *
+ * До 20.09.2026 они стояли записанными в КАЖДОМ наборе — семь наборов по
+ * два значения, сорок две записи на шесть чисел. Заказчик спросил, сколько
+ * красок названо рукой, счёт по файлу показал: по-настоящему рукой
+ * называются ТРИ — бумага, чернила, марка; остальные три переписаны
+ * одинаково семь раз (И216).
+ *
+ * Набор по-прежнему может назвать свои: аптека с фирменным красным вправе
+ * отодвинуть «нет в наличии». Названное живёт, неназванное берётся отсюда.
+ */
+const FIXED = {
+  /* Ошибка ночью — светлая (Radix red 11 тёмной темы, Material error dark
+     светлый тоже): яркий красный ночью — краска скидки (И554). */
+  error: { light: '#B3261E', dark: '#FF9592' },
+  warn: { light: '#F76B15', dark: '#F76B15' },
+  ok: { light: '#30A46C', dark: '#30A46C' },
+}
+
+/* Синий эталона — краска сведения. Не выводится из марки, как скидка:
+ * скидка — СОСЕДКА марки и обязана быть из её мира, а сведение обязано
+ * быть узнаваемым само по себе, и во всех разобранных наборах оно синее
+ * (Carbon `info`, Spectrum `informative`, Polaris `info`). Radix пишет
+ * прямо, что синий несёт два смысла сразу: «If you map `blue` to
+ * "accent", you might also need `blue` to communicate "info"» — значит у
+ * набора с синей маркой сведению нужна СВОЯ краска, а не марка. Поэтому
+ * синий тут постоянный, как оранжевый «мало осталось» и зелёный «в
+ * наличии», и только если он подошёл ближе 25 ΔE к чему-то из набора,
+ * поворачивается тем же ходом, что и скидка. */
+const INFO = '#0090FF'
+
+function infoFrom(others = []) {
+  const [L, C, h] = oklch(INFO)
+  const paint = (turn) => toHex(clampChroma([L, C, (h + turn) % 360]).map((v) => v * 255))
+  for (let turn = 0; turn <= 300; turn += 30) {
+    /* Меряется та краска, что встанет на сайт, — уже сдвинутая до
+       читаемой надписи (`solidFor`, И559). */
+    const hex = solidFor(turn === 0 ? INFO : paint(turn))
+    if (others.every((other) => difference(hex, other) >= NEED.brandApart)) return hex
+  }
+  return solidFor(INFO)
+}
+
+/** Набор, у которого скидка названа заказчиком, остаётся как есть; набор
+ *  без скидки получает её выведенной из марки, а сведение — синим эталона.
+ *
+ *  Заведено 20.09.2026 вопросом заказчика «восемь не нужно?»: сообщение о
+ *  факте — «доставка 3–5 дней», «закон ЕС: до 0,2 % ТГК» — красилось либо
+ *  успехом (зелёный врёт: ничего не удалось), либо вниманием (оранжевый
+ *  врёт: ничего не случилось). */
+const withSale = (set, mode = 'light') => {
+  const full = { ...set }
+  /* Краску, которую набор назвал сам, строитель не двигает — только меряет,
+     как марку (И559): его выбор старше правила. Двигаются выведенные. */
+  for (const [job, краски] of Object.entries(FIXED)) full[job] = set[job] || solidFor(краски[mode])
+  full.sale = set.sale || solidFor(saleFrom(full.accent, [full.error, full.warn, full.ok, full.accent].filter(Boolean)))
+  full.info = set.info || solidFor(infoFrom([full.accent, full.error, full.warn, full.ok, full.sale].filter(Boolean)))
+  return full
+}
+
+function toCss(sets, { generator = 'tools/palette-css.mjs' } = {}) {
+  const names = Object.keys(sets)
+  const body = (set) => {
+    const light = roles(set.light, 'light')
+    const dark = roles(set.dark, 'dark')
+    return Object.keys(light)
+      .map((key) => `  ${key}: light-dark(${light[key]}, ${dark[key] ?? light[key]});`)
+      .join('\n')
+  }
+  const head = `/* Собран ${generator} из styles/palette.json. Руками не правят:
+   первый же выпуск сотрёт правку. Краски набора — в palette.json, всё
+   остальное здесь СЧИТАЕТСЯ (палитра: ${names.length} ${names.length === 1 ? 'набор' : 'набора(ов)'}). */`
+  const first = `:root{\n  color-scheme: light dark;\n${body(sets[names[0]])}\n}`
+  const named = names.map((name) => `[data-palette="${name}"]{\n${body(sets[name])}\n}`)
+  return [head, first, ...named].join('\n\n') + '\n'
+}
+
+/* ── Замер ───────────────────────────────────────────────────────────── */
+
+function auditPalette(rawSeed, mode) {
+  /* Мерится то, чем сайт покрашен, а не то, что записано в файле: выведенные
+     краски — такие же краски, и пропускать их мимо замера значит мерить
+     половину. */
+  const seed = withSale(rawSeed, mode)
+  const n = scale(seed.paper, seed.ink, null, mode)
+  const a = scale(seed.paper, seed.ink, seed.accent, mode, n[1])
+  const pressed = press(a, mode)
+  const ring = firstReaching(a, GROUNDS(n), NEED.control, 7)
+  const bound = firstReaching(n, GROUNDS(n), NEED.control, 6)
+  const hover = Math.abs(lightness(a[9]) - lightness(a[8]))
+  const pushed = Math.abs(lightness(pressed) - lightness(a[8]))
+
+  const found = []
+  const want = (rule, got, need) => {
+    if (got < need) found.push({ rule, got: Number(got.toFixed(2)), need })
+  }
+  want('основной текст на карточке', ratio(n[11], n[1]), NEED.text)
+  want('приглушённый текст на карточке', ratio(n[10], n[1]), NEED.text)
+  want('цена фирменным на карточке', ratio(a[10], n[1]), NEED.text)
+  want('знак на кнопке покупки', ratio(inkOn(a[8]), a[8]), NEED.text)
+  /* Обещание APCA для надписи на заливке (И559): латунь 4.75 по WCAG и Lc 36
+     глазом — «чёрный на бронзе плохо различим». Марка, не держащая обе
+     меры, двигается до построения (шаги 2–4; панель — `fitPalette`). */
+  want('знак на кнопке покупки читается глазом (APCA)', Math.abs(apca(inkOn(a[8]), a[8])), NEED.mutedLc)
+  for (const job of STATUS) want(`надпись на плашке «${SIGNAL_NAMES[job]}» читается глазом (APCA)`, Math.abs(apca(inkOn(seed[job]), seed[job])), NEED.mutedLc)
+  want('текст кнопки при наведении', ratio(inkOn(a[9]), a[9]), NEED.text)
+  want('текст нажатой кнопки', ratio(inkOn(pressed), pressed), NEED.text)
+  want('кольцо фокуса на всех поверхностях', Math.min(...GROUNDS(n).map((bg) => ratio(ring, bg))), NEED.control)
+  want('граница органа управления на каждом полу', Math.min(...GROUNDS(n).map((bg) => ratio(bound, bg))), NEED.control)
+  const edge = firstReaching(n, GROUNDS(n), STATE.edge, 6)
+  want('тихая кромка органа видна на всех поверхностях', Math.min(...GROUNDS(n).map((bg) => ratio(edge, bg))), STATE.edge)
+  const edgeHand = firstReaching(n, GROUNDS(n), NEED.control, 6)
+  want('кромка органа под рукой на всех поверхностях', Math.min(...GROUNDS(n).map((bg) => ratio(edgeHand, bg))), NEED.control)
+  /* Роли по полу (И295) — тем же расчётом, что их выпускает: тихая вуаль
+     на бумаге и на палубе (орган без кромки виден только ею; «Аптека» до
+     24.09.2026 выходила с тихой кнопкой 1.14 : 1 на полу страницы, И285),
+     хвост главной кнопки на обоих полах, кромка выключенной, пилюля палубы
+     под рукой и текст героя на любом снимке. */
+  for (const c of groundRoles(n, a, mode, seed).checks) want(c.rule, c.got, c.need)
+
+  /* Статусные краски: у каждой своя лестница, и каждая мерится как марка.
+     Красный до 20.09.2026 не мерил никто (И190), а скидка, «мало осталось»
+     и «в наличии» не существовали вовсе до 21.09.2026. */
+  const jobs = { error: 'ошибки', sale: 'скидки', warn: 'предупреждения', ok: 'наличия', info: 'информации' }
+  for (const job of STATUS) {
+    if (!seed[job]) continue
+    const row = scale(seed.paper, seed.ink, seed[job], mode, n[1])
+    want(`текст ${jobs[job]} на карточке`, ratio(row[10], n[1]), NEED.text)
+    want(`знак на заливке ${jobs[job]}`, ratio(inkOn(row[8]), row[8]), NEED.text)
+    want(`${jobs[job]} держит обещание эталона`, apca(row[10], n[1]), NEED.mutedLc)
+    want(`лестница ${jobs[job]} не схлопывается`, tightest(row, mode), STEP_MIN)
+  }
+
+  /* Пять красок сигналов обязаны быть различимы ПОПАРНО, а не только марка
+     с красным. Плашка скидки цвета кнопки покупки рядом с ней пропадает, а
+     цвета «нет в наличии» — читается как предупреждение: покупатель уходит
+     в обоих случаях, и в обоих виновата не вёрстка. */
+  for (let i = 0; i < SIGNALS.length; i += 1) {
+    for (let j = i + 1; j < SIGNALS.length; j += 1) {
+      const [x, y] = [seed[SIGNALS[i]], seed[SIGNALS[j]]]
+      if (!x || !y) continue
+      want(`${SIGNAL_NAMES[SIGNALS[i]]} и ${SIGNAL_NAMES[SIGNALS[j]]} — разные краски`,
+        difference(x, y), NEED.brandApart)
+    }
+  }
+
+  /* Обещание эталона — единственное, которое он вообще даёт, и дано оно в
+     APCA (И191). На этих же парах в тёмной теме WCAG показывает 6.2–8.4 при
+     норме 4.5 — «с запасом», пока APCA держится на 55.8. */
+  want('приглушённый текст держит обещание эталона', apca(n[10], n[1]), NEED.mutedLc)
+  want('основной текст держит обещание эталона', apca(n[11], n[1]), NEED.mainLc)
+  want('цена фирменным держит обещание эталона', apca(a[10], n[1]), NEED.mutedLc)
+
+  /* Лестница не схлопывается: две ступени с разной работой в одной краске —
+     это контрол без ответа или цена, неотличимая от текста (И189). */
+  want('нейтральная лестница не схлопывается', tightest(n, mode), STEP_MIN)
+  want('фирменная лестница не схлопывается', tightest(a, mode), STEP_MIN)
+  want('наведение кнопки заметно', hover, 2)
+  want('нажатие кнопки заметно', pushed, 4)
+  /* Слишком большой сдвиг — та же беда, что и нулевой: обвал янтаря заказчик
+     назвал «слишком большое изменение оттенка» раньше, чем это дали числа. */
+  if (hover > 8) found.push({ rule: 'наведение кнопки не обвал', got: Number(hover.toFixed(2)), need: 8 })
+  if (pushed > 16) found.push({ rule: 'нажатие кнопки не обвал', got: Number(pushed.toFixed(2)), need: 16 })
+  return found
+}
+
+/* ── Строитель для заказчика: верен по построению (И275) ────────────────
+
+   Заказчик задаёт НАМЕРЕНИЕ, а не три краски: цвет марки (тон он хочет
+   именно этот), бумагу — тёплую, нейтральную или холодную, с лёгким тоном
+   или без, и чернила — сами или с уходом в марку. Строитель превращает
+   намерение в набор, который проходит ВЕСЬ замер набора (`auditPalette`) в
+   обеих темах, и одной строкой говорит, что он подвинул. Списка ошибок
+   заказчик не видит никогда: замер остаётся инструментом того, кто ведёт
+   набор, а инструмент заказчика гарантирует (слово заказчика 24.09.2026:
+   «не понимаю, зачем мне давать выбор цвета, а затем он не подходит и
+   ошибки в меню»).
+
+   Поиск ближайшего: тон марки держится, светлота и насыщенность перебираются
+   от заданной краски наружу по ΔE, и берётся первая, при которой замер
+   чист; тон двигается только если ни одна светлота не прошла — и тогда это
+   названо. Чернила темнеют (светлеют в тёмной теме), пока текст не сдержит
+   обещание эталона. */
+
+const PAPER_HUE = { warm: 80, cool: 250, neutral: 80 }
+const PAPER_TINT = { none: 0.003, light: 0.012 }
+const THEME = {
+  light: { paper: 0.988, ink: [0.25, 0.23, 0.21, 0.19, 0.17, 0.15, 0.13] },
+  dark: { paper: 0.18, ink: [0.94, 0.955, 0.97, 0.985] },
+}
+const hexOf = (lch) => toHex(clampChroma(lch).map((v) => v * 255))
+/** К чему относится находка замера — по её имени (замер тот же, И275). */
+const partOf = (rule) => (/разные краски/.test(rule) ? 'signals'
+  : /ошибки|скидки|предупреждения|наличия|информации/.test(rule) ? 'status'
+    : /фирменн|кнопк|кольцо фокуса|наведение|нажатие/.test(rule) ? 'brand' : 'neutral')
+
+/** Бумага и чернила темы из намерения: чернила уходят от бумаги, пока
+ *  нейтральная часть замера не станет чистой. */
+function groundOf(intent, mode) {
+  const warmth = intent.paper ?? 'warm'
+  const hue = PAPER_HUE[warmth] ?? 80
+  const tint = warmth === 'neutral' ? 0 : PAPER_TINT[intent.tint ?? 'none'] ?? 0.003
+  const paper = hexOf([THEME[mode].paper, tint, hue])
+  const [, bC, bH] = oklch(intent.brand)
+  const inkHue = intent.inkTowardBrand ? bH : hue
+  const inkC = intent.inkTowardBrand ? Math.min(0.03, bC * 0.3) : Math.max(tint, 0.004)
+  let ink = null
+  for (const L of THEME[mode].ink) {
+    ink = hexOf([L, inkC, inkHue])
+    if (!auditPalette({ paper, ink, accent: intent.brand }, mode).some((f) => partOf(f.rule) === 'neutral')) break
+  }
+  return { paper, ink }
+}
+
+/** Свои чернила темы, доведённые до замера НАИМЕНЬШИМ сдвигом: тон и
+ *  насыщенность те же, светлота уходит от бумаги шагом 0.005 OKLCH, пока
+ *  нейтральная часть замера не станет чистой. null — не дошли и за 0.2:
+ *  тогда чернила подбирает намерение (`groundOf`). Так же доводятся и
+ *  готовые наборы набора (И285): верен по построению не только строитель. */
+function deeperInk(ground, accent, mode) {
+  const [L, C, H] = oklch(ground.ink)
+  const way = mode === 'light' ? -1 : 1
+  for (let d = 0.005; d <= 0.2; d += 0.005) {
+    const ink = hexOf([L + way * d, C, H])
+    if (!auditPalette({ ...ground, ink, accent }, mode).some((f) => partOf(f.rule) === 'neutral')) return ink
+  }
+  return null
+}
+
+/** Ближайшая к `brand` краска марки, при которой замер темы чист целиком. */
+function brandFor(brand, ground, mode) {
+  const [L, C, H] = oklch(brand)
+  const clean = (accent) => auditPalette({ ...ground, accent }, mode).length === 0
+  if (clean(brand)) return { accent: brand, hue: 0 }
+  const tried = new Set()
+  for (const turn of [0, 8, -8, 16, -16, 24, -24, 32, -32]) {
+    const candidates = []
+    for (const c of [C, C * 0.8, C * 0.6, C * 0.4]) {
+      for (let d = 0; d <= 0.5; d += 0.02) for (const l of d ? [L - d, L + d] : [L]) if (l > 0.15 && l < 0.93) candidates.push(hexOf([l, c, (H + turn + 360) % 360]))
+    }
+    candidates.sort((a, b) => difference(a, brand) - difference(b, brand))
+    for (const hex of candidates) {
+      if (tried.has(hex)) continue
+      tried.add(hex)
+      if (clean(hex)) return { accent: hex, hue: turn }
+    }
+  }
+  return null
+}
+
+/** Почему краску марки пришлось подвинуть — словами для заказчика. */
+function whyMoved(from, to, ground, mode) {
+  const parts = new Set(auditPalette({ ...ground, accent: from }, mode).map((f) => partOf(f.rule)))
+  const way = lightness(to) < lightness(from) ? 'a little darker' : 'a little lighter'
+  if (parts.has('signals')) return `${way}, so it stays apart from the sale and stock colours`
+  if (parts.has('brand')) return `${way}, so the button text and the focus ring read`
+  return `${way}, so every text on it reads`
+}
+
+/** Намерение → набор, который проходит замер в обеих темах, и что
+ *  подвинуто. `intent`: { brand: '#hex', paper: 'warm'|'neutral'|'cool',
+ *  tint: 'none'|'light', inkTowardBrand: boolean }. `exact` (тонкая
+ *  настройка) — свои бумага и чернила темы: они тоже доводятся до замера. */
+function fitPalette(intent, exact = null) {
+  const out = { light: null, dark: null }
+  const notes = []
+  const used = {}
+  for (const mode of ['light', 'dark']) {
+    let ground = exact?.[mode] ? { paper: exact[mode].paper, ink: exact[mode].ink } : groundOf(intent, mode)
+    const accent = exact?.[mode]?.accent ?? intent.brand
+    const weak = exact?.[mode] ? auditPalette({ ...ground, accent }, mode).filter((f) => partOf(f.rule) === 'neutral') : []
+    if (weak.length) {
+      const ink = deeperInk(ground, accent, mode) ?? groundOf(intent, mode).ink
+      const why = weak.every((f) => /вуаль/.test(f.rule)) ? 'the ink was made a touch deeper, so quiet buttons show on the page' : 'the ink was made deeper, so body text reads'
+      notes.push({ what: 'ink', mode, from: ground.ink, to: ink, why })
+      ground = { paper: ground.paper, ink }
+    }
+    const want = exact?.[mode]?.accent ?? intent.brand
+    const found = brandFor(want, ground, mode)
+    if (!found) return { ok: false, seed: null, notes: [{ what: 'brand', mode, from: want, to: want, why: 'no tone of this colour works as a button here; try another colour' }] }
+    if (found.accent !== want) notes.push({ what: 'brand', mode, from: want, to: found.accent, why: found.hue ? `the hue was turned ${Math.abs(found.hue)}°, so it stays apart from the sale and stock colours` : whyMoved(want, found.accent, ground, mode) })
+    out[mode] = { ...ground, accent: found.accent }
+    used[mode] = found.accent
+  }
+  return { ok: true, seed: out, notes, used }
+}
+
+/** Набор → намерение, из которого строитель его повторит (для «Edit»). */
+function intentOf(set) {
+  const [, pC, pH] = oklch(set.light.paper)
+  const [, iC] = oklch(set.light.ink)
+  const paper = pC < 0.0045 ? 'neutral' : pH >= 20 && pH < 160 ? 'warm' : 'cool'
+  return { brand: set.light.accent.toUpperCase(), paper, tint: pC >= 0.007 ? 'light' : 'none', inkTowardBrand: iC >= 0.02 }
+}
+
+</script>
+<script>
+const SETS = {"Латунь на угле":{"light":{"paper":"#FCFBF9","ink":"#1F1E1C","accent":"#917236"},"dark":{"paper":"#121110","ink":"#EDEBE8","accent":"#CFAB6F"}},"Аптека":{"light":{"paper":"#FEFCF5","ink":"#1E2F25","accent":"#D1AC54"},"dark":{"paper":"#0C1510","ink":"#EDECE9","accent":"#D1AC54"}},"Олива":{"light":{"paper":"#FCFDF7","ink":"#22271A","accent":"#5F6B34"},"dark":{"paper":"#11140D","ink":"#ECECEA","accent":"#5F6B34"}},"Мек остров":{"light":{"paper":"#FFFFFF","ink":"#231F18","accent":"#0C3A46"},"dark":{"paper":"#141310","ink":"#EFECE7","accent":"#3A7B8C"}},"Тёплый лист":{"light":{"paper":"#FFFCF6","ink":"#241E17","accent":"#A34627","error":"#D83B43"},"dark":{"paper":"#15120E","ink":"#EDECEA","accent":"#A34627"}},"Ледяной шалфей":{"light":{"paper":"#FAFCFB","ink":"#1B2422","accent":"#438170"},"dark":{"paper":"#0D1211","ink":"#E9EDEC","accent":"#78BCAA"}},"Аптечный синий":{"light":{"paper":"#FBFCFE","ink":"#1A1F2B","accent":"#3A6EA5"},"dark":{"paper":"#0E1116","ink":"#E8EBF0","accent":"#4579AF"}},"Ирис":{"light":{"paper":"#FBFBFB","ink":"#211F2F","accent":"#6E56CF"},"dark":{"paper":"#121212","ink":"#EAE8FF","accent":"#6E56CF"}}};
+const ORIGINAL = JSON.parse(JSON.stringify(SETS));
+const state = { name: Object.keys(SETS)[0], show: 'both' };
+const cur = () => SETS[state.name];
+const MODES = ['light', 'dark'];
+const MODE_NAME = { light: 'Светлая тема', dark: 'Тёмная тема' };
+const JOBS = ['лист','карточка','орган','курсор','нажатие','раздели-тель','граница','граница под курсором','заливка','заливка под курсором','приглу-шённый','основной'];
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const f1 = (x) => Number(x).toFixed(1);
+const f2 = (x) => Number(x).toFixed(2);
+const chip = (kind, text) => `<span class="v ${kind}">${esc(text)}</span>`;
+const okno = (ok) => ok ? 'ok' : 'no';
+
+function data(mode) {
+  const set = cur()[mode];
+  const full = withSale(set, mode);
+  const r = roles(set, mode);
+  const n = Array.from({ length: 12 }, (_, i) => r[`--n-${i + 1}`]);
+  const a = Array.from({ length: 12 }, (_, i) => r[`--a-${i + 1}`]);
+  return { set, full, r, n, a, findings: auditPalette(set, mode) };
+}
+const vars = (r) => Object.entries(r).map(([k, v]) => `${k}:${v}`).join(';');
+const panel = (mode, title, body) => `<div class="panel" data-mode="${mode}"><h3>${MODE_NAME[mode]}<small>${esc(title)}</small></h3>${body}</div>`;
+
+/* ── шаги 1–4 ── */
+function renderChecks(mode) {
+  const { set, full } = data(mode);
+  const sw = (hex, name, extra) => `<div class="sw" style="background:${hex};color:${inkOn(hex)}"><b>${name}</b><span>${hex} · L* ${f1(lightness(hex))}${extra ? ' · ' + extra : ''}</span></div>`;
+  const acc = full.accent, L = lightness(acc);
+  const ink = inkOn(acc);
+  const inkK = ratio(ink, acc);
+  let corridor;
+  if (L >= 45 && L <= 62) corridor = ['ok', `L* ${f1(L)}: коридор 45–62`];
+  else if (L >= 83 && L <= 91) corridor = ['ok', `L* ${f1(L)}: коридор 83–91`];
+  else if (L > 62 && L < 83) corridor = inkK >= 4.5 ? ['warn', `L* ${f1(L)}: вне коридора, знак держит ${f2(inkK)}`] : ['no', `L* ${f1(L)}: мёртвая зона 63–82`];
+  else corridor = ['warn', `L* ${f1(L)}: ниже 45, лестница тесная`];
+  const [, Cp] = oklch(full.paper);
+  const Lp = lightness(full.paper), Li = lightness(full.ink);
+  const paperOk = mode === 'light' ? (full.paper.toUpperCase() !== '#FFFFFF' && Lp >= 95) : (Lp >= 4 && Lp <= 9);
+  const inkOk = mode === 'light' ? (Li <= 25 && full.ink.toUpperCase() !== '#000000') : (Li >= 85 && Li <= 96);
+  const rows = [
+    ['Марка в коридоре светлоты', corridor[0], corridor[1], 'Radix: девятая цветных — L* 45–62 под белый знак или 83–91 под тёмный; между ними ни один знак не даёт Lc 60'],
+    ['Знак на марке выбран замером', okno(ratio(ink, acc) >= 4.5), `${ink === '#FFFFFF' ? 'белый' : 'чёрный'} · ${f2(inkK)} : 1`, 'знак не хранится в наборе: у трёх чужих наборов из трёх хранёный знак не читался'],
+    ['Бумага почти-белая, с тоном', okno(paperOk && Cp <= 0.02), `L* ${f1(Lp)} · C ${Cp.toFixed(3)}`, mode === 'light' ? 'чистый белый на большой площади бликует; хрома нейтрали ≤ 0.02' : 'тёмная бумага L* 5–8, не чёрная: на чёрном перестают существовать тени и ступени'],
+    ['Чернила не чёрные и не белые', okno(inkOk), `L* ${f1(Li)}`, mode === 'light' ? 'Material: on-surface тон 10' : 'текст не выше L* 96: от чистого белого на чёрном «звенит»'],
+  ];
+  for (const job of STATUS) {
+    const d = difference(full.accent, full[job]);
+    const src = set[job] ? 'названа заказчиком' : job === 'sale' ? 'выведена из марки: тон + 60°' : job === 'info' ? 'синий эталона' : 'постоянная строителя';
+    rows.push([`${SIGNAL_NAMES[job]} отличим от марки`, okno(d >= NEED.brandApart), `ΔE ${f1(d)} при норме 25`, `${full[job]} · ${src}`]);
+  }
+  const body = `<div class="trio">${sw(full.paper, 'фон', 'ступень 1')}${sw(full.ink, 'текст', 'ступень 12')}${sw(full.accent, 'фирменный', 'ступень 9')}</div>
+  <div class="checks">${rows.map(([k, kind, v, d]) => `<div class="check"><span class="k">${esc(k)}</span>${chip(kind, v)}<span class="d">${esc(d)}</span></div>`).join('')}</div>`;
+  return panel(mode, 'что проверяется до того, как что-то строится', body);
+}
+
+/* ── лестницы ── */
+function renderLadders(mode) {
+  const { r, n, a } = data(mode);
+  const row = (arr, fixedIdx, label) => `
+    <p class="note"><b style="color:var(--ink)">${label}</b></p>
+    <div class="ladder">${arr.map((hex, i) => `<div class="step ${fixedIdx.includes(i) ? 'fixed' : ''}" style="background:${hex};color:${inkOn(hex)}" title="${hex}"><b>${i + 1}</b><span>${f1(lightness(hex))}</span></div>`).join('')}</div>
+    <div class="jobs">${JOBS.map((j) => `<span>${j.replace('-', '&shy;')}</span>`).join('')}</div>`;
+  const dir = mode === 'light' ? 'темнее' : 'светлее';
+  const item = (dotStyle, label, hex, what) => `<span class="ex"><span class="dot" style="${dotStyle}">${what || ''}</span><span>${label}</span><span class="mono muted">${hex}</span></span>`;
+  const extra = `<div class="extra">
+    ${item(`background:${r['--a-press']};color:${inkOn(r['--a-press'])}`, 'нажатие', r['--a-press'], 'Aa')}
+    ${item(`background:${a[8]};color:${r['--on-a-9']}`, 'знак на марке', r['--on-a-9'], 'Aa')}
+    ${item(`background:${r['--line']}`, 'разделитель', r['--line'])}
+    ${item(`border:2px solid ${r['--border']}`, 'граница органа', r['--border'])}
+    ${item(`outline:2px solid ${r['--ring']};outline-offset:-2px`, 'кольцо фокуса', r['--ring'])}
+  </div>
+  <p class="note">Нажатие — ступень, которой в шкале эталона нет: вдвое дальше наведения, ${dir} марки на ${f1(Math.abs(lightness(r['--a-press']) - lightness(a[8])))} L*. На телефоне курсора нет, и это единственный ответ кнопки.</p>
+  <p class="note">Граница и кольцо — не ступень по номеру, а первая ступень, которая даёт 3 : 1 (WCAG 1.4.11): седьмая у самого эталона даёт 1.49. Одиннадцатая уводится от бумаги, пока не выполнит Lc 60.</p>`;
+  return panel(mode, 'нейтраль и марка', row(n, [0, 11], 'Нейтраль n1…n12 — лист, карточка, органы, линии, текст') + row(a, [8], 'Марка a1…a12 — тональные поверхности, заливка кнопки, фирменный текст') + extra);
+}
+
+/* ── сигналы ── */
+function renderSignals(mode) {
+  const { set, full, r, n } = data(mode);
+  const names = { error: ['Ошибка', 'нет в наличии, поле не принято'], sale: ['Скидка', 'плашка «−20 %», прежняя цена'], warn: ['Внимание', 'осталось двое, срок годности'], ok: ['Успех', 'в наличии, добавлено, заказ принят'], info: ['Сведение', 'доставка 3–5 дней, закон ЕС'] };
+  const short = { error: 'e', sale: 'sale', warn: 'warn', ok: 'ok', info: 'info' };
+  const rows = STATUS.map((job) => {
+    const s = short[job];
+    const tint = r[`--${s}-2`], fill = r[`--${s}-9`], text = r[`--${s}-11`], on = r[`--on-${s}-9`];
+    const src = set[job] ? 'своя' : job === 'sale' ? 'из марки' : job === 'info' ? 'эталон' : 'постоянная';
+    return `<div class="sig">
+      <div class="nm">${names[job][0]}<small>${names[job][1]} · ${src}</small></div>
+      <div class="cell" style="background:${tint};color:${text}" title="${tint}">${s}-2</div>
+      <div class="cell" style="background:${fill};color:${on}" title="${fill}">${s}-9 Aa</div>
+      <div class="cell" style="background:${n[1]};color:${text}" title="${text}">${s}-11</div>
+      <div class="cell" style="background:${fill};color:${on}" title="${on}">${on === '#FFFFFF' ? 'белый' : 'чёрный'}</div>
+      <div class="de">ΔE ${f1(difference(full.accent, full[job]))}</div>
+    </div>`;
+  }).join('');
+  const head = `<div class="sighead"><span>сигнал</span><span>тихий фон</span><span>заливка</span><span>текст</span><span>знак</span><span class="de">до марки</span></div>`;
+  return panel(mode, 'три ступени и знак на каждый', head + rows + `<p class="note">Скидка — соседка марки: тон + 60° (так Material берёт третью краску схемы), и поворот продолжается шагом 30°, пока все краски не разойдутся на ΔE 25. Красный, оранжевый, зелёный узнают по цвету вообще, поэтому они не зависят от набора.</p>`);
+}
+
+/* ── витрина ── */
+function renderShop(mode) {
+  const { r } = data(mode);
+  return panel(mode, 'ни одного числа мимо палитры', `<div class="shop" style="${vars(r)}">
+    <div class="shop-bar"><span class="shop-brand">CBDSHOP</span><nav><span>Масла</span><span class="active">Капсулы</span><span>Косметика</span></nav><span class="shop-cart">Корзина <b class="badge">2</b></span></div>
+    <div class="shop-body">
+      <article class="pcard">
+        <div class="pmedia"><span class="cut">−20 %</span></div>
+        <p class="pbrand">Hemp scale</p>
+        <h4 class="ptitle">CBD масло 10 %</h4>
+        <p class="psub">10 ml · 1000 mg · 8,90 €/ml</p>
+        <p class="prow"><span class="now">89,00 €</span><span class="was">112,00 €</span></p>
+        <div class="stock"><span class="ok">в наличии</span><span class="warn">осталось 2</span><span class="err">нет в наличии</span></div>
+        <div class="hr"></div>
+        <div class="states">
+          <div class="state"><button class="buy" type="button" tabindex="-1">В корзину</button><small>покой a9</small></div>
+          <div class="state"><button class="buy hover" type="button" tabindex="-1">В корзину</button><small>курсор a10</small></div>
+          <div class="state"><button class="buy press" type="button" tabindex="-1">В корзину</button><small>палец a-press</small></div>
+        </div>
+        <div class="states">
+          <div class="state"><button class="buy focus" type="button" tabindex="-1">В корзину</button><small>фокус: кольцо</small></div>
+          <div class="state"><button class="buy off" type="button" tabindex="-1">В корзину</button><small>недоступно n3 · n9</small></div>
+          <div class="state"><button class="quiet" type="button" tabindex="-1">Ещё</button><small>тихая n3 · n12</small></div>
+        </div>
+      </article>
+      <div class="chips">
+        <div class="chipw"><span class="chip">10 %</span><small>покой</small></div>
+        <div class="chipw"><span class="chip hv">15 %</span><small>курсор</small></div>
+        <div class="chipw"><span class="chip pr">20 %</span><small>нажатие</small></div>
+        <div class="chipw"><span class="chip tonal">30 %</span><small>выбрано тональное</small></div>
+        <div class="chipw"><span class="chip solid">30 %</span><small>выбрано сплошное</small></div>
+      </div>
+      <div class="fields">
+        <div class="field"><div class="in">Почта</div><small>поле: граница замером</small></div>
+        <div class="field"><div class="in filled focus">ihor@…</div><small>фокус: кольцо</small></div>
+        <div class="field"><div class="in filled bad">+359 8</div><small class="bad">неполный номер</small></div>
+      </div>
+      <div class="banners">
+        <div class="bn info">Доставка 3–5 дней · до 0,2 % ТГК по закону ЕС</div>
+        <div class="bn ok">Добавлено в корзину</div>
+        <div class="bn warn">Срок годности до 12.2026</div>
+      </div>
+    </div>
+    <div class="deck"><span>© CBDSHOP · обратная пара: n12 под n1</span><span class="hair">Доставка · Возврат · Контакты</span></div>
+  </div>`);
+}
+
+/* ── замер ── */
+function renderAudit(mode) {
+  const { set, full, r, n, a, findings } = data(mode);
+  const pressed = r['--a-press'];
+  const hover = Math.abs(lightness(a[9]) - lightness(a[8]));
+  const pushed = Math.abs(lightness(pressed) - lightness(a[8]));
+  const rows = [
+    ['основной текст на карточке', ratio(n[11], n[1]), '≥ 4.5', ratio(n[11], n[1]) >= 4.5],
+    ['приглушённый текст на карточке', ratio(n[10], n[1]), '≥ 4.5', ratio(n[10], n[1]) >= 4.5],
+    ['цена фирменным на карточке', ratio(a[10], n[1]), '≥ 4.5', ratio(a[10], n[1]) >= 4.5],
+    ['знак на кнопке покупки', ratio(r['--on-a-9'], a[8]), '≥ 4.5', ratio(r['--on-a-9'], a[8]) >= 4.5],
+    ['кольцо фокуса на листе', ratio(r['--ring'], n[0]), '≥ 3', ratio(r['--ring'], n[0]) >= 3],
+    ['граница органа управления', ratio(r['--border'], n[1]), '≥ 3', ratio(r['--border'], n[1]) >= 3],
+    ['приглушённый текст, APCA', apca(n[10], n[1]), 'Lc ≥ 60', apca(n[10], n[1]) >= 60],
+    ['основной текст, APCA', apca(n[11], n[1]), 'Lc ≥ 90', apca(n[11], n[1]) >= 90],
+    ['наведение кнопки, сдвиг L*', hover, '2 … 8', hover >= 2 && hover <= 8],
+    ['нажатие кнопки, сдвиг L*', pushed, '4 … 16', pushed >= 4 && pushed <= 16],
+    ['нейтральная лестница, наименьший шаг L*', tightest(n, mode), '≥ 0.6', tightest(n, mode) >= STEP_MIN],
+    ['фирменная лестница, наименьший шаг L*', tightest(a, mode), '≥ 0.6', tightest(a, mode) >= STEP_MIN],
+  ];
+  for (const job of STATUS) {
+    const row = scale(set.paper, set.ink, full[job], mode, n[1]);
+    rows.push([`текст «${SIGNAL_NAMES[job].replace(/^[а-я]+ /, '')}» на карточке`, ratio(row[10], n[1]), '≥ 4.5', ratio(row[10], n[1]) >= 4.5]);
+    rows.push([`знак на заливке «${SIGNAL_NAMES[job].replace(/^[а-я]+ /, '')}»`, ratio(inkOn(row[8]), row[8]), '≥ 4.5', ratio(inkOn(row[8]), row[8]) >= 4.5]);
+  }
+  let minPair = null;
+  for (let i = 0; i < SIGNALS.length; i += 1) for (let j = i + 1; j < SIGNALS.length; j += 1) {
+    const d = difference(full[SIGNALS[i]], full[SIGNALS[j]]);
+    if (!minPair || d < minPair.d) minPair = { d, x: SIGNAL_NAMES[SIGNALS[i]], y: SIGNAL_NAMES[SIGNALS[j]] };
+  }
+  rows.push([`самая близкая пара красок: ${minPair.x} и ${minPair.y}`, minPair.d, 'ΔE ≥ 25', minPair.d >= 25]);
+  const table = `<div class="tbl"><table><thead><tr><th>Проверка</th><th style="text-align:right">Число</th><th>Норма</th><th></th></tr></thead><tbody>${rows.map(([k, v, need, ok]) => `<tr><td>${esc(k)}</td><td class="n">${f2(v)}</td><td class="n">${esc(need)}</td><td>${chip(okno(ok), ok ? 'держится' : 'находка')}</td></tr>`).join('')}</tbody></table></div>`;
+  const finds = findings.length
+    ? findings.map((x) => `<div class="find">${esc(x.rule)}: ${f2(x.got)} при норме ${x.need}</div>`).join('')
+    : `<div class="find none">check:palette — находок нет, набор проходит</div>`;
+  return panel(mode, `то же, что печатает npm run check:palette`, `<div class="finds">${finds}</div>${table}`);
+}
+
+/* ── сборка страницы ── */
+function renderAll() {
+  const put = (id, fn) => { document.getElementById(id).innerHTML = MODES.map(fn).join(''); };
+  put('p1', renderChecks); put('p2', renderLadders); put('p3', renderSignals); put('p4', renderShop); put('p5', renderAudit);
+  document.getElementById('css').textContent = toCss({ [state.name]: cur() }, { generator: 'tools/palette-css.mjs' });
+  for (const el of document.querySelectorAll('.pair')) el.className = 'pair' + (state.show === 'both' ? '' : ` only-${state.show}`);
+}
+function renderPaints() {
+  const host = document.getElementById('paints');
+  host.innerHTML = MODES.map((mode) => `<div class="paint-row" data-mode="${mode}"><span class="t">${mode === 'light' ? 'Светлая' : 'Тёмная'}</span>${['paper', 'ink', 'accent'].map((key) => {
+    const v = cur()[mode][key];
+    const id = `${mode}-${key}`;
+    return `<span class="paint"><input type="color" id="${id}-c" value="${v}" aria-label="${key}"><input type="text" id="${id}-t" value="${v}" maxlength="7" spellcheck="false" aria-label="${key} hex"><small>${{ paper: 'фон', ink: 'текст', accent: 'фирменный' }[key]}</small></span>`;
+  }).join('')}</div>`).join('');
+  host.querySelectorAll('input').forEach((inp) => inp.addEventListener('input', onPaint));
+}
+function onPaint(e) {
+  const [mode, key, kind] = e.target.id.split('-');
+  let v = e.target.value.trim().toUpperCase();
+  if (!/^#[0-9A-F]{6}$/.test(v)) return;
+  cur()[mode][key] = v;
+  const other = document.getElementById(`${mode}-${key}-${kind === 'c' ? 't' : 'c'}`);
+  if (other) other.value = v;
+  renderAll();
+}
+const sel = document.getElementById('set');
+sel.innerHTML = Object.keys(SETS).map((nm, i) => `<option value="${esc(nm)}"${i === 0 ? ' selected' : ''}>${esc(nm)}${i === 0 ? ' · на сайте сейчас' : ''}</option>`).join('');
+sel.addEventListener('change', () => { state.name = sel.value; renderPaints(); renderAll(); });
+document.getElementById('reset').addEventListener('click', () => { SETS[state.name] = JSON.parse(JSON.stringify(ORIGINAL[state.name])); renderPaints(); renderAll(); });
+for (const b of document.querySelectorAll('.seg button')) b.addEventListener('click', () => {
+  state.show = b.dataset.show;
+  for (const x of document.querySelectorAll('.seg button')) x.setAttribute('aria-pressed', String(x === b));
+  renderAll();
+});
+renderPaints(); renderAll();
+</script>
+
+</body></html>

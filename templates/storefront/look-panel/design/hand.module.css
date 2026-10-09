@@ -1,0 +1,59 @@
+/* Наведение и нажатие (HandStates.tsx, И718, И720, И722). Первая часть
+   страницы — сами предметы сайта, своих правил у неё почти нет: бумага меню
+   под строками, ширина карточки, раскрытое подменю. Вторая — библиотека:
+   десять способов наведения и два нажатия, образцы только этой страницы, на
+   сайте не стоят. Предмет образца — `data-form` (слово, плашка, ссылка со
+   стрелкой, карточка), способ — `data-fx`; краски, толщины, доли и движение —
+   роли сайта. */
+/* Бумага — примитив `menu` сайта (краска, угол, тень); здесь только место образца:
+   ширина и поле раскрытия. До 04.10.2026 бумага была нарисована здесь второй раз (И730). */
+.paper{inline-size:100%;max-inline-size:calc(var(--ctrl-h) * 5);padding:var(--pad-inner)}
+.open.open{display:block;inline-size:100%;max-inline-size:calc(var(--ctrl-h) * 5);padding:var(--pad-inner)}
+.card{inline-size:100%;max-inline-size:calc(var(--ctrl-h) * 6)}
+.prose{margin:0;text-align:start;font-size:var(--body-size);line-height:var(--body-lead)}
+
+/* ── Предметы библиотеки в покое ─────────────────────────────────────── */
+.fx{
+  position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;gap:var(--sp-2);
+  font-size:var(--menu-size);line-height:var(--menu-lead);font-weight:var(--menu-weight);color:var(--ink);text-decoration:none;
+  transition:color var(--hover-t) var(--ease), background-color var(--hover-t) var(--ease), box-shadow var(--hover-t) var(--ease),
+    translate var(--hover-t) var(--ease), transform var(--press-t) var(--ease)
+}
+.fx svg{inline-size:1.25em;block-size:1.25em;flex:none;transition:translate var(--hover-t) var(--ease), opacity var(--hover-t) var(--ease), scale var(--hover-t) var(--ease)}
+.fx:is([data-form='word'], [data-form='icon']){min-block-size:var(--ctrl-target);padding-inline:var(--sp-2);border-radius:var(--r-ctrl);color:var(--ink-dim)}
+.fx[data-form='pill']{min-block-size:var(--ctrl-h);padding-inline:calc(var(--ctrl-h) * .4);border-radius:var(--r-ctrl);background-color:var(--quiet);font-size:var(--ctrl-fs-sm);font-weight:var(--label-weight)}
+.fx[data-fx='edge']{background-color:var(--surface);box-shadow:inset 0 0 0 var(--line-w) var(--edge)}
+.fx[data-form='card']{flex-direction:column;align-items:stretch;inline-size:calc(var(--ctrl-h) * 4);padding:var(--sp-2);border-radius:var(--r-card);background:var(--plate);color:var(--on-plate);box-shadow:inset 0 0 0 var(--line-w) var(--edge);overflow:visible}
+.pic{position:relative;display:grid;place-items:center;aspect-ratio:1;max-block-size:calc(var(--ctrl-h) * 3);border-radius:calc(var(--r-card) - var(--sp-2));background:var(--plate-2);color:var(--ink-soft);overflow:hidden}
+.pic svg{grid-area:1 / 1;inline-size:40%;block-size:40%}
+.pic svg + svg{opacity:0;color:var(--pop)}
+
+/* Растущая черта — слой под словом, который растёт. */
+.fx[data-fx='underline']::after{content:'';position:absolute;inset-inline:var(--sp-2);inset-block-end:0;block-size:var(--ring-w);background:var(--pop);scale:0 1;transform-origin:left;transition:scale var(--hover-t) var(--ease)}
+/* Рябь — круг из середины плашки при нажатии. */
+.fx[data-fx='ripple']::after{content:'';position:absolute;inset-inline-start:50%;inset-block-start:50%;inline-size:200%;aspect-ratio:1;max-block-size:calc(var(--ctrl-h) * 8);translate:-50% -50%;border-radius:50%;background:var(--press-row);scale:0;opacity:0;transition:scale var(--open-t) var(--ease), opacity var(--open-t) var(--ease)}
+
+/* ── Ответ под рукой ─────────────────────────────────────────────────── */
+@media (hover:hover){
+  .fx[data-fx='tint']:hover{color:var(--ink)}
+  .fx[data-fx='veil']:hover{background-image:linear-gradient(var(--hover-row), var(--hover-row))}
+  .fx[data-fx='plate']:hover{background-color:var(--hover-row);color:var(--ink)}
+  .fx[data-fx='underline']:hover{color:var(--ink)}
+  .fx[data-fx='underline']:hover::after{scale:1 1}
+  .fx[data-fx='edge']:hover{box-shadow:inset 0 0 0 var(--line-w) var(--edge-hand)}
+  .fx[data-fx='nudge']:hover{color:var(--ink)}
+  .fx[data-fx='nudge']:hover svg{translate:var(--nudge) 0}
+  .fx[data-fx='lift']:hover{box-shadow:inset 0 0 0 var(--line-w) var(--edge), var(--sh-lift);translate:0 calc(-1 * var(--sp-1))}
+  .fx[data-fx='shadow']:hover{box-shadow:inset 0 0 0 var(--line-w) var(--edge), var(--sh-lift)}
+  .fx[data-fx='zoom']:hover .pic svg:first-child{scale:var(--creep)}
+  .fx[data-fx='second']:hover .pic svg:first-child{opacity:0}
+  .fx[data-fx='second']:hover .pic svg + svg{opacity:1}
+}
+
+/* ── Ответ на нажатие ────────────────────────────────────────────────── */
+.fx[data-fx='press']:active{transform:var(--press-move)}
+.fx[data-fx='ripple']:active::after{scale:1;opacity:1}
+
+@media (prefers-reduced-motion:reduce){
+  .fx,.fx svg,.fx::before,.fx::after{transition:none}
+}

@@ -1,0 +1,228 @@
+/* Корзина и итоги. Раскладку дают примитивы (sidebar, stack, frame, pinned,
+   grid, cluster); здесь — строка товара, сводка, код скидки и обещания.
+   Итоги (`tally`) и обещания (`pledges`) берут и шаги оформления. */
+
+/* Поля формы выключаются одной рамкой, а раскладку она не трогает: рамка
+   `fieldset` исчезает из раскладки, ребёнок встаёт в ритм родителя. */
+.bare{display:contents}
+
+.list{list-style:none;padding:0;margin:0}
+/* СТРОКА — одна сетка на все ширины, шва нет:
+     снимок    | имя, факты            | цена за штуку
+     «Удалить» | счётчик ········ сумма строки (одним рядом на всю ширину)
+   Органы стоят под именем, которое меняют: на столе имя и его счётчик
+   стояли в четырёхстах пикселях друг от друга (разбор 24.09.2026, K2).
+   Снимок — колодец ростом в два крупных органа (96 под мышью, 112 под
+   пальцем): миниатюра в 38 пикселей не узнавалась (K1). Между строками —
+   воздух группы и волосок черты (`--rule`), внутри строки — воздух строки:
+   строки читаются отдельными товарами (K3; `--edge` — кромка органа, а не
+   разделитель).
+   «Удалить» — под снимком, по его левому краю (слова заказчика: 29.09.2026
+   «ремув под изображение положи», 03.10.2026 «выровняй с изображением по
+   левому краю»); счётчик — той же строкой под именем, сумма строки — на её
+   правом краю: она меняется вместе со счётчиком и стоит рядом с ним, а наверху
+   справа — цена за штуку, без слова (И668). */
+.line{
+  position:relative;
+  display:grid;align-items:start;
+  grid-template-columns:var(--line-thumb, calc(var(--ctrl-h-lg) * 2)) minmax(0, 1fr) auto;
+  grid-template-areas:'thumb what unit' 'act act act';
+  column-gap:var(--gap-grid);row-gap:var(--air-row);
+  padding-block:var(--air-group);
+  border-block-end:var(--line-w) solid var(--rule)
+}
+.line:first-child{padding-block-start:0}
+.thumb{grid-area:thumb;--frame:var(--shot-frame);border-radius:var(--r-ctrl);background:var(--plate-2)}
+/* Имя и цена за штуку — одной строкой текста: стоят по базовой линии первой
+   строки имени, а не по верхнему краю (цена мельче имени). Факты («3000 mg ·
+   10 ml») — подпись имени: между ними воздух одной мысли `--air-line` (И509),
+   заметно больше межстрочья имени — иначе факты читались третьей строкой
+   имени (слово заказчика 03.10.2026: «параметр очень близко к названию»;
+   И688). */
+.what{grid-area:what;align-self:baseline;display:flex;flex-direction:column;align-items:flex-start;gap:var(--air-line);min-inline-size:0}
+.unit{grid-area:unit;align-self:baseline;margin:0;font-size:var(--blurb-size);line-height:var(--blurb-lead);color:var(--ink-soft);white-space:nowrap;font-variant-numeric:tabular-nums}
+/* Имя — ссылка на вариант и цель пальца (`--ctrl-target`, И263); её
+   область растянута на всю строку (И110): строка ведёт на товар целиком. */
+.name{display:inline-flex;align-items:center;min-block-size:var(--ctrl-target);font-weight:var(--cardname-weight);color:var(--ink);overflow-wrap:anywhere}
+.name::after{content:'';position:absolute;inset:0}
+/* Что строка — ссылка, видно рукой, как у карточки полки (И717; правило вида
+   И685: подчёркивание — только у ссылки в тексте): снимок чуть подаётся вперёд
+   (`--creep`), а в шторке, где строка — карточка, проступает кромка руки
+   (`--edge-hand`). Рука на любом месте строки — на растянутой ссылке; на органах
+   строки (счётчик, «удалить») отвечает сам орган. */
+.thumb img{transition:scale var(--hover-t) var(--ease)}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){ .line:has(.name:hover) .thumb img{scale:var(--creep)} }
+/* Палец отвечает тем же при нажатии: на телефоне наведения нет, и строка молчала. */
+@media (prefers-reduced-motion:no-preference){ .line:has(.name:active) .thumb img{scale:var(--creep)} }
+/* Органы строки подняты над растянутой ссылкой одним родителем. Счётчик в
+   строке — рисунком малого органа (`--ctrl-face`, 32 и под пальцем; жёлоб
+   снят): крупнее снимка он быть не должен; палец получает сорок четыре
+   запасом наружу (`data-hit`, у «Удалить» — `p.tap`). До 05.10.2026 рост был
+   `--ctrl-h-sm`, под пальцем 44 — счётчик, «Удалить» и сумма поднимали ряд
+   до 44, и на телефоне одна строка корзины не помещалась в шторку целиком
+   (слово заказчика: «огромный счётчик… оптимизируй», образец cbdin.bg; И764).
+   Надпись органов — малая (`--ctrl-fs-sm`): цифра счётчика и «Удалить»
+   кеглем тела стояли крупнее имени товара (слово заказчика 29.09.2026:
+   «тут ошибок куча»).
+   Ряд — «Удалить», счётчик, сумма — одним flex-рядом на всю ширину строки:
+   «Удалить» занимает ширину снимка, и счётчик встаёт под именем; не хватает
+   места (телефон 360–375, трёхзначная сумма) — «Удалить» сжимается до слова,
+   счётчик и сумма остаются в одном ряду, а не рвутся на два. Зазор ряда —
+   зазор сетки (`--gap-grid`), иначе счётчик не попадёт под имя.
+   Ряд сам не ловит нажатие — ловят его органы в нём; пустое место ряда и
+   сумма отдают нажатие ссылке строки под ними. */
+.act{
+  grid-area:act;position:relative;z-index:1;
+  display:flex;flex-wrap:wrap;align-items:center;gap:var(--air-tight) var(--gap-grid);
+  --qty-h:var(--ctrl-face);--qty-pad:0px;--qty-fs:var(--ctrl-fs-sm);
+  font-size:var(--ctrl-fs-sm);
+  color:var(--ink-soft);
+  pointer-events:none
+}
+.act > :not(.sum){pointer-events:auto}
+/* Сумма строки — крупнее цифры счётчика (тело против малой надписи) и в рост
+   самого счётчика: счётчик не выше своей строки с суммой (слово заказчика
+   03.10.2026: «счётчик такой же по высоте или меньше суммы, но не больше»).
+   Прижата к правому краю; не влезла рядом со счётчиком — переносится вниз
+   тоже к правому краю. */
+.sum{margin:0;margin-inline-start:auto;font-size:var(--body-size);font-weight:var(--cardprice-weight);line-height:var(--ctrl-face);color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+/* «Удалить» — тихое слово (`word`, разрушительное — `data-hand="bad"`: под рукой
+   краска ошибки, И717, И472, И790), а не третий серый квадрат со знаком и не
+   ссылка «куда ведёт»; краску и ответ решает модуль кнопки, место — только где
+   и какого роста. Первым в ряду, слово — у левого края снимка; ширина — до снимка
+   (потолок), а не слова: по ней счётчик встаёт под имя. Сжимается до слова, когда
+   ряд не вмещает; кнопка сама центрует надпись — слово к началу. */
+.drop{flex:1 1 0;min-inline-size:min-content;max-inline-size:var(--line-thumb, calc(var(--ctrl-h-lg) * 2));min-block-size:var(--ctrl-face);padding:0;text-align:start;font-size:var(--ctrl-fs-sm);white-space:nowrap}
+
+/* СВОДКА — единственный поднятый лист страницы. Порядок решения: код скидки
+   свёрнут, итоги, кнопка, под ней обещания. Между группами — воздух группы,
+   внутри группы — воздух строки.
+   Сводка приклеена (`pinned`) и держит потолок от окна; что сжимать внутри
+   потолка, решает блок (primitives, «pinned»): сводка прокручивается сама, и
+   прокрутка не утекает на страницу. Без этого содержимое вылезало из коробки:
+   на окне ноутбука 587 код скидки стоял ниже края, и увидеть его было нельзя
+   никогда (481 при потолке 433, check:craft sticky 05.10.2026). */
+/* Лист страницы корзины — тот же, что у окна меню и шторки (`--surface`, угол карточки, поле
+   карточки): строки товаров лежат на нём, а не прямо на полу («корзину делаем панелью, как
+   меню?», слово заказчика 08.10.2026; И785). Последняя строка без волоска и воздуха под собой:
+   край листа замыкает её сам. */
+.sheet{background:var(--surface);border-radius:var(--r-card);padding:var(--pad-card)}
+.sheet .line:last-child{padding-block-end:0;border-block-end:0}
+.summary{composes:sheet;--stack:var(--air-group);overflow-y:auto;overscroll-behavior:contain}
+.decide{display:flex;flex-direction:column;gap:var(--air-row)}
+
+/* Код скидки — под вопросом (`details`): открытое поле уводит искать коды
+   (Baymard). Открыт, когда о коде есть что сказать; применённый код —
+   пилюлей снятия, видной и при свёрнутом вопросе. */
+/* Купон — последним в сводке, под волоском (И497). Волосок — у обёртки
+   (`CartCoupon`), раскладка — у формы внутри: место не красит взятую форму
+   корзины (check:system, placePaints). */
+.coupon{padding-block-start:var(--air-row);border-block-start:var(--line-w) solid var(--rule)}
+.couponForm{display:flex;flex-direction:column;gap:var(--air-row)}
+/* Строка исхода пуста, пока сказать нечего, — зазора под себя не берёт. */
+.couponForm > p:empty{display:none}
+/* Ошибка поля кода («код не подошёл») — часть поля: вопрос свернут — строки нет
+   (CartForm, `data-field`). Ошибка снятия пилюли или сети остаётся видна. */
+.couponForm:has(.promo:not([open])) > p[data-field]{display:none}
+/* Вопрос о коде — вид «слово и знак» (`word`, И685): тихое слово в покое, полное под рукой. */
+.promo summary{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);font-weight:var(--label-weight);list-style:none}
+.promo summary::-webkit-details-marker{display:none}
+.promo summary svg{color:var(--ink-soft)}
+/* Поле и кнопка купона — общая пара `f.send` (styles/form.module.css). */
+.code{margin-block-start:var(--gap-targets)}
+
+/* ИТОГИ — одни на корзину, оформление и «спасибо». Свой шаг, а не ручка
+   `stack`: ручка наследуется, и сводка раздавала бы итогам свой воздух. */
+.tally{display:flex;flex-direction:column;gap:var(--air-row)}
+.totals{display:grid;gap:var(--gap-row);margin:0}
+.row{display:flex;justify-content:space-between;gap:var(--gap-row)}
+.row dd{margin:0;text-align:end;font-variant-numeric:tabular-nums}
+.grand{padding-block-start:var(--gap-row);border-block-start:var(--line-w) solid var(--rule);font-weight:var(--cardprice-weight);align-items:baseline}
+.grand dd{font-size:var(--h3-size);font-weight:var(--h3-weight);white-space:nowrap}
+
+/* ОБЕЩАНИЯ у кнопки — справка при ней: роль сноски, знак из листа. */
+/* Тихая полоса сведения (roles.md: «полоса „доставка 3–5 дней“» — info2 и
+   текст info11; И472): обещания — факт, не беда и не успех. */
+.pledges{
+  list-style:none;margin:0;display:grid;gap:var(--gap-targets);
+  padding:var(--pad-inner);border-radius:var(--r-card);background:var(--info-tint);
+  font-size:var(--note-size);line-height:var(--note-lead);color:var(--info)
+}
+.pledges li{display:flex;align-items:flex-start;gap:var(--gap-row)}
+.pledges svg{inline-size:1.35em;block-size:1.35em;flex:none}
+
+/* Полка пустой корзины — та же плотность, что полка главной. */
+
+
+/* Шторка корзины (CartPane.tsx, бриф docs/design/шторки.md): строки те же,
+   между строками — воздух строки, а не группы: в шторке строк больше, чем
+   места. Низ стоит: итог, одна громкая кнопка, под ней тихая «открыть корзину». */
+/* Снимок — колодец страницы корзины (два крупных органа), но не больше четверти
+   ширины списка: на телефоне 360 карточка с полем даёт строке 248, и снимок в 84
+   оставлял имени 85 — четыре строки (И671). До 03.10.2026 он стоял полутора
+   органами (72), и имя в две строки с фактами упиралось в его низ — ритм
+   подгонялся под снимок (слово заказчика: «может изменить изображения размер,
+   ритм откорректировать»; И688). */
+.pane{--line-thumb:min(calc(var(--ctrl-h-lg) * 2), 26cqi)}
+/* Шапка: заголовок и число штук — шапка окна (components/PaneHead.tsx, `aside`). */
+/* ЛИСТ ШТОРКИ — ОДИН (слово заказчика 05.10.2026: «в корзине есть несколько
+   оттенков, а в меню нет… всё свести к цельному»; И772). До этого корзина шла
+   слоями (03.10.2026, И671): полоса доставки на тоне марки или успеха, тело на
+   подложке `--band`, строки белыми карточками, серый жёлоб счётчика — пять
+   заливок против двух у фильтров и трёх у меню. Теперь корзина — то же окно,
+   что меню и фильтры (styles/pane.module.css): палуба шапки, один лист, черта
+   над низом; своей заливки у тела, полосы и строки нет (находка `paneFill`,
+   check:css). Строка — та же, что на странице корзины: воздух строки и волосок
+   черты, а не карточка на подложке; рука на строке — снимок подаётся вперёд
+   (`--creep`). Полоса до бесплатной доставки стоит под шапкой на листе и отбита
+   чертой, как низ (И693): взят порог — об этом говорит краска полосы и грузовик,
+   а не тон под ней. */
+.paneGoal{flex:none;padding:var(--pad-inner) var(--pane-pad, var(--pad-card));border-block-end:var(--line-w) solid var(--rule)}
+.pane .list{display:grid;container-type:inline-size}
+.pane .line{padding-block:var(--air-row)}
+.pane .line:first-child{padding-block-start:0}
+.pane .line:last-child{padding-block-end:0;border-block-end:0}
+/* Узкий список (телефон): цена за штуку не делит строку с именем — имени
+   оставалось 98 из 272, четыре строки, — а встаёт строкой фактов справа
+   («2000 mg · 10 ml ······ €39.00»): своей строкой под фактами она
+   добавляла строке 33 пикселя (И764; образец cbdin.bg — цена в строке под
+   именем). Имя и факты встают в сетку строки сами (`.what` растворяется), и
+   воздух «имя → факты» — воздух одной мысли, как на широкой. На широкой
+   шторке цена вверху справа, как в задании. */
+@container (max-width: 22rem){
+  .pane .line{grid-template-areas:'thumb name name' 'thumb facts unit' 'act act act';row-gap:0}
+  .pane .what{display:contents}
+  .pane .name{grid-area:name}
+  .pane .facts{grid-area:facts;align-self:baseline;margin-block-start:var(--air-line)}
+  .pane .unit{align-self:baseline}
+  .pane .act{margin-block-start:var(--air-row)}
+}
+/* Код скидки — первым в стоящем низу шторки, над итогом (И693): волосок
+   низа уже отбивает его от тела, своя черта сверху не нужна. Низ не отнимает
+   места у строк (слово заказчика: «нижний блок чтоб не занимал кучу места…
+   нам нужно пространство для видения заказанных товаров»): вопрос — одна
+   тихая строка ростом цели и кеглем подписи, поле раскрывается по нажатию. */
+.paneFoot .coupon{padding-block-start:0;border-block-start:0}
+.paneFoot .promo summary{min-block-size:var(--ctrl-target);font-size:var(--blurb-size);line-height:var(--blurb-lead);font-weight:var(--body-weight)}
+/* Низ — пара окна (`acts`, styles/pane.module.css, И772): «Открыть корзину»
+   тихой кнопкой слева, «К оформлению» громкой справа, одним рядом; не
+   помещаются (узкий телефон, длинная надпись) — громкая встаёт НАД тихой. До
+   05.10.2026 «открыть» была тихим словом (И693, И764: своей строкой под кнопкой
+   слово брало у строк 56 пикселей, одним рядом с ней — ни одного), а в низу
+   фильтров та же пара стояла контуром и громкой столбиком: заказчик увидел два
+   разных окна. Рост ряда тот же — тихая кнопка ровно с громкой. */
+.paneFoot{display:grid;gap:var(--gap-row)}
+/* В низу шторки — только итог и сноска (cbdin.bg: «Общо» и строка о налогах):
+   три строки итогов брали треть высоты телефона (319 из 844), и строкам
+   корзины оставалась половина. Разбивка — на странице корзины. Сноска «с НДС»
+   стоит в строке итога у подписи («Total price (inc. VAT)» — корзина eZ
+   Publish, ezbasket), а не
+   своей строкой под числом — та отнимала у строк корзины ещё строку и зазор
+   (слово заказчика 04.10.2026: «она место отнимает по вертикали»; И49). */
+.paneFoot .row:not(.grand){display:none}
+.paneFoot .grand{padding-block-start:0;border-block-start:0}
+/* Итог в шторке — ролью части (`parthead`, 19–21), на ступень ниже заголовка
+   окна: у страницы итог стоит ролью подзаголовка (28), и в окне, где заголовок
+   сам 21–28, число вровень с заголовком спорило с ним, а не следовало за ним
+   (слово заказчика 03.10.2026: «сумма очень велика, на шаг меньше», И668). */
+.paneFoot .grand dd{font-size:var(--parthead-size);line-height:var(--parthead-lead);font-weight:var(--parthead-weight)}

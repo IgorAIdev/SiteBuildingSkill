@@ -1,0 +1,29 @@
+<!doctype html><meta charset="utf-8"><title>Catalogue export checks</title>
+<button id="run">Run catalogue checks</button><pre id="result">Not run</pre><iframe id="site" title="Catalogue" style="width:390px;height:844px"></iframe>
+<script type="module">
+const frame=document.querySelector('iframe'),out=document.querySelector('pre')
+document.querySelector('button').onclick=async()=>{
+let checks=0;const failures=[];const assert=(x,s)=>{checks++;if(!x)failures.push(s)}
+const ready=async fn=>{for(let i=0;i<160;i++){if(fn())return;await new Promise(r=>setTimeout(r,25))}throw Error('Filter did not finish loading')}
+const load=async url=>{await new Promise(r=>{frame.onload=r;frame.src=url});await ready(()=>frame.contentDocument.documentElement.dataset.catalogueFilter==='ready');return frame.contentDocument}
+try{for(const variant of ['original','minimal']){
+let d=await load(`/${variant}/en/catalog/oil/`);const w=frame.contentWindow
+const form=()=>d.querySelector('form:has(input[name^="facet."])')
+const n=()=>[...d.querySelectorAll('[data-catalog-grid] article')].filter(e=>e.getClientRects().length&&getComputedStyle(e).visibility!=='hidden').length
+const tick=(name,value)=>form().querySelector(`input[name="facet.${name}"][value="${value}"]`).click()
+const apply=()=>{form().requestSubmit();return new Promise(r=>setTimeout(r,40))}
+assert(n()===16,variant+' initial scope')
+tick('concentration','10');await apply();assert(n()===6,variant+' 10 percent gives six')
+tick('type','full');await apply();assert(n()===3,variant+' combined type gives three')
+tick('content','3000-4000');await apply();assert(n()===1,variant+' range gives one')
+assert(w.location.search.includes('facet.content=3000-4000'),variant+' query preserved')
+d=await load(w.location.href);assert(n()===1,variant+' reload preserves filter')
+form().querySelector('button[type="button"]:last-of-type')
+const clear=[...form().querySelectorAll('button')].find(b=>b.textContent==='Clear filters');clear.click();await ready(()=>n()===16)
+assert(n()===16,variant+' clear restores scope')
+w.history.back();await ready(()=>n()===1);assert(n()===1,variant+' browser back restores result')
+d=await load(`/${variant}/en/catalog/oil/?facet.type=missing`);assert(n()===0,variant+' unknown filter is empty, not unfiltered')
+}}
+catch(e){failures.push(e.message)}out.textContent=JSON.stringify({checks,failures},null,2)
+}
+</script>

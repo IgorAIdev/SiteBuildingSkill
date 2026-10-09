@@ -1,0 +1,25 @@
+/kit/
+/scale-stand.html
+/control-stand.html
+/layout-stand.html
+/shape-stand.html
+/mood-stand.html
+/face-stand.html
+/proof-stand.html
+/button-stand.html
+node_modules/
+dist/
+.lighthouseci/
+/palette-stand.html
+# Снимки чужих магазинов для брифа поверхности (docs/design/): в репозиторий не идут (И300)
+.refs/
+# Витрина из шаблона для правки шаблона (npm run storefront, И432): копия, правят templates/storefront
+/.storefront/
+/.storefront-*/
+/.impeccable/
+# Настройки одной машины: путь к памяти в репозитории и прочее (.claude/rules/memory.md)
+.claude/settings.local.json
+
+# Local agent folders (Codex hooks, logs, copied third-party skills) — machine-local, not kit content
+.codex/
+.agents/

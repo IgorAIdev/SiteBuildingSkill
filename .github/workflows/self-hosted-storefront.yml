@@ -1,0 +1,72 @@
+name: storefront on our runner
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: storefront-self-hosted-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    # Only trusted main is executed on the owner's machine; fork PRs do not use it.
+    if: github.ref == 'refs/heads/main'
+    runs-on: ${{ fromJSON(vars.SELF_HOSTED_RUNNER_LABELS || '["self-hosted"]') }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    env:
+      SOURCE: sample
+      LOOK_PICKER: 'off'
+      VENDURE_PLACE_ORDERS: 'off'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: storefront-check-${{ github.run_id }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify kit rules, resources and self-tests
+        working-directory: storefront-check-${{ github.run_id }}
+        run: |
+          npm run check:rules
+          npm run check:skill
+          npm run check:css
+          npm run check:code
+          npm run check:port
+          npm run check:scale
+          npm run check:palette
+          npm run pro:check
+          npm test
+      - name: Prepare both storefront profiles
+        working-directory: storefront-check-${{ github.run_id }}
+        run: |
+          npm run storefront -- --prepare --no-watch
+          npm run storefront -- --variant minimal --prepare --no-watch
+      - name: Test and build the original storefront
+        working-directory: storefront-check-${{ github.run_id }}/.storefront
+        run: |
+          npm test
+          npm run test:panel
+          npm run build
+      - name: Test and build the minimalist storefront
+        working-directory: storefront-check-${{ github.run_id }}/.storefront-minimal
+        run: |
+          npm test
+          npm run test:panel
+          npm run build
+      - name: Keep production build manifests
+        uses: actions/upload-artifact@v4
+        with:
+          name: storefront-manifests-${{ github.run_id }}
+          retention-days: 7
+          include-hidden-files: true
+          path: |
+            storefront-check-${{ github.run_id }}/.storefront/.next/BUILD_ID
+            storefront-check-${{ github.run_id }}/.storefront/.next/routes-manifest.json
+            storefront-check-${{ github.run_id }}/.storefront-minimal/.next/BUILD_ID
+            storefront-check-${{ github.run_id }}/.storefront-minimal/.next/routes-manifest.json

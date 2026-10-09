@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>99 · Широкая полоса с суммой в заливке</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 99 — «Широкая полоса с суммой в заливке». Источники — Flowbite «Progress → With label inside», Preline «Progress → label inside the bar» (MIT).
+  Толстая полоса на всю ширину листа: сумма в корзине стоит внутри заливки, слова «ещё … до бесплатной доставки» — над полосой; дойдя до порога,
+  полоса заливается краской «успеха». Три положения: далеко, близко, порог взят. Сумма, порог и валюта — данные.
+  Снято: цвета Tailwind и тёмные классы, процент внутри заливки (на его месте сумма в корзине).
+  Приведено к единой форме: дорожка — тон, заливка — марка, у выполненного — краска успеха; высота — три четверти малого органа набора.
+  Доля заливки — data-share (лестница в 5 % в base.css), в магазине её ставит переходник.
+-->
+</head>
+<body>
+  <div class="live">
+    <div class="goal" data-view="wide">
+      <p id="g99a"><b>€70.00</b> to go for free delivery</p>
+      <div class="gauge" role="progressbar" aria-labelledby="g99a" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" aria-valuetext="€30.00 of €100.00" data-share="30"><span class="fill">€30.00</span></div>
+    </div>
+    <div class="goal" data-view="wide">
+      <p id="g99b"><b>€15.00</b> to go for free delivery</p>
+      <div class="gauge" role="progressbar" aria-labelledby="g99b" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-valuetext="€85.00 of €100.00" data-share="85"><span class="fill">€85.00</span></div>
+    </div>
+    <div class="goal" data-view="wide" data-tone="ok">
+      <p id="g99c"><svg data-sign="truck"></svg>Free delivery unlocked</p>
+      <div class="gauge" role="progressbar" aria-labelledby="g99c" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-valuetext="€112.00 of €100.00" data-share="100"><span class="fill">€112.00</span></div>
+    </div>
+  </div>
+</body>
+</html>

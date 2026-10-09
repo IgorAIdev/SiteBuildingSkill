@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>92 · Подсказка у слова</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 92 — «Подсказка у слова». Источники — daisyUI «Tooltip», shadcn/ui «Tooltip», HyperUI «Tooltips» (MIT).
+  Короткое пояснение появляется над словом, под ним, слева или справа — под рукой и на фокусе (клавиатура). Без скрипта:
+  текст лежит в `data-tip`. Расширяет подсказку элемента 39.
+-->
+</head>
+<body>
+  <div class="live">
+    <span class="tipped" tabindex="0" data-tip="Third-party lab report for every batch">Lab tested</span>
+    <span class="tipped" tabindex="0" data-side="bottom" data-tip="Two to three working days">Fast delivery</span>
+    <span class="tipped" tabindex="0" data-side="start" data-tip="Cool, dry, away from light">Storage</span>
+    <span class="tipped" tabindex="0" data-side="end" data-tip="14 days, original package">Returns</span>
+  </div>
+</body>
+</html>

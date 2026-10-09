@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>104 · Плашка доставки с тонкой полосой</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 104 — «Плашка доставки с тонкой полосой». Собран из двух образцов набора, ничего нового не нарисовано:
+  сообщение 91 (HyperUI «Alerts», daisyUI «Alert», shadcn/ui «Alert», MIT) — тон «сведения», знак слева, слова;
+  полоса 74 (daisyUI «Progress», MIT) — родной progress под словами. Порог взят — плашка и полоса в краске «успеха»
+  (data-tone ok у обеих частей). Слова, суммы, порог и валюта — данные.
+  Снято: цвета и рамка Tailwind, крестик «закрыть» сообщения.
+  Приведено к единой форме: свои краски не заводились — тон плашки, дорожка и заливка полосы взяты как есть у 91 и 74;
+  дописано только место между словами и полосой.
+-->
+</head>
+<body>
+  <div class="live">
+    <div class="note" data-view="goal" role="status"><svg data-sign="truck"></svg><div><b>€70.00 to go for free delivery</b><progress class="meter" value="30" max="100" aria-label="Free delivery progress">30%</progress></div></div>
+    <div class="note" data-view="goal" role="status"><svg data-sign="truck"></svg><div><b>€15.00 to go for free delivery</b><progress class="meter" value="85" max="100" aria-label="Free delivery progress">85%</progress></div></div>
+    <div class="note" data-tone="ok" data-view="goal" role="status"><svg data-sign="truck"></svg><div><b>Free delivery unlocked</b><progress class="meter" data-tone="ok" value="100" max="100" aria-label="Free delivery progress">100%</progress></div></div>
+  </div>
+</body>
+</html>

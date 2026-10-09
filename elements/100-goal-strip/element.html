@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>100 · Лента до бесплатной доставки на всю ширину</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 100 — «Лента до бесплатной доставки на всю ширину». Источники — Flowbite «Progress → Sizes / With label inside»,
+  Preline «Progress → label inside the bar» (MIT): дорожка с высотой на ней, заливка внутри, role="progressbar".
+  Лента ростом с обычный ряд набора на всю ширину листа: слова лежат поверх всей дорожки, заливка растёт слева направо;
+  порог взят — лента вся в краске «успеха». Сумма, порог и валюта — данные.
+  Снято: цвета Tailwind и тёмные классы; заливка сплошной маркой — слова поверх дорожки на ней не читались.
+  Приведено к единой форме: высота — ряд набора, угол из Shape, кромка — настоящая рамка (не тень под заливкой);
+  заливка — средний тон марки (роль --pop-trail-far), слова — чернила: читаются и на заливке (8.7 : 1), и на дорожке.
+-->
+</head>
+<body>
+  <div class="live">
+    <div class="goal" data-view="strip">
+      <div class="gauge">
+        <span class="fill" role="progressbar" aria-labelledby="g100a" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" aria-valuetext="€30.00 of €100.00" data-share="30"></span>
+        <p id="g100a"><svg data-sign="truck"></svg><span><b>€70.00</b> to go for free delivery</span></p>
+      </div>
+    </div>
+    <div class="goal" data-view="strip">
+      <div class="gauge">
+        <span class="fill" role="progressbar" aria-labelledby="g100b" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-valuetext="€85.00 of €100.00" data-share="85"></span>
+        <p id="g100b"><svg data-sign="truck"></svg><span><b>€15.00</b> to go for free delivery</span></p>
+      </div>
+    </div>
+    <div class="goal" data-view="strip" data-tone="ok">
+      <div class="gauge">
+        <span class="fill" role="progressbar" aria-labelledby="g100c" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-valuetext="€112.00 of €100.00" data-share="100"></span>
+        <p id="g100c"><svg data-sign="truck"></svg><span>Free delivery unlocked</span></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

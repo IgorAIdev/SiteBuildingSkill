@@ -1,0 +1,39 @@
+/* Окно поиска (SearchPane.tsx; бриф docs/design/поиск.md). Устройство окна —
+   общий модуль (styles/pane.module.css, `data-pane="top"`): шапка с заголовком
+   стоит, поле, действия и подсказки прокручиваются. Они стоят в мере страницы
+   (`wrap`), как строка шапки над ними. */
+.form{inline-size:100%;display:flex;align-items:center;gap:var(--gap-row);flex:1 1 auto;min-inline-size:0}
+.form > svg{flex:none;inline-size:1.25em;block-size:1.25em;color:var(--ink-soft)}
+.input{flex:1 1 auto;min-inline-size:0}
+.input::-webkit-search-cancel-button{appearance:none}
+/* Ритм окна: поле — одна группа, подпись и строки под ним — вторая (`list`), между группами воздух
+   одной мысли, внутри группы строки идут шагом соседних целей, а не воздухом строки; сверху поле
+   отбито от шапки полем самого тела окна, второго не прибавляется; «Clear» ростом подписи, а не малой кнопки, поэтому строка подписи одного роста и до набора слова — список не сдвигается (замер 08.10.2026 на 360: поле
+   стояло в 32 от шапки, подпись в 16, «All results» в 16, первая находка в 16 — «зазоры большие»,
+   слово заказчика: «ритм поправь»; И786). */
+.body{display:grid;justify-items:start;gap:var(--air-line);padding-block:0 var(--pad-card)}
+.list{justify-self:stretch;display:grid;justify-items:start;gap:var(--sp-1)}
+/* Строка под полем: подпись списка слева, «Clear» тихим словом справа — как «Clear filters»
+   в строке фильтров каталога (кнопка вида `bare`, малая); большие кнопки под полем
+   отнимали у находок треть окна (слово заказчика 08.10.2026). */
+.lead{justify-self:stretch;display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row)}
+/* Подпись списка и «Clear» — одна роль текста: тот же кегль и вес (слово заказчика 08.10.2026: «clear таким же
+   размером, ролью, как и Products»); «Clear» — тихое слово (`word`, полное под рукой), палец — запасом наружу
+   (`tap`), строка от слова не растёт. Краска слова — модуля (`word`: тихое → полное); своя
+   краска здесь весила как `.word`, и порядок кусков CSS решал её (разбор 08.10.2026, И790). */
+.head,.clear{font-size:var(--ctrl-fs-sm);font-weight:var(--label-weight)}
+.head{margin:0;color:var(--ink-soft)}
+.clear{padding:0}
+/* Подсказки — строками: снимок, марка и имя, цена; колонок столько,
+   сколько встаёт (правило 5), строку отличает плашка под рукой. */
+.found{justify-self:stretch;list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 18rem), 1fr));gap:var(--sp-1) var(--gap-grid)}
+.hit{composes:row from '../styles/btn.module.css';display:grid;grid-template-columns:var(--ctrl-h-lg) minmax(0, 1fr) auto;align-items:center;gap:var(--gap-row);padding:var(--sp-2);color:var(--ink);text-decoration:none}
+.thumb{--frame:var(--shot-frame);border-radius:var(--r-ctrl);background:var(--plate-2)}
+.what{display:flex;flex-direction:column;min-inline-size:0}
+/* Марка у находки — роль марки, как в карточке (И563): ростом текста. */
+.brand{font-size:var(--byline-size);line-height:var(--byline-lead);font-weight:var(--byline-weight);color:var(--ink-soft)}
+/* Имя находки — толщиной имени товара, как на полке (И589). */
+.name{font-weight:var(--prodhead-weight);overflow-wrap:anywhere}
+.price{font-weight:var(--cardprice-weight);font-variant-numeric:tabular-nums;white-space:nowrap}
+.none{margin:0;color:var(--ink-soft)}
+

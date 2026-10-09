@@ -1,0 +1,80 @@
+/* ── МЕНЮ — одно устройство всех выпадающих списков (И730) ────────────────
+   Слово заказчика 04.10.2026 со снимками фильтра «Type», подменю «Oil», порядка
+   полки и языка: «меню явно берётся не из одного источника дизайн-системы… делай
+   единый источник правды меню для нашей витрины… чтоб и меню было похоже с нашей
+   формой». Было: строки пятью правилами (рост 24–48, кегль 14 и 16, поле от 0 до
+   поля строки), выбранное — четырьмя способами (плашка тона прямоугольником у
+   порядка и языка, черта у подменю, ничего у «Ещё», галочка у граней), подпись
+   группы — тремя.
+
+   Бумага — примитив `menu` (краска листа `--menu-bg` = `--surface`, та же, что у
+   окна и шторки; угол; роль тени всплывающего, И726) и раскрытие `drop`
+   (Filters.module.css: место под кнопкой, потолок от окна). Здесь — то, что
+   внутри бумаги, одно на все: подменю шапки, «Ещё», язык, порядок полки, грани
+   каталога. Ответ строки на руку — вид «строка» (`row` из styles/btn.module.css,
+   И685): класс ставит разметка.
+
+   Образец — shadcn/ui DropdownMenu (MIT, на Radix): строка ростом цели, поле
+   строки, подпись группы приглушённой краской, выбранное — знаком-галочкой без
+   заливки, наведение — подложкой строки. Форму подложки меню не пишет: она — у вида
+   «строка», одна на все строки сайта, прямоугольник углом контрола (слово заказчика
+   04.10.2026 на пилюлю в подменю «Oil» рядом с прямоугольником меню связи: «почему
+   не единообразие согласно дизайн-системе… делай прямоугольник»). Кегль,
+   межстрочье, вес и разрядка строки — роль меню `--menu-*`: строка меню — слово
+   меню, как в строке шапки. */
+/* Список раскладку не объявляет: он сам — раскрытие (`ul popover`), а правило автора
+   сильнее браузерного `[popover]:not(:popover-open){display:none}` при любой силе
+   селектора — с `display:flex` закрытые меню вставали в левый верхний угол страницы
+   (04.10.2026). Ритм строк — полем между соседями. */
+.list{list-style:none;margin:0;padding:0}
+.list > li + li{margin-block-start:var(--sp-1)}
+.list > li > :is(a, button, label), .fold > summary{
+  display:flex;align-items:center;gap:var(--gap-row);inline-size:100%;
+  min-block-size:var(--ctrl-target);padding-inline:calc(var(--pad-inner) + var(--menu-inset, 0px)) var(--pad-inner);
+  border:0;background:none;
+  font:inherit;font-size:var(--menu-size);line-height:var(--menu-lead);font-weight:var(--menu-weight);letter-spacing:var(--menu-track);
+  color:var(--ink);text-align:start;text-decoration:none;white-space:nowrap;cursor:pointer
+}
+/* Свёртка длинного списка — «Arată toate (14)» под десятью значениями грани
+   (catalog-view.ts, `foldValues`; И734): та же строка меню, тоном вторичного
+   текста, стрелка раскрытия (`Turn`) в конце; раскрытый остаток — тот же список. */
+.fold > summary{list-style:none;color:var(--ink-soft);margin-block-start:var(--sp-1)}
+.fold > summary::-webkit-details-marker{display:none}
+.fold > summary > svg:last-child{margin-inline-start:auto}
+.fold > .list{margin-block-start:var(--sp-1)}
+/* Выбранное и текущее — галочка в конце строки краской слова, слово полное;
+   плашки нет (И713, И716): плашка тона читалась ещё одним прямоугольником, а тон
+   выбранного — тем же, что подложка под рукой. Галочка — вырез знака `check`
+   его же рисунком (`--sign-mask-check`, tools/icons.mjs; И630). */
+.list > li > [aria-current]:not([aria-current='false'])::after{
+  content:'';flex:none;margin-inline-start:auto;inline-size:1em;block-size:1em;
+  background:currentColor;
+  -webkit-mask:var(--sign-mask-check) center / contain no-repeat;mask:var(--sign-mask-check) center / contain no-repeat
+}
+/* Знак строки (знак полки в подменю «All products») — ростом с букву,
+   приглушённый: называет слово, а не спорит с ним. */
+.list > li > * > svg{inline-size:var(--icon-size);block-size:var(--icon-size);flex:none;color:var(--ink-soft)}
+/* Тихий список — служебное под главным (ссылки в низу шторки меню под полками, И770):
+   слово тоном вторичного текста, текущее — полным; ответ на руку — подложка
+   строки, как у всех строк. */
+.list[data-tone='quiet'] > li > :is(a, button, label){color:var(--ink-soft)}
+.list[data-tone='quiet'] > li > [aria-current]:not([aria-current='false']){color:var(--ink)}
+/* Вторая часть строки (имя языка у кода) — тоном вторичного текста; у
+   выбранной — краской строки. */
+.aside{color:var(--ink-soft);font-weight:var(--body-weight)}
+.list > li > [aria-current]:not([aria-current='false']) .aside{color:inherit}
+/* Подпись группы («Concentration», «Type», имя грани фильтра) — тем же кеглем и
+   весом, приглушённой краской (слово заказчика 02.10.2026: «подзаголовки —
+   жирность убирай»), поле строки: стоит по слову строк под ней. */
+.group{
+  display:block;margin:0;padding-inline:var(--pad-inner);
+  font-size:var(--menu-size);line-height:var(--menu-lead);font-weight:var(--menu-weight);letter-spacing:var(--menu-track);color:var(--ink-soft)
+}
+/* Строки под подписью — с отступом от неё, слово строки правее слова подписи
+   (слово заказчика 04.10.2026 со снимком подменю «Oil»: «то, что под заголовком,
+   должно быть чуть смещено вправо, как отступ после заголовка»). Сдвигается
+   слово, а не строка: подложка под рукой остаётся во всю бумагу, как у пункта
+   `inset` в shadcn/ui DropdownMenu. Отступ — ступень «внутри органа» (`--sp-2`):
+   «чуть», а не колонка под галочку, как `inset` у shadcn. Свёртка «Arată toate»
+   и её остаток — строки той же группы. */
+.group ~ :is(.list, .fold){--menu-inset:var(--sp-2)}

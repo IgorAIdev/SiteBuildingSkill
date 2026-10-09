@@ -1,0 +1,242 @@
+{
+  "en": {
+    "query": {
+      "primary": "cbd shop",
+      "secondary": [
+        "cbd shop romania",
+        "cbd oil romania",
+        "buy cbd oil online",
+        "cbd capsules",
+        "cbd gummies"
+      ],
+      "origin": "AC en-RO 2026-10-08; SERP proxy: Romanian shop home pages 10 of 10"
+    },
+    "title": "CBD shop in Romania: CBD oil, capsules, gummies and creams",
+    "description": "Online CBD shop in Romania: CBD oil (full spectrum, broad spectrum, isolate), CBD capsules, gummies, creams and cosmetics. Buy CBD products online.",
+    "hero": {
+      "title": "CBD shop in Romania",
+      "lede": "A CBD shop for Romania: CBD oil, capsules, gummies, creams and cosmetics to choose by strength, spectrum and effect."
+    },
+    "effects": {
+      "title": "Shop by effect",
+      "lede": "Sleep, Relax, Recovery and more: the range grouped into collections."
+    },
+    "oils": {
+      "title": "CBD oil",
+      "lede": "Full spectrum, broad spectrum and isolate CBD oil in several strengths."
+    },
+    "capsules": {
+      "title": "CBD capsules",
+      "lede": "The same amount of CBD in every capsule, with no drops to count."
+    },
+    "featured": {
+      "title": "From the range",
+      "lede": "CBD products from the range: oil, capsules, gummies and creams."
+    },
+    "reviews": {
+      "title": "What customers say",
+      "lede": "Sample reviews — the shop’s real reviews will appear here."
+    },
+    "posts": {
+      "title": "CBD guides",
+      "lede": "How to read mg and %, hemp seed oil versus CBD oil, and what the law says in Romania."
+    },
+    "faq": {
+      "title": "CBD shop: questions and answers",
+      "items": [
+        {
+          "q": "What is CBD?",
+          "a": "CBD (cannabidiol) is a compound of the hemp plant. Unlike THC, it does not make you high. Here it comes as oils, capsules, gummies, creams and cosmetics."
+        },
+        {
+          "q": "Is CBD legal in Romania?",
+          "a": "The rules depend on the product type — cosmetics, oils, food — and on the THC content. Our guide sets out what Romanian and EU law say, with dates and sources."
+        },
+        {
+          "q": "Is hemp seed oil the same as CBD oil?",
+          "a": "No. Hemp seed oil is pressed from the seeds and contains almost no CBD. CBD oil is made from hemp extract and states its CBD in milligrams."
+        },
+        {
+          "q": "Will CBD show up on a drug test?",
+          "a": "Drug tests look for THC, not CBD. Full spectrum products contain THC traces that can show up with regular use; broad spectrum and isolate products are made without detectable THC."
+        },
+        {
+          "q": "What is the difference between full spectrum, broad spectrum and isolate?",
+          "a": "Full spectrum keeps all hemp compounds, including THC traces; broad spectrum removes the THC; isolate is pure CBD. The batch report shows the measured THC."
+        },
+        {
+          "q": "How do I choose a CBD oil strength?",
+          "a": "By the milligrams per drop. 10 % means 100 mg per millilitre, about 5 mg per drop; 5 % gives about 2.5 mg per drop. The label gives the milligrams in the bottle; divide them by the drops to get the mg per drop."
+        },
+        {
+          "q": "Can I use CBD if I take medication?",
+          "a": "Ask your doctor first. CBD can interact with some medicines, and it is not recommended under 18, during pregnancy or while breastfeeding."
+        },
+        {
+          "q": "How do delivery and payment work?",
+          "a": "Delivery options, times and payment methods, including payment on delivery where it is offered, are listed on the delivery and payment page and at checkout."
+        }
+      ]
+    }
+  },
+  "ro": {
+    "query": {
+      "primary": "magazin cbd",
+      "secondary": [
+        "magazin cbd online",
+        "cbd romania",
+        "cumpara cbd online",
+        "ulei cbd",
+        "produse cbd"
+      ],
+      "origin": "AC ro-RO 2026-10-08; SERP proxy: pagini principale de magazine 10 din 10"
+    },
+    "title": "Magazin CBD online în România: ulei CBD, capsule, creme",
+    "description": "Magazin CBD online în România: ulei CBD full spectrum, broad spectrum și izolat, capsule CBD, jeleuri, creme și cosmetice. Cumpărați produse CBD online.",
+    "hero": {
+      "title": "Magazin CBD online în România",
+      "lede": "Magazin CBD pentru România: ulei CBD, capsule, jeleuri, creme și cosmetice, alese după concentrație, spectru și efect."
+    },
+    "effects": {
+      "title": "Alegeți după efect",
+      "lede": "Somn, Relaxare, Recuperare și altele: oferta grupată în colecții."
+    },
+    "oils": {
+      "title": "Ulei CBD",
+      "lede": "Ulei CBD full spectrum, broad spectrum și izolat, în mai multe concentrații."
+    },
+    "capsules": {
+      "title": "Capsule CBD",
+      "lede": "Aceeași cantitate de CBD în fiecare capsulă, fără picături de numărat."
+    },
+    "featured": {
+      "title": "Din ofertă",
+      "lede": "Produse CBD din ofertă: ulei, capsule, jeleuri și creme."
+    },
+    "reviews": {
+      "title": "Ce spun clienții",
+      "lede": "Recenzii exemplu — aici vor apărea recenziile reale ale magazinului."
+    },
+    "posts": {
+      "title": "Ghiduri CBD",
+      "lede": "Cum citiți mg și procente, ulei de cânepă sau ulei CBD și ce spune legea în România."
+    },
+    "faq": {
+      "title": "Întrebări despre magazinul CBD",
+      "items": [
+        {
+          "q": "Ce este CBD?",
+          "a": "CBD (canabidiolul) este un compus al plantei de cânepă. Spre deosebire de THC, nu are efect psihoactiv. Aici îl găsiți în uleiuri, capsule, jeleuri, creme și cosmetice."
+        },
+        {
+          "q": "Este CBD legal în România?",
+          "a": "Regulile depind de tipul produsului — cosmetic, ulei, aliment — și de conținutul de THC. Ghidul nostru arată ce spun legea română și cea europeană, cu date și surse."
+        },
+        {
+          "q": "Uleiul de cânepă este același lucru cu uleiul CBD?",
+          "a": "Nu. Uleiul de cânepă se presează din semințe și aproape nu conține CBD. Uleiul CBD are extract de cânepă și scrie CBD-ul în miligrame."
+        },
+        {
+          "q": "Apare CBD la testul antidrog?",
+          "a": "Testele caută THC, nu CBD. Produsele full spectrum au urme de THC care pot apărea la folosire regulată; produsele broad spectrum și izolat sunt făcute fără THC detectabil."
+        },
+        {
+          "q": "Ce înseamnă full spectrum, broad spectrum și izolat?",
+          "a": "Full spectrum păstrează toți compușii cânepei, inclusiv urme de THC; broad spectrum elimină THC-ul; izolatul este CBD pur. Buletinul lotului arată THC-ul măsurat."
+        },
+        {
+          "q": "Cum aleg concentrația uleiului CBD?",
+          "a": "După miligramele pe picătură. 10 % înseamnă 100 mg la mililitru, adică în jur de 5 mg pe picătură; 5 % dă circa 2,5 mg pe picătură. Eticheta dă miligramele din flacon; împărțiți-le la numărul de picături ca să aflați mg pe picătură."
+        },
+        {
+          "q": "Pot folosi CBD dacă iau medicamente?",
+          "a": "Întrebați întâi medicul. CBD poate interacționa cu unele medicamente și nu este recomandat sub 18 ani, în sarcină sau în alăptare."
+        },
+        {
+          "q": "Cum funcționează livrarea și plata?",
+          "a": "Opțiunile de livrare, termenele și metodele de plată, inclusiv plata la livrare acolo unde este oferită, sunt pe pagina Livrare și plată și la finalizarea comenzii."
+        }
+      ]
+    }
+  },
+  "hu": {
+    "query": {
+      "primary": "cbd webshop",
+      "secondary": [
+        "cbd bolt",
+        "cbd olaj",
+        "cbd kapszula",
+        "cbd gumicukor",
+        "cbd krém"
+      ],
+      "origin": "AC hu-HU, hu-RO 2026-10-08; SERP proxy: webshop-főoldalak 9 / 10"
+    },
+    "title": "CBD webshop Romániában: CBD olaj, kapszula, gumicukor, krém",
+    "description": "CBD webshop Romániában: CBD olaj (teljes és széles spektrum, izolátum), CBD kapszula, gumicukor, krém és kozmetikum. CBD termékek online.",
+    "hero": {
+      "title": "CBD webshop Romániában",
+      "lede": "CBD webshop: CBD olaj, kapszula, gumicukor, krém és kozmetikum, erősség, spektrum és hatás szerint válogatva."
+    },
+    "effects": {
+      "title": "Válassz hatás szerint",
+      "lede": "Alvás, Relax, Regeneráció és a többi: a kínálat gyűjteményekbe rendezve."
+    },
+    "oils": {
+      "title": "CBD olaj",
+      "lede": "Teljes és széles spektrumú CBD olaj és izolátum, több erősségben."
+    },
+    "capsules": {
+      "title": "CBD kapszula",
+      "lede": "Minden kapszulában ugyanannyi CBD, cseppszámolás nélkül."
+    },
+    "featured": {
+      "title": "A kínálatból",
+      "lede": "CBD termékek a kínálatból: olaj, kapszula, gumicukor és krém."
+    },
+    "reviews": {
+      "title": "Mit mondanak a vásárlók",
+      "lede": "Mintavélemények — itt jelennek meg a bolt valódi véleményei."
+    },
+    "posts": {
+      "title": "CBD útmutatók",
+      "lede": "Hogyan olvasd a mg-ot és a %-ot, kendermagolaj vagy CBD olaj, és mit mond a román jog."
+    },
+    "faq": {
+      "title": "Kérdések a CBD webshopról",
+      "items": [
+        {
+          "q": "Mi a CBD?",
+          "a": "A CBD (kannabidiol) a kenderből származó vegyület. A THC-vel ellentétben nem bódít. Nálunk olajban, kapszulában, gumicukorban, krémben és kozmetikumban kapható."
+        },
+        {
+          "q": "Legális a CBD Romániában?",
+          "a": "A szabályok a termék típusától — kozmetikum, olaj, élelmiszer — és a THC-tartalomtól függenek. Útmutatónk dátummal és forrással mutatja be, mit mond a román és az uniós jog."
+        },
+        {
+          "q": "Ugyanaz a kendermagolaj és a CBD olaj?",
+          "a": "Nem. A kendermagolajat a magokból préselik, és szinte nincs benne CBD. A CBD olaj kenderkivonatból készül, és milligrammban adja meg a CBD-t."
+        },
+        {
+          "q": "Kimutatja a drogteszt a CBD-t?",
+          "a": "A drogteszt THC-t keres, nem CBD-t. A teljes spektrumú termékekben THC-nyom van, ami rendszeres használatnál kimutatható; a széles spektrumú és az izolátum termékek kimutatható THC nélkül készülnek."
+        },
+        {
+          "q": "Mi a különbség a teljes spektrum, a széles spektrum és az izolátum között?",
+          "a": "A teljes spektrum a kender minden összetevőjét megtartja, THC-nyomokkal együtt; a széles spektrumból a THC-t eltávolítják; az izolátum tiszta CBD. A mért THC-t a tételvizsgálat mutatja."
+        },
+        {
+          "q": "Hogyan válasszam ki a CBD olaj erősségét?",
+          "a": "Az egy cseppre jutó milligramm alapján. A 10% milliliterenként 100 mg, cseppenként kb. 5 mg; az 5% cseppenként kb. 2,5 mg. A címke megadja az üvegben lévő milligrammot; told el a cseppek számával, és megkapod a cseppenkénti mg-ot."
+        },
+        {
+          "q": "Használhatok CBD-t, ha gyógyszert szedek?",
+          "a": "Előbb kérdezd meg az orvosodat. A CBD kölcsönhatásba léphet egyes gyógyszerekkel, és 18 év alatt, várandósság és szoptatás idején nem ajánlott."
+        },
+        {
+          "q": "Hogyan működik a szállítás és a fizetés?",
+          "a": "A szállítási módokat, határidőket és fizetési lehetőségeket — köztük az utánvétet, ahol elérhető — a Szállítás és fizetés oldal és a pénztár mutatja."
+        }
+      ]
+    }
+  }
+}

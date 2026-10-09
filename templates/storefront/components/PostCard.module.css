@@ -1,0 +1,48 @@
+/* Карточка статьи (components/PostCard.tsx, И729) — ячейкой рельсы товаров.
+   Ритм — как у карточки товара: от снимка к словам — воздух строки, дата,
+   заголовок и строка — оптикой `--sp-1`. */
+.card{position:relative;display:flex;flex-direction:column;gap:var(--air-row);block-size:100%}
+/* Кадр — пропорция ряда карточек (`--card-frame`, И736: ряды главной одной
+   сеткой с товаром; myeq.com, замер 04.10.2026: сетка из четырёх, 1 : 1);
+   потолок — половина малого окна, как у карточки отзыва. Пока снимок едет или
+   его нет, место держит лист. */
+.shot{--frame:var(--card-frame);--frame-cap:50svh;border-radius:var(--r-card);background:var(--plate-2)}
+/* Ответ руке — наплыв снимка, рамка стоит (craft, controls.md). */
+@media (prefers-reduced-motion:no-preference){
+  .shot img{transition:scale var(--hover-t) var(--ease)}
+  .card:active .shot img{scale:var(--creep)}
+}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){ .card:hover .shot img{scale:var(--creep)} }
+.text{display:flex;flex-direction:column;gap:var(--sp-1)}
+/* Строка о статье держит место под две строки и прижата к заголовку (поправка
+   И762): «дата · 5 min read · рубрика» на ячейке 240 у двух статей из четырёх
+   переносилась, ряд тянулся по ним, и под видимыми карточками снова стояла
+   пустая строка — статьи → вопросы 57 против 39 у отзывов (заказчик 05.10.2026:
+   «явно же расстояние между блоками разное»). У карточки без рамки каждая
+   строка держит своё число строк, иначе низ ряда — низ самой длинной.
+   Многоточием не режется: срезанная рубрика — потерянный текст (`clip`), а
+   длина строки зависит от языка. Запас стоит над строкой, в воздухе под
+   снимком, и заголовки ряда встают на одну линию. */
+.meta{min-block-size:2lh;display:flex;flex-direction:column;justify-content:flex-end}
+/* Заголовок — роль имени карточки, не больше двух строк: длинный третьей
+   строкой сдвигал бы строку о статье ниже, чем у соседей (так же имя товара).
+   И не меньше двух — место держится (`2lh`): у карточки статьи нет рамки, и
+   короткий заголовок оставлял под рядом пустую строку — зазор до следующего
+   раздела выходил 69 против 49 (заказчик 05.10.2026; И762). То же у описания. */
+.title{
+  font-size:var(--cardname-size);line-height:var(--cardname-lead);font-weight:var(--cardname-weight);letter-spacing:var(--cardname-track);
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;min-block-size:2lh
+}
+.link{color:inherit;text-decoration:none}
+.link::after{content:'';position:absolute;inset:0}
+.summary{
+  font-size:var(--blurb-size);line-height:var(--blurb-lead);font-weight:var(--blurb-weight);letter-spacing:var(--blurb-track);color:var(--ink-soft);
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;min-block-size:2lh
+}
+
+/* Закреплённая статья списка («Începe de aici», И749; cbdshop.bg — карточка на
+   две колонки, снимок слева): снимок и слова рядом — примитив `switcher`, на
+   узкой коробке столбиком. Слова — по низу снимка не тянутся; ярлык — фишка
+   сайта над строкой данных. */
+.cardWide{--switch-at:40rem;--switch-gap:var(--air-group);position:relative;align-items:center}
+.cardWide .text{justify-content:center}

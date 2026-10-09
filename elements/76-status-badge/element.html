@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>76 · Значок статуса</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 76 — «Значок статуса». Источники — HyperUI «Badges», daisyUI «Badge», shadcn/ui «Badge» (MIT).
+  Короткое слово краской смысла: «в наличии», «осталось 3», «нет в наличии», скидка, «новинка». Пять видов: точка и слово
+  на тоне смысла, скидка, и «новинка» контуром. Не нажимается — сообщает.
+  Снято: цвета Tailwind, обводка и тень, рост по тексту без потолка.
+  Приведено к единой форме: тон и чернила — семьи смысла палитры; рост — доля малого органа; точка — круг от роста.
+-->
+</head>
+<body>
+  <div class="live">
+    <span class="status" data-tone="ok" data-dot>In stock</span>
+    <span class="status" data-tone="warn" data-dot>Only 3 left</span>
+    <span class="status" data-tone="bad" data-dot>Sold out</span>
+    <span class="status" data-tone="sale">−20 %</span>
+    <span class="status" data-view="line">New</span>
+  </div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+/* Подписка — верхний ярус подвала (Newsletter.tsx, И549). Две колонки
+   примитивом `switcher` (правило 7): зачем — слева, поле — справа; тесно —
+   одна под другой, решает ширина яруса, а не окно. Шов — ширина, на которой
+   поле с кнопкой ещё не уже строки заголовка (`--switch-at`).
+
+   Заголовок — кеглем тела, полужирным, над текстом подвала (кегль подписи):
+   замер 29.09.2026 — naturecan.ro 18 над 14, Aesop 14 над 14; роль
+   заголовка (`--h3`, 31) была громче обоих и спорила со знаком магазина.
+   Поле — ростом полей сайта (40; Aesop 40, naturecan 56). Строка «зачем»
+   и мелкий текст согласия — тоном вторичного текста; согласие — кеглем
+   заметки, как основание подвала. Ярус отбит от столбцов волоском, как
+   прежде полоса обещаний. */
+.news{
+  --switch-at:44rem;--switch-gap:var(--air-block);--switch-gap-stack:var(--air-row);
+  /* Колонки — по верху (И738): заголовок подписки — первая строка подвала, от
+     края палубы до его заглавных воздух раздела; по середине он уходил на 4 px
+     ниже края за более высокой формой. */
+  align-items:start;
+  padding-block-end:var(--air-group);border-block-end:var(--line-w) solid var(--rule)
+}
+.intro{display:grid;gap:var(--air-line)}
+/* Первая строка подвала — срезана сверху по заглавным (И738): от края палубы
+   до букв — воздух раздела, как над краем. */
+.title{margin:0;text-box:trim-start cap alphabetic;font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--h3-weight);color:var(--ink)}
+.lead{margin:0;max-inline-size:var(--measure);color:var(--ink-soft)}
+.side{display:grid;gap:var(--sp-2);max-inline-size:32rem}
+.form{display:grid;gap:var(--sp-1)}
+.done{margin:0;font-weight:var(--label-weight);color:var(--ink)}
+.consent{margin:0;font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft)}
+.consent a{color:var(--ink);text-decoration-line:underline;text-underline-offset:.2em;text-decoration-color:var(--rule)}
+@media (hover:hover){ .consent a:hover{text-decoration-color:currentColor} }
+.consent a:active{text-decoration-color:currentColor}

@@ -1,0 +1,107 @@
+/* ═══ КАБИНЕТ ПОКУПАТЕЛЯ (И771) ══════════════════════════════════════════
+ *
+ *  Бриф — docs/design/кабинет.md. Вход, создание, сброс и подтверждение —
+ *  стандартная форма входа (И780): колонка по центру страницы шириной формы
+ *  (`--measure-form`, 25rem; у образцов 320–446 — Gymshark, Allbirds, Dawn, все
+ *  три по центру), имя страницы и строка под ним по центру. Колонка —
+ *  контейнер уже шва 560, и кнопка формы в ней во всю колонку на любом экране
+ *  (Checkout.module.css `.form`), как «Log In» у Gymshark. Прежде колонка
+ *  стояла мерой текста (637 на 1253) у левого края с кнопкой своей ширины.
+ *  Лист под формой — вид панели (`--auth-look`: `plain` — на полу страницы,
+ *  `card` — на листе, как формы входа, присланные 24.09.2026, — прежде
+ *  элементы 56 и 57, перенесены сюда). Под формой — «или» и кнопки
+ *  поставщиков (И787). Кабинет — заказы
+ *  главной колонкой, сбоку лист с данными, адресом и выходом (`sidebar`;
+ *  Dawn, `customers/account.liquid`). Заказ и адрес — карточкой: лист на полу
+ *  страницы, как строки шторки корзины и лист итога (И671). Тени нет.
+ */
+.auth{max-inline-size:var(--measure-form);margin-inline:auto;container-type:inline-size}
+.head{text-align:center}
+/* Адреса — не форма входа, а список карточек с правкой на месте: колонка мерой
+   строки формы у начала страницы, как главная колонка кабинета. */
+.book{max-inline-size:var(--measure);container-type:inline-size}
+/* На листе (`card`): форма целиком — лист на полу страницы, поле и угол листа
+   (`--pad-sheet`, `--r-sheet`), краска листа и край волоском `--rule`, как у
+   присланных форм (край — волосок, не тень, И336): белый лист на светлом полу без
+   края не читается (пол 250·248·246 против 255). Тени нет. */
+@container style(--auth-look: card){
+  .auth{padding:var(--pad-sheet);border-radius:var(--r-sheet);background:var(--surface);box-shadow:inset 0 0 0 var(--line-w) var(--rule)}
+}
+.form{composes:form from './Checkout.module.css'}
+.plain{composes:plain from './Checkout.module.css'}
+/* «Забыли пароль» — под паролем у начала поля, тихим словом (3 из 3
+   образцов), своей шириной, а не полосой во всю меру. */
+.forgot{align-self:flex-start}
+/* Вспомогательное слово формы — «забыли пароль», пути под формой и строка о заказе
+   без кабинета — одной ролью подписи поля (`label`, 14 px), как «Forgot password» у
+   Dawn (14) и у Gymshark: заказчик 08.10.2026 со снимком входа — «похоже не по ролям
+   типографика»; было три размера — тело 16–18 у ссылок, подпись 14 у полей, сноска 12 у
+   строки внизу. Лестница формы: имя страницы → вводная строка → подписи и слова. */
+.forgot,.ways{font-size:var(--label-size);line-height:var(--label-lead)}
+.ways > p{font-size:inherit;line-height:inherit}
+
+/* Вход через поставщика (И787) — группа под формой: «или» между волосками и
+   кнопки стопкой — примитив `stack`, здесь только его шаг. «Или» — голова
+   группы: до кнопок шаг строки группы (`--air-row`), от формы — воздух части,
+   как у путей ниже; кнопки — соседние цели (`--gap-targets`). Волосок — роль
+   линии `--rule` толщиной `--line-w`, слово — сноской (`note`), как у shadcn/ui
+   `FieldSeparator` (MIT). Одежда кнопки поставщика и краски знаков — в модуле
+   кнопки и в самих знаках (btn.module.css `[data-provider]`, `google-color`,
+   `facebook-color`), не здесь. */
+/* Шаг стопки ставится соседу и читается на нём самом: группе его не задаём
+   (иначе и её собственный шаг от формы стал бы шагом строки) — форме кнопок
+   шаг от «или», кнопкам — шаг между собой. */
+.or{display:flex;align-items:center;gap:var(--gap-row);text-align:center}
+.or::before,.or::after{content:'';flex:1;border-block-start:var(--line-w) solid var(--rule)}
+.providers{--stack:var(--air-row)}
+.providers > *{--stack:var(--gap-targets)}
+
+/* Пути под формой — вопрос и ссылка одной строкой, переносятся вместе, по
+   центру колонки, как «Sign up» у Gymshark и «Create account» у Dawn; ссылка —
+   словом полной краски и весом подписи. */
+.ways{display:flex;flex-direction:column;align-items:center;gap:var(--air-line);text-align:center}
+.way{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;column-gap:var(--gap-row)}
+.way > .wayLink{color:var(--ink);font-weight:var(--label-weight)}
+
+/* Часть кабинета — заголовок и его содержимое одной группой; ссылки — своей
+   шириной. */
+.part{display:flex;flex-direction:column;gap:var(--air-row)}
+.part > a{align-self:flex-start}
+
+/* Между карточками заказов — воздух строки одной мысли, меньше, чем от
+   заголовка части до списка: карточки — один список под своим заголовком
+   (check:design, flatRhythm). */
+.orders{list-style:none;margin:0;padding:0;display:grid;gap:var(--air-line)}
+/* Карточка заказа — сетка строки товара кассы (`.item`: колодец снимка,
+   слова, сумма). Ссылка — номер заказа, её область растянута на всю
+   карточку (И110), как имя в строке корзины (Cart.module.css, `.name`); что
+   карточка — ссылка, видно рукой тем же ответом, что у карточки строки в
+   шторке корзины: снимок подаётся вперёд (`--creep`), проступает кромка руки
+   (`--edge-hand`, И717). */
+.order{
+  position:relative;display:grid;grid-template-columns:calc(var(--ctrl-h-lg) * 1.1) minmax(0, 1fr) auto;column-gap:var(--gap-row);align-items:center;
+  padding:var(--pad-card);border-radius:var(--r-card);background:var(--surface);
+  box-shadow:inset 0 0 0 var(--line-w) var(--line-hand, transparent);transition:box-shadow var(--hover-t) var(--ease)
+}
+@media (hover:hover){ .order:has(.orderName:hover){--line-hand:var(--edge-hand)} }
+.order:has(.orderName:active){--line-hand:var(--edge-hand)}
+.order img{transition:scale var(--hover-t) var(--ease)}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){ .order:has(.orderName:hover) img{scale:var(--creep)} }
+@media (prefers-reduced-motion:no-preference){ .order:has(.orderName:active) img{scale:var(--creep)} }
+.orderWhat{display:flex;flex-direction:column;align-items:flex-start;gap:var(--air-line);min-inline-size:0}
+.orderName{font-weight:var(--cardname-weight);color:var(--ink);overflow-wrap:anywhere}
+.orderName::after{content:'';position:absolute;inset:0}
+.status{color:var(--ink);font-weight:var(--label-weight)}
+.orderSum{display:flex;flex-direction:column;align-items:flex-end;gap:var(--air-line);text-align:end}
+
+/* Лист сбоку — разделы с заголовком h2 подряд: между ними воздух части
+   блока, как между такими разделами по всему сайту (И524). */
+.side{display:flex;flex-direction:column;align-items:flex-start;gap:var(--air-block);padding:var(--pad-card);border-radius:var(--r-card);background:var(--surface)}
+.side > section{align-self:stretch}
+
+/* Адреса — столбиком карточек; «по умолчанию» — словом сноски весом
+   подписи; действия — тихими словами в ряд. */
+.cards{list-style:none;margin:0;padding:0;display:grid;gap:var(--air-row)}
+.card{display:flex;flex-direction:column;gap:var(--air-line);padding:var(--pad-card);border-radius:var(--r-card);background:var(--surface)}
+.mark{font-size:var(--note-size);line-height:var(--note-lead);font-weight:var(--label-weight);color:var(--ink)}
+.acts{display:flex;flex-wrap:wrap;align-items:center;gap:var(--gap-targets)}

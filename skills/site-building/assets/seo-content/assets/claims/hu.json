@@ -1,0 +1,21 @@
+{
+  "lang": "hu",
+  "note": "Own lexicon of the seo-content skill: EU health-claims law and the NKFH notice of 24.07.2026 (references/compliance.md). Patterns run on lower-case text without accents (ő → o, ű → u). No regulator lexicon exists for Hungarian — a person reads every text.",
+  "condition": ["alvas", "elalvas", "almatlan", "szorong", "fajdalom", "fajdalm", "izulet", "gyullad", "stressz", "depresszi", "menstrua", "menopauz", "migren", "ekcema", "pikkelysomor", "epilep", "rak ", "cukorbeteg", "immun", "gyogyit", "gyogymod"],
+  "conditionAllow": ["stresszmentes szallitas"],
+  "hedge": ["\\bnem (bizonyitja|garantalja|garantal|jelenti automatikusan)\\b", "\\bellenorizze a cimket", "\\bnem garantalhato\\b"],
+  "promise": ["\\bminden (termeknel|termeken|uvegen|olajnal)\\b", "\\bminden (termek|olaj) (feltunteti|megadja|mutatja|tartalmazza)\\b"],
+  "rules": [
+    { "id": "hu-treats", "level": "fail", "patterns": ["\\b(gyogyit|gyogyitja|kezeli a|kezelesere|gyogymod|termeszetes gyogyszer)\\b"], "rewrite": "«A CBD nem gyógyszer» — egy mondat a figyelmeztetésekben" },
+    { "id": "hu-pain", "level": "fail", "patterns": ["\\b(fajdalomcsillapito|fajdalomcsillapitas|enyhiti|csillapitja|gyulladascsokkento)\\b"], "rewrite": "«hűsítő masszázskrém CBD-vel» — érzet a bőrön" },
+    { "id": "hu-proven", "level": "fail", "patterns": ["\\b(bizonyitottan|klinikailag bizonyitott|kutatasok bizonyitjak|orvosok ajanljak)\\b"], "rewrite": "cikk: mit tudunk és mit nem; EFSA dátummal" },
+    { "id": "hu-safety", "level": "fail", "patterns": ["\\b(mellekhatasok nelkul|mellekhatasmentes|100 ?% biztonsagos|gyerekeknek is biztonsagos)\\b"], "rewrite": "«18 év alatt, várandósság és szoptatás idején nem ajánlott»" },
+    { "id": "hu-sleep", "level": "fix", "patterns": ["\\b(alvast tamogato|elalvast segit|jobb alvas|pihentato alvas)\\b"], "rewrite": "pillanat: «esti termékek: CBN-t tartalmazó olaj»" },
+    { "id": "hu-calm", "level": "fix", "patterns": ["\\b(nyugtato|szorongasoldo|stresszoldo|ellazit)\\b"], "rewrite": "összetétel és mennyiség" },
+    { "id": "hu-function", "level": "fix", "patterns": ["\\b(immunerosito|tamogatja (az immun|az izulet|az idegrendszer))\\b"], "rewrite": "felhasználási hely, funkció nélkül" },
+    { "id": "hu-dose", "level": "fix", "patterns": ["\\bajanlott napi adag\\b", "\\bnoveld az adagot\\b"], "rewrite": "«a címke szerint»; a címke számtana megengedett" },
+    { "id": "hu-intake", "level": "fix", "patterns": ["\\b(nyelv ala|lenyelheto|tartsa a szajaban)\\b"], "rewrite": "kozmetikum csak külsőleg" },
+    { "id": "hu-best", "level": "fix", "patterns": ["\\b(a legjobb cbd|legolcsobb|elso szamu)\\b"], "rewrite": "összehasonlítható tény: ár / mg" },
+    { "id": "hu-legal", "level": "fix", "patterns": ["\\b(100 ?% legalis|0 ?% thc|0[,.]2 ?%-ig legalis)\\b"], "rewrite": "«THC a tételvizsgálat szerint»" }
+  ]
+}

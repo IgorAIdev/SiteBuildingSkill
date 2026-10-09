@@ -1,0 +1,204 @@
+/* Собран tools/buttons.mjs из styles/buttons.json. Руками не правят.
+   Роли одной кнопки основы (styles/btn.module.css) по осям каталога. На
+   корне — первый вариант каждой оси; другой — [data-button-<ось>="вариант"].
+   Оси: loud — fill · gradient; quiet — veil · outline · dash; shape — standard · outline · arrow · arrow-outline · trail · trail-joined · circle · circle-outline; hand — darken · hold. */
+
+:root{
+  --ctrl-btn-fill-pop: var(--pop);
+  --ctrl-btn-ink-pop: var(--on-pop);
+  --ctrl-btn-edge-pop: transparent;
+  --ctrl-btn-tint-pop: var(--pop);
+  --ctrl-btn-frost-pop: 0;
+  --ctrl-btn-rim-pop: transparent;
+  --ctrl-btn-fill: var(--quiet);
+  --ctrl-btn-ink: var(--ink);
+  --ctrl-btn-edge: transparent;
+  --ctrl-btn-edge-hand: transparent;
+  --ctrl-btn-dash: 0;
+  --ctrl-btn-tip: 0;
+  --ctrl-btn-tip-at: 0;
+  --ctrl-btn-notch: 0;
+  --ctrl-btn-echo: none;
+  --ctrl-btn-trail-1: 0;
+  --ctrl-btn-trail-2: 0;
+  --ctrl-btn-mark: 0;
+  --ctrl-btn-glyph: 0;
+  --ctrl-btn-still: 0;
+  --ctrl-btn-swap: 0;
+  --ctrl-btn-hollow: 0;
+  --ctrl-btn-draw: 0;
+  --ctrl-btn-hand-edge: 1;
+  --ctrl-btn-hand-fill: 0;
+}
+
+[data-button-loud="fill"]{
+  --ctrl-btn-fill-pop: var(--pop);
+  --ctrl-btn-ink-pop: var(--on-pop);
+  --ctrl-btn-edge-pop: transparent;
+  --ctrl-btn-tint-pop: var(--pop);
+  --ctrl-btn-frost-pop: 0;
+  --ctrl-btn-rim-pop: transparent;
+}
+
+[data-button-loud="gradient"]{
+  --ctrl-btn-fill-pop: var(--pop);
+  --ctrl-btn-ink-pop: var(--on-pop);
+  --ctrl-btn-edge-pop: transparent;
+  --ctrl-btn-tint-pop: var(--pop-grad);
+  --ctrl-btn-frost-pop: 0;
+  --ctrl-btn-rim-pop: transparent;
+}
+
+[data-button-quiet="veil"]{
+  --ctrl-btn-fill: var(--quiet);
+  --ctrl-btn-ink: var(--ink);
+  --ctrl-btn-edge: transparent;
+  --ctrl-btn-edge-hand: transparent;
+  --ctrl-btn-dash: 0;
+}
+
+[data-button-quiet="outline"]{
+  --ctrl-btn-fill: transparent;
+  --ctrl-btn-ink: var(--ink);
+  --ctrl-btn-edge: var(--edge);
+  --ctrl-btn-edge-hand: var(--edge-hand);
+  --ctrl-btn-dash: 0;
+}
+
+[data-button-quiet="dash"]{
+  --ctrl-btn-fill: transparent;
+  --ctrl-btn-ink: var(--ink);
+  --ctrl-btn-edge: transparent;
+  --ctrl-btn-edge-hand: transparent;
+  --ctrl-btn-dash: 1;
+}
+
+[data-button-shape="standard"]{
+  --ctrl-btn-tip: 0;
+  --ctrl-btn-tip-at: 0;
+  --ctrl-btn-notch: 0;
+  --ctrl-btn-echo: none;
+  --ctrl-btn-trail-1: 0;
+  --ctrl-btn-trail-2: 0;
+  --ctrl-btn-mark: 0;
+  --ctrl-btn-glyph: 0;
+  --ctrl-btn-still: 0;
+  --ctrl-btn-swap: 0;
+  --ctrl-btn-hollow: 0;
+  --ctrl-btn-draw: 0;
+}
+
+[data-button-shape="outline"]{
+  --ctrl-btn-tip: 0;
+  --ctrl-btn-tip-at: 0;
+  --ctrl-btn-notch: 0;
+  --ctrl-btn-echo: none;
+  --ctrl-btn-trail-1: 0;
+  --ctrl-btn-trail-2: 0;
+  --ctrl-btn-mark: 0;
+  --ctrl-btn-glyph: 0;
+  --ctrl-btn-still: 0;
+  --ctrl-btn-swap: 0;
+  --ctrl-btn-hollow: 1;
+  --ctrl-btn-draw: 0;
+}
+
+[data-button-shape="arrow"]{
+  --ctrl-btn-tip: 0;
+  --ctrl-btn-tip-at: 0;
+  --ctrl-btn-notch: 0;
+  --ctrl-btn-echo: none;
+  --ctrl-btn-trail-1: 0;
+  --ctrl-btn-trail-2: 0;
+  --ctrl-btn-mark: 0;
+  --ctrl-btn-glyph: 1;
+  --ctrl-btn-still: 1;
+  --ctrl-btn-swap: 0;
+  --ctrl-btn-hollow: 0;
+  --ctrl-btn-draw: 0;
+}
+
+[data-button-shape="arrow-outline"]{
+  --ctrl-btn-tip: 0;
+  --ctrl-btn-tip-at: 0;
+  --ctrl-btn-notch: 0;
+  --ctrl-btn-echo: none;
+  --ctrl-btn-trail-1: 0;
+  --ctrl-btn-trail-2: 0;
+  --ctrl-btn-mark: 0;
+  --ctrl-btn-glyph: 1;
+  --ctrl-btn-still: 1;
+  --ctrl-btn-swap: 0;
+  --ctrl-btn-hollow: 1;
+  --ctrl-btn-draw: 1;
+}
+
+[data-button-shape="trail"]{
+  --ctrl-btn-tip: 1.07;
+  --ctrl-btn-tip-at: 0.74;
+  --ctrl-btn-notch: 0;
+  --ctrl-btn-echo: block;
+  --ctrl-btn-trail-1: 0.07;
+  --ctrl-btn-trail-2: 0.44;
+  --ctrl-btn-mark: 0;
+  --ctrl-btn-glyph: 0;
+  --ctrl-btn-still: 1;
+  --ctrl-btn-swap: 0;
+  --ctrl-btn-hollow: 0;
+  --ctrl-btn-draw: 0;
+}
+
+[data-button-shape="trail-joined"]{
+  --ctrl-btn-tip: 0.93;
+  --ctrl-btn-tip-at: 0.6;
+  --ctrl-btn-notch: 0;
+  --ctrl-btn-echo: block;
+  --ctrl-btn-trail-1: 0;
+  --ctrl-btn-trail-2: 0.3;
+  --ctrl-btn-mark: 0;
+  --ctrl-btn-glyph: 0;
+  --ctrl-btn-still: 1;
+  --ctrl-btn-swap: 0;
+  --ctrl-btn-hollow: 0;
+  --ctrl-btn-draw: 0;
+}
+
+[data-button-shape="circle"]{
+  --ctrl-btn-tip: 0;
+  --ctrl-btn-tip-at: 0;
+  --ctrl-btn-notch: 0;
+  --ctrl-btn-echo: none;
+  --ctrl-btn-trail-1: 0;
+  --ctrl-btn-trail-2: 0;
+  --ctrl-btn-mark: 1;
+  --ctrl-btn-glyph: 0;
+  --ctrl-btn-still: 1;
+  --ctrl-btn-swap: 1;
+  --ctrl-btn-hollow: 0;
+  --ctrl-btn-draw: 0;
+}
+
+[data-button-shape="circle-outline"]{
+  --ctrl-btn-tip: 0;
+  --ctrl-btn-tip-at: 0;
+  --ctrl-btn-notch: 0;
+  --ctrl-btn-echo: none;
+  --ctrl-btn-trail-1: 0;
+  --ctrl-btn-trail-2: 0;
+  --ctrl-btn-mark: 1;
+  --ctrl-btn-glyph: 0;
+  --ctrl-btn-still: 1;
+  --ctrl-btn-swap: 1;
+  --ctrl-btn-hollow: 1;
+  --ctrl-btn-draw: 0;
+}
+
+[data-button-hand="darken"]{
+  --ctrl-btn-hand-edge: 1;
+  --ctrl-btn-hand-fill: 0;
+}
+
+[data-button-hand="hold"]{
+  --ctrl-btn-hand-edge: 0;
+  --ctrl-btn-hand-fill: 0;
+}

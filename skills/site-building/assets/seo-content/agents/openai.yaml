@@ -1,0 +1,4 @@
+interface:
+  display_name: "SEO Content"
+  short_description: "Продающие SEO/GEO-тексты по настоящим запросам рынка"
+  default_prompt: "Используй $seo-content: собери запросы рынка, назначь страницу, напиши title, description, H1, текст над сеткой и под ней и FAQ словами покупателя, проверь lint-copy."

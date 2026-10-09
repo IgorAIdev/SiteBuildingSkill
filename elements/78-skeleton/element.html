@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>78 · Заглушка загрузки</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 78 — «Заглушка загрузки». Источники — daisyUI «Skeleton», shadcn/ui «Skeleton» (MIT).
+  Серые формы на месте того, что ещё грузится: кадр, строки, кружок. Покупатель видит, где что будет, и страница не прыгает.
+  Мерцание — тон скользит слева направо; при «меньше движения» стоит ровным тоном.
+  Снято: цвета Tailwind и градиент daisyUI, фиксированные размеры в пикселях.
+  Приведено к единой форме: тон — тихая плашка палитры, углы — угол набора, размер — доли ряда набора.
+-->
+</head>
+<body>
+  <div class="live">
+    <div class="skeleton" aria-busy="true" aria-label="Loading product"><span class="skel" data-shape="block"></span><span class="skel" data-shape="line"></span><span class="skel" data-shape="line" data-short></span></div>
+    <div class="skeleton" data-view="row" aria-busy="true" aria-label="Loading"><span class="skel" data-shape="circle"></span><div><span class="skel" data-shape="line"></span><span class="skel" data-shape="line" data-short></span></div></div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "Латунь на угле": {
+    "light": {
+      "paper": "#FCFBF9",
+      "ink": "#1F1E1C",
+      "accent": "#917236"
+    },
+    "dark": {
+      "paper": "#121110",
+      "ink": "#EDEBE8",
+      "accent": "#CFAB6F"
+    }
+  }
+}

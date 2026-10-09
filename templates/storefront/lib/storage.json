@@ -1,0 +1,64 @@
+[
+ {
+  "name": "shop_session",
+  "kind": "cookie-http",
+  "category": "necessary",
+  "provider": null,
+  "purpose": {
+   "ro": "Păstrează coșul, comanda în curs și conectarea la contul dvs.",
+   "en": "Keeps your cart, the order in progress and your sign-in to your account",
+   "hu": "Megőrzi a kosarat, a folyamatban lévő rendelést és a fiókjába való bejelentkezést"
+  },
+  "lifetime": { "ro": "30 de zile", "en": "30 days", "hu": "30 nap" }
+ },
+ {
+  "name": "shop_oauth",
+  "alias": "__Host-shop_oauth",
+  "kind": "cookie-http",
+  "category": "necessary",
+  "provider": null,
+  "purpose": {
+   "ro": "Leagă conectarea cu Google sau Facebook de acest browser, doar cât durează conectarea",
+   "en": "Ties a Google or Facebook sign-in to this browser, only while you sign in",
+   "hu": "A Google- vagy Facebook-bejelentkezést ehhez a böngészőhöz köti, csak a bejelentkezés idejére"
+  },
+  "lifetime": { "ro": "10 minute", "en": "10 minutes", "hu": "10 perc" }
+ },
+ {
+  "name": "theme",
+  "kind": "cookie",
+  "category": "necessary",
+  "provider": null,
+  "purpose": {
+   "ro": "Ține minte alegerea între tema luminoasă și cea întunecată",
+   "en": "Remembers your choice of light or dark theme",
+   "hu": "Megjegyzi, hogy világos vagy sötét témát választott"
+  },
+  "lifetime": { "ro": "1 an", "en": "1 year", "hu": "1 év" }
+ },
+ {
+  "name": "consent",
+  "kind": "cookie",
+  "category": "necessary",
+  "provider": null,
+  "onlyWithConsent": true,
+  "purpose": {
+   "ro": "Ține minte ce ați ales despre cookie-uri, ca să nu vă întrebăm la fiecare pagină",
+   "en": "Remembers your cookie choice so we don't ask on every page",
+   "hu": "Megjegyzi a sütikkel kapcsolatos döntését, hogy ne kérdezzük minden oldalon"
+  },
+  "lifetime": { "ro": "6 luni", "en": "6 months", "hu": "6 hónap" }
+ },
+ {
+  "name": "saved",
+  "kind": "local",
+  "category": "necessary",
+  "provider": null,
+  "purpose": {
+   "ro": "Ține minte lista de favorite pe acest dispozitiv",
+   "en": "Remembers your favourites list on this device",
+   "hu": "Megjegyzi a kedvencek listáját ezen az eszközön"
+  },
+  "lifetime": { "ro": "Până o ștergeți", "en": "Until you delete it", "hu": "Amíg Ön nem törli" }
+ }
+]

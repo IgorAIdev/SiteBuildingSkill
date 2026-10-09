@@ -1,0 +1,73 @@
+/* Карточка отзыва (components/ReviewCard.tsx, И728) — кадр 2 : 3 и подпись
+   под ним, ячейкой рельсы товаров (ширина — у рельсы, `--rail-cell`).
+   Ритм — лестница, как у карточки товара: от кадра к подписи — воздух строки
+   (`--air-row`), между цитатой и подписью — зазор (`--gap-row`), внутри
+   группы — оптика `--sp-1`, `--sp-2` и воздух мысли `--air-line`. */
+.card{display:flex;flex-direction:column;gap:var(--air-row);block-size:100%}
+.caption{display:flex;flex-direction:column;gap:var(--gap-row)}
+.say{display:flex;flex-direction:column;gap:var(--sp-2)}
+
+/* Кадр — постер ролика или лист цитаты, мера одна (`--frame`), и ряд ровный
+   по верху и низу кадров. Потолок — половина малого окна: на окне ноутбука
+   заказчика (≈ 590 по высоте, 1253 в ширину) карточка с подписью стоит под
+   шапкой целиком; на окне выше потолок не достаётся — кадр 2 : 3 как есть. */
+.media,.plate{--frame:var(--people-frame);--frame-cap:50svh;border-radius:var(--r-card)}
+
+/* Постер — одна кнопка (ReviewPlay.tsx). Ответ руке — наплыв постера, рамка
+   стоит, как у карточки товара (craft, controls.md: «плавающее со снимком —
+   рама стоит, движется снимок»). Пока постер едет, место держит лист. */
+.media{
+  position:relative;inline-size:100%;padding:0;border:0;background:var(--plate-2);
+  color:inherit;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent
+}
+.media:focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:var(--ring-off)}
+@media (prefers-reduced-motion:no-preference){
+  .media img{transition:scale var(--hover-t) var(--ease)}
+  .media:active img{scale:var(--creep)}
+}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){ .media:hover img{scale:var(--creep)} }
+/* Круг «пуск» — кнопка-знак сайта (`data-pager`), висящая над снимком
+   (`data-float`: своя плита всегда — пол листа с волоском, как «наверх»): тихая
+   кнопка без своей заливки на снимке не читалась бы. Одежду ставит модуль кнопки,
+   место — только где (разбор 08.10.2026, И790: `--press-bg` здесь весил как
+   `.btn`, и порядок кусков CSS решал, видна ли плита). Вуали под ним нет (слово
+   заказчика 01.10.2026: «разве я писал сделать тень на изображении?»). */
+.play{position:absolute;inset-block-start:50%;inset-inline-start:50%;translate:-50% -50%}
+
+/* Лист цитаты — поверхность карточки с тихой кромкой (`--edge`, как у
+   карточки товара «framed»); содержимое — сверху вниз, а не по середине кадра. */
+.plate{
+  flex-direction:column;align-items:stretch;justify-content:flex-start;gap:var(--air-line);
+  padding:var(--pad-card);background:var(--surface);border:var(--line-w) solid var(--edge)
+}
+
+/* Заголовок отзыва — роль имени карточки: он — имя этой вещи. */
+.title{font-size:var(--cardname-size);line-height:var(--cardname-lead);font-weight:var(--cardname-weight);letter-spacing:var(--cardname-track)}
+/* Цитата — роль тела: в листе она главное. Под постером — строка описания
+   (`--blurb-*`): главное там ролик. */
+.quote{font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--body-weight);letter-spacing:var(--body-track);color:var(--ink)}
+.gist{font-size:var(--blurb-size);line-height:var(--blurb-lead);font-weight:var(--blurb-weight);letter-spacing:var(--blurb-track);color:var(--ink)}
+/* Сколько строк — у места: в листе до шести (лист 2 : 3 при ячейке 240
+   держит шесть строк тела и звёзды с заголовком, не обрезая строку краем), под
+   постером — две; целиком цитата стоит в окне ролика. */
+.quote[data-clamp] > p,.gist > p{display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
+.quote[data-clamp] > p{-webkit-line-clamp:6;line-clamp:6}
+.gist > p{-webkit-line-clamp:2;line-clamp:2}
+
+/* Подпись: имя и отметка одной строкой (тесно — переносятся), под ними дата
+   и товар. */
+.by{display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-1)}
+.who{display:flex;flex-wrap:wrap;align-items:center;column-gap:var(--sp-2);font-size:var(--label-size);line-height:var(--label-lead)}
+.name{font-weight:var(--label-weight);color:var(--ink)}
+.mark{display:inline-flex;align-items:center;gap:var(--sp-1);font-weight:var(--blurb-weight);color:var(--ink-soft)}
+.mark svg{inline-size:1.15em;block-size:1.15em;flex:none}
+.product{font-size:var(--blurb-size);line-height:var(--blurb-lead)}
+
+/* Окно ролика: кадр 2 : 3 не выше двух третей малого окна и не шире тела
+   окна — пропорция держится шириной от высоты, ролик не режется. */
+.watch{display:flex;flex-direction:column;gap:var(--air-row)}
+.player{
+  --frame:var(--people-frame);--frame-cap:65svh;
+  inline-size:min(100%, calc(var(--frame-cap) * var(--people-frame)));align-self:center;
+  border-radius:var(--r-card);background:var(--scrim-deck)
+}

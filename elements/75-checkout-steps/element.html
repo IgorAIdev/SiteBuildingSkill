@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>75 · Шаги оформления заказа</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 75 — «Шаги оформления заказа». Источники — daisyUI «Steps», Preline «Stepper» (MIT).
+  Где покупатель: корзина → доставка → оплата. Два вида: кружки с номерами и соединительной линией; три черты с подписями.
+  Пройденный шаг — галка на марке, текущий — кольцо марки (`aria-current="step"`), впереди — тон.
+  Снято: цвета Tailwind и daisyUI, стрелки между шагами.
+  Приведено к единой форме: кружок — высота малого органа набора; линия — волосок, у пройденного — марка.
+-->
+</head>
+<body>
+  <div class="live">
+    <ol class="steps" aria-label="Checkout">
+      <li data-step="done"><span class="stepdot"><svg data-sign="check"></svg></span>Cart</li>
+      <li data-step="current" aria-current="step"><span class="stepdot">2</span>Delivery</li>
+      <li><span class="stepdot">3</span>Payment</li>
+    </ol>
+    <ol class="steps" data-view="bars" aria-label="Checkout">
+      <li data-step="done">Cart</li>
+      <li data-step="current" aria-current="step">Delivery</li>
+      <li>Payment</li>
+    </ol>
+  </div>
+</body>
+</html>

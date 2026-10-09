@@ -1,0 +1,16 @@
+/* Соцсети — варианты оформления одним блоком (Socials.tsx). Образцы стоят на
+   тёмной полосе подвала, как на витрине. Устройство — кнопка и ссылка сайта;
+   здесь только место образца и форма круга от роста кнопки. */
+.sets{--cols:3;--cols-min:1;--cell-min:260px;--grid-gap:var(--gap-grid);list-style:none;padding:0;margin:0}
+.set{display:flex;flex-direction:column;gap:var(--air-row);padding:var(--pad-inner);border-radius:var(--r-card);background:var(--plate);color:var(--on-plate);box-shadow:var(--sh-raised)}
+.name{font-size:var(--name-size);line-height:var(--name-lead);font-weight:var(--name-weight)}
+.line{font-size:var(--note-size);line-height:var(--note-lead);color:var(--on-plate-2)}
+.deck{display:flex;align-items:center;min-block-size:calc(var(--ctrl-h-lg) * 2);padding:var(--pad-inner);border-radius:var(--r-card);background:var(--page-deck)}
+.pairs{--cols:2;--cols-min:1;--cell-min:260px;--grid-gap:var(--gap-grid)}
+.pair{--cluster:var(--sp-5);align-items:center}
+.big svg{display:block;inline-size:calc(var(--ctrl-h-lg) * 1.4);block-size:calc(var(--ctrl-h-lg) * 1.4)}
+.small svg{display:block;inline-size:calc(var(--ctrl-h) * .55);block-size:calc(var(--ctrl-h) * .55)}
+.col{list-style:none;padding:0;margin:0;display:grid;gap:var(--sp-2)}
+/* Без движения: стрелка/знак под рукой не едет, меняется только цвет. */
+.col .still svg,.col .still:hover svg{translate:none;inline-size:calc(var(--ctrl-h) * .6);block-size:calc(var(--ctrl-h) * .6)}
+.still{gap:var(--sp-3)}

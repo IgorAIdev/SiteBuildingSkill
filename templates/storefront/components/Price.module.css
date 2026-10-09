@@ -1,0 +1,21 @@
+/* Цена (Price.tsx, И476): одна строка по базовой линии, переносится, если
+   тесно. Сейчас — полужирно, ростом тела на полке и ролью ввода на карте
+   товара (громкое слово у колонки покупки одно — имя, И444); прежняя —
+   сноской, зачёркнутой, краской подписи. */
+.price{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:var(--gap-row);row-gap:var(--sp-1);margin:0;font-variant-numeric:tabular-nums}
+.now{font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--price-weight);white-space:nowrap;color:var(--ink)}
+/* На карте товара — ролью ввода: имя товара теперь ростом ступени h3 (`--prodhead-*`, И503), и
+   цена ростом h3 спорила бы с ним. */
+/* Цена карты товара — своя роль `--price-*` (ступень h2, на ступень ниже
+   имени; заказчик 28.09.2026: «цену на 3 позиции выше» — от ввода на три
+   ступени; И513). */
+.price[data-size='lead'] .now{font-size:var(--price-size);line-height:var(--price-lead);font-weight:var(--price-weight);letter-spacing:var(--price-track)}
+/* Цена карточки товара — своя роль `--cardprice-*`, ростом и толщиной имени
+   в карточке (заказчик 03.10.2026: «только новые роли для текста карточки»):
+   мельчить карточку — не мельчить текст страницы. */
+.price[data-size='card'] .now{font-size:var(--cardprice-size);line-height:var(--cardprice-lead);font-weight:var(--cardprice-weight);letter-spacing:var(--cardprice-track)}
+.was{font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft);white-space:nowrap;text-decoration-thickness:var(--line-w)}
+.price[data-size='lead'] .was{font-size:var(--body-size)}
+/* В карточке прежняя цена — на ступень ниже цены, голосом справки (И674): цена
+   встала ростом текста, и сноска в 12 под ней читалась крошкой. */
+.price[data-size='card'] .was{font-size:var(--blurb-size);line-height:var(--blurb-lead)}

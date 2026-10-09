@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>102 · Полоса с грузовиком на конце</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 102 — «Полоса с грузовиком на конце». Источник — Preline «Progress → Floating label» (MIT):
+  метка над полосой стоит у конца заливки (поле от доли минус полметки), под ней тонкая полоса с role="progressbar".
+  Грузовик — метка: ведёт заливку за собой и у порога встаёт у правого края; слова — над ним. Порог взят — метка и заливка
+  в краске «успеха». Суммы, порог и валюта — данные.
+  Снято: цвета и рамка метки Preline, процент в метке (на его месте — знак доставки из листа набора).
+  Приведено к единой форме: метка — круг в три четверти малого органа, тон марки; полоса — как у элемента 74;
+  положение метки зажато краями полосы, чтобы она не выходила за лист.
+-->
+</head>
+<body>
+  <div class="live">
+    <div class="goal" data-view="rider">
+      <p id="g102a"><b>€70.00</b> to go for free delivery</p>
+      <div class="reach" data-share="30">
+        <span class="rider"><svg data-sign="truck"></svg></span>
+        <div class="gauge" role="progressbar" aria-labelledby="g102a" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" aria-valuetext="€30.00 of €100.00"><span class="fill"></span></div>
+      </div>
+    </div>
+    <div class="goal" data-view="rider">
+      <p id="g102b"><b>€15.00</b> to go for free delivery</p>
+      <div class="reach" data-share="85">
+        <span class="rider"><svg data-sign="truck"></svg></span>
+        <div class="gauge" role="progressbar" aria-labelledby="g102b" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-valuetext="€85.00 of €100.00"><span class="fill"></span></div>
+      </div>
+    </div>
+    <div class="goal" data-view="rider" data-tone="ok">
+      <p id="g102c">Free delivery unlocked</p>
+      <div class="reach" data-share="100">
+        <span class="rider"><svg data-sign="truck"></svg></span>
+        <div class="gauge" role="progressbar" aria-labelledby="g102c" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-valuetext="€112.00 of €100.00"><span class="fill"></span></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

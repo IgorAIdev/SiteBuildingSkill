@@ -1,0 +1,125 @@
+/* ═══ ТИХИЙ ЗНАК — одна кнопка-знак на сайт ═════════════════════════════
+ *
+ *  Заведено 01.10.2026 (И603). Сердце «в избранное» было описано дважды:
+ *  в шапке — глифом шапки (знак 1.43em от надписи органа, круглая тихая
+ *  подложка под рукой), на карточке — голой кнопкой со своим размером знака
+ *  (1.25em от тела) и белой плашкой, которую подкладывала сама карточка.
+ *  Знак тот же, а рисовался двумя числами в двух файлах — правка одного не
+ *  доходила до другого (правило 10).
+ *
+ *  Тихий знак — знак ростом с цель (`--ctrl-target`: 24 под мышью, 44 под
+ *  пальцем), без заливки и без плашки: не кнопка действия. Ответ на руку —
+ *  вида «слово и знак» (И685, btn.module.css): в покое тихое слово
+ *  `--ink-dim`, под рукой полное `--ink`, подложки нет (вуаль состояния —
+ *  ноль); при нажатии чуть меньше и на пиксель ниже (`press`, И273). До
+ *  03.10.2026 под рукой вырастала круглая подложка и знак брал краску марки
+ *  — рядом с соцсетями (квадрат) и ссылками подвала (краска) это был третий
+ *  ответ на одно и то же.
+ *  Знак — общей ролью `--icon-size` от тела сайта, независимо от кегля
+ *  подписи органа: в шапке и боковом меню одна высота. Под пальцем растёт
+ *  цель, а не рисунок.
+ *
+ *  Берут: шапка (`.glyph` в Header.module.css), сердце (SaveToggle). Место,
+ *  где знак стоит, решает только где он стоит — не рисует под ним ничего.
+ */
+/* Положение знака — умолчание нулевым весом: где знак стоит, решает место
+   (сердце карточки — `position:absolute` в углу снимка). Равным весом
+   `position:relative` знака побеждал место в сборке, где кусок стилей знака
+   встаёт позже кусков карточки: сердце растягивалось полосой 284 × 40 во всю
+   карточку (сборка 05.10.2026; на сервере разработки порядок другой и всё
+   стояло). Правило набора — И320, И346, И755. */
+:where(.glyph){position:relative}
+.glyph{
+  composes:press from './btn.module.css';
+  display:inline-flex;align-items:center;justify-content:center;gap:calc(var(--ctrl-target) * .2);
+  min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target);padding-inline:calc(var(--ctrl-target) * .1);
+  border-radius:50%;color:var(--ink-dim);--state-hover:0%;--state-press:0%;
+  /* Основные знаки — от обычной надписи органа, как svg общей кнопки.
+     Малый кегль оставлен служебной строке шапки её собственным правилом. */
+  font:inherit;font-size:var(--ctrl-fs);font-weight:var(--label-weight);
+  /* Рост знака — ручка: место, которое ставит знак на вертикаль полей
+     страницы (меню шапки у края, И753), меряет рамку от него, а не числом. */
+  --glyph-h:var(--icon-size)
+}
+.glyph svg{inline-size:var(--glyph-h);block-size:var(--glyph-h);flex:none}
+@media (hover:hover){ .glyph:not(:disabled):hover{color:var(--ink)} }
+.glyph:not(:disabled):active{color:var(--ink)}
+/* «Открыто» (раскрытие рядом стоит открытым: язык шапки, меню связи; И733) — полное
+   слово, как под рукой; подложки у тихого знака нет и открытым. */
+.glyph:has(+ :popover-open){color:var(--ink)}
+/* Отмеченный знак (`aria-pressed`: сердце в избранном) залит краской марки —
+   ролью заливки знака листа `--sign-fill` (И625). */
+.glyph[aria-pressed='true'] svg{--sign-fill:currentColor;color:var(--pop)}
+
+/* Знак на снимке (`data-over="picture"`, И606) — сердце в углу снимка
+   карточки. Читаться он обязан над любым снимком, и это работа палитры, а
+   не места: стекло тихого органа `--plate-glass` с краской `--on-plate-glass`
+   (строитель меряет долю стекла так, чтобы тёмный знак держал 4.5 : 1 даже
+   над чёрным снимком, И601) — та же краска, что у стеклянной пилюли плашек.
+   Круг — рост органа (`--ctrl-h`), как у знаков шапки рядом с поиском: на
+   росте цели (24) стекло обжимало знак 20 — «плашка какая-то». Под рукой и
+   при нажатии стекло непрозрачно (`--plate-glass-hand`), как у пилюли.
+   Отмеченный знак — `--pop-on-glass`: ступень марки, которую строитель
+   нашёл читаемой на стекле над любым снимком (у латуни ступень 9 давала
+   1.2 : 1 — отмеченное сердце пропадало; замер glass-pop). */
+.glyph[data-over='picture']{
+  --press-bg:var(--plate-glass);color:var(--on-plate-glass);
+  min-block-size:var(--ctrl-h);min-inline-size:var(--ctrl-h)
+}
+@media (hover:hover){ .glyph[data-over='picture']:not(:disabled):not([aria-disabled='true']):hover{--press-fill:var(--plate-glass-hand);color:var(--on-plate-glass)} }
+.glyph[data-over='picture']:not(:disabled):not([aria-disabled='true']):active{--press-fill:var(--plate-glass-hand);color:var(--on-plate-glass)}
+.glyph[data-over='picture'][aria-pressed='true'] svg{color:var(--pop-on-glass)}
+/* Под пальцем кружок на снимке не растёт до цели (слово заказчика 05.10.2026:
+   «размер иконки / фона избранное тоже нужно меньше для моб.»): рост органа
+   под пальцем 48 — кружок на карточке телефона шириной 165 брал треть её
+   ширины. Рисунок — малый орган с целью наружу (`--ctrl-face`, 32: Gymshark
+   на телефоне — сердце 32 при цели 44, M3 — 32 при 48); пальцу его 44 дают
+   невидимым запасом вокруг, как у `.tap` (primitives.module.css). Под мышью
+   кружок прежний. Сердце без подложки (`bare`, ниже) свою коробку цели
+   держит само. */
+@media (pointer:coarse){
+  .glyph[data-over='picture']{min-block-size:var(--ctrl-face);min-inline-size:var(--ctrl-face)}
+  .glyph[data-over='picture']::after{
+    content:'';position:absolute;left:50%;top:50%;translate:-50% -50%;
+    inline-size:max(100%, var(--ctrl-target));block-size:max(100%, var(--ctrl-target))
+  }
+}
+/* Близнец блока пальца — рамка «телефон» дизайн-системы (И768): тот же текст. */
+:where([data-pointer='coarse']) .glyph[data-over='picture']{min-block-size:var(--ctrl-face);min-inline-size:var(--ctrl-face)}
+:where([data-pointer='coarse']) .glyph[data-over='picture']::after{
+  content:'';position:absolute;left:50%;top:50%;translate:-50% -50%;
+  inline-size:max(100%, var(--ctrl-target));block-size:max(100%, var(--ctrl-target))
+}
+
+/* Сердце на снимке без подложки (`--save-look: bare`; слово заказчика
+   03.10.2026: «фон для иконки нужен? может как вариант убрать фон и увеличить
+   сердечко до высоты плашки скидки»). Подложки нет — читаться над любым
+   снимком знаку помогает не стекло, а край: чернила знака и тонкая кайма
+   цвета листа (`--surface`) вокруг рисунка — на светлом снимке видны чернила,
+   на тёмном — кайма. Рост знака — рост плашки скидки (`.cut`,
+   primitives.module.css: `--ctrl-h-sm` × .8); цель нажатия не меньше
+   `--ctrl-target` — кнопка вырастает вокруг знака, а знак остаётся по центру
+   плашки скидки (поле выравнивается отрицательным отступом). Под рукой знак
+   берёт краску марки для текста (`--pop-ink`; знак шапки под рукой идёт в
+   полные чернила `--ink` — у снимка своя краска руки); отмеченный залит
+   маркой. Стекла (`--plate-glass`) здесь нет вовсе. */
+@container style(--save-look: bare){
+  .glyph[data-over='picture']{
+    --glyph-h:calc(var(--ctrl-h-sm) * .8);
+    --glyph-box:max(var(--glyph-h), var(--ctrl-target));
+    --press-bg:transparent;color:var(--ink);padding-inline:0;
+    min-block-size:var(--glyph-box);min-inline-size:var(--glyph-box);
+    margin-block-start:calc((var(--glyph-h) - var(--glyph-box)) / 2);
+    margin-inline-end:calc((var(--glyph-h) - var(--glyph-box)) / 2)
+  }
+  .glyph[data-over='picture'] svg{
+    inline-size:var(--glyph-h);block-size:var(--glyph-h);
+    filter:drop-shadow(0 0 var(--line-w) var(--surface)) drop-shadow(0 0 var(--line-w) var(--surface))
+  }
+  @media (hover:hover){ .glyph[data-over='picture']:not(:disabled):not([aria-disabled='true']):hover{--press-fill:transparent;color:var(--pop-ink)} }
+  .glyph[data-over='picture']:not(:disabled):not([aria-disabled='true']):active{--press-fill:transparent;color:var(--pop-ink)}
+  .glyph[data-over='picture'][aria-pressed='true'] svg{color:var(--pop)}
+}
+
+/* Secondary icon role: visual size only; the hit target stays unchanged. */
+.glyph[data-icon-size="small"]{--glyph-h:var(--icon-size-sm)}

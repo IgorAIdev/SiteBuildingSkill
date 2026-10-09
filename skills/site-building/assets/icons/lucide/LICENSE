@@ -1,0 +1,114 @@
+ISC License
+
+Copyright (c) 2026 Lucide Icons and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+---
+
+The following Lucide icons are derived from the Feather project:
+
+airplay, alert-circle, alert-octagon, alert-triangle, aperture, arrow-down-circle, arrow-down-left, arrow-down-right, arrow-down, arrow-left-circle, arrow-left, arrow-right-circle, arrow-right, arrow-up-circle, arrow-up-left, arrow-up-right, arrow-up, at-sign, calendar, cast, check, chevron-down, chevron-left, chevron-right, chevron-up, chevrons-down, chevrons-left, chevrons-right, chevrons-up, circle, clipboard, clock, code, columns, command, compass, corner-down-left, corner-down-right, corner-left-down, corner-left-up, corner-right-down, corner-right-up, corner-up-left, corner-up-right, crosshair, database, divide-circle, divide-square, dollar-sign, download, external-link, feather, frown, hash, headphones, help-circle, info, italic, key, layout, life-buoy, link-2, link, loader, lock, log-in, log-out, maximize, meh, minimize, minimize-2, minus-circle, minus-square, minus, monitor, moon, more-horizontal, more-vertical, move, music, navigation-2, navigation, octagon, pause-circle, percent, plus-circle, plus-square, plus, power, radio, rss, search, server, share, shopping-bag, sidebar, smartphone, smile, square, table-2, tablet, target, terminal, trash-2, trash, triangle, tv, type, upload, x-circle, x-octagon, x-square, x, zoom-in, zoom-out
+
+The MIT License (MIT) (for the icons listed above)
+
+Copyright (c) 2013-present Cole Bemis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Откуда знаки этой папки: Lucide (https://lucide.dev, lucide-static через
+https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/<имя>.svg), рисунок
+без правки; убраны только строка лицензии и класс.
+Добавлены 01.10.2026 из lucide-static 1.49.0 по знакам каталога элементов:
+- виды меню: menu-left (text-align-start), menu-center (text-align-center),
+  menu-two (equal);
+- виды марок пером: facebook-line (facebook), instagram-line (instagram),
+  youtube-line (youtube);
+- под своими именами Lucide: ellipsis, ellipsis-vertical, shopping-bag,
+  shopping-basket, store, arrow-up-down, arrow-up-right, chevrons-right,
+  grip-vertical, pencil, credit-card, rotate-ccw, file-check, panel-right,
+  swatch-book, layout-dashboard, settings, messages-square, circle-alert,
+  users, user-plus, image, calendar, eye, at-sign, paperclip, lock,
+  badge-check.
+
+Местные имена (01.10.2026, И628: имя — что изображено, семья впереди, вид хвостом;
+рисунок не меняется): handbag → shopping-handbag, chevrons-right → chevron-double-right, users → user-group, messages-square → message-two, circle-check → check-circle, badge-check → check-badge, shield-check → check-shield, file-check → check-file, circle-alert → alert-circle, circle-x → x-circle (02.10.2026, наличие), triangle-alert → alert-triangle, flask-conical → flask, paw-print → pets, soap-dispenser-droplet → soap-dispenser, swatch-book → swatches.
+
+Знаки, перерисованные набором (01.10.2026): `cookie` — печенье с большим
+откусанным краем (слово заказчика: у Lucide откус мал); окружность,
+дуга откуса и пять крошек нарисованы заново на сетке 24 × 24 в штрихе
+Lucide, рисунок Lucide `cookie` не использован.
+
+`dot-full`, `dot-half`, `dot-empty` (02.10.2026) — точка наличия: залитая,
+наполовину, пустая; обычная геометрия (окружность и её половина) на сетке
+24 × 24 в штрихе Lucide, готового знака нет ни в одной библиотеке (так
+делает и Shopify Dawn).
+
+`vape` (02.10.2026) — вейп-устройство: корпус и картридж с коротким штырьком,
+левое устройство знака «vape-kit» из Akar Icons (MIT, Copyright (c) Arturo
+Wibawa, https://github.com/artcoholic/akar-icons), сдвинуто в центр сетки
+24 × 24, штрих Lucide; в Lucide вейпа нет. Слово заказчика: прежний знак
+(бокс с дымом) не похож на устройство. `cigarette` — Lucide без изменений.
+
+`tube` (01.10.2026) — тюбик с крышкой и обжатым краем (крем, бальзам),
+нарисован набором на сетке 24 × 24 в штрихе Lucide; в Lucide тюбика нет.
+
+`target` (01.10.2026) — центр закрашен (слово заказчика): у Lucide там кольцо,
+здесь залитый круг (`fill="currentColor"` на центральном круге).
+
+---
+
+Two more store icons come from other MIT projects and live in this folder
+(added 02.10.2026, drawn on the same 24 × 24 box with strokes):
+
+store-building — Tabler Icons, «building-store»
+  Copyright (c) 2020-2024 Paweł Kuna
+storefront — Heroicons, «building-storefront»
+  Copyright (c) Tailwind Labs, Inc.
+
+Both are under The MIT License (MIT), the permission notice is the one given
+above for the Feather icons.
+
+---
+
+Seven line icons come from the owner's own cbdin.bg design sheet (element 15 of
+the kit, copied 02.10.2026, redrawn on the same 24 × 24 box): home-line,
+shop-awning, basket-wide, bag-handle, trolley, account-line, heart-line.
+
+---
+
+Tabler Icons (https://tabler.io/icons, MIT, Copyright (c) 2020-2024 Paweł Kuna),
+outline set, copied 02.10.2026 as a reserve for the shop (the bounding box
+path removed, same 24 × 24 box and strokes): gift, discount, receipt, wallet, cash, coin, credit-card-pay, shopping-cart-check, shopping-cart-discount, shopping-bag-check, basket-check, basket-heart, package-export, package-import, building-warehouse, truck-delivery, truck-return, map-2, map-pin-check, clock, calendar-event, headset, message-dots, help-circle, user-circle, user-check, user-heart, id-badge-2, certificate, award, heart-handshake, microscope, test-pipe, cannabis, plant-2, bottle, vaccine-bottle, candy, mug, bed, yoga, heartbeat, mood-smile, ticket, bookmark, share, bell, lock-check, shield-lock, weight, tag, barcode.
+
+---
+
+Added 03.10.2026 from lucide-static 1.49.0 (the drawing is unchanged; only the licence comment and the class are removed), for the «Rows» sign of the owner's cbdin.bg sheet (element 15, a table of rows and columns — the set had no table sign): table (Lucide «table-2»).

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>88 · Поле кода из ячеек</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 88 — «Поле кода из ячеек». Источники — shadcn/ui «Input OTP», daisyUI «Validator», HyperUI «Inputs» (MIT).
+  Код из SMS или письма: одна ячейка — одна цифра, шесть и четыре. Фокус — кольцо набора и светлая ячейка.
+-->
+</head>
+<body>
+  <div class="live">
+    <div class="code" role="group" aria-label="Verification code"><input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 1"><input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2"><input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3"><input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4"><input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5"><input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6"></div>
+    <div class="code" role="group" aria-label="PIN"><input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 1" value="4"><input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2" value="2"><input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3"><input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4"></div>
+  </div>
+</body>
+</html>

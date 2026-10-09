@@ -1,0 +1,41 @@
+/* Выпущен scripts/look-slots.mjs из опубликованного вида (lib/source/sample/look.json;
+   у Payload — global «look»). Руками не правят: шрифт, тени, вид поля ввода и галочки, ручки карты товара и полки и шрифты вида со своего адреса. */
+
+:root{
+  --face: var(--face-stack);
+  --face-head: var(--face);
+  --pdp-gallery: 50%;
+  --pdp-thumbs: below;
+  --pdp-edge: inset;
+  --seg-look: chips;
+  --stock-look: sign;
+  --auth-look: plain;
+  --pager-look: rings;
+  --filter-look: drawer;
+  --filter-phone: drawer;
+  --save-look: disc;
+  --quick-look: tiles;
+  --say-look: line;
+  --pair-look: apart;
+  --cart-sign: cart;
+  --cart-meta: count;
+  --door-case: none;
+  --band-featured: none;
+  --band-story: none;
+  --band-faq: none;
+}
+:root,[data-ground='deck'],[data-plate]{
+  --sh-raised: 0 0 0 1px var(--sh-ring), 0 1px 2px var(--sh-near), 0 8px 20px -10px var(--sh-far-1);
+  --sh-lift: 0 0 0 1px var(--sh-ring), 0 2px 4px var(--sh-near), 0 20px 44px -18px var(--sh-far-2);
+  --sh-sticky: 0 -1px 0 var(--sh-ring), 0 -4px 12px -6px var(--sh-near);
+  --sh-overlay: 0 0 0 1px var(--sh-ring), 0 4px 8px var(--sh-near), 0 36px 80px -28px var(--sh-far-3);
+  --sh-modal: 0 0 0 1px var(--sh-ring), 0 4px 8px var(--sh-near), 0 36px 80px -28px var(--sh-far-3);
+  --sh-in: inset 0 1px 2px var(--sh-inset);
+  --ctrl-field-fill: var(--field);
+  --ctrl-field-edge: var(--field-edge);
+  --ctrl-field-side: 1;
+  --ctrl-field-label: above;
+  --ctrl-tick-fill: var(--pop-ink);
+  --go-hover: currentcolor;
+  --star: var(--star-trade);
+}

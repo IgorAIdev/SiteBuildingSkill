@@ -1,0 +1,514 @@
+/* ── Шапка: своя полоса, три варианта ─────────────────────────────────────
+   look-header:* Блоки и строки с меткой вариантов принадлежат вариантам
+   look-header:* шапки: `npm run look:remove` оставляет выбранный (lib/headers.ts).
+   Полоса поверхности во всю ширину окна с волоском снизу: на голом полу
+   страницы шапка не лежит никогда (заказчик показал снимок 1900 широкого
+   окна: знак и полки висели на сером полу без полосы). Коробка шапки —
+   контейнер (правило 6): строкой полки или шторкой, решает ЕЁ ширина на шве
+   820 (реестр швов, kit.config.json), а не окно.
+
+   Строка — рост органа (`--ctrl-h`) и поле ступенью ритма сверху и снизу. */
+.head{
+  container-type:inline-size;anchor-name:--head;
+  background:var(--surface);border-block-end:var(--line-w) solid var(--rule);
+  /* Приклеена строка меню, верхняя строка уезжает (бриф docs/design/шапка.md;
+     cbdin.bg держит шапку целиком, разбор 28.09.2026 п. 6: страницы по
+     3–4 тыс. px, корзина и поиск уходили за край). Шапка встаёт выше края
+     окна ровно на рост верхней строки — роста её собственного, а не числа:
+     `--head-top` объявляет строка ниже. У сборок cbdin строка внутри листа —
+     `--head-top` там не объявлен, и приклеена вся шапка, как у образца. */
+  position:sticky;inset-block-start:calc(-1 * (var(--head-top, 0px) + var(--head-edge, 0px)));z-index:var(--layer-header)
+}
+/* ── Верхняя строка ──────────────────────────────────────────────────────
+   Тише строки меню: надпись органа `xs`, приглушённая краска, пол — та же
+   поверхность шапки, отделена волоском. Рост — цель органа и поле ступенью
+   ритма (как у полосы «search» прежде). Ссылки слева; обещание — у правого
+   края, перед языком и темой (заказчик 28.09.2026: «free delivery прижми к
+   правому краю»). Вся строка — один тон и один вес: чернила текста (ступень
+   12 нейтрали), вес тела — «слишком серое, не очень заметное» (заказчик
+   29.09.2026, И545; прежде — вторичный тон, ступень 11); прежде ссылки были серыми 400, обещание — чернилами 600, язык
+   и тема — чернилами 500 («элементы имеют разный оттенок»; И538). */
+.head:has(> .top){--head-top:var(--head-strip);--head-edge:var(--line-w)}
+.top{border-block-end:var(--line-w) solid var(--rule);font-size:var(--ctrl-fs-xs);color:var(--ink);--icon-stroke:calc(var(--ctrl-fs-xs) * var(--icon-stem))}
+.topRow{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:var(--gap-row);min-block-size:var(--head-top)}
+.topLinks ul{display:flex;flex-wrap:wrap;gap:var(--gap-targets);margin:0;padding:0;list-style:none}
+/* Цель — и по ширине: короткое слово («Blog») стояло 32 × 44 при норме 44 × 44
+   под пальцем (check:craft target, 05.10.2026); слово встаёт посередине цели. */
+.topLinks a,.promo{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-1);min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target);text-decoration:none}
+.promo{grid-column:2;margin:0}
+.promo svg{inline-size:1.43em;block-size:1.43em;flex:none}
+.topTools{grid-column:3;justify-self:end;display:flex;align-items:center;gap:var(--gap-targets)}
+.topTools .glyph{font-size:var(--ctrl-fs-xs);font-weight:var(--body-weight)}
+/* Язык в строке — сегменты ростом цели, а не малого органа: строка не выше
+   своего `--head-top`, иначе приклеенная шапка оставляла бы её край. */
+.topTools{--seg-h:var(--ctrl-target)}
+/* Верхняя строка — ответ вида «слово и знак» (`word`, Header.tsx; И685). */
+.topLinks a,a.promo{padding-inline:var(--sp-2);border-radius:var(--r-ctrl)}
+/* День / ночь: виден знак той темы, КУДА переключит (ThemeToggle.tsx).
+   Без выбора решает система; выбор — `data-theme` на корне. */
+.sun{display:none}
+.moon{display:contents}
+:root[data-theme='dark'] .sun{display:contents}
+:root[data-theme='dark'] .moon{display:none}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme='light']) .sun{display:contents}
+  :root:not([data-theme='light']) .moon{display:none}
+}
+/* Строка меню: орган ростом `--ctrl-h` и поле ступенью ритма над и под ним —
+   строка 64–68, как у cbdin.bg и rituals.com (64; замер 01.10.2026). Было
+   поле `--sp-2`: 8 над знаком марки и 8 под ним, строка 57, и знак 28 заполнял
+   её от края до края — «что-то не так с воздухом» (слово заказчика 01.10.2026);
+   поле — роль `--pad-inner` (12–14).
+   Знак марки — своя роль `--logo-*` (1.2 текста, голосом подзаголовков):
+   самое крупное слово строки, но в коридоре образцов — у cbdin.bg 1.4 меню,
+   у rituals 1.0; было 28 при меню 16, 1.75 (И609). */
+.bar{display:flex;align-items:center;gap:var(--gap-row);min-block-size:var(--ctrl-h);padding-block:var(--pad-inner)}
+/* Под пальцем цель сама несёт воздух (48 вокруг знака 20) — поле остаётся
+   прежним, иначе приклеенная шапка телефона росла бы на 8 (ось указателя,
+   tools/axes.mjs). */
+@media (pointer:coarse){ .bar{padding-block:var(--sp-2)} }
+:where([data-pointer='coarse']) .bar{padding-block:var(--sp-2)}
+/* Знак марки не сжимается (`flex:none`): до скрипта строка несёт все полки
+   (приоритетное меню прячет хвост под «Ещё» после загрузки, NavLinks.tsx), и
+   сжатый знак (83 при своих 92) отдавал меню место, а после скрипта забирал —
+   меню съезжало на 9 px у гостя на глазах (замер cbdin.ro 08.10.2026, семья
+   `shift`); слово при этом вылезало из своей коробки. */
+.logo{flex:none;display:inline-flex;align-items:center;min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target);margin-inline-end:var(--air-row);font-size:var(--logo-size);line-height:var(--logo-lead);font-weight:var(--logo-weight);letter-spacing:var(--logo-track);color:var(--ink)}
+/* Действия — одна группа у правого края; просвет между целями — роль
+   зазора целей (под пальцем вдвое шире). */
+/* Знаки действий — рамкой ростом среднего органа (`--ctrl-h`), вплотную с
+   оптикой `--sp-1`: шаг знаков ровный и крупнее знака (cbdin.bg — 42 рамка,
+   шаг 44). Рамка цели мыши (24) с зазором 8 ставила знаки 19 через 13 —
+   гуще, чем слова меню рядом (И543). */
+.actions{display:flex;align-items:center;gap:var(--sp-1);margin-inline-start:auto}
+.actions .glyph{min-block-size:var(--ctrl-h);min-inline-size:var(--ctrl-h)}
+
+/* Знак шапки — тихий знак сайта (styles/glyph.module.css, И603): рост цели,
+   размер знака, круг и ответ на руку живут там, одним местом с сердцем
+   «в избранное»; здесь — только то, где он стоит в шапке. */
+.glyph{composes:glyph from '../styles/glyph.module.css'}
+/* Знак корзины — тележка или сумка, рядом — сумма товаров (вид
+   `--cart-sign`, `--cart-meta`; шапка cbdin.bg, И430). Обёртка знака не
+   рисует ничего своего: знак стоит, как стоял. */
+.signCart,.signBag{display:contents}
+/* Число держится за сам знак, а не за рамку цели: рамка в строке меню —
+   рост органа (40), знак в ней — 20, и число на углу рамки висело над
+   знаком и почти упиралось в черту над строкой (слово заказчика
+   01.10.2026). Обёртка знака — коробка ровно по знаку; число — центром на
+   её верхнем правом углу, как у allbirds.com (число на самом знаке). */
+.cartSign{position:relative;display:inline-flex}
+.signBag,.cartSum{display:none}
+@container style(--cart-sign: bag){ .signCart{display:none} .signBag{display:contents} }
+/* С суммой ссылка шире знака; число по-прежнему на углу знака (`.cartSign`). */
+@container style(--cart-meta: sum){
+  .cartSum{display:inline;padding-inline-start:.6em}
+}
+.cartSum{font-size:var(--ctrl-fs-sm);font-weight:var(--cardprice-weight);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* Знаки шапки — без заливки, вуаль под рукой (заказчик 02.10.2026: ручка
+   «Icons» снята, остался вид `bare`; И634). Со словом («Shop», «Cart») — поле по бокам шире: слово не липнет к краю вуали. */
+.cart:has(.cartLabel){padding-inline:calc(var(--ctrl-target) * .25)}
+.shop{padding-inline:calc(var(--ctrl-target) * .25)} /* look-header:boutique */
+
+/* «Положено» — строка под знаком корзины (CartLink, `cart:added`), краской
+   того же «выбранного», что число: ответ корзины одним голосом. Всплывает
+   поверх страницы и места в шапке не занимает; вынос и поле — доли роста
+   цели (правило 2), тень — роль того, что всплывает. Гаснет прозрачностью и
+   сдвигом, а `visibility` снимается в конце перехода — в покое строки нет ни
+   для глаза, ни для указателя. */
+.cartBox{position:relative;display:inline-flex}
+.told{
+  position:absolute;z-index:1;inset-block-start:calc(100% + var(--sp-1));inset-inline-end:0;
+  display:inline-flex;align-items:center;gap:calc(var(--ctrl-target) * .15);
+  padding:calc(var(--ctrl-target) * .15) calc(var(--ctrl-target) * .3);
+  border-radius:var(--r-ctrl);background:var(--pop);color:var(--on-pop);box-shadow:var(--sh-overlay);
+  font-size:var(--ctrl-fs-xs);font-weight:var(--label-weight);white-space:nowrap;pointer-events:none;
+  transition:opacity var(--open-t) var(--ease),translate var(--open-t) var(--ease),visibility var(--open-t)
+}
+.told svg{inline-size:1.2em;block-size:1.2em;flex:none}
+.told[data-shown='false']{opacity:0;visibility:hidden;translate:0 calc(var(--sp-1) * -1)}
+
+/* Число в корзине — маленькой пилюлей краски «выбранного» на углу знака,
+   только когда оно больше нуля: центром на верхнем правом углу знака
+   (`.cartSign`), кегль — доля надписи органа, кружок ~18 на знаке 20 (было
+   22 — крупнее самого знака). Место под число не занимается — шапка от
+   него не прыгает. Угол — полукруг от своей высоты (1.6em = 1.6 кегля надписи
+   `--ctrl-fs-xs`, половина — .8 кегля), как у фишки-пилюли: 50 % давало овал на
+   двузначном числе (разбор 08.10.2026; И790). */
+.badge{
+  position:absolute;inset-block-start:0;inset-inline-end:0;translate:50% -75%;
+  display:grid;place-items:center;min-inline-size:1.6em;block-size:1.6em;padding-inline:.35em;border-radius:calc(var(--ctrl-fs-xs) * .8);
+  background:var(--pop);color:var(--on-pop);
+  font-size:var(--ctrl-fs-xs);text-align:center;font-variant-numeric:tabular-nums
+}
+
+/* ── Полки строкой ───────────────────────────────────────────────────────
+   Навигация носит `popover` (шторка на узком), и у браузера на такой элемент
+   своя коробка: `fixed`, `inset:0`, рамка, поле, `Canvas`, `display:none`.
+   Правило автора сильнее правила браузера при любой силе селектора,
+   поэтому строка объявляет всю коробку сама. Полка — надписью тела
+   средней толщины; текущая — плашкой тона (ручка «Current menu item» снята,
+   остался вид `pill`; И634), под рукой — краской.
+
+   Кегль полки — роль меню (`--menu-*`, одна ступень ниже тела, styles/scale.json),
+   а не ступень лестницы органов; регулировки в панели нет (заказчик
+   02.10.2026: «фиксируй как при −1, Menu size удаляй», И633). Мельче 1rem
+   меню не встаёт ни при каком размере текста — пол max(1rem, …)
+   (impeccable, typeset.md:46 —
+   «1rem / 16px as the ordinary web body floor»; `check:design`, семья
+   `navSmall`). На ступени органа `xs` «Тесный» ронял полки до 13.5 px —
+   меню читалось сноской рядом с текстом страницы (24.09.2026). */
+.nav{
+  position:static;inset:auto;margin:0;padding:0;border:0;
+  inline-size:auto;block-size:auto;overflow:visible;
+  background:none;color:inherit;
+  display:flex;align-items:center;min-inline-size:0
+}
+/* Строка полок — примитив `rail` (Header.tsx): полки не переносятся второй
+   строкой и имя полки не ломается по словам — не влезли, строка едет вбок.
+   Прежде `flex-wrap:wrap` на 860–1080 уводил последние полки второй строкой
+   к левому краю, а ужатые имена из двух слов вставали столбиком (находка
+   сессии «Меню на мобильных», 28.09.2026; 9 полок cbdin.ro просят ~900px).
+   Раскладка не зависит от числа полок в данных (правило 5, следствие). */
+/* Шаг полок — воздух группы МЕЖДУ СЛОВАМИ, а не между рамками: у отметки
+   полки своё поле (`--sp-2`), и прежде оно добавлялось к шагу —
+   56 между словами на 1440 при норме 24–36 (бриф шапки; cbdin.bg 27 при
+   16). Заказчик 28.09.2026: «в меню в шапке ритм не нужно применить?»
+   (И543). */
+.links{--rail-gap:calc(var(--air-group) - var(--sp-2) * 2);align-items:center;list-style:none;padding-inline:0}
+.nav:not(:popover-open, [data-leaving]) .links a{white-space:nowrap}
+/* classic — полки сразу за знаком, действия у правого края (слово
+   заказчика 29.09.2026: «пункты меню в левый край к логотипу двигай»;
+   И544; прежде полки стояли по середине строки). От знака до первого
+   слова — воздух блока: из него вычтены зазор строки и поле отметки
+   полки, так воздух меряется между словами, как шаг полок (И543). Шаг
+   полок — воздух группы (24–36; семь магазинов исследования — 24–34, бриф
+   docs/design/шапка.md). */
+.head[data-variant='classic'] .logo{margin-inline-end:calc(var(--air-block) - var(--gap-row) - var(--sp-2))} /* look-header:classic */
+/* Полки уехали за край — край строки гаснет, пока дальше есть полки: иначе
+   спрятанную полку не видно. Гаснет по прокрутке самой строки; строка не
+   едет (все полки видны) — прокрутки нет, и края не трогает ничто. */
+@property --menu-edge{syntax:'<length>';inherits:false;initial-value:0px}
+.nav:not(:popover-open, [data-leaving]) .links{
+  mask-image:linear-gradient(to left, transparent, var(--ink) var(--menu-edge));
+  animation:shelf-edge linear both;animation-timeline:scroll(self inline)
+}
+@keyframes shelf-edge{
+  0%,95%{--menu-edge:var(--air-group)}
+  100%{--menu-edge:0px}
+}
+/* Ссылки панели подменю (`dropPanel`) — не полки: их одежда своя (фишка, строка
+   с знаком), и правила полок до них не достают. */
+/* Цель полки — не уже пальца и по ширине: короткое имя («oil» каталога
+   cbdin) под пальцем на планшете стояло 35 × 44 (check:craft, 25.09.2026). */
+/* Слово полки в строке — прямой пункт списка (`> li > a`): строки раскрытий
+   («Ещё», подменю) — меню набора, и `.links a` сильнее строки списка ломал их —
+   поле 8, слова по середине, свой кегль (И730). */
+.links > li > a{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--gap-row);min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target);
+  padding-inline:var(--sp-2);border-radius:var(--r-ctrl);
+  font-size:var(--menu-size);line-height:var(--menu-lead);font-weight:var(--menu-weight);letter-spacing:var(--menu-track);
+  text-underline-offset:.45em;text-decoration-thickness:var(--line-w)
+}
+/* Ответ на руку — краской, а не подчёркиванием (слово заказчика 29.09.2026:
+   «наведение указывается подчёркиванием — это архаика, давай современно»;
+   И578): вид «слово и знак» (`word` из styles/btn.module.css, класс ставит
+   NavLinks.tsx; И685) — тихое слово в покое, полное под рукой, нажатие чуть
+   меньше. Текущая полка — полное слово без плашки (И713; заказчик 04.10.2026:
+   «почему под All products какой-то прямоугольник… хуёвая отметка»): плашка
+   лежала под словом, стрелка подменю — снаружи. У Allbirds и Gymshark пункт
+   текущего раздела в шапке не отмечен ничем — где покупатель, говорят имя
+   страницы и крошки (замер 04.10.2026). */
+.links a[aria-current='page']{color:var(--ink)}
+/* Знак шапки на своей странице (сердце, корзина, лупа; И715) — та же отметка,
+   что у слова: полная краска вместо тихой покоя, при черте — черта под знаком. */
+.glyph[aria-current='page']{color:var(--ink)}
+/* Вид отметки — `--nav-current` (И714; панель Look → Header → Current page):
+   `word` — полное слово (выше); `line` — ещё и черта краской марки по нижнему
+   волоску шапки под словом и стрелкой подменю (Carbon UI Shell, Primer
+   UnderlineNav). Черта — `::after` шапки на якоре текущей ссылки: где бы строка
+   меню ни стояла в раскладке, черта ложится на низ шапки. Поле ссылки слева
+   (`--sp-2`) черта не берёт; у пункта с подменю доходит до конца стрелки, знак
+   которой — кегль меню в середине цели. Нет якоря (строка в шторке) или браузер
+   якорей не знает — черты нет, остаётся полное слово.
+   Черту рисует строка шапки (`.bar::after`), а не сама шапка: строка — потомок
+   коробки шапки и слышит её ширину. На узкой коробке черты нет вовсе (И756):
+   строка полок там спрятана, якорь пропадал, и черта вставала на запасные
+   значения `anchor()` — 22 px под бургером; знак своей страницы на телефоне
+   отмечен только краской (Allbirds, Gymshark — ничем). */
+@supports (anchor-name: --a){
+  @container style(--nav-current: line){
+    /* Якорь — слово меню или сам знак шапки, а не цель вокруг знака. */
+    .nav:not(:popover-open, [data-leaving]) .links a[aria-current='page'],
+    .glyph[aria-current='page'] > :is(.cartSign, svg){anchor-name:--nav-current}
+    @container (min-width:820px){
+      .head:has(.nav:not(:popover-open, [data-leaving]) .links a[aria-current='page'], .glyph[aria-current='page']) .bar::after{
+        content:'';position:absolute;position-anchor:--nav-current;pointer-events:none;
+        inset-inline-start:anchor(start, 0px);inset-inline-end:anchor(end, 100%);
+        inset-block-end:calc(-1 * var(--line-w));block-size:var(--ring-w);background:var(--pop)
+      }
+      .head:has(.nav:not(:popover-open, [data-leaving]) .links a[aria-current='page']) .bar::after{
+        inset-inline-start:calc(anchor(start, 0px) + var(--sp-2));inset-inline-end:calc(anchor(end, 100%) + var(--sp-2))
+      }
+      .head:has(.nav:not(:popover-open, [data-leaving]) .links li[data-drops] > a[aria-current='page']) .bar::after{
+        inset-inline-end:calc(anchor(end, 100%) - (var(--ctrl-target) + var(--menu-size)) / 2)
+      }
+    }
+  }
+}
+/* Знак полки и строка о полке — у шторки, не у строки. */
+.sign,.line{display:none}
+/* Шапка шторки — только у открытой шторки; сила — местом, а не порядком:
+   `bar` окна (styles/pane.module.css) объявляет `flex` тем же весом. */
+.nav:not(:popover-open, [data-leaving]) > .sheetHead{display:none}
+
+/* Язык — переключатель LangSwitch (сегменты примитива, И479): своего
+   рисунка у шапки нет. */
+
+/* look-header:search:start */
+/* ── search: полоса обещания, широкий поиск, полки второй строкой ─────── */
+.field{flex:1 1 auto;min-inline-size:0;margin-inline:var(--air-block)}
+/* look-header:search:end */
+/* Строка полок второй строкой шапки — у «search» и у «boutique». */
+.shelfRow{border-block-start:var(--line-w) solid var(--rule);padding-block:var(--sp-1)} /* look-header:search,boutique */
+
+/* Три места строки — знак, середина, действия — у «boutique». */
+.head[data-variant='boutique'] .bar{display:grid;grid-template-columns:1fr auto 1fr} /* look-header:boutique */
+/* look-header:boutique:start */
+/* ── boutique: знак по центру, язык слева, полки строкой под ним ─────────
+   Три места строки: слева язык (на узкой — «Shop»), знак по центру, справа
+   поиск и корзина. Спрятанный орган места в сетке не занимает — левое место
+   берёт тот, кто виден. Полки — строкой по середине под знаком, в той же
+   полосе. Окна с плитками полок поверх страницы нет (слово заказчика
+   25.09.2026). */
+.head[data-variant='boutique'] .logo{grid-column:2;margin-inline-end:0}
+.shop{grid-column:1;justify-self:start}
+.shop{display:none}
+.head[data-variant='boutique'] .actions{grid-column:3;justify-self:end;margin-inline-start:0}
+.head[data-variant='boutique'] .nav:not(:popover-open, [data-leaving]){justify-content:center}
+/* look-header:boutique:end */
+
+/* look-header:tray,nested,step:start */
+/* ── tray, nested, step: сборки шапки cbdin.bg (И425) ────────────────────
+   Лист шапки лежит на полу страницы в её полях (`wrap`), а не полосой во
+   всю ширину окна: волоска и своей поверхности у коробки шапки нет. Лист —
+   светлая полоса и тёмная рабочая строка; строка — на полу палубы
+   (`data-ground="deck"`: краски знаков, полок и отметки текущей полки —
+   роли палубы). Поле полосы сбоку — то же, что у строки: слова полосы и
+   строки стоят на одной вертикали. Шторка полок открывается из строки и
+   берёт пол палубы: поверхность палубы — вуаль, шторке нужен сплошной пол. */
+.head:is([data-variant='tray'], [data-variant='nested'], [data-variant='step']){background:none;border-block-end:0;padding-block:var(--sp-2)}
+.board{display:flex;flex-direction:column}
+.util{
+  display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);
+  padding:var(--sp-1) var(--pad-card);font-size:var(--ctrl-fs-xs)
+}
+.row{padding-inline:var(--pad-card) var(--sp-2);border-radius:var(--r-sheet);background:var(--page-deck)}
+.row .nav:is(:popover-open, [data-leaving]){background:var(--page-deck)}
+/* look-header:tray,nested,step:end */
+/* look-header:tray:start */
+/* tray — полоса на белом листе одной строкой; тёмная строка ложится на его
+   нижний край: нахлёст равен нижнему полю полосы. */
+.head[data-variant='tray'] .util{background:var(--surface);border-start-start-radius:var(--r-sheet);border-start-end-radius:var(--r-sheet);padding-block-end:calc(var(--sp-1) + var(--pad-inner))}
+.head[data-variant='tray'] .row{margin-block-start:calc(-1 * var(--pad-inner));box-shadow:var(--sh-raised)}
+/* look-header:tray:end */
+/* look-header:nested:start */
+/* nested — один белый лист держит полосу и строку, поле листа — со всех
+   сторон своё (полоса может уйти, поле остаётся); угол строки концентричен
+   углу листа. */
+.head[data-variant='nested'] .board{padding:var(--pad-inner);border-radius:var(--r-sheet);background:var(--surface);box-shadow:var(--sh-raised)}
+.head[data-variant='nested'] .util{padding-block:0 var(--pad-inner)}
+.head[data-variant='nested'] .row{border-radius:calc(var(--r-sheet) - var(--pad-inner))}
+/* look-header:nested:end */
+/* look-header:step:start */
+/* step — лист тихой плашкой, строка прижата к его бокам и сидит в нём
+   своими плечами: верхний угол строки меньше угла листа, стык скруглён. */
+.head[data-variant='step'] .board{border-radius:var(--r-sheet);background:var(--plate-quiet);box-shadow:var(--sh-raised)}
+.head[data-variant='step'] .util{padding-block:var(--sp-2)}
+.head[data-variant='step'] .row{border-radius:calc(var(--r-sheet) - var(--pad-inner)) calc(var(--r-sheet) - var(--pad-inner)) var(--r-sheet) var(--r-sheet)}
+/* look-header:step:end */
+
+/* Кнопка меню — только там, где полок в строке нет: на узкой коробке. */
+.menu{display:none} /* look-header:classic,search,tray,nested,step */
+
+/* ── Узкая коробка: одна строка — знак, поиск, корзина, меню ──────────── */
+@container (max-width:819px){
+  .nav:not(:popover-open, [data-leaving]),.cartLabel,.cartSum{display:none}
+  /* Верхняя строка на узкой коробке — одно обещание по центру; ссылки, язык и
+     тема — в шторке меню (бриф, 7 из 7 референсов). */
+  .topLinks,.topLanguage{display:none}
+  /* Кабинет — в шторку меню, строкой «моё» (И771): на 360 между знаком и
+     знаками остаётся 48, пятый знак (48 и просвет) лёг бы на знак. */
+  .contact,.account{display:none}
+  .topRow{grid-template-columns:var(--ctrl-target) minmax(0,1fr) var(--ctrl-target);gap:var(--sp-1)}
+  .promo{grid-column:2;justify-self:center}
+  /* look-header:classic,search,tray,nested,step:start */
+  /* Меню — первым в строке, у начального края (слово заказчика 05.10.2026:
+     «мобилка, меню перенеси к левому краю»; И753). Рамка — рост органа, как
+     у знаков действий; на вертикали полей страницы стоит знак, а не рамка:
+     рамка уходит в поле на половину своего лишнего (Material 3, верхняя
+     строка: знак навигации на поле экрана, рамка цели — в поле; Allbirds на
+     375 — знак меню 24 на поле 30). Дальше поля окна (`--gut`) рамка не
+     уходит: на узком поле она не выезжает за край экрана. */
+  .menu{display:inline-flex;min-block-size:var(--ctrl-h);min-inline-size:var(--ctrl-h);margin-inline-start:max((var(--glyph-h) - var(--ctrl-h)) / 2, -1 * var(--gut))}
+  /* look-header:classic,search,tray,nested,step:end */
+  .util .topLinks,.util .topLanguage{display:none} /* look-header:tray,nested,step */
+  .util{justify-content:center} /* look-header:tray,nested,step */
+  .head[data-variant='tray'] .row{margin-block-start:0} /* look-header:tray */
+  .shop{display:inline-flex} /* look-header:boutique */
+  .shelfRow{border:0;padding:0} /* look-header:search,boutique */
+  /* look-header:search:start */
+  /* Поле поиска «search» — своей строкой во всю ширину под строкой знака. */
+  .head[data-variant='search'] .bar{flex-wrap:wrap}
+  .field{order:1;flex-basis:100%;margin-inline:0}
+  /* look-header:search:end */
+}
+
+/* ── Шторка меню ─────────────────────────────────────────────────────────
+   Коробка шторки — окно общего модуля (styles/pane.module.css, И467): край
+   (`data-pane`), ширина, высота от окна, угол, тень, затемнение. Верхний
+   слой, номера нет (правило 8); Escape и щелчок мимо закрывают сами, третий
+   выход — крестик. Здесь — только что внутри: строки — знак полки, имя,
+   стрелка, ростом строки меню; текущая — тихой маркой и полужирным; язык —
+   внизу. */
+.nav:is(:popover-open, [data-leaving]){align-items:stretch}
+/* Тело шторки — окно общего модуля (И460): шапка стоит, прокручиваются
+   полки, группы и язык. В строке шапки тела нет — полки стоят прямо в ней. */
+.nav:not(:popover-open, [data-leaving]) > .sheetBody{display:contents}
+.nav:is(:popover-open, [data-leaving]) > .sheetBody{display:flex;flex-direction:column;gap:var(--air-group)}
+/* Полки в шторке — список строк, а не ряд: между строками оптика `--sp-1`,
+   строку отличает её плашка под рукой (воздух группы между строками в 61
+   ставил полки через 85 — список рассыпался). Строка — прямой пункт списка
+   (`> li > a`): пилюли граней под строкой — фишки, у них своя одежда, и
+   `.links a` давал им рост и поле строки (56 вместо 44). */
+.nav:is(:popover-open, [data-leaving]) .links{flex-direction:column;align-items:stretch;gap:var(--sp-1);overflow:visible;margin-block:0;padding-block:0}
+.nav:is(:popover-open, [data-leaving]) .links > li > a{display:flex;min-block-size:var(--ctrl-h-lg);padding:var(--sp-2) var(--pad-inner);border-radius:var(--r-ctrl);font-size:var(--menu-size);text-decoration-line:none}
+/* Знак полки — тот же, что у кнопки категории (И753): снимков в меню нет
+   (слово заказчика 05.10.2026: «само меню убирай изображения, иконки
+   категорий можно использовать»). Ростом с букву, приглушённый, как знак
+   строки меню набора (styles/menu.module.css). */
+.nav:is(:popover-open, [data-leaving]) .sign{display:inline-flex;flex:none;color:var(--ink-soft)}
+.nav:is(:popover-open, [data-leaving]) .sign svg{inline-size:var(--icon-size);block-size:var(--icon-size)}
+.nav:is(:popover-open, [data-leaving]) .name{flex:1 1 auto}
+/* Слово меню — всегда с заглавной (слово заказчика 25.09.2026: «в меню
+   всегда слова с большой буквы»; имена приходят из данных магазина
+   строчными — «oil», «capsules»). Данные не трогаем, пишем экраном: первая
+   буква, а не каждое слово — «All products» не станет «All Products». Имя —
+   элемент внутри ссылки-флекса: у флекса своей первой буквы нет. */
+.name::first-letter,.pillName::first-letter{text-transform:uppercase}
+/* Текущая страница в шторке выделена (И716, поправка 05.10.2026; слово
+   заказчика со снимком меню cbdin.bg: «логику делай такую, текущая страница
+   выделена»): строка — плашкой тихой марки `--pop-tint`, слово — марочным
+   текстом `--pop-ink` и полужирным; знак полки — краской слова. Строка шапки
+   на широком отмечает по-своему (И713, И714): там слово в ряду, здесь строка
+   списка. Строка подменю текущей полки — меню набора (styles/menu.module.css,
+   И730): галочка, как у всех раскрытий. */
+.nav:is(:popover-open, [data-leaving]) .links > li > a[aria-current='page']{background:var(--pop-tint);color:var(--pop-ink);font-weight:var(--h3-weight)}
+.nav:is(:popover-open, [data-leaving]) .links > li > a[aria-current='page'] .sign{color:inherit}
+.sheetFoot{display:flex;flex-direction:column;gap:var(--air-row)}
+.nav:not(:popover-open, [data-leaving]) .sheetFoot{display:none}
+.nav:is(:popover-open, [data-leaving]) .sheetFoot{margin-block-start:auto;padding-block-start:var(--air-row);border-block-start:var(--line-w) solid var(--rule)}
+/* Низ шторки (MenuFoot, И770, И772) — под полками, за чертой, две группы воздухом
+   строки: служебные ссылки строками меню набора (styles/menu.module.css) и ряд
+   «моё и как показать» — знаки-кнопки шапки слева, язык кодами на подложке справа,
+   одним рядом; не помещаются (уже 360) — язык переносится под знаки. Зазора между
+   ними нет: на телефоне 360 знаки (132) и подложка (138) занимают 270 из 272, любой
+   зазор перенёс бы язык строкой ниже на самом частом окне телефона (замер
+   05.10.2026). Знаки — коробка малого органа (`--ctrl-h-sm`: 32 под мышью, 44 под пальцем, плиты у
+   них нет — коробка это цель), без зазора между собой. Первый знак стоит так, что сам
+   рисунок (не коробка вокруг него) на одной вертикали со знаками строк над ним:
+   центр знака строки — поле строки плюс полвысоты её знака (1.25em от кегля меню),
+   центр рисунка у коробки — её половина; коробка уходит в поле на разницу (замер
+   05.10.2026: у мыши 29 против 28, у пальца 31 против 28 до этого правила).
+   Подложка языка — рост сегмента `--ctrl-face` (32, как у малого органа: на телефоне
+   169 × 51 стояла «огромной панелью», слово заказчика 05.10.2026), палец получает 44
+   запасом наружу (`tap`, LangSwitch) — рисунок не растёт; стоит краем в край строк,
+   как их плиты под рукой. */
+.sheetTools{--seg-h:var(--ctrl-face);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;column-gap:0;row-gap:var(--gap-row)}
+.sheetSigns{--sign-box:var(--ctrl-h-sm);display:flex;align-items:center;margin-inline-start:calc(var(--pad-inner) + var(--icon-size) / 2 - var(--sign-box) / 2)}
+.sheetTools .glyph{min-block-size:var(--sign-box);min-inline-size:var(--sign-box)}
+/* Грани полки в шторке — пилюлями под её строкой (меню телефона cbdin.bg,
+   И478; слово заказчика 05.10.2026: «пилюлями как на скрине 1»): полки
+   остаются строками — там выбирают место; пилюли — значения, по которым
+   выбирают. Пилюля круглая (`data-pill`), как у образца. Групп всего
+   каталога под полками нет — повторяли грани масел (И430). Подпись группы —
+   ростом тела, полужирная: рядом с пилюлями она не тонет. */
+.sheetGroup{display:flex;flex-direction:column;gap:var(--sp-2)}
+.groupName{font-size:var(--menu-size);font-weight:var(--h3-weight);color:var(--ink)}
+.pills{--cluster:var(--gap-targets);list-style:none;padding:0;margin:0}
+/* Пилюля повода в шторке — пункт меню, и кегль у неё тела, а не органа
+   (`check:design`, `navSmall`: меню не мельче тела; И286). Фишка набора
+   набрана ступенью органа — у фильтра она примечание, здесь — меню. */
+.pills a{font-size:var(--menu-size)}
+/* Общие параметры полки (NavLinks, И478): раскрытие — только в шторке; в
+   строке шапки полки остаются ссылками. Строка с параметрами — ссылка и
+   раскрытие рядом, под ними — панель граней во всю строку. Стрелка
+   раскрытия смотрит вверх, пока открыто (как у створки фильтров). */
+.params,.paramsPanel{display:none}
+/* Подменю в строке (NavLinks.tsx): стрелка рядом со словом полки и панель
+   граней под ней — только в строке шапки; в шторке то же даёт раскрытие
+   `params` выше. Слово и стрелка — одна цель мыши: пункт списка
+   выстроен в ряд, и стрелка стоит сразу за ссылкой. Панель — бумага
+   всплывающего (`menu`, `drop` из Filters.module.css) под ПУНКТОМ, а не под
+   стрелкой: окно привязано к пункту (`--shelf-anchor`, свой у каждого), и
+   левый край панели — левый край слова. */
+.dropArrow,.dropPanel{display:none}
+.nav:not(:popover-open, [data-leaving]) .links li[data-drops]{display:flex;align-items:center;anchor-name:var(--shelf-anchor)}
+.nav:not(:popover-open, [data-leaving]) .dropArrow{
+  display:inline-flex;align-items:center;justify-content:center;flex:none;
+  min-block-size:var(--ctrl-target);inline-size:var(--ctrl-target);padding:0;
+  border:0;border-radius:var(--r-ctrl);background:none;cursor:pointer;font-size:var(--menu-size)
+}
+/* Слово полки с подменю отдаёт правое поле стрелке: слово и стрелка — одна
+   цель мыши, и стрелка стоит сразу за словом без обратного отступа. */
+.nav:not(:popover-open, [data-leaving]) .links li[data-drops] > a{padding-inline-end:0}
+.dropArrow svg{inline-size:1em;block-size:1em}
+.dropPanel{position-anchor:var(--shelf-anchor)}
+/* Ширина панели — доля коробки шапки (`cqi`, правило 6), а не область
+   привязки: у `drop` потолок `100%` считается от области под пунктом, и у
+   правых полок панель сжималась до остатка строки (106 при трёх фишках)
+   вместо того, чтобы перевернуться к левому краю пункта. Сила — местом
+   (0,3,0): `drop:popover-open` из Filters.module.css стоит на том же узле. */
+.links .dropPanel:popover-open{display:block;margin-block-start:var(--sp-1);padding:var(--pad-card);max-inline-size:calc(100cqi - var(--sp-2) * 2)}
+/* Грани — рядом, сколько поместится (примитив `cluster`), каждая со своим
+   полом и потолком ширины: одна грань не растягивает панель на две колонки,
+   две стоят рядом, а не друг под другом. Сила — местом (0,2,0): у `cluster`
+   `align-items` объявлен голым классом. */
+.dropPanel .dropGroups{--cluster:var(--air-group);align-items:flex-start;flex-wrap:nowrap}
+.dropGroups > .sheetGroup{flex:0 1 auto;max-inline-size:26rem}
+/* Строки подменю, подпись группы и знак полки перед словом — меню набора
+   (styles/menu.module.css, И730): своего рисунка у подменю шапки нет. */
+.nav:is(:popover-open, [data-leaving]) .links li[data-params]{display:grid;grid-template-columns:minmax(0, 1fr) auto;align-items:center;column-gap:var(--gap-row)}
+.nav:is(:popover-open, [data-leaving]) .params{display:inline-flex;--btn-h:var(--ctrl-target)}
+.nav:is(:popover-open, [data-leaving]) .paramsPanel:not([hidden]){
+  display:flex;flex-direction:column;gap:var(--air-row);grid-column:1 / -1;
+  padding:var(--sp-2) var(--pad-inner) var(--pad-inner)
+}
+
+
+
+/* Приоритетное меню (NavLinks.tsx, И546): в строке шапки полки, не
+   вставшие в место навигации, спрятаны (`data-over`) и стоят списком под
+   «Ещё» — раскрытием, как язык и порядок полки. Навигация «classic» берёт
+   весь остаток строки: её ширина — место полок, а не их сумма. В шторке
+   видны все полки, «Ещё» нет. */
+.nav:not(:popover-open, [data-leaving]) .links > li[data-over]{display:none}
+.more{display:none}
+.nav:not(:popover-open, [data-leaving]) .more[data-on]{display:flex;align-items:center}
+.moreBtn{
+  display:inline-flex;align-items:center;gap:var(--sp-1);min-block-size:var(--ctrl-target);
+  padding:0 var(--sp-2);border:0;border-radius:var(--r-ctrl);background:none;cursor:pointer;
+  font:inherit;font-size:var(--menu-size);font-weight:var(--menu-weight);white-space:nowrap
+}
+.head[data-variant='classic'] .nav:not(:popover-open, [data-leaving]){flex:1 1 auto} /* look-header:classic */
+
+/* ── Ответ шапки на руку (слово заказчика 30.09.2026; И685) ───────────────
+   Окантовка под рукой в шапке не живёт — ни в верхней полосе, ни в основной
+   строке (у профи — Apple, Allbirds, Nike — знаки и слова меню отвечают
+   краской). Шапка ответа не пишет: слова, «Ещё», стрелка подменю и ссылки
+   верхней строки — вид «слово и знак» (`word` из styles/btn.module.css,
+   классом в Header.tsx и NavLinks.tsx), знаки — тот же ответ в
+   styles/glyph.module.css (И603): тихое слово в покое, полное под рукой,
+   без подложки. Кольцо остаётся только фокусу с клавиатуры (браузерный
+   `:focus-visible`). До 03.10.2026 шапка брала под рукой краску марки — на
+   палубе она тёмно-бирюзовая и не читается, а подвал отвечал полным
+   словом: два ответа на одно и то же. */

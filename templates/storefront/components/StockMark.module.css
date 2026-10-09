@@ -1,0 +1,15 @@
+/* Наличие — вторичным ярусом (`blurb`, 0.8 текста), как рейтинг и протокол:
+   наличие решает покупку, это не юридическая сноска (И561). Краска — текст
+   сигнала (palette, roles.md, «Текст и знаки»: «в наличии» ok11, «осталось
+   двое» warn11, «нет в наличии» e11; И472): серым оно стояло одним цветом на
+   все три смысла. */
+.stock{display:inline-flex;align-items:center;gap:.35em;font-size:var(--blurb-size);line-height:var(--blurb-lead);font-weight:var(--label-weight);color:var(--ink-soft)}
+.stock[data-level='in']{color:var(--ok)}
+.stock[data-level='low']{color:var(--warn)}
+.stock[data-level='out']{color:var(--bad)}
+/* Знак и точка — от кегля слова; видит один (`--stock-look`: sign · dot ·
+   word), слово без знака — когда выбрано оно. */
+.sign,.dot{display:none;flex:none}
+.sign svg,.dot svg{display:block;inline-size:1.25em;block-size:1.25em}
+@container style(--stock-look: sign){ .sign{display:inline-flex} }
+@container style(--stock-look: dot){ .dot{display:inline-flex} }

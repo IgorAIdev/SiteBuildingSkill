@@ -1,0 +1,177 @@
+import type { Lang } from '../../locale.ts'
+import type { Card, Collection, Facet, Listing, Product, Result, SortKey, Source } from '../contract.ts'
+import { CATEGORIES, EFFECTS, FACETS, LAB_REPORTS, PRODUCTS, type SampleProduct } from '../../products.ts'
+import { EFFECT_FACET, onSite } from '../effect.ts'
+import { facetValueFilters, pageVariables, pageCount } from '../vendure/core/search.mjs'
+import { PAGE_SIZE } from '../page.ts'
+import { MARKET } from '../../market.ts'
+import { overallStock, standardOf } from '../stock.ts'
+import { standardDetails } from '../details.ts'
+import { percentOf } from '../../facts.ts'
+import { productArt, productImages, type ArtView } from './art.ts'
+import { effectShot, shelfShot } from './shelf-shots.ts'
+import { categoryCopy, effectCopy } from '../../content/shop-copy.ts'
+
+/* Помощники набора — JavaScript; тип их ответа записан здесь один раз. */
+type Filter = { and: string } | { or: string[] }
+type Paging = { ok: true; page: number; take: number; skip: number } | { ok: false }
+
+/* Страница полки — одно число на оба источника (`PAGE_SIZE`, И732). */
+const PAGE = PAGE_SIZE
+/* Грань полок образца — форма товара: масло, капсулы, крем, для животных. */
+const SHELF_FACET = 'forma'
+const ok = <T,>(value: T): Result<T> => ({ ok: true, value })
+const money = (minor: number) => ({ minor, currency: MARKET.currency })
+const image = (p: SampleProduct, lang: Lang) => ({ src: productArt(p.cat, p.hue, p.label), alt: p.name[lang], width: 800, height: 800 })
+/* Подпись снимка — имя товара и что на снимке; у главного — одно имя. Это
+   данные образца: настоящие снимки приходят из админки с готовым `alt`. */
+const VIEW: Record<Exclude<ArtView, 'front'>, Record<Lang, string>> = {
+  back: { ro: 'eticheta din spate', en: 'the back label', hu: 'a hátoldali címke' },
+  box: { ro: 'cu cutia', en: 'with its box', hu: 'dobozzal' },
+  detail: { ro: 'detaliu', en: 'close-up', hu: 'közelről' },
+}
+/* Задник этикетки образца: подпись, состав по полке, партия. */
+const INSIDE: Record<string, string> = { uleiuri: 'hemp extract · MCT oil', capsule: 'hemp extract · vegan', cosmetice: 'CBD · shea · menthol', animale: 'hemp extract · salmon oil' }
+const images = (p: SampleProduct, lang: Lang) =>
+  productImages(p.cat, p.hue, p.label, [p.label, INSIDE[p.cat] ?? 'hemp extract', `lot ${p.variants[0].batch}`]).map(({ view, src }) => ({
+    src, alt: view === 'front' ? p.name[lang] : `${p.name[lang]}, ${VIEW[view][lang]}`, width: 800, height: 800,
+  }))
+const low = (p: SampleProduct) => Math.min(...p.variants.map((v) => v.price))
+
+function card(p: SampleProduct, lang: Lang): Card {
+  const prices = p.variants.map((v) => v.price)
+  const [min, max] = [Math.min(...prices), Math.max(...prices)]
+  const pick = standardOf(p.variants, p.standard ?? null)
+  return {
+    id: p.id, category: p.cat, brand: p.brand, name: p.name[lang], image: image(p, lang),
+    price: min === max ? { kind: 'single', value: money(min) } : { kind: 'range', min: money(min), max: money(max) },
+    was: min === max && p.variants.length === 1 && p.variants[0].was ? money(p.variants[0].was) : null,
+    variant: pick?.id ?? null,
+    pick: pick ? { id: pick.id, price: money(pick.price), was: pick.was ? money(pick.was) : null, stock: pick.stock, pack: pick.pack } : null,
+    stock: overallStock(p.variants.map((v) => v.stock)),
+    strength: p.strength, packs: p.variants.map((v) => v.pack),
+  }
+}
+
+/* Грани товара. Форма набрана в данных; концентрация выводится из упаковок
+   той же функцией, что печатает её на карточке (`percentOf`), — и только у
+   того, что продаётся концентрацией. Набранная рукой, она расходилась с
+   этикеткой (products.ts, `SampleProduct`). */
+const facetsOf = (p: SampleProduct): Record<string, string[]> => {
+  const putere = p.strength === 'percent' ? [...new Set(p.variants.map((v) => percentOf(v.pack)).filter((x) => x !== null))].map(String) : []
+  return putere.length ? { ...p.facets, putere } : p.facets
+}
+
+/* Словарь «код → id» — как у адаптера Vendure; в образце id — это «грань:значение». */
+const DICTIONARY = Object.fromEntries(FACETS.map((f) => [f.code, Object.fromEntries(f.values.map((v) => [v.code, `${f.code}:${v.code}`]))]))
+const carries = (p: SampleProduct, id: string) => {
+  const [facet, value] = id.split(':')
+  return (facetsOf(p)[facet] ?? []).includes(value)
+}
+const matches = (p: SampleProduct, filters: Filter[]) =>
+  filters.every((f) => ('and' in f ? carries(p, f.and) : f.or.some((id) => carries(p, id))))
+
+const ORDER: Record<SortKey, (a: SampleProduct, b: SampleProduct) => number> = {
+  'popular': (a, b) => a.popular - b.popular,
+  'newest': (a, b) => b.added.localeCompare(a.added) || a.popular - b.popular,
+  'price-asc': (a, b) => low(a) - low(b) || a.popular - b.popular,
+  'price-desc': (a, b) => low(b) - low(a) || a.popular - b.popular,
+}
+
+const collection = (c: (typeof CATEGORIES)[number], lang: Lang): Collection => ({
+  slug: c.slug, name: categoryCopy(lang, c.slug)?.name ?? c.name[lang], description: categoryCopy(lang, c.slug)?.caption ?? categoryCopy(lang, c.slug)?.lede ?? c.description[lang],
+  image: shelfShot(c.form, c.name[lang]), sign: c.sign, form: c.form,
+})
+
+type Filtered = { filters: Filter[]; invalid: string[] }
+const filtersOf = (facets: Record<string, string[]>) => facetValueFilters(facets, DICTIONARY) as unknown as Filtered
+const without = (facets: Record<string, string[]>, code: string) => Object.fromEntries(Object.entries(facets).filter(([k]) => k !== code))
+
+/** Образец торговли. Размер страницы — ручкой: полка образца держит одну
+ *  страницу, а листание проверяется тестом на странице поменьше. */
+export function sampleSource(pageSize = PAGE): Source {
+  return {
+    async collections(lang) {
+      return ok(CATEGORIES.map((c) => collection(c, lang)))
+    },
+    async collection(lang, slug) {
+      const c = CATEGORIES.find((x) => x.slug === slug)
+      return c ? ok(collection(c, lang)) : { ok: false, reason: 'not-found' }
+    },
+    /* Эффект стоит, когда под ним есть товар: пустая страница эффекта —
+       обещание без полки. */
+    async effects(lang) {
+      const used = new Set(PRODUCTS.flatMap((p) => p.facets[EFFECT_FACET] ?? []))
+      return ok(EFFECTS.filter((e) => used.has(e.effect) && onSite(EFFECT_FACET, e.effect)).map((e) => ({ code: e.effect, name: effectCopy(lang, e.effect)?.name ?? e.name[lang], description: effectCopy(lang, e.effect)?.caption ?? effectCopy(lang, e.effect)?.lede ?? e.description[lang], image: effectShot(e.effect, e.name[lang]) })))
+    },
+    async listing(lang, query) {
+      const paging = pageVariables({ page: query.page ?? undefined }, { pageSize }) as Paging
+      if (!paging.ok) return { ok: false, reason: 'bad-request' }
+      const asked = query.facets
+      const { filters, invalid } = filtersOf(asked)
+      const words = (query.q ?? '').trim().toLocaleLowerCase(lang)
+      const pool = PRODUCTS.filter((p) => (!query.category || p.cat === query.category) && (!words || p.name[lang].toLocaleLowerCase(lang).includes(words)))
+      const found = pool.filter((p) => matches(p, filters)).sort(ORDER[query.sort])
+      const pages = pageCount(found.length, pageSize) as number
+      if (paging.page > pages) return { ok: false, reason: 'not-found' }
+      /* Счёт значения — против всех граней, КРОМЕ своей (cbd-facet, §3): «Масло»
+         выбрано — «Капсулы» считаются так, будто формы не выбирали, и остаются
+         выбором «или», а не нулём. Значения — те, что есть в рамке (`pool`:
+         полка без выбора покупателя); выбор их не находит — счёт ноль, и фильтр
+         гасит значение, а не прячет (И750). */
+      const facets: Facet[] = FACETS.map((f) => {
+        const others = pool.filter((p) => matches(p, filtersOf(without(asked, f.code)).filters))
+        const here = new Set(pool.flatMap((p) => facetsOf(p)[f.code] ?? []))
+        const facet: Facet = {
+          code: f.code, name: f.name[lang],
+          values: f.values.filter((v) => onSite(f.code, v.code) && (here.has(v.code) || (query.facets[f.code] ?? []).includes(v.code))).map((v) => ({
+            code: v.code, name: f.code === EFFECT_FACET ? effectCopy(lang, v.code)?.name ?? v.name[lang] : v.name[lang],
+            count: others.filter((p) => (facetsOf(p)[f.code] ?? []).includes(v.code)).length,
+            selected: (query.facets[f.code] ?? []).includes(v.code),
+          })),
+        }
+        if (f.code === SHELF_FACET) facet.shelf = true
+        return facet
+      })
+      /* Спрошен только счёт — без карточек: счёт выдачи и значений граней. */
+      if (query.count) return ok({ items: [], total: found.length, page: 1, pages: 1, facets, invalid })
+      const listing: Listing = { items: found.slice(paging.skip, paging.skip + paging.take).map((p) => card(p, lang)), total: found.length, page: paging.page, pages, facets, invalid }
+      return ok(listing)
+    },
+    async cards(lang, ids) {
+      return ok(ids.flatMap((id) => {
+        const p = PRODUCTS.find((x) => x.id === id)
+        return p ? [card(p, lang)] : []
+      }))
+    },
+    async product(lang, id) {
+      const p = PRODUCTS.find((x) => x.id === id)
+      if (!p) return { ok: false, reason: 'not-found' }
+      const batches = [...new Set(p.variants.map((v) => v.batch))].filter((b) => LAB_REPORTS[b])
+      const product: Product = {
+        id: p.id, category: p.cat, brand: p.brand, rating: p.rating ?? null, name: p.name[lang], summary: p.summary[lang], description: p.description[lang],
+        ...standardDetails(CATEGORIES.find((c) => c.slug === p.cat)?.form ?? null, lang), standard: p.standard ?? null,
+        images: images(p, lang),
+        optionGroups: p.groups.map((g) => ({ code: g.code, name: g.name[lang], options: g.options.map((o) => ({ code: o.code, name: o.name[lang] })) })),
+        variants: p.variants.map((v) => ({ id: v.id, sku: v.sku, name: p.name[lang], price: money(v.price), was: v.was ? money(v.was) : null, stock: v.stock, options: v.options, batch: v.batch, pack: v.pack })),
+        labReports: batches.map((b) => {
+          const r = LAB_REPORTS[b]
+          return { batch: b, lab: r.lab, date: r.date, cbdPercent: r.cbdPercent, thcPercent: r.thcPercent, url: `#lab-${b}` }
+        }),
+        strength: p.strength, line: p.line ?? [],
+      }
+      return ok(product)
+    },
+    async related(lang, id, limit) {
+      const p = PRODUCTS.find((x) => x.id === id)
+      if (!p) return { ok: false, reason: 'not-found' }
+      /* Соседи по линейке — не «похожие»: к ним ведёт выбор на карте. */
+      return ok(PRODUCTS.filter((x) => x.cat === p.cat && x.id !== id && !(p.line ?? []).some((m) => m.id === x.id)).slice(0, limit).map((x) => card(x, lang)))
+    },
+    async productIds() {
+      return ok(PRODUCTS.map((p) => p.id))
+    },
+  }
+}
+
+export const sample: Source = sampleSource()

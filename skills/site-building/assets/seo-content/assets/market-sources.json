@@ -1,0 +1,87 @@
+{
+  "reviewedAt": "2026-10-08",
+  "audience": "Repository links refer to owner-private sources; raw exports are not bundled in this reusable skill.",
+  "methodSources": [
+    {
+      "repository": "IgorAIdev/HempScale",
+      "commit": "571f7e3f5c948ca805798a44affd667677833a2e",
+      "path": "docs/seo-content-principles.md",
+      "use": "E-commerce content, facts, trust pages, answer-first writing; dated SEO statistics are not adopted as universal rules."
+    },
+    {
+      "repository": "IgorAIdev/HempScale",
+      "commit": "571f7e3f5c948ca805798a44affd667677833a2e",
+      "path": "docs/market-research-recipe.md",
+      "use": "Locale-specific market research, SERP-derived page routing, origins of questions, metrics and freshness."
+    },
+    {
+      "repository": "IgorAIdev/HempScale-seo",
+      "commit": "4d399412402cc6d1bd81f2cd0d706a22110f16cd",
+      "path": "docs/CLIENT_CONTENT_STRATEGY.md",
+      "use": "B2C intent brief and cluster-to-page workflow; automatic publishing and fixed block quotas are not adopted."
+    },
+    {
+      "repository": "IgorAIdev/HempScale-seo",
+      "commit": "4d399412402cc6d1bd81f2cd0d706a22110f16cd",
+      "path": "docs/agents/hempscale-blog-intent.md",
+      "use": "Intent graph, subquestions, outline, entities and internal links; B2B topics are not store keyword research."
+    }
+  ],
+  "markets": [
+    {
+      "country": "BG",
+      "language": "bg",
+      "status": "measured_snapshot_available",
+      "repository": "IgorAIdev/HempScale",
+      "commit": "571f7e3f5c948ca805798a44affd667677833a2e",
+      "path": "packages/seo-audit/src/market/bundled/BG-bg.json",
+      "contextPath": "docs/research/seo-transfer-2026-09/from-shop/bg-copy-brief-2026-09-08/BRIEF.md",
+      "freshness": "Use each row's measuredAt; downloading the export does not refresh it."
+    },
+    {
+      "country": "RO",
+      "language": "ro",
+      "status": "autocomplete_and_serp_proxy_2026-10-08; volume only for the head phrase",
+      "nextStep": "Measure volumes with scripts/volumes.mjs (location 2642, ro and hu) when the DataForSEO key is available; store the result in the research repository.",
+      "headVolume": {
+        "phrase": "ulei cbd",
+        "volume": 2400,
+        "origin": "VOL",
+        "source": "HempScale DataForSEO ~2026-09-03"
+      }
+    },
+    {
+      "country": "IT",
+      "language": "it",
+      "status": "market_overview_available_keyword_export_not_found",
+      "repository": "IgorAIdev/HempScale",
+      "commit": "571f7e3f5c948ca805798a44affd667677833a2e",
+      "path": "docs/research/cbd-markets-dach-south-2026.md",
+      "contextPath": "docs/market.md",
+      "nextStep": "Obtain the existing keyword/SERP export and recheck current legal applicability before commercial publication."
+    },
+    {
+      "country": "RO",
+      "language": "hu",
+      "status": "autocomplete_and_serp_proxy_2026-10-08",
+      "nextStep": "volumes.mjs --location 2642 --language hu"
+    },
+    {
+      "country": "RO",
+      "language": "en",
+      "status": "autocomplete_and_serp_proxy_2026-10-08; little own demand, almost no competition"
+    },
+    {
+      "country": "HU",
+      "language": "hu",
+      "status": "autocomplete_and_serp_proxy_2026-10-08; regulator notice NKFH 2026-07-24"
+    }
+  ],
+  "research": {
+    "repository": "IgorAIdev/CBDSeoMarketResearch",
+    "visibility": "private",
+    "created": "2026-10-08",
+    "layout": "<COUNTRY>-<lang>/ (RO-ro, RO-hu, RO-en, HU-hu, BG-bg): autocomplete-<date>.json (suggest.mjs), serp-<date>.json, volumes-<date>.json (volumes.mjs), competitors-<date>.json, dossier.md; reports/<date>/",
+    "use": "Owner-private store for market research shared by this skill and HempScale; raw research never goes into the public kit."
+  }
+}

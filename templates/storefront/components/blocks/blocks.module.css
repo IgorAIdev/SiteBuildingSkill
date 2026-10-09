@@ -1,0 +1,307 @@
+/* Главная — один пол и два возвышения (разбор 24.09.2026, И279–И283): тёмная
+   сцена героя наверху и светлый лист лаборатории посередине. Остальное
+   стоит прямо на полу страницы без коробок, и разделы отбивает один
+   воздух `--air-page` (`.section`). Внутри листа ничего не поднимается. */
+/* Варианты главной (lib/homes.ts) раскладывают те же блоки по-своему; их
+   правила стоят блоками с меткой варианта.
+   Краска — роли палитры, размер — роли шкал, раскладка — примитивы. */
+.rows{list-style:none;padding:0;margin:0}
+/* Ходовые — четыре в ряд на широком, две на телефоне; число колонок считает
+   сетка (`grid`: `--cols` сверху, пол ряда — две). */
+
+
+/* ДВЕРИ (Doors.tsx) — плитки ряда эффектов главной; полки — кнопками героя
+   (И673). Одежда — значение
+   вида `home` (`data-door`, lib/homes.ts); разметка одна. Лента — рельса
+   товаров, по четыре с половиной на столе. Снимок наплывает под рукой и под
+   пальцем; под снимком — ступень листа, пока кадр грузится. */
+/* Отступ имени от левого и нижнего края плитки — роль `--pad-inner` во всех одеждах (слово заказчика 01.10.2026: «расположение слова относительно левого и нижнего края разное»): у кнопки это край самой кнопки, у ленты, окантовки и плашки — начало слова. */
+.doors{--shelf-cols:4}
+.door{position:relative;display:grid;min-inline-size:0;overflow:clip;border-radius:var(--r-card)}
+/* На руку отвечает ПЛАШКА, а не орган в ней, — у всех одежд одинаково
+   (слово заказчика 01.10.2026: «при наведении тихая окантовка всей плашки…
+   стрелка чуть смещается… не кнопки; при нажатии окантовка сильнее», И601).
+   Окантовка — пара кромок палитры, та же, что у карточки товара (И588):
+   под рукой тихая `--edge`, нажатие — `--edge-hand`; линия внутрь края,
+   раскладку не двигает. Стрелка едет ролью `--nudge` (go.module.css, `.to`).
+   У `under` плашка — снимок: окантовка — у кадра, своим блоком одежды
+   (правило называет только свою одежду — панель снимается чисто, И618).
+   Окантовка — тонкий слой поверх снимка (`::before`), а не контур плашки:
+   наплывший под рукой снимок — свой слой и закрывал контур по краю (И695,
+   как у карточки товара). Краску слоя называет одежда (`--line-card`). */
+.doors .door{--line-card:transparent}
+.doors .door::before,.doors .doorShot::before{content:'';position:absolute;inset:0;z-index:2;border-radius:inherit;box-shadow:inset 0 0 0 var(--line-w) var(--line-card, transparent);pointer-events:none;transition:box-shadow var(--hover-t) var(--ease)}
+.doors .doorShot{position:relative}
+@media (hover:hover){ .doors .door:hover{--line-card:var(--edge)} }
+.doors .door:active{--line-card:var(--edge-hand)}
+/* Слой кадра молчит; его включает одежда, где плашка — снимок (`under`,
+   `caption`), своим блоком: общее правило не называет одежд — панель
+   снимается чисто (И618). */
+.doors .doorShot::before{content:none}
+/* Своего ответа у имени нет: ни вуали и сжатия кнопки, ни краски ссылки. */
+@media (hover:hover){ .doors .door .doorName a:hover{--press-fill:var(--press-bg);--btn-edge:var(--ctrl-btn-edge, transparent);--go-hover:currentColor} }
+.doors .door .doorName a:active{--press-fill:var(--press-bg);--btn-edge:var(--ctrl-btn-edge, transparent);transform:none}
+.doors .door .doorName a:active{color:inherit}
+/* Кадр — пропорция ряда карточек, у всех одежд (И736): ряды главной стоят
+   одной сеткой с товаром и статьями. До 04.10.2026 — 1.4, как у cbdin. */
+.doorShot{--frame:var(--card-frame);display:block;background:var(--plate-2)}
+.doorShot img{transition:scale calc(var(--hover-t) * 3) var(--ease)}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){ .door:hover .doorShot img{scale:var(--creep)} }
+/* Нажатие — тот же наплыв: на телефоне наведения нет (И229). */
+@media (prefers-reduced-motion:no-preference){ .door:active .doorShot img{scale:var(--creep)} }
+/* Имя стоит ВЫШЕ наплывающего снимка: снимок под рукой получает `scale` и
+   от этого становится своим слоем, который ложится поверх соседей без
+   положения — имя на снимке пропадало под рукой и возвращалось, когда снимок
+   доезжал назад (600 мс; слово заказчика 01.10.2026: «плашки исчезают,
+   появляются через полсекунды после снятия наведения»). `z-index` у ребёнка
+   сетки работает без `position`, поэтому растянутая ссылка по-прежнему
+   меряет от двери. */
+.doorName{margin:0;min-inline-size:0;z-index:2}
+/* Ссылка двери растянута на всю дверь: точка отсчёта — дверь, не ссылка. Ссылка-выход
+   (`go.go`) сама берёт `position: relative` под запас цели (styles/go.module.css) —
+   у одежд-ссылок (`doorGo`, Doors.tsx `LINK`) он снят, и растяжка меряет от двери (И755). */
+.doorGo{position:static}
+.doorName a::after{content:'';position:absolute;inset:0}
+/* Первая буква имени заглавная всегда (слово заказчика 01.10.2026), как бы оно ни было записано в данных; `::first-letter` работает на блоке, поэтому подпись — inline-block. */
+.doorLabel{display:inline-block}
+.doorLabel::first-letter{text-transform:uppercase}
+/* Имя полки — одна роль на все одежды: надпись органа, 600 (слово заказчика
+   01.10.2026: «один блок категории, а размер и жирность разные»; было — на
+   кнопке надпись малая 600, на ленте, плашке и под снимком тело 400). Знак
+   у правого края — у текстовых одежд (bar, mount, under). */
+.doorName a{display:flex;justify-content:space-between;gap:var(--gap-grid);line-height:var(--body-lead);text-wrap:balance;font-size:var(--menu-size);font-weight:var(--cardname-weight);letter-spacing:var(--body-track);text-transform:var(--door-case,none)}
+
+/* look-home:button:start */
+/* button — имя тихой кнопкой сайта на снимке внизу слева: заливка —
+   поверхность (как у кнопок связи), кромка и ответ на руку — кнопочные
+   (`btn`), надпись — роль надписи органа. Контраст держит кнопка на любом
+   снимке; полка без снимка стоит на краске сцены. */
+.doors[data-door='button'] .door{background:var(--scrim-deck)}
+.doors[data-door='button'] .door > *{grid-area:1 / 1}
+.doors[data-door='button'] .doorName{align-self:end;justify-self:start;max-inline-size:100%;padding:var(--pad-inner)}
+/* Форма имени-кнопки — общая форма кнопок сайта (ось Buttons → Shape; при пилюле —
+   полный круг, слово заказчика 01.10.2026: «квадратная кнопка некрасива, давай пилюлю», И601). */
+.doors[data-door='button'] .doorName a{--press-bg:var(--surface)}
+.doors[data-door='button'] .door .doorName a:active{color:var(--press-ink)}
+/* look-home:button:end */
+
+/* look-home:glass:start */
+/* glass — та же пилюля, полупрозрачная (слово заказчика 01.10.2026:
+   «рядом полупрозрачная кнопка… посчитай, какой, чтоб чёрный текст был
+   виден», И601): заливка — стекло палитры `--plate-glass`, надпись — `--on-plate-glass`.
+   Долю считает строитель, нижняя граница у него — `PLATE_GLASS.floor`
+   (tools/thresholds.mjs; 03.10.2026 — 86 %). Ответ на руку — плашки, как у
+   всех одежд. */
+.doors[data-door='glass'] .door{background:var(--scrim-deck)}
+.doors[data-door='glass'] .door > *{grid-area:1 / 1}
+.doors[data-door='glass'] .doorName{align-self:end;justify-self:start;max-inline-size:100%;padding:var(--pad-inner)}
+/* Кромка пилюли — роли кромки палитры (слово заказчика 01.10.2026: «в покое
+   тихую окантовку, при наведении усиль»): в покое тихая `--edge`, под рукой
+   и при нажатии — `--edge-hand`, как у полей и кнопок. */
+.doors[data-door='glass'] .doorName a{--press-bg:var(--plate-glass);--press-ink:var(--on-plate-glass);--btn-edge:var(--edge)}
+/* Под рукой стекло непрозрачно (`--plate-glass-hand`), смена плавная —
+   переход заливки кнопки за `--hover-t` (btn.module.css, `.press`); при
+   нажатии тоже. Стрелки нет: имя стоит само (слово заказчика 01.10.2026). */
+@media (hover:hover){ .doors[data-door='glass'] .door:hover .doorName a{--press-fill:var(--plate-glass-hand);--btn-edge:var(--edge-hand)} }
+.doors[data-door='glass'] .door:active .doorName a{--press-fill:var(--plate-glass-hand);--btn-edge:var(--edge-hand)}
+.doors[data-door='glass'] .doorName a svg{display:none}
+.doors[data-door='glass'] .door .doorName a:active{color:var(--press-ink)}
+/* look-home:glass:end */
+
+/* look-home:frost:start */
+/* frost — матовое стекло (слово заказчика 01.10.2026: «правее от Glass ещё
+   вариант не с пилюлей, а с прямоугольником с системными углами, с
+   окантовкой и без заливки, но со слоем, который размывает; при наведении,
+   нажатии окантовка усиливается и размытие усиливается», И613). Имя —
+   тихая кнопка с признаком `data-frost` (styles/btn.module.css): угол
+   органа `--r-ctrl`, без заливки, под ней размыт снимок — четвертью порога
+   `--frost-blur`, одинаково в покое, под рукой и при нажатии (слово
+   заказчика 02.10.2026, И635). Надпись — краска стекла палитры
+   `--on-plate-glass`, кромка — роли кромок палитры: `--edge` в покое,
+   `--edge-near` чуть темнее под рукой, `--edge-hand` при нажатии. Ответ на
+   руку — плашки, как у всех одежд; стрелки нет, как у Glass.
+   Под надписью — светлая полупрозрачная подложка, стекло палитры
+   `--plate-glass` (слово заказчика 02.10.2026: «тёмный текст на тёмном плохо
+   виден, нужна светлая полупрозрачная подложка»): без неё тёмная надпись на
+   тёмном снимке не читалась. Подложка одна в покое и под рукой, размытие под
+   ней остаётся — отвечает кромка. */
+.doors[data-door='frost'] .door{background:var(--scrim-deck)}
+.doors[data-door='frost'] .door > *{grid-area:1 / 1}
+.doors[data-door='frost'] .doorName{align-self:end;justify-self:start;max-inline-size:100%;padding:var(--pad-inner)}
+.doors[data-door='frost'] .doorName a{--press-bg:var(--plate-glass);--press-ink:var(--on-plate-glass);--btn-edge:var(--edge)}
+@media (hover:hover){ .doors[data-door='frost'] .door:hover .doorName a{--press-fill:var(--plate-glass);--btn-edge:var(--edge-near)} }
+.doors[data-door='frost'] .door:active .doorName a{--press-fill:var(--plate-glass);--btn-edge:var(--edge-hand)}
+.doors[data-door='frost'] .doorName a svg{display:none}
+.doors[data-door='frost'] .door .doorName a:active{color:var(--press-ink)}
+/* look-home:frost:end */
+
+/* look-home:bar:start */
+/* bar — лента подписи по низу снимка (cbdin), полупрозрачная (слово
+   заказчика 02.10.2026: «нижнюю часть с текстом сделаем полупрозрачной,
+   чтоб и текст был виден, и изображение», И634): заливка — стекло палитры
+   `--plate-glass`, надпись — `--on-plate-glass`; долю считает строитель
+   палитры (надпись 4.5 : 1 над чёрным снимком), как у Glass. Поле — внутри
+   контрола. */
+.doors[data-door='bar'] .door > *{grid-area:1 / 1}
+.doors[data-door='bar'] .doorName{align-self:end;padding:var(--pad-inner);background:var(--plate-glass);color:var(--on-plate-glass)}
+/* look-home:bar:end */
+
+/* look-home:mount:start */
+/* mount — снимок в белой плашке, имя под ним (cbdin); угол снимка вложен в
+   угол плашки и не меньше `--r-xs` (И592). */
+.doors[data-door='mount'] .door{gap:var(--gap-grid);padding:var(--pad-inner);background:var(--plate);color:var(--on-plate)}
+.doors[data-door='mount'] .doorShot{border-radius:max(var(--r-xs), calc(var(--r-card) - var(--pad-inner)))}
+/* look-home:mount:end */
+
+/* look-home:under:start */
+/* under — снимок, имя под ним на полу страницы (Aesop): ни листа, ни ленты. */
+.doors[data-door='under'] .door{gap:var(--gap-row);overflow:visible;border-radius:0}
+.doors[data-door='under'] .doorShot{border-radius:var(--r-card)}
+/* Окантовка — у кадра: слой плашки молчит (его краска не доходит до слоя),
+   кадр берёт краску плашки своим слоем. */
+.doors[data-door='under'] .door::before{content:none}
+.doors[data-door='under'] .doorShot::before{content:''}
+/* look-home:under:end */
+
+/* look-home:outline:start */
+/* outline — имя светлым прямо на снимке внизу слева, без плашки; вместо тени
+   букв (cbdin «Shadow») — тихая окантовка: тонкая и светлая кромка (`--sh-near`, слабая нейтраль теней палитры)
+   вокруг букв, нарисованная ПОД заливкой (`paint-order`), чтобы буква не
+   худела. Имя белое сплошь — краска светлой палубы (`--chrome-fg`), одна в обеих
+   темах: снимок темы не знает. Полупрозрачное «чуть темнее белого» с белым под
+   рукой пробовали 02.10.2026 и сняли словом заказчика: «текст с прозрачностью
+   плохо читается, верни белый». Затемнения под именем нет: заказчик его не
+   просил (01.10.2026). Стрелки нет: имя стоит само. */
+.doors[data-door='outline'] .door > *{grid-area:1 / 1}
+.doors[data-door='outline'] .door{background:var(--scrim-deck)}
+.doors[data-door='outline'] .doorName{align-self:end;justify-self:start;max-inline-size:100%;padding:var(--pad-inner);color:var(--chrome-fg)}
+.doors[data-door='outline'] .doorName a{color:inherit;-webkit-text-stroke:.08em var(--sh-near);paint-order:stroke fill;stroke-linejoin:round}
+.doors[data-door='outline'] .doorName a svg{display:none}
+/* look-home:outline:end */
+
+/* look-home:caption:start */
+/* caption — как карточка статьи блога (PostCard.module.css; слово заказчика
+   04.10.2026: «в таком же стиле как и плашка блога»): снимок, под ним имя и
+   строка о двери на полу страницы — ни листа, ни кромки двери. Ритм тот же:
+   от снимка к словам — воздух строки, имя → строка — оптика `--sp-1`; имя —
+   роль имени карточки, строка — роль строки о товаре тихой краской, не
+   длиннее двух строк. Потолок кадра — как у карточки статьи. На руку
+   отвечает кадр, как у `under` (И601): тихая линия по его краю, слой двери
+   молчит; стрелки нет — как у статьи, имя стоит само. */
+.doors[data-door='caption'] .door{align-content:start;overflow:visible;border-radius:0}
+.doors[data-door='caption'] .door::before{content:none}
+.doors[data-door='caption'] .doorShot{--frame-cap:50svh;margin-block-end:var(--air-row);border-radius:var(--r-card)}
+.doors[data-door='caption'] .doorShot::before{content:''}
+.doors[data-door='caption'] .doorName a{font-size:var(--cardname-size);line-height:var(--cardname-lead);letter-spacing:var(--cardname-track)}
+.doors[data-door='caption'] .doorName a svg{display:none}
+.doors[data-door='caption'] .doorLine{
+  margin-block-start:var(--sp-1);
+  font-size:var(--blurb-size);line-height:var(--blurb-lead);font-weight:var(--blurb-weight);letter-spacing:var(--blurb-track);color:var(--ink-soft);
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden
+}
+/* look-home:caption:end */
+
+/* ГЕРОЙ (Hero.tsx, И710) — светлая половина и снимок рядом, вариант C (слово
+   заказчика 04.10.2026: «беру вариант C»; образец Allbirds). Раскладка — примитив
+   `lede`: текст и кадр в ряд, ряду тесно — столбиком (порог примитива, а не окна).
+   Снимок в разметке первый, ряд развёрнут: на широком кадр справа, в столбике —
+   сверху, товар в первом окне телефона (И553). Воздух над героем — ступень группы
+   (как у прежней полосы), под ним — воздух раздела ниже (twoAir). До 04.10.2026 —
+   тёмная сцена во всю коробку с вуалью марки на снимке (И280, И697). */
+/* Герой — одно целое (И724; слово заказчика 04.10.2026: «текст должен быть выровнен по
+   верхнему краю изображения, а кнопки по нижнему»): в ряду колонка текста той же
+   высоты, что кадр (`--lede-align: stretch`), слова — у верхнего края, ряд пути — у
+   нижнего (`--lede-stack-align: space-between`); в столбике ручки ничего не меняют. */
+.hero{flex-direction:row-reverse;--lede-air:var(--air-group) 0;--lede-align:stretch;--lede-stack-align:space-between}
+/* Кадр — примитив `frame`, пропорция сцены (`--scene-frame`, 4 : 3, И736) с
+   потолком (правило 4), скругление листа; фокус
+   снимка — правее середины, где у снимков полок предметы. */
+/* Потолок кадра в столбике — 30 % окна: на телефоне 360 × 670 снимок 4 : 3 (252) уводил
+   «В магазин» за край первого окна; 30 % — пол снимка первого экрана (И657). В ряду
+   потолок прежний, 60 % окна: ширина ряда сверх порога примитива (`--lede-at`)
+   раздувает второе слагаемое, и `max()` берёт его — условия по ширине числом нет. */
+.heroShot{--frame:var(--scene-frame);border-radius:var(--r-sheet);--frame-focus:72% 50%;--frame-cap:min(60svh, max(30svh, (100cqi - var(--lede-at)) * 999))}
+/* Слова: заголовок → абзац — воздух «заголовок → его текст» (И524); слова → ряд
+   пути — ритм колонки примитива (`--lede-stack`). */
+.heroWords{--stack:var(--air-line)}
+/* Ряд пути (И673, И683, И708, И735): «В магазин» первая и громкая, все полки — плашки
+   листа; в широкой колонке переносится вторым рядом, в узкой едет вбок одной
+   полосой (примитив `rail`, вид `wrap`). */
+.heroShelves{margin:0;padding:0;list-style:none}
+
+/* look-home:minimal:start */
+/* Opt-in editorial home: one actual featured product, one main action;
+   categories remain readable text links, with their full touch targets. */
+:global(main[data-home='minimal'] h2){font-size:var(--h2-size);line-height:var(--h2-lead);font-weight:var(--h2-weight);letter-spacing:var(--h2-track)}
+.minimalHero{--lede-air:var(--air-group) 0;--lede-align:center;--lede-stack-align:center}
+.minimalText{align-items:start}
+.minimalShelves{margin:0;padding:0;list-style:none}
+.minimalShelves a{min-block-size:var(--ctrl-target);display:inline-flex;align-items:center}
+.minimalProduct{--stack:var(--air-row)}
+.minimalShot{--frame:var(--card-frame);--frame-cap:60svh;background:var(--plate-2);border-radius:var(--r-sheet)}
+.minimalShot img{object-fit:contain;padding:var(--pad-sheet)}
+.minimalCaption{display:flex;align-items:center;gap:var(--gap-row);font-size:var(--cardname-size);line-height:var(--cardname-lead);font-weight:var(--cardname-weight);letter-spacing:var(--cardname-track)}
+.minimalCaption span:first-child{flex:1;min-inline-size:0}
+.minimalCaption span:nth-child(2){white-space:nowrap}
+.doors[data-door='minimal'] .door{gap:var(--gap-row);overflow:visible;border-radius:0}
+.doors[data-door='minimal'] .doorShot{border-radius:var(--r-card)}
+.doors[data-door='minimal'] .door::before{content:none}
+.doors[data-door='minimal'] .doorShot::before{content:''}
+/* look-home:minimal:end */
+
+/* СПРАВОЧНЫЙ РАЗДЕЛ — вопросы: заголовок своей колонкой слева, строки
+   справа через волосок (`sidebar`); в узкой коробке — столбиком, и от
+   заголовка до строк тот же воздух, что у любой шапки блока. */
+.split{--side-w:22rem;--side-gap:var(--air-head)}
+.splitBody{--stack:var(--air-group)}
+.rows{border-block-start:var(--line-w) solid var(--rule)}
+/* Вопрос — строка во всю колонку, цель нажатия — вся строка (у `summary`
+   рост цели уже в styles/base.css). Под рукой — подложка строки (`row`,
+   И685), поэтому у строки поле органа и по бокам, и ответ стоит на том же
+   поле. Знак раскрытия — общая стрелка (`Turn`, И481) в тихом круге (вуаль
+   `--quiet`, стрелка чернилами), ростом 1.75 кегля вопроса: круг — держатель
+   знака (ritual.com). Сплошной круг марки (И690) снят словом заказчика
+   03.10.2026 — «кружочки синего на большой серой площади херово смотрится»;
+   цвет разделу даёт его полоса (на главной — тёмная палуба, И697), а не
+   точки на сером. Ответ —
+   текст страницы, полными чернилами: тихий серый ответ на сером листе делал
+   блок «серым весь» (слово заказчика 03.10.2026). */
+.q{border-block-end:var(--line-w) solid var(--rule)}
+.ask{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);padding:var(--pad-inner);list-style:none;font-weight:var(--h3-weight)}
+.ask::-webkit-details-marker{display:none}
+.askSign{flex:none;display:grid;place-items:center;inline-size:1.75em;block-size:1.75em;border-radius:50%;background:var(--quiet);color:var(--ink)}
+.askSign svg{inline-size:55%;block-size:55%}
+/* Ответ — мерой текста: под статьёй вопросы стоят во всю колонку, и строка
+   ответа шла 87–95 знаками (check:craft lineLong, И676). */
+.answer{padding:0 var(--pad-inner) var(--pad-card);color:var(--ink);max-inline-size:var(--body-measure)}
+
+/* СЛОВО МАГАЗИНА — место заказчика, во всех вариантах (Story.tsx): слова и
+   снимок рядом, в узкой коробке столбиком (`switcher`); пустое молчит. */
+.story{--switch-at:820px;--switch-gap:var(--air-block);align-items:center}
+.storyText{--stack:var(--air-head)}
+/* Абзацы — теснее, чем заголовок до них: одна мысль, а не разделы. */
+.storyBody{--stack:var(--air-row)}
+.storyShot{--frame:var(--scene-frame);border-radius:var(--r-card)}
+
+
+
+
+
+
+
+
+/* Подложка секции — вид `--band-<блок>` (панель Look → Admin → Sections,
+   И591): фон целой секции во всю ширину окна, цвет — роль по слову вида
+   (`data-tone`; `quiet` — `--band`, `brand` — `--pop-tint`, `dark` —
+   `--page-deck` и `data-ground="deck"`: чернила и карточки переходят на
+   палубу сами). Отбивка над подложкой и такой же воздух под содержимым —
+   воздух раздела, чтобы её край стоял от соседа так же далеко, как раньше
+   стоял сам блок. Обёртки нет, пока подложки нет: страница без неё та же. */
+.band{display:flow-root;margin-block-start:var(--air-page);padding-block-end:var(--air-page);background:var(--band)}
+.band[data-tone='brand']{background:var(--pop-tint)}
+.band[data-tone='dark']{background:var(--page-deck)}
+/* Блок промолчал (слов магазина нет) — обёртка пуста и подложки не даёт. */
+.band:empty{display:none}
+/* Соседи одного типа сливаются: шов и лишний воздух между ними снимаются. */
+.band[data-join~='prev']{margin-block-start:0}
+.band[data-join~='next']{padding-block-end:0}

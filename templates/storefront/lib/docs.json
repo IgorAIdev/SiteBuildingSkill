@@ -1,0 +1,2056 @@
+[
+ {
+  "slug": "despre-noi",
+  "updated": "2026-10-04",
+  "numbered": false,
+  "title": {
+   "ro": "Despre noi",
+   "en": "About us",
+   "hu": "Rólunk"
+  },
+  "summary": {
+   "ro": "Cine suntem, cum alegem produsele cu CBD, ce nu promitem și datele firmei care operează magazinul.",
+   "en": "Who we are, how we choose CBD products, what we do not promise, and the details of the company that runs the shop.",
+   "hu": "Kik vagyunk, hogyan választjuk ki a CBD-termékeket, mit nem ígérünk, és a boltot üzemeltető cég adatai."
+  },
+  "sections": [
+   {
+    "id": "cine-suntem",
+    "heading": {
+     "ro": "Cine suntem",
+     "en": "Who we are",
+     "hu": "Kik vagyunk"
+    },
+    "body": {
+     "ro": "Suntem un magazin online, nu un producător. Vindem uleiuri, capsule și cosmetice cu CBD, precum și produse pentru animale de companie, toate de la producători din Uniunea Europeană.\n\nMagazinul este operat de {company.name}. Toate produsele sunt în [catalog](catalog), iar datele complete ale firmei sunt mai jos, pe această pagină.",
+     "en": "We are an online shop, not a manufacturer. We sell CBD oils, capsules and cosmetics, as well as products for pets, all from producers in the European Union.\n\nThe shop is run by {company.name}. All products are in the [catalogue](catalog), and the full company details are further down this page.",
+     "hu": "Webáruház vagyunk, nem gyártó. CBD-olajokat, -kapszulákat és -kozmetikumokat, valamint háziállatoknak szánt termékeket árulunk, mindet az Európai Unióban működő gyártóktól.\n\nA boltot a(z) {company.name} üzemelteti. Minden termék megtalálható a [katalógusban](catalog), a cég teljes adatai pedig lejjebb, ezen az oldalon olvashatók."
+    }
+   },
+   {
+    "id": "cum-alegem",
+    "heading": {
+     "ro": "Cum alegem produsele",
+     "en": "How we choose products",
+     "hu": "Hogyan választjuk ki a termékeket"
+    },
+    "body": {
+     "ro": "Un produs ajunge în magazin doar dacă îndeplinește toate cele patru condiții de mai jos. Cum se citește un buletin de analiză explicăm în pagina [Analize de laborator](doc:analize-de-laborator).",
+     "en": "A product enters the shop only if it meets all four conditions below. We explain how to read a lab report on the [Lab reports](doc:analize-de-laborator) page.",
+     "hu": "Egy termék csak akkor kerül a boltba, ha az alábbi négy feltétel mindegyikét teljesíti. A laborvizsgálati jegyzőkönyv olvasását a [Laborvizsgálatok](doc:analize-de-laborator) oldalon magyarázzuk el."
+    },
+    "list": {
+     "ro": [
+      "Fiecare lot are buletin de analiză de la un laborator independent.",
+      "Conținutul de CBD măsurat corespunde celui de pe etichetă.",
+      "THC-ul este în limita legală, iar cânepa provine din soiuri certificate în UE.",
+      "Pe buletin apar numele laboratorului și data analizei."
+     ],
+     "en": [
+      "Every batch has a lab report from an independent laboratory.",
+      "The measured CBD content matches the label.",
+      "THC is within the legal limit, and the hemp comes from EU-certified varieties.",
+      "The lab's name and the date of analysis are on the report."
+     ],
+     "hu": [
+      "Minden gyártási tételhez független laboratórium vizsgálati jegyzőkönyve tartozik.",
+      "A mért CBD-tartalom megegyezik a címkén feltüntetettel.",
+      "A THC a törvényes határértéken belül van, a kender pedig az EU-ban minősített fajtákból származik.",
+      "A jegyzőkönyvön szerepel a laboratórium neve és a vizsgálat dátuma."
+     ]
+    }
+   },
+   {
+    "id": "ce-nu-promitem",
+    "heading": {
+     "ro": "Ce nu promitem",
+     "en": "What we do not promise",
+     "hu": "Amit nem ígérünk"
+    },
+    "body": {
+     "ro": "Nu promitem efecte asupra sănătății. În Uniunea Europeană nu este autorizată nicio mențiune de sănătate pentru CBD, așa că nu veți găsi astfel de promisiuni nici la noi (Regulamentul (CE) nr. 1924/2006).\n\nProdusele cu CBD nu sunt medicamente și nu înlocuiesc un tratament. Le vindem doar persoanelor care au împlinit 18 ani. Dacă sunteți însărcinată, alăptați sau luați medicamente, întrebați medicul sau farmacistul înainte de folosire. Nu lăsați produsele la îndemâna copiilor.",
+     "en": "We do not promise any health effects. No health claim for CBD is authorised in the European Union, so you will not find such promises here either (Regulation (EC) No 1924/2006).\n\nCBD products are not medicines and do not replace treatment. We sell them only to people aged 18 or over. If you are pregnant, breastfeeding or taking medicines, ask your doctor or pharmacist before use. Keep the products out of reach of children.",
+     "hu": "Semmilyen egészségügyi hatást nem ígérünk. Az Európai Unióban a CBD-re egyetlen egészségre vonatkozó állítás sem engedélyezett, ezért nálunk sem talál ilyen ígéreteket (1924/2006/EK rendelet).\n\nA CBD-termékek nem gyógyszerek, és nem helyettesítik a kezelést. Csak 18. életévüket betöltött személyeknek értékesítjük őket. Ha várandós, szoptat vagy gyógyszert szed, használat előtt kérdezze meg orvosát vagy gyógyszerészét. A termékeket gyermekektől elzárva tartsa."
+    }
+   },
+   {
+    "id": "regim-legal",
+    "heading": {
+     "ro": "Regimul legal",
+     "en": "Legal status",
+     "hu": "Jogi helyzet"
+    },
+    "body": {
+     "ro": "CBD-ul nu este un stupefiant: așa a decis Curtea de Justiție a Uniunii Europene în cauza Kanavape (C-663/18, 19.11.2020). Canabisul și THC-ul rămân însă substanțe controlate în România (Legea 143/2000, Legea 339/2005).\n\nCosmeticele cu CBD respectă Regulamentul (CE) nr. 1223/2009 și sunt notificate în portalul CPNP. Alimentele și suplimentele cu CBD sunt alimente noi (novel food) și au nevoie de autorizare (Regulamentul (UE) 2015/2283). Vindem doar ce permite legea și scriem regimul pe pagina fiecărui produs.",
+     "en": "CBD is not a narcotic: the Court of Justice of the European Union ruled so in the Kanavape case (C-663/18, 19 November 2020). Cannabis and THC, however, remain controlled substances in Romania (Law 143/2000, Law 339/2005).\n\nCBD cosmetics comply with Regulation (EC) No 1223/2009 and are notified in the CPNP portal. Foods and food supplements with CBD are novel foods and need authorisation (Regulation (EU) 2015/2283). We sell only what the law allows and state the regime on each product page.",
+     "hu": "A CBD nem kábítószer: így döntött az Európai Unió Bírósága a Kanavape-ügyben (C-663/18, 2020. november 19.). A kannabisz és a THC azonban Romániában továbbra is ellenőrzött anyag (143/2000. sz. törvény, 339/2005. sz. törvény).\n\nA CBD-s kozmetikumok megfelelnek az 1223/2009/EK rendeletnek, és be vannak jelentve a CPNP portálon. A CBD-t tartalmazó élelmiszerek és étrend-kiegészítők új élelmiszernek (novel food) minősülnek, és engedélyre van szükségük (2015/2283/EU rendelet). Csak azt áruljuk, amit a jogszabályok megengednek, és minden termék oldalán feltüntetjük, milyen szabályozás alá esik."
+    }
+   },
+   {
+    "id": "date-firma",
+    "heading": {
+     "ro": "Datele firmei",
+     "en": "Company details",
+     "hu": "Cégadatok"
+    },
+    "body": {
+     "ro": "Activitatea noastră este supravegheată de ANPC (Autoritatea Națională pentru Protecția Consumatorilor), pentru protecția consumatorilor, și de ANSVSA (Autoritatea Națională Sanitară Veterinară și pentru Siguranța Alimentelor), pentru alimente și suplimente alimentare.\n\nDatele vânzătorului sunt în tabelul de mai jos (Legea 365/2002, art. 5).",
+     "en": "Our activity is supervised by ANPC (National Authority for Consumer Protection) for consumer protection, and by ANSVSA (National Sanitary Veterinary and Food Safety Authority) for food and food supplements.\n\nThe seller's details are in the table below (Law 365/2002, art. 5).",
+     "hu": "Tevékenységünket fogyasztóvédelmi kérdésekben az ANPC (Országos Fogyasztóvédelmi Hatóság), élelmiszerek és étrend-kiegészítők esetében az ANSVSA (Országos Állategészségügyi és Élelmiszer-biztonsági Hatóság) felügyeli.\n\nAz eladó adatai az alábbi táblázatban találhatók (365/2002. sz. törvény, 5. cikk)."
+    },
+    "table": {
+     "head": {
+      "ro": [
+       "Date",
+       "Valoare"
+      ],
+      "en": [
+       "Detail",
+       "Value"
+      ],
+      "hu": [
+       "Adat",
+       "Érték"
+      ]
+     },
+     "rows": {
+      "ro": [
+       [
+        "Denumire",
+        "{company.name}"
+       ],
+       [
+        "CUI",
+        "{company.cui}"
+       ],
+       [
+        "Nr. Reg. Com.",
+        "{company.regCom}"
+       ],
+       [
+        "Sediu",
+        "{company.address}"
+       ],
+       [
+        "Telefon",
+        "{contacts.phone}"
+       ],
+       [
+        "E-mail",
+        "{contacts.email}"
+       ]
+      ],
+      "en": [
+       [
+        "Company name",
+        "{company.name}"
+       ],
+       [
+        "Tax ID (CUI)",
+        "{company.cui}"
+       ],
+       [
+        "Trade Register No.",
+        "{company.regCom}"
+       ],
+       [
+        "Registered office",
+        "{company.address}"
+       ],
+       [
+        "Phone",
+        "{contacts.phone}"
+       ],
+       [
+        "E-mail",
+        "{contacts.email}"
+       ]
+      ],
+      "hu": [
+       [
+        "Cégnév",
+        "{company.name}"
+       ],
+       [
+        "Adószám (CUI)",
+        "{company.cui}"
+       ],
+       [
+        "Cégjegyzékszám",
+        "{company.regCom}"
+       ],
+       [
+        "Székhely",
+        "{company.address}"
+       ],
+       [
+        "Telefon",
+        "{contacts.phone}"
+       ],
+       [
+        "E-mail",
+        "{contacts.email}"
+       ]
+      ]
+     }
+    }
+   },
+   {
+    "id": "contact",
+    "heading": {
+     "ro": "Contact",
+     "en": "Contact",
+     "hu": "Kapcsolat"
+    },
+    "body": {
+     "ro": "Pentru orice întrebare despre o comandă sau un produs, toate căile prin care ne puteți scrie sau suna sunt în pagina [Contact](doc:contact).",
+     "en": "For any question about an order or a product, all the ways to write or call us are on the [Contact](doc:contact) page.",
+     "hu": "Rendeléssel vagy termékkel kapcsolatos bármilyen kérdés esetén a [Kapcsolat](doc:contact) oldalon talál minden elérhetőségünket."
+    }
+   }
+  ],
+  "faq": [
+   {
+    "q": {
+     "ro": "Cine se află în spatele magazinului?",
+     "en": "Who is behind the shop?",
+     "hu": "Ki áll a bolt mögött?"
+    },
+    "a": {
+     "ro": "Magazinul este operat de {company.name}, cu sediul în {company.address}. Datele complete ale firmei sunt în secțiunea „Datele firmei” de pe această pagină.",
+     "en": "The shop is run by {company.name}, with its registered office at {company.address}. The full company details are in the “Company details” section on this page.",
+     "hu": "A boltot a(z) {company.name} üzemelteti, székhelye: {company.address}. A cég teljes adatai ezen az oldalon, a „Cégadatok” részben találhatók."
+    }
+   },
+   {
+    "q": {
+     "ro": "De unde provin produsele?",
+     "en": "Where do the products come from?",
+     "hu": "Honnan származnak a termékek?"
+    },
+    "a": {
+     "ro": "De la producători din Uniunea Europeană. Fiecare lot are buletin de analiză de la un laborator independent, pe care îl găsiți pe pagina produsului.",
+     "en": "From producers in the European Union. Every batch has a lab report from an independent laboratory, which you can find on the product page.",
+     "hu": "Az Európai Unióban működő gyártóktól. Minden gyártási tételhez független laboratórium vizsgálati jegyzőkönyve tartozik, amelyet a termék oldalán talál."
+    }
+   },
+   {
+    "q": {
+     "ro": "Este CBD-ul legal în România?",
+     "en": "Is CBD legal in Romania?",
+     "hu": "Legális a CBD Romániában?"
+    },
+    "a": {
+     "ro": "CBD-ul nu este un stupefiant (CJUE, cauza Kanavape C-663/18). Un produs cu CBD se poate vinde dacă respectă regimul său, de exemplu cosmeticele notificate în CPNP; THC-ul rămâne substanță controlată. Regimul fiecărui produs este scris pe pagina lui.",
+     "en": "CBD is not a narcotic (CJEU, Kanavape case C-663/18). A CBD product may be sold if it complies with its own regime, for example cosmetics notified in the CPNP; THC remains a controlled substance. The regime of each product is stated on its page.",
+     "hu": "A CBD nem kábítószer (EUB, Kanavape-ügy, C-663/18). Egy CBD-termék akkor forgalmazható, ha megfelel a rá vonatkozó szabályozásnak, például a CPNP-ben bejelentett kozmetikumok; a THC továbbra is ellenőrzött anyag. Minden termék szabályozását az oldalán tüntetjük fel."
+    }
+   },
+   {
+    "q": {
+     "ro": "Este CBD-ul un medicament?",
+     "en": "Is CBD a medicine?",
+     "hu": "Gyógyszer a CBD?"
+    },
+    "a": {
+     "ro": "Nu. Produsele cu CBD din magazin nu sunt medicamente și nu înlocuiesc un tratament. Dacă luați medicamente, întrebați medicul sau farmacistul înainte de folosire.",
+     "en": "No. The CBD products in the shop are not medicines and do not replace treatment. If you take medicines, ask your doctor or pharmacist before use.",
+     "hu": "Nem. A boltban kapható CBD-termékek nem gyógyszerek, és nem helyettesítik a kezelést. Ha gyógyszert szed, használat előtt kérdezze meg orvosát vagy gyógyszerészét."
+    }
+   },
+   {
+    "q": {
+     "ro": "Cum vă pot contacta?",
+     "en": "How can I contact you?",
+     "hu": "Hogyan léphetek kapcsolatba Önökkel?"
+    },
+    "a": {
+     "ro": "Prin telefon la {contacts.phone}, prin e-mail la {contacts.email} sau prin butonul de chat de pe orice pagină. Programul de lucru este în pagina [Contact](doc:contact).",
+     "en": "By phone at {contacts.phone}, by e-mail at {contacts.email} or through the chat button on any page. Our working hours are on the [Contact](doc:contact) page.",
+     "hu": "Telefonon a {contacts.phone} számon, e-mailben a {contacts.email} címen vagy bármelyik oldalon a csevegés gombbal. Az ügyfélszolgálati időt a [Kapcsolat](doc:contact) oldalon találja."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "livrare-si-plata",
+  "updated": "2026-10-04",
+  "numbered": false,
+  "title": {
+   "ro": "Livrare și plată",
+   "en": "Delivery and payment",
+   "hu": "Szállítás és fizetés"
+  },
+  "summary": {
+   "ro": "Unde și cât de repede livrăm, cum plătiți și ce verificați când primiți coletul.",
+   "en": "Where and how fast we deliver, how you pay and what to check when the parcel arrives.",
+   "hu": "Hová és milyen gyorsan szállítunk, hogyan fizethet, és mit ellenőrizzen a csomag átvételekor."
+  },
+  "sections": [
+   {
+    "id": "unde-livram",
+    "heading": {
+     "ro": "Unde livrăm",
+     "en": "Where we deliver",
+     "hu": "Hová szállítunk"
+    },
+    "body": {
+     "ro": "Livrăm doar în România. La finalizarea comenzii alegeți curier la domiciliu, locker de colete sau ridicare de la magazin; termenul și costul fiecăruia sunt în tabelul de mai sus.\n\nLa locker, codul de ridicare vine prin SMS când coletul ajunge.\n\nVindem doar persoanelor de peste 18 ani. Țigările electronice și lichidele de vapat pleacă numai prin curier la adresă, nu în locker: curierul verifică vârsta la predare (Legea 201/2016).",
+     "en": "We deliver within Romania only. At checkout you choose a courier to your door, a parcel locker or pickup from the shop; the time and cost of each are in the table above.\n\nFor a parcel locker, the pickup code comes by SMS when the parcel arrives.\n\nWe sell only to people over 18. E-cigarettes and vape liquids go only by courier to an address, never to a locker: the courier checks your age on handover (Law 201/2016).",
+     "hu": "Csak Romániába szállítunk. A pénztárban választhat: futár házhoz, csomagautomata vagy személyes átvétel a boltban; mindegyik határideje és díja a fenti táblázatban áll.\n\nCsomagautomatánál az átvételi kódot SMS-ben kapja meg, amikor a csomag megérkezik.\n\nTermékeinket csak 18 év felettieknek értékesítjük. Az e-cigarettát és a vape-folyadékot csak futár viszi házhoz, csomagautomatába nem: a futár átadáskor ellenőrzi az életkort (201/2016-os törvény)."
+    }
+   },
+   {
+    "id": "cand-pleaca",
+    "heading": {
+     "ro": "Când pleacă comanda",
+     "en": "When your order ships",
+     "hu": "Mikor indul a rendelés"
+    },
+    "body": {
+     "ro": "Expediem comanda în 1 zi lucrătoare de la plasare; la plata prin transfer bancar, de la sosirea banilor. Apoi curierul o livrează în termenul din tabel.\n\nCând coletul pleacă, primiți pe e-mail numărul de urmărire (AWB), cu care vedeți pe site-ul curierului unde se află coletul.\n\nSâmbăta, duminica și sărbătorile legale nu sunt zile lucrătoare: o comandă plasată atunci pleacă în prima zi lucrătoare.",
+     "en": "We ship your order within 1 working day of placing it; with bank transfer, within 1 working day of the money arriving. The courier then delivers it in the time shown in the table.\n\nWhen the parcel leaves, you get the tracking number by e-mail and can follow the parcel on the courier's website.\n\nSaturdays, Sundays and public holidays are not working days: an order placed then ships on the next working day.",
+     "hu": "A rendelést a leadástól számított 1 munkanapon belül feladjuk; banki átutalásnál az összeg beérkezésétől számítva. Ezután a futár a táblázatban szereplő határidőn belül kézbesíti.\n\nAmikor a csomag elindul, e-mailben megkapja a csomagkövetési számot, amellyel a futár oldalán követheti a csomagot.\n\nA szombat, a vasárnap és a munkaszüneti napok nem munkanapok: az ilyenkor leadott rendelés az első munkanapon indul."
+    }
+   },
+   {
+    "id": "cost",
+    "heading": {
+     "ro": "Cât costă livrarea",
+     "en": "What delivery costs",
+     "hu": "Mennyibe kerül a szállítás"
+    },
+    "body": {
+     "ro": "Costul fiecărui mod de livrare e în tabelul de mai sus. Pragul de livrare gratuită e afișat în coș, iar coșul vă arată cât mai aveți până la el.\n\nPrețurile includ TVA. Totalul final, cu livrarea și eventualele reduceri, îl vedeți la finalizarea comenzii, înainte de a plăti.",
+     "en": "The cost of each delivery method is in the table above. The free-delivery threshold is shown in the cart, and the cart tells you how much is left to reach it.\n\nPrices include VAT. You see the final total, with delivery and any discounts, at checkout before you pay.",
+     "hu": "Az egyes szállítási módok díja a fenti táblázatban áll. Az ingyenes szállítás határa a kosárban látható, és a kosár azt is mutatja, mennyi hiányzik még hozzá.\n\nAz árak tartalmazzák az áfát. A végösszeget a szállítással és az esetleges kedvezményekkel együtt a pénztárban, fizetés előtt látja."
+    }
+   },
+   {
+    "id": "plata",
+    "heading": {
+     "ro": "Cum plătiți",
+     "en": "How you pay",
+     "hu": "Hogyan fizethet"
+    },
+    "body": {
+     "ro": "Modul de plată îl alegeți la finalizarea comenzii; acolo apar doar modurile disponibile pentru comanda dumneavoastră.",
+     "en": "You choose how to pay at checkout; only the methods available for your order are shown there.",
+     "hu": "A fizetési módot a pénztárban választja ki; ott csak a rendeléséhez elérhető módok jelennek meg."
+    },
+    "list": {
+     "ro": [
+      "Ramburs: plătiți curierului la primire, numerar sau cu cardul. Plata ramburs are o limită maximă, afișată la finalizarea comenzii.",
+      "Transfer bancar: după plasarea comenzii primiți datele contului; expediem comanda după ce banii ajung în contul magazinului.",
+      "Card online (Visa, Mastercard, Apple Pay, Google Pay): când magazinul o activează, apare la finalizarea comenzii."
+     ],
+     "en": [
+      "Cash on delivery: pay the courier on receipt, in cash or by card. Cash on delivery has an upper limit, shown at checkout.",
+      "Bank transfer: after you place the order you receive the account details; we ship once the money reaches the shop's account.",
+      "Online card payment (Visa, Mastercard, Apple Pay, Google Pay): when the shop enables it, it appears at checkout."
+     ],
+     "hu": [
+      "Utánvét: átvételkor a futárnak fizet, készpénzzel vagy kártyával. Az utánvétnek felső határa van, ezt a pénztár mutatja.",
+      "Banki átutalás: a rendelés leadása után megkapja a számlaszámot; a csomagot azután adjuk fel, hogy az összeg megérkezett a bolt számlájára.",
+      "Online kártyás fizetés (Visa, Mastercard, Apple Pay, Google Pay): ha a bolt bekapcsolja, megjelenik a pénztárban."
+     ]
+    }
+   },
+   {
+    "id": "factura",
+    "heading": {
+     "ro": "Factura",
+     "en": "Invoice",
+     "hu": "Számla"
+    },
+    "body": {
+     "ro": "Factura vine pe e-mail, la adresa din comandă, și o transmitem în sistemul național RO e-Factura, cum cere legea.\n\nPăstrați factura; vă ajută dacă vreți să [returnați un produs](doc:retur).",
+     "en": "The invoice comes by e-mail to the address in your order, and we also report it in the national RO e-Factura system, as the law requires.\n\nKeep the invoice; it helps if you want to [return a product](doc:retur).",
+     "hu": "A számlát e-mailben küldjük a rendelésben megadott címre, és a törvény szerint a román RO e-Factura rendszerbe is feltöltjük.\n\nŐrizze meg a számlát; jól jön, ha [vissza szeretne küldeni egy terméket](doc:retur)."
+    }
+   },
+   {
+    "id": "la-primire",
+    "heading": {
+     "ro": "La primirea coletului",
+     "en": "When the parcel arrives",
+     "hu": "A csomag átvételekor"
+    },
+    "body": {
+     "ro": "Verificați coletul când îl primiți, de față cu curierul: ambalajul întreg, sigiliile intacte, produsele cele comandate. La locker, verificați-l imediat după ce îl scoateți.\n\nDacă ambalajul e deteriorat, puteți refuza coletul sau puteți nota problema pe documentul de livrare al curierului. Apoi scrieți-ne la {contacts.email}, cu numărul comenzii și o fotografie.\n\nUn produs deteriorat sau greșit intră în [garanția legală de conformitate](doc:garantie), iar transportul îl plătește magazinul.",
+     "en": "Check the parcel when you receive it, in front of the courier: packaging intact, seals unbroken, the products you ordered. At a parcel locker, check it right after you take it out.\n\nIf the packaging is damaged, you can refuse the parcel or note the problem on the courier's delivery form. Then write to us at {contacts.email} with your order number and a photo.\n\nA damaged or wrong product falls under the [legal guarantee of conformity](doc:garantie), and the shop pays the shipping.",
+     "hu": "A csomagot átvételkor, a futár jelenlétében ellenőrizze: ép csomagolás, sértetlen zárak, a megrendelt termékek. Csomagautomatánál közvetlenül a kivétel után nézze meg.\n\nHa a csomagolás sérült, megtagadhatja az átvételt, vagy felírhatja a hibát a futár szállítólevelére. Utána írjon nekünk e-mailt ({contacts.email}) a rendelésszámmal és egy fényképpel.\n\nHa a termék sérült, vagy nem azt kapta, amit rendelt, az a [jogszabályi szavatosság](doc:garantie) körébe tartozik, és a szállítást a bolt fizeti."
+    }
+   }
+  ],
+  "faq": [
+   {
+    "q": {
+     "ro": "Cât costă livrarea?",
+     "en": "How much does delivery cost?",
+     "hu": "Mennyibe kerül a szállítás?"
+    },
+    "a": {
+     "ro": "Costul fiecărui mod de livrare e în tabelul de pe această pagină și apare în coș înainte de a plăti. Pragul de livrare gratuită e afișat tot în coș.",
+     "en": "The cost of each method is in the table on this page and appears in the cart before you pay. The free-delivery threshold is shown in the cart too.",
+     "hu": "Az egyes módok díja az oldalon lévő táblázatban áll, és fizetés előtt a kosárban is megjelenik. Az ingyenes szállítás határát szintén a kosár mutatja."
+    }
+   },
+   {
+    "q": {
+     "ro": "Când ajunge comanda?",
+     "en": "When will my order arrive?",
+     "hu": "Mikor érkezik meg a rendelés?"
+    },
+    "a": {
+     "ro": "O expediem în 1 zi lucrătoare, iar curierul o livrează în termenul din tabel. Weekendul și sărbătorile legale nu se numără.",
+     "en": "We ship it within 1 working day, and the courier delivers it in the time shown in the table. Weekends and public holidays do not count.",
+     "hu": "1 munkanapon belül feladjuk, a futár pedig a táblázatban szereplő határidőn belül kézbesíti. A hétvége és a munkaszüneti napok nem számítanak bele."
+    }
+   },
+   {
+    "q": {
+     "ro": "Pot plăti la livrare?",
+     "en": "Can I pay on delivery?",
+     "hu": "Fizethetek átvételkor?"
+    },
+    "a": {
+     "ro": "Da, ramburs: plătiți curierului numerar sau cu cardul. Limita maximă pentru ramburs apare la finalizarea comenzii.",
+     "en": "Yes, cash on delivery: pay the courier in cash or by card. The upper limit for cash on delivery is shown at checkout.",
+     "hu": "Igen, utánvéttel: a futárnak fizet készpénzzel vagy kártyával. Az utánvét felső határát a pénztár mutatja."
+    }
+   },
+   {
+    "q": {
+     "ro": "Cum urmăresc coletul?",
+     "en": "How do I track my parcel?",
+     "hu": "Hogyan követhetem a csomagot?"
+    },
+    "a": {
+     "ro": "Când coletul pleacă, primiți pe e-mail numărul de urmărire (AWB). Cu el vedeți pe site-ul curierului unde se află coletul.",
+     "en": "When the parcel leaves, you get the tracking number by e-mail. With it you can see on the courier's website where the parcel is.",
+     "hu": "Amikor a csomag elindul, e-mailben megkapja a csomagkövetési számot. Ezzel a futár oldalán láthatja, hol tart a csomag."
+    }
+   },
+   {
+    "q": {
+     "ro": "Ce fac dacă coletul a sosit deteriorat?",
+     "en": "What if the parcel arrives damaged?",
+     "hu": "Mi a teendő, ha a csomag sérülten érkezik?"
+    },
+    "a": {
+     "ro": "Refuzați coletul sau notați problema pe documentul curierului, apoi scrieți-ne cu numărul comenzii și o fotografie. Vă înlocuim produsul prin garanția legală, iar transportul îl plătește magazinul.",
+     "en": "Refuse the parcel or note the problem on the courier's form, then write to us with your order number and a photo. We replace the product under the legal guarantee, and the shop pays the shipping.",
+     "hu": "Tagadja meg az átvételt, vagy írja fel a hibát a futár szállítólevelére, majd írjon nekünk a rendelésszámmal és egy fényképpel. A terméket a jogszabályi szavatosság alapján kicseréljük, a szállítást a bolt fizeti."
+    }
+   }
+  ],
+  "table": "delivery"
+ },
+ {
+  "slug": "retur",
+  "updated": "2026-10-04",
+  "numbered": true,
+  "title": {
+   "ro": "Retur și dreptul de retragere",
+   "en": "Returns and the right of withdrawal",
+   "hu": "Elállás és visszaküldés"
+  },
+  "summary": {
+   "ro": "Cum vă retrageți dintr-o comandă în 14 zile, fără motiv, ce produse nu se pot returna și când primiți banii înapoi.",
+   "en": "How to withdraw from an order within 14 days without giving a reason, which products cannot be returned and when you get your money back.",
+   "hu": "Hogyan állhat el a rendeléstől 14 napon belül indoklás nélkül, mely termékek nem küldhetők vissza, és mikor kapja vissza a pénzét."
+  },
+  "sections": [
+   {
+    "id": "termen",
+    "heading": {
+     "ro": "Termenul de 14 zile",
+     "en": "The 14-day period",
+     "hu": "A 14 napos határidő"
+    },
+    "body": {
+     "ro": "Aveți 14 zile calendaristice să vă retrageți din contract, fără să spuneți motivul (OUG 34/2014, art. 9). Termenul începe în ziua în care dumneavoastră, sau o persoană indicată de dumneavoastră, alta decât curierul, primiți produsele; dacă o comandă vine în mai multe colete, din ziua în care îl primiți pe ultimul.\n\nRetragerea e la timp dacă ne trimiteți declarația înainte să treacă cele 14 zile.",
+     "en": "You have 14 calendar days to withdraw from the contract without giving any reason (OUG 34/2014, art. 9). The period starts on the day you, or someone you name other than the courier, receive the products; if an order comes in several parcels, from the day you receive the last one.\n\nYour withdrawal is in time if you send us your statement before the 14 days are over.",
+     "hu": "14 naptári napja van arra, hogy indoklás nélkül elálljon a szerződéstől (OUG 34/2014, 9. cikkely). A határidő azon a napon kezdődik, amikor Ön vagy az Ön által megjelölt, a futártól eltérő személy átveszi a termékeket; ha a rendelés több csomagban érkezik, az utolsó csomag átvételének napján.\n\nAz elállás határidőben történik, ha nyilatkozatát a 14 nap lejárta előtt elküldi nekünk."
+    }
+   },
+   {
+    "id": "cum",
+    "heading": {
+     "ro": "Cum vă retrageți",
+     "en": "How to withdraw",
+     "hu": "Hogyan állhat el"
+    },
+    "body": {
+     "ro": "Alegeți una dintre cele trei căi; toate au același efect.",
+     "en": "Use any one of the three ways; they all have the same effect.",
+     "hu": "Válassza a három út bármelyikét; mindegyiknek ugyanaz a hatása."
+    },
+    "list": {
+     "ro": [
+      "Butonul online [Retrageți-vă din contract aici](withdraw): doi pași, iar confirmarea vine imediat pe e-mail.",
+      "Formularul standard de retragere de mai jos, completat și trimis la {contacts.email} sau prin poștă la {company.address}.",
+      "Orice declarație clară trimisă la {contacts.email}: numele, numărul comenzii și faptul că vă retrageți din contract."
+     ],
+     "en": [
+      "The online button [Withdraw from contract here](withdraw): two steps, and the confirmation arrives by e-mail at once.",
+      "The standard withdrawal form below, filled in and sent to {contacts.email} or by post to {company.address}.",
+      "Any clear statement sent to {contacts.email}: your name, the order number and that you withdraw from the contract."
+     ],
+     "hu": [
+      "Az online [Elállás a szerződéstől itt](withdraw) gomb: két lépés, a visszaigazolás azonnal megérkezik e-mailben.",
+      "Az alábbi szabványos elállási nyilatkozatminta, kitöltve, e-mailben ({contacts.email}) vagy postán erre a címre küldve: {company.address}.",
+      "Bármilyen egyértelmű nyilatkozat e-mailben ({contacts.email}): az Ön neve, a rendelésszám, és hogy eláll a szerződéstől."
+     ]
+    }
+   },
+   {
+    "id": "buton",
+    "heading": {
+     "ro": "Butonul de retragere online",
+     "en": "The online withdrawal button",
+     "hu": "Az online elállási gomb"
+    },
+    "body": {
+     "ro": "Butonul e mai jos și îl găsiți oricând în cele 14 zile. Are doi pași.\n\nPasul 1: scrieți numele, numărul comenzii și adresa de e-mail folosită la comandă. Pasul 2: apăsați „Confirmați retragerea”.\n\nImediat primiți pe e-mail confirmarea, cu conținutul declarației, data și ora la care am primit-o. Păstrați e-mailul: arată că v-ați retras la timp.",
+     "en": "The button is below and stays available for the whole 14 days. It has two steps.\n\nStep 1: enter your name, the order number and the e-mail address used for the order. Step 2: press “Confirm withdrawal”.\n\nYou immediately receive a confirmation by e-mail with the content of your statement and the date and time we received it. Keep the e-mail: it shows you withdrew in time.",
+     "hu": "A gomb alább található, és a 14 nap alatt végig elérhető. Két lépésből áll.\n\nElső lépés: adja meg a nevét, a rendelésszámot és a rendeléshez használt e-mail-címet. Második lépés: nyomja meg az „Elállás megerősítése” gombot.\n\nAzonnal megkapja e-mailben a visszaigazolást a nyilatkozat tartalmával, valamint beérkezésének dátumával és időpontjával. Őrizze meg az e-mailt: ez igazolja, hogy időben elállt."
+    },
+    "slot": "withdrawal"
+   },
+   {
+    "id": "formular",
+    "heading": {
+     "ro": "Formularul standard de retragere",
+     "en": "The standard withdrawal form",
+     "hu": "Szabványos elállási nyilatkozatminta"
+    },
+    "body": {
+     "ro": "Dacă preferați formularul, copiați textul de mai jos, completați-l și trimiteți-l la {contacts.email} sau prin poștă (anexa la OUG 34/2014, partea B). Nu e obligatoriu să îl folosiți.\n\nCătre {company.name}, {company.address}, {contacts.email}\n\nVă informez prin prezenta cu privire la retragerea mea din contractul de vânzare a următoarelor produse: …\n\nComandate la data: … / primite la data: …\n\nNumele consumatorului: …\n\nAdresa consumatorului: …\n\nSemnătura (numai dacă formularul e pe hârtie): …\n\nData: …",
+     "en": "If you prefer the form, copy the text below, fill it in and send it to {contacts.email} or by post (Annex to OUG 34/2014, part B). You do not have to use it.\n\nTo {company.name}, {company.address}, {contacts.email}\n\nI hereby give notice that I withdraw from my contract of sale of the following products: …\n\nOrdered on: … / received on: …\n\nName of consumer: …\n\nAddress of consumer: …\n\nSignature (only if the form is on paper): …\n\nDate: …",
+     "hu": "Ha a nyilatkozatmintát választja, másolja ki az alábbi szöveget, töltse ki, és küldje el e-mailben ({contacts.email}) vagy postán (OUG 34/2014, melléklet, B rész). Használata nem kötelező.\n\nCímzett: {company.name}, {company.address}, {contacts.email}\n\nAlulírott kijelentem, hogy gyakorlom elállási jogomat az alábbi termékek adásvételére irányuló szerződés tekintetében: …\n\nMegrendelés időpontja: … / átvétel időpontja: …\n\nA fogyasztó neve: …\n\nA fogyasztó címe: …\n\nAláírás (csak papíron tett nyilatkozat esetén): …\n\nKelt: …"
+    }
+   },
+   {
+    "id": "trimitere",
+    "heading": {
+     "ro": "Trimiterea produselor înapoi",
+     "en": "Sending the products back",
+     "hu": "A termékek visszaküldése"
+    },
+    "body": {
+     "ro": "Trimiteți produsele înapoi în cel mult 14 zile de la ziua în care ne-ați anunțat retragerea, la adresa {company.address}, dacă nu v-am indicat alta. Termenul e respectat dacă le predați curierului înainte să treacă cele 14 zile (OUG 34/2014, art. 14).\n\nCostul transportului de retur îl plătiți dumneavoastră. Ambalați produsele bine, de preferat în cutia lor, cu flacoanele în picioare și protejate, ca să nu se spargă sau să curgă; puneți în colet numărul comenzii.\n\nRăspundeți doar pentru scăderea valorii produselor care vine din folosirea lor mai mult decât e nevoie ca să le verificați.",
+     "en": "Send the products back within 14 days of the day you told us you are withdrawing, to {company.address}, unless we have given you another address. The deadline is met if you hand them to the courier before the 14 days are over (OUG 34/2014, art. 14).\n\nYou pay the cost of the return shipping. Pack the products well, ideally in their box, with bottles upright and padded so they cannot break or leak; put the order number in the parcel.\n\nYou are only liable for loss of value caused by handling the products more than needed to check them.",
+     "hu": "A termékeket az elállás bejelentésétől számított 14 napon belül küldje vissza erre a címre: {company.address}, hacsak nem adtunk meg másikat. A határidő teljesül, ha a 14 nap lejárta előtt átadja őket a futárnak (OUG 34/2014, 14. cikkely).\n\nA visszaküldés szállítási költségét Ön fizeti. Gondosan csomagolja be a termékeket, lehetőleg az eredeti dobozukban, az üvegeket állítva és kipárnázva, hogy ne törjenek el és ne folyjanak ki; tegye a csomagba a rendelésszámot.\n\nÖn csak azért az értékcsökkenésért felel, amely abból ered, hogy a termékeket a megvizsgálásukhoz szükségesnél jobban használta."
+    }
+   },
+   {
+    "id": "rambursare",
+    "heading": {
+     "ro": "Când primiți banii",
+     "en": "When you get your money back",
+     "hu": "Mikor kapja vissza a pénzét"
+    },
+    "body": {
+     "ro": "Vă returnăm toți banii plătiți, inclusiv costul livrării la nivelul celei mai ieftine livrări standard pe care o oferim, în cel mult 14 zile de la ziua în care ne-ați anunțat retragerea (OUG 34/2014, art. 13). Dacă ați ales o livrare mai scumpă decât cea standard, diferența nu se returnează.\n\nPutem amâna rambursarea până primim produsele înapoi sau până ne trimiteți dovada că le-ați expediat, oricare vine mai întâi.\n\nBanii vin prin aceeași metodă de plată pe care ați folosit-o, dacă nu ne înțelegem altfel, fără niciun cost pentru dumneavoastră. Dacă ați plătit ramburs, vi-i trimitem prin transfer bancar, în contul pe care ni-l indicați.",
+     "en": "We refund everything you paid, including delivery up to the cost of the cheapest standard delivery we offer, within 14 days of the day you told us you are withdrawing (OUG 34/2014, art. 13). If you chose a more expensive delivery than the standard one, the difference is not refunded.\n\nWe may hold the refund until we receive the products back or you send us proof that you have shipped them, whichever comes first.\n\nThe money comes back by the same payment method you used, unless we agree otherwise, at no cost to you. If you paid cash on delivery, we send it by bank transfer to the account you give us.",
+     "hu": "Minden kifizetett összeget visszatérítünk, a szállítási díjat is a legolcsóbb általunk kínált szokásos szállítási mód díjáig, az elállás bejelentésétől számított 14 napon belül (OUG 34/2014, 13. cikkely). Ha a szokásosnál drágább szállítást választott, a különbözetet nem térítjük vissza.\n\nA visszatérítést visszatarthatjuk, amíg a termékek vissza nem érkeznek, vagy amíg nem igazolja, hogy feladta őket, attól függően, melyik történik előbb.\n\nA pénzt ugyanazzal a fizetési móddal kapja vissza, amellyel fizetett, hacsak másban nem állapodunk meg, és ez Önnek semmibe sem kerül. Ha utánvéttel fizetett, banki átutalással küldjük az Ön által megadott számlára."
+    }
+   },
+   {
+    "id": "exceptii",
+    "heading": {
+     "ro": "Ce nu se poate returna",
+     "en": "What cannot be returned",
+     "hu": "Mi nem küldhető vissza"
+    },
+    "body": {
+     "ro": "Produsele nedesfăcute, cu sigiliul intact, le puteți returna ca pe oricare altele. Excepțiile sunt doar acestea (OUG 34/2014, art. 16):",
+     "en": "Unopened products with the seal intact can be returned like any others. The only exceptions are these (OUG 34/2014, art. 16):",
+     "hu": "A bontatlan, sértetlen zárású termékeket ugyanúgy visszaküldheti, mint bármely mást. Kivétel csak a következő (OUG 34/2014, 16. cikkely):"
+    },
+    "list": {
+     "ro": [
+      "Produse sigilate desfăcute după livrare, care nu se mai pot returna din motive de igienă sau de protecție a sănătății: uleiuri, capsule, cosmetice și lichide în sigiliul fabricii (lit. e).",
+      "Produse care se deteriorează rapid — doar cele cu adevărat perisabile, de exemplu unele alimente (lit. d).",
+      "Produse care, după livrare, s-au amestecat inseparabil cu alte bunuri (lit. f)."
+     ],
+     "en": [
+      "Sealed products unsealed after delivery that cannot be returned for health protection or hygiene reasons: oils, capsules, cosmetics and liquids in the factory seal (letter e).",
+      "Goods that deteriorate quickly — only those that are truly perishable, such as some edibles (letter d).",
+      "Goods that, after delivery, have been inseparably mixed with other items (letter f)."
+     ],
+     "hu": [
+      "Zárt csomagolású termékek, amelyeket átvétel után felbontottak, és egészségvédelmi vagy higiéniai okból nem küldhetők vissza: gyári zárású olajok, kapszulák, kozmetikumok és folyadékok (e pont).",
+      "Gyorsan romló termékek — csak a valóban romlandók, például egyes élelmiszerek (d pont).",
+      "Termékek, amelyek átvétel után elválaszthatatlanul összekeveredtek más termékekkel (f pont)."
+     ]
+    }
+   },
+   {
+    "id": "defecte",
+    "heading": {
+     "ro": "Produs deteriorat sau greșit",
+     "en": "Damaged or wrong product",
+     "hu": "Sérült vagy nem a rendelt termék"
+    },
+    "body": {
+     "ro": "Dacă produsul a sosit deteriorat, cu sigiliul rupt sau nu e cel comandat, nu aveți nevoie de retragere: e o reclamație în [garanția legală de conformitate](doc:garantie), iar transportul îl plătește magazinul.\n\nScrieți-ne la {contacts.email} cu numărul comenzii și o fotografie, iar noi vă spunem ce urmează.",
+     "en": "If the product arrived damaged, with a broken seal or is not the one you ordered, you do not need to withdraw: it is a claim under the [legal guarantee of conformity](doc:garantie), and the shop pays the shipping.\n\nWrite to us at {contacts.email} with your order number and a photo, and we will tell you what happens next.",
+     "hu": "Ha a termék sérülten, feltört zárral érkezett, vagy nem azt kapta, amit rendelt, nem kell elállnia: ez a [jogszabályi szavatosság](doc:garantie) körébe tartozó igény, és a szállítást a bolt fizeti.\n\nÍrjon nekünk e-mailt ({contacts.email}) a rendelésszámmal és egy fényképpel, és megírjuk, mi a következő lépés."
+    }
+   }
+  ],
+  "faq": [
+   {
+    "q": {
+     "ro": "Pot returna un ulei deschis?",
+     "en": "Can I return an opened oil?",
+     "hu": "Visszaküldhetek egy felbontott olajat?"
+    },
+    "a": {
+     "ro": "Nu, dacă sigiliul a fost rupt după livrare: produsele sigilate desfăcute nu se mai pot returna din motive de igienă (OUG 34/2014, art. 16 lit. e). Un flacon nedesfăcut, cu sigiliul intact, îl puteți returna.",
+     "en": "No, if the seal was broken after delivery: unsealed products cannot be returned for hygiene reasons (OUG 34/2014, art. 16(e)). An unopened bottle with the seal intact can be returned.",
+     "hu": "Nem, ha a zárat átvétel után feltörték: a felbontott zárt termékek higiéniai okból nem küldhetők vissza (OUG 34/2014, 16. cikkely e pont). A bontatlan, sértetlen zárású üveget visszaküldheti."
+    }
+   },
+   {
+    "q": {
+     "ro": "Cine plătește transportul la retur?",
+     "en": "Who pays for return shipping?",
+     "hu": "Ki fizeti a visszaküldés költségét?"
+    },
+    "a": {
+     "ro": "Dumneavoastră plătiți transportul produselor înapoi. Dacă produsul a sosit deteriorat sau greșit, transportul îl plătește magazinul.",
+     "en": "You pay for sending the products back. If the product arrived damaged or wrong, the shop pays the shipping.",
+     "hu": "A termékek visszaküldésének költségét Ön fizeti. Ha a termék sérülten érkezett, vagy nem azt kapta, amit rendelt, a szállítást a bolt fizeti."
+    }
+   },
+   {
+    "q": {
+     "ro": "Când primesc banii înapoi?",
+     "en": "When do I get my money back?",
+     "hu": "Mikor kapom vissza a pénzemet?"
+    },
+    "a": {
+     "ro": "În cel mult 14 zile de la ziua în care ne-ați anunțat retragerea. Putem aștepta până primim produsele sau dovada că le-ați trimis.",
+     "en": "Within 14 days of the day you told us you are withdrawing. We may wait until we receive the products or proof that you have sent them.",
+     "hu": "Az elállás bejelentésétől számított 14 napon belül. Megvárhatjuk, amíg a termékek visszaérkeznek, vagy amíg igazolja, hogy feladta őket."
+    }
+   },
+   {
+    "q": {
+     "ro": "Trebuie să spun de ce returnez?",
+     "en": "Do I need to give a reason?",
+     "hu": "Meg kell indokolnom az elállást?"
+    },
+    "a": {
+     "ro": "Nu. În cele 14 zile vă puteți retrage fără niciun motiv.",
+     "en": "No. Within the 14 days you can withdraw without giving any reason.",
+     "hu": "Nem. A 14 napon belül indoklás nélkül elállhat."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "garantie",
+  "updated": "2026-10-08",
+  "numbered": true,
+  "title": {
+   "ro": "Garanția legală de conformitate",
+   "en": "Legal guarantee of conformity",
+   "hu": "Jogszabályi szavatosság"
+  },
+  "summary": {
+   "ro": "Ce drepturi aveți timp de 2 ani dacă un produs a sosit deteriorat, greșit sau nu corespunde etichetei.",
+   "en": "Your rights for 2 years if a product arrived damaged, wrong or not as described on the label.",
+   "hu": "Milyen jogai vannak 2 évig, ha a termék sérülten érkezett, nem azt kapta, amit rendelt, vagy nem felel meg a címkének."
+  },
+  "sections": [
+   {
+    "id": "ce-este",
+    "heading": {
+     "ro": "Ce este garanția legală",
+     "en": "What the legal guarantee is",
+     "hu": "Mi a jogszabályi szavatosság"
+    },
+    "body": {
+     "ro": "Pentru fiecare produs cumpărat de la noi răspundem de orice lipsă de conformitate care exista la livrare și apare în 2 ani de la livrare (OUG 140/2021). Garanția legală e gratuită și se aplică de drept, fără niciun document în plus.\n\nÎn primul an după livrare, o lipsă de conformitate se presupune că exista deja la livrare: nu trebuie să dovediți dumneavoastră acest lucru.",
+     "en": "For every product bought from us, we are liable for any lack of conformity that existed at delivery and becomes apparent within 2 years of delivery (OUG 140/2021). The legal guarantee is free and applies by law, with no extra document.\n\nIn the first year after delivery, a lack of conformity is presumed to have existed at delivery: you do not have to prove it.",
+     "hu": "Minden nálunk vásárolt termékért felelünk, ha a szállításkor már nem felelt meg a szerződésnek, és ez a szállítástól számított 2 éven belül kiderül (OUG 140/2021). A jogszabályi szavatosság ingyenes, és a törvény erejénél fogva érvényes, külön irat nélkül.\n\nA szállítást követő első évben vélelmezni kell, hogy a hiba már a szállításkor megvolt: ezt nem Önnek kell bizonyítania."
+    }
+   },
+   {
+    "id": "ce-acopera",
+    "heading": {
+     "ro": "Ce acoperă",
+     "en": "What it covers",
+     "hu": "Mire terjed ki"
+    },
+    "body": {
+     "ro": "Produsele noastre se consumă și au termen de valabilitate: data de pe ambalaj arată până când le folosiți, iar garanția privește starea lor la livrare.\n\nNu intră în garanție expirarea normală după livrare, folosirea altfel decât scrie pe etichetă și păstrarea contrar indicațiilor de pe etichetă. Intră în garanție orice problemă care exista la livrare, de exemplu:",
+     "en": "Our products are consumables with a shelf life: the date on the pack tells you until when to use them, and the guarantee covers their condition at delivery.\n\nThe guarantee does not cover normal expiry after delivery, use other than as the label says, or storage contrary to the label. It covers any problem that existed at delivery, for example:",
+     "hu": "Termékeink elhasználódnak, és lejárati idejük van: a csomagoláson lévő dátum mutatja, meddig használhatók, a szavatosság pedig a szállításkori állapotukra vonatkozik.\n\nNem tartozik ide a szállítás utáni szokásos lejárat, a címkétől eltérő használat és a címkén leírtakkal ellentétes tárolás. Ide tartozik minden hiba, amely már a szállításkor megvolt, például:"
+    },
+    "list": {
+     "ro": [
+      "Ați primit alt produs sau altă variantă decât ați comandat.",
+      "Produsul a sosit deteriorat.",
+      "Sigiliul era rupt la primire.",
+      "Conținutul nu corespunde etichetei sau [buletinului de analiză](doc:analize-de-laborator) al lotului.",
+      "Produsul era expirat la livrare."
+     ],
+     "en": [
+      "You received a different product or variant from the one you ordered.",
+      "The product arrived damaged.",
+      "The seal was broken on arrival.",
+      "The content does not match the label or the batch's [lab report](doc:analize-de-laborator).",
+      "The product had expired on delivery."
+     ],
+     "hu": [
+      "Más terméket vagy más változatot kapott, mint amit rendelt.",
+      "A termék sérülten érkezett.",
+      "A zár átvételkor már fel volt törve.",
+      "A tartalom nem egyezik a címkével vagy a gyártási tétel [laborvizsgálati jegyzőkönyvével](doc:analize-de-laborator).",
+      "A termék a szállításkor már lejárt."
+     ]
+    }
+   },
+   {
+    "id": "cum",
+    "heading": {
+     "ro": "Cum faceți o reclamație",
+     "en": "How to make a claim",
+     "hu": "Hogyan jelezheti a hibát"
+    },
+    "body": {
+     "ro": "Scrieți-ne la {contacts.email} imediat ce observați problema. Vă răspundem repede și vă spunem ce urmează; dacă produsul trebuie trimis înapoi, transportul îl plătește magazinul.\n\nÎn e-mail trimiteți:",
+     "en": "Write to us at {contacts.email} as soon as you notice the problem. We answer quickly and tell you what happens next; if the product has to come back, the shop pays the shipping.\n\nIn the e-mail, send:",
+     "hu": "Írjon nekünk e-mailt ({contacts.email}), amint észreveszi a hibát. Gyorsan válaszolunk, és megírjuk, mi a következő lépés; ha a terméket vissza kell küldeni, a szállítást a bolt fizeti.\n\nAz e-mailben küldje el:"
+    },
+    "list": {
+     "ro": [
+      "Numărul comenzii.",
+      "O fotografie a produsului și a ambalajului.",
+      "Numărul lotului de pe etichetă."
+     ],
+     "en": [
+      "Your order number.",
+      "A photo of the product and its packaging.",
+      "The batch number from the label."
+     ],
+     "hu": [
+      "A rendelésszámot.",
+      "Egy fényképet a termékről és a csomagolásról.",
+      "A gyártási tétel számát a címkéről."
+     ]
+    }
+   },
+   {
+    "id": "remedii",
+    "heading": {
+     "ro": "Ce puteți cere",
+     "en": "What you can ask for",
+     "hu": "Mit kérhet"
+    },
+    "body": {
+     "ro": "Puteți cere înlocuirea produsului sau, unde se poate, repararea lui, gratuit, într-un termen rezonabil de cel mult 15 zile calendaristice de la data la care ne-ați anunțat problema (OUG 140/2021). Toate costurile, inclusiv transportul, le suportă magazinul.\n\nDacă înlocuirea sau repararea nu e posibilă, nu se face la timp sau problema rămâne, puteți cere o reducere proporțională a prețului sau rezoluțiunea contractului, adică banii înapoi.",
+     "en": "You can ask for the product to be replaced or, where possible, repaired, free of charge, within a reasonable time of no more than 15 calendar days from when you told us about the problem (OUG 140/2021). The shop bears all costs, including shipping.\n\nIf replacement or repair is not possible, is not done in time or the problem remains, you can ask for a proportionate price reduction or for the contract to be terminated, which means your money back.",
+     "hu": "Kérheti a termék cseréjét vagy, ahol lehetséges, a javítását, díjmentesen, észszerű határidőn belül, legfeljebb 15 naptári napon belül attól számítva, hogy jelezte nekünk a hibát (OUG 140/2021). Minden költséget, a szállítást is, a bolt fizet.\n\nHa a csere vagy a javítás nem lehetséges, nem történik meg időben, vagy a hiba megmarad, arányos árleszállítást kérhet, vagy elállhat a szerződéstől, és visszakapja a pénzét."
+    }
+   },
+   {
+    "id": "eticheta-ue",
+    "heading": {
+     "ro": "Informarea armonizată a UE",
+     "en": "The EU harmonised notice",
+     "hu": "Az egységes uniós tájékoztató"
+    },
+    "body": {
+     "ro": "Din 27 septembrie 2026, magazinele online din UE afișează informarea armonizată a UE despre garanția legală (Regulamentul (UE) 2025/1960). Noi o arătăm pe această pagină și la finalizarea comenzii, înainte de a plăti.\n\nEa vă explică drepturile în aceleași cuvinte în toate țările UE.",
+     "en": "Since 27 September 2026, online shops in the EU show the EU harmonised notice on the legal guarantee (Regulation (EU) 2025/1960). We show it on this page and at checkout, before you pay.\n\nIt explains your rights in the same words in every EU country.",
+     "hu": "2026. szeptember 27-től az uniós webáruházak megjelenítik a jogszabályi szavatosságról szóló egységes uniós tájékoztatót ((EU) 2025/1960 rendelet). Mi ezen az oldalon és a pénztárban, fizetés előtt mutatjuk.\n\nA tájékoztató az EU minden országában ugyanazokkal a szavakkal ismerteti a jogait."
+    },
+    "slot": "guarantee-notice"
+   },
+   {
+    "id": "comerciala",
+    "heading": {
+     "ro": "Garanția comercială",
+     "en": "Commercial guarantee",
+     "hu": "Kereskedelmi jótállás"
+    },
+    "body": {
+     "ro": "Magazinul nu oferă o garanție comercială în plus față de cea legală, decât dacă pagina produsului spune altfel; atunci condițiile ei sunt scrise acolo. O garanție comercială nu înlocuiește și nu reduce garanția legală.",
+     "en": "The shop gives no commercial guarantee on top of the legal one unless the product page says otherwise; its terms are then written there. A commercial guarantee never replaces or reduces the legal guarantee.",
+     "hu": "A bolt a jogszabályi szavatosságon felül nem vállal kereskedelmi jótállást, hacsak a termék oldala másként nem jelzi; ilyenkor a feltételei ott olvashatók. A kereskedelmi jótállás nem helyettesíti és nem szűkíti a jogszabályi szavatosságot."
+    }
+   },
+   {
+    "id": "litigii",
+    "heading": {
+     "ro": "Dacă nu ajungem la o înțelegere",
+     "en": "If we cannot agree",
+     "hu": "Ha nem jutunk megegyezésre"
+    },
+    "body": {
+     "ro": "Ne străduim să rezolvăm orice reclamație direct cu dumneavoastră. Dacă nu reușim, vă puteți adresa ANPC sau puteți folosi soluționarea alternativă a litigiilor (SAL) pe [reclamatiisal.anpc.ro](https://reclamatiisal.anpc.ro) (OG 38/2015). Rămâne și calea instanței.\n\nSe aplică legea română; drepturile dumneavoastră de consumator nu sunt limitate.",
+     "en": "We try to settle every claim directly with you. If we cannot, you can turn to ANPC, the Romanian consumer protection authority, or use alternative dispute resolution (SAL) at [reclamatiisal.anpc.ro](https://reclamatiisal.anpc.ro) (OG 38/2015). You can also go to court.\n\nRomanian law applies; your consumer rights are not limited.",
+     "hu": "Minden panaszt igyekszünk közvetlenül Önnel rendezni. Ha ez nem sikerül, az ANPC-hez, a román fogyasztóvédelmi hatósághoz fordulhat, vagy igénybe veheti az alternatív vitarendezést (SAL) a [reclamatiisal.anpc.ro](https://reclamatiisal.anpc.ro) oldalon (OG 38/2015). Bírósághoz is fordulhat.\n\nA román jog az irányadó; fogyasztói jogait ez nem korlátozza."
+    }
+   }
+  ],
+  "faq": [
+   {
+    "q": {
+     "ro": "Cât durează garanția?",
+     "en": "How long does the guarantee last?",
+     "hu": "Meddig tart a szavatosság?"
+    },
+    "a": {
+     "ro": "2 ani de la livrare. În primul an nu trebuie să dovediți că problema exista la livrare.",
+     "en": "2 years from delivery. In the first year you do not have to prove that the problem existed at delivery.",
+     "hu": "A szállítástól számított 2 évig. Az első évben nem Önnek kell bizonyítania, hogy a hiba már a szállításkor megvolt."
+    }
+   },
+   {
+    "q": {
+     "ro": "Am primit un flacon cu sigiliul rupt. Ce fac?",
+     "en": "My bottle arrived with a broken seal. What do I do?",
+     "hu": "Feltört zárral érkezett az üveg. Mit tegyek?"
+    },
+    "a": {
+     "ro": "Scrieți-ne la {contacts.email} cu numărul comenzii, o fotografie și numărul lotului. Vă trimitem alt produs, iar transportul îl plătește magazinul.",
+     "en": "Write to us at {contacts.email} with the order number, a photo and the batch number. We send you a new product, and the shop pays the shipping.",
+     "hu": "Írjon nekünk e-mailt ({contacts.email}) a rendelésszámmal, egy fényképpel és a gyártási tétel számával. Új terméket küldünk, a szállítást a bolt fizeti."
+    }
+   },
+   {
+    "q": {
+     "ro": "Pot cere banii înapoi în loc de alt produs?",
+     "en": "Can I ask for my money back instead of a new product?",
+     "hu": "Kérhetem a pénzemet a csere helyett?"
+    },
+    "a": {
+     "ro": "Mai întâi puteți cere înlocuirea. Dacă nu e posibilă, nu se face în 15 zile sau problema rămâne, puteți cere o reducere de preț sau banii înapoi.",
+     "en": "First you can ask for a replacement. If that is not possible, is not done within 15 days or the problem remains, you can ask for a price reduction or your money back.",
+     "hu": "Először a cserét kérheti. Ha ez nem lehetséges, 15 napon belül nem történik meg, vagy a hiba megmarad, árleszállítást kérhet, vagy visszakérheti a pénzét."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "contact",
+  "updated": "2026-10-04",
+  "numbered": false,
+  "title": {
+   "ro": "Contact",
+   "en": "Contact",
+   "hu": "Kapcsolat"
+  },
+  "summary": {
+   "ro": "Cum ne puteți scrie sau suna, când răspundem, unde trimiteți o reclamație și cum vă retrageți dintr-o comandă.",
+   "en": "How to write or call us, when we answer, where to send a complaint and how to withdraw from an order.",
+   "hu": "Hogyan írhat vagy telefonálhat nekünk, mikor válaszolunk, hová küldheti a panaszát, és hogyan állhat el egy rendeléstől."
+  },
+  "sections": [
+   {
+    "id": "cum-ne-contactati",
+    "heading": {
+     "ro": "Cum ne contactați",
+     "en": "How to reach us",
+     "hu": "Elérhetőségeink"
+    },
+    "body": {
+     "ro": "Ne puteți suna la {contacts.phone} sau ne puteți scrie la {contacts.email}. Pe fiecare pagină a magazinului găsiți și butonul de chat, prin care ne scrieți pe messenger.\n\nRăspundem în zilele lucrătoare, în programul de mai jos. Dacă întrebarea privește o comandă, adăugați numărul ei: așa vă răspundem mai repede.",
+     "en": "You can call us at {contacts.phone} or write to {contacts.email}. Every page of the shop also has a chat button that lets you message us on a messenger app.\n\nWe answer on working days, during the hours below. If your question is about an order, add the order number so we can answer faster.",
+     "hu": "Hívjon minket a {contacts.phone} számon, vagy írjon a {contacts.email} címre. A bolt minden oldalán megtalálja a csevegés gombot is, amellyel üzenetküldő alkalmazáson keresztül írhat nekünk.\n\nMunkanapokon, az alább megadott időben válaszolunk. Ha a kérdése egy rendelésre vonatkozik, adja meg a rendelés számát, így gyorsabban tudunk válaszolni."
+    }
+   },
+   {
+    "id": "program",
+    "heading": {
+     "ro": "Program",
+     "en": "Working hours",
+     "hu": "Ügyfélszolgálati idő"
+    },
+    "body": {
+     "ro": "Lucrăm de luni până vineri, între orele 9:00 și 18:00. Mesajele trimise sâmbătă sau duminică primesc răspuns luni. La telefon ne găsiți în același interval.",
+     "en": "We work Monday to Friday, 9:00–18:00. Messages sent on Saturday or Sunday are answered on Monday. The phone line is open during the same hours.",
+     "hu": "Hétfőtől péntekig, 9:00 és 18:00 között dolgozunk. A szombaton vagy vasárnap küldött üzenetekre hétfőn válaszolunk. Telefonon ugyanebben az időben érhet el minket."
+    }
+   },
+   {
+    "id": "firma",
+    "heading": {
+     "ro": "Datele firmei",
+     "en": "Company details",
+     "hu": "Cégadatok"
+    },
+    "body": {
+     "ro": "Magazinul este operat de {company.name}, CUI {company.cui}, Nr. Reg. Com. {company.regCom}, cu sediul în {company.address}. Mai multe despre noi și despre autoritățile care ne supraveghează găsiți în pagina [Despre noi](doc:despre-noi).",
+     "en": "The shop is run by {company.name}, tax ID (CUI) {company.cui}, Trade Register No. {company.regCom}, registered office at {company.address}. More about us and the authorities that supervise us is on the [About us](doc:despre-noi) page.",
+     "hu": "A boltot a(z) {company.name} üzemelteti (adószám, CUI: {company.cui}; cégjegyzékszám: {company.regCom}; székhely: {company.address}). Rólunk és a minket felügyelő hatóságokról a [Rólunk](doc:despre-noi) oldalon olvashat bővebben."
+    }
+   },
+   {
+    "id": "reclamatii",
+    "heading": {
+     "ro": "Reclamații",
+     "en": "Complaints",
+     "hu": "Panaszok"
+    },
+    "body": {
+     "ro": "Trimiteți reclamația pe e-mail la {contacts.email} și scrieți numărul comenzii. Vă răspundem în cel mult 30 de zile. Dacă produsul a sosit deteriorat sau nu corespunde comenzii, urmați pașii din [pagina despre garanție](doc:garantie).\n\nDacă nu ajungem la o înțelegere, vă puteți adresa ANPC sau puteți folosi soluționarea alternativă a litigiilor pe [platforma SAL a ANPC](https://reclamatiisal.anpc.ro) (OG 38/2015).",
+     "en": "Send your complaint by e-mail to {contacts.email} and include the order number. We answer within 30 days at the latest. If the product arrived damaged or not as ordered, follow the steps on the [guarantee page](doc:garantie).\n\nIf we cannot reach an agreement, you can turn to ANPC or use alternative dispute resolution on the [ANPC SAL platform](https://reclamatiisal.anpc.ro) (Government Ordinance 38/2015).",
+     "hu": "Panaszát e-mailben küldje a {contacts.email} címre, és adja meg a rendelés számát. Legkésőbb 30 napon belül válaszolunk. Ha a termék sérülten vagy nem a rendelésnek megfelelően érkezett, kövesse a [szavatosságról szóló oldalon](doc:garantie) leírt lépéseket.\n\nHa nem jutunk megegyezésre, az ANPC-hez fordulhat, vagy igénybe veheti az alternatív vitarendezést az [ANPC SAL platformján](https://reclamatiisal.anpc.ro) (38/2015. sz. kormányrendelet)."
+    }
+   },
+   {
+    "id": "retragere",
+    "heading": {
+     "ro": "Retragerea din contract",
+     "en": "Withdrawal from the contract",
+     "hu": "Elállás a szerződéstől"
+    },
+    "body": {
+     "ro": "Vă puteți retrage dintr-o comandă în 14 zile de la primirea produselor, fără să spuneți motivul, direct online: [Retrageți-vă din contract aici](withdraw).",
+     "en": "You can withdraw from an order within 14 days of receiving the goods, without giving a reason, directly online: [Withdraw from contract here](withdraw).",
+     "hu": "A termékek átvételétől számított 14 napon belül indoklás nélkül, közvetlenül online is elállhat a rendeléstől: [Elállás a szerződéstől itt](withdraw)."
+    }
+   }
+  ],
+  "faq": []
+ },
+ {
+  "slug": "termeni",
+  "updated": "2026-10-08",
+  "numbered": true,
+  "title": {
+   "ro": "Termeni și condiții",
+   "en": "Terms and conditions",
+   "hu": "Általános szerződési feltételek"
+  },
+  "summary": {
+   "ro": "Regulile după care cumpărați de la noi: cine vinde, cum se încheie contractul, prețuri, plată, livrare, retragere și reclamații.",
+   "en": "The rules for buying from us: who sells, how the contract is made, prices, payment, delivery, withdrawal and complaints.",
+   "hu": "A vásárlás szabályai nálunk: ki az eladó, hogyan jön létre a szerződés, árak, fizetés, szállítás, elállás és panaszok."
+  },
+  "sections": [
+   {
+    "id": "vanzator",
+    "heading": {
+     "ro": "Cine vinde",
+     "en": "Who sells",
+     "hu": "Ki az eladó"
+    },
+    "body": {
+     "ro": "Magazinul online este operat de {company.name}, CUI {company.cui}, Nr. Reg. Com. {company.regCom}, cu sediul în {company.address} (Legea 365/2002, art. 5).\n\nNe puteți scrie la {contacts.email} sau ne puteți suna la {contacts.phone}. Toate căile de contact sunt pe pagina [Contact](doc:contact).",
+     "en": "The online shop is run by {company.name}, tax ID (CUI) {company.cui}, Trade Register No. {company.regCom}, registered office at {company.address} (Law 365/2002, art. 5).\n\nYou can write to us at {contacts.email} or call us on {contacts.phone}. All the ways to reach us are on the [Contact](doc:contact) page.",
+     "hu": "Az online áruházat a(z) {company.name} üzemelteti. Adószám (CUI): {company.cui}, cégjegyzékszám: {company.regCom}, székhely: {company.address} (365/2002. sz. törvény, 5. cikk).\n\nÍrjon nekünk a {contacts.email} címre, vagy hívjon a {contacts.phone} számon. Minden elérhetőségünk a [Kapcsolat](doc:contact) oldalon található."
+    }
+   },
+   {
+    "id": "definitii",
+    "heading": {
+     "ro": "Definiții",
+     "en": "Definitions",
+     "hu": "Fogalmak"
+    },
+    "body": {
+     "ro": "În acești termeni, cuvintele de mai jos au înțelesul următor.",
+     "en": "In these terms, the words below have the following meaning.",
+     "hu": "E feltételekben az alábbi szavak jelentése a következő."
+    },
+    "list": {
+     "ro": [
+      "Consumator — persoana fizică ce cumpără în afara activității sale comerciale sau profesionale.",
+      "Comandă — cererea de cumpărare a produselor din coș, trimisă prin site.",
+      "Contract — contractul la distanță dintre dvs. și magazin, încheiat când primiți e-mailul de confirmare a comenzii.",
+      "Zi lucrătoare — de luni până vineri, fără sărbătorile legale din România."
+     ],
+     "en": [
+      "Consumer — a person who buys outside their trade, business or profession.",
+      "Order — the request to buy the products in the cart, sent through the site.",
+      "Contract — the distance contract between you and the shop, concluded when you receive the order confirmation e-mail.",
+      "Working day — Monday to Friday, except public holidays in Romania."
+     ],
+     "hu": [
+      "Fogyasztó — az a természetes személy, aki kereskedelmi, üzleti vagy szakmai tevékenységén kívül vásárol.",
+      "Rendelés — a kosárban lévő termékek megvásárlására irányuló kérés, amelyet a weboldalon küld el.",
+      "Szerződés — az Ön és az áruház között távollevők között kötött szerződés, amely a rendelést visszaigazoló e-mail megérkezésével jön létre.",
+      "Munkanap — hétfőtől péntekig, a romániai munkaszüneti napok kivételével."
+     ]
+    }
+   },
+   {
+    "id": "produse",
+    "heading": {
+     "ro": "Ce vindem",
+     "en": "What we sell",
+     "hu": "Mit árusítunk"
+    },
+    "body": {
+     "ro": "Vindem cosmetice și alte produse din cânepă industrială, doar dintre cele pe care legea le permite în România. Pe pagina fiecărui produs scrie regimul lui, de exemplu cosmetic notificat în CPNP.\n\nProdusele cu CBD nu sunt medicamente și nu înlocuiesc un tratament. Dacă sunteți însărcinată, alăptați sau luați medicamente, întrebați medicul sau farmacistul înainte de folosire. Vindem doar persoanelor de cel puțin 18 ani.\n\nFiecare lot are un buletin de analiză de la un laborator independent, explicat pe pagina [Analize de laborator](doc:analize-de-laborator).",
+     "en": "We sell cosmetics and other industrial-hemp products, only those the law allows in Romania. Each product page states its legal category, for example a cosmetic notified in the CPNP.\n\nCBD products are not medicines and do not replace any treatment. If you are pregnant, breastfeeding or taking medicines, ask a doctor or pharmacist before use. We sell only to people aged 18 or over.\n\nEvery batch has a certificate from an independent laboratory, explained on the [Lab reports](doc:analize-de-laborator) page.",
+     "hu": "Kozmetikumokat és más ipari kenderből készült termékeket árusítunk, kizárólag olyanokat, amelyeket a román jogszabályok megengednek. Minden termékoldalon szerepel a termék jogi besorolása, például a CPNP-ben bejelentett kozmetikum.\n\nA CBD-termékek nem gyógyszerek, és nem helyettesítenek semmilyen kezelést. Ha várandós, szoptat vagy gyógyszert szed, használat előtt kérdezze meg orvosát vagy gyógyszerészét. Csak 18. életévüket betöltött vásárlóknak értékesítünk.\n\nMinden gyártási tételhez független laboratórium vizsgálati tanúsítványa tartozik; ezt a [Laborvizsgálatok](doc:analize-de-laborator) oldal magyarázza el."
+    }
+   },
+   {
+    "id": "comanda",
+    "heading": {
+     "ro": "Cum comandați",
+     "en": "How to order",
+     "hu": "Hogyan rendelhet"
+    },
+    "body": {
+     "ro": "Comanda se plasează în pașii de mai jos. Până la trimitere puteți corecta orice greșeală: schimbați cantitățile în coș, apăsați „Modifică” la un pas deja completat sau reveniți cu „Înapoi la coș” (Legea 365/2002, art. 9).\n\nPăstrăm contractul, adică comanda și termenii valabili la data ei, și vi-l trimitem pe e-mail la cerere. Contractul se poate încheia în limba română, engleză sau maghiară.",
+     "en": "You place an order in the steps below. Until you send it, you can fix any mistake: change quantities in the cart, press “Change” on a step you have completed, or go “Back to cart” (Law 365/2002, art. 9).\n\nWe keep the contract, meaning the order and the terms valid on its date, and send it to you by e-mail on request. The contract can be concluded in Romanian, English or Hungarian.",
+     "hu": "A rendelést az alábbi lépésekben adhatja le. Elküldés előtt bármilyen hibát kijavíthat: módosíthatja a mennyiséget a kosárban, egy kész lépésnél a „Módosítás” gombot választhatja, vagy a „Vissza a kosárhoz” gombbal visszaléphet (365/2002. sz. törvény, 9. cikk).\n\nA szerződést, vagyis a rendelést és a napján érvényes feltételeket megőrizzük, és kérésére e-mailben elküldjük. A szerződés román, angol vagy magyar nyelven köthető meg."
+    },
+    "list": {
+     "ro": [
+      "Adăugați produsele în coș și apăsați „Finalizează comanda”.",
+      "Completați datele de contact.",
+      "Alegeți livrarea și adresa.",
+      "Alegeți metoda de plată.",
+      "Verificați comanda și apăsați „Comandă cu obligație de plată”: din acest pas vă asumați plata (OUG 34/2014).",
+      "Primiți e-mailul de confirmare; din acel moment contractul este încheiat."
+     ],
+     "en": [
+      "Add the products to the cart and press “Continue to checkout”.",
+      "Fill in your contact details.",
+      "Choose delivery and the address.",
+      "Choose how to pay.",
+      "Review the order and press “Order with obligation to pay”: this step commits you to pay (GEO 34/2014).",
+      "Receive the confirmation e-mail; from that moment the contract is concluded."
+     ],
+     "hu": [
+      "Tegye a termékeket a kosárba, és válassza a „Tovább a pénztárhoz” gombot.",
+      "Adja meg kapcsolati adatait.",
+      "Válassza ki a szállítási módot és a címet.",
+      "Válassza ki a fizetési módot.",
+      "Ellenőrizze a rendelést, és nyomja meg a „Megrendelés fizetési kötelezettséggel” gombot: ezzel a lépéssel fizetési kötelezettséget vállal (34/2014. sz. sürgősségi kormányrendelet).",
+      "Megkapja a visszaigazoló e-mailt; ettől a pillanattól a szerződés létrejött."
+     ]
+    }
+   },
+   {
+    "id": "cont",
+    "heading": {
+     "ro": "Contul de client",
+     "en": "Customer account",
+     "hu": "Vásárlói fiók"
+    },
+    "body": {
+     "ro": "Puteți comanda și fără cont. Dacă vă creați unul, cu e-mail și parolă sau prin Google ori Facebook, vedeți acolo comenzile și adresele salvate. Păstrați parola doar pentru dvs. și anunțați-ne la {contacts.email} dacă cineva a intrat în cont fără acordul dvs.\n\nPuteți închide contul oricând, scriindu-ne la {contacts.email}. Comenzile deja plasate rămân valabile, iar facturile le păstrăm cât cere legea. Cum folosim datele contului aflați din [Politica de confidențialitate](doc:confidentialitate).",
+     "en": "You can order without an account. If you create one, with an e-mail and password or through Google or Facebook, you can see your orders and saved addresses there. Keep your password to yourself and tell us at {contacts.email} if someone has entered your account without your consent.\n\nYou can close your account at any time by writing to {contacts.email}. Orders already placed remain valid, and we keep invoices for as long as the law requires. How we use account data is explained in the [Privacy policy](doc:confidentialitate).",
+     "hu": "Fiók nélkül is rendelhet. Ha fiókot hoz létre e-mail-címmel és jelszóval, vagy Google- illetve Facebook-fiókkal, ott látja rendeléseit és mentett címeit. A jelszavát tartsa titokban, és írjon nekünk a {contacts.email} címre, ha valaki az Ön engedélye nélkül belépett a fiókjába.\n\nA fiókot bármikor megszüntetheti, ha ír nekünk a {contacts.email} címre. A már leadott rendelések érvényesek maradnak, a számlákat pedig a törvényben előírt ideig megőrizzük. A fiókadatok kezeléséről az [Adatvédelmi tájékoztató](doc:confidentialitate) szól."
+    }
+   },
+   {
+    "id": "preturi",
+    "heading": {
+     "ro": "Prețuri",
+     "en": "Prices",
+     "hu": "Árak"
+    },
+    "body": {
+     "ro": "Prețurile sunt afișate în moneda magazinului și includ TVA. Costul livrării apare în coș înainte de a plăti, la fel și pragul de livrare gratuită.\n\nLa produsele reduse, prețul anterior afișat este cel mai mic preț practicat în ultimele 30 de zile înainte de reducere (HG 686/2022).\n\nDacă un preț apare vădit greșit din cauza unei erori tehnice, vă anunțăm înainte de expediere. Puteți păstra comanda la prețul corect sau o puteți anula, iar orice sumă plătită vă este returnată integral.",
+     "en": "Prices are shown in the shop's currency and include VAT. The delivery cost appears in the cart before you pay, and so does the free-delivery threshold.\n\nFor discounted products, the previous price shown is the lowest price we charged in the 30 days before the discount (GD 686/2022).\n\nIf a price is obviously wrong because of a technical error, we tell you before shipping. You can keep the order at the correct price or cancel it, and any amount paid is refunded in full.",
+     "hu": "Az árak az áruház pénznemében jelennek meg, és tartalmazzák az áfát. A szállítási költség fizetés előtt megjelenik a kosárban, ahogy az ingyenes szállítás határa is.\n\nAkciós termékeknél korábbi árként az akciót megelőző 30 nap legalacsonyabb árát tüntetjük fel (686/2022. sz. kormányhatározat).\n\nHa egy ár műszaki hiba miatt nyilvánvalóan téves, a feladás előtt értesítjük. Megtarthatja a rendelést a helyes áron, vagy lemondhatja, és a kifizetett összeget teljes egészében visszatérítjük."
+    }
+   },
+   {
+    "id": "plata",
+    "heading": {
+     "ro": "Plata",
+     "en": "Payment",
+     "hu": "Fizetés"
+    },
+    "body": {
+     "ro": "Puteți plăti ramburs, numerar sau cu cardul la curier, ori prin transfer bancar. Plata ramburs are o limită de valoare, afișată la finalizarea comenzii; la transfer bancar, comanda pleacă după ce banii ajung în cont.\n\nPlata online cu cardul (Visa, Mastercard, Apple Pay, Google Pay) apare la finalizarea comenzii când magazinul o activează. Factura vine pe e-mail; toate detaliile sunt pe pagina [Livrare și plată](doc:livrare-si-plata). Nu percepem nicio taxă în plus pentru metoda de plată aleasă (OUG 34/2014).",
+     "en": "You can pay cash on delivery, in cash or by card to the courier, or by bank transfer. Cash on delivery has an upper limit shown at checkout; with bank transfer, the order ships once the money arrives.\n\nOnline card payment (Visa, Mastercard, Apple Pay, Google Pay) appears at checkout when the shop enables it. The invoice comes by e-mail; all the details are on the [Delivery and payment](doc:livrare-si-plata) page. We charge no extra fee for the payment method you choose (GEO 34/2014).",
+     "hu": "Fizethet utánvéttel, készpénzzel vagy kártyával a futárnál, illetve banki átutalással. Az utánvétnek felső határa van, ezt a rendelés véglegesítésekor látja; átutalásnál a rendelést a pénz beérkezése után adjuk fel.\n\nAz online kártyás fizetés (Visa, Mastercard, Apple Pay, Google Pay) akkor jelenik meg a rendelés véglegesítésekor, amikor az áruház bekapcsolja. A számlát e-mailben küldjük; minden részlet a [Szállítás és fizetés](doc:livrare-si-plata) oldalon található. A választott fizetési módért nem számítunk fel többletdíjat (34/2014. sz. sürgősségi kormányrendelet)."
+    }
+   },
+   {
+    "id": "livrare",
+    "heading": {
+     "ro": "Livrarea",
+     "en": "Delivery",
+     "hu": "Szállítás"
+    },
+    "body": {
+     "ro": "Livrăm doar în România: prin curier la ușă, la locker sau cu ridicare din magazin. Termenele și urmărirea coletului sunt pe pagina [Livrare și plată](doc:livrare-si-plata).\n\nRiscul de pierdere sau deteriorare a produselor trece asupra dvs. în momentul în care primiți coletul. Verificați-l la primire; dacă e deteriorat, refuzați-l sau notați acest lucru pe documentul curierului și anunțați-ne.",
+     "en": "We deliver only within Romania: by courier to your door, to a locker, or for pickup from the shop. Delivery times and parcel tracking are on the [Delivery and payment](doc:livrare-si-plata) page.\n\nThe risk of loss or damage passes to you when you receive the parcel. Check it on receipt; if it is damaged, refuse it or note the damage on the courier's receipt and let us know.",
+     "hu": "Csak Románián belül szállítunk: futárral házhoz, csomagautomatába, vagy személyes átvétellel az üzletben. A szállítási időket és a csomagkövetést a [Szállítás és fizetés](doc:livrare-si-plata) oldal írja le.\n\nA termékek elvesztésének vagy sérülésének kockázata a csomag átvételekor száll át Önre. Átvételkor ellenőrizze a csomagot; ha sérült, tagadja meg az átvételét, vagy jegyezze fel a futár bizonylatára, és értesítsen minket."
+    }
+   },
+   {
+    "id": "retragere",
+    "heading": {
+     "ro": "Dreptul de retragere",
+     "en": "Right of withdrawal",
+     "hu": "Elállási jog"
+    },
+    "body": {
+     "ro": "Aveți 14 zile calendaristice de la primirea produselor ca să vă retrageți din contract, fără să dați vreun motiv; la mai multe livrări, termenul curge de la ultima (OUG 34/2014). Cel mai simplu folosiți butonul [Retrageți-vă din contract aici](withdraw); merg și formularul standard de retragere sau un e-mail clar.\n\nProdusele sigilate, cum ar fi uleiurile, capsulele, cosmeticele și lichidele, se pot returna doar nedesfăcute; desigilate după livrare nu mai pot fi primite înapoi, din motive de protecție a sănătății și de igienă (OUG 34/2014, art. 16).\n\nTransportul la retur îl plătiți dvs., iar banii vi-i returnăm în cel mult 14 zile de la declarația de retragere. Pașii sunt explicați pe pagina [Retur](doc:retur).",
+     "en": "You have 14 calendar days from receiving the products to withdraw from the contract without giving any reason; for several deliveries, the period runs from the last one (GEO 34/2014). The easiest way is the [Withdraw from contract here](withdraw) button; the standard withdrawal form or a clear e-mail also work.\n\nSealed products such as oils, capsules, cosmetics and liquids can be returned only unopened; once unsealed after delivery, they cannot be taken back for health protection and hygiene reasons (GEO 34/2014, art. 16).\n\nYou pay the return shipping, and we refund you within 14 days of your withdrawal statement. The steps are explained on the [Returns](doc:retur) page.",
+     "hu": "A termékek átvételétől számított 14 naptári napon belül indoklás nélkül elállhat a szerződéstől; több részletben történő szállításnál a határidő az utolsó átvételtől számít (34/2014. sz. sürgősségi kormányrendelet). A legegyszerűbb az [Elállás a szerződéstől itt](withdraw) gomb; a szabványos elállási nyilatkozatminta vagy egy egyértelmű e-mail is megfelel.\n\nA lezárt termékek, például olajok, kapszulák, kozmetikumok és folyadékok, csak bontatlanul küldhetők vissza; ha a szállítás után felbontották, egészségvédelmi és higiéniai okokból nem vehetjük vissza őket (34/2014. sz. sürgősségi kormányrendelet, 16. cikk).\n\nA visszaküldés szállítási költségét Ön fizeti, mi pedig az elállási nyilatkozattól számított 14 napon belül visszatérítjük az árat. A lépéseket a [Visszaküldés](doc:retur) oldal írja le."
+    }
+   },
+   {
+    "id": "garantie",
+    "heading": {
+     "ro": "Garanția de conformitate",
+     "en": "Guarantee of conformity",
+     "hu": "Szavatosság"
+    },
+    "body": {
+     "ro": "Răspundem pentru orice lipsă de conformitate descoperită în 2 ani de la livrare; în primul an se presupune că defectul exista deja la livrare (OUG 140/2021). Repararea sau înlocuirea este gratuită și se face în cel mult 15 zile calendaristice de când ne anunțați; dacă nu se poate, primiți o reducere de preț sau încetăm contractul.\n\nUn produs ajuns deteriorat sau greșit este o reclamație în garanție, nu o retragere, iar transportul îl plătește magazinul. Detaliile sunt pe pagina [Garanție](doc:garantie).",
+     "en": "We are liable for any lack of conformity found within 2 years of delivery; in the first year the defect is presumed to have existed at delivery (GEO 140/2021). Repair or replacement is free and done within 15 calendar days of you telling us; if that is not possible, you get a price reduction or we end the contract.\n\nA product that arrives damaged or wrong is a guarantee claim, not a withdrawal, and the shop pays the shipping. The details are on the [Guarantee](doc:garantie) page.",
+     "hu": "Felelünk minden olyan hibáért, amely a szállítástól számított 2 éven belül derül ki; az első évben vélelmezzük, hogy a hiba már a szállításkor megvolt (140/2021. sz. sürgősségi kormányrendelet). A javítás vagy csere ingyenes, és legfeljebb 15 naptári napon belül megtörténik attól számítva, hogy jelezte nekünk; ha ez nem lehetséges, árleszállítást kap, vagy megszüntetjük a szerződést.\n\nA sérülten vagy tévesen megérkezett termék szavatossági igény, nem elállás, és a szállítás költségét az áruház fizeti. A részleteket a [Szavatosság](doc:garantie) oldal írja le."
+    }
+   },
+   {
+    "id": "recenzii",
+    "heading": {
+     "ro": "Recenzii",
+     "en": "Reviews",
+     "hu": "Értékelések"
+    },
+    "body": {
+     "ro": "Marca „Cumpărător verificat” apare doar la recenziile legate de o comandă livrată de magazinul nostru; celelalte recenzii apar fără această marcă.\n\nPublicăm și recenziile negative. Nu publicăm recenziile ilegale, jignitoare, cu datele personale ale altor persoane sau fără legătură cu produsul și nu plătim pentru recenzii (Legea 363/2007).",
+     "en": "The “Verified buyer” mark appears only on reviews linked to an order delivered by our shop; other reviews appear without it.\n\nWe also publish negative reviews. We do not publish reviews that are unlawful, offensive, contain other people's personal data or are unrelated to the product, and we do not pay for reviews (Law 363/2007).",
+     "hu": "Az „Igazolt vásárló” jelölés csak a boltunk által kiszállított rendeléshez kapcsolódó értékeléseknél jelenik meg; a többi értékelés e jelölés nélkül látható.\n\nA negatív értékeléseket is közzétesszük. Nem tesszük közzé a jogellenes, sértő, mások személyes adatait tartalmazó vagy a termékhez nem kapcsolódó értékeléseket, és nem fizetünk értékelésekért (363/2007. sz. törvény)."
+    }
+   },
+   {
+    "id": "reclamatii",
+    "heading": {
+     "ro": "Reclamații",
+     "en": "Complaints",
+     "hu": "Panaszok"
+    },
+    "body": {
+     "ro": "Pentru o reclamație scrieți-ne la {contacts.email}, cu numărul comenzii și, dacă ajută, o fotografie. Vă răspundem în cel mult 30 de zile.\n\nDacă nu ajungem la o soluție, vă puteți adresa ANPC sau unei entități de soluționare alternativă a litigiilor (SAL), prin [reclamatiisal.anpc.ro](https://reclamatiisal.anpc.ro) (OG 38/2015; Ordinul ANPC 270/2026). Platforma europeană de soluționare online a litigiilor (SOL) a fost închisă la 20 iulie 2025.",
+     "en": "To make a complaint, write to us at {contacts.email} with your order number and, if it helps, a photo. We reply within 30 days at the latest.\n\nIf we cannot reach a solution, you can turn to ANPC or to an alternative dispute resolution body (SAL) via [reclamatiisal.anpc.ro](https://reclamatiisal.anpc.ro) (GO 38/2015; ANPC Order 270/2026). The EU online dispute resolution platform (ODR) was closed on 20 July 2025.",
+     "hu": "Panaszát a {contacts.email} címre írja meg, a rendelésszámmal és, ha segít, egy fényképpel. Legfeljebb 30 napon belül válaszolunk.\n\nHa nem jutunk megoldásra, az ANPC-hez vagy alternatív vitarendezési testülethez (SAL) fordulhat a [reclamatiisal.anpc.ro](https://reclamatiisal.anpc.ro) oldalon (38/2015. sz. kormányrendelet; az ANPC 270/2026. sz. rendelete). Az uniós online vitarendezési platform (OVR) 2025. július 20-án megszűnt."
+    }
+   },
+   {
+    "id": "restrictii",
+    "heading": {
+     "ro": "Restricții",
+     "en": "Restrictions",
+     "hu": "Korlátozások"
+    },
+    "body": {
+     "ro": "Vindem doar persoanelor de cel puțin 18 ani și livrăm doar la adrese din România; plasând comanda, confirmați că aveți 18 ani împliniți. Dacă în comandă sunt produse de vapat, curierul verifică vârsta la predare, iar ele nu se livrează la locker (Legea 201/2016).\n\nPutem refuza o comandă dacă nu putem confirma vârsta cumpărătorului sau adresa de livrare. În acest caz vă anunțăm, iar orice sumă plătită vă este returnată integral.",
+     "en": "We sell only to people aged 18 or over and deliver only to addresses in Romania; by placing an order you confirm you are at least 18. If the order contains vaping products, the courier checks your age on handover and they are not delivered to lockers (Law 201/2016).\n\nWe may refuse an order if we cannot confirm the buyer's age or the delivery address. In that case we let you know, and any amount paid is refunded in full.",
+     "hu": "Csak 18. életévüket betöltött személyeknek értékesítünk, és csak romániai címre szállítunk; a rendelés leadásával megerősíti, hogy elmúlt 18 éves. Ha a rendelésben e-cigarettás termék van, a futár átadáskor ellenőrzi az életkort, és ezeket nem szállítjuk csomagautomatába (201/2016. sz. törvény).\n\nElutasíthatunk egy rendelést, ha nem tudjuk megerősíteni a vásárló életkorát vagy a szállítási címet. Ilyenkor értesítjük, és a kifizetett összeget teljes egészében visszatérítjük."
+    }
+   },
+   {
+    "id": "proprietate",
+    "heading": {
+     "ro": "Proprietate intelectuală",
+     "en": "Intellectual property",
+     "hu": "Szellemi tulajdon"
+    },
+    "body": {
+     "ro": "Textele, fotografiile, logo-ul și grafica site-ului aparțin {company.name}. Nu le puteți copia, publica sau folosi în scop comercial fără acordul nostru scris.",
+     "en": "The texts, photos, logo and graphics of the site belong to {company.name}. You may not copy, publish or use them commercially without our written consent.",
+     "hu": "A weboldal szövegei, fényképei, logója és grafikai elemei a(z) {company.name} tulajdonát képezik. Írásos hozzájárulásunk nélkül nem másolhatók, nem tehetők közzé és nem használhatók kereskedelmi célra."
+    }
+   },
+   {
+    "id": "forta-majora",
+    "heading": {
+     "ro": "Forța majoră",
+     "en": "Force majeure",
+     "hu": "Vis maior"
+    },
+    "body": {
+     "ro": "Nu răspundem pentru întârzieri sau neexecutare cauzate de forța majoră, adică de evenimente imprevizibile și de neînlăturat, cum ar fi dezastrele naturale, războaiele sau interdicțiile impuse de autorități. Vă anunțăm cât mai repede, iar dacă nu mai putem livra, vă returnăm integral banii.",
+     "en": "We are not liable for delays or non-performance caused by force majeure, meaning unforeseeable and unavoidable events such as natural disasters, wars or bans imposed by authorities. We let you know as soon as possible, and if we can no longer deliver, we refund you in full.",
+     "hu": "Nem felelünk a vis maior, vagyis előre nem látható és elháríthatatlan események, például természeti katasztrófák, háborúk vagy hatósági tilalmak okozta késésért vagy nemteljesítésért. A lehető leghamarabb értesítjük, és ha már nem tudunk szállítani, a teljes összeget visszatérítjük."
+    }
+   },
+   {
+    "id": "legea",
+    "heading": {
+     "ro": "Legea aplicabilă",
+     "en": "Governing law",
+     "hu": "Irányadó jog"
+    },
+    "body": {
+     "ro": "Contractul este guvernat de legea română. Acest lucru nu vă lipsește de protecția pe care v-o dau normele obligatorii de protecție a consumatorilor.\n\nDacă o neînțelegere nu se rezolvă amiabil sau prin SAL, ea se judecă de instanțele competente din România.",
+     "en": "The contract is governed by Romanian law. This does not take away the protection that mandatory consumer protection rules give you.\n\nIf a disagreement cannot be settled amicably or through SAL, it goes to the competent courts in Romania.",
+     "hu": "A szerződésre a román jog irányadó. Ez nem fosztja meg Önt a kötelező fogyasztóvédelmi szabályok által nyújtott védelemtől.\n\nHa egy vita nem rendezhető békés úton vagy SAL útján, a romániai illetékes bíróság dönt róla."
+    }
+   },
+   {
+    "id": "modificari",
+    "heading": {
+     "ro": "Modificări",
+     "en": "Changes",
+     "hu": "Módosítások"
+    },
+    "body": {
+     "ro": "Putem actualiza acești termeni. Versiunea nouă se aplică doar comenzilor plasate după publicarea ei; comanda dvs. rămâne sub termenii valabili când ați plasat-o. Data ultimei actualizări este scrisă în partea de sus a paginii.\n\nTextul a fost pregătit ca model; magazinul îl verifică împreună cu juristul său.",
+     "en": "We may update these terms. A new version applies only to orders placed after it is published; your order stays under the terms valid when you placed it. The date of the last update is shown at the top of the page.\n\nThe text was prepared as a model; the shop reviews it together with its lawyer.",
+     "hu": "Ezeket a feltételeket módosíthatjuk. Az új változat csak a közzététele után leadott rendelésekre vonatkozik; az Ön rendelésére a leadásakor érvényes feltételek maradnak irányadók. Az utolsó módosítás dátuma az oldal tetején látható.\n\nA szöveg mintaként készült; az áruház a jogászával együtt ellenőrzi."
+    }
+   }
+  ],
+  "faq": []
+ },
+ {
+  "slug": "confidentialitate",
+  "updated": "2026-10-08",
+  "numbered": true,
+  "title": {
+   "ro": "Politica de confidențialitate",
+   "en": "Privacy policy",
+   "hu": "Adatvédelmi tájékoztató"
+  },
+  "summary": {
+   "ro": "Ce date personale folosim, de ce, cât timp le păstrăm, cui le transmitem și ce drepturi aveți asupra lor.",
+   "en": "Which personal data we use, why, how long we keep them, who receives them and what rights you have over them.",
+   "hu": "Milyen személyes adatokat kezelünk, miért, meddig őrizzük őket, kinek adjuk át, és milyen jogai vannak velük kapcsolatban."
+  },
+  "sections": [
+   {
+    "id": "operator",
+    "heading": {
+     "ro": "Cine prelucrează datele",
+     "en": "Who processes your data",
+     "hu": "Ki kezeli az adatokat"
+    },
+    "body": {
+     "ro": "Operatorul datelor dvs. personale este {company.name}, CUI {company.cui}, cu sediul în {company.address}. Pentru orice întrebare despre date ne scrieți la {contacts.email} sau ne sunați la {contacts.phone}.\n\nNu am numit un responsabil cu protecția datelor (DPO), pentru că prelucrările noastre nu îl cer (GDPR, art. 37). Întrebările ajung direct la noi, pe datele de contact de mai sus.",
+     "en": "The controller of your personal data is {company.name}, tax ID (CUI) {company.cui}, registered office at {company.address}. For any question about your data, write to us at {contacts.email} or call {contacts.phone}.\n\nWe have not appointed a data protection officer (DPO), because our processing does not require one (GDPR, art. 37). Your questions come straight to us at the contact details above.",
+     "hu": "Személyes adatainak adatkezelője a(z) {company.name}, adószám (CUI): {company.cui}, székhely: {company.address}. Az adataival kapcsolatos bármely kérdéssel írjon a {contacts.email} címre, vagy hívjon a {contacts.phone} számon.\n\nAdatvédelmi tisztviselőt (DPO) nem neveztünk ki, mert adatkezelésünk ezt nem teszi szükségessé (GDPR, 37. cikk). Kérdései közvetlenül hozzánk érkeznek a fenti elérhetőségeken."
+    }
+   },
+   {
+    "id": "date-si-scopuri",
+    "heading": {
+     "ro": "Ce date folosim și de ce",
+     "en": "What data we use and why",
+     "hu": "Milyen adatokat kezelünk és miért"
+    },
+    "body": {
+     "ro": "Folosim doar datele de care avem nevoie pentru fiecare scop de mai jos. Tabelul arată temeiul legal (GDPR, art. 6) și cât timp le păstrăm; după acest termen, datele sunt șterse sau anonimizate.",
+     "en": "We use only the data we need for each purpose below. The table shows the legal basis (GDPR, art. 6) and how long we keep them; after that, the data are deleted or anonymised.",
+     "hu": "Csak az alábbi célokhoz szükséges adatokat kezeljük. A táblázat mutatja a jogalapot (GDPR, 6. cikk) és a megőrzési időt; ennek leteltével az adatokat töröljük vagy anonimizáljuk."
+    },
+    "table": {
+     "head": {
+      "ro": [
+       "Ce date",
+       "De ce",
+       "Temei legal",
+       "Cât timp"
+      ],
+      "en": [
+       "What data",
+       "Why",
+       "Legal basis",
+       "How long"
+      ],
+      "hu": [
+       "Milyen adat",
+       "Miért",
+       "Jogalap",
+       "Meddig"
+      ]
+     },
+     "rows": {
+      "ro": [
+       [
+        "Nume, telefon, e-mail, adresa de livrare, produsele comandate",
+        "Preluarea, livrarea și urmărirea comenzii",
+        "Executarea contractului, art. 6 alin. (1) lit. b) GDPR",
+        "5 ani"
+       ],
+       [
+        "Datele de facturare și de plată, facturile",
+        "Facturare și contabilitate",
+        "Obligație legală, art. 6 alin. (1) lit. c) GDPR; Legea contabilității 82/1991",
+        "10 ani"
+       ],
+       [
+        "Adresa de e-mail",
+        "Newsletter",
+        "Consimțământ, art. 6 alin. (1) lit. a) GDPR",
+        "Până vă retrageți consimțământul"
+       ],
+       [
+        "Mesajele și reclamațiile dvs., datele de contact",
+        "Răspuns la întrebări și reclamații",
+        "Contract sau obligație legală, art. 6 alin. (1) lit. b) și c) GDPR",
+        "3 ani"
+       ],
+       [
+        "Numele afișat, textul și nota recenziei",
+        "Publicarea recenziilor",
+        "Consimțământ, art. 6 alin. (1) lit. a) GDPR",
+        "Până vă retrageți consimțământul"
+       ],
+       [
+        "Declarația de retragere: nume, număr de comandă, e-mail, data și ora",
+        "Dovada retragerii din contract și rambursarea",
+        "Obligație legală, art. 6 alin. (1) lit. c) GDPR",
+        "3 ani"
+       ],
+       [
+        "Contul de client: nume, e-mail, parola (păstrată doar criptată), adrese, istoricul comenzilor",
+        "Contul dvs.: comenzi mai rapide și istoricul lor",
+        "Executarea contractului, GDPR art. 6 alin. (1) lit. b)",
+        "Până închideți contul; facturile rămân cât cere legea"
+       ],
+       [
+        "Conectarea cu Google sau Facebook: datele de profil primite de la ei",
+        "Să vă conectați fără parolă, când alegeți asta",
+        "Executarea contractului, GDPR art. 6 alin. (1) lit. b)",
+        "Cât există contul"
+       ],
+       [
+        "Adresa IP, browserul, paginile cerute și ora (jurnalele serverului)",
+        "Securitatea site-ului și găsirea erorilor",
+        "Interes legitim: un site sigur și funcțional, GDPR art. 6 alin. (1) lit. f)",
+        "30 de zile"
+       ]
+      ],
+      "en": [
+       [
+        "Name, phone, e-mail, delivery address, products ordered",
+        "Taking, delivering and tracking your order",
+        "Performance of the contract, GDPR art. 6(1)(b)",
+        "5 years"
+       ],
+       [
+        "Billing and payment data, invoices",
+        "Invoicing and accounting",
+        "Legal obligation, GDPR art. 6(1)(c); Accounting Law 82/1991",
+        "10 years"
+       ],
+       [
+        "E-mail address",
+        "Newsletter",
+        "Consent, GDPR art. 6(1)(a)",
+        "Until you withdraw consent"
+       ],
+       [
+        "Your messages and complaints, contact details",
+        "Answering questions and complaints",
+        "Contract or legal obligation, GDPR art. 6(1)(b) and (c)",
+        "3 years"
+       ],
+       [
+        "Display name, review text and rating",
+        "Publishing reviews",
+        "Consent, GDPR art. 6(1)(a)",
+        "Until you withdraw consent"
+       ],
+       [
+        "Withdrawal statement: name, order number, e-mail, date and time",
+        "Proof of withdrawal and the refund",
+        "Legal obligation, GDPR art. 6(1)(c)",
+        "3 years"
+       ],
+       [
+        "Customer account: name, e-mail, password (stored only encrypted), addresses, order history",
+        "Your account: faster orders and their history",
+        "Performance of the contract, GDPR art. 6(1)(b)",
+        "Until you close the account; invoices stay as long as the law requires"
+       ],
+       [
+        "Signing in with Google or Facebook: the profile data they send us",
+        "Letting you sign in without a password, when you choose to",
+        "Performance of the contract, GDPR art. 6(1)(b)",
+        "As long as the account exists"
+       ],
+       [
+        "IP address, browser, pages requested and time (server logs)",
+        "Keeping the site secure and finding errors",
+        "Legitimate interest in a secure, working site, GDPR art. 6(1)(f)",
+        "30 days"
+       ]
+      ],
+      "hu": [
+       [
+        "Név, telefonszám, e-mail-cím, szállítási cím, megrendelt termékek",
+        "A rendelés felvétele, kézbesítése és követése",
+        "Szerződés teljesítése, GDPR 6. cikk (1) bek. b) pont",
+        "5 év"
+       ],
+       [
+        "Számlázási és fizetési adatok, számlák",
+        "Számlázás és könyvelés",
+        "Jogi kötelezettség, GDPR 6. cikk (1) bek. c) pont; 82/1991. sz. számviteli törvény",
+        "10 év"
+       ],
+       [
+        "E-mail-cím",
+        "Hírlevél",
+        "Hozzájárulás, GDPR 6. cikk (1) bek. a) pont",
+        "Hozzájárulása visszavonásáig"
+       ],
+       [
+        "Üzenetei és panaszai, kapcsolati adatok",
+        "Kérdések és panaszok megválaszolása",
+        "Szerződés vagy jogi kötelezettség, GDPR 6. cikk (1) bek. b) és c) pont",
+        "3 év"
+       ],
+       [
+        "Megjelenített név, az értékelés szövege és pontszáma",
+        "Értékelések közzététele",
+        "Hozzájárulás, GDPR 6. cikk (1) bek. a) pont",
+        "Hozzájárulása visszavonásáig"
+       ],
+       [
+        "Elállási nyilatkozat: név, rendelésszám, e-mail-cím, dátum és időpont",
+        "Az elállás igazolása és a visszatérítés",
+        "Jogi kötelezettség, GDPR 6. cikk (1) bek. c) pont",
+        "3 év"
+       ],
+       [
+        "Vásárlói fiók: név, e-mail-cím, jelszó (csak titkosítva tárolva), címek, rendelési előzmények",
+        "Az Ön fiókja: gyorsabb rendelés és a rendelések előzményei",
+        "Szerződés teljesítése, GDPR 6. cikk (1) b)",
+        "A fiók megszüntetéséig; a számlák a törvényben előírt ideig megmaradnak"
+       ],
+       [
+        "Bejelentkezés Google- vagy Facebook-fiókkal: a tőlük kapott profiladatok",
+        "Hogy jelszó nélkül jelentkezhessen be, ha ezt választja",
+        "Szerződés teljesítése, GDPR 6. cikk (1) b)",
+        "Amíg a fiók létezik"
+       ],
+       [
+        "IP-cím, böngésző, lekért oldalak és időpont (szervernaplók)",
+        "Az oldal biztonsága és a hibák felderítése",
+        "Jogos érdek: biztonságos, működő oldal, GDPR 6. cikk (1) f)",
+        "30 nap"
+       ]
+      ]
+     }
+    }
+   },
+   {
+    "id": "sursa",
+    "heading": {
+     "ro": "De unde avem datele",
+     "en": "Where we get your data",
+     "hu": "Honnan kapjuk az adatait"
+    },
+    "body": {
+     "ro": "Aproape toate datele le primim chiar de la dvs., când comandați, vă creați cont sau ne scrieți. Când alegeți să vă conectați cu Google sau Facebook, primim de la ei datele de profil de bază: numele, adresa de e-mail, un identificator al contului și, dacă există, poza de profil. Parola dvs. de acolo nu o primim niciodată (GDPR, art. 14).",
+     "en": "Almost all your data come from you, when you order, create an account or write to us. When you choose to sign in with Google or Facebook, we receive basic profile data from them: your name, e-mail address, an account identifier and, if there is one, your profile picture. We never receive your password there (GDPR, art. 14).",
+     "hu": "Szinte minden adatot közvetlenül Öntől kapunk, amikor rendel, fiókot hoz létre vagy ír nekünk. Ha a Google- vagy Facebook-bejelentkezést választja, tőlük az alapvető profiladatokat kapjuk meg: a nevét, e-mail-címét, egy fiókazonosítót és – ha van – a profilképét. Az ottani jelszavát soha nem kapjuk meg (GDPR, 14. cikk)."
+    }
+   },
+   {
+    "id": "obligatoriu",
+    "heading": {
+     "ro": "Ce date sunt obligatorii",
+     "en": "Which data are required",
+     "hu": "Mely adatok kötelezők"
+    },
+    "body": {
+     "ro": "Pentru o comandă avem nevoie de nume, telefon, e-mail și adresa de livrare, iar pentru factură de datele de facturare. Fără ele nu putem încheia contractul și nu putem livra comanda.\n\nAbonarea la newsletter și scrierea unei recenzii sunt voluntare. Dacă nu le folosiți, puteți cumpăra la fel.",
+     "en": "For an order we need your name, phone, e-mail and delivery address, and for the invoice your billing details. Without them we cannot conclude the contract or deliver the order.\n\nSubscribing to the newsletter and writing a review are voluntary. If you don't use them, you can still buy just the same.",
+     "hu": "A rendeléshez szükségünk van a nevére, telefonszámára, e-mail-címére és szállítási címére, a számlához pedig a számlázási adataira. Ezek nélkül nem tudjuk megkötni a szerződést és kiszállítani a rendelést.\n\nA hírlevélre való feliratkozás és az értékelés írása önkéntes. Ha nem él velük, ugyanúgy vásárolhat."
+    }
+   },
+   {
+    "id": "destinatari",
+    "heading": {
+     "ro": "Cui transmitem datele",
+     "en": "Who receives your data",
+     "hu": "Kinek adjuk át az adatokat"
+    },
+    "body": {
+     "ro": "Transmitem datele doar cât este necesar pentru scopul respectiv, către parteneri care lucrează cu noi pe bază de contract. Nu vindem datele dvs. nimănui.",
+     "en": "We share data only as far as each purpose requires, with partners who work with us under a contract. We do not sell your data to anyone.",
+     "hu": "Az adatokat csak az adott célhoz szükséges mértékben adjuk át olyan partnereknek, akik szerződés alapján dolgoznak velünk. Az adatait senkinek nem adjuk el."
+    },
+    "list": {
+     "ro": [
+      "Firmele de curierat, pentru livrare.",
+      "Furnizorul de găzduire a site-ului.",
+      "Procesatorul de plăți, când plătiți online cu cardul.",
+      "Contabilul sau firma de contabilitate.",
+      "Autoritățile publice, doar când legea o cere.",
+      "Serviciul de e-mail care trimite confirmările comenzilor și newsletterul.",
+      "Google sau Meta (Facebook), doar dacă alegeți să vă conectați prin ei."
+     ],
+     "en": [
+      "Courier companies, for delivery.",
+      "The site's hosting provider.",
+      "The payment processor, when you pay online by card.",
+      "Our accountant or accounting firm.",
+      "Public authorities, only when the law requires it.",
+      "The e-mail service that sends order confirmations and the newsletter.",
+      "Google or Meta (Facebook), only if you choose to sign in with them."
+     ],
+     "hu": [
+      "Futárszolgálatok a kézbesítéshez.",
+      "A weboldal tárhelyszolgáltatója.",
+      "A fizetési szolgáltató, ha online kártyával fizet.",
+      "Könyvelőnk vagy könyvelőirodánk.",
+      "Hatóságok, kizárólag ha jogszabály előírja.",
+      "Az e-mail-szolgáltató, amely a rendelés-visszaigazolásokat és a hírlevelet küldi.",
+      "A Google vagy a Meta (Facebook), csak ha velük jelentkezik be."
+     ]
+    }
+   },
+   {
+    "id": "transfer",
+    "heading": {
+     "ro": "Transfer în afara UE",
+     "en": "Transfers outside the EU",
+     "hu": "Adattovábbítás az EU-n kívülre"
+    },
+    "body": {
+     "ro": "Transferăm date în afara Uniunii Europene și a Spațiului Economic European doar către o țară cu decizie de adecvare a Comisiei Europene sau pe baza clauzelor contractuale standard aprobate de Comisie (GDPR, art. 45 și 46). La cerere, vă spunem ce garanție se aplică și cum obțineți o copie a ei.",
+     "en": "We transfer data outside the European Union and the European Economic Area only to a country with a European Commission adequacy decision or under standard contractual clauses approved by the Commission (GDPR, art. 45 and 46). On request, we tell you which safeguard applies and how to get a copy of it.",
+     "hu": "Az Európai Unión és az Európai Gazdasági Térségen kívülre csak olyan országba továbbítunk adatot, amelyről az Európai Bizottság megfelelőségi határozatot hozott, vagy a Bizottság által jóváhagyott általános szerződési feltételek alapján (GDPR, 45. és 46. cikk). Kérésére megmondjuk, melyik garancia érvényes, és hogyan kaphat róla másolatot."
+    }
+   },
+   {
+    "id": "drepturi",
+    "heading": {
+     "ro": "Drepturile dvs.",
+     "en": "Your rights",
+     "hu": "Az Ön jogai"
+    },
+    "body": {
+     "ro": "Vă puteți exercita gratuit drepturile de mai jos, cu un e-mail la {contacts.email}. Vă răspundem în cel mult o lună (GDPR, art. 12).",
+     "en": "You can exercise the rights below free of charge by e-mailing {contacts.email}. We reply within one month at the latest (GDPR, art. 12).",
+     "hu": "Az alábbi jogait díjmentesen gyakorolhatja egy e-maillel a {contacts.email} címre. Legfeljebb egy hónapon belül válaszolunk (GDPR, 12. cikk)."
+    },
+    "list": {
+     "ro": [
+      "Acces: aflați ce date avem despre dvs. și primiți o copie (art. 15).",
+      "Rectificare: corectăm datele greșite sau incomplete (art. 16).",
+      "Ștergere: ștergem datele când nu mai avem temei să le păstrăm (art. 17).",
+      "Restricționare: oprim temporar folosirea datelor (art. 18).",
+      "Portabilitate: primiți datele într-un format structurat, ușor de preluat de alt furnizor (art. 20).",
+      "Opoziție: vă opuneți prelucrării, inclusiv pentru marketing (art. 21).",
+      "Retragerea consimțământului: oricând, de exemplu din linkul de dezabonare al newsletterului, fără efect asupra prelucrării de dinainte (art. 7 alin. (3))."
+     ],
+     "en": [
+      "Access: find out what data we hold about you and get a copy (art. 15).",
+      "Rectification: we correct wrong or incomplete data (art. 16).",
+      "Erasure: we delete data when we no longer have grounds to keep them (art. 17).",
+      "Restriction: we temporarily stop using the data (art. 18).",
+      "Portability: you receive your data in a structured format that another provider can easily take over (art. 20).",
+      "Objection: you object to processing, including for marketing (art. 21).",
+      "Withdrawing consent: at any time, for example via the newsletter's unsubscribe link, without affecting earlier processing (art. 7(3))."
+     ],
+     "hu": [
+      "Hozzáférés: megtudhatja, milyen adatokat kezelünk Önről, és másolatot kaphat róluk (15. cikk).",
+      "Helyesbítés: kijavítjuk a téves vagy hiányos adatokat (16. cikk).",
+      "Törlés: töröljük az adatokat, ha már nincs jogalapunk a megőrzésükre (17. cikk).",
+      "Korlátozás: átmenetileg felfüggesztjük az adatok használatát (18. cikk).",
+      "Adathordozhatóság: adatait tagolt, más szolgáltató által könnyen átvehető formátumban kapja meg (20. cikk).",
+      "Tiltakozás: tiltakozhat az adatkezelés ellen, a marketingcélú kezelést is beleértve (21. cikk).",
+      "A hozzájárulás visszavonása: bármikor, például a hírlevél leiratkozási linkjével, a korábbi adatkezelés érintése nélkül (7. cikk (3) bek.)."
+     ]
+    }
+   },
+   {
+    "id": "plangere",
+    "heading": {
+     "ro": "Plângere la autoritate",
+     "en": "Complaint to the authority",
+     "hu": "Panasz a felügyeleti hatóságnál"
+    },
+    "body": {
+     "ro": "Dacă considerați că vă prelucrăm datele cu încălcarea legii, puteți depune o plângere la Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP), B-dul G-ral. Gheorghe Magheru 28-30, București, [www.dataprotection.ro](https://www.dataprotection.ro) (GDPR, art. 77).\n\nNe puteți scrie și nouă înainte; de multe ori rezolvăm problema mai repede.",
+     "en": "If you believe we process your data in breach of the law, you can lodge a complaint with the Romanian data protection authority, Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP), B-dul G-ral. Gheorghe Magheru 28-30, Bucharest, [www.dataprotection.ro](https://www.dataprotection.ro) (GDPR, art. 77).\n\nYou can also write to us first; we can often solve the problem faster.",
+     "hu": "Ha úgy véli, hogy adatait jogsértő módon kezeljük, panaszt tehet a román adatvédelmi hatóságnál: Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP), B-dul G-ral. Gheorghe Magheru 28-30, Bukarest, [www.dataprotection.ro](https://www.dataprotection.ro) (GDPR, 77. cikk).\n\nElőbb nekünk is írhat; gyakran gyorsabban megoldjuk a problémát."
+    }
+   },
+   {
+    "id": "automat",
+    "heading": {
+     "ro": "Decizii automate",
+     "en": "Automated decisions",
+     "hu": "Automatizált döntéshozatal"
+    },
+    "body": {
+     "ro": "Nu luăm decizii bazate exclusiv pe prelucrarea automată a datelor și nu vă creăm profiluri (GDPR, art. 22).",
+     "en": "We do not make decisions based solely on automated processing of your data, and we do not profile you (GDPR, art. 22).",
+     "hu": "Nem hozunk kizárólag automatizált adatkezelésen alapuló döntést, és nem készítünk Önről profilt (GDPR, 22. cikk)."
+    }
+   },
+   {
+    "id": "minori",
+    "heading": {
+     "ro": "Minori",
+     "en": "Children",
+     "hu": "Kiskorúak"
+    },
+    "body": {
+     "ro": "Magazinul vinde doar persoanelor de peste 18 ani și nu adună cu bună știință date despre minori. Dacă aflăm că am primit date de la cineva sub 18 ani, le ștergem.",
+     "en": "The shop sells only to people aged 18 or over and does not knowingly collect data about minors. If we learn that we have received data from someone under 18, we delete them.",
+     "hu": "A bolt csak 18 éven felülieknek értékesít, és tudatosan nem gyűjt adatot kiskorúakról. Ha kiderül, hogy 18 év alatti személytől kaptunk adatot, töröljük."
+    }
+   },
+   {
+    "id": "securitate",
+    "heading": {
+     "ro": "Securitatea datelor",
+     "en": "Data security",
+     "hu": "Adatbiztonság"
+    },
+    "body": {
+     "ro": "Site-ul folosește conexiune criptată (HTTPS). La date au acces doar persoanele și partenerii care au nevoie de ele pentru a-și face treaba, și numai cât e nevoie.\n\nDacă o încălcare a securității vă pune în pericol drepturile, vă anunțăm pe dvs. și ANSPDCP, așa cum cere legea (GDPR, art. 33 și 34).",
+     "en": "The site uses an encrypted connection (HTTPS). Only the people and partners who need the data for their work have access to them, and only as long as needed.\n\nIf a security breach puts your rights at risk, we notify you and ANSPDCP, as the law requires (GDPR, art. 33 and 34).",
+     "hu": "A weboldal titkosított kapcsolatot (HTTPS) használ. Az adatokhoz csak azok a személyek és partnerek férnek hozzá, akiknek a munkájukhoz szükségük van rájuk, és csak addig, ameddig szükséges.\n\nHa egy adatvédelmi incidens veszélyezteti a jogait, a törvény szerint értesítjük Önt és az ANSPDCP-t (GDPR, 33. és 34. cikk)."
+    }
+   },
+   {
+    "id": "cookie",
+    "heading": {
+     "ro": "Cookie-uri",
+     "en": "Cookies",
+     "hu": "Sütik"
+    },
+    "body": {
+     "ro": "Site-ul folosește doar cookie-uri și stocare locală strict necesare, fără analiză de trafic și fără publicitate. Lista completă, cu scopul și durata fiecăruia, este în [Politica de cookie-uri](doc:cookie-uri).",
+     "en": "The site uses only strictly necessary cookies and local storage, with no traffic analytics and no advertising. The full list, with the purpose and lifetime of each item, is in the [Cookie policy](doc:cookie-uri).",
+     "hu": "A weboldal csak feltétlenül szükséges sütiket és helyi tárhelyet használ, forgalomelemzés és reklám nélkül. A teljes lista az egyes elemek céljával és időtartamával a [Süti-tájékoztatóban](doc:cookie-uri) található."
+    },
+    "when": "no-consent"
+   },
+   {
+    "id": "cookie",
+    "when": "consent",
+    "heading": {
+     "ro": "Cookie-uri",
+     "en": "Cookies",
+     "hu": "Sütik"
+    },
+    "body": {
+     "ro": "Cookie-urile strict necesare le folosim fără acord; pe celelalte doar cu acordul dvs., separat pe categorii. Alegerea o păstrăm cu un identificator aleator, versiunea, categoriile alese, data și ora, ca să putem dovedi acordul (GDPR, art. 7 alin. (1)). Lista completă, cu furnizorul, scopul și durata fiecărui cookie, este în [Politica de cookie-uri](doc:cookie-uri); acordul îl retrageți oricând din „Setări cookie”, în subsolul paginii. Furnizorii acestor cookie-uri primesc date doar pentru categoriile la care v-ați dat acordul.",
+     "en": "We use strictly necessary cookies without consent, and the others only with your consent, separately for each category. We keep your choice with a random identifier, the version, the categories chosen, the date and the time, so that we can prove consent (GDPR, art. 7(1)). The full list, with the provider, purpose and lifetime of each cookie, is in the [Cookie policy](doc:cookie-uri); you can withdraw consent at any time under “Cookie settings” at the bottom of the page. The providers of these cookies receive data only for the categories you have consented to.",
+     "hu": "A feltétlenül szükséges sütiket hozzájárulás nélkül használjuk, a többit csak az Ön hozzájárulásával, kategóriánként külön. A döntését egy véletlen azonosítóval, a verzióval, a választott kategóriákkal, a dátummal és az időponttal őrizzük meg, hogy a hozzájárulást igazolni tudjuk (GDPR, 7. cikk (1) bekezdés). A teljes lista – az egyes sütik szolgáltatójával, céljával és időtartamával – a [Süti-tájékoztatóban](doc:cookie-uri) található; hozzájárulását bármikor visszavonhatja az oldal alján, a „Süti-beállítások” alatt. E sütik szolgáltatói csak azokhoz a kategóriákhoz kapnak adatot, amelyekhez hozzájárult."
+    }
+   },
+   {
+    "id": "modificari",
+    "heading": {
+     "ro": "Modificări",
+     "en": "Changes",
+     "hu": "Módosítások"
+    },
+    "body": {
+     "ro": "Când schimbăm această politică, publicăm versiunea nouă pe această pagină și actualizăm data din partea de sus.",
+     "en": "When we change this policy, we publish the new version on this page and update the date at the top.",
+     "hu": "Ha módosítjuk ezt a tájékoztatót, az új változatot ezen az oldalon tesszük közzé, és frissítjük a dátumot az oldal tetején."
+    }
+   }
+  ],
+  "faq": []
+ },
+ {
+  "slug": "cookie-uri",
+  "updated": "2026-10-08",
+  "numbered": true,
+  "title": {
+   "ro": "Politica de cookie-uri",
+   "en": "Cookie policy",
+   "hu": "Süti-tájékoztató"
+  },
+  "summary": {
+   "ro": "Ce cookie-uri și ce stocare din browser folosește site-ul, la ce servesc, cât durează și cum le ștergeți.",
+   "en": "Which cookies and browser storage the site uses, what they are for, how long they last and how to delete them.",
+   "hu": "Milyen sütiket és böngészőtárhelyet használ a weboldal, mire valók, meddig maradnak meg, és hogyan törölheti őket."
+  },
+  "sections": [
+   {
+    "id": "fara-acord",
+    "heading": {
+     "ro": "De ce nu cerem acord pentru ele",
+     "en": "Why we do not ask consent for them",
+     "hu": "Miért nem kérünk hozzájárulást ezekhez"
+    },
+    "body": {
+     "ro": "Legea nu cere acord pentru cookie-urile fără de care serviciul cerut de dvs. nu poate fi oferit: coșul, comanda, conectarea la cont și alegerile pe care le faceți chiar dvs., cum ar fi tema (Legea 506/2004, art. 4 alin. (6)). Le setăm doar noi, doar pe acest site, și nu le folosim ca să vă urmărim.",
+     "en": "The law does not require consent for cookies without which the service you asked for cannot be provided: the cart, checkout, signing in to your account and choices you make yourself, such as the theme (Law 506/2004, art. 4(6)). Only we set them, only on this site, and we do not use them to track you.",
+     "hu": "A törvény nem ír elő hozzájárulást azokhoz a sütikhez, amelyek nélkül az Ön által kért szolgáltatás nem nyújtható: a kosár, a rendelés, a fiókba való bejelentkezés és az Ön által hozott döntések, például a téma (506/2004. sz. törvény, 4. cikk (6) bekezdés). Ezeket csak mi helyezzük el, csak ezen az oldalon, és nem követjük velük Önt."
+    }
+   },
+   {
+    "id": "fara-banner",
+    "heading": {
+     "ro": "De ce nu vedeți un banner de cookie-uri",
+     "en": "Why there is no cookie banner",
+     "hu": "Miért nincs sütisáv"
+    },
+    "body": {
+     "ro": "Pentru cookie-urile strict necesare legea nu cere consimțământ, de aceea site-ul nu afișează acum un banner de cookie-uri (Legea 506/2004, art. 4).\n\nDacă vom adăuga măsurarea traficului sau alte cookie-uri care nu sunt strict necesare, vă vom cere mai întâi acordul printr-un banner. Odată cu el apare și linkul „Setări cookie”, de unde vă puteți schimba oricând alegerea, iar tabelul de mai sus va fi actualizat.",
+     "en": "The law does not require consent for strictly necessary cookies, so the site does not show a cookie banner at the moment (Law 506/2004, art. 4).\n\nIf we ever add traffic measurement or other cookies that are not strictly necessary, we will first ask for your consent through a banner. Together with it, a “Cookie settings” link appears where you can change your choice at any time, and the table above will be updated.",
+     "hu": "A feltétlenül szükséges sütikhez a törvény nem ír elő hozzájárulást, ezért a weboldal jelenleg nem jelenít meg sütisávot (506/2004. sz. törvény, 4. cikk).\n\nHa egyszer forgalommérést vagy más, nem feltétlenül szükséges sütit vezetünk be, előbb egy sávon kérjük a hozzájárulását. Vele együtt megjelenik a „Süti-beállítások” link is, ahol bármikor módosíthatja a döntését, és a fenti táblázatot is frissítjük."
+    },
+    "when": "no-consent"
+   },
+   {
+    "id": "optionale",
+    "when": "consent",
+    "slot": "cookie-optional",
+    "heading": {
+     "ro": "Cookie-uri opționale",
+     "en": "Optional cookies",
+     "hu": "Nem kötelező sütik"
+    },
+    "body": {
+     "ro": "Pe acestea le folosim doar după ce vă dați acordul, separat pentru fiecare categorie. Până atunci nu se încarcă nici scripturile furnizorilor. Tabelele de mai jos arată, pentru fiecare cookie, cine îl setează, la ce folosește și cât durează.",
+     "en": "We use these only after you give consent, separately for each category. Until then, not even the providers' scripts are loaded. The tables below show who sets each cookie, what it is for and how long it lasts.",
+     "hu": "Ezeket csak az Ön hozzájárulása után használjuk, kategóriánként külön. Addig a szolgáltatók szkriptjei sem töltődnek be. Az alábbi táblázatok megmutatják, ki helyezi el az egyes sütiket, mire valók és meddig maradnak meg."
+    }
+   },
+   {
+    "id": "schimbare",
+    "when": "consent",
+    "slot": "cookie-settings",
+    "heading": {
+     "ro": "Cum vă schimbați alegerea",
+     "en": "How to change your choice",
+     "hu": "Hogyan módosíthatja a döntését"
+    },
+    "body": {
+     "ro": "Vă puteți schimba alegerea sau retrage acordul oricând, la fel de simplu cum l-ați dat: din butonul de mai jos sau din „Setări cookie”, în subsolul fiecărei pagini. Când retrageți acordul pentru o categorie, ștergem cookie-urile ei de pe acest site; retragerea nu afectează ce s-a întâmplat înainte (GDPR, art. 7 alin. (3)).\n\nVă întrebăm din nou după 6 luni sau când adăugăm un furnizor nou.",
+     "en": "You can change your choice or withdraw consent at any time, as easily as you gave it: with the button below or under “Cookie settings” at the bottom of every page. When you withdraw consent for a category, we delete its cookies from this site; withdrawal does not affect what happened before (GDPR, art. 7(3)).\n\nWe ask you again after 6 months or when we add a new provider.",
+     "hu": "Döntését bármikor módosíthatja, hozzájárulását bármikor visszavonhatja – ugyanolyan egyszerűen, ahogy megadta: az alábbi gombbal vagy minden oldal alján, a „Süti-beállítások” alatt. Ha egy kategóriához visszavonja a hozzájárulását, töröljük annak sütijeit erről az oldalról; a visszavonás nem érinti a korábbiakat (GDPR, 7. cikk (3) bekezdés).\n\n6 hónap után, illetve új szolgáltató bevezetésekor újra megkérdezzük."
+    }
+   },
+   {
+    "id": "stergere",
+    "heading": {
+     "ro": "Cum le ștergeți",
+     "en": "How to delete them",
+     "hu": "Hogyan törölheti őket"
+    },
+    "body": {
+     "ro": "Puteți șterge oricând cookie-urile și datele salvate de site din setările browserului, de obicei la secțiunea despre confidențialitate sau datele de navigare. Ștergerea golește coșul, lista de favorite și alegerea temei.\n\nDacă blocați toate cookie-urile, coșul și finalizarea comenzii nu vor funcționa.",
+     "en": "You can delete the cookies and data stored by the site at any time in your browser settings, usually in the privacy or browsing data section. Deleting them empties the cart, the favourites list and your theme choice.\n\nIf you block all cookies, the cart and checkout will not work.",
+     "hu": "A weboldal által tárolt sütiket és adatokat bármikor törölheti a böngésző beállításaiban, általában az adatvédelem vagy a böngészési adatok résznél. A törlés kiüríti a kosarat, a kedvencek listáját, és elfelejti a választott témát.\n\nHa minden sütit letilt, a kosár és a rendelés véglegesítése nem fog működni."
+    }
+   },
+   {
+    "id": "intrebari",
+    "heading": {
+     "ro": "Întrebări",
+     "en": "Questions",
+     "hu": "Kérdések"
+    },
+    "body": {
+     "ro": "Pentru întrebări despre cookie-uri sau despre datele dvs. ne scrieți la {contacts.email}. Cum folosim datele personale aflați din [Politica de confidențialitate](doc:confidentialitate).",
+     "en": "For questions about cookies or your data, write to us at {contacts.email}. How we use personal data is explained in the [Privacy policy](doc:confidentialitate).",
+     "hu": "A sütikkel vagy az adataival kapcsolatos kérdéseivel írjon a {contacts.email} címre. Azt, hogyan kezeljük a személyes adatokat, az [Adatvédelmi tájékoztató](doc:confidentialitate) írja le."
+    }
+   }
+  ],
+  "faq": [],
+  "table": "storage"
+ },
+ {
+  "slug": "analize-de-laborator",
+  "updated": "2026-10-04",
+  "numbered": false,
+  "title": {
+   "ro": "Analize de laborator",
+   "en": "Lab reports",
+   "hu": "Laborvizsgálatok"
+  },
+  "summary": {
+   "ro": "Ce este buletinul de analiză al unui lot, ce le cerem producătorilor și cum îl citiți singur în cinci pași.",
+   "en": "What a batch lab report is, what we require from producers, and how to read one yourself in five steps.",
+   "hu": "Mi a gyártási tétel laborvizsgálati jegyzőkönyve, mit várunk el a gyártóktól, és hogyan olvashatja el saját maga öt lépésben."
+  },
+  "sections": [
+   {
+    "id": "ce-este",
+    "heading": {
+     "ro": "Ce este un buletin de analiză",
+     "en": "What a lab report is",
+     "hu": "Mi a laborvizsgálati jegyzőkönyv"
+    },
+    "body": {
+     "ro": "Buletinul de analiză, numit și certificat de analiză (COA, din engleză Certificate of Analysis), este documentul emis de un laborator independent pentru un anumit lot de produs. Arată ce s-a măsurat în acel lot: canabinoizii, inclusiv CBD și THC, și eventualii contaminanți.\n\nPe document apar numele laboratorului, metoda de analiză și data. Un buletin este valabil doar pentru lotul al cărui număr îl poartă.",
+     "en": "A lab report, also called a certificate of analysis (COA), is the document issued by an independent laboratory for a specific batch of a product. It shows what was measured in that batch: the cannabinoids, including CBD and THC, and any contaminants.\n\nThe document states the lab's name, the test method and the date. A report applies only to the batch whose number it carries.",
+     "hu": "A laborvizsgálati jegyzőkönyv, más néven analitikai tanúsítvány (COA, angolul Certificate of Analysis), egy független laboratórium által a termék egy adott gyártási tételéről kiállított dokumentum. Megmutatja, mit mértek az adott tételben: a kannabinoidokat, köztük a CBD-t és a THC-t, valamint az esetleges szennyező anyagokat.\n\nA dokumentumon szerepel a laboratórium neve, a vizsgálati módszer és a dátum. A jegyzőkönyv csak arra a tételre érvényes, amelynek a számát viseli."
+    }
+   },
+   {
+    "id": "ce-cerem",
+    "heading": {
+     "ro": "Ce le cerem producătorilor",
+     "en": "What we require from producers",
+     "hu": "Mit várunk el a gyártóktól"
+    },
+    "body": {
+     "ro": "De la fiecare producător cerem un buletin pentru fiecare lot, nu unul singur pentru toată marca. Buletinul trebuie să cuprindă:",
+     "en": "We ask every producer for a report for each batch, not a single one for the whole brand. The report must cover:",
+     "hu": "Minden gyártótól minden egyes tételhez külön jegyzőkönyvet kérünk, nem egyetlenegyet az egész márkára. A jegyzőkönyvnek tartalmaznia kell:"
+    },
+    "list": {
+     "ro": [
+      "Profilul de canabinoizi, inclusiv CBD și THC.",
+      "THC sub limita de detecție sau în limita legală.",
+      "Metale grele.",
+      "Pesticide.",
+      "Solvenți reziduali.",
+      "Analize microbiologice, pentru produsele comestibile.",
+      "Numele laboratorului, metoda de analiză și data."
+     ],
+     "en": [
+      "The cannabinoid profile, including CBD and THC.",
+      "THC below the limit of detection or within the legal limit.",
+      "Heavy metals.",
+      "Pesticides.",
+      "Residual solvents.",
+      "Microbiology, for edible products.",
+      "The lab's name, the test method and the date."
+     ],
+     "hu": [
+      "A kannabinoidprofilt, köztük a CBD-t és a THC-t.",
+      "A THC-t a kimutatási határ alatt vagy a törvényes határértéken belül.",
+      "A nehézfémeket.",
+      "A növényvédő szereket.",
+      "Az oldószer-maradékokat.",
+      "A mikrobiológiai vizsgálatot az ehető termékeknél.",
+      "A laboratórium nevét, a vizsgálati módszert és a dátumot."
+     ]
+    }
+   },
+   {
+    "id": "cum-citesti",
+    "heading": {
+     "ro": "Cum citiți buletinul",
+     "en": "How to read the report",
+     "hu": "Hogyan olvassa a jegyzőkönyvet"
+    },
+    "body": {
+     "ro": "Țineți la îndemână ambalajul și buletinul lotului, apoi verificați, în ordine:",
+     "en": "Keep the pack and the batch report at hand, then check, in this order:",
+     "hu": "Tartsa kéznél a csomagolást és a tétel jegyzőkönyvét, majd ellenőrizze sorban:"
+    },
+    "list": {
+     "ro": [
+      "Numărul lotului de pe ambalaj este același cu cel de pe buletin.",
+      "THC-ul este sub limita de detecție sau în limita legală.",
+      "CBD-ul măsurat corespunde etichetei; o abatere de ±10% este obișnuită.",
+      "Data analizei este trecută pe buletin.",
+      "Numele laboratorului apare pe buletin, iar laboratorul nu este producătorul."
+     ],
+     "en": [
+      "The batch number on the pack is the same as on the report.",
+      "THC is below the limit of detection or within the legal limit.",
+      "The measured CBD matches the label; a deviation of ±10% is usual.",
+      "The date of analysis is on the report.",
+      "The lab's name is on the report, and the lab is not the producer."
+     ],
+     "hu": [
+      "A csomagoláson lévő tételszám megegyezik a jegyzőkönyvön szereplővel.",
+      "A THC a kimutatási határ alatt vagy a törvényes határértéken belül van.",
+      "A mért CBD megfelel a címkének; a ±10%-os eltérés szokásos.",
+      "A vizsgálat dátuma szerepel a jegyzőkönyvön.",
+      "A laboratórium neve szerepel a jegyzőkönyvön, és a laboratórium nem azonos a gyártóval."
+     ]
+    }
+   },
+   {
+    "id": "unde",
+    "heading": {
+     "ro": "Unde găsiți buletinul",
+     "en": "Where to find the report",
+     "hu": "Hol találja a jegyzőkönyvet"
+    },
+    "body": {
+     "ro": "Pagina fiecărui produs din [catalog](catalog) arată buletinul lotului aflat în vânzare. Dacă buletinul lipsește sau aveți un produs dintr-un alt lot, scrieți-ne la {contacts.email} cu numărul lotului și vi-l trimitem.",
+     "en": "Each product page in the [catalogue](catalog) shows the report for the batch on sale. If the report is missing or your product is from another batch, write to {contacts.email} with the batch number and we will send it to you.",
+     "hu": "A [katalógusban](catalog) minden termék oldalán megtalálja az éppen forgalmazott tétel jegyzőkönyvét. Ha a jegyzőkönyv hiányzik, vagy az Ön terméke másik tételből származik, írjon a {contacts.email} címre a tétel számával, és elküldjük Önnek."
+    }
+   },
+   {
+    "id": "thc",
+    "heading": {
+     "ro": "THC și legea",
+     "en": "THC and the law",
+     "hu": "A THC és a jogszabályok"
+    },
+    "body": {
+     "ro": "THC-ul este substanța din cânepă care rămâne controlată în România (Legea 143/2000, Legea 339/2005). În produsele noastre THC-ul este sub limita de detecție a laboratorului sau în limita legală, iar buletinul arată rezultatul măsurat.\n\nCânepa industrială se cultivă în UE din soiuri certificate, cu cel mult 0,3% THC în plantă (Regulamentul (UE) 2021/2115).",
+     "en": "THC is the hemp substance that remains controlled in Romania (Law 143/2000, Law 339/2005). In our products THC is below the laboratory's limit of detection or within the legal limit, and the report shows the measured result.\n\nIndustrial hemp in the EU is grown from certified varieties with no more than 0.3% THC in the plant (Regulation (EU) 2021/2115).",
+     "hu": "A THC a kender azon anyaga, amely Romániában továbbra is ellenőrzött (143/2000. sz. törvény, 339/2005. sz. törvény). Termékeinkben a THC a laboratórium kimutatási határa alatt vagy a törvényes határértéken belül van, a jegyzőkönyv pedig mutatja a mért eredményt.\n\nAz ipari kendert az EU-ban minősített fajtákból termesztik, a növény THC-tartalma legfeljebb 0,3% (2021/2115/EU rendelet)."
+    }
+   }
+  ],
+  "faq": [
+   {
+    "q": {
+     "ro": "Produsele voastre conțin THC?",
+     "en": "Do your products contain THC?",
+     "hu": "Tartalmaznak THC-t a termékeik?"
+    },
+    "a": {
+     "ro": "Unele pot conține urme. THC-ul este sub limita de detecție sau în limita legală, iar rezultatul fiecărui lot este pe buletinul său de analiză.",
+     "en": "Some may contain traces. THC is below the limit of detection or within the legal limit, and each batch's result is on its lab report.",
+     "hu": "Egyesek nyomokban tartalmazhatnak. A THC a kimutatási határ alatt vagy a törvényes határértéken belül van, és minden tétel eredménye szerepel a saját jegyzőkönyvén."
+    }
+   },
+   {
+    "q": {
+     "ro": "Pot avea un test antidrog pozitiv?",
+     "en": "Will I fail a drug test?",
+     "hu": "Lehet pozitív a drogtesztem?"
+    },
+    "a": {
+     "ro": "Nu putem garanta rezultatul unui test. Produsele full spectrum pot conține urme de THC. Dacă vi se fac astfel de teste, alegeți produse cu izolat de CBD sau broad spectrum și verificați pe buletin că THC-ul este sub limita de detecție.",
+     "en": "We cannot guarantee the result of a test. Full-spectrum products may contain traces of THC. If you get tested, choose CBD isolate or broad-spectrum products and check on the report that THC is below the limit of detection.",
+     "hu": "Egy teszt eredményét nem tudjuk garantálni. A teljes spektrumú (full spectrum) termékek nyomokban tartalmazhatnak THC-t. Ha Önnél ilyen tesztet végeznek, válasszon CBD-izolátumot vagy széles spektrumú (broad spectrum) terméket, és ellenőrizze a jegyzőkönyvön, hogy a THC a kimutatási határ alatt van."
+    }
+   },
+   {
+    "q": {
+     "ro": "Unde văd buletinul de analiză?",
+     "en": "Where can I see the lab report?",
+     "hu": "Hol látom a laborvizsgálati jegyzőkönyvet?"
+    },
+    "a": {
+     "ro": "Pe pagina produsului, pentru lotul aflat în vânzare. Dacă lipsește, scrieți-ne cu numărul lotului și vi-l trimitem.",
+     "en": "On the product page, for the batch on sale. If it is missing, write to us with the batch number and we will send it.",
+     "hu": "A termék oldalán, az éppen forgalmazott tételre. Ha hiányzik, írjon nekünk a tétel számával, és elküldjük."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "accesibilitate",
+  "updated": "2026-10-08",
+  "numbered": false,
+  "title": {
+   "ro": "Declarație de accesibilitate",
+   "en": "Accessibility statement",
+   "hu": "Akadálymentességi nyilatkozat"
+  },
+  "summary": {
+   "ro": "Cât de accesibil este magazinul, ce limitări cunoaștem și cum ne semnalați o barieră întâlnită pe site.",
+   "en": "How accessible the shop is, which limitations we know about, and how to report a barrier you meet on the site.",
+   "hu": "Mennyire akadálymentes a bolt, milyen korlátokról tudunk, és hogyan jelezheti, ha akadályba ütközik az oldalon."
+  },
+  "sections": [
+   {
+    "id": "angajament",
+    "heading": {
+     "ro": "Angajamentul nostru",
+     "en": "Our commitment",
+     "hu": "Vállalásunk"
+    },
+    "body": {
+     "ro": "Vrem ca oricine să poată cumpăra din magazin, inclusiv persoanele cu dizabilități și cei care folosesc tehnologii asistive. Declarația de față arată cât de accesibil este site-ul și ce facem când ceva nu funcționează.\n\nO publicăm conform Legii 232/2022, care transpune în România Actul european privind accesibilitatea (Directiva (UE) 2019/882) și se aplică magazinelor online din 28 iunie 2025.",
+     "en": "We want everyone to be able to shop here, including people with disabilities and people who use assistive technologies. This statement explains how accessible the site is and what we do when something does not work.\n\nWe publish it under Law 232/2022, which transposes the European Accessibility Act (Directive (EU) 2019/882) in Romania and applies to online shops from 28 June 2025.",
+     "hu": "Azt szeretnénk, hogy mindenki vásárolhasson nálunk, a fogyatékossággal élők és a segítő technológiát használók is. Ez a nyilatkozat bemutatja, mennyire akadálymentes az oldal, és mit teszünk, ha valami nem működik.\n\nA 232/2022. sz. törvény alapján tesszük közzé, amely Romániában átülteti az európai akadálymentesítési irányelvet (2019/882/EU irányelv), és 2025. június 28-tól a webáruházakra is vonatkozik."
+    }
+   },
+   {
+    "id": "nivel",
+    "heading": {
+     "ro": "Nivelul de accesibilitate",
+     "en": "Accessibility level",
+     "hu": "Az akadálymentesség szintje"
+    },
+    "body": {
+     "ro": "Ținta noastră este nivelul AA din ghidul WCAG 2.1 (Web Content Accessibility Guidelines). Ce am făcut până acum:",
+     "en": "Our target is level AA of WCAG 2.1 (Web Content Accessibility Guidelines). What we have done so far:",
+     "hu": "Célunk a WCAG 2.1 (Web Content Accessibility Guidelines) AA szintje. Amit eddig megtettünk:"
+    },
+    "list": {
+     "ro": [
+      "Tot site-ul se poate folosi doar cu tastatura, iar elementul selectat se vede clar.",
+      "Textul și butoanele au contrast suficient față de fundal.",
+      "Imaginile care transmit informație au text alternativ.",
+      "Pagina se poate mări din browser până la 200% fără să se piardă conținut.",
+      "Titlurile, etichetele formularelor și butoanele sunt citite corect de cititoarele de ecran."
+     ],
+     "en": [
+      "The whole site can be used with a keyboard alone, and the focused element is clearly visible.",
+      "Text and buttons have enough contrast with the background.",
+      "Images that carry information have text alternatives.",
+      "Pages can be zoomed in the browser up to 200% without losing content.",
+      "Headings, form labels and buttons are read correctly by screen readers."
+     ],
+     "hu": [
+      "Az egész oldal használható csak billentyűzettel, és a kijelölt elem jól látható.",
+      "A szövegek és a gombok kellően elütnek a háttértől.",
+      "Az információt hordozó képeknek van szöveges alternatívája.",
+      "Az oldal a böngészőben 200%-ig nagyítható tartalomvesztés nélkül.",
+      "A képernyőolvasók helyesen olvassák fel a címsorokat, az űrlapcímkéket és a gombokat."
+     ]
+    }
+   },
+   {
+    "id": "limitari",
+    "heading": {
+     "ro": "Limitări cunoscute",
+     "en": "Known limitations",
+     "hu": "Ismert korlátok"
+    },
+    "body": {
+     "ro": "Unele buletine de analiză primite de la producători sunt fișiere PDF care pot să nu fie accesibile pentru cititoarele de ecran. La cerere, vă trimitem pe e-mail datele din buletin ca text. Despre buletine aflați mai multe în pagina [Analize de laborator](doc:analize-de-laborator).",
+     "en": "Some lab reports we receive from producers are PDF files that may not be accessible to screen readers. On request, we e-mail you the data from the report as text. More about the reports is on the [Lab reports](doc:analize-de-laborator) page.",
+     "hu": "A gyártóktól kapott laborvizsgálati jegyzőkönyvek egy része PDF-fájl, amely a képernyőolvasók számára nem feltétlenül hozzáférhető. Kérésre a jegyzőkönyv adatait szövegként, e-mailben elküldjük. A jegyzőkönyvekről bővebben a [Laborvizsgálatok](doc:analize-de-laborator) oldalon olvashat."
+    }
+   },
+   {
+    "id": "semnalare",
+    "heading": {
+     "ro": "Cum ne semnalați o barieră",
+     "en": "How to report a barrier",
+     "hu": "Hogyan jelezhet egy akadályt"
+    },
+    "body": {
+     "ro": "Dacă ceva de pe site nu funcționează pentru dumneavoastră, scrieți-ne la {contacts.email}. Spuneți-ne pagina și ce ați încercat să faceți; dacă folosiți o tehnologie asistivă, numele ei ne ajută.\n\nVă răspundem în cel mult 5 zile lucrătoare. Până rezolvăm, vă oferim informația sau vă preluăm comanda pe altă cale, prin telefon sau e-mail.",
+     "en": "If something on the site does not work for you, write to {contacts.email}. Tell us the page and what you were trying to do; if you use an assistive technology, its name helps us.\n\nWe answer within 5 working days at the latest. Until we fix it, we give you the information or take your order another way, by phone or e-mail.",
+     "hu": "Ha az oldalon valami nem működik az Ön számára, írjon nekünk a {contacts.email} címre. Írja meg, melyik oldalról van szó, és mit próbált tenni; ha segítő technológiát használ, annak neve is segít.\n\nLegkésőbb 5 munkanapon belül válaszolunk. Amíg a hibát kijavítjuk, az információt vagy a rendelés felvételét más úton, telefonon vagy e-mailben biztosítjuk."
+    }
+   },
+   {
+    "id": "autoritate",
+    "heading": {
+     "ro": "Autoritatea competentă",
+     "en": "Enforcement authority",
+     "hu": "Illetékes hatóság"
+    },
+    "body": {
+     "ro": "Dacă nu sunteți mulțumit de răspunsul nostru, puteți depune o sesizare la Autoritatea pentru Digitalizarea României (ADR), autoritatea de supraveghere a pieței desemnată pentru comerțul electronic prin Legea 232/2022, art. 19 alin. (1) lit. d).",
+     "en": "If you are not satisfied with our answer, you can complain to the Romanian Digitalisation Authority (Autoritatea pentru Digitalizarea României, ADR), the market surveillance authority designated for e-commerce by Law 232/2022, art. 19(1)(d).",
+     "hu": "Ha nem elégedett a válaszunkkal, panaszt tehet a Román Digitalizációs Hatóságnál (Autoritatea pentru Digitalizarea României, ADR), amelyet a 232/2022. sz. törvény 19. cikk (1) bekezdés d) pontja jelöl ki az e-kereskedelem piacfelügyeleti hatóságaként."
+    }
+   },
+   {
+    "id": "data",
+    "heading": {
+     "ro": "Data declarației",
+     "en": "Date of this statement",
+     "hu": "A nyilatkozat dátuma"
+    },
+    "body": {
+     "ro": "Declarația a fost întocmită pe 4 octombrie 2026. O revizuim în fiecare an; data ultimei revizuiri apare în partea de sus a paginii.",
+     "en": "This statement was prepared on 4 October 2026. We review it every year; the date of the latest review is shown at the top of the page.",
+     "hu": "A nyilatkozat 2026. október 4-én készült. Évente felülvizsgáljuk; a legutóbbi felülvizsgálat dátuma az oldal tetején látható."
+    }
+   }
+  ],
+  "faq": []
+ }
+]

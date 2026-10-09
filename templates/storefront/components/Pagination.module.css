@@ -1,0 +1,60 @@
+/* ── Листание под полкой (Pagination.tsx, И721, И731) ─────────────────────
+   Одна строка по центру, слева направо: группа страниц, «Показать ещё», строка
+   счёта (слово заказчика 04.10.2026). Зазор между тремя — группы по умолчанию
+   (`cluster`), как у «View all» и кнопок листания в шапке полки; тесно — строка
+   переносится, порядок тот же. Полоски показанного нет (снята тем же словом).
+   Коробка объявлена: на узкой ряд номеров уходит в «2 / 4» по ЕЁ ширине, а не по
+   окну (правило 6). */
+.pages{container-type:inline-size}
+.row{justify-content:center}
+/* Внутри листания: назад — номера — вперёд. Номер и стрелка — круглые кнопки
+   набора (`data-pager`), пропуск «…» — тот же круг без кнопки. */
+.steps{justify-content:center;--cluster:var(--gap-targets)}
+/* Строка счёта — примечание (`p.note`) в строке органов: без своих полей. */
+.count,.folded{margin:0}
+.numbers{--cluster:var(--gap-targets);list-style:none;padding:0;margin:0}
+.gap{display:inline-grid;place-items:center;min-inline-size:var(--ctrl-h);block-size:var(--ctrl-h);font-size:var(--body-size);color:var(--ink-soft)}
+.numbers [data-pager]{font-variant-numeric:tabular-nums}
+.total{display:none;padding-inline:var(--gap-targets);font-size:var(--body-size);color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.total b{font-weight:var(--label-weight);color:var(--ink)}
+
+/* Вид — роль `--pager-look`. Номер страницы — та же тихая кнопка сайта, что
+   стрелки рядом и «Add to cart» на карточке: кромка и заливка тихой оси
+   каталога (Look → кнопки), кругом; текущий залит краской выбранного
+   (`--chosen`, Mantine «Pagination»); «Показать ещё» рядом — тихая пилюля, марка
+   только под рукой (бриф `docs/design/кнопки.md`, И790). Слово заказчика 08.10.2026: «кнопки
+   пагинации не совпадают по дизайну с другими кнопками по заливке — сделай
+   единый дизайн кнопок»: вариант «номера без кромки» снят (И721, поправка). */
+/* `compact` — вместо номеров «2 / 4» между стрелками; полоски нет. */
+@container style(--pager-look: compact){
+  .numbers{display:none}
+  .total{display:block}
+}
+/* Узкая коробка — у любого вида «2 / 4»: семь кругов по 48 с зазором под
+   палец в телефон не встают (шов 560, `tools/seams.mjs`). */
+@container (max-width:559px){
+  .numbers{display:none}
+  .total{display:block}
+}
+/* Две страницы (`data-few`, И723) — два круга «1» и «2» без стрелок у любого вида
+   и в узкой коробке: номер сам и есть шаг, стрелки рядом повторяли бы его, а «1 / 2»
+   прятало бы вторую страницу за стрелкой. Атрибут коробки весит больше правил вида
+   и узкой коробки — порядок не решает. */
+.pages[data-few] .numbers{display:flex}
+.pages[data-few] .total,
+.pages[data-few] .steps > [data-pager]{display:none}
+
+/* Полка телефона шагами (FoldShelf, И754): на узкой коробке у свёрнутой полки в
+   строке — номера страниц, «Показать ещё» на 24 (`unfold`) и счёт показанного
+   (`folded`), а «Показать ещё» страницы и её счёт уступают; на широком —
+   наоборот. Своя полка — сосед обёртки (Catalog.tsx), а не любая на странице: у
+   панели вида — вторая копия витрины. Строка ради одних шагов
+   (`data-fold-only`: страница одна) на широком не видна. */
+.row > :is(.unfold, .folded){display:none}
+.pages[data-fold-only]{display:none}
+@container (max-width:559px){
+  :has(> * > [data-fold]) > .pages[data-fold-only]{display:block}
+  :has(> * > [data-fold]) > .pages .row > .unfold{display:inline-flex}
+  :has(> * > [data-fold]) > .pages .row > .folded{display:block}
+  :has(> * > [data-fold]) > .pages .row > :is(.next, .count){display:none}
+}

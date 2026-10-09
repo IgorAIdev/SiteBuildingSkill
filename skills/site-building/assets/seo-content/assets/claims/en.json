@@ -1,0 +1,152 @@
+{
+  "lang": "en",
+  "note": "Own lexicon of the seo-content skill for English pages of an EU shop: Reg. 1924/2006, 432/2012, 2015/2283, Dir. 2001/83/EC (references/compliance.md). Patterns run on lower-case text.",
+  "condition": [
+    "sleep",
+    "insomnia",
+    "anxiety",
+    "anxious",
+    "pain",
+    "joint",
+    "inflamm",
+    "stress",
+    "menopaus",
+    "menstrua",
+    "depress",
+    "epilep",
+    "cancer",
+    "diabet",
+    "immun",
+    "migraine",
+    "arthritis",
+    "eczema",
+    "psoria",
+    "disease",
+    "treatment"
+  ],
+  "conditionAllow": [
+    "stress-free delivery"
+  ],
+  "hedge": [
+    "\\bdoes not (establish|guarantee|prove|mean)\\b",
+    "\\bwithout assuming\\b",
+    "\\bcheck the label\\b",
+    "\\bcannot be guaranteed\\b",
+    "\\bis not evidence\\b"
+  ],
+  "promise": [
+    "\\b(on|at|in) (every|each) product\\b",
+    "\\b(every|each) (product|oil|item) (shows|states|gives|carries)\\b",
+    "\\b(shows|shown|states|stated) (the )?price per (mg|milligram)\\b"
+  ],
+  "rules": [
+    {
+      "id": "en-treats",
+      "level": "fail",
+      "patterns": [
+        "\\b(cures?|heals?|remedy|natural medicine)\\b",
+        "\\btreat(s|ing)? (your |the )?(anxiety|pain|insomnia|disease|condition|symptoms|depression)\\b"
+      ],
+      "rewrite": "«Not a medicine» — one line in the warnings block"
+    },
+    {
+      "id": "en-pain",
+      "level": "fail",
+      "patterns": [
+        "\\b(pain relief|relieves? pain|painkiller|anti-?inflammatory|reduces? inflammation)\\b"
+      ],
+      "rewrite": "sensation on the skin: «cooling CBD massage balm with menthol»"
+    },
+    {
+      "id": "en-proven",
+      "level": "fail",
+      "patterns": [
+        "\\b(clinically proven|studies show|science shows|doctor recommended|recommended by doctors)\\b"
+      ],
+      "rewrite": "guide: what is known and what is not; EFSA with a date"
+    },
+    {
+      "id": "en-safety",
+      "level": "fail",
+      "patterns": [
+        "\\b(no side effects|100 ?% safe|completely safe|safe for (children|kids))\\b"
+      ],
+      "rewrite": "«Not recommended under 18, during pregnancy or breastfeeding»"
+    },
+    {
+      "id": "en-approved",
+      "level": "fail",
+      "patterns": [
+        "\\b(approved by (the )?(efsa|eu|ministry|fda)|eu approved)\\b"
+      ],
+      "rewrite": "—"
+    },
+    {
+      "id": "en-sleep",
+      "level": "fix",
+      "patterns": [
+        "\\b(sleep better|better sleep|fall asleep faster|restful sleep|deeper sleep)\\b"
+      ],
+      "rewrite": "the moment, not the effect: «for your evening routine», CBN oil"
+    },
+    {
+      "id": "en-calm",
+      "level": "fix",
+      "patterns": [
+        "\\b(calmer|stress-?free(?! delivery)|takes the edge off|reduces? stress|relieves? stress|inner calm|inner balance)\\b"
+      ],
+      "rewrite": "composition and amount"
+    },
+    {
+      "id": "en-recovery",
+      "level": "fix",
+      "patterns": [
+        "\\b(muscle recovery|recover faster|post-workout recovery)\\b"
+      ],
+      "rewrite": "«CBD creams, balms and massage oil»"
+    },
+    {
+      "id": "en-function",
+      "level": "fix",
+      "patterns": [
+        "\\b(supports?|boosts?|balances?) (your )?(immune|immunity|joints?|nervous system|endocannabinoid system)\\b"
+      ],
+      "rewrite": "place of application, no body function"
+    },
+    {
+      "id": "en-dose",
+      "level": "fix",
+      "patterns": [
+        "\\b(take|start with) \\d+[–-]?\\d* (drops|capsules)\\b",
+        "\\bincrease the dose\\b",
+        "\\brecommended daily dose\\b"
+      ],
+      "rewrite": "«Use as directed on the label»; label arithmetic is fine"
+    },
+    {
+      "id": "en-best",
+      "level": "fix",
+      "patterns": [
+        "\\b(the best cbd|best cbd oil|cheapest|number one|no\\. ?1)\\b"
+      ],
+      "rewrite": "a comparable fact: price per mg"
+    },
+    {
+      "id": "en-legal",
+      "level": "fix",
+      "patterns": [
+        "\\b(100 ?% legal|legal everywhere|thc-free|0 ?% thc)\\b"
+      ],
+      "rewrite": "«THC as measured in the batch report»"
+    },
+    {
+      "id": "en-supplement",
+      "level": "fix",
+      "patterns": [
+        "\\bfood supplement\\b",
+        "\\bdietary supplement\\b"
+      ],
+      "rewrite": "the product status is the lawyer's call"
+    }
+  ]
+}

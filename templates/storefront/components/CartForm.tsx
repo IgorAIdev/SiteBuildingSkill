@@ -1,0 +1,96 @@
+'use client'
+import { useState, type FormEvent, type ReactNode } from 'react'
+import { useRouter } from 'next/navigation'
+import f from '@/styles/form.module.css'
+import p from '@/styles/primitives.module.css'
+import s from './Cart.module.css'
+import { cartLane, isTimeout } from '@/lib/cart-lane.ts'
+import { heldOf, holdOne } from '@/lib/in-cart.ts'
+import { PendingOp } from './CartPending.ts'
+import type { Outcome } from '@/lib/cart-ops.ts'
+
+type Said = Pick<Outcome, 'kind' | 'message'> & { inCart?: number | null; code?: string }
+type Props = {
+  lang: string; className?: string; refresh?: boolean; quiet?: boolean
+  submit: (form: FormData) => Promise<void>
+  call: (form: FormData) => Promise<Outcome>
+  initial: Said | null; timeout: string; failed: string
+  after?: ReactNode; children: ReactNode
+}
+/** Форма записи в корзину. Без скрипта — обычная отправка: сервер пишет и
+ *  переводит на корзину с исходом в адресе. Со скриптом — одна полоса на
+ *  корзину вкладки: пока запись идёт, вторая отклоняется; нет ответа 15
+ *  секунд — исход неизвестен, корзина перечитывается, запись сама не
+ *  повторяется (references/commerce-patterns.md).
+ *
+ *  Полоса общая, а «жду» — своё (И440). Поля выключает и `aria-busy` ставит
+ *  только форма, которая пишет: полоса отклоняет вторую запись молча, у
+ *  каждой формы в `onSubmit`. Выключала общая полоса — и нажатие «Add» на
+ *  одной карточке гасило кнопки всех карточек полки разом (слово заказчика
+ *  25.09.2026: «срабатывает нажатие этой же кнопки и в других карточках»). */
+/* `quiet` — форма в тесном месте (кнопка на карточке полки): удачный исход
+   читается вслух, но строки под кнопкой не занимает — его показывает сама
+   кнопка: добавление кладёт число штук варианта в список страницы
+   (lib/in-cart.ts, И469), и надпись становится «Added · 5». Ошибка видна
+   всегда: её нельзя сказать надписью кнопки. */
+/* Удачная запись страницу на сервере не пересобирает (И696): она шлёт
+   `cart:changed`, и страница корзины, если открыта, перерисовывается сама
+   (CartFresh); шторка перечитывает корзину по `cart:count`. */
+export function CartForm({ lang, className, refresh = true, quiet = false, submit, call, initial, timeout, failed, after, children }: Props) {
+  const router = useRouter()
+  const [busy, setBusy] = useState(false)
+  const [said, setSaid] = useState<Said | null>(initial)
+  const [pending, setPending] = useState<string | null>(null)
+  /* Ошибка самого поля кода («e:coupon-…», COUPON_CODES в lib/cart-view.ts)
+     говорит про поле: когда вопрос «Have a discount code?» свернут, строка уходит
+     вместе с ним (styles у `.couponForm`, заказчик 08.10.2026, И333). */
+  const aboutField = said?.kind === 'error' && !!said.code?.startsWith('e:coupon-')
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    if (cartLane.pending) return
+    const form = new FormData(e.currentTarget, (e.nativeEvent as SubmitEvent).submitter)
+    /* Перечитывать здесь надо только после ошибки или таймаута: исход не
+       известен, корзина могла разойтись с экраном. */
+    let unsure = false
+    const op = String(form.get('op') ?? '')
+    setPending(op.startsWith('set:') ? op : null)
+    setBusy(true)
+    /* «Added · N» — сразу, а не после ответа сервера: у живого магазина ответ идёт
+       0.4–1.1 с, и всё это время кнопка молчала («задержка при нажатии на Add to cart»,
+       заказчик 08.10.2026; И782). Число — прежнее плюс количество формы; ответ
+       поправит его (меньше при нехватке на складе), ошибка вернёт прежнее. Как
+       счётчик количества, И698. */
+    const variant = String(form.get('variant') ?? '')
+    const before = op === 'add' && variant ? heldOf(variant) : 0
+    if (op === 'add' && variant) holdOne(variant, before + (Math.max(1, Math.floor(Number(form.get('quantity') ?? 1))) || 1))
+    try {
+      const out = await cartLane.run(() => call(form))
+      setSaid(out)
+      unsure = out.kind === 'error'
+      if (out.kind !== 'ok') setPending(null)
+      if (op === 'add' && variant) holdOne(variant, out.inCart !== null ? out.inCart : out.kind === 'error' ? before : heldOf(variant))
+      if (out.count !== null) window.dispatchEvent(new CustomEvent('cart:count', { detail: out.count }))
+      if (!unsure) window.dispatchEvent(new CustomEvent('cart:changed'))
+      /* Положено — говорит корзина в шапке (CartLink), а не строка под
+         кнопкой: у всех кнопок «в корзину» одно место ответа. */
+      if (!unsure && form.get('op') === 'add') window.dispatchEvent(new CustomEvent('cart:added'))
+    } catch (error) {
+      setSaid({ kind: 'error', message: isTimeout(error) ? timeout : failed })
+      setPending(null)
+      if (op === 'add' && variant) holdOne(variant, before)
+      unsure = true
+    }
+    setBusy(false)
+    if (refresh && unsure) router.refresh()
+  }
+  return (
+    <form className={className} action={submit} onSubmit={onSubmit} aria-busy={busy} data-said={said?.kind}>
+      <input type="hidden" name="lang" value={lang} />
+      <PendingOp.Provider value={pending}>
+        <fieldset className={s.bare} disabled={busy}>{children}</fieldset>
+      </PendingOp.Provider>
+      <p className={quiet && said?.kind !== 'error' ? `${f.say} ${p.said}` : f.say} data-state={said?.kind === 'error' ? 'error' : undefined} data-field={aboutField ? '' : undefined} role="status">{said?.message}</p>
+      {said && said.kind !== 'error' ? after : null}
+    </form>
+  )
+}

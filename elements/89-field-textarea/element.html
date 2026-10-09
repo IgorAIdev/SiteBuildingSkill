@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>89 · Поле сообщения со счётчиком</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 89 — «Поле сообщения со счётчиком». Источники — daisyUI «Textarea», HyperUI «Textareas», shadcn/ui «Textarea» (MIT).
+  Поле для текста в несколько строк; под ним — сколько знаков из скольки. Слева — счётчик, справа — действие. Расширяет элемент 55.
+-->
+</head>
+<body>
+  <div class="live">
+    <div class="field" data-lines><textarea placeholder="Your message" aria-label="Message" maxlength="300"></textarea><span class="row"><span class="tally">0 / 300</span><button class="el" data-voice="loud" data-size="sm" type="button">Send</button></span></div>
+    <div class="field" data-lines data-voice="line"><textarea aria-label="Review" maxlength="300">Fast delivery and a clear lab report. The dropper is easy to use.</textarea><span class="row"><span class="tally">64 / 300</span><button class="el" data-voice="line" data-size="sm" type="button">Post</button></span></div>
+  </div>
+</body>
+</html>

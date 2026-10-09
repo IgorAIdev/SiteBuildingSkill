@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>98 · Цена со скидкой</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 98 — «Цена со скидкой». Источники — HyperUI «Product Cards», daisyUI «Badge», Flowbite «Pricing» (MIT).
+  Цена: обычная; со старой ценой и ярлыком скидки; с ценой за единицу («за мл»). Число крупно, старая цена зачёркнута тихо,
+  ярлык — значок статуса (76). Цены и валюта — данные магазина.
+-->
+</head>
+<body>
+  <div class="live">
+    <span class="price"><b>€24.90</b></span>
+    <span class="price" data-tone="sale"><b>€24.90</b><s>€31.00</s><span class="status" data-tone="sale">−20 %</span></span>
+    <span class="price"><b>€24.90</b><small>€0.83 / ml</small></span>
+  </div>
+</body>
+</html>

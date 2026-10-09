@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>94 · Хлебные крошки</title>
+<link rel="stylesheet" href="../palettes.css">
+<link rel="stylesheet" href="../../styles/scale.css">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../base.css">
+<script src="../stage.js"></script>
+<!--
+  Элемент 94 — «Хлебные крошки». Источники — daisyUI «Breadcrumbs», HyperUI «Breadcrumbs», shadcn/ui «Breadcrumb» (MIT).
+  Где человек на сайте: Главная › Масла › Товар. Три вида: уголки, косая черта, со знаком дома. Последнее — текущее
+  (`aria-current`). У образца нет адресов: он ни к чему не ведёт.
+-->
+</head>
+<body>
+  <div class="live">
+    <ol class="crumbs" data-sep="chevron" aria-label="Breadcrumb"><li><a><svg data-sign="house"></svg>Home</a></li><li><a>Oils</a></li><li><a aria-current="page">Full spectrum 10 %</a></li></ol>
+    <ol class="crumbs" data-sep="slash" aria-label="Breadcrumb"><li><a>Home</a></li><li><a>Capsules</a></li><li><a aria-current="page">Sleep blend</a></li></ol>
+    <ol class="crumbs" aria-label="Breadcrumb"><li><a><svg data-sign="house"></svg></a></li><li><a>Edibles</a></li><li><a aria-current="page">Gummies</a></li></ol>
+  </div>
+</body>
+</html>
