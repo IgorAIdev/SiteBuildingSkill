@@ -5,10 +5,11 @@ import { readFileSync, statSync, realpathSync, existsSync } from 'node:fs'
 import { resolve, sep, extname } from 'node:path'
 import { createRequire } from 'node:module'
 import { execFileSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 
 if (!process.argv[2]) throw new Error('Usage: npm run check:preview -- <export dist>')
 const root=realpathSync(resolve(process.argv[2]))
-execFileSync(process.execPath,[new URL('./prepare-design-preview.mjs',import.meta.url).pathname.replace(/^\/(?=[A-Z]:)/,''),root,'--check'],{stdio:'inherit'})
+execFileSync(process.execPath,[fileURLToPath(new URL('./prepare-design-preview.mjs',import.meta.url)),root,'--check'],{stdio:'inherit'})
 const require=createRequire(new URL('../selftest/component-preview/package.json',import.meta.url))
 const {chromium}=require('playwright')
 const server=createServer((req,res)=>{
