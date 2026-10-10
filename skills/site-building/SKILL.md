@@ -17,6 +17,9 @@ description: Процесс сайта от брифа до выпуска — �
 
 1. **Прочитать правила, команды, результат и решения целевого проекта**; известное не спрашивать.
 2. **Выбрать режим:** новый сайт — [production.md](references/production.md) с П0;
+   новая витрина на шаблоне набора (новый магазин, новый рынок) — то же с П0, на
+   английском; рынок заводится к завершению —
+   [template-storefront.md](references/template-storefront.md), «Новый рынок на шаблоне»;
    ремонт — [renovation.md](references/renovation.md), затем затронутые этапы; аудит —
    таблицы «Как проверить готовую витрину» в [vendure.md](references/vendure.md) и
    [payload.md](references/payload.md), отчёт по renovation.md, диагностика кончается
