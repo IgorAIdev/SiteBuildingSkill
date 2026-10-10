@@ -210,7 +210,8 @@ https://github.com/IgorAIdev/SiteBuildingSkill» — он склонирует �
 | `.claude/skills/craft/` | экран: закон в `SKILL.md` (десять запретов, три шкалы, двенадцать примитивов, **палитра из двенадцати ступеней**), разбор по темам в `references/`, переносимость, проверки |
 | `.claude/skills/code/` | код: одно и то же в одном месте, чистое обновление состояния, файл читается целиком, склад браузера |
 | `.claude/skills/shop/` | магазин: товар, вариант, цена, полка, корзина, отзывы, обязательные страницы, язык рынка, разметка о товаре; отдельно — CBD (фасет силы, что нельзя писать) |
-| `.claude/skills/` — остальное | вкус (`taste-skill`, `emil-design-eng`), движение (`improve-animations`), стиль (`minimalist`, `brutalist`, `soft`), придирчивый разбор (`impeccable`), `redesign`, `brandkit`, `output` — с лицензиями |
+| `.claude/skills/` — остальное | чужое, что процесс набора использует: придирчивый разбор (`impeccable`, `redesign-skill`), движение (`emil-design-eng`, `improve-animations`, `review-animations`), процесс (`systematic-debugging`, `verification-before-completion`, `test-driven-development`) — с лицензиями |
+| `vendor/skills/` | чужие скиллы, не грузящиеся с 10.10.2026 (процесс Superpowers, стилевые из taste-skill), с лицензиями и перечнем — `vendor/skills/README.md` |
 | `CLAUDE.md` | те же правила словами — читаются раньше кода каждой сессией |
 | `install.mjs` | раскладывает набор в проект и дописывает скрипты |
 | `templates/palette.json` | **готовые наборы цвета для копирования** в `styles/palette.json` проекта: три краски на тему, остальные считаются |

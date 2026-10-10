@@ -216,6 +216,9 @@ for (const f of FILES) put(f)
  * при сохранении текста лицензии — он лежит рядом и едет вместе. */
 const SKILLS = join(ROOT, '.claude/skills')
 cpSync(SKILLS, join(OUT, '.claude/skills'), { recursive: true })
+/* Выведенные из загрузки чужие скиллы (10.10.2026) лежат в `vendor/skills/` с
+   лицензиями и перечнем; ставятся в проект только `install.mjs --extras`. */
+cpSync(join(ROOT, 'vendor/skills'), join(OUT, 'vendor/skills'), { recursive: true })
 // Preserve the portable authored root, including its separately installed SEO companion.
 const authoredRoot = [join(ROOT, 'skills/site-building'),
   join(ROOT, '.agents/skills/site-building'), join(ROOT, '.claude/skills/site-building')]
@@ -392,7 +395,8 @@ https://github.com/IgorAIdev/SiteBuildingSkill» — он склонирует �
 | \`.claude/skills/palette/\` | цвет: семь семей смысла, шкала из двенадцати ступеней на каждую, роли по элементам витрины, порядок построения новой палитры, формулы; строитель и замер — \`tools/palette*.mjs\` |
 | \`.claude/skills/code/\` | код: одно и то же в одном месте, чистое обновление состояния, файл читается целиком, склад браузера |
 | \`.claude/skills/shop/\` | магазин: товар, вариант, цена, полка, корзина, отзывы, обязательные страницы, язык рынка, разметка о товаре; отдельно — CBD (фасет силы, что нельзя писать) |
-| \`.claude/skills/\` — остальное | вкус (\`taste-skill\`, \`emil-design-eng\`), движение (\`improve-animations\`, \`review-animations\`), стиль (\`minimalist\`, \`brutalist\`, \`soft\`), придирчивый разбор (\`impeccable\`), \`redesign\`, \`brandkit\`, \`output\` — с лицензиями |
+| \`.claude/skills/\` — остальное | чужое, что процесс набора использует: придирчивый разбор (\`impeccable\`, \`redesign-skill\`), движение (\`emil-design-eng\`, \`improve-animations\`, \`review-animations\`), процесс (\`systematic-debugging\`, \`verification-before-completion\`, \`test-driven-development\`) — с лицензиями |
+| \`vendor/skills/\` | чужие скиллы, выведенные из загрузки 10.10.2026 (процесс Superpowers, стилевые из taste-skill): лежат с лицензиями и перечнем в \`README.md\`, не грузятся; вернуть — \`git mv\`, поставить в проект — \`install.mjs --extras\` |
 | \`CLAUDE.md\` | те же правила словами — читаются раньше кода каждой сессией |
 | \`install.mjs\` | раскладывает набор в проект и дописывает скрипты |
 | \`styles/base.css\` | сброс, земля страницы, режимы переноса, кольцо фокуса |
@@ -439,7 +443,7 @@ https://github.com/IgorAIdev/SiteBuildingSkill» — он склонирует �
 * [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)
   (MIT) — половина проверок ремесла, но только измеримое.
 
-У чужих скиллов в \`.claude/skills/\` лицензии лежат рядом файлами
+У чужих скиллов в \`.claude/skills/\` и \`vendor/skills/\` лицензии лежат рядом файлами
 \`LICENSE.*\`, отметки Apache 2.0 — файлами \`NOTICE.*\`.
 
 **Чего в этих источниках нет.** Четыре запрета из десяти заведены дефектом
@@ -543,7 +547,7 @@ if (existsSync(pkgPath)) {
 console.log(`Набор собран: ${FILES.length + 7} файлов и ${kits} скиллов в ${OUT}`)
 console.log('  · CLAUDE.md — правила, читаются раньше кода каждой сессией')
 console.log('  · install.mjs — ставит набор в проект одной командой')
-console.log('  · .claude/skills — все скиллы: свой craft, code и stages плюс вкус, движение, стиль, процесс')
+console.log('  · .claude/skills — свои скиллы плюс чужие нужные (разбор, движение, отладка); остальной чужой архив — vendor/skills, не грузится')
 console.log('  · tools/stages.mjs + tools/stage.mjs — этапы: `npm run stage` говорит, что сейчас нужно')
 if (spare) console.log('  · заготовок tools/kit/ нет — правила взяты из корневого CLAUDE.md')
 console.log('  · .github/workflows/check.yml — проверки падают сами, без чьей-либо памяти')

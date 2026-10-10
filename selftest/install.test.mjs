@@ -70,6 +70,7 @@ test('новый сайт: всё разложено, команды допис�
   assert.ok(!existsSync(join(dir, 'selftest')), 'самопроверка набора — не содержимое проекта')
   assert.ok(!existsSync(join(dir, 'research')), 'исследования набора — не содержимое проекта')
   assert.ok(!existsSync(join(dir, '.claude/skills/taste-skill')), 'чужие стилевые скиллы не ставятся без --extras')
+  assert.ok(!existsSync(join(dir, 'vendor')), 'архив выведенных скиллов ставится только с --extras')
   /* И271: правило CLAUDE.md «Дизайн делается дизайнерскими скиллами» зовёт
      их по имени — без них на сайте оно ссылалось бы в пустоту. */
   for (const f of ['.claude/skills/impeccable/SKILL.md', '.claude/skills/impeccable/reference/critique.md',
@@ -350,7 +351,13 @@ test('--extras is explicit and retains upstream skill licenses; invalid modes wr
   try {
     const r = install(dir, '--extras')
     assert.equal(r.status, 0, r.stderr)
-    assert.ok(existsSync(join(dir, '.claude/skills/taste-skill/SKILL.md')))
+    /* Выведенные из загрузки чужие скиллы (10.10.2026) едут в vendor/skills,
+       а не в .claude/skills: иначе они снова грузились бы в каждый запрос. */
+    assert.ok(existsSync(join(dir, 'vendor/skills/taste-skill/SKILL.md')))
+    assert.ok(existsSync(join(dir, 'vendor/skills/README.md')))
+    assert.ok(existsSync(join(dir, 'vendor/skills/LICENSE.superpowers')))
+    assert.ok(!existsSync(join(dir, '.claude/skills/taste-skill')), 'выведенный скилл не возвращается в загрузку')
+    assert.ok(existsSync(join(dir, '.claude/skills/systematic-debugging/SKILL.md')), 'оставленный чужой скилл едет с --extras')
     const bad = install(invalid, '--skill-only', '--audit')
     assert.notEqual(bad.status, 0)
     assert.ok(!existsSync(join(invalid, '.agents')))

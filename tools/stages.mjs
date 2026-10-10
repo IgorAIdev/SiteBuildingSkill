@@ -448,8 +448,6 @@ export const STAGES = [
     parked: [
       { name: 'ui-ux-pro-max — products.csv и typography.csv (только новый сайт)', url: 'https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/tree/main/.claude/skills/ui-ux-pro-max/data',
         take: 'на НОВОМ сайте, где системы ещё нет: строки «Pharmacy/Drug Store», «Beauty/Spa/Wellness Service», «E-commerce Luxury» — отправная идея стиля; пары шрифтов — кандидаты в face-stand (он сам проверит кириллицу и latin-ext). Коды цветов не берутся: краски — строителем из трёх красок заказчика. Скрипты на Python не ставятся; --design-system в проекте с tokens.css — второй набор чисел.' },
-      { name: 'minimalist · brutalist · soft (taste-skill)', url: '.claude/skills/',
-        take: 'за идеей стиля, не за числами: идея переводится в свои токены.' },
       /* Разбор — docs/skills.md, «cbdshop.bg». Обе записи — про то, как
          устроено ОСНОВАНИЕ; берутся при закладке нового сайта или при
          следующей правке шкал набора, не раньше. */
@@ -510,7 +508,7 @@ export const STAGES = [
     builds: 'блоки и страницы, отзывчивость по ширинам, обе темы, вкус и движение. Компонент меряет контейнер, а не окно; число колонок вычисляется.',
     /* Дизайнерские скиллы — первыми: правка вида начинается с них, а не
        с CSS (CLAUDE.md, «Дизайн делается дизайнерскими скиллами»; И271). */
-    skills: ['impeccable', 'redesign-skill', 'craft', 'scale', 'shop', 'code', 'taste-skill', 'emil-design-eng', 'improve-animations', 'review-animations', 'stages'],
+    skills: ['impeccable', 'redesign-skill', 'craft', 'scale', 'shop', 'code', 'emil-design-eng', 'improve-animations', 'review-animations', 'stages'],
     steps: [
       step(14, 'Узлы', 'атомы → молекулы → организмы: кнопка, поле → карточка, счётчик, поиск → шапка, сетка, полоса покупки; без сырых значений, все состояния, оба указателя, обе темы', 'craft',
         () => has('components') ? null : 'нет components/ — узлов ещё нет'),
@@ -835,7 +833,7 @@ export const ALWAYS = [
   'stages',
   `дизайн (любая правка вида, на любом этапе): ${DESIGN.order.join(' → ')}; разбор готовой страницы — ${DESIGN.audit}; рядом ${DESIGN.alongside} — ${DESIGN.rule}`,
   'craft (при любой правке CSS)', 'palette (при любой правке красок, ролей цвета и строителя палитры)', 'scale (при любой правке кеглей, ритма, полей, воздуха и строителя шкал)', 'code (при любой правке TypeScript)', 'shop (при любой правке товара, полки, корзины, страниц магазина)',
-  'Superpowers: brainstorming · writing-plans · systematic-debugging · verification-before-completion · finishing-a-development-branch',
+  'Superpowers (из процесса — только то, что лежит в `.claude/skills/`): systematic-debugging · verification-before-completion · test-driven-development',
 ]
 
 /* ── текущий этап ──────────────────────────────────────────────────────── */

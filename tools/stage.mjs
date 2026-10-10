@@ -122,6 +122,21 @@ if (!stage) {
   process.exit(1)
 }
 
+/* ── коротко: для хука начала сессии ──────────────────────────────────────
+   Полный брифинг — 17 КБ в каждую сессию, и большая часть — пройденные
+   шаги (разбор 10.10.2026). Хуку хватает трёх строк: где мы, что держится,
+   что дальше; остальное — по `npm run stage`. */
+if (arg('--brief')) {
+  const broken = gateProblems(stage).length
+  const left = stepProblems(stage).length
+  const owner = stage.gate.human.owner.filter((h) => !confirmed(h)).length
+  const next = stage.steps?.find((st) => { const m = st.done ? st.done() : undefined; return m === null && !st.reviewed })
+  console.log(`Этап производства: ${title(stage)} — ${stage.builds}`)
+  console.log(`Держится: ${broken ? `✗ нарушений ${broken}` : '✓'} · до перехода: машиной ${left}, решает заказчик ${owner}${next ? ` · следующий подэтап: ${next.layer}. ${next.name}` : ''}`)
+  console.log('Подробно — npm run stage; правка вида — порядок из CLAUDE.md «Дизайн делается дизайнерскими скиллами».')
+  process.exit(0)
+}
+
 /* ── ворота: пройденное держится ───────────────────────────────────────── */
 if (arg('--gate')) {
   let failed = false

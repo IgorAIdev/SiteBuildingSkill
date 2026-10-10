@@ -543,6 +543,8 @@ DTCG, Style Dictionary, Figma; MDN и `web-features` (Baseline на дату), W
 
 ## taste-skill — сверка с автором
 
+**С 10.10.2026** пять из семи (`taste-skill`, `minimalist-skill`, `brutalist-skill`, `soft-skill`, `output-skill`) и `brandkit` лежат в `vendor/skills/` и не грузятся (`vendor/skills/README.md`); `redesign-skill` остался в `.claude/skills/`.
+
 **Дата разбора:** 24.09.2026. Семь наших скиллов совпадают с `leonxlnx/taste-skill` байт в байт (хэши блобов); с
 12.06.2026 автор скиллы не менял. Новые у автора: `gpt-tasteskill`, `taste-skill-v1`, `stitch-skill`,
 `image-to-code-skill`, `imagegen-frontend-web/mobile`.
