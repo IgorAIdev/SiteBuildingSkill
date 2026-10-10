@@ -1425,7 +1425,8 @@ checks-not-on-dev-server). Firefox — впервые (системный 157), 
 
 ## Проверить ночью 10.10.2026 — адрес-пример в тестах шаблона
 
-- [ ] `tests/social.test.ts`, `tests/account.test.ts`, `tests/consent.test.ts`: адрес отделённого магазина в
+- [x] (10.10.2026: прогнаны в свежей `.storefront/` — `npm test` 379 из 380, эти три зелёные; красный —
+      `buttons.test.ts`, вид в копии старше `showcase/`) `tests/social.test.ts`, `tests/account.test.ts`, `tests/consent.test.ts`: адрес отделённого магазина в
       примерах заменён на `shop.example`. Днём не прогнаны: копия `.storefront/` устарела (нет `lib/social.ts`),
       а запуск витрины днём не делается. Прогнать `npm test` в свежей копии.
 
