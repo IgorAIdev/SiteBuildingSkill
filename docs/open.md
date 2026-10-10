@@ -1447,6 +1447,6 @@ checks-not-on-dev-server). Firefox — впервые (системный 157), 
 
 ## Тест установки витрины (найдено 10.10.2026)
 
-- [ ] `selftest/storefront-install.test.mjs` («--storefront lays the template…») красный и до перестройки
+- [x] (10.10.2026: имя ключа избранного вынесено в `lib/saved-key.ts` без React; полный selftest 290 зелёных, 0 красных) `selftest/storefront-install.test.mjs` («--storefront lays the template…») красный и до перестройки
       набора: установленная во временную папку витрина гоняет `tests/consent.test.ts`, а `react` там нет —
       зависимости не ставятся. Решить: ставить зависимости в тесте или гонять только тесты без React.

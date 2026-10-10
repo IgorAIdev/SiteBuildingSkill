@@ -11,7 +11,7 @@ import { STORAGE_ROWS, consentView, hasOptional, optionalOf, storageTable } from
 import { SESSION_COOKIE } from '../lib/session-cookie.ts'
 import { THEME_COOKIE } from '../lib/theme.ts'
 import { flowCookie } from '../lib/social.ts'
-import { SAVED_KEY } from '../lib/saved.ts'
+import { SAVED_KEY } from '../lib/saved-key.ts'
 import { LOCALES } from '../lib/locale.ts'
 
 /* Согласие на cookie (И791; бриф docs/design/документы-и-куки.md). Что меряется:
