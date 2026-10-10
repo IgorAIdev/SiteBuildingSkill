@@ -131,7 +131,7 @@ if (arg('--brief')) {
   const left = stepProblems(stage).length
   const owner = stage.gate.human.owner.filter((h) => !confirmed(h)).length
   const next = stage.steps?.find((st) => { const m = st.done ? st.done() : undefined; return m === null && !st.reviewed })
-  console.log(`Этап производства: ${title(stage)} — ${stage.builds}`)
+  console.log(`Ворота набора: ${title(stage)} — ${stage.builds} (этапы — П0–П6, skills/site-building/references/production.md)`)
   console.log(`Держится: ${broken ? `✗ нарушений ${broken}` : '✓'} · до перехода: машиной ${left}, решает заказчик ${owner}${next ? ` · следующий подэтап: ${next.layer}. ${next.name}` : ''}`)
   console.log('Подробно — npm run stage; правка вида — порядок из CLAUDE.md «Дизайн делается дизайнерскими скиллами».')
   process.exit(0)

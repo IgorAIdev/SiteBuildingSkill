@@ -1,6 +1,6 @@
 ---
 name: no-history
-description: History was reset twice — 28.09.2026 (kit) and 09.10.2026 (kit and cbd-ecommerce, with a full backup); only on the owner's word, one repo at a time; small requested fixes publish without repeat confirmation
+description: History was reset twice — 28.09.2026 (kit) and 09.10.2026 (with a full backup); only on the owner's word, one repo at a time; small requested fixes publish without repeat confirmation
 metadata:
   type: feedback
 ---

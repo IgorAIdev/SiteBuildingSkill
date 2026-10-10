@@ -1,6 +1,6 @@
 {
   "lang": "hu",
-  "note": "Own lexicon of the seo-content skill: EU health-claims law and the NKFH notice of 24.07.2026 (references/compliance.md). Patterns run on lower-case text without accents (ő → o, ű → u). No regulator lexicon exists for Hungarian — a person reads every text.",
+  "note": "Own lexicon of the seo-content skill: EU health-claims law and the NKFH notice of 24.07.2026 (references/compliance.md, references/market-packs.md). Patterns run on lower-case text without accents (ő → o, ű → u). No regulator lexicon exists for Hungarian — a person reads every text.",
   "condition": ["alvas", "elalvas", "almatlan", "szorong", "fajdalom", "fajdalm", "izulet", "gyullad", "stressz", "depresszi", "menstrua", "menopauz", "migren", "ekcema", "pikkelysomor", "epilep", "rak ", "cukorbeteg", "immun", "gyogyit", "gyogymod"],
   "conditionAllow": ["stresszmentes szallitas"],
   "hedge": ["\\bnem (bizonyitja|garantalja|garantal|jelenti automatikusan)\\b", "\\bellenorizze a cimket", "\\bnem garantalhato\\b"],

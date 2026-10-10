@@ -15,7 +15,7 @@
     "origin": "AC 2026-10-08; VOL ulei cbd 2400 (2026-09)"
   },
   "name": "Ulei CBD",
-  "title": "Ulei CBD (ulei de canabis): full spectrum, broad și izolat | CBDin",
+  "title": "Ulei CBD (ulei de canabis): full spectrum, broad și izolat | {Марка}",
   "description": "…110–165 знаков, факты…",
   "heading": "Ulei CBD (ulei de canabis)",
   "lede": "…≤ 40 слов над сеткой, главный запрос в первом предложении…",

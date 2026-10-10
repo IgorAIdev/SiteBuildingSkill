@@ -1,6 +1,6 @@
 {
   "lang": "ro",
-  "note": "Own lexicon of the seo-content skill, written from Reg. 1924/2006, 432/2012, 2015/2283, Dir. 2001/83/EC and the Romanian practice described in references/compliance.md. Patterns run on lower-case text without diacritics. fail = never on a shop page; fix = rewrite (fails in names, headings, questions and captions).",
+  "note": "Own lexicon of the seo-content skill, written from Reg. 1924/2006, 432/2012, 2015/2283, Dir. 2001/83/EC and the Romanian practice described in references/compliance.md and references/market-packs.md. Patterns run on lower-case text without diacritics. fail = never on a shop page; fix = rewrite (fails in names, headings, questions and captions).",
   "condition": ["somn", "insomni", "anxiet", "stres", "durer", "articulat", "inflam", "menstru", "menopauz", "depresi", "epilep", "cancer", "diabet", "imunit", "tratament", "vindec", "boala", "boli", "afectiun", "migren", "tensiun", "colesterol"],
   "conditionAllow": ["fara stres", "livrare fara stres"],
   "hedge": ["\\bnu (dovedeste|garanteaza|stabileste|confirma|inseamna automat)\\b", "\\bfara a presupune\\b", "\\bverificati eticheta\\b", "\\bnu poate fi garantat", "\\bnu este o dovada\\b"],
