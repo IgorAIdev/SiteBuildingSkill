@@ -110,7 +110,7 @@ snap(x)   = round(x / клетка(x)) × клетка(x)
 нижний конец:   размер.base[0] ≥ 16, sm ≥ 14, xs ≥ 12, h2 ≥ 24  — TYPE.floor
 отношение:      r₀, r₁ ∈ TYPE.ratio [1.067, 1.5]
 заголовок:      h2[0] / base[0] ≥ TYPE.headContrast (1.5)
-мера строки:    45…80 знаков                                    — TYPE.measure
+мера строки:    45…75 знаков                                    — TYPE.measure
 ```
 
 ## Роли текста — `auditRoles`, `TEXT`, `rolesOf`
