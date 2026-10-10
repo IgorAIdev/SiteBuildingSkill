@@ -125,7 +125,7 @@ Google» и «Continue with Facebook» — но только для постав
 | `FACEBOOK_APP_ID` | `123456789012345` | Facebook: id приложения (открытый) |
 | `FACEBOOK_APP_SECRET` | секрет приложения | Facebook: только здесь |
 | `FACEBOOK_GRAPH_VERSION` | `v26.0` | версия Graph API; пусто или криво — `v26.0` |
-| `SOCIAL_AUTH_REDIRECT_URIS` | `https://cbdin.ro/api/auth/google/callback,https://cbdin.ro/api/auth/facebook/callback` | адреса возврата витрины через запятую — те же, что в консолях; https (http — только localhost) |
+| `SOCIAL_AUTH_REDIRECT_URIS` | `https://shop.example/api/auth/google/callback,https://shop.example/api/auth/facebook/callback` | адреса возврата витрины через запятую — те же, что в консолях; https (http — только localhost) |
 
 Нет пары id + секрет — поставщик выключен. Нет ни одного адреса возврата —
 выключены оба: код без адреса из списка не войдёт.

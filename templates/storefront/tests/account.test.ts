@@ -295,7 +295,7 @@ test('vendure: buttons only for providers the server plugin names, in the storef
 })
 
 test('vendure: the code goes to authenticate with the GUEST token; success takes the new token; plugin refusals become words', async () => {
-  const grant = { code: 'c-1', redirectUri: 'https://cbdin.ro/api/auth/google/callback', codeVerifier: 'v'.repeat(64) }
+  const grant = { code: 'c-1', redirectUri: 'https://shop.example/api/auth/google/callback', codeVerifier: 'v'.repeat(64) }
   const ok = engine((q, auth) => {
     if (q.includes('authenticate')) return { authenticate: { __typename: 'CurrentUser', id: '1' } }
     if (q.includes('activeCustomer')) return { activeCustomer: auth === 'Bearer tok-2' ? CUSTOMER : null }

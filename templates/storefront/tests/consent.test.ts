@@ -132,7 +132,7 @@ test('no third-party script before consent; an external script address lives onl
   assert.deepEqual(allowed(null, services), [], 'выбора нет — ни одной службы')
   assert.deepEqual(allowed({ revision: 1, categories: [], id: 'x', at: 0 }, services), [], 'отказ — ни одной службы')
   assert.deepEqual(allowed({ revision: 1, categories: ['analytics'], id: 'x', at: 0 }, services).map((s) => s.key), ['ga'])
-  assert.deepEqual(expiring('_ga=1; _ga_X=2; theme=dark', ['analytics'], 'cbdin.ro', services).filter((l) => !l.includes('domain')), ['_ga=; path=/; max-age=0', '_ga_X=; path=/; max-age=0'])
+  assert.deepEqual(expiring('_ga=1; _ga_X=2; theme=dark', ['analytics'], 'shop.example', services).filter((l) => !l.includes('domain')), ['_ga=; path=/; max-age=0', '_ga_X=; path=/; max-age=0'])
   assert.equal(SERVICES.length, 0, 'у шаблона служб нет')
   for (const file of SITE) {
     const text = read(file)

@@ -13,7 +13,7 @@ metadata:
 - Fix the owner asked for → branch from current `main`, applicable checks, push, PR, merge myself. No «вливать?» question.
 - Fix I found and made myself → same flow, and the report lists each one as a numbered bold line: **1. Что исправлено** — где и почему.
 - An explicit «только локально» / «не заливай» in the current task still wins until he lifts it.
-- Merge is not «на витрине»: cbdin.ro lives in cbd-ecommerce since 08.10 ([[cbdin-ro-in-ecommerce]]); a kit merge reaches only the kit template showcase.
+- Merge is not «на витрине» until he pulls `main` ([[on-storefront-means-merged]]).
 
 **Why:** he got tired of approval round-trips (06.10), but wants to see what changed without asking (10.10).
 

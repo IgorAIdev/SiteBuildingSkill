@@ -8,8 +8,8 @@ import { socialAlert, signInView, signUpView } from '../lib/account-view.ts'
    «Отмена» — тихо, остальное — отказ словами на той же форме. Действие кнопки
    и адрес возврата — тонкие обёртки над `start`, `land` и `landed`. */
 
-const BACK = 'https://cbdin.ro/api/auth/google/callback'
-const back = (p: string) => `https://cbdin.ro/api/auth/${p}/callback`
+const BACK = 'https://shop.example/api/auth/google/callback'
+const back = (p: string) => `https://shop.example/api/auth/${p}/callback`
 const flow = (o: Partial<Flow> = {}): Flow => ({ ...newFlow('google', 'ro', '/ro/cart', 'home'), ...o })
 const query = (q: Record<string, string>) => new URLSearchParams(q)
 const form = (q: Record<string, string>) => { const f = new FormData(); for (const [k, v] of Object.entries(q)) f.set(k, v); return f }

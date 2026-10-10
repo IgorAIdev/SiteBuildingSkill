@@ -11,7 +11,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { appSecretProof, decide, grantOf, normalizeEmail, optionsOf, personOf, publicProviders, refusalOfError, toDrop } from '../skills/site-building/assets/vendure/plugins/social-auth/rules.ts'
 
-const BACK = ['https://cbdin.ro/api/auth/google/callback', 'https://cbdin.ro/api/auth/facebook/callback']
+const BACK = ['https://shop.example/api/auth/google/callback', 'https://shop.example/api/auth/facebook/callback']
 const VERIFIER = 'a'.repeat(43)
 
 test('authenticate input: a code, a return address the server knows and a PKCE verifier — for both providers; no ready tokens', () => {
@@ -72,11 +72,11 @@ test('appsecret_proof and provider trouble: network and 5xx say «unavailable»,
 
 test('settings: a provider without its secret is off; return addresses are https (http only on localhost); no address — no buttons', () => {
   const env = { GOOGLE_CLIENT_ID: 'g-id', GOOGLE_CLIENT_SECRET: '', FACEBOOK_APP_ID: '1', FACEBOOK_APP_SECRET: 's', FACEBOOK_GRAPH_VERSION: 'bad',
-    SOCIAL_AUTH_REDIRECT_URIS: 'http://cbdin.ro/a, http://localhost:3001/api/auth/google/callback ,https://cbdin.ro/api/auth/facebook/callback' }
+    SOCIAL_AUTH_REDIRECT_URIS: 'http://shop.example/a, http://localhost:3001/api/auth/google/callback ,https://shop.example/api/auth/facebook/callback' }
   const o = optionsOf(env)
   assert.equal(o.google, null, 'нет секрета — поставщик выключен')
   assert.equal(o.facebook.graphVersion, 'v26.0', 'кривая версия Graph — своя по умолчанию')
-  assert.deepEqual(o.redirectUris, ['http://localhost:3001/api/auth/google/callback', 'https://cbdin.ro/api/auth/facebook/callback'])
+  assert.deepEqual(o.redirectUris, ['http://localhost:3001/api/auth/google/callback', 'https://shop.example/api/auth/facebook/callback'])
   assert.deepEqual(publicProviders(o), [{ name: 'facebook', clientId: '1' }], 'наружу — открытый id, без секрета')
   assert.ok(!JSON.stringify(publicProviders(o)).includes('"s"'))
   assert.deepEqual(publicProviders(optionsOf({ ...env, GOOGLE_CLIENT_SECRET: 'x', SOCIAL_AUTH_REDIRECT_URIS: '' })), [], 'без адреса возврата кнопки не войдут — их нет')
