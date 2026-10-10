@@ -1,4 +1,5 @@
 - [Kit goal](skill-goal.md) — build and audit CBD storefronts on Next.js over Payload + Vendure; owner non-technical
+- [No Codex work](no-codex-work.md) — owner 10.10.2026: nothing needs doing for Codex; no .agents/.codex upkeep
 - [Owner decisions on the look](../../docs/owner-decisions/README.md) — 41 decisions on the template storefront look and copies of CLAUDE.md rules, moved out of auto-load 10.10.2026; read before changing the look of a part
 - [Storefront template](storefront-template-ro.md) — universal reference storefront built in English (ro/hu market packs); run with npm run storefront, on the server as skill-storefront
 - [Take the recommended option](take-recommended.md) — don't ask the owner to pick between options I recommend; take the recommended one and go
