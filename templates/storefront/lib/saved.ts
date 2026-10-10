@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { read, useStored, write } from './store.ts'
+import { SAVED_KEY } from './saved-key.ts'
 
 /* Избранное — список товаров, отмеченных сердцем (слово заказчика
    28.09.2026: «иконки поиск, контакты, кабинет, избранное добавляй в
@@ -7,8 +8,7 @@ import { read, useStored, write } from './store.ts'
    браузера номерами товаров, новые — первыми; товары читает страница
    избранного у источника (`/api/cards`), так цена и наличие всегда
    свежие. */
-/** Имя строки склада — его же называет реестр хранилищ (lib/storage.json, И791). */
-export const SAVED_KEY = 'saved'
+export { SAVED_KEY }
 const KEY = SAVED_KEY
 const NONE: string[] = []
 
