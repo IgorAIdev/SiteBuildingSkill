@@ -237,7 +237,8 @@ const PROJECT_OWNED = ['AGENTS.md', 'CLAUDE.md', 'docs', 'styles', 'tests', '.ox
 
 /** Свои шесть скиллов — то, ради чего набор существует. Остальные в
  *  `.claude/skills/` — чужие, о вкусе и процессе; на чужой сайт для аудита
- *  они не едут: там могут стоять свои. */
+ *  они не едут: там могут стоять свои. Чужие, выведенные из загрузки
+ *  10.10.2026, лежат в `vendor/skills/` и едут туда же — только с --extras. */
 const OWN_SKILLS = ['craft', 'palette', 'scale', 'code', 'shop', 'stages']
 
 /** Дизайнерские скиллы, которые правило проекта зовёт по имени: CLAUDE.md,
@@ -409,6 +410,14 @@ if (!flags.has('--extras') || MODE === 'audit') {
 } else {
   copy(join(SRC, '.claude/skills'), join(OUT, '.claude/skills'))
   moved.push('дополнительные скиллы с лицензиями')
+  /* Выведенный из загрузки архив (vendor/skills, 10.10.2026) едет в проект
+     тем же местом — `vendor/skills/`, не в `.claude/skills/`: иначе он
+     снова попал бы в каждый запрос. Вернуть скилл в загрузку проекта —
+     `git mv vendor/skills/<имя> .claude/skills/<имя>` (README рядом). */
+  if (existsSync(join(SRC, 'vendor/skills'))) {
+    copy(join(SRC, 'vendor/skills'), join(OUT, 'vendor/skills'))
+    moved.push('vendor/skills — выведенные из загрузки чужие скиллы с лицензиями и перечнем')
+  }
 }
 if (MODE !== 'audit') {
   /* settings.json у проекта может быть свой — с разрешениями и своими
@@ -743,7 +752,7 @@ if (templateReport) {
 for (const line of lookReport) console.log(`  · ${line}`)
 if (MODE === 'new') {
   console.log('  · CLAUDE.md — правила, читаются раньше кода каждой сессией')
-  console.log('  · .claude/skills — шесть предметных скиллов; сторонние только с --extras')
+  console.log('  · .claude/skills — шесть предметных скиллов и нужные набору чужие (impeccable, redesign-skill); остальной сторонний архив — только с --extras, в vendor/skills')
   console.log('  · .claude/settings.json — хуки: брифинг этапа сам в начале сессии, проверка сама после правки')
   console.log('  · .github/workflows/check.yml — проверки падают сами, без чьей-либо памяти')
   if (!kept.some(isBaseline)) console.log('  · базы храповиков на нулях — на новом проекте долга нет')

@@ -35,7 +35,9 @@
 даже если найдено при правке стилей. Как растёт скилл и куда что кладётся —
 `craft/references/self-improvement.md`.
 
-## Вендоренные дизайн-скиллы
+## Вендоренные скиллы
+
+**С 10.10.2026 не всё чужое грузится.** Каждый скилл здесь кладёт описание в каждый запрос, а часть спорит с правилами набора. Те чужие, которых процесс набора не использует (одиннадцать из Superpowers и шесть из taste-skill), переехали в `vendor/skills/` — целыми, с лицензиями; перечень, источники и как вернуть — `vendor/skills/README.md`. Ниже — что осталось в загрузке.
 
 Лежат здесь, а не подключены маркетплейсом, потому что маркетплейсы в этих
 сессиях не скачиваются: `~/.claude/plugins/installed_plugins.json` остаётся
@@ -44,12 +46,12 @@
 
 | Источник | Лицензия | Что взято |
 | --- | --- | --- |
-| [leonxlnx/taste-skill](https://github.com/leonxlnx/taste-skill) | MIT | `taste-skill`, `minimalist-skill`, `redesign-skill`, `brandkit`, `brutalist-skill`, `soft-skill`, `output-skill` |
+| [leonxlnx/taste-skill](https://github.com/leonxlnx/taste-skill) | MIT | здесь — `redesign-skill`; `taste-skill`, `minimalist-skill`, `brandkit`, `brutalist-skill`, `soft-skill`, `output-skill` с 10.10.2026 в `vendor/skills/` |
 | [pbakaus/impeccable](https://github.com/pbakaus/impeccable) | Apache 2.0 | `impeccable` — `SKILL.md` и `reference/`; его детектор — не здесь, а в `tools/vendor/impeccable/` (ниже) |
 | [emilkowalski/skills](https://github.com/emilkowalski/skills) | MIT | `emil-design-eng`, `improve-animations`, `review-animations` |
-| [obra/superpowers](https://github.com/obra/superpowers) | MIT | все 14 скиллов процесса — `using-superpowers`, `brainstorming`, `writing-plans`, `executing-plans`, `test-driven-development`, `systematic-debugging`, `requesting-code-review`, `receiving-code-review`, `verification-before-completion`, `writing-skills`, `using-git-worktrees`, `finishing-a-development-branch`, `dispatching-parallel-agents`, `subagent-driven-development` |
+| [obra/superpowers](https://github.com/obra/superpowers) | MIT | здесь — `test-driven-development`, `systematic-debugging`, `verification-before-completion`; остальные одиннадцать скиллов процесса с 10.10.2026 в `vendor/skills/` |
 
-Тексты скиллов не менялись. Лицензии рядом: `LICENSE.taste-skill`,
+Тексты скиллов не менялись. Лицензии рядом (копии `LICENSE.superpowers` и `LICENSE.taste-skill` лежат ещё и в `vendor/skills/`): `LICENSE.taste-skill`,
 `LICENSE.impeccable` и `NOTICE.impeccable`, `LICENSE.emil-kowalski`,
 `LICENSE.superpowers`. `NOTICE.impeccable` — дословный `NOTICE.md` автора:
 справочники `impeccable/reference/ios.md` и `android.md` выведены из
@@ -104,7 +106,7 @@
   (И271, `docs/skills.md`).
 - **`imagegen-*`, `stitch-skill`, `image-to-code-skill`** из taste-skill —
   им нужен генератор изображений, а в этой сессии его нет.
-- **`brandkit`** взят, хотя он тоже про генерацию картинок: его метод
+- **`brandkit`** был взят, хотя он тоже про генерацию картинок: его метод
   (аргумент бренда → метафора → редукция) применяется руками, по нему сделан
   второй заход логотипа.
 
@@ -112,50 +114,33 @@
 
 ```
 git clone --depth 1 https://github.com/leonxlnx/taste-skill.git /tmp/ts
-cp -r /tmp/ts/skills/<имя> .claude/skills/
+cp -r /tmp/ts/skills/<имя> .claude/skills/   # выведенные из загрузки — в vendor/skills/
 
 git clone --depth 1 https://github.com/emilkowalski/skills.git /tmp/em
 cp -r /tmp/em/skills/<имя> .claude/skills/
 ```
 
 
-## Superpowers: чем он отличается от остальных здесь
+## Superpowers: что осталось
 
 Все прочие скиллы в этой папке — про **артефакт**: как выглядит, как ложится,
-как звучит. Superpowers — про **процесс**: как вести работу от «хочу вот это»
-до влитой ветки. Разговор до кода, план, красный-зелёный, разбор дефекта по
-шагам, запрос ревью, проверка перед сдачей.
-
-Пересечения с `craft` нет: `craft` отвечает, каким должен получиться результат,
-Superpowers — в каком порядке к нему идти. Ставится целиком, а не выборочно:
-скиллы ссылаются друг на друга, и половина набора — это половина маршрута.
-
-Вещи, о которых надо знать заранее.
+как звучит. Из Superpowers (**процесс**) в загрузке три, и каждый опирается на
+то, что в проекте есть: `systematic-debugging` (разбор дефекта по шагам),
+`verification-before-completion` (проверка перед сдачей), `test-driven-development`
+(красный тест перед кодом).
 
 **`test-driven-development` опирается на прогон, и он есть.** Тесты лежат в
 `selftest/`, `tests/` и `templates/storefront/tests/`; `npm test` и CI
-(`.github/workflows/kit.yml`) их гоняют. Скилл требует красного теста перед
-кодом — писать его есть чем. Где прогона нет (новый проект без образца
-теста), скилл честно неприменим, и делать вид, что применим, нельзя.
+(`.github/workflows/kit.yml`) их гоняют. Где прогона нет (новый проект без
+образца теста), скилл честно неприменим, и делать вид, что применим, нельзя.
 
-**Взяты только `skills/`.** Хуки набора (`hooks/`, они вешают его на старт
-сессии) и его команды не копировались: поведение сессии — решение проекта, а
-не устанавливаемого набора.
-
-**Одна вещь ходит наружу, и о ней надо знать.** `brainstorming/scripts/server.cjs`
-поднимает локальный сервер для «визуального компаньона» — страницы, на которой
-показывают макеты и жмут на варианты. Сама страница локальная, но знак набора
-на ней подтягивается с `primeradiant.com`: открыв её, вы сообщаете автору
-набора, что ей пользуетесь. Компаньон не запускается сам — он нужен только
-тогда, когда его позвали, — но молча ставить то, что ходит наружу, нельзя.
-
-**`using-superpowers` спорит с правилом заказчика.** Он требует вызвать скилл
-до ЛЮБОГО ответа, включая уточняющий вопрос, и вести разговор через
-`brainstorming` прежде плана. В `CLAUDE.md` записано обратное и по счёту:
-«правка делается, а не обсуждается», и ожидание названо перекладыванием
-работы на заказчика. Старшинство разрешено там же — `CLAUDE.md` старше всего,
-включая скиллы. То есть: разбор по шагам берём, спрашивание разрешения перед
-названной правкой — нет.
+**Остальные одиннадцать выведены из загрузки 10.10.2026** (`vendor/skills/`).
+Причина — не только вес описаний. `using-superpowers` требует вызвать скилл до
+ЛЮБОГО ответа и вести разговор через `brainstorming` прежде плана, а в
+`CLAUDE.md` записано обратное: «правка делается, а не обсуждается».
+Старшинство то же: `CLAUDE.md` старше всего, включая скиллы. Взяты были только `skills/` набора:
+его хуки и команды не копировались. Ходящий наружу `brainstorming/scripts/server.cjs`
+(знак набора подтягивается с `primeradiant.com`) теперь тоже вне загрузки.
 
 ## GSD — не ставится, и вот почему
 

@@ -351,8 +351,8 @@ AgriciDaniel, разбор в `docs/skills.md`) дали: одиннадцать
 | TypeScript, состояние, границы слоёв, повторы | `code` |
 | товар, цена, полка, корзина, оформление, обязательные страницы, магазин CBD | `shop` |
 | «некрасиво», «как у всех», «переделай», композиция, иерархия, ритм блока | ОБЯЗАТЕЛЬНО `impeccable` по порядку (контекст `PRODUCT.md` и `DESIGN.md` → critique → референсы и замок → тезис → layout / typeset → polish), разбор готовой страницы — `redesign-skill` |
-| стиль нового сайта, ощущение движения | `impeccable shape`; за идеей стиля — `minimalist-skill`, `brutalist-skill`, `soft-skill`; движение — `emil-design-eng`, `improve-animations` |
-| разбор бага, план, ревью, порядок работы | скиллы Superpowers |
+| стиль нового сайта, ощущение движения | `impeccable shape`; движение — `emil-design-eng`, `improve-animations` |
+| разбор бага по шагам, проверка перед сдачей, тест перед кодом | `systematic-debugging`, `verification-before-completion`, `test-driven-development` |
 | «что дальше», «какой этап», новый скилл от заказчика, сдача, аудит чужого сайта | сюда |
 
 Старшинство прежнее: `CLAUDE.md` проекта старше всего; проверки старше
