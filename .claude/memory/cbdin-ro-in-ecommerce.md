@@ -11,4 +11,6 @@ The finished site was installed as a shop (`install.mjs --storefront --shop`), t
 
 **Why:** the owner wants a real working shop, not a showcase with a panel.
 
-**How to apply:** a fix to the live cbdin.ro site after the domain switch goes into `apps/storefront3` in cbd-ecommerce (its own checks: tsc, npm test, check:css …); a fix that is also a kit lesson goes into the kit template and skill too. Until the switch, CLAUDE.md's «влитие в main выкатывает витрину на cbdin.ro» still holds. Social sign-in there needs Vendure ≥ 3.7.3 (ecommerce runs 3.7.2). See [[storefront-template-ro]], [[work-locally]].
+**10.10.2026, owner: «уже живёт в екомерс».** cbdin.ro is served from cbd-ecommerce; CLAUDE.md's «влитие в main выкатывает витрину на cbdin.ro» no longer holds for the live site.
+
+**How to apply:** a fix to the live cbdin.ro site goes into `apps/storefront3` in cbd-ecommerce (its own checks: tsc, npm test, check:css …); a fix that is also a kit lesson goes into the kit template and skill too. Until the switch, CLAUDE.md's «влитие в main выкатывает витрину на cbdin.ro» still holds. Social sign-in there needs Vendure ≥ 3.7.3 (ecommerce runs 3.7.2). See [[storefront-template-ro]], [[work-locally]].

@@ -13,7 +13,7 @@ magia», «cel mai bun», восклицаний и повторяющихся �
 Плохо: «Comparați uleiurile CBD după volumul flaconului. Verificați
 eticheta înainte de alegere.» — инструкция без предложения.
 Хорошо: «Ulei CBD de la 5 % la 30 %, în flacoane de 10 și 30 ml. Alegeți
-după miligramele dintr-o picătură — sunt scrise la fiecare produs.»
+după miligramele dintr-o picătură — le găsiți pe etichetă.»
 
 ## Слово рынка
 

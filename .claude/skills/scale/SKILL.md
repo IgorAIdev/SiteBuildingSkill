@@ -425,9 +425,12 @@ npm run check:scale    # набор по формуле: находка чини
 живыми, тем же `getComputedStyle` по отрисованной витрине. Второй кадр —
 роли текста. Выбирает заказчик глазами (И197); его слово — в `docs/gate.md`
 с датой, пункт ворот основания «набор ритма показан заказчику на стенде и
-назван словом». Опубликованный стенд — четыре набора, оба кадра:
-https://claude.ai/artifact/YZS2JiNiEXKdz2FA3wUtMC (пересобирается из
-`scale-stand.html` после каждой правки наборов; та же ссылка — в реестре
+назван словом». Опубликованный стенд — наборы `styles/scale.json` на день
+публикации (их число — в таблице фактов ниже; опубликованный стенд может
+отставать), оба кадра: https://claude.ai/artifact/YZS2JiNiEXKdz2FA3wUtMC
+(пересобирается из страницы, которую команда `scale:stand` выпускает в
+`scale-stand.html`: это машинный выход, в наборе его нет и он в `.gitignore`,
+после каждой правки наборов; та же ссылка — в реестре
 этапов, `show` у слоёв 5 и 6, и в `references/sets.md`). Размеры органов —
 `npm run control:stand`: три размера кнопки, поля, фишки и счётчика на
 одной карточке, переключатель «курсор / палец» с теми же числами, что в
@@ -454,7 +457,7 @@ https://claude.ai/artifact/YZS2JiNiEXKdz2FA3wUtMC (пересобирается 
 | ролей текста | 22: hero, pagehead, prodhead, price, byline, maker, cardname, cardprice, cardbtn, h2, h3, parthead, logo, panehead, intro, lede, menu, label, body, blurb, note, eyebrow | `rolesOf()` |
 | размеры органов | под курсором 32 / 40 / 48, под пальцем 44 / 48 / 56; цель у знака 24 / 44 | `CONTROL` в `tools/thresholds.mjs`, `--ctrl-h-*` в `styles/scale.css` |
 | пороги | тело от 16, отношение 1.067…1.5, клетка 2 / 4 / 8, пол 8, воздух к полю ≥ 3, рост разделов ×1.33…1.5, зазор под пальцем 16 | `tools/thresholds.mjs` |
-| команды | `scale` · `check:scale` · `scale:stand` | `scripts.mjs` |
+| команды | `scale` · `check:scale` · `scale:stand` · `control:stand` | `scripts.mjs` |
 <!-- /families:scale -->
 
 Замки (`npm run check:rules`; хук после правки запускает их сам при правке
