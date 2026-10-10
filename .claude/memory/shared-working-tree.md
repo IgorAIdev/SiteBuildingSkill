@@ -27,6 +27,8 @@ committing on a shared branch and agree numbers and shared files (base.css,
 catalog) up front; regeneration keeps entries it didn't create. See
 [[elements-draw-not-embed]], [[work-locally]].
 
+**Since 10.10.2026 the journal is frozen** (no new И-numbers; lessons go into the owning skill), so the two journal paragraphs below are history.
+
 **Rule journal (docs/rules.md) is shared too.** On 29.09.2026 two sessions took the same И-numbers (И556, И560), and a peer accused me of wiping its block. Take the number by reading the tail of the file right before writing (`grep -o "^## И5[0-9]*" docs/rules.md | tail -1`); append only (`cat >>` or an Edit at the end), never rewrite the file from a copy. To commit only my blocks from a file others are also editing, stage just my hunks: filter `git diff` hunks by my markers and `git apply --cached`. `git add -p` is not available here.
 
 **Write the journal entry before citing its number** (И681, 03.10.2026): a peer cited «И678» in two files before writing the entry, I appended my own И678 meanwhile, and its references pointed at my rule. `check:rules` now flags any «И<n>» in code, styles or skills that has no journal heading — so append the heading first, then cite.

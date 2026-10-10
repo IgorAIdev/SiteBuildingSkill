@@ -1,6 +1,6 @@
 {
   "lang": "en",
-  "note": "Own lexicon of the seo-content skill for English pages of an EU shop: Reg. 1924/2006, 432/2012, 2015/2283, Dir. 2001/83/EC (references/compliance.md). Patterns run on lower-case text.",
+  "note": "Own lexicon of the seo-content skill for English pages of an EU shop: Reg. 1924/2006, 432/2012, 2015/2283, Dir. 2001/83/EC (references/compliance.md, references/market-packs.md). Patterns run on lower-case text.",
   "condition": [
     "sleep",
     "insomnia",

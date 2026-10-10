@@ -17,3 +17,5 @@ Origin and core value (owner, 22.09.2026): sites had basic problems ("адапт
 **Why:** a previous AI session (commits a021c11, 83a54d8 on 22.09.2026) drifted the kit toward a "universal" skill (WordPress, OpenCart, portable studio), while Vendure specifics stayed generic.
 
 **How to apply:** prioritize concrete Next.js + Payload + Vendure + CBD guidance, resources and checks over platform-universality. Related: [[skill-scope-not-shop]].
+
+**10.10.2026:** the template is universal and built in English ([[build-in-english]]); Next.js + Payload + Vendure + CBD stays the main profile, and its specific facts are marked «профиль» in the skills rather than written as universal law.

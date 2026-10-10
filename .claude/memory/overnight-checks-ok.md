@@ -21,3 +21,5 @@ metadata:
 04.10.2026: «правил немеряно… будет тысяча правил; это тоже в ночной проверке оптимизировать нужно» → rule И737 (new number only for a new question, amendments in place, entry ≤ 30 lines, `check:rules` ratchet on long entries) and a recurring scheduled task `night-rules-compaction` (daily ~04:07, after the 01:00 recheck): folds the day's continuation entries into the older one (stub «И<n> · влито в И<m>»), shortens long ones, archives full text in `docs/rules-archive/<год-месяц>.md`, reports in `docs/audit-<дата>.md`.
 
 05.10.2026 10:07: «Закоммить, когда всё будет зелёное. Файрфокс поставлю. Ночью можешь продолжить проверки» — commit is allowed only when the whole chain is green (local main, no push). Night run scheduled as a session-only one-shot cron (01:07, 06.10) inside the session that runs without permission prompts — that is what keeps it from stalling like the scheduled-task runs did; it dies if that session is closed.
+
+**10.10.2026:** the rules journal is frozen and the nightly compaction task is paused (restructuring plan, stage 5). Night runs of tests and rendered checks still stand.

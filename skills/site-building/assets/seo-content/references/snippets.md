@@ -32,11 +32,11 @@ Google переписывает description в большинстве выдач
 
 | тип | title | пример (ro) |
 | --- | --- | --- |
-| главная | `{категория магазина} în {страна}: {3 формы словами рынка} \| {Марка}` | Magazin CBD online în România: ulei CBD, capsule, creme \| CBDin |
-| полка | `{слово рынка} ({синоним}) — {различитель}: {спектры или выбор} \| {Марка}` | Ulei CBD (ulei de canabis): full spectrum, broad și izolat \| CBDin |
-| хаб момента | `{момент} cu CBD: {формы} \| {Марка}` | Produse CBD pentru seară: ulei, capsule, ceai \| CBDin |
-| срез | `{слово рынка} {спектр} ({перевод спектра}) \| {Марка}` | Ulei CBD full spectrum (spectru complet) \| CBDin |
-| товар | `{форма} {сила} {спектр}, {мг}, {объём} — {марка товара}` | Ulei CBD 10 % full spectrum, 1000 mg, 10 ml — Nutrific |
+| главная | `{категория магазина} în {страна}: {3 формы словами рынка} \| {Марка}` | Magazin CBD online în România: ulei CBD, capsule, creme \| {Марка} |
+| полка | `{слово рынка} ({синоним}) — {различитель}: {спектры или выбор} \| {Марка}` | Ulei CBD (ulei de canabis): full spectrum, broad și izolat \| {Марка} |
+| хаб момента | `{момент} cu CBD: {формы} \| {Марка}` | Produse CBD pentru seară: ulei, capsule, ceai \| {Марка} |
+| срез | `{слово рынка} {спектр} ({перевод спектра}) \| {Марка}` | Ulei CBD full spectrum (spectru complet) \| {Марка} |
+| товар | `{форма} {сила} {спектр}, {мг}, {объём} — {марка товара}` | Ulei CBD 10 % full spectrum, 1000 mg, 10 ml — {марка товара} |
 | гид | вывод, а не тема: `{ответ на вопрос}: {уточнение}` | Ulei de cânepă sau ulei CBD: diferența în 3 cifre |
 | право | `{вопрос рынка}? {ответ коротко} ({год}, если обновляется ежегодно)` | Este CBD legal în România? Ce spune legea în 2026 |
 
