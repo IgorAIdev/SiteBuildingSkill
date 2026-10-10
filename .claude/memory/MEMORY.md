@@ -1,5 +1,5 @@
 - [Kit goal](skill-goal.md) — build and audit CBD storefronts on Next.js over Payload + Vendure; owner non-technical
-- [Storefront template RO](storefront-template-ro.md) — reference storefront = Romanian market template (ro/en/hu); run with npm run storefront, on the server as skill-storefront
+- [Storefront template](storefront-template-ro.md) — universal reference storefront built in English (ro/hu market packs); run with npm run storefront, on the server as skill-storefront
 - [Take the recommended option](take-recommended.md) — don't ask the owner to pick between options I recommend; take the recommended one and go
 - [Draft per-shop choices](draft-per-shop-choices.md) — carriers and similar vendors: rough draft options, verified per shop at launch
 - [Rendered checks: changed pages only](rendered-checks-changed-pages.md) — fix rounds: touched pages, main language only; full craft/sweep, all languages, once before handover
@@ -49,7 +49,7 @@
 - [Variants in chat](variants-in-chat.md) — asked for variants in chat: fix with the recommended one, then draw ≤3 mockups with real content; he picks fast
 - [LUXA is not his](luxa-not-owner.md) — the LUXA screenshot in the home brief was never sent by the owner (04.10.2026); his refs are Allbirds, Gymshark
 - [Round forms only](round-forms-only.md) — buttons pills and circles, no square plates; menu/list row hover = rounded rectangle --r-ctrl, one shape everywhere (04.10.2026); button corner = Shape → Corners (--r-btn, «· pill» twins), no data-pill on buttons; since 08.10.2026 the published look is «Standard · pill», every data-pager sign button a circle (И790)
-- [Variants as a menu](variants-as-menu.md) — skills offer every variant for the owner's pick during the build stage; no thresholds; filter starts from storefront3 (04.10, 10.10.2026)
+- [Variants as a menu](variants-as-menu.md) — skills offer every variant for the owner's pick during the build stage; no thresholds; filter starts from the template's (04.10, 10.10.2026)
 - [Phone menu on top](phone-menu-top.md) — top header, burger first at the left edge, drawer from the left, signs not pictures, current page on a light brand plate (05.10.2026); no bottom tab bar
 - [Panel knob reaches all](panel-knob-reaches-all.md) — Corners must change buttons too; no second knob silently overriding a general one (04.10.2026)
 - [Cards: no shadows](cards-no-shadows.md) — Shadows knob does not reach product cards; owner «тени у карточек не нужны» (04.10.2026)
@@ -61,11 +61,10 @@
 - [One window, one sheet](one-pane-one-sheet.md) — menu/filters/cart share deck header + one white sheet + one foot pair (quiet left, loud right); no per-window tones or grey controls; menu foot = icon buttons + language on one plate (05.10.2026, И772)
 - [Codex in the same folder](codex-same-folder.md) — Codex worked here and on GitHub until 08.10.2026; its local folders removed by the owner's word; if it returns: check branch/uncommitted/PRs, merge all lines, one snapshot to main
 - [Window foot + swipe](pane-foot-and-swipe.md) — foot buttons always whole, never scroll; every sheet closes by swipe incl. from the dim strip; owner phone 360 css px; tested with a real finger (08.10.2026, И781)
-- [«On the storefront» = merged](on-storefront-means-merged.md) — he sees localhost:3020 on his machine and cbdin.ro; say «влито в main» only after merge, never «уже на витрине» from my sandbox (08.10.2026)
+- [«On the storefront» = merged](on-storefront-means-merged.md) — he sees localhost:3020 on his machine; say «влито в main» only after merge, never «уже на витрине» from my sandbox (08.10.2026)
 - [Payment marks in the footer](footer-payment-marks.md) — bare marks 24 px, no pills (a payment mark is not clickable), air between tiers; email wraps before @ if the column is narrow (08.10.2026, И783)
 - [Window bits 08.10](window-bits-08-10.md) — coupon error folds with its field; empty cart and favourites = word + line + quiet category rows; search pane no big buttons, no repeat field on results; × at the end of every window head; checkout without footer (И333/И689/И687/И784/И325)
 - [SEO copy carries the queries](seo-copy-keywords.md) — texts hold real buyer queries in title/H1/intro/H2/FAQ; HempScale principles are the base; Codex's 06.10 SEO work not trusted, redo from evidence (08.10.2026)
 - [Market research repo](market-research-repo.md) — research lives in private IgorAIdev/CBDSeoMarketResearch, shared with HempScale; first upload blocked as exfiltration — owner uploads; local copy D:\MyBssinessProject\research-2026-10-08
-- [cbdin.ro moved to ecommerce](cbdin-ro-in-ecommerce.md) — 08.10.2026 the site went into cbd-ecommerce apps/storefront3; since 10.10 it lives there, live fixes go there; template stays in the kit
 - [Build in English](build-in-english.md) — template is built in English; translation to the market language is a final-stage step (10.10.2026)
 - [Home: no explainers](home-no-explainers.md) — guides go to the blog, not a home block; copy never promises «on every product» data, say «on the label» (09.10.2026, И788 п. 5)

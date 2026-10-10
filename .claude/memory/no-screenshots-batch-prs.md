@@ -1,6 +1,6 @@
 ---
 name: no-screenshots-batch-prs
-description: Owner 27.09.2026 — no screenshots in chat, they check cbdin.ro themselves; batch edits into one PR per task, no PR-activity subscription, one scheduled check then merge
+description: Owner 27.09.2026 — no screenshots in chat, he checks the storefront himself; batch edits into one PR per task, no PR-activity subscription, one scheduled check then merge
 metadata:
   node_type: memory
   type: feedback
@@ -11,7 +11,7 @@ Owner, 27.09.2026: «не нужно показывать мне скрины, �
 
 **Why:** tokens. Images are the most expensive part of a session, and every PR notification wakes the session with the whole conversation plus a long instruction block (more than ten wakes on 27.09.2026).
 
-**How to apply:** verify rendered pages yourself (measure, detector, sweep) but don't send screenshots unless asked. Collect edits in one `claude/*` branch, one PR per task. Don't call subscribe_pr_activity (unsubscribe if the harness auto-subscribed); set one send_later check-in a few minutes after the push, merge when green. After merge, tell the owner in one line what to look at on cbdin.ro. Rule И500 in CLAUDE.md. Related: [[work-locally]].
+**How to apply:** verify rendered pages yourself (measure, detector, sweep) but don't send screenshots unless asked. Collect edits in one `claude/*` branch, one PR per task. Don't call subscribe_pr_activity (unsubscribe if the harness auto-subscribed); set one send_later check-in a few minutes after the push, merge when green. After merge, tell the owner in one line what to look at. Rule И500 in CLAUDE.md. Related: [[work-locally]].
 
 Owner, 27.09.2026 late, initially requested merging «по команде». Superseded on 06.10.2026 for small requested fixes: complete push, PR, merge and normal publication without another confirmation (AGENTS.md, [[work-locally]]). Keep one PR per task, targeted reads and batched edits; obey a current explicit local-only instruction.
 

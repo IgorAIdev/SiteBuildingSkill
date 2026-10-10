@@ -8,15 +8,14 @@ metadata:
   modified: 2026-09-26T13:06:34.424Z
 ---
 
-Decided 23.09.2026 by the owner: the reference Next.js CBD storefront built inside the kit (`templates/storefront/`, variant A — own app on the kit foundation, one data contract, sample provider + live Vendure/Payload adapters) is a **template for the Romanian market**: languages Romanian (default), English, Hungarian. Scope: full guest purchase **plus personal account** (register, login, logout, password reset, orders, addresses, profile). Working copy installed by the kit installer into `.storefront/` of this kit (`npm run storefront`).
+Decided 23.09.2026 by the owner: the reference Next.js CBD storefront built inside the kit (`templates/storefront/`, variant A — own app on the kit foundation, one data contract, sample provider + live Vendure/Payload adapters) was first set up for the Romanian market (languages en, ro, hu); since 10.10.2026 it is a universal template built in English ([[build-in-english]]). Scope: full guest purchase **plus personal account** (register, login, logout, password reset, orders, addresses, profile). Working copy installed by the kit installer into `.storefront/` of this kit (`npm run storefront`).
 
 **Why:** the owner builds CBD shop storefronts; the kit needs an "эталон" to build from scratch and to audit other sites against.
 
 **Since 25–26.09.2026:** the template is run and edited without the demo.
 - `npm run storefront` installs it into `.storefront/` inside the kit and applies the owner's look from `showcase/`. It watches `templates/storefront/`: edit the template, never the copy (a hook blocks edits to the copy).
 - The demo folder is legacy and exists only on the old machine.
-- The skill's storefront at an address runs on the owner's Coolify as the separate app `skill-storefront` in project `skill`. It is never mixed with the shops' code or apps (cbdin, cbdshop); only the cbdin.ro address was given to it.
-- Its address is **cbdin.ro**. The owner decided on 26.09.2026: «то что сейчас там стоит можно заменить». The shop's storefront3 placeholder stood there. Sample orders on it don't matter for now: «да похуй на заказ, это неважно сейчас». Deploy with `npm run storefront:server -- --domain cbdin.ro`.
+- The skill's storefront at an address runs on the owner's Coolify as the separate app `skill-storefront` in project `skill`, never mixed with shops' code or apps. Deploy with `npm run storefront:server -- --domain <address>`.
 - `npm run storefront:server` sets it up and deploys it. It needs `COOLIFY_URL` and `COOLIFY_TOKEN`, which the cloud session has.
 - A look published in the panel there goes back into the skill with `npm run storefront -- --save-look --from <address>`.
 

@@ -98,10 +98,8 @@ inline-size` + `@container` (`nodeWindow`, `sizeContain`, `fullVw`).
 4. Выбранный в панели вид — `npm run storefront -- --save-look` в
    `showcase/`, дальше коммит.
 5. Коммит и PR; влитие в `main` выкатывает витрину-образец набора само
-   (Coolify, приложение `skill-storefront`, И434). Живой магазин cbdin.ro с
-   10.10.2026 живёт в cbd-ecommerce (`apps/storefront3`) — правки живого
-   сайта идут туда. Торговля — движок Vendure cbdin; образец —
-   `SOURCE=sample`, ключи в репозиторий не идут.
+   (Coolify, приложение `skill-storefront`, И434). Торговля — движок
+   Vendure; образец — `SOURCE=sample`, ключи в репозиторий не идут.
 
 ---
 
