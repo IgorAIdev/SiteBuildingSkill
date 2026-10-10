@@ -13,7 +13,7 @@
 - [No screenshots, batched PRs](no-screenshots-batch-prs.md) — save tokens: no images at all, not even for my own checking — verify with printed numbers; one PR per batch; small requested fixes merge without repeat confirmation; no PR subscription
 - [Measure before styling](measure-before-styling.md) — type/spacing only from kit research + owner's built storefronts + 3 live shops (И507); think phone-first unprompted
 - [Checks not on the dev server](checks-not-on-dev-server.md) — crawling checks only on a build (dev manifest → all 500); check:part narrow one-lane (И765); never a second browser check beside check:all — 8 GB, GPU crash (06.10.2026)
-- [History resets](no-history.md) — reset on 28.09.2026 and again 09.10.2026 (bundle backup, steps recorded); only on his word naming the repo; small fixes publish without repeat confirmation; cloud session cannot delete branches (403)
+- [History resets](no-history.md) — reset on 28.09.2026 and again 09.10.2026 (bundle backup, steps recorded); only on his word naming the repo; small fixes publish without repeat confirmation; branch deletion only from a local session
 - [Fix what checks find](fix-what-checks-find.md) — red checks and found debt get fixed before I report; never «another session's» or «baseline debt»
 - [Overnight checks OK](overnight-checks-ok.md) — full npm test, builds and rendered checks only at night (owner 03.10.2026); daytime = narrow checks; rules journal frozen 10.10.2026, nightly compaction paused
 - [Verify pages use the system](verify-pages-use-system.md) — page instances share the design system component; window head = PaneHead only, check:system ownedPart; measure before saying «the same»
