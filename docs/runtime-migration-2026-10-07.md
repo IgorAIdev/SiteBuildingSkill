@@ -1,5 +1,7 @@
 # Переход основной витрины на серверный runtime — 2026-10-07
 
+> **10.10.2026:** папки `cbd-preview-icons` и `cbd-runtime` удалены словом владельца — эксперимент Codex на Cloudflare, набору не нужен; витрина строится из `templates/storefront`.
+
 Запрос: полноценное исходное приложение вместо HTML с удалённой hydration.
 Основной сайт: cbd-storefront-preview.ihormatyshchuk.chatgpt.site.
 Рабочий источник публикации: D:/MyBssinessProject/cbd-preview-icons.
