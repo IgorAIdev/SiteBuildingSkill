@@ -1,11 +1,11 @@
 # Оси — слой 2 основания
 
-Разбор к разделу «Оси» закона `craft`. По каким обстоятельствам одно имя
+Разбор к разделу «Основание: роли, имена, оси» закона `craft` (пункт «Сначала оси, потом значения»). По каким обстоятельствам одно имя
 получает разные значения, чем каждая ось включается, что по ней меняется,
 а что нет — и чем это меряется. Реестр — `tools/axes.mjs`; семьи
 `axisUnknown`, `axisTheme`, `axisScope`, `axisHover` в `check:css`.
 Пересмотрено 20.09.2026 против сырых ответов исследования
-(`raw/findings/next-steps/next_theming.json`, `next_responsive.json`,
+(`research/site-building-2026-09-20/raw/findings/next-steps/next_theming.json`, `next_responsive.json`,
 `next_multilingual-text.json`, `site-steps/steps_foundations-carbon-spectrum-atlassian.json`,
 `steps_token-tiers.json`).
 

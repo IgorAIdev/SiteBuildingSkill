@@ -5,6 +5,14 @@
 В репозитории самого скилла храните правила выбора и проверяемые примитивы;
 компоненты интерфейса добавляйте в целевой сайт под конкретный сценарий.
 
+Содержание:
+
+- [Какой источник для какой задачи](#какой-источник-для-какой-задачи)
+- [Процедура заимствования](#процедура-заимствования)
+- [Что проверить против «прыгающих блоков»](#что-проверить-против-прыгающих-блоков)
+- [Выбранные ресурсы, 22.09.2026](#выбранные-ресурсы-22092026)
+- [Что принято из дополнительных источников](#что-принято-из-дополнительных-источников)
+
 ## Какой источник для какой задачи
 
 | Задача | Откуда начать | Граница применения |
@@ -95,6 +103,13 @@ NavigationMenu из shadcn/ui (Radix/Tailwind v4), лицензия и восе�
 | [Radix Primitives](https://github.com/radix-ui/primitives) | Фокус, клавиатура, раскрытие и композиция контролов | Использовать одну поведенческую основу проекта; не добавлять параллельно Base UI/React Aria без необходимости |
 | [shadcn/ui](https://github.com/shadcn-ui/ui) | Исходники кнопок, меню, полей, tabs и других контролов | Первые три сохранены; дальнейшие выбирать по нужному сценарию и лицензии конкретного registry |
 | [Lucide](https://github.com/lucide-icons/lucide) | Единый рисунок SVG-иконок для разных стеков | Расширяемый набор в `assets/icons/lucide`; не смешивать случайные стили |
+| [Payload website template](https://github.com/payloadcms/payload/tree/main/templates/website) | Реестр блоков, draft/live-preview, переобновление страниц | Применять в CMS-адаптере. Не копировать `key=index`, подавление типов и молчаливый пропуск неизвестных блоков как правило качества |
+| [Puck](https://github.com/puckeditor/puck) | Отдельные config/data, типизированные поля, обход дерева и вложенных slots | Принять принцип реестра и сериализуемого дерева. Полный drag-and-drop редактор только если нужен пользователю |
+| [Vercel Commerce](https://github.com/vercel/commerce) | Выбор варианта, URL-состояние, server actions и optimistic cart | Адаптирован variant-selection.mjs, внесены правила подтверждённой корзины. Чужая денежная арифметика и Shopify SDK не перенесены |
+| [Shopify Hydrogen](https://github.com/Shopify/hydrogen) | Cursor pagination, namespace, явные cache directives | Адаптированы pagination.mjs и cache-policy.mjs; усилены bounds и personal/mutation no-store |
+| [Medusa DTC](https://github.com/medusajs/dtc-starter) | Фильтры, варианты, цены и pending-состояние | Адаптирован option-filters.mjs; приняты сценарии вариантов и нулевой цены; собственный mutation-lane гарантирует finally. Старый nextjs-starter-medusa архивный |
+| [Saleor Paper](https://github.com/saleor/storefront) | Registry платежей и единый manifest кэша | Приняты архитектурные требования в commerce-patterns.md. FSL-код не скопирован и не перелицензирован |
+| [Lighthouse CI](https://github.com/GoogleChrome/lighthouse-ci) | Проверки ресурсов и регрессий загрузки в CI | Добавлены исполняемый конфиг, pinned dev dependency и CI на production-стенде; локальные HTML/JSON без публичной загрузки |
 
 Навигация по содержимому: `newspaper` — блог и статьи (по умолчанию),
 `book-open` — руководства и библиотека знаний, `info` — «О нас».
@@ -103,13 +118,6 @@ NavigationMenu из shadcn/ui (Radix/Tailwind v4), лицензия и восе�
 Генератор общего листа добавляет `non-scaling-stroke`; размер и цвет задаются
 ролями сайта. Проверяйте назначение в потребителе и наличие символа в
 выпущенном листе, включая статический экспорт.
-| [Payload website template](https://github.com/payloadcms/payload/tree/main/templates/website) | Реестр блоков, draft/live-preview, переобновление страниц | Применять в CMS-адаптере. Не копировать `key=index`, подавление типов и молчаливый пропуск неизвестных блоков как правило качества |
-| [Puck](https://github.com/puckeditor/puck) | Отдельные config/data, типизированные поля, обход дерева и вложенных slots | Принять принцип реестра и сериализуемого дерева. Полный drag-and-drop редактор только если нужен пользователю |
-| [Vercel Commerce](https://github.com/vercel/commerce) | Выбор варианта, URL-состояние, server actions и optimistic cart | Адаптирован variant-selection.mjs, внесены правила подтверждённой корзины. Чужая денежная арифметика и Shopify SDK не перенесены |
-| [Shopify Hydrogen](https://github.com/Shopify/hydrogen) | Cursor pagination, namespace, явные cache directives | Адаптированы pagination.mjs и cache-policy.mjs; усилены bounds и personal/mutation no-store |
-| [Medusa DTC](https://github.com/medusajs/dtc-starter) | Фильтры, варианты, цены и pending-состояние | Адаптирован option-filters.mjs; приняты сценарии вариантов и нулевой цены; собственный mutation-lane гарантирует finally. Старый nextjs-starter-medusa архивный |
-| [Saleor Paper](https://github.com/saleor/storefront) | Registry платежей и единый manifest кэша | Приняты архитектурные требования в commerce-patterns.md. FSL-код не скопирован и не перелицензирован |
-| [Lighthouse CI](https://github.com/GoogleChrome/lighthouse-ci) | Проверки ресурсов и регрессий загрузки в CI | Добавлены исполняемый конфиг, pinned dev dependency и CI на production-стенде; локальные HTML/JSON без публичной загрузки |
 
 Источники изучены на уровне выбранных файлов/контрактов и перечислены в
 `commerce-patterns.md`, без заявления о полном аудите всех их функций.

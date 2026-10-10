@@ -3,7 +3,7 @@
 - [Take the recommended option](take-recommended.md) — don't ask the owner to pick between options I recommend; take the recommended one and go
 - [Draft per-shop choices](draft-per-shop-choices.md) — carriers and similar vendors: rough draft options, verified per shop at launch
 - [Rendered checks: changed pages only](rendered-checks-changed-pages.md) — fix rounds: touched pages, main language only; full craft/sweep, all languages, once before handover
-- [GitHub flow](work-locally.md) — since 06.10.2026 small requested fixes include push, PR, merge and normal publication without repeat confirmation; current explicit local-only requests still win
+- [GitHub flow](work-locally.md) — 10.10.2026: small fixes branch → PR → merge myself; self-found fixes allowed but reported in bold, numbered 1. 2. 3.
 - [Look panel architecture](look-panel-architecture.md) — panel holds the variant catalog, site holds one look as values; no rebuild; removable in one command
 - [Only correct architecture](only-correct-architecture.md) — name the owning layer before deciding or briefing; no wrong-layer shortcuts ever
 - [Design through skills](design-with-skills.md) — storefront design goes through impeccable/redesign-skill inside kit rules; owner: «дизайн говно везде, переделай скилами»
@@ -49,7 +49,7 @@
 - [Variants in chat](variants-in-chat.md) — asked for variants in chat: fix with the recommended one, then draw ≤3 mockups with real content; he picks fast
 - [LUXA is not his](luxa-not-owner.md) — the LUXA screenshot in the home brief was never sent by the owner (04.10.2026); his refs are Allbirds, Gymshark
 - [Round forms only](round-forms-only.md) — buttons pills and circles, no square plates; menu/list row hover = rounded rectangle --r-ctrl, one shape everywhere (04.10.2026); button corner = Shape → Corners (--r-btn, «· pill» twins), no data-pill on buttons; since 08.10.2026 the published look is «Standard · pill», every data-pager sign button a circle (И790)
-- [Variants as a menu](variants-as-menu.md) — skills offer every variant for the owner's pick; no «recommend X when N facets» thresholds (04.10.2026)
+- [Variants as a menu](variants-as-menu.md) — skills offer every variant for the owner's pick during the build stage; no thresholds; filter starts from storefront3 (04.10, 10.10.2026)
 - [Phone menu on top](phone-menu-top.md) — top header, burger first at the left edge, drawer from the left, signs not pictures, current page on a light brand plate (05.10.2026); no bottom tab bar
 - [Panel knob reaches all](panel-knob-reaches-all.md) — Corners must change buttons too; no second knob silently overriding a general one (04.10.2026)
 - [Cards: no shadows](cards-no-shadows.md) — Shadows knob does not reach product cards; owner «тени у карточек не нужны» (04.10.2026)
@@ -66,5 +66,6 @@
 - [Window bits 08.10](window-bits-08-10.md) — coupon error folds with its field; empty cart and favourites = word + line + quiet category rows; search pane no big buttons, no repeat field on results; × at the end of every window head; checkout without footer (И333/И689/И687/И784/И325)
 - [SEO copy carries the queries](seo-copy-keywords.md) — texts hold real buyer queries in title/H1/intro/H2/FAQ; HempScale principles are the base; Codex's 06.10 SEO work not trusted, redo from evidence (08.10.2026)
 - [Market research repo](market-research-repo.md) — research lives in private IgorAIdev/CBDSeoMarketResearch, shared with HempScale; first upload blocked as exfiltration — owner uploads; local copy D:\MyBssinessProject\research-2026-10-08
-- [cbdin.ro moved to ecommerce](cbdin-ro-in-ecommerce.md) — 08.10.2026 the finished site went into cbd-ecommerce apps/storefront3 without the panel; after the owner moves the domain, live fixes go there; template stays in the kit
+- [cbdin.ro moved to ecommerce](cbdin-ro-in-ecommerce.md) — 08.10.2026 the site went into cbd-ecommerce apps/storefront3; since 10.10 it lives there, live fixes go there; template stays in the kit
+- [Build in English](build-in-english.md) — template is built in English; translation to the market language is a final-stage step (10.10.2026)
 - [Home: no explainers](home-no-explainers.md) — guides go to the blog, not a home block; copy never promises «on every product» data, say «on the label» (09.10.2026, И788 п. 5)

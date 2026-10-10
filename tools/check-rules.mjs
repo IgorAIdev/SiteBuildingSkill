@@ -229,7 +229,9 @@ for (const sec of sections) {
    Храповик по длинным: новая длинная запись — красное, ночное сжатие
    опускает планку (`--update`). */
 const LONG = 30
-const entries = sections.filter((sec) => /^\s*[А-ЯA-Z]+\d+\s*·/.test(sec))
+/* «И630 (продолжение) ·» — та же запись под тем же номером; без этой поправки
+   продолжение ускользало от планки длины (разбор 10.10.2026). */
+const entries = sections.filter((sec) => /^\s*[А-ЯA-Z]+\d+(\s*\(продолжение\))?\s*·/.test(sec))
 const stubs = entries.filter((sec) => STUB.test(sec.split('\n')[0]))
 const longOnes = entries.filter((sec) => !STUB.test(sec.split('\n')[0]) && sec.trimEnd().split('\n').length > LONG)
 for (const sec of stubs) {
@@ -326,7 +328,7 @@ const scaleFacts = () => {
   const names = Object.keys(sets)
   const first = resolveScale(sets[names[0]])
   const roles = (k) => Object.keys(first[k]).map((n) => `\`--${k === 'поле' ? 'pad' : k === 'воздух' ? 'air' : 'gap'}-${n}\``).join(', ')
-  const cmds = Object.keys(SCRIPTS).filter((k) => /scale/.test(k))
+  const cmds = Object.keys(SCRIPTS).filter((k) => /scale|control:stand/.test(k))
   return [
     '| Факт | Значение | Откуда |', '| --- | --- | --- |',
     `| наборов | ${names.length}: ${names.map((n) => `${n} (тело ${(sets[n].тело ?? []).join(' → ')}, отношение ${(sets[n].отношение ?? []).join(' / ')})`).join(' · ')} | \`${f}\` |`,

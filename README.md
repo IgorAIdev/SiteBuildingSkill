@@ -306,7 +306,7 @@ https://github.com/IgorAIdev/SiteBuildingSkill» — он склонирует �
 | ролей текста | 22: hero, pagehead, prodhead, price, byline, maker, cardname, cardprice, cardbtn, h2, h3, parthead, logo, panehead, intro, lede, menu, label, body, blurb, note, eyebrow | `rolesOf()` |
 | размеры органов | под курсором 32 / 40 / 48, под пальцем 44 / 48 / 56; цель у знака 24 / 44 | `CONTROL` в `tools/thresholds.mjs`, `--ctrl-h-*` в `styles/scale.css` |
 | пороги | тело от 16, отношение 1.067…1.5, клетка 2 / 4 / 8, пол 8, воздух к полю ≥ 3, рост разделов ×1.33…1.5, зазор под пальцем 16 | `tools/thresholds.mjs` |
-| команды | `scale` · `check:scale` · `scale:stand` | `scripts.mjs` |
+| команды | `scale` · `check:scale` · `scale:stand` · `control:stand` | `scripts.mjs` |
 <!-- /families:scale -->
 
 ## Откуда родом правила
