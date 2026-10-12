@@ -63,7 +63,7 @@ export default async function Home({ params }: Props) {
           них не публикуется (флаг настоящести COMPANY_IS_REAL). */}
       {COMPANY_IS_REAL && <JsonLd data={organizationLd()} />}
       {COMPANY_IS_REAL && <JsonLd data={websiteLd()} />}
-      <Blocks placed={arrange(page.value.blocks)} ctx={ctx} />
+      <Blocks placed={arrange(page.value.blocks, look.home)} ctx={ctx} />
     </main>
   )
 }

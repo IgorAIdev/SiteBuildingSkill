@@ -8,6 +8,7 @@ import { shot } from '@/lib/shot.ts'
 import { CategoryButton } from '../CategoryButton.tsx'
 import { heroShelves } from '@/lib/hero-shelves.ts'
 import { MinimalHero } from './MinimalHero.tsx' // look-home:minimal
+import { SportHero } from './SportHero.tsx' // look-home:sport
 
 type Props = { block: Extract<Block, { type: 'hero' }>; ctx: BlockCtx; place: Place }
 
@@ -44,6 +45,9 @@ export function Hero({ block, ctx }: Props) {
   /* look-home:minimal:start */
   if (ctx.home === 'minimal') return <MinimalHero block={block} ctx={ctx} />
   /* look-home:minimal:end */
+  /* look-home:sport:start */
+  if (ctx.home === 'sport') return <SportHero block={block} ctx={ctx} />
+  /* look-home:sport:end */
   return (
     <section className={`${p.wrap} ${p.lede} ${s.hero}`} data-scene="hero">
       <div className={`${p.frame} ${s.heroShot}`}>

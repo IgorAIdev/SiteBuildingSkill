@@ -249,6 +249,26 @@
 .doors[data-door='minimal'] .doorShot::before{content:''}
 /* look-home:minimal:end */
 
+/* look-home:sport:start */
+/* sport — плакат вместо снимка героя: узкий заголовок прописными (регистр —
+   только у заголовков главной; весом он не набирается — закон шкалы «два
+   голоса толщины» не знает 800+, плотность даёт гарнитура заголовков), строка
+   текста мерой лида и путь в каталог; товар стоит сразу под ним (lib/homes.ts,
+   рецепт `sport`). Кегль заголовка — роль героя (`--hero-size`), как у обычного
+   героя: заголовок первого экрана крупнее h2 главной (лестница заголовков).
+   Классы зовутся `hero…`: по ним проверки узнают первый экран (И521).
+   Двери эффектов — как `under`: снимок, имя под ним на полу страницы. */
+:global(main[data-home='sport'] :is(h1, h2)){text-transform:uppercase}
+.heroSport{--stack:var(--air-line);padding-block-start:var(--air-group);container-type:inline-size}
+.heroSport h1{font-size:var(--hero-size);line-height:var(--hero-lead);font-weight:var(--hero-weight);letter-spacing:var(--hero-track)}
+.heroSportRow{--side-w:30rem;--side-gap:var(--air-group);--side-align:end}
+.heroSportRow p{max-inline-size:var(--measure-lede)}
+.doors[data-door='sport'] .door{gap:var(--gap-row);overflow:visible;border-radius:0}
+.doors[data-door='sport'] .doorShot{border-radius:var(--r-card)}
+.doors[data-door='sport'] .door::before{content:none}
+.doors[data-door='sport'] .doorShot::before{content:''}
+/* look-home:sport:end */
+
 /* СПРАВОЧНЫЙ РАЗДЕЛ — вопросы: заголовок своей колонкой слева, строки
    справа через волосок (`sidebar`); в узкой коробке — столбиком, и от
    заголовка до строк тот же воздух, что у любой шапки блока. */
