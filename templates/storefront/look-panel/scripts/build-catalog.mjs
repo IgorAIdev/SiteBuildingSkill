@@ -163,6 +163,8 @@ export const FACES = [
   { id: 'playfair', name: 'Playfair + Inter', body: { family: 'Inter', weights: [400,500,600,700] }, head: { family: 'Playfair Display', weights: [600, 700], stack: "Georgia, 'Times New Roman', serif" } },
   { id: 'lora', name: 'Lora + Manrope', body: { family: 'Manrope', weights: [400,500,600,700] }, head: { family: 'Lora', weights: [600, 700], stack: "Georgia, 'Times New Roman', serif" } },
   { id: 'fraunces', name: 'Fraunces + DM Sans', body: { family: 'DM Sans', weights: [400,500,600,700] }, head: { family: 'Fraunces', weights: [600, 700], stack: "Georgia, 'Times New Roman', serif" } },
+  { id: 'fresh', name: 'Fraunces + Figtree', body: { family: 'Figtree', weights: [400,500,600,700] }, head: { family: 'Fraunces', weights: [500,600,700], stack: "Georgia, 'Times New Roman', serif" } },
+  { id: 'sport', name: 'Oswald + Inter', body: { family: 'Inter', weights: [400,500,600,700] }, head: { family: 'Oswald', weights: [500,600,700], stack: "'Arial Narrow', Impact, sans-serif" } },
   { id: 'cormorant', name: 'Cormorant + Work Sans', body: { family: 'Work Sans', weights: [400,500,600,700] }, head: { family: 'Cormorant Garamond', weights: [600, 700], stack: "Georgia, 'Times New Roman', serif" } },
 ]
 /** Вид поля ввода (И390): одно поле на весь сайт — поиск в шапке, почта,
@@ -371,6 +373,7 @@ const HOME_LINES = {
   under: { name: 'Under', line: 'The picture, the name under it on the page (Aesop)' },
   outline: { name: 'Outline', line: 'The name in white on the picture, a quiet outline round the letters instead of a shadow' },
   minimal: { name: 'Minimal editorial', line: 'A product from the featured shelf leads the hero; quiet category links and effect names below their pictures' },
+  sport: { name: 'Sport', line: 'A poster instead of a hero picture: a narrow capitalised heading, the way into the shop, and the best sellers right under it; effect names under their pictures (Gymshark)' },
 }
 /** Шапки: id — HEADERS в lib/headers.ts. */
 const HEADER_LINES = {

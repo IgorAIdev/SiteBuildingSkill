@@ -122,6 +122,17 @@ npm run storefront -- --no-watch --variant minimal
 Его адрес — http://localhost:3021/en; на Windows —
 `tools/start-minimal-storefront.cmd`.
 [Описание, сохранение вида и ограничения](showcase/variants/minimal/README.md).
+
+Третий и четвёртый виды — «Sport» (плотный, узкий заголовок прописными, полка
+товаров сразу под ним) и «Fresh» (мягкая засечка, тёплая бумага, цветные плиты):
+
+```sh
+npm run storefront -- --no-watch --variant sport --port 3022
+npm run storefront -- --no-watch --variant fresh --port 3023
+```
+
+На Windows — `tools/start-sport-storefront.cmd` и `tools/start-fresh-storefront.cmd`.
+Бриф и замеры: [docs/design/четвёртая-витрина.md](docs/design/четвёртая-витрина.md).
 Запуск в облаке не запускает сервер на вашем ноутбуке; для облачного
 предпросмотра нужен внешний адрес среды.
 

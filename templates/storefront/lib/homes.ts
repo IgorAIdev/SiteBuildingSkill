@@ -24,6 +24,7 @@ export const HOMES = [
   'under', // look-home:under
   'outline', // look-home:outline
   'minimal', // look-home:minimal
+  'sport', // look-home:sport
 ] as const
 
 export type HomeVariant = (typeof HOMES)[number]
@@ -42,15 +43,25 @@ export type Step = readonly [Slot, Air?]
    покупателей», И728), статьи блога — перед справкой (И729). */
 export const RECIPE: readonly Step[] = [['hero'], ['effects'], ['featured'], ['reviews'], ['story'], ['posts'], ['faq']]
 
+/* Рецепт на вид: одежда `sport` ставит полку товаров сразу за героем — первое
+   окно показывает заголовок и товар вместе (docs/design/четвёртая-витрина.md,
+   «полка сразу»). Остальные одежды стоят по общему рецепту. */
+const RECIPES: Partial<Record<HomeVariant, readonly Step[]>> = {
+  /* look-home:sport:start */
+  sport: [['hero'], ['featured', 'head'], ['effects'], ['reviews'], ['story'], ['posts'], ['faq']],
+  /* look-home:sport:end */
+}
+
 export type Placed = { slot: Slot; block: Block; air: Air | null; key: string }
 
 /** Блоки страницы в порядке рецепта: блоков одного типа несколько — стоят
  *  подряд на месте типа, в порядке данных; тип вне рецепта — в конце.
  *  Чистая функция: вид не решает, ЧТО на странице, — только где. */
-export function arrange(blocks: readonly Block[]): Placed[] {
+export function arrange(blocks: readonly Block[], home?: HomeVariant): Placed[] {
   const out: Placed[] = []
-  const named = new Set<Slot>(RECIPE.map(([slot]) => slot))
-  RECIPE.forEach(([slot, air], at) => {
+  const recipe = (home && RECIPES[home]) || RECIPE
+  const named = new Set<Slot>(recipe.map(([slot]) => slot))
+  recipe.forEach(([slot, air], at) => {
     blocks.filter((b) => b.type === slot).forEach((block, i) => out.push({ slot, block, air: air ?? null, key: `${at}-${slot}-${i}` }))
   })
   blocks.forEach((block, i) => { if (!named.has(block.type)) out.push({ slot: block.type, block, air: null, key: `x${i}-${block.type}` }) })

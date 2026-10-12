@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { arrange, RECIPE } from '../lib/homes.ts'
+import { arrange, HOMES, RECIPE, type HomeVariant } from '../lib/homes.ts'
 import { PAGES } from '../lib/pages.ts'
 import type { Block } from '../lib/source/contract.ts'
 
@@ -34,4 +34,15 @@ test('home: the page marks the tile dress it draws, and the recipe names every b
   const slots = RECIPE.map(([slot]) => slot)
   assert.equal(new Set(slots).size, slots.length, 'место не повторяется')
   for (const type of ['hero', 'effects', 'featured', 'faq', 'story']) assert.ok(slots.includes(type as never), type)
+})
+
+/* Одежда `sport` ставит полку товаров сразу за героем — первое окно показывает
+   заголовок и товар вместе. Блок остаётся один раз, порядок остальных прежний. */
+test('home: the sport dress puts the best sellers right after the hero, every block still once', { skip: !(HOMES as readonly string[]).includes('sport') }, () => {
+  for (const lang of ['ro', 'en', 'hu'] as const) {
+    const blocks = PAGES.home.blocks[lang]
+    const placed = arrange(blocks, 'sport' as HomeVariant)
+    assert.deepEqual(placed.map((x) => x.slot).slice(0, 2), ['hero', 'featured'], `${lang}: полка сразу за героем`)
+    assert.deepEqual([...placed.map((x) => x.block)].sort((a, b) => blocks.indexOf(a) - blocks.indexOf(b)), blocks, `${lang}: каждый блок — один раз`)
+  }
 })
