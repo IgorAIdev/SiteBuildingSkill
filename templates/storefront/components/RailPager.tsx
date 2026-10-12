@@ -27,9 +27,11 @@ type Edge = { start: boolean; end: boolean }
    Dawn листают по одной (замер и код 03.10.2026) — это и есть тот частый
    случай. На
    краю кнопка гаснет (`aria-disabled`: фокус с неё не слетает), весь ряд
-   помещается — кнопок нет. В узкой коробке шапки пары нет — ряд листают
-   пальцем (И506; `.pager` в btn.module.css). Помнит компонент одно — где
-   рельса стоит. */
+   помещается — кнопок не видно. В узкой коробке шапки пары нет — ряд листают
+   пальцем (И506; `.pager` в btn.module.css). Не измерен ряд или весь помещается —
+   кнопки не видно (`data-idle`), а место остаётся: появившись после загрузки,
+   пара сдвигала соседний выход «View all» (отрисованная проверка, `shift`).
+   Помнит компонент одно — где рельса стоит. */
 export function RailPager({ rail, back, next }: { rail: string; back: string; next: string }) {
   const [edge, setEdge] = useState<Edge | null>(null)
   useEffect(() => {
@@ -42,10 +44,11 @@ export function RailPager({ rail, back, next }: { rail: string; back: string; ne
     ro.observe(el)
     return () => { el.removeEventListener('scroll', read); ro.disconnect() }
   }, [rail])
-  if (!edge || (edge.start && edge.end)) return null
+  const at = edge ?? { start: true, end: true }
+  const idle = at.start && at.end
   const step = (dir: 1 | -1) => {
     const el = document.getElementById(rail)
-    if (!el || (dir < 0 ? edge.start : edge.end)) return
+    if (!el || (dir < 0 ? at.start : at.end)) return
     const items = [...el.children] as HTMLElement[]
     const base = items[0]?.offsetLeft ?? 0
     const [from, to] = [el.scrollLeft, el.scrollLeft + el.clientWidth]
@@ -57,9 +60,9 @@ export function RailPager({ rail, back, next }: { rail: string; back: string; ne
     el.scrollTo({ left: Math.max(0, left), behavior: still ? 'auto' : 'smooth' })
   }
   return (
-    <span className={b.pager}>
-      <button type="button" className={b.btn} data-pager data-rail-nav data-hand="pop" data-to="back" aria-label={back} aria-controls={rail} aria-disabled={edge.start || undefined} onClick={() => step(-1)}><Icon id="chevron-left" /></button>
-      <button type="button" className={b.btn} data-pager data-rail-nav data-hand="pop" aria-label={next} aria-controls={rail} aria-disabled={edge.end || undefined} onClick={() => step(1)}><Icon id="chevron-right" /></button>
+    <span className={b.pager} data-idle={idle ? '' : undefined} inert={idle}>
+      <button type="button" className={b.btn} data-pager data-rail-nav data-hand="pop" data-to="back" aria-label={back} aria-controls={rail} aria-disabled={at.start || undefined} onClick={() => step(-1)}><Icon id="chevron-left" /></button>
+      <button type="button" className={b.btn} data-pager data-rail-nav data-hand="pop" aria-label={next} aria-controls={rail} aria-disabled={at.end || undefined} onClick={() => step(1)}><Icon id="chevron-right" /></button>
     </span>
   )
 }
