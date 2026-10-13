@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <!-- Собран tools/icons.mjs из skills/site-building/assets/icons/lucide (Lucide, ISC) icons/brands (Simple Icons, CC0) и icons/solid (Lucide, ISC); см. LICENSE там же.
-       Руками не правят: первый же выпуск сотрёт правку. Знаков: 185. -->
+       Руками не правят: первый же выпуск сотрёт правку. Знаков: 186. -->
   <symbol id="account-line" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.6" r="3.6" vector-effect="non-scaling-stroke"/><path d="M5.4 20.2a6.6 6.6 0 0 1 13.2 0" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="alert-circle" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" vector-effect="non-scaling-stroke"/><line x1="12" x2="12" y1="8" y2="12" vector-effect="non-scaling-stroke"/><line x1="12" x2="12.01" y1="16" y2="16" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="alert-triangle" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" vector-effect="non-scaling-stroke"/><path d="M12 9v4" vector-effect="non-scaling-stroke"/><path d="M12 17h.01" vector-effect="non-scaling-stroke"/></symbol>
@@ -98,6 +98,7 @@
   <symbol id="moon" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="mug" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4.083 5h10.834a1.08 1.08 0 0 1 1.083 1.077v8.615c0 2.38 -1.94 4.308 -4.333 4.308h-4.334c-2.393 0 -4.333 -1.929 -4.333 -4.308v-8.615a1.08 1.08 0 0 1 1.083 -1.077" vector-effect="non-scaling-stroke"/><path d="M16 8h2.5c1.38 0 2.5 1.045 2.5 2.333v2.334c0 1.288 -1.12 2.333 -2.5 2.333h-2.5" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="newspaper" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" vector-effect="non-scaling-stroke"/><path d="M18 14h-8" vector-effect="non-scaling-stroke"/><path d="M15 18h-5" vector-effect="non-scaling-stroke"/><path d="M10 6h8v4h-8V6Z" vector-effect="non-scaling-stroke"/></symbol>
+  <symbol id="oil-dropper-jar" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="10" height="3" rx="1" vector-effect="non-scaling-stroke"/><path d="M4 10v9a2 2 0 0 0 2 2h5a2 2 0 0 0 2 -2v-9" vector-effect="non-scaling-stroke"/><path d="M6.5 15.5h3" vector-effect="non-scaling-stroke"/><path d="M17.5 6v-1.5a1.5 1.5 0 0 1 3 0v1.5" vector-effect="non-scaling-stroke"/><path d="M16.5 7h5" vector-effect="non-scaling-stroke"/><path d="M17.5 7v6.5l1.5 2.5l1.5 -2.5v-6.5" vector-effect="non-scaling-stroke"/><path d="M19 19.4c.75 1 1.3 1.6 1.3 2.2a1.3 1.3 0 0 1 -2.6 0c0 -.6 .55 -1.2 1.3 -2.2z" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="package-export" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21l-8 -4.5v-9l8 -4.5l8 4.5v4.5" vector-effect="non-scaling-stroke"/><path d="M12 12l8 -4.5" vector-effect="non-scaling-stroke"/><path d="M12 12v9" vector-effect="non-scaling-stroke"/><path d="M12 12l-8 -4.5" vector-effect="non-scaling-stroke"/><path d="M15 18h7" vector-effect="non-scaling-stroke"/><path d="M19 15l3 3l-3 3" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="package-import" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21l-8 -4.5v-9l8 -4.5l8 4.5v4.5" vector-effect="non-scaling-stroke"/><path d="M12 12l8 -4.5" vector-effect="non-scaling-stroke"/><path d="M12 12v9" vector-effect="non-scaling-stroke"/><path d="M12 12l-8 -4.5" vector-effect="non-scaling-stroke"/><path d="M22 18h-7" vector-effect="non-scaling-stroke"/><path d="M18 15l-3 3l3 3" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="package" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" vector-effect="non-scaling-stroke"/><path d="M12 22V12" vector-effect="non-scaling-stroke"/><polyline points="3.29 7 12 12 20.71 7" vector-effect="non-scaling-stroke"/><path d="m7.5 4.27 9 5.15" vector-effect="non-scaling-stroke"/></symbol>
@@ -283,92 +284,93 @@
   <use href="#moon" x="2256" y="0" width="24" height="24" stroke-width="1.75"/><view id="moon-view" viewBox="2256 0 24 24"/>
   <use href="#mug" x="2280" y="0" width="24" height="24" stroke-width="1.75"/><view id="mug-view" viewBox="2280 0 24 24"/>
   <use href="#newspaper" x="2304" y="0" width="24" height="24" stroke-width="1.75"/><view id="newspaper-view" viewBox="2304 0 24 24"/>
-  <use href="#package-export" x="2328" y="0" width="24" height="24" stroke-width="1.75"/><view id="package-export-view" viewBox="2328 0 24 24"/>
-  <use href="#package-import" x="2352" y="0" width="24" height="24" stroke-width="1.75"/><view id="package-import-view" viewBox="2352 0 24 24"/>
-  <use href="#package" x="2376" y="0" width="24" height="24" stroke-width="1.75"/><view id="package-view" viewBox="2376 0 24 24"/>
-  <use href="#panel-right" x="2400" y="0" width="24" height="24" stroke-width="1.75"/><view id="panel-right-view" viewBox="2400 0 24 24"/>
-  <use href="#paperclip" x="2424" y="0" width="24" height="24" stroke-width="1.75"/><view id="paperclip-view" viewBox="2424 0 24 24"/>
-  <use href="#pencil" x="2448" y="0" width="24" height="24" stroke-width="1.75"/><view id="pencil-view" viewBox="2448 0 24 24"/>
-  <use href="#percent" x="2472" y="0" width="24" height="24" stroke-width="1.75"/><view id="percent-view" viewBox="2472 0 24 24"/>
-  <use href="#pets" x="2496" y="0" width="24" height="24" stroke-width="1.75"/><view id="pets-view" viewBox="2496 0 24 24"/>
-  <use href="#phone" x="2520" y="0" width="24" height="24" stroke-width="1.75"/><view id="phone-view" viewBox="2520 0 24 24"/>
-  <use href="#pill" x="2544" y="0" width="24" height="24" stroke-width="1.75"/><view id="pill-view" viewBox="2544 0 24 24"/>
-  <use href="#pipette" x="2568" y="0" width="24" height="24" stroke-width="1.75"/><view id="pipette-view" viewBox="2568 0 24 24"/>
-  <use href="#plant-2" x="2592" y="0" width="24" height="24" stroke-width="1.75"/><view id="plant-2-view" viewBox="2592 0 24 24"/>
-  <use href="#plus" x="2616" y="0" width="24" height="24" stroke-width="1.75"/><view id="plus-view" viewBox="2616 0 24 24"/>
-  <use href="#receipt" x="2640" y="0" width="24" height="24" stroke-width="1.75"/><view id="receipt-view" viewBox="2640 0 24 24"/>
-  <use href="#rotate-ccw" x="2664" y="0" width="24" height="24" stroke-width="1.75"/><view id="rotate-ccw-view" viewBox="2664 0 24 24"/>
-  <use href="#search" x="2688" y="0" width="24" height="24" stroke-width="1.75"/><view id="search-view" viewBox="2688 0 24 24"/>
-  <use href="#send" x="2712" y="0" width="24" height="24" stroke-width="1.75"/><view id="send-view" viewBox="2712 0 24 24"/>
-  <use href="#settings" x="2736" y="0" width="24" height="24" stroke-width="1.75"/><view id="settings-view" viewBox="2736 0 24 24"/>
-  <use href="#share" x="2760" y="0" width="24" height="24" stroke-width="1.75"/><view id="share-view" viewBox="2760 0 24 24"/>
-  <use href="#shield-lock" x="2784" y="0" width="24" height="24" stroke-width="1.75"/><view id="shield-lock-view" viewBox="2784 0 24 24"/>
-  <use href="#shop-awning" x="2808" y="0" width="24" height="24" stroke-width="1.75"/><view id="shop-awning-view" viewBox="2808 0 24 24"/>
-  <use href="#shopping-bag-check" x="2832" y="0" width="24" height="24" stroke-width="1.75"/><view id="shopping-bag-check-view" viewBox="2832 0 24 24"/>
-  <use href="#shopping-bag" x="2856" y="0" width="24" height="24" stroke-width="1.75"/><view id="shopping-bag-view" viewBox="2856 0 24 24"/>
-  <use href="#shopping-basket" x="2880" y="0" width="24" height="24" stroke-width="1.75"/><view id="shopping-basket-view" viewBox="2880 0 24 24"/>
-  <use href="#shopping-cart-check" x="2904" y="0" width="24" height="24" stroke-width="1.75"/><view id="shopping-cart-check-view" viewBox="2904 0 24 24"/>
-  <use href="#shopping-cart-discount" x="2928" y="0" width="24" height="24" stroke-width="1.75"/><view id="shopping-cart-discount-view" viewBox="2928 0 24 24"/>
-  <use href="#shopping-cart" x="2952" y="0" width="24" height="24" stroke-width="1.75"/><view id="shopping-cart-view" viewBox="2952 0 24 24"/>
-  <use href="#shopping-handbag" x="2976" y="0" width="24" height="24" stroke-width="1.75"/><view id="shopping-handbag-view" viewBox="2976 0 24 24"/>
-  <use href="#sliders-horizontal" x="3000" y="0" width="24" height="24" stroke-width="1.75"/><view id="sliders-horizontal-view" viewBox="3000 0 24 24"/>
-  <use href="#soap-dispenser" x="3024" y="0" width="24" height="24" stroke-width="1.75"/><view id="soap-dispenser-view" viewBox="3024 0 24 24"/>
-  <use href="#sparkles" x="3048" y="0" width="24" height="24" stroke-width="1.75"/><view id="sparkles-view" viewBox="3048 0 24 24"/>
-  <use href="#star" x="3072" y="0" width="24" height="24" stroke-width="1.75"/><view id="star-view" viewBox="3072 0 24 24"/>
-  <use href="#store-building" x="3096" y="0" width="24" height="24" stroke-width="1.75"/><view id="store-building-view" viewBox="3096 0 24 24"/>
-  <use href="#store" x="3120" y="0" width="24" height="24" stroke-width="1.75"/><view id="store-view" viewBox="3120 0 24 24"/>
-  <use href="#storefront" x="3144" y="0" width="24" height="24" stroke-width="1.75"/><view id="storefront-view" viewBox="3144 0 24 24"/>
-  <use href="#sun" x="3168" y="0" width="24" height="24" stroke-width="1.75"/><view id="sun-view" viewBox="3168 0 24 24"/>
-  <use href="#swatches" x="3192" y="0" width="24" height="24" stroke-width="1.75"/><view id="swatches-view" viewBox="3192 0 24 24"/>
-  <use href="#syringe" x="3216" y="0" width="24" height="24" stroke-width="1.75"/><view id="syringe-view" viewBox="3216 0 24 24"/>
-  <use href="#table" x="3240" y="0" width="24" height="24" stroke-width="1.75"/><view id="table-view" viewBox="3240 0 24 24"/>
-  <use href="#tag" x="3264" y="0" width="24" height="24" stroke-width="1.75"/><view id="tag-view" viewBox="3264 0 24 24"/>
-  <use href="#target" x="3288" y="0" width="24" height="24" stroke-width="1.75"/><view id="target-view" viewBox="3288 0 24 24"/>
-  <use href="#test-pipe" x="3312" y="0" width="24" height="24" stroke-width="1.75"/><view id="test-pipe-view" viewBox="3312 0 24 24"/>
-  <use href="#ticket" x="3336" y="0" width="24" height="24" stroke-width="1.75"/><view id="ticket-view" viewBox="3336 0 24 24"/>
-  <use href="#trash" x="3360" y="0" width="24" height="24" stroke-width="1.75"/><view id="trash-view" viewBox="3360 0 24 24"/>
-  <use href="#trolley" x="3384" y="0" width="24" height="24" stroke-width="1.75"/><view id="trolley-view" viewBox="3384 0 24 24"/>
-  <use href="#truck-delivery" x="3408" y="0" width="24" height="24" stroke-width="1.75"/><view id="truck-delivery-view" viewBox="3408 0 24 24"/>
-  <use href="#truck-return" x="3432" y="0" width="24" height="24" stroke-width="1.75"/><view id="truck-return-view" viewBox="3432 0 24 24"/>
-  <use href="#truck" x="3456" y="0" width="24" height="24" stroke-width="1.75"/><view id="truck-view" viewBox="3456 0 24 24"/>
-  <use href="#tube" x="3480" y="0" width="24" height="24" stroke-width="1.75"/><view id="tube-view" viewBox="3480 0 24 24"/>
-  <use href="#user-check" x="3504" y="0" width="24" height="24" stroke-width="1.75"/><view id="user-check-view" viewBox="3504 0 24 24"/>
-  <use href="#user-circle" x="3528" y="0" width="24" height="24" stroke-width="1.75"/><view id="user-circle-view" viewBox="3528 0 24 24"/>
-  <use href="#user-group" x="3552" y="0" width="24" height="24" stroke-width="1.75"/><view id="user-group-view" viewBox="3552 0 24 24"/>
-  <use href="#user-heart" x="3576" y="0" width="24" height="24" stroke-width="1.75"/><view id="user-heart-view" viewBox="3576 0 24 24"/>
-  <use href="#user-plus" x="3600" y="0" width="24" height="24" stroke-width="1.75"/><view id="user-plus-view" viewBox="3600 0 24 24"/>
-  <use href="#user" x="3624" y="0" width="24" height="24" stroke-width="1.75"/><view id="user-view" viewBox="3624 0 24 24"/>
-  <use href="#vaccine-bottle" x="3648" y="0" width="24" height="24" stroke-width="1.75"/><view id="vaccine-bottle-view" viewBox="3648 0 24 24"/>
-  <use href="#vape" x="3672" y="0" width="24" height="24" stroke-width="1.75"/><view id="vape-view" viewBox="3672 0 24 24"/>
-  <use href="#wallet" x="3696" y="0" width="24" height="24" stroke-width="1.75"/><view id="wallet-view" viewBox="3696 0 24 24"/>
-  <use href="#waves" x="3720" y="0" width="24" height="24" stroke-width="1.75"/><view id="waves-view" viewBox="3720 0 24 24"/>
-  <use href="#weight" x="3744" y="0" width="24" height="24" stroke-width="1.75"/><view id="weight-view" viewBox="3744 0 24 24"/>
-  <use href="#wind" x="3768" y="0" width="24" height="24" stroke-width="1.75"/><view id="wind-view" viewBox="3768 0 24 24"/>
-  <use href="#x-circle" x="3792" y="0" width="24" height="24" stroke-width="1.75"/><view id="x-circle-view" viewBox="3792 0 24 24"/>
-  <use href="#x" x="3816" y="0" width="24" height="24" stroke-width="1.75"/><view id="x-view" viewBox="3816 0 24 24"/>
-  <use href="#yoga" x="3840" y="0" width="24" height="24" stroke-width="1.75"/><view id="yoga-view" viewBox="3840 0 24 24"/>
-  <use href="#youtube-line" x="3864" y="0" width="24" height="24" stroke-width="1.75"/><view id="youtube-line-view" viewBox="3864 0 24 24"/>
-  <use href="#zap" x="3888" y="0" width="24" height="24" stroke-width="1.75"/><view id="zap-view" viewBox="3888 0 24 24"/>
-  <use href="#facebook-color" x="3912" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-color-view" viewBox="3912 0 24 24"/>
-  <use href="#facebook-square" x="3936" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-square-view" viewBox="3936 0 24 24"/>
-  <use href="#facebook" x="3960" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-view" viewBox="3960 0 24 24"/>
-  <use href="#gmail-color" x="3984" y="0" width="24" height="24" stroke-width="1.75"/><view id="gmail-color-view" viewBox="3984 0 24 24"/>
-  <use href="#gmail" x="4008" y="0" width="24" height="24" stroke-width="1.75"/><view id="gmail-view" viewBox="4008 0 24 24"/>
-  <use href="#google-color" x="4032" y="0" width="24" height="24" stroke-width="1.75"/><view id="google-color-view" viewBox="4032 0 24 24"/>
-  <use href="#instagram" x="4056" y="0" width="24" height="24" stroke-width="1.75"/><view id="instagram-view" viewBox="4056 0 24 24"/>
-  <use href="#messenger" x="4080" y="0" width="24" height="24" stroke-width="1.75"/><view id="messenger-view" viewBox="4080 0 24 24"/>
-  <use href="#telegram" x="4104" y="0" width="24" height="24" stroke-width="1.75"/><view id="telegram-view" viewBox="4104 0 24 24"/>
-  <use href="#tiktok" x="4128" y="0" width="24" height="24" stroke-width="1.75"/><view id="tiktok-view" viewBox="4128 0 24 24"/>
-  <use href="#viber" x="4152" y="0" width="24" height="24" stroke-width="1.75"/><view id="viber-view" viewBox="4152 0 24 24"/>
-  <use href="#whatsapp" x="4176" y="0" width="24" height="24" stroke-width="1.75"/><view id="whatsapp-view" viewBox="4176 0 24 24"/>
-  <use href="#youtube" x="4200" y="0" width="24" height="24" stroke-width="1.75"/><view id="youtube-view" viewBox="4200 0 24 24"/>
-  <use href="#droplet-fill" x="4224" y="0" width="24" height="24" stroke-width="1.75"/><view id="droplet-fill-view" viewBox="4224 0 24 24"/>
-  <use href="#heart-fill" x="4248" y="0" width="24" height="24" stroke-width="1.75"/><view id="heart-fill-view" viewBox="4248 0 24 24"/>
-  <use href="#pause" x="4272" y="0" width="24" height="24" stroke-width="1.75"/><view id="pause-view" viewBox="4272 0 24 24"/>
-  <use href="#play" x="4296" y="0" width="24" height="24" stroke-width="1.75"/><view id="play-view" viewBox="4296 0 24 24"/>
-  <use href="#star-fill" x="4320" y="0" width="24" height="24" stroke-width="1.75"/><view id="star-fill-view" viewBox="4320 0 24 24"/>
-  <use href="#applepay" x="4344" y="0" width="24" height="24" stroke-width="1.75"/><view id="applepay-view" viewBox="4344 0 24 24"/>
-  <use href="#googlepay" x="4368" y="0" width="24" height="24" stroke-width="1.75"/><view id="googlepay-view" viewBox="4368 0 24 24"/>
-  <use href="#mastercard" x="4392" y="0" width="24" height="24" stroke-width="1.75"/><view id="mastercard-view" viewBox="4392 0 24 24"/>
-  <use href="#visa" x="4416" y="0" width="24" height="24" stroke-width="1.75"/><view id="visa-view" viewBox="4416 0 24 24"/>
+  <use href="#oil-dropper-jar" x="2328" y="0" width="24" height="24" stroke-width="1.75"/><view id="oil-dropper-jar-view" viewBox="2328 0 24 24"/>
+  <use href="#package-export" x="2352" y="0" width="24" height="24" stroke-width="1.75"/><view id="package-export-view" viewBox="2352 0 24 24"/>
+  <use href="#package-import" x="2376" y="0" width="24" height="24" stroke-width="1.75"/><view id="package-import-view" viewBox="2376 0 24 24"/>
+  <use href="#package" x="2400" y="0" width="24" height="24" stroke-width="1.75"/><view id="package-view" viewBox="2400 0 24 24"/>
+  <use href="#panel-right" x="2424" y="0" width="24" height="24" stroke-width="1.75"/><view id="panel-right-view" viewBox="2424 0 24 24"/>
+  <use href="#paperclip" x="2448" y="0" width="24" height="24" stroke-width="1.75"/><view id="paperclip-view" viewBox="2448 0 24 24"/>
+  <use href="#pencil" x="2472" y="0" width="24" height="24" stroke-width="1.75"/><view id="pencil-view" viewBox="2472 0 24 24"/>
+  <use href="#percent" x="2496" y="0" width="24" height="24" stroke-width="1.75"/><view id="percent-view" viewBox="2496 0 24 24"/>
+  <use href="#pets" x="2520" y="0" width="24" height="24" stroke-width="1.75"/><view id="pets-view" viewBox="2520 0 24 24"/>
+  <use href="#phone" x="2544" y="0" width="24" height="24" stroke-width="1.75"/><view id="phone-view" viewBox="2544 0 24 24"/>
+  <use href="#pill" x="2568" y="0" width="24" height="24" stroke-width="1.75"/><view id="pill-view" viewBox="2568 0 24 24"/>
+  <use href="#pipette" x="2592" y="0" width="24" height="24" stroke-width="1.75"/><view id="pipette-view" viewBox="2592 0 24 24"/>
+  <use href="#plant-2" x="2616" y="0" width="24" height="24" stroke-width="1.75"/><view id="plant-2-view" viewBox="2616 0 24 24"/>
+  <use href="#plus" x="2640" y="0" width="24" height="24" stroke-width="1.75"/><view id="plus-view" viewBox="2640 0 24 24"/>
+  <use href="#receipt" x="2664" y="0" width="24" height="24" stroke-width="1.75"/><view id="receipt-view" viewBox="2664 0 24 24"/>
+  <use href="#rotate-ccw" x="2688" y="0" width="24" height="24" stroke-width="1.75"/><view id="rotate-ccw-view" viewBox="2688 0 24 24"/>
+  <use href="#search" x="2712" y="0" width="24" height="24" stroke-width="1.75"/><view id="search-view" viewBox="2712 0 24 24"/>
+  <use href="#send" x="2736" y="0" width="24" height="24" stroke-width="1.75"/><view id="send-view" viewBox="2736 0 24 24"/>
+  <use href="#settings" x="2760" y="0" width="24" height="24" stroke-width="1.75"/><view id="settings-view" viewBox="2760 0 24 24"/>
+  <use href="#share" x="2784" y="0" width="24" height="24" stroke-width="1.75"/><view id="share-view" viewBox="2784 0 24 24"/>
+  <use href="#shield-lock" x="2808" y="0" width="24" height="24" stroke-width="1.75"/><view id="shield-lock-view" viewBox="2808 0 24 24"/>
+  <use href="#shop-awning" x="2832" y="0" width="24" height="24" stroke-width="1.75"/><view id="shop-awning-view" viewBox="2832 0 24 24"/>
+  <use href="#shopping-bag-check" x="2856" y="0" width="24" height="24" stroke-width="1.75"/><view id="shopping-bag-check-view" viewBox="2856 0 24 24"/>
+  <use href="#shopping-bag" x="2880" y="0" width="24" height="24" stroke-width="1.75"/><view id="shopping-bag-view" viewBox="2880 0 24 24"/>
+  <use href="#shopping-basket" x="2904" y="0" width="24" height="24" stroke-width="1.75"/><view id="shopping-basket-view" viewBox="2904 0 24 24"/>
+  <use href="#shopping-cart-check" x="2928" y="0" width="24" height="24" stroke-width="1.75"/><view id="shopping-cart-check-view" viewBox="2928 0 24 24"/>
+  <use href="#shopping-cart-discount" x="2952" y="0" width="24" height="24" stroke-width="1.75"/><view id="shopping-cart-discount-view" viewBox="2952 0 24 24"/>
+  <use href="#shopping-cart" x="2976" y="0" width="24" height="24" stroke-width="1.75"/><view id="shopping-cart-view" viewBox="2976 0 24 24"/>
+  <use href="#shopping-handbag" x="3000" y="0" width="24" height="24" stroke-width="1.75"/><view id="shopping-handbag-view" viewBox="3000 0 24 24"/>
+  <use href="#sliders-horizontal" x="3024" y="0" width="24" height="24" stroke-width="1.75"/><view id="sliders-horizontal-view" viewBox="3024 0 24 24"/>
+  <use href="#soap-dispenser" x="3048" y="0" width="24" height="24" stroke-width="1.75"/><view id="soap-dispenser-view" viewBox="3048 0 24 24"/>
+  <use href="#sparkles" x="3072" y="0" width="24" height="24" stroke-width="1.75"/><view id="sparkles-view" viewBox="3072 0 24 24"/>
+  <use href="#star" x="3096" y="0" width="24" height="24" stroke-width="1.75"/><view id="star-view" viewBox="3096 0 24 24"/>
+  <use href="#store-building" x="3120" y="0" width="24" height="24" stroke-width="1.75"/><view id="store-building-view" viewBox="3120 0 24 24"/>
+  <use href="#store" x="3144" y="0" width="24" height="24" stroke-width="1.75"/><view id="store-view" viewBox="3144 0 24 24"/>
+  <use href="#storefront" x="3168" y="0" width="24" height="24" stroke-width="1.75"/><view id="storefront-view" viewBox="3168 0 24 24"/>
+  <use href="#sun" x="3192" y="0" width="24" height="24" stroke-width="1.75"/><view id="sun-view" viewBox="3192 0 24 24"/>
+  <use href="#swatches" x="3216" y="0" width="24" height="24" stroke-width="1.75"/><view id="swatches-view" viewBox="3216 0 24 24"/>
+  <use href="#syringe" x="3240" y="0" width="24" height="24" stroke-width="1.75"/><view id="syringe-view" viewBox="3240 0 24 24"/>
+  <use href="#table" x="3264" y="0" width="24" height="24" stroke-width="1.75"/><view id="table-view" viewBox="3264 0 24 24"/>
+  <use href="#tag" x="3288" y="0" width="24" height="24" stroke-width="1.75"/><view id="tag-view" viewBox="3288 0 24 24"/>
+  <use href="#target" x="3312" y="0" width="24" height="24" stroke-width="1.75"/><view id="target-view" viewBox="3312 0 24 24"/>
+  <use href="#test-pipe" x="3336" y="0" width="24" height="24" stroke-width="1.75"/><view id="test-pipe-view" viewBox="3336 0 24 24"/>
+  <use href="#ticket" x="3360" y="0" width="24" height="24" stroke-width="1.75"/><view id="ticket-view" viewBox="3360 0 24 24"/>
+  <use href="#trash" x="3384" y="0" width="24" height="24" stroke-width="1.75"/><view id="trash-view" viewBox="3384 0 24 24"/>
+  <use href="#trolley" x="3408" y="0" width="24" height="24" stroke-width="1.75"/><view id="trolley-view" viewBox="3408 0 24 24"/>
+  <use href="#truck-delivery" x="3432" y="0" width="24" height="24" stroke-width="1.75"/><view id="truck-delivery-view" viewBox="3432 0 24 24"/>
+  <use href="#truck-return" x="3456" y="0" width="24" height="24" stroke-width="1.75"/><view id="truck-return-view" viewBox="3456 0 24 24"/>
+  <use href="#truck" x="3480" y="0" width="24" height="24" stroke-width="1.75"/><view id="truck-view" viewBox="3480 0 24 24"/>
+  <use href="#tube" x="3504" y="0" width="24" height="24" stroke-width="1.75"/><view id="tube-view" viewBox="3504 0 24 24"/>
+  <use href="#user-check" x="3528" y="0" width="24" height="24" stroke-width="1.75"/><view id="user-check-view" viewBox="3528 0 24 24"/>
+  <use href="#user-circle" x="3552" y="0" width="24" height="24" stroke-width="1.75"/><view id="user-circle-view" viewBox="3552 0 24 24"/>
+  <use href="#user-group" x="3576" y="0" width="24" height="24" stroke-width="1.75"/><view id="user-group-view" viewBox="3576 0 24 24"/>
+  <use href="#user-heart" x="3600" y="0" width="24" height="24" stroke-width="1.75"/><view id="user-heart-view" viewBox="3600 0 24 24"/>
+  <use href="#user-plus" x="3624" y="0" width="24" height="24" stroke-width="1.75"/><view id="user-plus-view" viewBox="3624 0 24 24"/>
+  <use href="#user" x="3648" y="0" width="24" height="24" stroke-width="1.75"/><view id="user-view" viewBox="3648 0 24 24"/>
+  <use href="#vaccine-bottle" x="3672" y="0" width="24" height="24" stroke-width="1.75"/><view id="vaccine-bottle-view" viewBox="3672 0 24 24"/>
+  <use href="#vape" x="3696" y="0" width="24" height="24" stroke-width="1.75"/><view id="vape-view" viewBox="3696 0 24 24"/>
+  <use href="#wallet" x="3720" y="0" width="24" height="24" stroke-width="1.75"/><view id="wallet-view" viewBox="3720 0 24 24"/>
+  <use href="#waves" x="3744" y="0" width="24" height="24" stroke-width="1.75"/><view id="waves-view" viewBox="3744 0 24 24"/>
+  <use href="#weight" x="3768" y="0" width="24" height="24" stroke-width="1.75"/><view id="weight-view" viewBox="3768 0 24 24"/>
+  <use href="#wind" x="3792" y="0" width="24" height="24" stroke-width="1.75"/><view id="wind-view" viewBox="3792 0 24 24"/>
+  <use href="#x-circle" x="3816" y="0" width="24" height="24" stroke-width="1.75"/><view id="x-circle-view" viewBox="3816 0 24 24"/>
+  <use href="#x" x="3840" y="0" width="24" height="24" stroke-width="1.75"/><view id="x-view" viewBox="3840 0 24 24"/>
+  <use href="#yoga" x="3864" y="0" width="24" height="24" stroke-width="1.75"/><view id="yoga-view" viewBox="3864 0 24 24"/>
+  <use href="#youtube-line" x="3888" y="0" width="24" height="24" stroke-width="1.75"/><view id="youtube-line-view" viewBox="3888 0 24 24"/>
+  <use href="#zap" x="3912" y="0" width="24" height="24" stroke-width="1.75"/><view id="zap-view" viewBox="3912 0 24 24"/>
+  <use href="#facebook-color" x="3936" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-color-view" viewBox="3936 0 24 24"/>
+  <use href="#facebook-square" x="3960" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-square-view" viewBox="3960 0 24 24"/>
+  <use href="#facebook" x="3984" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-view" viewBox="3984 0 24 24"/>
+  <use href="#gmail-color" x="4008" y="0" width="24" height="24" stroke-width="1.75"/><view id="gmail-color-view" viewBox="4008 0 24 24"/>
+  <use href="#gmail" x="4032" y="0" width="24" height="24" stroke-width="1.75"/><view id="gmail-view" viewBox="4032 0 24 24"/>
+  <use href="#google-color" x="4056" y="0" width="24" height="24" stroke-width="1.75"/><view id="google-color-view" viewBox="4056 0 24 24"/>
+  <use href="#instagram" x="4080" y="0" width="24" height="24" stroke-width="1.75"/><view id="instagram-view" viewBox="4080 0 24 24"/>
+  <use href="#messenger" x="4104" y="0" width="24" height="24" stroke-width="1.75"/><view id="messenger-view" viewBox="4104 0 24 24"/>
+  <use href="#telegram" x="4128" y="0" width="24" height="24" stroke-width="1.75"/><view id="telegram-view" viewBox="4128 0 24 24"/>
+  <use href="#tiktok" x="4152" y="0" width="24" height="24" stroke-width="1.75"/><view id="tiktok-view" viewBox="4152 0 24 24"/>
+  <use href="#viber" x="4176" y="0" width="24" height="24" stroke-width="1.75"/><view id="viber-view" viewBox="4176 0 24 24"/>
+  <use href="#whatsapp" x="4200" y="0" width="24" height="24" stroke-width="1.75"/><view id="whatsapp-view" viewBox="4200 0 24 24"/>
+  <use href="#youtube" x="4224" y="0" width="24" height="24" stroke-width="1.75"/><view id="youtube-view" viewBox="4224 0 24 24"/>
+  <use href="#droplet-fill" x="4248" y="0" width="24" height="24" stroke-width="1.75"/><view id="droplet-fill-view" viewBox="4248 0 24 24"/>
+  <use href="#heart-fill" x="4272" y="0" width="24" height="24" stroke-width="1.75"/><view id="heart-fill-view" viewBox="4272 0 24 24"/>
+  <use href="#pause" x="4296" y="0" width="24" height="24" stroke-width="1.75"/><view id="pause-view" viewBox="4296 0 24 24"/>
+  <use href="#play" x="4320" y="0" width="24" height="24" stroke-width="1.75"/><view id="play-view" viewBox="4320 0 24 24"/>
+  <use href="#star-fill" x="4344" y="0" width="24" height="24" stroke-width="1.75"/><view id="star-fill-view" viewBox="4344 0 24 24"/>
+  <use href="#applepay" x="4368" y="0" width="24" height="24" stroke-width="1.75"/><view id="applepay-view" viewBox="4368 0 24 24"/>
+  <use href="#googlepay" x="4392" y="0" width="24" height="24" stroke-width="1.75"/><view id="googlepay-view" viewBox="4392 0 24 24"/>
+  <use href="#mastercard" x="4416" y="0" width="24" height="24" stroke-width="1.75"/><view id="mastercard-view" viewBox="4416 0 24 24"/>
+  <use href="#visa" x="4440" y="0" width="24" height="24" stroke-width="1.75"/><view id="visa-view" viewBox="4440 0 24 24"/>
 </svg>
