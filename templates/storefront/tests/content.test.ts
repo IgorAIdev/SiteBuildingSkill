@@ -7,8 +7,14 @@ test('home page blocks exist in every language, in one order, and point at real 
   for (const lang of ['ro', 'en', 'hu'] as const) {
     const r = await sampleContent.page(lang, 'home')
     assert.ok(r.ok, lang)
-    assert.deepEqual(r.value.blocks.map((b) => b.type), ['hero', 'effects', 'featured', 'featured', 'featured', 'reviews', 'posts', 'faq'])
+    assert.deepEqual(r.value.blocks.map((b) => b.type), ['hero', 'effects', 'featured', 'featured', 'featured', 'featured', 'reviews', 'posts', 'faq', 'trust'])
     for (const b of r.value.blocks) if (b.type === 'featured') for (const id of b.ids) assert.ok(PRODUCTS.some((p) => p.id === id), id)
+    /* Вход для новичка — первая полка, сразу за эффектами; слова английские во
+       всех языках образца (слово заказчика 13.10.2026: «все на англ»). */
+    const starter = r.value.blocks.find((b) => b.type === 'featured')
+    assert.ok(starter?.type === 'featured' && starter.title === 'New to CBD?' && starter.ids.length === 3, `${lang}: первая полка — вход для новичка из трёх товаров`)
+    const trust = r.value.blocks.find((b) => b.type === 'trust')
+    assert.ok(trust?.type === 'trust' && !/[^\x00-\x7F’—]/.test(JSON.stringify(trust)), `${lang}: слова ряда доверия английские`)
     /* Герой лежит поверх широкого снимка — снимок у него свой, а не первая
        карточка полки (флакон во весь экран под заголовком). */
     const hero = r.value.blocks.find((b) => b.type === 'hero')

@@ -9,6 +9,7 @@ const HERO: Image = { src: scene(), alt: '', width: 1600, height: 1000 }
 // these shelves to the real catalogue without duplicating the editorial copy.
 const OILS = ['ulei-cbd-full-spectrum', 'ulei-cbd-izolat-10', 'ulei-cbd-5-incepatori', 'ulei-cbd-20-seara', 'ulei-cbd-30-forte']
 const CAPSULES = ['capsule-cbd-25', 'capsule-cbd-10']
+const STARTER = ['ulei-cbd-5-incepatori', 'capsule-cbd-10', 'ulei-cbd-izolat-10']
 const FEATURED = ['ulei-cbd-full-spectrum', 'capsule-cbd-25', 'crema-cbd', 'ulei-caini-cbd']
 const localized = <T,>(read: (lang: Lang) => T): Record<Lang, T> => Object.fromEntries(LOCALES.map((lang) => [lang, read(lang)])) as Record<Lang, T>
 
@@ -21,12 +22,14 @@ export const PAGES: Record<string, SamplePage> = {
       return [
         { type: 'hero', ...words.hero, image: HERO, shelves: 'all' },
         { type: 'effects', ...words.effects },
+        { type: 'featured', ...words.starter, ids: STARTER },
         { type: 'featured', ...words.oils, ids: OILS, to: 'uleiuri' },
         { type: 'featured', ...words.capsules, ids: CAPSULES, to: 'capsule' },
         { type: 'featured', ...words.featured, ids: FEATURED },
         { type: 'reviews', ...words.reviews, all: null },
         { type: 'posts', ...words.posts },
         { type: 'faq', ...words.faq },
+        { type: 'trust', ...words.trust, deliveryDoc: 'livrare-si-plata', returnsDoc: 'retur', lab: { ...words.trust.lab, doc: 'analize-de-laborator' } },
       ]
     }),
   },

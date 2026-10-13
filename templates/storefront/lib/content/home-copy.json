@@ -77,6 +77,17 @@
           "a": "Delivery options, times and payment methods, including payment on delivery where it is offered, are listed on the delivery and payment page and at checkout."
         }
       ]
+    },
+    "starter": {
+      "title": "New to CBD?",
+      "lede": "Start low, go slow: three gentle picks, one for every way to take it."
+    },
+    "trust": {
+      "title": "Why you can trust us",
+      "lab": {
+        "title": "Lab-tested batches",
+        "text": "Results are public"
+      }
     }
   },
   "ro": {
@@ -157,6 +168,17 @@
           "a": "Opțiunile de livrare, termenele și metodele de plată, inclusiv plata la livrare acolo unde este oferită, sunt pe pagina Livrare și plată și la finalizarea comenzii."
         }
       ]
+    },
+    "starter": {
+      "title": "New to CBD?",
+      "lede": "Start low, go slow: three gentle picks, one for every way to take it."
+    },
+    "trust": {
+      "title": "Why you can trust us",
+      "lab": {
+        "title": "Lab-tested batches",
+        "text": "Results are public"
+      }
     }
   },
   "hu": {
@@ -237,6 +259,17 @@
           "a": "A szállítási módokat, határidőket és fizetési lehetőségeket — köztük az utánvétet, ahol elérhető — a Szállítás és fizetés oldal és a pénztár mutatja."
         }
       ]
+    },
+    "starter": {
+      "title": "New to CBD?",
+      "lede": "Start low, go slow: three gentle picks, one for every way to take it."
+    },
+    "trust": {
+      "title": "Why you can trust us",
+      "lab": {
+        "title": "Lab-tested batches",
+        "text": "Results are public"
+      }
     }
   }
 }

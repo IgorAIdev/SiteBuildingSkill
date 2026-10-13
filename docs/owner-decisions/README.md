@@ -19,6 +19,7 @@
 - [Panel overwrites server-side draft edits](./draft-overwritten-by-panel.md) — open Look panel re-posts its in-memory names; after editing the draft on the server ask the owner to reload first
 - [No Brand tint](./no-brand-tint.md) — owner rejected the brand-veil button fill; removed from the catalog, never offer again
 - [Effects row stays tiles](./effects-row-stays-tiles.md) — tiles, not pills; since 04.10.2026 dress «Caption» like the blog card; frames by role (И736)
+- [Home: product first, trust last](./home-product-first.md) — product and effect tiles at the top, «New to CBD?» shelf, trust row (lab, delivery, returns) last before the footer; owner overrode proof-first research (13.10.2026)
 - [Bands full-bleed](./bands-full-bleed.md) — band to window edge, content in frame; owner chose 03.10.2026, nothing to change
 - [Round forms only](./round-forms-only.md) — buttons pills and circles, no square plates; menu/list row hover = rounded rectangle --r-ctrl, one shape everywhere (04.10.2026); button corner = Shape → Corners (--r-btn, «· pill» twins), no data-pill on buttons; since 08.10.2026 the published look is «Standard · pill», every data-pager sign button a circle (И790)
 - [Phone menu on top](./phone-menu-top.md) — top header, burger first at the left edge, drawer from the left, signs not pictures, current page on a light brand plate (05.10.2026); no bottom tab bar

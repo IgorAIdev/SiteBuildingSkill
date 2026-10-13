@@ -84,7 +84,7 @@ test('panel sections: every field sits in exactly one sub-tab; System is colour,
   assert.equal(catalog.groups['chip-sign'], undefined)
   /* Подложка секций (И591): строки — из каталога, по одной на блок реестра; у каждой четыре слова. */
   const rows = sectionsOf(catalog)[1].subs.find((s) => s.id === 'sections')!.fields.map((f) => f[0])
-  assert.deepEqual(rows, ['band-effects', 'band-featured', 'band-story', 'band-reviews', 'band-posts', 'band-faq'])
+  assert.deepEqual(rows, ['band-effects', 'band-featured', 'band-story', 'band-reviews', 'band-posts', 'band-faq', 'band-trust'])
   /* Первой в каталоге стоит выбранная на сайте, поэтому состав сверяется без порядка. */
   for (const f of rows) assert.deepEqual(catalog.groups[f].map((o) => o.id).sort(), ['brand', 'dark', 'none', 'quiet'])
   assert.equal(catalog.defaults.home, HOMES[0])

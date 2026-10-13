@@ -46,3 +46,20 @@ test('home: the sport dress puts the best sellers right after the hero, every bl
     assert.deepEqual([...placed.map((x) => x.block)].sort((a, b) => blocks.indexOf(a) - blocks.indexOf(b)), blocks, `${lang}: каждый блок — один раз`)
   }
 })
+
+/* Ряд доверия стоит после товара, а не над ним. Исследование главной советовало
+   поставить его под героя; заказчик, увидев, сказал: «наверху товар, а не
+   политика возврата; доверие ниже, перед футером» (13.10.2026,
+   `.claude/memory/home-product-first.md`). Решение не оставляет следа в
+   поведении, и «доказательство рядом с героем» хочется вернуть из лучших
+   побуждений — поэтому падает. Снимается словом заказчика, одной работой с
+   записью. */
+test('home: the trust row stands last, after every product shelf, in every recipe', () => {
+  const fail = 'Ряд доверия стоит выше товара. Заказчик 13.10.2026: «наверху товар, а не политика возврата; доверие ниже, перед футером». Верни его последним.'
+  const recipes: Array<[string, readonly (readonly [string, ...unknown[]])[]]> = [['общий', RECIPE], ...HOMES.map((h) => [h, arrange(PAGES.home.blocks.en, h).map((x) => [x.slot] as const)] as [string, readonly (readonly [string])[]])]
+  for (const [name, steps] of recipes) {
+    const slots = steps.map(([slot]) => slot)
+    assert.equal(slots.at(-1), 'trust', `${name}: ${fail}`)
+    assert.ok(slots.lastIndexOf('featured') < slots.indexOf('trust'), `${name}: ${fail}`)
+  }
+})
