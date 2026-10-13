@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <!-- Собран tools/icons.mjs из skills/site-building/assets/icons/lucide (Lucide, ISC) icons/brands (Simple Icons, CC0) и icons/solid (Lucide, ISC); см. LICENSE там же.
-       Руками не правят: первый же выпуск сотрёт правку. Знаков: 186. -->
+       Руками не правят: первый же выпуск сотрёт правку. Знаков: 187. -->
   <symbol id="account-line" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.6" r="3.6" vector-effect="non-scaling-stroke"/><path d="M5.4 20.2a6.6 6.6 0 0 1 13.2 0" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="alert-circle" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" vector-effect="non-scaling-stroke"/><line x1="12" x2="12" y1="8" y2="12" vector-effect="non-scaling-stroke"/><line x1="12" x2="12.01" y1="16" y2="16" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="alert-triangle" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" vector-effect="non-scaling-stroke"/><path d="M12 9v4" vector-effect="non-scaling-stroke"/><path d="M12 17h.01" vector-effect="non-scaling-stroke"/></symbol>
@@ -155,6 +155,7 @@
   <symbol id="user-plus" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" vector-effect="non-scaling-stroke"/><circle cx="9" cy="7" r="4" vector-effect="non-scaling-stroke"/><line x1="19" x2="19" y1="8" y2="14" vector-effect="non-scaling-stroke"/><line x1="22" x2="16" y1="11" y2="11" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="user" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" vector-effect="non-scaling-stroke"/><circle cx="12" cy="7" r="4" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="vaccine-bottle" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v1a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -1" vector-effect="non-scaling-stroke"/><path d="M10 6v.98c0 .877 -.634 1.626 -1.5 1.77c-.866 .144 -1.5 .893 -1.5 1.77v8.48a2 2 0 0 0 2 2h6a2 2 0 0 0 2 -2v-8.48c0 -.877 -.634 -1.626 -1.5 -1.77a1.795 1.795 0 0 1 -1.5 -1.77v-.98" vector-effect="non-scaling-stroke"/><path d="M7 12h10" vector-effect="non-scaling-stroke"/><path d="M7 18h10" vector-effect="non-scaling-stroke"/><path d="M11 15h2" vector-effect="non-scaling-stroke"/></symbol>
+  <symbol id="vape-mod" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6.26 3.8V1.8a.55 .55 0 0 1 .55 -.55h.74a.55 .55 0 0 1 .55 .55v2" vector-effect="non-scaling-stroke"/><path d="M5.49 10.9V4.34a.52 .52 0 0 1 .52 -.52h3.8a.52 .52 0 0 1 .52 .52v6.56" vector-effect="non-scaling-stroke"/><path d="M5.49 5.7h4.84" vector-effect="non-scaling-stroke"/><path d="M5.49 9.04h4.84" vector-effect="non-scaling-stroke"/><path d="M6.99 5.7v3.34" vector-effect="non-scaling-stroke"/><path d="M8.87 5.7v3.34" vector-effect="non-scaling-stroke"/><rect x="4.76" y="10.89" width="10.47" height="11.86" rx=".87" vector-effect="non-scaling-stroke"/><path d="M4.76 13.11h10.47" vector-effect="non-scaling-stroke"/><path d="M6.64 13.11v3.62" vector-effect="non-scaling-stroke"/><path d="M4.76 20.54h10.47" vector-effect="non-scaling-stroke"/><path d="M10.85 2.02c.55 -.27 .95 -.52 1.35 -.52c.7 0 1.4 .45 1.81 1.1" vector-effect="non-scaling-stroke"/><path d="M11.6 1.75c.35 .35 .5 .75 .6 1.15" vector-effect="non-scaling-stroke"/><path d="M14.01 2.6c.39 -.3 .89 -.4 1.29 -.2c.6 .3 .9 .8 1.03 1.19" vector-effect="non-scaling-stroke"/><path d="M14.98 1.94c.52 -.44 1.02 -.66 1.64 -.66c1.58 0 2.61 1.22 2.61 2.68c0 1.24 -.73 2.15 -1.81 2.15c-.52 0 -.92 -.21 -1.32 -.47" vector-effect="non-scaling-stroke"/><path d="M13.66 5.28c.44 .72 .94 1.05 1.45 1.05c.49 0 .79 -.33 .99 -.69" vector-effect="non-scaling-stroke"/><path d="M12.97 4v.25" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="vape" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 10.5a1 1 0 0 1 1-1h6v11a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1z" vector-effect="non-scaling-stroke"/><path d="M11.5 4.5h4v5h-4z" vector-effect="non-scaling-stroke"/><path d="M13.5 4.5v-2" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="wallet" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8v-3a1 1 0 0 0 -1 -1h-10a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1 -1 1h-12a2 2 0 0 1 -2 -2v-12" vector-effect="non-scaling-stroke"/><path d="M20 12v4h-4a2 2 0 0 1 0 -4h4" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="waves" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12q2.5 2 5 0t5 0 5 0 5 0" vector-effect="non-scaling-stroke"/><path d="M2 19q2.5 2 5 0t5 0 5 0 5 0" vector-effect="non-scaling-stroke"/><path d="M2 5q2.5 2 5 0t5 0 5 0 5 0" vector-effect="non-scaling-stroke"/></symbol>
@@ -341,36 +342,37 @@
   <use href="#user-plus" x="3624" y="0" width="24" height="24" stroke-width="1.75"/><view id="user-plus-view" viewBox="3624 0 24 24"/>
   <use href="#user" x="3648" y="0" width="24" height="24" stroke-width="1.75"/><view id="user-view" viewBox="3648 0 24 24"/>
   <use href="#vaccine-bottle" x="3672" y="0" width="24" height="24" stroke-width="1.75"/><view id="vaccine-bottle-view" viewBox="3672 0 24 24"/>
-  <use href="#vape" x="3696" y="0" width="24" height="24" stroke-width="1.75"/><view id="vape-view" viewBox="3696 0 24 24"/>
-  <use href="#wallet" x="3720" y="0" width="24" height="24" stroke-width="1.75"/><view id="wallet-view" viewBox="3720 0 24 24"/>
-  <use href="#waves" x="3744" y="0" width="24" height="24" stroke-width="1.75"/><view id="waves-view" viewBox="3744 0 24 24"/>
-  <use href="#weight" x="3768" y="0" width="24" height="24" stroke-width="1.75"/><view id="weight-view" viewBox="3768 0 24 24"/>
-  <use href="#wind" x="3792" y="0" width="24" height="24" stroke-width="1.75"/><view id="wind-view" viewBox="3792 0 24 24"/>
-  <use href="#x-circle" x="3816" y="0" width="24" height="24" stroke-width="1.75"/><view id="x-circle-view" viewBox="3816 0 24 24"/>
-  <use href="#x" x="3840" y="0" width="24" height="24" stroke-width="1.75"/><view id="x-view" viewBox="3840 0 24 24"/>
-  <use href="#yoga" x="3864" y="0" width="24" height="24" stroke-width="1.75"/><view id="yoga-view" viewBox="3864 0 24 24"/>
-  <use href="#youtube-line" x="3888" y="0" width="24" height="24" stroke-width="1.75"/><view id="youtube-line-view" viewBox="3888 0 24 24"/>
-  <use href="#zap" x="3912" y="0" width="24" height="24" stroke-width="1.75"/><view id="zap-view" viewBox="3912 0 24 24"/>
-  <use href="#facebook-color" x="3936" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-color-view" viewBox="3936 0 24 24"/>
-  <use href="#facebook-square" x="3960" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-square-view" viewBox="3960 0 24 24"/>
-  <use href="#facebook" x="3984" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-view" viewBox="3984 0 24 24"/>
-  <use href="#gmail-color" x="4008" y="0" width="24" height="24" stroke-width="1.75"/><view id="gmail-color-view" viewBox="4008 0 24 24"/>
-  <use href="#gmail" x="4032" y="0" width="24" height="24" stroke-width="1.75"/><view id="gmail-view" viewBox="4032 0 24 24"/>
-  <use href="#google-color" x="4056" y="0" width="24" height="24" stroke-width="1.75"/><view id="google-color-view" viewBox="4056 0 24 24"/>
-  <use href="#instagram" x="4080" y="0" width="24" height="24" stroke-width="1.75"/><view id="instagram-view" viewBox="4080 0 24 24"/>
-  <use href="#messenger" x="4104" y="0" width="24" height="24" stroke-width="1.75"/><view id="messenger-view" viewBox="4104 0 24 24"/>
-  <use href="#telegram" x="4128" y="0" width="24" height="24" stroke-width="1.75"/><view id="telegram-view" viewBox="4128 0 24 24"/>
-  <use href="#tiktok" x="4152" y="0" width="24" height="24" stroke-width="1.75"/><view id="tiktok-view" viewBox="4152 0 24 24"/>
-  <use href="#viber" x="4176" y="0" width="24" height="24" stroke-width="1.75"/><view id="viber-view" viewBox="4176 0 24 24"/>
-  <use href="#whatsapp" x="4200" y="0" width="24" height="24" stroke-width="1.75"/><view id="whatsapp-view" viewBox="4200 0 24 24"/>
-  <use href="#youtube" x="4224" y="0" width="24" height="24" stroke-width="1.75"/><view id="youtube-view" viewBox="4224 0 24 24"/>
-  <use href="#droplet-fill" x="4248" y="0" width="24" height="24" stroke-width="1.75"/><view id="droplet-fill-view" viewBox="4248 0 24 24"/>
-  <use href="#heart-fill" x="4272" y="0" width="24" height="24" stroke-width="1.75"/><view id="heart-fill-view" viewBox="4272 0 24 24"/>
-  <use href="#pause" x="4296" y="0" width="24" height="24" stroke-width="1.75"/><view id="pause-view" viewBox="4296 0 24 24"/>
-  <use href="#play" x="4320" y="0" width="24" height="24" stroke-width="1.75"/><view id="play-view" viewBox="4320 0 24 24"/>
-  <use href="#star-fill" x="4344" y="0" width="24" height="24" stroke-width="1.75"/><view id="star-fill-view" viewBox="4344 0 24 24"/>
-  <use href="#applepay" x="4368" y="0" width="24" height="24" stroke-width="1.75"/><view id="applepay-view" viewBox="4368 0 24 24"/>
-  <use href="#googlepay" x="4392" y="0" width="24" height="24" stroke-width="1.75"/><view id="googlepay-view" viewBox="4392 0 24 24"/>
-  <use href="#mastercard" x="4416" y="0" width="24" height="24" stroke-width="1.75"/><view id="mastercard-view" viewBox="4416 0 24 24"/>
-  <use href="#visa" x="4440" y="0" width="24" height="24" stroke-width="1.75"/><view id="visa-view" viewBox="4440 0 24 24"/>
+  <use href="#vape-mod" x="3696" y="0" width="24" height="24" stroke-width="1.75"/><view id="vape-mod-view" viewBox="3696 0 24 24"/>
+  <use href="#vape" x="3720" y="0" width="24" height="24" stroke-width="1.75"/><view id="vape-view" viewBox="3720 0 24 24"/>
+  <use href="#wallet" x="3744" y="0" width="24" height="24" stroke-width="1.75"/><view id="wallet-view" viewBox="3744 0 24 24"/>
+  <use href="#waves" x="3768" y="0" width="24" height="24" stroke-width="1.75"/><view id="waves-view" viewBox="3768 0 24 24"/>
+  <use href="#weight" x="3792" y="0" width="24" height="24" stroke-width="1.75"/><view id="weight-view" viewBox="3792 0 24 24"/>
+  <use href="#wind" x="3816" y="0" width="24" height="24" stroke-width="1.75"/><view id="wind-view" viewBox="3816 0 24 24"/>
+  <use href="#x-circle" x="3840" y="0" width="24" height="24" stroke-width="1.75"/><view id="x-circle-view" viewBox="3840 0 24 24"/>
+  <use href="#x" x="3864" y="0" width="24" height="24" stroke-width="1.75"/><view id="x-view" viewBox="3864 0 24 24"/>
+  <use href="#yoga" x="3888" y="0" width="24" height="24" stroke-width="1.75"/><view id="yoga-view" viewBox="3888 0 24 24"/>
+  <use href="#youtube-line" x="3912" y="0" width="24" height="24" stroke-width="1.75"/><view id="youtube-line-view" viewBox="3912 0 24 24"/>
+  <use href="#zap" x="3936" y="0" width="24" height="24" stroke-width="1.75"/><view id="zap-view" viewBox="3936 0 24 24"/>
+  <use href="#facebook-color" x="3960" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-color-view" viewBox="3960 0 24 24"/>
+  <use href="#facebook-square" x="3984" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-square-view" viewBox="3984 0 24 24"/>
+  <use href="#facebook" x="4008" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-view" viewBox="4008 0 24 24"/>
+  <use href="#gmail-color" x="4032" y="0" width="24" height="24" stroke-width="1.75"/><view id="gmail-color-view" viewBox="4032 0 24 24"/>
+  <use href="#gmail" x="4056" y="0" width="24" height="24" stroke-width="1.75"/><view id="gmail-view" viewBox="4056 0 24 24"/>
+  <use href="#google-color" x="4080" y="0" width="24" height="24" stroke-width="1.75"/><view id="google-color-view" viewBox="4080 0 24 24"/>
+  <use href="#instagram" x="4104" y="0" width="24" height="24" stroke-width="1.75"/><view id="instagram-view" viewBox="4104 0 24 24"/>
+  <use href="#messenger" x="4128" y="0" width="24" height="24" stroke-width="1.75"/><view id="messenger-view" viewBox="4128 0 24 24"/>
+  <use href="#telegram" x="4152" y="0" width="24" height="24" stroke-width="1.75"/><view id="telegram-view" viewBox="4152 0 24 24"/>
+  <use href="#tiktok" x="4176" y="0" width="24" height="24" stroke-width="1.75"/><view id="tiktok-view" viewBox="4176 0 24 24"/>
+  <use href="#viber" x="4200" y="0" width="24" height="24" stroke-width="1.75"/><view id="viber-view" viewBox="4200 0 24 24"/>
+  <use href="#whatsapp" x="4224" y="0" width="24" height="24" stroke-width="1.75"/><view id="whatsapp-view" viewBox="4224 0 24 24"/>
+  <use href="#youtube" x="4248" y="0" width="24" height="24" stroke-width="1.75"/><view id="youtube-view" viewBox="4248 0 24 24"/>
+  <use href="#droplet-fill" x="4272" y="0" width="24" height="24" stroke-width="1.75"/><view id="droplet-fill-view" viewBox="4272 0 24 24"/>
+  <use href="#heart-fill" x="4296" y="0" width="24" height="24" stroke-width="1.75"/><view id="heart-fill-view" viewBox="4296 0 24 24"/>
+  <use href="#pause" x="4320" y="0" width="24" height="24" stroke-width="1.75"/><view id="pause-view" viewBox="4320 0 24 24"/>
+  <use href="#play" x="4344" y="0" width="24" height="24" stroke-width="1.75"/><view id="play-view" viewBox="4344 0 24 24"/>
+  <use href="#star-fill" x="4368" y="0" width="24" height="24" stroke-width="1.75"/><view id="star-fill-view" viewBox="4368 0 24 24"/>
+  <use href="#applepay" x="4392" y="0" width="24" height="24" stroke-width="1.75"/><view id="applepay-view" viewBox="4392 0 24 24"/>
+  <use href="#googlepay" x="4416" y="0" width="24" height="24" stroke-width="1.75"/><view id="googlepay-view" viewBox="4416 0 24 24"/>
+  <use href="#mastercard" x="4440" y="0" width="24" height="24" stroke-width="1.75"/><view id="mastercard-view" viewBox="4440 0 24 24"/>
+  <use href="#visa" x="4464" y="0" width="24" height="24" stroke-width="1.75"/><view id="visa-view" viewBox="4464 0 24 24"/>
 </svg>
