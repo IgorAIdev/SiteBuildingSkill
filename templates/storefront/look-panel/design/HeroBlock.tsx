@@ -3,6 +3,7 @@ import type { Block } from '@/lib/source/contract.ts'
 import { content, source } from '@/lib/source/index.ts'
 import { Hero } from '@/components/blocks/Hero.tsx'
 import { MinimalHero } from '@/components/blocks/MinimalHero.tsx'
+import { SportHero } from '@/components/blocks/SportHero.tsx'
 import { HOMES } from '@/lib/homes.ts'
 import type { BlockCtx } from '@/components/blocks/types.ts'
 import { Part, Worn } from './parts.tsx'
@@ -13,10 +14,10 @@ import { shelfCard } from '@/lib/view.ts'
 /* Home → Hero Block: варианты героя главной — настоящий блок сайта на
    словах и снимке главной (слово заказчика 01.10.2026: «в дизайн-системе
    делаем страницу Hero Block, где будем размещать варианты этого
-   хероблока»). Вариантов два: снимок и кнопки всех категорий со знаком
+   хероблока»). Вариантов три: снимок и кнопки всех категорий со знаком
    товара, все одного роста (И673, И683), и минимальный второй витрины —
    один товар, громкая кнопка и категории словами (`MinimalHero`, главная
-   «minimal»); новый вариант встаёт сюда строкой. Герою из контекста
+   «minimal») и плакат без снимка (`SportHero`, главная «sport»); новый вариант встаёт сюда строкой. Герою из контекста
    нужны только язык и полки — остальное у главной, не у него. */
 export async function HeroBlock({ lang }: { lang: Lang }) {
   const [page, cols, look] = await Promise.all([content().page(lang, 'home'), source().collections(lang), lookNow()])
@@ -38,6 +39,10 @@ export async function HeroBlock({ lang }: { lang: Lang }) {
       <div className={s.group}>
         <h3>Минимальный: один товар и категории словами <Worn on={look.home === 'minimal'} /></h3>
         <MinimalHero block={hero} ctx={{ ...ctx, home: 'minimal' }} />
+      </div>
+      <div className={s.group}>
+        <h3>Sport: плакат без снимка, товар сразу под ним <Worn on={look.home === 'sport'} /></h3>
+        <SportHero block={hero} ctx={{ ...ctx, home: 'sport' }} />
       </div>
     </Part>
   )

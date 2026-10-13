@@ -10,6 +10,7 @@ import { reachRows, supportHref, SUPPORT } from '@/lib/contacts.ts'
 import { subscribe } from '@/lib/actions/subscribe.ts'
 import { CheckoutHeader, Header } from '@/components/Header.tsx'
 import { Footer } from '@/components/Footer.tsx'
+import { BuildingNotice } from '@/components/BuildingNotice.tsx'
 import { Logo } from '@/components/Logo.tsx'
 import { DropBody, NavLinks } from '@/components/NavLinks.tsx'
 import { LangSwitch } from '@/components/LangSwitch.tsx'
@@ -82,6 +83,12 @@ export async function SiteFrame({ lang }: { lang: Lang }) {
 
       <Part title="Подвал" lede="Низ каждой страницы магазина: подписка на новости, знак, связь, полки, «о нас» и помощь; ниже — правила, продавец и оговорка о CBD.">
         <Footer lang={lang} docs={data.docs} shelves={data.nav} idPrefix="design-" />
+      </Part>
+
+      <Part title="Полоса «сайт строится»" lede="Тонкая строка над шапкой на всех страницах, пока магазин не принимает заказы: из поиска приходят на товар, и сразу видно, что покупать пока нельзя. Когда заказы открыты, полосы нет.">
+        <div className={`${p.stack} ${s.column}`}>
+          <div className={s.frame}><BuildingNotice text={t(lang, 'notice.building')} /></div>
+        </div>
       </Part>
 
       <Part title="Шапка кассы" lede="На шагах оформления заказа рама закрытая: знак и «назад в корзину» сверху, подвала нет — уйти с кассы можно только обратно в корзину.">
