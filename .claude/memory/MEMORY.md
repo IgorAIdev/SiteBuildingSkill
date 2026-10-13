@@ -30,3 +30,4 @@
 - [Market research repo](market-research-repo.md) — research lives in private IgorAIdev/CBDSeoMarketResearch, shared with HempScale; first upload blocked as exfiltration — owner uploads; local copy D:\MyBssinessProject\research-2026-10-08
 - [Build in English](build-in-english.md) — template is built in English; translation to the market language is a final-stage step (10.10.2026)
 - [Best examples, not local](best-examples-not-local.md) — orient on the best stores in the world, not local/market competitors; never offer a local-competitor review (owner 13.10.2026)
+- [Home: product first](home-product-first.md) — product at the top, trust/proof strip (lab, delivery, returns) last before the footer; owner overrode "proof-first" research (13.10.2026)
