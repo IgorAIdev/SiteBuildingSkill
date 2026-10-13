@@ -191,6 +191,12 @@ export type Block =
   /** Статьи блога — лентой последних из списка источника (`Content.posts`,
    *  И729); `limit` — сколько, умолчание 4. Статей нет — блока нет. */
   | { type: 'posts'; title: string; lede?: string; limit?: number }
+  /** Ряд доказательств перед подвалом: лаборатория — словом блока, доставка и
+   *  возврат — фактами магазина (`pledges`, а не числом в слове). Заголовка на
+   *  странице нет — `title` называет ряд для чтеца с экрана. `lab` — null:
+   *  магазин лабораторных анализов не называет, и строки нет. `deliveryDoc` и
+   *  `returnsDoc` — слаги страниц условий; нет — строка стоит без ссылки. */
+  | { type: 'trust'; title: string; lab: { title: string; text?: string; doc: string } | null; deliveryDoc?: string; returnsDoc?: string }
 export type Page = { slug: string; title: string; description: string; blocks: Block[] }
 /** Обещания магазина, которые витрина печатает у кнопки заказа, — числом из
  *  данных, а не словом в коде. `returnDays` — срок возврата в днях (закон ЕС

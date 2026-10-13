@@ -40,15 +40,17 @@ export type Step = readonly [Slot, Air?]
  *  рецепт не называет, не пропадает — встаёт в конец по порядку данных:
  *  блок владельца на витрине, пока владелец его не снял. */
 /* Отзывы — сразу за полками товара (за «Best sellers», docs/open.md «Отзывы
-   покупателей», И728), статьи блога — перед справкой (И729). */
-export const RECIPE: readonly Step[] = [['hero'], ['effects'], ['featured'], ['reviews'], ['story'], ['posts'], ['faq']]
+   покупателей», И728), статьи блога — перед справкой (И729). Ряд доверия —
+   последним, перед подвалом: наверху товар, слова о магазине — после него
+   (слово заказчика 13.10.2026, `.claude/memory/home-product-first.md`). */
+export const RECIPE: readonly Step[] = [['hero'], ['effects'], ['featured'], ['reviews'], ['story'], ['posts'], ['faq'], ['trust']]
 
 /* Рецепт на вид: одежда `sport` ставит полку товаров сразу за героем — первое
    окно показывает заголовок и товар вместе (docs/design/четвёртая-витрина.md,
    «полка сразу»). Остальные одежды стоят по общему рецепту. */
 const RECIPES: Partial<Record<HomeVariant, readonly Step[]>> = {
   /* look-home:sport:start */
-  sport: [['hero'], ['featured', 'head'], ['effects'], ['reviews'], ['story'], ['posts'], ['faq']],
+  sport: [['hero'], ['featured', 'head'], ['effects'], ['reviews'], ['story'], ['posts'], ['faq'], ['trust']],
   /* look-home:sport:end */
 }
 

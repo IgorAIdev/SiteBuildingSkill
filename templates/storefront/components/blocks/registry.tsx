@@ -9,6 +9,7 @@ import { Faq } from './Faq.tsx'
 import { Story } from './Story.tsx'
 import { Reviews } from './Reviews.tsx'
 import { Posts } from './Posts.tsx'
+import { Trust } from './Trust.tsx'
 import s from './blocks.module.css'
 
 type Renderers = { [K in Block['type']]: (props: { block: Extract<Block, { type: K }>; ctx: BlockCtx; place: Place }) => ReactNode }
@@ -24,6 +25,7 @@ export const RENDERERS = {
   reviews: Reviews,
   posts: Posts,
   faq: Faq,
+  trust: Trust,
 } satisfies Renderers
 
 /** Блоки, которым вид может дать подложку, — все, что есть в реестре, кроме первого экрана: новый блок в реестре получает выключатель в панели сам (scripts/band-blocks.mjs). */

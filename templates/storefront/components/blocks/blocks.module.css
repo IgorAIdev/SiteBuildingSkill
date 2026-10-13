@@ -325,3 +325,16 @@
 /* Соседи одного типа сливаются: шов и лишний воздух между ними снимаются. */
 .band[data-join~='prev']{margin-block-start:0}
 .band[data-join~='next']{padding-block-end:0}
+
+/* РЯД ДОВЕРИЯ перед подвалом (Trust.tsx): значок, слово, подробность — три в
+   ряд на столе, столбиком на телефоне; число колонок считает сетка (`grid`),
+   порога окна нет. Краска — роли: значок акцентом, слово чернилами, подробность
+   приглушёнными. Строка-ссылка — вид предмета «строка» (`b.row`, styles/btn.module.css):
+   ответ на руку и подложку даёт он, здесь — только раскладка; цель нажатия —
+   роль `--ctrl-target` (44 на касании). */
+.trust{--cols:3;--cell-min:200px;--cols-min:1;--grid-gap:var(--gap-row)}
+.trustRow{display:flex;align-items:flex-start;gap:var(--gap-row);min-inline-size:0;min-block-size:var(--ctrl-target);padding:var(--air-tight) var(--pad-inner);color:var(--ink);text-decoration:none}
+.trustIcon{flex:none;inline-size:1.4em;block-size:1.4em;margin-block-start:.1em;color:var(--pop)}
+.trustCopy{display:flex;flex-direction:column;gap:var(--air-line);min-inline-size:0}
+.trustTitle{font-size:var(--cardname-size);line-height:var(--cardname-lead);font-weight:var(--cardname-weight);letter-spacing:var(--cardname-track);overflow-wrap:break-word}
+.trustText{font-size:var(--blurb-size);line-height:var(--blurb-lead);font-weight:var(--blurb-weight);letter-spacing:var(--blurb-track);color:var(--ink-dim);overflow-wrap:break-word}
