@@ -1,0 +1,15 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="8.5" y="2.25" width="7" height="19.5" rx="3.5" transform="rotate(45 12 12)"/>
+  <path d="M8.5 12h7" transform="rotate(45 12 12)"/>
+  <path d="M11 5.4v3" transform="rotate(45 12 12)"/>
+</svg>

@@ -31,7 +31,7 @@ export type Fell = { group: Group; why: string }
 /** Старшинство: уступает младшая группа — ручки полки и карты товара раньше
  *  стиля кнопок, стиль кнопок раньше краски галочки, галочка раньше
  *  вида поля, вид поля раньше шрифта, теней, углов, ширины, ритма и цвета. */
-export const ORDER: readonly Group[] = ['palette', 'scale', 'text-size', 'head-size', 'width', 'corners', 'shadow', 'face', 'field', 'field-label', 'tick', 'button', 'pdp-gallery', 'pdp-thumbs', 'pdp-edge', 'seg-look', 'quick-look', 'go-hover', 'say-look', 'pair-look', 'cart-sign', 'cart-meta', 'door-case', 'logo', 'stock-look', 'pager-look', 'filter-look', 'filter-phone', 'save-look', 'nav-current', 'auth-look']
+export const ORDER: readonly Group[] = ['palette', 'scale', 'text-size', 'head-size', 'width', 'corners', 'shadow', 'face', 'field', 'field-label', 'tick', 'button', 'pdp-gallery', 'pdp-thumbs', 'pdp-edge', 'seg-look', 'quick-look', 'go-hover', 'say-look', 'pair-look', 'cart-sign', 'cart-meta', 'door-case', 'logo', 'stock-look', 'pager-look', 'filter-look', 'filter-phone', 'save-look', 'nav-current', 'auth-look', 'cat-look']
 
 type Rgba = readonly [number, number, number, number]
 const THEMES = ['light', 'dark'] as const
@@ -251,10 +251,11 @@ export type Note = { what: string; why: string }
  *  носящиеся с остальными (`settle`). Значения, равные умолчанию стилей
  *  сайта, в блок вида не идут — их и так держат стили. Исключение — слова,
  *  которые читает сервер, чтобы решить разметку (`toneOf`, lib/bands.ts):
- *  подложка секции. Вид сайта выпущен в styles/look.css (опубликованное
+ *  подложка секции и вид кнопок категорий первого экрана (`--cat-look`,
+ *  разметку решает Hero). Вид сайта выпущен в styles/look.css (опубликованное
  *  слово равно умолчанию стилей), и отброшенное как «равное умолчанию» оно
  *  пропадало с главной после пересборки (разбор ритма 03.10.2026). */
-export const READ_BY_SERVER = /^--band-/
+export const READ_BY_SERVER = /^--(band-|cat-look$)/
 export function acceptLook(raw: unknown, slots: Slots, facts: Facts, known: Structure = STRUCTURE): { look: Look; notes: Note[] } {
   const { look, dropped } = acceptValues(raw, slots, known)
   const kept = settle(look.vars, look.fonts, slots, facts)

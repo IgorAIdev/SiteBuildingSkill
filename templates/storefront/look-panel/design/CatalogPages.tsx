@@ -112,7 +112,7 @@ const CONSENT_SAMPLE: StorageRow[] = [
    блок тогда молчит. Образец — на словах страницы «О нас» и снимке первого
    экрана главной: те же данные магазина, в форме блока. */
 const storyOf = (about: Doc | null, image: Extract<Block, { type: 'hero' }>['image'] | null): Extract<Block, { type: 'story' }> | null =>
-  about ? { type: 'story', title: about.title, body: about.sections.map((x) => x.body).join('\n\n'), image } : null
+  about ? { type: 'story', title: about.title, body: about.sections.map((x) => x.body).join('\n\n'), image: image ?? null } : null
 
 export async function CatalogPages({ lang }: { lang: Lang }) {
   const at = (q: Query) => hrefFor(lang, { catalog: true, ...q })

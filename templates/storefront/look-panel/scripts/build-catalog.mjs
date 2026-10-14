@@ -81,9 +81,13 @@ export function copyEngine(kit, site) {
 export const WIDTHS = [1440, 1280, 1600]
 /** Наборы углов — из лестницы набора (M3 ∪ Carbon, SHAPE.radii), взятые из
  *  наборов ритма; вложенность «орган ≤ карточка ≤ лист» держит каждый. */
-const CORNER_NAMES = { '0/0/0/0': 'Square', '4/4/12/16': 'Crisp', '8/8/24/28': 'Standard', '8/8/28/32': 'Round' }
+const CORNER_NAMES = { '0/0/0/0': 'Square', '4/8/12/16': 'Medium', '4/4/12/16': 'Crisp', '8/8/24/28': 'Standard', '8/8/28/32': 'Round' }
 /** Прямой угол — ступень 0 лестницы (SHAPE.radii); ни один набор ритма его не несёт. */
 const SQUARE = { xs: 0, ctrl: 0, card: 0, sheet: 0 }
+/** Средний угол — орган 8, карточка 12, лист 16: середина замеров живых магазинов
+ *  (14.10.2026, 1440: карточка у Charlotte's Web 8, Olipop 16, Allbirds 16–20, Ritual и Glossier 0;
+ *  M3 «medium» — 12). Заведён по слову заказчика: «радиус давай другой, какой стандартный?» */
+const MEDIUM = { xs: 4, ctrl: 8, card: 12, sheet: 16 }
 /** У каждого набора углов — близнец с кнопками полным кругом (`--r-btn` =
  *  `--r-pop`): «Crisp» и «Crisp · pill» и т. д. Угол кнопки — роль формы, и ставит
  *  её та же ручка Corners, что все углы (слово заказчика 04.10.2026: «не реагируют
@@ -249,6 +253,13 @@ export const SAY_LOOKS = [
   { id: 'line', name: 'Line', line: 'A line of text under the form, in the signal colour', vars: { '--say-look': 'line' } },
   { id: 'note', name: 'Note', line: 'A tinted note with a sign: green when done, red on an error (elements 29, 31)', vars: { '--say-look': 'note' } },
 ]
+/** Кнопки категорий первого экрана (слово заказчика 14.10.2026): ряд кнопок со
+ *  знаком в кружке — как в третьей витрине сети — или сетка плиток: знак над
+ *  именем, три в ряд на телефоне (components/CategoryTile.tsx). */
+export const CAT_LOOKS = [
+  { id: 'dot', name: 'Pills', line: 'A row of pills; the sign of the shelf sits in a circle at the end', vars: { '--cat-look': 'dot' } },
+  { id: 'grid', name: 'Grid', line: 'A grid of tiles: the sign over the name, three in a row on a phone', vars: { '--cat-look': 'grid' } },
+]
 /** Краска ссылки «куда ведёт» под рукой (И397): своя (стрелка едет, краска
  *  та же) или марка для текста — элемент 11. */
 export const GO_HOVER = [
@@ -384,6 +395,8 @@ const HEADER_LINES = {
   tray: { name: 'Tray', line: 'cbdin.bg: the promise on a light sheet, the dark row lying across its edge' },
   nested: { name: 'Nested', line: 'cbdin.bg: one light sheet holds the promise and the dark row, a field all round' },
   step: { name: 'Step', line: 'cbdin.bg: a tone sheet, the dark row seated in it with its own shoulders' },
+  /* Своя сборка набора (cbdshop.hr, 14.10.2026): строка шапки — плавающая таблетка. */
+  capsule: { name: 'Capsule', line: 'A floating pill: logo, categories, search and cart in one rounded bar' },
 }
 
 const faceVars = (f) => ({
@@ -522,7 +535,7 @@ export async function buildCatalog({ site, kit }) {
       return { id, name: `${id} px`, line: `Page name ${r.размер.h1[1]} px · sections and price ${r.размер.h2[1]} · subheadings ${r.размер.h3[1]} on a laptop; ${r.размер.h1[0]} · ${r.размер.h2[0]} on a phone`, vars: check('head-size', id, ofGroup('head-size', variables(withKnobs(Object.values(scales)[0], { заголовок: id })))) }
     })),
     width: siteFirst(WIDTHS.map((w) => ({ id: String(w), name: String(w), line: `Canvas ${w} px wide`, vars: check('width', String(w), { '--wrap': `${w}px` }) }))),
-    corners: siteFirst(withPill(Object.values(Object.fromEntries([...Object.values(scales), { ...Object.values(scales)[0], радиус: SQUARE }].map((set) => {
+    corners: siteFirst(withPill(Object.values(Object.fromEntries([...Object.values(scales), { ...Object.values(scales)[0], радиус: SQUARE }, { ...Object.values(scales)[0], радиус: MEDIUM }].map((set) => {
       const key = ['xs', 'ctrl', 'card', 'sheet'].map((k) => set.радиус?.[k]).join('/')
       const name = CORNER_NAMES[key] ?? key
       return [key, { id: name.toLowerCase(), name, rung: set.радиус.card, line: `Controls and buttons ${set.радиус?.ctrl} px · cards ${set.радиус?.card} px · sheets ${set.радиус?.sheet} px`, vars: check('corners', key, ofGroup('corners', variables(set))) }]
@@ -536,6 +549,7 @@ export async function buildCatalog({ site, kit }) {
     ...Object.fromEntries(bandBlocks(site).map((b) => [`band-${b}`, siteFirst(bandOptions(b).map((o) => ({ ...o, vars: check(`band-${b}`, o.id, o.vars) })))])),
     'pair-look': siteFirst(PAIR_LOOKS.map((o) => ({ ...o, vars: check('pair-look', o.id, o.vars) }))),
     'say-look': siteFirst(SAY_LOOKS.map((o) => ({ ...o, vars: check('say-look', o.id, o.vars) }))),
+    'cat-look': siteFirst(CAT_LOOKS.map((o) => ({ ...o, vars: check('cat-look', o.id, o.vars) }))),
     'go-hover': siteFirst(GO_HOVER.map((o) => ({ ...o, vars: check('go-hover', o.id, o.vars) }))),
     star: siteFirst(STAR.map((o) => ({ ...o, vars: check('star', o.id, o.vars) }))),
     ...Object.fromEntries(Object.entries({ ...SHELF, ...PRODUCT_PAGE }).map(([field, list]) => [field, siteFirst(list.map((o) => ({ ...o, vars: check(field, o.id, o.vars) })))])),

@@ -164,7 +164,8 @@ test('brand under the hand, a floor button keeps its ink, the hero is a light ha
   assert.match(hero, /p\.lede\}/, 'герой — примитив «текст и кадр»')
   assert.match(hero, /p\.frame\}/, 'снимок — кадр с потолком')
   assert.doesNotMatch(hero, /data-ground="deck"/, 'тёмной сцены нет: текст на полу страницы')
-  assert.equal((hero.match(/<ul /g) ?? []).length, 1, '«В магазин» и полки — один ряд пути')
+  /* Ряд пути один на вид оси «Кнопки категорий» (14.10.2026): пилюли — `<ul>` с «Shop all» внутри, сетка — «Shop all» над `<ul>` плиток. */
+  assert.equal((hero.match(/<ul /g) ?? []).length, 2, '«В магазин» и полки — один ряд пути в каждом виде: пилюли или сетка')
 })
 
 /* Кнопка порядка — знак и выбранное слово, без подписи на виду и без стрелки

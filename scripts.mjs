@@ -53,6 +53,9 @@ export const SCRIPTS = {
   'shape:stand': 'node tools/shape-stand.mjs',
   'mood:stand': 'node tools/mood-stand.mjs',
   'face:stand': 'node tools/face-stand.mjs',
+  /* Лист шапок: все сборки шапки на данных витрины, ноутбук и телефон — для
+     чата (14.10.2026: вид новой витрины начинается с шапки). */
+  'header:sheet': 'node tools/header-sheet.mjs',
   'palette:stand': 'node tools/palette-stand.mjs',
   'palette:sheet': 'node tools/palette-sheet.mjs',
   'palette:builder': 'node tools/palette-builder.mjs',

@@ -10,6 +10,7 @@ export const HEADERS = [
   'tray', // look-header:tray
   'nested', // look-header:nested
   'step', // look-header:step
+  'capsule', // look-header:capsule
 ] as const
 
 export type HeaderVariant = (typeof HEADERS)[number]

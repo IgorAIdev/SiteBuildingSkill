@@ -56,7 +56,7 @@ export const SECTIONS = [
     { id: 'card', name: 'Card', hint: 'How a product card sits on the shelf. Pictures are square everywhere: on shelves and on the product page.', fields: [['card', 'Product card'], ['pager-look', 'Show more and pages'], ['filter-look', 'Filter on a laptop'], ['filter-phone', 'Filter on a phone'], ['save-look', 'Heart']], place: { page: 'catalog', block: '[data-product-card]' } },
     /* Главная (lib/homes.ts): одежда плиток эффектов; раскладок главной
        на выбор больше нет (И596). */
-    { id: 'home', name: 'Home', hint: 'How the effect tiles on the home page are dressed, and whether their text is capitalised or all capitals. The pictures and names stay the same. Categories stand as buttons on the hero picture.', fields: [['door-case', 'Tile text'], ['home', 'Tiles']], place: { page: 'home', block: '#effects-rail' } },
+    { id: 'home', name: 'Home', hint: 'How the effect tiles on the home page are dressed, and whether their text is capitalised or all capitals. The pictures and names stay the same. Categories stand as buttons on the hero picture.', fields: [['door-case', 'Tile text'], ['cat-look', 'Category buttons'], ['home', 'Tiles']], place: { page: 'home', block: '#effects-rail' } },
     /* Подложка секций главной (И591): строка на каждый блок реестра — список
        приходит из каталога (`bands`), новый блок добавляется сам. */
     { id: 'sections', name: 'Sections', hint: 'The background of each section of the home page: none, a quiet band, the brand tint or the dark tone. Sections appear here by themselves when the shop gets a new one.', fields: [], bands: true, place: { page: 'home', block: 'body' }, page: 'home&s=sections' },

@@ -17,8 +17,10 @@ import type { CartActions } from '../ProductCard.tsx'
  *  кладёт на снимок вариант, у которого герой показывает товар; ходовых
  *  нет — null. `effects` — эффекты для их ряда дверей; источник молчит —
  *  пусто, и ряда нет. `reviews` и `posts` — отзывы и статьи источника
- *  содержания для их лент (И728, И729); молчит источник — пусто, и ленты нет. */
-export type BlockCtx = { lang: Lang; home: HomeVariant; collections: Collection[]; effects: Effect[]; cards: Record<string, ShelfCard>; spotlight: ShelfCard | null; pledges: PledgesView; cart: CartActions; bands: Readonly<Record<string, Tone>>; reviews: Review[]; posts: Post[] }
+ *  содержания для их лент (И728, И729); молчит источник — пусто, и ленты нет.
+ *  `cat` — вид кнопок категорий первого экрана из вида (`--cat-look`):
+ *  `dot` — ряд кнопок со знаком в кружке, `grid` — сетка плиток. */
+export type BlockCtx = { lang: Lang; home: HomeVariant; collections: Collection[]; effects: Effect[]; cards: Record<string, ShelfCard>; spotlight: ShelfCard | null; pledges: PledgesView; cart: CartActions; bands: Readonly<Record<string, Tone>>; reviews: Review[]; posts: Post[]; cat?: 'dot' | 'grid' }
 /** Место блока на главной: воздух над ним — роль примитива `section`
  *  (`data-air`); null — воздух раздела. */
 export type Place = { air: Air | null }

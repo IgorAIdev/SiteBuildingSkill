@@ -220,6 +220,8 @@
    «В магазин» за край первого окна; 30 % — пол снимка первого экрана (И657). В ряду
    потолок прежний, 60 % окна: ширина ряда сверх порога примитива (`--lede-at`)
    раздувает второе слагаемое, и `max()` берёт его — условия по ширине числом нет. */
+.hero[data-bare]{flex-direction:row;--lede-align:start;--lede-stack-align:flex-start}
+.hero[data-bare] > *{max-inline-size:var(--measure-lede)} /* слова и ряд пути — одна колонка: кнопки не уходят правее слов (heroLane) */
 .heroShot{--frame:var(--scene-frame);border-radius:var(--r-sheet);--frame-focus:72% 50%;--frame-cap:min(60svh, max(30svh, (100cqi - var(--lede-at)) * 999))}
 /* Слова: заголовок → абзац — воздух «заголовок → его текст» (И524); слова → ряд
    пути — ритм колонки примитива (`--lede-stack`). */
@@ -228,6 +230,10 @@
    листа; в широкой колонке переносится вторым рядом, в узкой едет вбок одной
    полосой (примитив `rail`, вид `wrap`). */
 .heroShelves{margin:0;padding:0;list-style:none}
+/* Сетка категорий (`--cat-look: grid`): «Shop all» сверху, под ней плитки. */
+.heroNav{inline-size:100%}
+.heroGrid{--stack:var(--air-line);align-items:flex-start}
+.heroGrid > ul{inline-size:100%}
 
 /* look-home:minimal:start */
 /* Opt-in editorial home: one actual featured product, one main action;
@@ -332,7 +338,7 @@
    приглушёнными. Строка-ссылка — вид предмета «строка» (`b.row`, styles/btn.module.css):
    ответ на руку и подложку даёт он, здесь — только раскладка; цель нажатия —
    роль `--ctrl-target` (44 на касании). */
-.trust{--cols:3;--cell-min:200px;--cols-min:1;--grid-gap:var(--gap-row)}
+.trust{--cols:3;--cell-min:200px;--cols-min:1;--grid-gap:var(--gap-row);margin-block:calc(-1 * var(--air-tight))} /* поле строки-ссылки — часть воздуха раздела: видимый воздух до края полосы и подвала равен соседним (bandSeam) */
 .trustRow{display:flex;align-items:flex-start;gap:var(--gap-row);min-inline-size:0;min-block-size:var(--ctrl-target);padding:var(--air-tight) var(--pad-inner);color:var(--ink);text-decoration:none}
 .trustIcon{flex:none;inline-size:1.4em;block-size:1.4em;margin-block-start:.1em;color:var(--pop)}
 .trustCopy{display:flex;flex-direction:column;gap:var(--air-line);min-inline-size:0}
