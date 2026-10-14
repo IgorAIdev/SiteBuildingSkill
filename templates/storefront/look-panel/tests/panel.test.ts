@@ -120,7 +120,7 @@ test('panel sections: every field sits in exactly one sub-tab; System is colour,
   assert.deepEqual(catalog.groups.width.map((o) => o.id).sort(), ['1440', '1280', '1600'].sort(), 'холст по умолчанию — 1440')
   /* У каждого набора углов — близнец «· pill»: кнопки полным кругом (`--r-btn`), остальные
      углы те же (заказчик 04.10.2026: «не реагируют кнопки на настройку панели»). */
-  assert.deepEqual(catalog.groups.corners.map((o) => o.name).sort(), ['Crisp', 'Crisp · pill', 'Round', 'Round · pill', 'Square', 'Square · pill', 'Standard', 'Standard · pill', 'Tight', 'Tight · pill'])
+  assert.deepEqual(catalog.groups.corners.map((o) => o.name).sort(), ['Crisp', 'Crisp · pill', 'Medium', 'Medium · pill', 'Round', 'Round · pill', 'Square', 'Square · pill', 'Standard', 'Standard · pill'])
   for (const o of catalog.groups.corners) assert.equal(o.vars!['--r-btn'], o.id.endsWith('-pill') ? 'var(--r-pop)' : 'var(--r-ctrl)', o.id)
   /* Состав, а не порядок: первым каталог ставит выбор сайта (`siteFirst`). */
   assert.deepEqual(catalog.groups.shadow.map((o) => o.name).sort(), ['Flat', 'Soft', 'Supersoft'])
