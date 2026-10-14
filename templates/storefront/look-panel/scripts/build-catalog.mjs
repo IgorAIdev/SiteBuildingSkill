@@ -81,9 +81,13 @@ export function copyEngine(kit, site) {
 export const WIDTHS = [1440, 1280, 1600]
 /** Наборы углов — из лестницы набора (M3 ∪ Carbon, SHAPE.radii), взятые из
  *  наборов ритма; вложенность «орган ≤ карточка ≤ лист» держит каждый. */
-const CORNER_NAMES = { '0/0/0/0': 'Square', '4/4/12/16': 'Crisp', '8/8/24/28': 'Standard', '8/8/28/32': 'Round' }
+const CORNER_NAMES = { '0/0/0/0': 'Square', '4/8/8/8': 'Tight', '4/4/12/16': 'Crisp', '8/8/24/28': 'Standard', '8/8/28/32': 'Round' }
 /** Прямой угол — ступень 0 лестницы (SHAPE.radii); ни один набор ритма его не несёт. */
 const SQUARE = { xs: 0, ctrl: 0, card: 0, sheet: 0 }
+/** Малый угол — карточка и лист на одной ступени 8, орган не острее. Заведён по слову
+ *  заказчика 14.10.2026 с телефона: «радиус давай меньше, например 6» — 6 нет в лестнице
+ *  (M3 ∪ Carbon: 0, 2, 4, 8, 12 …), ближайшая — 8. */
+const TIGHT = { xs: 4, ctrl: 8, card: 8, sheet: 8 }
 /** У каждого набора углов — близнец с кнопками полным кругом (`--r-btn` =
  *  `--r-pop`): «Crisp» и «Crisp · pill» и т. д. Угол кнопки — роль формы, и ставит
  *  её та же ручка Corners, что все углы (слово заказчика 04.10.2026: «не реагируют
@@ -524,7 +528,7 @@ export async function buildCatalog({ site, kit }) {
       return { id, name: `${id} px`, line: `Page name ${r.размер.h1[1]} px · sections and price ${r.размер.h2[1]} · subheadings ${r.размер.h3[1]} on a laptop; ${r.размер.h1[0]} · ${r.размер.h2[0]} on a phone`, vars: check('head-size', id, ofGroup('head-size', variables(withKnobs(Object.values(scales)[0], { заголовок: id })))) }
     })),
     width: siteFirst(WIDTHS.map((w) => ({ id: String(w), name: String(w), line: `Canvas ${w} px wide`, vars: check('width', String(w), { '--wrap': `${w}px` }) }))),
-    corners: siteFirst(withPill(Object.values(Object.fromEntries([...Object.values(scales), { ...Object.values(scales)[0], радиус: SQUARE }].map((set) => {
+    corners: siteFirst(withPill(Object.values(Object.fromEntries([...Object.values(scales), { ...Object.values(scales)[0], радиус: SQUARE }, { ...Object.values(scales)[0], радиус: TIGHT }].map((set) => {
       const key = ['xs', 'ctrl', 'card', 'sheet'].map((k) => set.радиус?.[k]).join('/')
       const name = CORNER_NAMES[key] ?? key
       return [key, { id: name.toLowerCase(), name, rung: set.радиус.card, line: `Controls and buttons ${set.радиус?.ctrl} px · cards ${set.радиус?.card} px · sheets ${set.радиус?.sheet} px`, vars: check('corners', key, ofGroup('corners', variables(set))) }]
