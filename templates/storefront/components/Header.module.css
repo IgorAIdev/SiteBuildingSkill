@@ -310,7 +310,7 @@
 .board{display:flex;flex-direction:column}
 .util{
   display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);
-  padding:var(--sp-1) var(--pad-card);font-size:var(--ctrl-fs-xs)
+  padding-inline:var(--pad-card);min-block-size:var(--head-strip);font-size:var(--ctrl-fs-xs)
 }
 .row{padding-inline:var(--pad-card) var(--sp-2);border-radius:var(--r-sheet);background:var(--page-deck)}
 .row .nav:is(:popover-open, [data-leaving]){background:var(--page-deck)}
@@ -336,7 +336,6 @@
    часть с одинаковыми радиусами сверху снизу»). Лист отделяет тонкая окантовка, а не тень (слово владельца 14.10.2026:
    «на заливках, тонкой окантовке и фоне страницы»). */
 .head[data-variant='step'] .board{border-radius:var(--r-sheet);background:var(--plate-quiet);border:var(--line-w) solid var(--rule)}
-.head[data-variant='step'] .util{padding-block:var(--sp-2)}
 .head[data-variant='step'] .row{border-radius:calc(var(--r-sheet) - var(--line-w))}
 /* look-header:step:end */
 
