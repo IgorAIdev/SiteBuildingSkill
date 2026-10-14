@@ -1,0 +1,20 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M9.4 2.2h5.2" transform="rotate(45 12 12)"/>
+  <path d="M12 2.2v4" transform="rotate(45 12 12)"/>
+  <path d="M7.8 6.2h8.4" transform="rotate(45 12 12)"/>
+  <rect x="9.4" y="6.2" width="5.2" height="8.2" rx="1" transform="rotate(45 12 12)"/>
+  <path d="M9.4 9.2h2" transform="rotate(45 12 12)"/>
+  <path d="M9.4 11.8h2" transform="rotate(45 12 12)"/>
+  <path d="M11.1 14.4v2.4h1.8v-2.4" transform="rotate(45 12 12)"/>
+  <path d="M12 18.8c-1.6.8 1.6 1.7 0 2.5" transform="rotate(45 12 12)"/>
+</svg>
