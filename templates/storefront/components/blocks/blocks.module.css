@@ -332,7 +332,7 @@
    приглушёнными. Строка-ссылка — вид предмета «строка» (`b.row`, styles/btn.module.css):
    ответ на руку и подложку даёт он, здесь — только раскладка; цель нажатия —
    роль `--ctrl-target` (44 на касании). */
-.trust{--cols:3;--cell-min:200px;--cols-min:1;--grid-gap:var(--gap-row)}
+.trust{--cols:3;--cell-min:200px;--cols-min:1;--grid-gap:var(--gap-row);margin-block:calc(-1 * var(--air-tight))} /* поле строки-ссылки — часть воздуха раздела: видимый воздух до края полосы и подвала равен соседним (bandSeam) */
 .trustRow{display:flex;align-items:flex-start;gap:var(--gap-row);min-inline-size:0;min-block-size:var(--ctrl-target);padding:var(--air-tight) var(--pad-inner);color:var(--ink);text-decoration:none}
 .trustIcon{flex:none;inline-size:1.4em;block-size:1.4em;margin-block-start:.1em;color:var(--pop)}
 .trustCopy{display:flex;flex-direction:column;gap:var(--air-line);min-inline-size:0}

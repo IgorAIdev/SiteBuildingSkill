@@ -331,8 +331,10 @@
 /* look-header:nested:end */
 /* look-header:step:start */
 /* step — лист тихой плашкой, строка прижата к его бокам и сидит в нём
-   своими плечами: верхний угол строки меньше угла листа, стык скруглён. */
-.head[data-variant='step'] .board{border-radius:var(--r-sheet);background:var(--plate-quiet);box-shadow:var(--sh-raised)}
+   своими плечами: верхний угол строки меньше угла листа, стык скруглён.
+   Лист отделяет тонкая окантовка, а не тень (слово владельца 14.10.2026:
+   «на заливках, тонкой окантовке и фоне страницы»). */
+.head[data-variant='step'] .board{border-radius:var(--r-sheet);background:var(--plate-quiet);border:var(--line-w) solid var(--rule)}
 .head[data-variant='step'] .util{padding-block:var(--sp-2)}
 .head[data-variant='step'] .row{border-radius:calc(var(--r-sheet) - var(--pad-inner)) calc(var(--r-sheet) - var(--pad-inner)) var(--r-sheet) var(--r-sheet)}
 /* look-header:step:end */
