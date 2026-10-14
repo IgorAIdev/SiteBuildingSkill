@@ -826,8 +826,21 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
       }
       if (own) continue
       const rg = document.createRange(); rg.selectNodeContents(t)
+      /* Текст в ленте, которую обрезает предок (`overflow`), — содержимое
+         прокрутки, а не буква на краю листа: за обрезкой его не видно, у
+         обрезки он выглядывает по замыслу ленты (14.10.2026, полоса «Небо»:
+         девять «нарушений» -46…-4px были карточками за краем ленты). */
+      const clipped = (b) => {
+        for (let up = host; up && up !== el; up = up.parentElement) {
+          const ucs = getComputedStyle(up)
+          if (ucs.overflowX === 'visible') continue
+          const u = up.getBoundingClientRect()
+          if (b.left < u.left - 0.5 || b.right > u.right + 0.5) return true
+        }
+        return false
+      }
       for (const b of rg.getClientRects()) {
-        if (b.width <= 0) continue
+        if (b.width <= 0 || clipped(b)) continue
         const gap = Math.min(b.left - r.left, r.right - b.right)
         if (gap < near) { near = gap; who = t.nodeValue.trim().slice(0, 24) }
       }
