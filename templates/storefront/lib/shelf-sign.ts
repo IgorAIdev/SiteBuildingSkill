@@ -1,13 +1,17 @@
 /* Знак полки по её имени в движке — пока у коллекций Vendure нет своего
    поля для знака (И422). Выбор заказчика 01.10.2026: масло — пипетка,
    капсулы — капсула, паста — шприц, съедобное — печенье, животные — pets,
-   вейп — вейп-бокс, косметика — дозатор, крема и бальзамы — тюбик. Ключ —
+   вейп — вейп-бокс, косметика — дозатор, крема и бальзамы — тюбик. С 13.10.2026
+   знаки товара — те, что владелец нарисовал по своим образцам (PR набора №142–151): масло — банка
+   с пипеткой, капсулы — банка с капсулой, паста — шприц с пастой, съедобное —
+   шоколадка, животные — собака и кошка, вейп — бокс с дымом, крем — тюбик.
+   Ключ —
    имя коллекции в движке (`slug` без перевода), значение — имя знака в
    листе (`styles/icons.svg`). Читает переходник Vendure
    (`source/vendure/catalog.ts`) и кладёт в `Collection.sign`; дальше знак
    идёт данными — в меню шапки, в кнопки категорий. Поле появится в движке —
    этот файл уйдёт. */
 export const SHELF_SIGN: Record<string, string> = {
-  oil: 'pipette', capsules: 'pill', paste: 'syringe', edibles: 'cookie',
-  pets: 'pets', vape: 'vape', cosmetics: 'soap-dispenser', topicals: 'tube',
+  oil: 'oil-dropper-jar', capsules: 'capsules-jar', paste: 'syringe-paste', edibles: 'chocolate-bar',
+  pets: 'pets-dog-cat', vape: 'vape-mod', cosmetics: 'soap-dispenser', topicals: 'cream-tube',
 }
