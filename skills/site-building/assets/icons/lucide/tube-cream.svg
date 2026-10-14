@@ -9,8 +9,7 @@
   stroke-linecap="round"
   stroke-linejoin="round"
 >
-  <rect x="10.4" y="2.4" width="3.2" height="2.8" rx=".7" transform="rotate(45 12 12)"/>
-  <path d="M9.3 5.2h5.4l1.7 13.9H7.6z" transform="rotate(45 12 12)"/>
-  <path d="M7.3 19.1h9.4v2.5H7.3z" transform="rotate(45 12 12)"/>
-  <path d="M9.7 10.4h4.6" transform="rotate(45 12 12)"/>
+  <path d="M9.3 5.2h5.4l1.7 13.9H7.6z" transform="translate(1.7 -1.7) rotate(45 12 12)"/>
+  <path d="M7.3 19.1h9.4v2.5H7.3z" transform="translate(1.7 -1.7) rotate(45 12 12)"/>
+  <path d="M9.7 10.4h4.6" transform="translate(1.7 -1.7) rotate(45 12 12)"/>
 </svg>
