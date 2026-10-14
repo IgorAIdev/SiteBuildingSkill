@@ -6,6 +6,8 @@ import { t } from '@/lib/i18n/index.ts'
 import type { BlockCtx, Place } from './types.ts'
 import { shot } from '@/lib/shot.ts'
 import { CategoryButton } from '../CategoryButton.tsx'
+import { CategoryTile } from '../CategoryTile.tsx'
+import cat from '../CategoryTile.module.css'
 import { heroShelves } from '@/lib/hero-shelves.ts'
 import { MinimalHero } from './MinimalHero.tsx' // look-home:minimal
 import { SportHero } from './SportHero.tsx' // look-home:sport
@@ -60,11 +62,20 @@ export function Hero({ block, ctx }: Props) {
           <h1>{block.title}</h1>
           <p>{block.lede}</p>
         </div>
-        <nav aria-label={t(ctx.lang, 'nav.categories')}>
-          <ul className={`${p.rail} ${s.heroShelves}`} data-rail="wrap">
-            <li><CategoryButton name={t(ctx.lang, 'nav.shopAll')} sign="shop-awning" href={hrefFor(ctx.lang, { catalog: true })} /></li>
-            {shelves.map((c) => <li key={c.slug}><CategoryButton quiet name={c.name} sign={c.sign} href={hrefFor(ctx.lang, { category: c.slug })} /></li>)}
-          </ul>
+        <nav aria-label={t(ctx.lang, 'nav.categories')} className={ctx.cat === 'grid' ? s.heroNav : undefined}>
+          {ctx.cat === 'grid' ? (
+            <div className={`${p.stack} ${s.heroGrid}`}>
+              <CategoryButton name={t(ctx.lang, 'nav.shopAll')} sign="shop-awning" href={hrefFor(ctx.lang, { catalog: true })} />
+              <ul className={cat.grid}>
+                {shelves.map((sh) => <li key={sh.slug}><CategoryTile name={sh.name} sign={sh.sign} href={hrefFor(ctx.lang, { category: sh.slug })} /></li>)}
+              </ul>
+            </div>
+          ) : (
+            <ul className={`${p.rail} ${s.heroShelves}`} data-rail="wrap">
+              <li><CategoryButton name={t(ctx.lang, 'nav.shopAll')} sign="shop-awning" href={hrefFor(ctx.lang, { catalog: true })} /></li>
+              {shelves.map((c) => <li key={c.slug}><CategoryButton quiet name={c.name} sign={c.sign} href={hrefFor(ctx.lang, { category: c.slug })} /></li>)}
+            </ul>
+          )}
         </nav>
       </div>
     </section>

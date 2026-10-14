@@ -76,6 +76,7 @@ export const PRODUCT = {
   '--cart-meta': { type: 'keyword', value: 'count' },
   '--nav-current': { type: 'keyword', value: 'line' },
   '--door-case': { type: 'keyword', value: 'none' },
+  '--cat-look': { type: 'keyword', value: 'dot' },
   ...bands,
 }
 /* Роли тени — по работе (И228): предмет в покое, подъём под рукой,

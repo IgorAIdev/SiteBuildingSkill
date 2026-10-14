@@ -1,0 +1,19 @@
+/* Плитка категории (CategoryTile.tsx). Число колонок считает сетка по месту
+   (`auto-fit`, правило 5): на телефоне в 358 помещается три, на 328 — тоже; на
+   широкой — сколько влезет в колонку текста. Форма — `--r-card` ролью, кромка —
+   линия листа. */
+.grid{margin:0;padding:0;list-style:none;display:grid;gap:var(--gap-targets);grid-template-columns:repeat(auto-fit, minmax(6rem, 1fr));max-inline-size:36rem}
+.tile{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--air-tight);
+  block-size:100%;padding:var(--pad-card) var(--pad-inner);
+  border:var(--line-w) solid var(--rule);border-radius:var(--r-card);
+  background:var(--plate-quiet);color:var(--ink);text-align:center;text-decoration:none
+}
+.sign{inline-size:2.25rem;block-size:2.25rem;color:var(--pop);flex:none}
+.name{font-size:var(--ctrl-fs-sm);line-height:1.25;overflow-wrap:anywhere;text-wrap:balance}
+.name::first-letter{text-transform:uppercase}
+@media (hover:hover){
+  .tile:hover{border-color:var(--pop)}
+}
+.tile:active{border-color:var(--pop)}
+.tile:focus-visible{outline:var(--ring-w) solid var(--ring);outline-offset:var(--ring-off)}

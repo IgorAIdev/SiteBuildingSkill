@@ -230,6 +230,10 @@
    листа; в широкой колонке переносится вторым рядом, в узкой едет вбок одной
    полосой (примитив `rail`, вид `wrap`). */
 .heroShelves{margin:0;padding:0;list-style:none}
+/* Сетка категорий (`--cat-look: grid`): «Shop all» сверху, под ней плитки. */
+.heroNav{inline-size:100%}
+.heroGrid{--stack:var(--air-line);align-items:flex-start}
+.heroGrid > ul{inline-size:100%}
 
 /* look-home:minimal:start */
 /* Opt-in editorial home: one actual featured product, one main action;

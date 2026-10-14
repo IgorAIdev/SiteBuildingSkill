@@ -3099,6 +3099,10 @@ async function visit(path, w, { finger, dark = false }) {
         const b = el.getBoundingClientRect()
         if (!b.width) continue
         if (b.right > c.right + 1 || b.left < c.left - 1) out.push(`«${el.textContent.trim().slice(0, 24)}» ${Math.round(b.left)}…${Math.round(b.right)} при колонке текста ${Math.round(c.left)}…${Math.round(c.right)}: кнопка героя вышла из колонки на снимок`)
+        /* Плитка категории (`data-tile`, components/CategoryTile.tsx) — не кнопка ряда, а
+           своя вещь вида «сетка девяти» (14.10.2026): знак над именем, рост у неё свой.
+           Колонку текста она держит так же (проверка выше), ростом не меряется. */
+        if (el.hasAttribute('data-tile')) continue
         const h = Math.round(b.height)
         if (!tall.has(h)) tall.set(h, el.textContent.trim().slice(0, 24))
       }

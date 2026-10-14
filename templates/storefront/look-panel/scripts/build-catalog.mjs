@@ -253,6 +253,13 @@ export const SAY_LOOKS = [
   { id: 'line', name: 'Line', line: 'A line of text under the form, in the signal colour', vars: { '--say-look': 'line' } },
   { id: 'note', name: 'Note', line: 'A tinted note with a sign: green when done, red on an error (elements 29, 31)', vars: { '--say-look': 'note' } },
 ]
+/** Кнопки категорий первого экрана (слово заказчика 14.10.2026): ряд кнопок со
+ *  знаком в кружке — как в третьей витрине сети — или сетка плиток: знак над
+ *  именем, три в ряд на телефоне (components/CategoryTile.tsx). */
+export const CAT_LOOKS = [
+  { id: 'dot', name: 'Pills', line: 'A row of pills; the sign of the shelf sits in a circle at the end', vars: { '--cat-look': 'dot' } },
+  { id: 'grid', name: 'Grid', line: 'A grid of tiles: the sign over the name, three in a row on a phone', vars: { '--cat-look': 'grid' } },
+]
 /** Краска ссылки «куда ведёт» под рукой (И397): своя (стрелка едет, краска
  *  та же) или марка для текста — элемент 11. */
 export const GO_HOVER = [
@@ -542,6 +549,7 @@ export async function buildCatalog({ site, kit }) {
     ...Object.fromEntries(bandBlocks(site).map((b) => [`band-${b}`, siteFirst(bandOptions(b).map((o) => ({ ...o, vars: check(`band-${b}`, o.id, o.vars) })))])),
     'pair-look': siteFirst(PAIR_LOOKS.map((o) => ({ ...o, vars: check('pair-look', o.id, o.vars) }))),
     'say-look': siteFirst(SAY_LOOKS.map((o) => ({ ...o, vars: check('say-look', o.id, o.vars) }))),
+    'cat-look': siteFirst(CAT_LOOKS.map((o) => ({ ...o, vars: check('cat-look', o.id, o.vars) }))),
     'go-hover': siteFirst(GO_HOVER.map((o) => ({ ...o, vars: check('go-hover', o.id, o.vars) }))),
     star: siteFirst(STAR.map((o) => ({ ...o, vars: check('star', o.id, o.vars) }))),
     ...Object.fromEntries(Object.entries({ ...SHELF, ...PRODUCT_PAGE }).map(([field, list]) => [field, siteFirst(list.map((o) => ({ ...o, vars: check(field, o.id, o.vars) })))])),

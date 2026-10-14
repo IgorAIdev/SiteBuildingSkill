@@ -31,6 +31,7 @@
 - [Category buttons: pills, one bright](./category-buttons-pill-brand.md) — always pills (exception to Corners); hero row since 08.10.2026: only «Shop all» brand-filled, shelves quiet; variants A/B/C drawn
 - [Header first, «Step» without a shadow](./header-first-step-no-shadow.md) — a new look starts with the header (all builds pictured + one invented); Step edged by a hairline; top strip = tap target; phone row: menu+logo start, signs end (14.10.2026)
 - [Corners «Medium»](./corners-standard-medium.md) — control 8 · card 12 · sheet 16, measured on live shops; 6 is off the ladder; radii only as tokens (14.10.2026)
+- [Category buttons: pills or a grid of nine](./category-buttons-grid.md) — panel axis `cat-look`: `dot` (default) or `grid` (sign over the name, tiles); cbdshop.hr took the grid (14.10.2026)
 - [Category signs at 45°](./signs-45-degrees.md) — one thing + one detail, no jars; nine shelves = nine signs in the sheet and the design-system gallery (14.10.2026)
 - [One window, one sheet](./one-pane-one-sheet.md) — menu/filters/cart share deck header + one white sheet + one foot pair (quiet left, loud right); no per-window tones or grey controls; menu foot = icon buttons + language on one plate (05.10.2026, И772)
 - [Window foot + swipe](./pane-foot-and-swipe.md) — foot buttons always whole, never scroll; every sheet closes by swipe incl. from the dim strip; owner phone 360 css px; tested with a real finger (08.10.2026, И781)

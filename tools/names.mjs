@@ -176,6 +176,7 @@ const ROLE = [
   { rx: /^--(cart-sign|cart-meta|logo|nav-current)$/, family: 'шапка: знак корзины, сумма у корзины, знак магазина, отметка текущего раздела', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--pair-look$/, family: 'вид пары «поле и кнопка»', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--say-look$/, family: 'вид сообщения формы', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
+  { rx: /^--cat-look$/, family: 'вид кнопок категорий на первом экране', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--door-case$/, family: 'регистр имени на плашке категории главной', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--go-hover$/, family: 'краска ссылки «куда ведёт» под рукой', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--seg-look$/, family: 'вид сегментов выбора', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },

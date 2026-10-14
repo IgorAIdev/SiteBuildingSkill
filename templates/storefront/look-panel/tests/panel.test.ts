@@ -79,7 +79,7 @@ test('panel sections: every field sits in exactly one sub-tab; System is colour,
      одежды, по порядку; первая, нынешняя, — умолчание. */
   assert.deepEqual(catalog.groups.home.map((o) => o.id), [...HOMES])
   /* Раскладок главной и знаков на фишках в панели нет (И596): во вкладке — регистр имени и одежда. */
-  assert.deepEqual(SECTIONS[1].subs.find((s) => s.id === 'home')!.fields.map((f) => f[0]), ['door-case', 'home'])
+  assert.deepEqual(SECTIONS[1].subs.find((s) => s.id === 'home')!.fields.map((f) => f[0]), ['door-case', 'cat-look', 'home'])
   assert.deepEqual(catalog.groups['door-case'].map((o) => o.id), ['sentence', 'caps'])
   assert.equal(catalog.groups['chip-sign'], undefined)
   /* Подложка секций (И591): строки — из каталога, по одной на блок реестра; у каждой четыре слова. */

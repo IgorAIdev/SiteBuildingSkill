@@ -49,7 +49,7 @@ export default async function Home({ params }: Props) {
      главная стоит. */
   const shelf: BlockCtx['cards'] = Object.fromEntries(cards.value.map((c) => [c.id, shelfCard(lang, c)]))
   const ctx: BlockCtx = {
-    lang, home: look.home, collections: cols.value, effects: effects.ok ? effects.value : [], pledges, cart: { submit: cartSubmit, call: cartCall }, cards: shelf,
+    lang, home: look.home, cat: look.vars['--cat-look'] === 'grid' ? 'grid' : 'dot', collections: cols.value, effects: effects.ok ? effects.value : [], pledges, cart: { submit: cartSubmit, call: cartCall }, cards: shelf,
     spotlight: ids.map((id) => shelf[id]).find(Boolean) ?? null,
     bands: Object.fromEntries(page.value.blocks.map((b) => [b.type, toneOf(look.vars, b.type)])),
     reviews: reviews.ok ? reviews.value : [], posts: posts.ok ? posts.value : [],

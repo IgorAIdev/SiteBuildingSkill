@@ -188,6 +188,8 @@
       if (field === 'say-look') return el('span', { class: 'lp-say', 'data-at': o.vars['--say-look'], 'aria-hidden': 'true' }, [el('i'), el('b')])
       /* Шапка cbdin (И430): знак корзины, сумма у корзины. */
       if (field === 'cart-sign') return el('span', { class: 'lp-go', 'aria-hidden': 'true', text: o.vars['--cart-sign'] === 'bag' ? '👜' : '🛒' })
+      /* Кнопки категорий главной (14.10.2026): ряд пилюль или сетка плиток. */
+      if (field === 'cat-look') return el('span', { class: 'lp-go', 'aria-hidden': 'true', text: o.vars['--cat-look'] === 'grid' ? '▦' : '◖◗' })
       if (field === 'door-case') return el('span', { class: 'lp-go', 'aria-hidden': 'true', text: o.vars['--door-case'] === 'uppercase' ? 'AA' : 'Aa' })
       if (field === 'cart-meta') return el('span', { class: 'lp-go', 'aria-hidden': 'true', text: o.vars['--cart-meta'] === 'sum' ? '2 · €45' : '2' })
       /* Ссылка под рукой (И397): стрелка краской варианта. */
