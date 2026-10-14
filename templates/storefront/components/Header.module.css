@@ -183,7 +183,7 @@
    полки, так воздух меряется между словами, как шаг полок (И543). Шаг
    полок — воздух группы (24–36; семь магазинов исследования — 24–34, бриф
    docs/design/шапка.md). */
-.head[data-variant='classic'] .logo{margin-inline-end:calc(var(--air-block) - var(--gap-row) - var(--sp-2))} /* look-header:classic */
+.head:is([data-variant='classic'], [data-variant='capsule']) .logo{margin-inline-end:calc(var(--air-block) - var(--gap-row) - var(--sp-2))} /* look-header:classic,capsule */
 /* Полки уехали за край — край строки гаснет, пока дальше есть полки: иначе
    спрятанную полку не видно. Гаснет по прокрутке самой строки; строка не
    едет (все полки видны) — прокрутки нет, и края не трогает ничто. */
@@ -264,6 +264,16 @@
 /* Язык — переключатель LangSwitch (сегменты примитива, И479): своего
    рисунка у шапки нет. */
 
+/* look-header:capsule:start */
+/* capsule — строка шапки лежит таблеткой: у шапки нет своей полосы и волоска,
+   таблетка — поверхность страницы с волоском по кругу (форма — угол кнопки
+   `--r-btn`: полный круг у вида «· pill»). Отметка «текущая страница» — только
+   краской слова (`--nav-current: word`): черта по нижнему волоску шапки лежала
+   бы мимо таблетки. Тени нет — возвышение держит волосок. */
+.head[data-variant='capsule']{background:none;border-block-end:0;--nav-current:word}
+.capsuleWrap{padding-block:var(--sp-2)}
+.capsule{background:var(--surface);border:var(--line-w) solid var(--rule);border-radius:var(--r-btn);padding-inline:var(--pad-inner)}
+/* look-header:capsule:end */
 /* look-header:search:start */
 /* ── search: полоса обещания, широкий поиск, полки второй строкой ─────── */
 .field{flex:1 1 auto;min-inline-size:0;margin-inline:var(--air-block)}
@@ -328,7 +338,7 @@
 /* look-header:step:end */
 
 /* Кнопка меню — только там, где полок в строке нет: на узкой коробке. */
-.menu{display:none} /* look-header:classic,search,tray,nested,step */
+.menu{display:none} /* look-header:classic,search,tray,nested,step,capsule */
 
 /* ── Узкая коробка: одна строка — знак, поиск, корзина, меню ──────────── */
 @container (max-width:819px){
@@ -341,7 +351,7 @@
   .contact,.account{display:none}
   .topRow{grid-template-columns:var(--ctrl-target) minmax(0,1fr) var(--ctrl-target);gap:var(--sp-1)}
   .promo{grid-column:2;justify-self:center}
-  /* look-header:classic,search,tray,nested,step:start */
+  /* look-header:classic,search,tray,nested,step,capsule:start */
   /* Меню — первым в строке, у начального края (слово заказчика 05.10.2026:
      «мобилка, меню перенеси к левому краю»; И753). Рамка — рост органа, как
      у знаков действий; на вертикали полей страницы стоит знак, а не рамка:
@@ -350,7 +360,7 @@
      375 — знак меню 24 на поле 30). Дальше поля окна (`--gut`) рамка не
      уходит: на узком поле она не выезжает за край экрана. */
   .menu{display:inline-flex;min-block-size:var(--ctrl-h);min-inline-size:var(--ctrl-h);margin-inline-start:max((var(--glyph-h) - var(--ctrl-h)) / 2, -1 * var(--gut))}
-  /* look-header:classic,search,tray,nested,step:end */
+  /* look-header:classic,search,tray,nested,step,capsule:end */
   .util .topLinks,.util .topLanguage{display:none} /* look-header:tray,nested,step */
   .util{justify-content:center} /* look-header:tray,nested,step */
   .head[data-variant='tray'] .row{margin-block-start:0} /* look-header:tray */

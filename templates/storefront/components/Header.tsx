@@ -73,13 +73,13 @@ const topRow = (lang: Lang, top: TopBar) => (
     <div className={s.topTools}>{tools(lang)}</div>
   </>
 )
-/* look-header:classic,search,boutique:start */
+/* look-header:classic,search,boutique,capsule:start */
 /* Верхняя полоса — пол шапки, отбита волоском (И703): палубу марки она носила
    один день (И697, п. 2) и снята словом заказчика 04.10.2026: «верхнее меню —
    верни цвет, который был». */
 const topBar = (lang: Lang, top: TopBar) => <div className={s.top}><div className={`${p.wrap} ${s.topRow}`}>{topRow(lang, top)}</div></div>
-/* look-header:classic,search,boutique:end */
-/* look-header:classic,boutique,tray,nested,step:start */
+/* look-header:classic,search,boutique,capsule:end */
+/* look-header:classic,boutique,tray,nested,step,capsule:start */
 /* Поиск — окном сверху (SearchPane, И539), контакты и избранное — знаками
    рядом с корзиной, как «Пишете ни», «Запазени» у cbdin.bg (слово заказчика
    28.09.2026). Контакты на узкой коробке уходят в шторку меню — там они
@@ -109,10 +109,10 @@ const reach = (lang: Lang, nav: Menu) => (
     <AccountLink lang={lang} label={t(lang, 'nav.account')} />
   </>
 )
-/* look-header:classic,boutique,tray,nested,step:end */
-/* look-header:classic,search,tray,nested,step:start */
+/* look-header:classic,boutique,tray,nested,step,capsule:end */
+/* look-header:classic,search,tray,nested,step,capsule:start */
 const menu = (lang: Lang, nav: Menu) => <button className={`${s.glyph} ${s.menu}`} type="button" popoverTarget={`${nav.at}site-menu`} aria-label={t(lang, 'nav.menu')}><Icon id="menu" /></button>
-/* look-header:classic,search,tray,nested,step:end */
+/* look-header:classic,search,tray,nested,step,capsule:end */
 /* Шторка полок — от начального края у всех вариантов: кнопка меню стоит там
    (И753), шторка выезжает из-под неё, как у cbdin.bg. Групп «по поводу» под
    полками нет: они повторяли грани масел (слово заказчика 05.10.2026: «там
@@ -147,6 +147,28 @@ const classic = (lang: Lang, nav: Menu) => (
   </header>
 )
 /* look-header:classic:end */
+
+/* look-header:capsule:start */
+/* capsule — та же строка, что у classic (знак, полки рядом, справа поиск,
+   контакты, корзина), но лежащая плавающей таблеткой: шапка без своей полосы,
+   таблетка — поверхность с волоском по кругу. Верхняя строка с обещанием над
+   ней, как у остальных (бриф docs/design/хорватская-витрина.md, «Шапка»). */
+const capsule = (lang: Lang, nav: Menu) => (
+  <header className={s.head} data-variant="capsule" data-print="skip">
+    {topBar(lang, nav.top)}
+    <div className={`${p.wrap} ${s.capsuleWrap}`}>
+      <div className={`${s.bar} ${s.capsule}`}>
+        {menu(lang, nav)}
+        {logo(lang)}
+        {shelves(lang, nav, t(lang, 'nav.menu'))}
+        <div className={s.actions}>
+          {find(lang, nav)}{reach(lang, nav)}{cart(lang, false)}
+        </div>
+      </div>
+    </div>
+  </header>
+)
+/* look-header:capsule:end */
 
 /* look-header:search:start */
 /* search — полоса обещания магазина с языком; строка знака, широкого
@@ -226,6 +248,7 @@ const DRAW: Record<HeaderVariant, (lang: Lang, nav: Menu) => ReactNode> = {
   tray, // look-header:tray
   nested, // look-header:nested
   step, // look-header:step
+  capsule, // look-header:capsule
 }
 
 export function Header({ lang, nav, service, top, variant, idPrefix = '' }: Props) {

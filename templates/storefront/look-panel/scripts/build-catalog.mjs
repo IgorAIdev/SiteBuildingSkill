@@ -384,6 +384,8 @@ const HEADER_LINES = {
   tray: { name: 'Tray', line: 'cbdin.bg: the promise on a light sheet, the dark row lying across its edge' },
   nested: { name: 'Nested', line: 'cbdin.bg: one light sheet holds the promise and the dark row, a field all round' },
   step: { name: 'Step', line: 'cbdin.bg: a tone sheet, the dark row seated in it with its own shoulders' },
+  /* Своя сборка набора (cbdshop.hr, 14.10.2026): строка шапки — плавающая таблетка. */
+  capsule: { name: 'Capsule', line: 'A floating pill: logo, categories, search and cart in one rounded bar' },
 }
 
 const faceVars = (f) => ({

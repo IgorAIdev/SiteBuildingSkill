@@ -33,7 +33,7 @@ const listOf = (text, name) => [...(text.match(new RegExp(`${name} = \\[([\\s\\S
 const hash = (p) => createHash('sha256').update(readFileSync(p)).digest('hex')
 
 /** Варианты разметки, которые шаблон держит, — храповик: убыть им нельзя. */
-const HEADERS = ['classic', 'search', 'boutique', 'tray', 'nested', 'step']
+const HEADERS = ['classic', 'search', 'boutique', 'tray', 'nested', 'step', 'capsule']
 const CARDS = ['inset', 'framed', 'sheet', 'edged']
 const PANEL = ['PANEL.md', 'ui/look.js', 'ui/look.css', 'ui/choice.mjs', 'routes/index.ts', 'scripts/build-catalog.mjs',
   'scripts/fonts.mjs', 'scripts/check-choice.mjs', 'scripts/remove.mjs', 'scripts/pairs.mjs', 'tests/panel.test.ts']
