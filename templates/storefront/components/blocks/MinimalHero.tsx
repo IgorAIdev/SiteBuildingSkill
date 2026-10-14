@@ -28,7 +28,7 @@ export function MinimalHero({ block, ctx }: { block: Extract<Block, { type: 'her
         </nav>
       </div>
       <div className={`${p.stack} ${s.minimalProduct}`}>
-        <div className={`${p.frame} ${s.minimalShot}`}><img {...shot(image, 'stage')} alt={product?.name ?? image.alt} fetchPriority="high" /></div>
+        {image ? <div className={`${p.frame} ${s.minimalShot}`}><img {...shot(image, 'stage')} alt={product?.name ?? image.alt} fetchPriority="high" /></div> : null}
         {product ? <a className={`${go.go} ${s.minimalCaption}`} href={product.href}><span>{product.name}</span><span>{product.price}</span><Icon id="arrow-right" className={go.to} /></a> : null}
       </div>
     </section>

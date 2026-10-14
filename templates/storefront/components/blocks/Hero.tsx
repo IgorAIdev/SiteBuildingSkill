@@ -49,10 +49,12 @@ export function Hero({ block, ctx }: Props) {
   if (ctx.home === 'sport') return <SportHero block={block} ctx={ctx} />
   /* look-home:sport:end */
   return (
-    <section className={`${p.wrap} ${p.lede} ${s.hero}`} data-scene="hero">
-      <div className={`${p.frame} ${s.heroShot}`}>
-        <img {...shot(block.image, 'wide')} alt={block.image.alt} fetchPriority="high" />
-      </div>
+    <section className={`${p.wrap} ${p.lede} ${s.hero}`} data-scene="hero" data-bare={block.image ? undefined : ''}>
+      {block.image ? (
+        <div className={`${p.frame} ${s.heroShot}`}>
+          <img {...shot(block.image, 'wide')} alt={block.image.alt} fetchPriority="high" />
+        </div>
+      ) : null}
       <div className={p.ledeText}>
         <div className={`${p.stack} ${s.heroWords}`}>
           <h1>{block.title}</h1>

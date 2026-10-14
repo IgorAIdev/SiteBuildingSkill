@@ -220,6 +220,8 @@
    «В магазин» за край первого окна; 30 % — пол снимка первого экрана (И657). В ряду
    потолок прежний, 60 % окна: ширина ряда сверх порога примитива (`--lede-at`)
    раздувает второе слагаемое, и `max()` берёт его — условия по ширине числом нет. */
+.hero[data-bare]{flex-direction:row;--lede-align:start;--lede-stack-align:flex-start}
+.hero[data-bare] > *{max-inline-size:var(--measure-lede)} /* слова и ряд пути — одна колонка: кнопки не уходят правее слов (heroLane) */
 .heroShot{--frame:var(--scene-frame);border-radius:var(--r-sheet);--frame-focus:72% 50%;--frame-cap:min(60svh, max(30svh, (100cqi - var(--lede-at)) * 999))}
 /* Слова: заголовок → абзац — воздух «заголовок → его текст» (И524); слова → ряд
    пути — ритм колонки примитива (`--lede-stack`). */
