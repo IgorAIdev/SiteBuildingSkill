@@ -331,12 +331,13 @@
 /* look-header:nested:end */
 /* look-header:step:start */
 /* step — лист тихой плашкой, строка прижата к его бокам и сидит в нём
-   своими плечами: верхний угол строки меньше угла листа, стык скруглён.
-   Лист отделяет тонкая окантовка, а не тень (слово владельца 14.10.2026:
+   своими плечами. Углы строки одинаковы сверху и снизу и концентричны углу
+   листа за вычетом его линии (слово владельца 14.10.2026 с телефона: «синяя
+   часть с одинаковыми радиусами сверху снизу»). Лист отделяет тонкая окантовка, а не тень (слово владельца 14.10.2026:
    «на заливках, тонкой окантовке и фоне страницы»). */
 .head[data-variant='step'] .board{border-radius:var(--r-sheet);background:var(--plate-quiet);border:var(--line-w) solid var(--rule)}
 .head[data-variant='step'] .util{padding-block:var(--sp-2)}
-.head[data-variant='step'] .row{border-radius:calc(var(--r-sheet) - var(--pad-inner)) calc(var(--r-sheet) - var(--pad-inner)) var(--r-sheet) var(--r-sheet)}
+.head[data-variant='step'] .row{border-radius:calc(var(--r-sheet) - var(--line-w))}
 /* look-header:step:end */
 
 /* Кнопка меню — только там, где полок в строке нет: на узкой коробке. */
@@ -374,6 +375,21 @@
   .field{order:1;flex-basis:100%;margin-inline:0}
   /* look-header:search:end */
 }
+
+/* look-header:tray,nested,step:start */
+/* Синяя строка на телефоне — пять равных промежутков: меню, знак, поиск,
+   избранное, корзина (слово владельца 14.10.2026 с телефона: «значки
+   неравномерно распределены, корзина вылазит»). Знаки действий встают в строку
+   сами (`display:contents`), поля строки с обеих сторон равны, между всеми пятью
+   — одинаковый воздух (`space-between`). Пять боксов 40 и знак 101 — 261 px:
+   на 320 в строке 276 — поля `--sp-1`, а не поле карточки. */
+@container (max-width:559px){
+  .row{justify-content:space-between;padding-inline:var(--sp-1);gap:0}
+  .row .menu{margin-inline-start:0}
+  .row .logo{margin-inline-end:0}
+  .row .actions{display:contents}
+}
+/* look-header:tray,nested,step:end */
 
 /* ── Шторка меню ─────────────────────────────────────────────────────────
    Коробка шторки — окно общего модуля (styles/pane.module.css, И467): край
