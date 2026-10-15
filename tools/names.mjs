@@ -64,7 +64,8 @@ export const CONCEPTS = {
   control: ['ctrl', 'chan', 'chip', 'tab', 'dock', 'edge',
     /* ручка окна за пальцем (`--grab-size`, `--grab-w`, И494) */
     'grab'],
-  layout: ['wrap', 'gut', 'head', 'anchor', 'float', 'chrome', 'tile'],
+  /* ширина боковой колонки (`--col-narrow|side|wide`, слой 8, набор шкал) */
+  layout: ['wrap', 'gut', 'head', 'anchor', 'float', 'chrome', 'tile', 'col'],
 }
 export const MODIFIERS = new Set([
   'soft', 'quiet', 'hover', 'press', 'solid', 'fill', 'tint', 'line', 'ink', 'on', 'bg', 'fg', 'active', 'dim',
@@ -73,7 +74,7 @@ export const MODIFIERS = new Set([
   't', 'edge', 'head', 'inset', 'gut', 'stuck', 'look', 'fold', 'btn', 'top', 'mark', 'stack', 'targets', 'row',
   'grid', 'band', 'block', 'group', 'tight', 'lede', 'note', 'cell', 'in', 'off', 'act', 'fit', 'side', 'above', 'at', 'bias',
   'uri', 'lift', 'select', 'search', 'plate', 'bleed', 'hand', 'cap', 'slope', 'md', 'lg', 'target',
-  'ctrl', 'pop', 'raised', 'overlay', 'strong', 'exit', 'case', 'r', 'sh', 'intro', 'pos',
+  'ctrl', 'pop', 'raised', 'overlay', 'strong', 'exit', 'case', 'r', 'sh', 'intro', 'pos', 'narrow', 'wide',
   /* форма главной кнопки (И276): вырез, остриё, выемка, эхо-шеврон */
   'clip', 'tip', 'notch', 'echo', 'trail', 'stop',
   /* выравнивание колонок `sidebar` (`--side-align`): ручку примитив читал

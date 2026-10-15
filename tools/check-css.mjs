@@ -2136,6 +2136,15 @@ for (const file of files) {
   if (EXEMPT.includes(rel)) continue
   const at = (i) => `${rel}:${css.slice(0, i).split('\n').length}`
 
+  /* Ширина боковой колонки — роль набора (`--col-narrow|side|wide`, слой 8), а не число в узле:
+     `--side-w: 22rem` — три разных решения на странице без общего слова. Умолчание ручки лежит в
+     `primitives.module.css` (исключён); ручка от роста органа (`calc(var(--ctrl-h) * 3.5)`) — не число. */
+  if (!rel.endsWith('primitives.module.css')) {
+    for (const m of css.matchAll(/(?<![-\w])--side-w\s*:\s*([^;}]+)/g)) {
+      if (/^\s*-?[\d.]+(?:px|rem|em|%)\s*$/.test(m[1])) found.sideLiteral.push(`${at(m.index)}  --side-w: ${m[1].trim()} — возьмите --col-narrow | --col-side | --col-wide`)
+    }
+  }
+
   for (const m of css.matchAll(/(?<![-a-z])transition(?:-property)?\s*:\s*([^;}]+)/g)) {
     const value = m[1]
     /* по частям: `transition: width .45s ease, background .2s ease` */
