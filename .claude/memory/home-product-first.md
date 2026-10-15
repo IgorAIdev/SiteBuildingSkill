@@ -13,3 +13,5 @@ On a shop homepage the product comes first. A row of trust claims (lab certifica
 **Why:** the buyer came for goods; policy words above the shelves read as the shop talking about itself. "Proof-first" is what supplement brands (Ritual, Seed, Endoca) do, but the owner overrode it for his shop. His call beats a researched pattern.
 
 **How to apply:** when composing or reordering a home page (template storefront, CBD shop), put hero → choice by need/effect → product shelves first; trust/proof blocks after the products, before the footer. Do not "improve" this by moving proof up because the best stores do. Choice-by-effect tiles are product choice, not trust, and may stay under the hero. Related: [[best-examples-not-local]], [[variants-in-chat]].
+
+**Amended 15.10.2026 (owner, cbdshop.hr):** order is now hero, a thin trust strip (lab, returns) under the hero, effects, best sellers, «New to CBD?» quiz, category shelves, reviews, FAQ; the old «trust last» no longer holds. See `apps/storefront4/docs/owner-decisions/home-product-first.md` in CBD_ecommerce_eu.
