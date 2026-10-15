@@ -122,6 +122,10 @@ export const at = ([min, max], [wMin, wMax], width) => {
  *                (Carbon: «margins … fixed … even when columns are fluid»),
  *                растёт не больше LAYOUT.edgeGrowth (люкс ×1…1.75,
  *                Atlassian ×2, Utopia ×2.2);
+ *   колонка    — роль → rem: ширина боковой колонки рядом с основной
+ *                (`--col-narrow|side|wide`, слой 8): оглавление, панель,
+ *                карточка у героя; ступени различимы (LAYOUT.column), узел
+ *                читает роль, а не число (`--side-w: var(--col-side)`);
  *   радиус     — роль → px из лестницы SHAPE.radii (M3 ∪ Carbon): xs, ctrl,
  *                card, sheet; полный круг (`--r-pop`) — у кнопки (близнец
  *                «· pill» ручки Corners) и кнопки-знака; его не выбирают
@@ -287,6 +291,17 @@ export const resolve = (set) => {
     if (!pa || !pb) throw new Error(`край просит ступень ритма ${!pa ? a : b}, которой в наборе нет`)
     out.край = { steps: [a, b], pair: [pa[0], pb[1]] }
   }
+  /* Боковая колонка (слой 8): три ступени ширины в rem; роли и порядок — из
+     LAYOUT.column, числа — набора. */
+  if (set.колонка !== undefined) {
+    if (!set.колонка || typeof set.колонка !== 'object') throw new Error('колонка — роли числом в rem: { narrow, side, wide }')
+    out.колонка = {}
+    for (const [name, v] of Object.entries(set.колонка)) {
+      if (!LAYOUT.column.roles.includes(name)) throw new Error(`колонка «${name}»: роль из ${LAYOUT.column.roles.join(', ')}`)
+      if (typeof v !== 'number') throw new Error(`колонка «${name}»: ширина числом в rem`)
+      out.колонка[name] = v
+    }
+  }
   /* Крупный текст (И245) — заголовок героя, заголовок страницы, вводный
      абзац. Он мерит СВОЮ КОЛОНКУ (`cqi`), а не окно: в двух колонках героя
      колонка узкая, в одной — широкая. Поэтому это не ступень лестницы, а
@@ -376,6 +391,9 @@ const block = (sets, name, indent = '  ') => {
   if (r.край) {
     const { steps, pair } = r.край
     put('--gut', steps[0] === steps[1] ? stepVar(steps[0]) : ramp(pair, w), `край страницы: от окна до предмета — ступени ${steps[0]} → ${steps[1]}`)
+  }
+  if (r.колонка) {
+    for (const [role, rem] of Object.entries(r.колонка)) put(`--col-${role}`, `${num(rem)}rem`, `боковая колонка: ${role}`)
   }
   /* Лестница управления: надпись органа не течёт с окном — пункт меню это
      мишень, а не абзац (scales.md, «Надпись контрола живёт в шкале
@@ -792,6 +810,20 @@ export const auditScale = (set) => {
     for (let i = 1; i < order.length; i++) {
       if (order[i][1] < order[i - 1][1]) {
         findings.push({ rule: 'радиусы вложены', got: `${order[i][0]} ${order[i][1]}px < ${order[i - 1][0]} ${order[i - 1][1]}px`, need: 'внешний предмет не острее вложенного: орган ≤ карточка ≤ лист' })
+      }
+    }
+  }
+  /* Боковая колонка (слой 8): ступени по возрастанию, в коридоре и различимы. */
+  if (r.колонка) {
+    const [lo, hi] = LAYOUT.column.rem
+    const order = LAYOUT.column.roles.filter((k) => k in r.колонка).map((k) => [k, r.колонка[k]])
+    for (const [role, rem] of order) {
+      if (rem < lo || rem > hi) findings.push({ rule: 'колонка в коридоре', got: `${role}: ${rem}rem`, need: `${lo}…${hi}rem` })
+    }
+    for (let i = 1; i < order.length; i++) {
+      const ratio = order[i][1] / order[i - 1][1]
+      if (ratio < LAYOUT.column.ratio) {
+        findings.push({ rule: 'ступени колонки различимы', got: `${order[i - 1][0]} ${order[i - 1][1]} → ${order[i][0]} ${order[i][1]}rem ×${ratio.toFixed(2)}`, need: `отношение не меньше ${LAYOUT.column.ratio}` })
       }
     }
   }

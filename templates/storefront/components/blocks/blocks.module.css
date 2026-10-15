@@ -267,7 +267,7 @@
 :global(main[data-home='sport'] :is(h1, h2)){text-transform:uppercase}
 .heroSport{--stack:var(--air-line);padding-block-start:var(--air-group);container-type:inline-size}
 .heroSport h1{font-size:var(--hero-size);line-height:var(--hero-lead);font-weight:var(--hero-weight);letter-spacing:var(--hero-track)}
-.heroSportRow{--side-w:30rem;--side-gap:var(--air-group);--side-align:end}
+.heroSportRow{--side-w:var(--col-wide);--side-gap:var(--air-group);--side-align:end}
 .heroSportRow p{max-inline-size:var(--measure-lede)}
 .doors[data-door='sport'] .door{gap:var(--gap-row);overflow:visible;border-radius:0}
 .doors[data-door='sport'] .doorShot{border-radius:var(--r-card)}
@@ -278,7 +278,7 @@
 /* СПРАВОЧНЫЙ РАЗДЕЛ — вопросы: заголовок своей колонкой слева, строки
    справа через волосок (`sidebar`); в узкой коробке — столбиком, и от
    заголовка до строк тот же воздух, что у любой шапки блока. */
-.split{--side-w:22rem;--side-gap:var(--air-head)}
+.split{--side-w:var(--col-side);--side-gap:var(--air-head)}
 .splitBody{--stack:var(--air-group)}
 .rows{border-block-start:var(--line-w) solid var(--rule)}
 /* Вопрос — строка во всю колонку, цель нажатия — вся строка (у `summary`

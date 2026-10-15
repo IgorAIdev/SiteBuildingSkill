@@ -66,5 +66,6 @@
   "turnFlip": 0,
   "fingerTwin": 0,
   "placeTie": 0,
-  "paneFill": 0
+  "paneFill": 0,
+  "sideLiteral": 0
 }
