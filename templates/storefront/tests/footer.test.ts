@@ -78,5 +78,5 @@ test('the legal row links ANPC and SAL, has no EU ODR, and the withdrawal functi
   assert.equal(isKey('footer.withdraw'), false, 'вторая надпись функции отказа')
   for (const lang of LOCALES) assert.ok(t(lang, 'withdraw.button').length > 0)
   assert.match(footer, /hasOptional\(\) \? <li><ConsentOpen label=\{t\(lang, 'consent\.open'\)\} voice="word" \/><\/li> : null/, '«Setări cookie» — словом, только когда есть что спрашивать')
-  assert.match(footer, /<footer className=\{s\.foot\} data-ground="deck" data-print="skip">/, 'подвал не печатается')
+  assert.match(footer, /<footer className=\{s\.foot\} data-print="skip">/, 'подвал не печатается')
 })

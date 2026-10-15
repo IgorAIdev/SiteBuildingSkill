@@ -10,6 +10,7 @@ import { t } from '@/lib/i18n/index.ts'
 import { shot } from '@/lib/shot.ts'
 import { heroShelves } from '@/lib/hero-shelves.ts'
 import { Icon } from '../Icon.tsx'
+import { TrustLine } from './TrustLine.tsx'
 
 /** Optional editorial home. Product, price and image come from one shelf item. */
 export function MinimalHero({ block, ctx }: { block: Extract<Block, { type: 'hero' }>; ctx: BlockCtx }) {
@@ -20,6 +21,7 @@ export function MinimalHero({ block, ctx }: { block: Extract<Block, { type: 'her
     <section className={`${p.wrap} ${p.lede} ${s.minimalHero}`} data-scene="hero">
       <div className={`${p.ledeText} ${s.minimalText}`}>
         <div className={`${p.stack} ${s.heroWords}`}><h1>{block.title}</h1><p>{block.lede}</p></div>
+        {ctx.trust ? <TrustLine block={ctx.trust} ctx={ctx} /> : null}
         <a className={b.btn} data-voice="loud" href={hrefFor(ctx.lang, { catalog: true })}>{t(ctx.lang, 'nav.shopAll')}<Icon id="arrow-right" /></a>
         <nav aria-label={t(ctx.lang, 'nav.categories')}>
           <ul className={`${p.cluster} ${s.minimalShelves}`}>

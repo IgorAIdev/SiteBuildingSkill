@@ -40,10 +40,10 @@ export type Step = readonly [Slot, Air?]
  *  рецепт не называет, не пропадает — встаёт в конец по порядку данных:
  *  блок владельца на витрине, пока владелец его не снял. */
 /* Отзывы — сразу за полками товара (за «Best sellers», docs/open.md «Отзывы
-   покупателей», И728), статьи блога — перед справкой (И729). Ряд доверия —
-   последним, перед подвалом: наверху товар, слова о магазине — после него
-   (слово заказчика 13.10.2026, `.claude/memory/home-product-first.md`). */
-export const RECIPE: readonly Step[] = [['hero'], ['effects'], ['featured'], ['reviews'], ['story'], ['posts'], ['faq'], ['trust']]
+   покупателей», И728), статьи блога — перед справкой (И729). Ряд доверия — не место
+   страницы, а строка героя над рядом кнопок (`carried`; слово заказчика 16.10.2026:
+   «выше кнопки магазина»; прежде — последним перед подвалом, 13.10.2026). */
+export const RECIPE: readonly Step[] = [['hero'], ['effects'], ['featured'], ['reviews'], ['story'], ['posts'], ['faq']]
 
 /* Рецепт на вид: одежда `sport` ставит полку товаров сразу за героем — первое
    окно показывает заголовок и товар вместе (docs/design/четвёртая-витрина.md,
@@ -56,13 +56,24 @@ const RECIPES: Partial<Record<HomeVariant, readonly Step[]>> = {
 
 export type Placed = { slot: Slot; block: Block; air: Air | null; key: string }
 
+/** Блок доверия, который несёт герой, — тот, чьё место рецепт не называет: ряд стоит
+ *  в первом окне над рядом кнопок (слово владельца 15.10.2026: «выше кнопки магазина,
+ *  иконки и текст в одной строке»). Рецепт назвал `trust` отдельным местом (одежда
+ *  `sport`) — герою нести нечего, блок стоит там, где сказано. Тот же блок не
+ *  стоит дважды. */
+export function carried(blocks: readonly Block[], home?: HomeVariant): Extract<Block, { type: 'trust' }> | null {
+  const recipe = (home && RECIPES[home]) || RECIPE
+  if (recipe.some(([slot]) => slot === 'trust')) return null
+  return blocks.find((b): b is Extract<Block, { type: 'trust' }> => b.type === 'trust') ?? null
+}
+
 /** Блоки страницы в порядке рецепта: блоков одного типа несколько — стоят
  *  подряд на месте типа, в порядке данных; тип вне рецепта — в конце.
  *  Чистая функция: вид не решает, ЧТО на странице, — только где. */
 export function arrange(blocks: readonly Block[], home?: HomeVariant): Placed[] {
   const out: Placed[] = []
   const recipe = (home && RECIPES[home]) || RECIPE
-  const named = new Set<Slot>(recipe.map(([slot]) => slot))
+  const named = new Set<Slot>([...recipe.map(([slot]) => slot), ...(carried(blocks, home) ? ['trust' as const] : [])])
   recipe.forEach(([slot, air], at) => {
     blocks.filter((b) => b.type === slot).forEach((block, i) => out.push({ slot, block, air: air ?? null, key: `${at}-${slot}-${i}` }))
   })

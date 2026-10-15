@@ -60,7 +60,7 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
   const withdrawLink = <li key="withdraw"><a className={b.word} href={hrefFor(lang, { withdraw: true })}>{t(lang, 'withdraw.button')}</a></li>
   const chats = MESSENGERS.flatMap((m) => { const href = chatHref(m, ''); return href ? [{ key: m.key, label: m.label, href }] : [] })
   return (
-    <footer className={s.foot} data-ground="deck" data-print="skip">
+    <footer className={s.foot} data-print="skip">
       {/* Языка в подвале нет (И484): он в шапке и в меню — там, где его
           ищут. Слово заказчика 27.09.2026: «я в жизни никогда не видел выбора
           языка в подвале — убирай». */}
@@ -106,11 +106,16 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
           </nav>
         </div>
       </div>
-      {/* Основание: слева правила и продавец, справа, к правому краю, —
-          оговорка о CBD (слово заказчика 29.09.2026: «в правую часть к
-          правому краю двигай», и правила от этого встают выше). */}
+      {/* Основание: оплата, продавец и самой нижней строкой — правила
+          (слово заказчика 16.10.2026: «правила в самый низ»); справа, к правому
+          краю, — оговорка о CBD (слово заказчика 29.09.2026). */}
       <div className={`${p.wrap} ${s.bottom}`}>
         <div className={s.base}>
+          <PayMarks label={t(lang, 'footer.pay')} />
+          <address className={s.seller}>
+            © {YEAR} <span translate="no">{COMPANY.name}</span> · CUI {COMPANY.cui} · {COMPANY.regCom} · {COMPANY.address}
+            {COMPANY_IS_REAL ? null : ` · ${t(lang, 'sample')}`}
+          </address>
           <ul className={s.legalLinks}>
             {links(LEGAL)}
             {hasOptional() ? <li><ConsentOpen label={t(lang, 'consent.open')} voice="word" /></li> : null}
@@ -120,11 +125,6 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
           {/* Знак SAL — официальная картинка без изменений (приказ 270/2026): своей
               краски, угла и рамки у знака нет, размер — его данные. */}
           {ANPC_SAL_BADGE.src ? <a className={s.sal} href={ANPC_SAL_URL} rel="noopener"><img src={ANPC_SAL_BADGE.src} width={ANPC_SAL_BADGE.width} height={ANPC_SAL_BADGE.height} alt={t(lang, 'footer.salAlt')} loading="lazy" decoding="async" /></a> : null}
-          <PayMarks label={t(lang, 'footer.pay')} />
-          <address className={s.seller}>
-            © {YEAR} <span translate="no">{COMPANY.name}</span> · CUI {COMPANY.cui} · {COMPANY.regCom} · {COMPANY.address}
-            {COMPANY_IS_REAL ? null : ` · ${t(lang, 'sample')}`}
-          </address>
         </div>
         <p className={s.notice}>{t(lang, 'footer.disclaimer')}</p>
       </div>
