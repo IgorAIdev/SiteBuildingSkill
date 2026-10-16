@@ -27,6 +27,11 @@
 
 /* Плашка скидки — примитив `cut` (верхний левый угол кадра). */
 .badge{pointer-events:none}
+/* Скидка-пилюля (`--sale-look: pill`, primitives.module.css) — ростом с круг сердца на этом кадре:
+   мышью — `--ctrl-h`, пальцем — `--ctrl-face` (styles/glyph.module.css, И606). */
+.gallery .badge{--sale-h:var(--ctrl-h)}
+@media (pointer:coarse){ .gallery .badge{--sale-h:var(--ctrl-face)} }
+:where([data-pointer='coarse']) .gallery .badge{--sale-h:var(--ctrl-face)}
 /* Сердце «в избранное» — верхний правый угол кадра, тем же полем, что на карточке
    полки (ProductCard.module.css, `.save`): на стекле — `--sp-2`; без подложки
    (`--save-look: bare`) — поле плашки скидки, верх знака на линии верха плашки. */
