@@ -1271,6 +1271,11 @@
       "group": "save-look",
       "value": "disc"
     },
+    "--sale-look": {
+      "type": "keyword",
+      "group": "sale-look",
+      "value": "tag"
+    },
     "--quick-look": {
       "type": "keyword",
       "group": "quick-look",

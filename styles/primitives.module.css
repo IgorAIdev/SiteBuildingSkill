@@ -1622,6 +1622,43 @@
    Слово, а не число, — вес ступенью тише, чем у цифры скидки. */
 .cut[data-cut='low']{background:var(--warn-fill);color:var(--on-warn);font-weight:var(--label-weight)}
 .cut[data-cut='out']{background:var(--bad-fill);color:var(--on-bad);font-weight:var(--label-weight)}
+/* Скидка пилюлей (`--sale-look: pill`; слово заказчика 16.10.2026: «пилюлей
+   сделай»): та же плашка, концы скруглены до половины её роста
+   (`--ctrl-h-sm` × .8 ÷ 2): геометрия органа — от его собственной высоты, а не
+   полным кругом набора — `--r-pop` носит только главное действие (И790).
+   Поле по бокам шире на треть — круглому концу нужен воздух под слово.
+   Только скидка: «мало» и «нет» остаются метками с углом контрола. Вес
+   (0,3,0) — по той же причине, что у ленты ниже: место (`.card .flag`, у
+   него свой угол «по кадру») форму не перебивает. */
+@container style(--sale-look: pill){
+  .cut[data-cut='sale']:not([hidden]){border-radius:calc(var(--ctrl-h-sm) * .4);padding-inline:calc(var(--ctrl-h-sm) * .45)}
+}
+/* Скидка лентой (`--sale-look: ribbon`; слово заказчика 16.10.2026: «косая
+   лента поставь в витрину»). Лента — угол кадра: квадрат от роста органа
+   (`--ctrl-h-sm` × 2.8), в нём полоса вдоль диагонали, концы её упираются в
+   края кадра, а не висят в воздухе. Полоса — градиент «к нижнему правому»:
+   на квадрате линии его уровня идут поперёк диагонали, а значит полоса
+   между 30 % и 50 % — от x + y = 0.6 до 1.0 стороны. Слово — `cutText`,
+   повёрнутое на середину полосы. Форма одна на карточку полки и на главный
+   кадр товара: место (`.card .flag`, `.gallery .badge`) даёт только угол.
+   Вес (0,3,0): место с весом (0,2,0) форму не перебивает; `min-*` сильнее
+   `max-*`, поэтому поле места «не шире места слева от сердца» ленте не
+   мешает. Только скидка: «мало» и «нет» остаются метками. */
+@container style(--sale-look: ribbon){
+  .cut[data-cut='sale']:not([hidden]){
+    --sale-size:calc(var(--ctrl-h-sm) * 2.8);
+    inset-block-start:0;inset-inline-start:0;
+    inline-size:var(--sale-size);min-inline-size:var(--sale-size);max-inline-size:none;
+    block-size:var(--sale-size);min-block-size:var(--sale-size);
+    display:block;padding:0;border-radius:0;
+    background:linear-gradient(to bottom right,transparent 0 30%,var(--sale-fill) 30% 50%,transparent 50%);
+    color:var(--on-sale)
+  }
+  .cut[data-cut='sale'] .cutText{
+    position:absolute;inset-block-start:40%;inset-inline-start:40%;translate:-50% -50%;rotate:-45deg;
+    white-space:nowrap;line-height:1
+  }
+}
 
 /* Вид и место — врозь. На карте товара сердце стоит дважды: на снимке и в
    строке под заголовком. Это одно действие, одно состояние и один вид —

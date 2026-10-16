@@ -275,7 +275,8 @@
     "--pager-look": "rings",
     "--filter-look": "drawer",
     "--filter-phone": "drawer",
-    "--save-look": "disc",
+    "--save-look": "bare",
+    "--sale-look": "pill",
     "--quick-look": "tiles",
     "--star": "var(--star-trade)"
   },
@@ -315,7 +316,8 @@
     "pager-look": "rings",
     "filter-look": "drawer",
     "filter-phone": "drawer",
-    "save-look": "disc",
+    "save-look": "bare",
+    "sale-look": "pill",
     "quick-look": "tiles",
     "star": "gold"
   },
