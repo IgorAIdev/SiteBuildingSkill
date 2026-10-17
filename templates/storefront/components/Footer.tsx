@@ -109,24 +109,26 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
       {/* Основание: оплата, продавец и самой нижней строкой — правила
           (слово заказчика 16.10.2026: «правила в самый низ»); справа, к правому
           краю, — оговорка о CBD (слово заказчика 29.09.2026). */}
-      <div className={`${p.wrap} ${s.bottom}`}>
-        <div className={s.base}>
-          <PayMarks label={t(lang, 'footer.pay')} />
-          <address className={s.seller}>
-            © {YEAR} <span translate="no">{COMPANY.name}</span> · CUI {COMPANY.cui} · {COMPANY.regCom} · {COMPANY.address}
-            {COMPANY_IS_REAL ? null : ` · ${t(lang, 'sample')}`}
-          </address>
-          <ul className={s.legalLinks}>
-            {links(LEGAL)}
-            {hasOptional() ? <li><ConsentOpen label={t(lang, 'consent.open')} voice="word" /></li> : null}
-            <li><a className={b.word} href={ANPC_URL} rel="noopener">{t(lang, 'footer.anpcHome')}</a></li>
-            {ANPC_SAL_BADGE.src ? null : <li><a className={b.word} href={ANPC_SAL_URL} rel="noopener">{t(lang, 'footer.anpc')}</a></li>}
-          </ul>
-          {/* Знак SAL — официальная картинка без изменений (приказ 270/2026): своей
-              краски, угла и рамки у знака нет, размер — его данные. */}
-          {ANPC_SAL_BADGE.src ? <a className={s.sal} href={ANPC_SAL_URL} rel="noopener"><img src={ANPC_SAL_BADGE.src} width={ANPC_SAL_BADGE.width} height={ANPC_SAL_BADGE.height} alt={t(lang, 'footer.salAlt')} loading="lazy" decoding="async" /></a> : null}
+      <div className={p.wrap}>
+        <div className={s.bottom}>
+          <div className={s.base}>
+            <PayMarks label={t(lang, 'footer.pay')} />
+            <address className={s.seller}>
+              © {YEAR} <span translate="no">{COMPANY.name}</span> · CUI {COMPANY.cui} · {COMPANY.regCom} · {COMPANY.address}
+              {COMPANY_IS_REAL ? null : ` · ${t(lang, 'sample')}`}
+            </address>
+            <ul className={s.legalLinks}>
+              {links(LEGAL)}
+              {hasOptional() ? <li><ConsentOpen label={t(lang, 'consent.open')} voice="word" /></li> : null}
+              <li><a className={b.word} href={ANPC_URL} rel="noopener">{t(lang, 'footer.anpcHome')}</a></li>
+              {ANPC_SAL_BADGE.src ? null : <li><a className={b.word} href={ANPC_SAL_URL} rel="noopener">{t(lang, 'footer.anpc')}</a></li>}
+            </ul>
+            {/* Знак SAL — официальная картинка без изменений (приказ 270/2026): своей
+                краски, угла и рамки у знака нет, размер — его данные. */}
+            {ANPC_SAL_BADGE.src ? <a className={s.sal} href={ANPC_SAL_URL} rel="noopener"><img src={ANPC_SAL_BADGE.src} width={ANPC_SAL_BADGE.width} height={ANPC_SAL_BADGE.height} alt={t(lang, 'footer.salAlt')} loading="lazy" decoding="async" /></a> : null}
+          </div>
+          <p className={s.notice}>{t(lang, 'footer.disclaimer')}</p>
         </div>
-        <p className={s.notice}>{t(lang, 'footer.disclaimer')}</p>
       </div>
     </footer>
   )
