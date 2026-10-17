@@ -39,7 +39,7 @@ export function Gallery({ view, save }: { view: GalleryView; save?: { id: string
             </div>
           ))}
         </div>
-        {view.badge ? <span className={`${p.cut} ${s.badge}`}>{view.badge}</span> : null}
+        {view.badge ? <span className={`${p.cut} ${s.badge}`} data-cut="sale"><span className={p.cutText}>{view.badge}</span></span> : null}
         {save ? <SaveToggle id={save.id} add={save.add} remove={save.remove} over="picture" className={s.save} /> : null}
       </div>
       {many ? (

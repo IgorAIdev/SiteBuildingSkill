@@ -66,6 +66,7 @@ export const PRODUCT = {
   '--filter-look': { type: 'keyword', value: 'drawer' },
   '--filter-phone': { type: 'keyword', value: 'drawer' },
   '--save-look': { type: 'keyword', value: 'disc' },
+  '--sale-look': { type: 'keyword', value: 'tag' },
   '--quick-look': { type: 'keyword', value: 'tiles' },
   '--go-hover': { type: 'colour', value: 'currentcolor' },
   '--star': { type: 'colour', value: 'var(--star-trade)' },

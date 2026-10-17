@@ -190,6 +190,7 @@ const ROLE = [
   { rx: /^--filter-look$/, family: 'вид фильтра полки на широком: кнопка и шторка, как корзина, или строка раскрытий (И739)', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--filter-phone$/, family: 'вид фильтра полки на узком: кнопка и шторка или пилюли граней вбок (И739)', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--pager-look$/, family: 'вид листания под полкой: «Показать ещё» со счётом и полоской, номера в кругах или «2 / 4» (И721)', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
+  { rx: /^--sale-look$/, family: 'вид скидки на снимке: плашка в углу, пилюля или косая лента через угол', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--save-look$/, family: 'вид сердца «в избранное» на снимке: на стекле или без подложки', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   { rx: /^--(shot-frame|shelf-cols)$/, family: 'товар: кадр снимка, плотность полки, кнопка карточки, подпись порядка полки', by: 'templates/storefront/scripts/look-slots.mjs (styles/look.css)' },
   /* Пропорция кадра по тому, что на снимке (И736): ряд карточек, сцена,

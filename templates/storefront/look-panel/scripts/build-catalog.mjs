@@ -354,6 +354,12 @@ export const PRODUCT_PAGE = {
     { id: 'disc', name: 'On glass', line: 'A quiet glass disc under the heart: it reads over any picture, the palette measures the glass', vars: { '--save-look': 'disc' } },
     { id: 'bare', name: 'Bare', line: 'No disc: the heart is as tall as the discount tag, ink with a thin edge in the sheet colour so it reads over a light and a dark picture', vars: { '--save-look': 'bare' } },
   ],
+  /* Скидка на снимке (слово заказчика 16.10.2026: «сама форма скидки … дай варианты по форме»; страница форм — восемь подач, выбрана косая лента): плашка в углу снимка (как было) или косая лента через угол. Слово «−15 %» и краска те же. */
+  'sale-look': [
+    { id: 'tag', name: 'Tag', line: 'A small tag with slightly rounded corners inside the picture, level with the heart', vars: { '--sale-look': 'tag' } },
+    { id: 'pill', name: 'Pill', line: 'The same tag with fully rounded ends, like a pill', vars: { '--sale-look': 'pill' } },
+    { id: 'ribbon', name: 'Ribbon', line: 'A diagonal ribbon across the corner of the picture, its ends running into the picture edges', vars: { '--sale-look': 'ribbon' } },
+  ],
   'pager-look': [
     { id: 'rings', name: 'Rings', line: 'Every page number in a hairline circle, the current one filled; «Show more» and the count in the same row (Mantine)', vars: { '--pager-look': 'rings' } },
     { id: 'compact', name: 'Compact', line: 'Round arrows around «2 / 4» instead of the numbers; «Show more» and the count in the same row', vars: { '--pager-look': 'compact' } },

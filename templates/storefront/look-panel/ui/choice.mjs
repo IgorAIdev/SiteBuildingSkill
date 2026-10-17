@@ -53,7 +53,7 @@ export const SECTIONS = [
     /* Полка (И400): одежда карточки, пропорция снимка — одна с картой
        товара, — место кнопки «в корзину» и сколько карточек в ряд на полке
        каталога. */
-    { id: 'card', name: 'Card', hint: 'How a product card sits on the shelf. Pictures are square everywhere: on shelves and on the product page.', fields: [['card', 'Product card'], ['pager-look', 'Show more and pages'], ['filter-look', 'Filter on a laptop'], ['filter-phone', 'Filter on a phone'], ['save-look', 'Heart']], place: { page: 'catalog', block: '[data-product-card]' } },
+    { id: 'card', name: 'Card', hint: 'How a product card sits on the shelf. Pictures are square everywhere: on shelves and on the product page.', fields: [['card', 'Product card'], ['pager-look', 'Show more and pages'], ['filter-look', 'Filter on a laptop'], ['filter-phone', 'Filter on a phone'], ['save-look', 'Heart'], ['sale-look', 'Discount']], place: { page: 'catalog', block: '[data-product-card]' } },
     /* Главная (lib/homes.ts): одежда плиток эффектов; раскладок главной
        на выбор больше нет (И596). */
     { id: 'home', name: 'Home', hint: 'How the effect tiles on the home page are dressed, and whether their text is capitalised or all capitals. The pictures and names stay the same. Categories stand as buttons on the hero picture.', fields: [['door-case', 'Tile text'], ['cat-look', 'Category buttons'], ['home', 'Tiles']], place: { page: 'home', block: '#effects-rail' } },
