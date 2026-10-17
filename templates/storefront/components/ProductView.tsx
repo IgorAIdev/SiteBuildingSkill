@@ -90,10 +90,12 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
             <AddToCart lang={lang} buy={view.buy} hint={view.message} submit={submit} call={call} />
           </div>
           {view.facts ? <KeyFacts facts={view.facts} /> : null}
+          {/* Сведения о товаре — в колонке справа, под покупкой (слово заказчика 17.10.2026: «фиксация картинки и скролл
+              информации справа»): галерея стоит, пока читается колонка; в одну колонку порядок прежний — после сведений. */}
+          <ProductDetails details={view.details} />
         </div>
         <StickyBuy buy="buy" label={view.buy.add} variant={view.buy.variant} added={view.buy.addedShort}><Price now={view.price} was={view.was} /></StickyBuy>
       </section>
-      <ProductDetails details={view.details} />
       {/* Протокол партии — окном общего модуля (styles/pane.module.css):
           немодальное, `popover` — Escape, щелчок мимо и крестик закрывают
           сами (правило 8). */}
