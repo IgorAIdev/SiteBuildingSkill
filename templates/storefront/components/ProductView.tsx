@@ -60,12 +60,20 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
                 «Cod produs» под именем). Наличие — первым в этой строке (слово заказчика
                 02.10.2026: «in stock размещать первым в одной строке с отзывами и
                 SKU»; раньше стояло у цены). Нет ничего — строки нет. */}
-            {view.stock || view.rating || view.lab || view.sku ? (
+            {view.stock || view.sku || view.rating || view.lab ? (
               <div className={s.proof}>
-                {view.stock ? <StockMark level={view.stockLevel}>{view.stock}</StockMark> : null}
-                {view.rating ? <Rating rating={view.rating} /> : null}
-                {view.lab ? <button className={b.btn} data-voice="bare" data-size="sm" type="button" popoverTarget="lab-report"><Icon id="flask" />{view.lab.chip}</button> : null}
-                {view.sku ? <span className={s.sku} translate="no">{view.sku}</span> : null}
+                {view.stock || view.sku ? (
+                  <div className={s.proofRow}>
+                    {view.stock ? <StockMark level={view.stockLevel}>{view.stock}</StockMark> : null}
+                    {view.sku ? <span className={s.sku} translate="no">{view.sku}</span> : null}
+                  </div>
+                ) : null}
+                {view.rating || view.lab ? (
+                  <div className={s.proofRow}>
+                    {view.rating ? <Rating rating={view.rating} /> : null}
+                    {view.lab ? <button className={b.btn} data-voice="bare" data-size="sm" type="button" popoverTarget="lab-report"><Icon id="flask" />{view.lab.chip}</button> : null}
+                  </div>
+                ) : null}
               </div>
             ) : null}
             {/* Описание — между именем и выбором (слово заказчика 28.09.2026:

@@ -318,7 +318,7 @@ test('panel removal: style branches of roles the look wears other values for are
     '.b{color:blue}',
   ].join('\n')
   const vars = { '--seg-look': 'chips' }
-  assert.deepEqual(foreignRoleBlocks(css, vars).map(([, , c]) => c.map(([n, v]) => `${n}=${v}`).join('|')), ['--seg-look=joined', '--seg-look=tiles|--seg-look=tint'])
+  assert.deepEqual((foreignRoleBlocks(css, vars) as [number, number, [string, string][]][]).map(([, , c]) => c.map(([n, v]) => `${n}=${v}`).join('|')), ['--seg-look=joined', '--seg-look=tiles|--seg-look=tint'])
   const out = stripRoles(css, vars)
   assert.ok(!out.includes('@container style(--seg-look: joined)') && !out.includes('tiles'), 'чужие значения вырезаны')
   for (const keep of ['.a{color:red}', 'style(--seg-look: chips)', 'style(--nav-look: dots)', 'not style(--seg-look: joined)', '(min-width:600px)', '.b{color:blue}']) assert.ok(out.includes(keep), `остаётся: ${keep}`)

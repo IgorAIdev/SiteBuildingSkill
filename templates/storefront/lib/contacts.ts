@@ -18,6 +18,9 @@ export const MESSENGERS: readonly { key: Messenger; label: string; value: string
   { key: 'whatsapp', label: 'WhatsApp', value: '+40 700 000 000' },
   { key: 'instagram', label: 'Instagram', value: 'exemplu' },
 ]
+/** Мессенджеры заказа — без Instagram: окно помощи и быстрый заказ его не показывают (слово заказчика 29.09.2026:
+ *  «Instagram убрать»; 17.10.2026: «Instagram кнопку удали» в быстром заказе). Один список на оба места. */
+export const ORDER_MESSENGERS = MESSENGERS.filter((m): m is (typeof MESSENGERS)[number] & { key: Exclude<Messenger, 'instagram'> } => m.key !== 'instagram')
 
 const digits = (v: string) => v.replace(/[^\d+]/g, '')
 
@@ -70,7 +73,7 @@ export function supportHref(): string | null {
 export type Reach = 'phone' | 'email' | Exclude<Messenger, 'instagram'>
 export type ReachRow = { key: Reach; name: string; value: string; href: string | null }
 export function reachRows(words: { phone: string; email: string }): ReachRow[] {
-  const chats = MESSENGERS.flatMap((m) => (m.key === 'instagram' ? [] : [{ key: m.key, name: m.label, value: m.value, href: chatHref(m) }]))
+  const chats = ORDER_MESSENGERS.map((m) => ({ key: m.key, name: m.label, value: m.value, href: chatHref(m) }))
   return [
     { key: 'phone', name: words.phone, value: CONTACTS.phone, href: CONTACTS.phone.trim() ? telHref() : null },
     { key: 'email', name: words.email, value: CONTACTS.email, href: CONTACTS.email.trim() ? mailHref() : null },

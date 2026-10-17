@@ -12,7 +12,7 @@ import s from './BuildingNotice.module.css'
    страницы в выдаче (Google, «nosnippet»). */
 export function BuildingNotice({ text }: { text: string }) {
   return (
-    <aside className={s.notice} data-print="skip" data-nosnippet="">
+    <aside className={s.notice} data-notice="" data-print="skip" data-nosnippet="">
       <p className={`${p.wrap} ${s.text}`}>{text}</p>
     </aside>
   )

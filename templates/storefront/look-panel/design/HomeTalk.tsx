@@ -1,7 +1,7 @@
 import p from '@/styles/primitives.module.css'
 import type { Lang } from '@/lib/locale.ts'
 import type { Block, Review } from '@/lib/source/contract.ts'
-import { commerce, content, source } from '@/lib/source/index.ts'
+import { content, source } from '@/lib/source/index.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { t } from '@/lib/i18n/index.ts'
 import { reviewView, type ReviewView } from '@/lib/review-view.ts'
@@ -9,7 +9,7 @@ import { postCard } from '@/lib/post-view.ts'
 import { Reviews } from '@/components/blocks/Reviews.tsx'
 import { Posts } from '@/components/blocks/Posts.tsx'
 import { Trust } from '@/components/blocks/Trust.tsx'
-import { pledgesView } from '@/lib/pledges.ts'
+import { sloganLines } from '@/lib/pledges.ts'
 import { ReviewCard } from '@/components/ReviewCard.tsx'
 import { PostCard } from '@/components/PostCard.tsx'
 import { RailPager } from '@/components/RailPager.tsx'
@@ -27,9 +27,9 @@ import s from './home.module.css'
 type Sample = { key: string; name: string; note: string; view: ReviewView }
 
 export async function HomeTalk({ lang }: { lang: Lang }) {
-  const [page, got, posts, top, methods, facts] = await Promise.all([
+  const [page, got, posts, top, facts] = await Promise.all([
     content().page(lang, 'home'), content().reviews(lang), content().posts(lang), source().listing(lang, { facets: {}, sort: 'popular', page: null }),
-    commerce().deliveryMethods(null, lang), content().facts(),
+    content().facts(),
   ])
   const blocks = page.ok ? page.value.blocks : []
   const reviewsBlock = blocks.find((b): b is Extract<Block, { type: 'reviews' }> => b.type === 'reviews')
@@ -37,9 +37,9 @@ export async function HomeTalk({ lang }: { lang: Lang }) {
   const trustBlock = blocks.find((b): b is Extract<Block, { type: 'trust' }> => b.type === 'trust')
   const reviews = got.ok ? got.value : []
   const list = posts.ok ? posts.value : []
-  /* Обещания ряда доверия — те же факты магазина, что у кнопки заказа: доставка из списка способов, срок возврата из данных. */
-  const pledges = pledgesView(lang, { payments: null, methods: methods.ok ? methods.value : null, returnDays: facts.ok ? facts.value.returnDays : null })
-  const ctx = { lang, reviews, posts: list, pledges } as unknown as BlockCtx
+  /* Слоганы ряда доверия — те же факты магазина, что в полосе над шапкой и у кнопки заказа: порог бесплатной доставки и срок возврата. */
+  const slogans = sloganLines(lang, facts.ok ? facts.value : null)
+  const ctx = { lang, reviews, posts: list, slogans } as unknown as BlockCtx
   /* Товар образца для ссылки карточки — товар полки магазина: на движке у
      отзывов образца ссылки на товар нет (lib/source/index.ts), а вариант
      «с товаром» показать нужно. */

@@ -89,6 +89,9 @@ export const MODIFIERS = new Set([
   /* нахлёст: на сколько лист покупки наезжает на снимок во всю ширину
      (`--gallery-lap`, карта товара, бриф docs/design/карта-товара.md) */
   'lap',
+  /* место по высоте, которое отдано блоку: меньшее из окна под прилипшей шапкой и окна под шапкой на нуле
+     прокрутки (`--gallery-room`, карта товара, 17.10.2026) */
+  'room',
   /* место подписи поля (`--ctrl-field-label`: над полем или на его кромке,
      элемент 47 набора, И394) */
   'label',
@@ -156,6 +159,7 @@ const ROLE = [
   { rx: /^--sh-[a-z0-9-]+$/, family: 'тень', by: 'styles/look.css (роли), styles/tokens.css (ингредиенты)' },
   { rx: /^--(ease|hover-t|rise|nudge|creep)$/, family: 'движение и ответ на руку', by: 'styles/tokens.css' },
   { rx: /^--layer-[a-z]+$/, family: 'слой', by: 'styles/tokens.css' },
+  { rx: /^--(head-open|notice-top)$/, family: 'верх страницы на нуле прокрутки: сколько занимают шапка целиком и полоса «сайт строится» над ней (первое окно карты товара)', by: 'styles/tokens.css' },
   { rx: /^--(ctrl-(h(-sm|-lg)?|target|face(-md)?|fs)|chan-(h|mark|gap)|tab-h|dock|edge-[bx])$/, family: 'размер и геометрия органа', by: 'tools/scale.mjs, styles/tokens.css' },
   { rx: /^--(measure(-[a-z]+)?|face(-[a-z]+)?|hero-(max|slope|size)|pagehead-(base|slope))$/, family: 'текст: кривая, мера, гарнитура', by: 'styles/tokens.css, гарнитура — styles/look.css' },
   /* Коробка страницы (И382): `--page-edge` — край у окна не уже выреза,
@@ -226,6 +230,8 @@ export const REQUIRED = {
      в пустой проект он не ставится, но имя — не про запас (И626). */
   '--menu-size': 'роль меню шапки — кегль, ступенью ниже тела, не мельче 1rem; регулировки в панели нет (templates/storefront, Header.module.css; И580, И633)',
   '--head-full': 'вся шапка на нуле прокрутки: прилипшая строка, верхняя полоса и линия — от неё герой считает первый экран (templates/storefront, blocks.module.css; И655)',
+  '--head-open': 'шапка целиком на нуле прокрутки — строка за строкой теми же ролями, что её рисуют; от неё первое окно считает верх до кадра карты товара (templates/storefront, ProductView.module.css; И795)',
+  '--notice-top': 'сколько верха занимает полоса «сайт строится» над шапкой; нет полосы — ноль (templates/storefront, BuildingNotice.tsx, ProductView.module.css; И795)',
   '--shot-frame': 'пропорция снимка товара, постоянная 1 / 1 (Gallery, ProductCard, ProductView; decisions.md 01.10.2026)',
   '--measure-form': 'колонка формы входа по центру страницы, 25rem — в коридоре образцов 320…446 (templates/storefront, Account.module.css; И780)',
   '--sh-far-3': 'дальний слой тени всплывающего — набор теней витрины (templates/storefront/styles/look.css; И593)',

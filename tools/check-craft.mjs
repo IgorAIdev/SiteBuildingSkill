@@ -1297,11 +1297,12 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
      Одна строка — не мера, её не меряем. Подпись под заголовком (`hgroup > p`,
      строка под именем страницы) — одна-три строки одним взглядом с
      заголовком: её потолок — 90, верх коридора Баттерика (`TYPE.measureCaption`,
-     И680: ширину подписи заказчик взял у Gymshark). */
+     И680: ширину подписи заказчик взял у Gymshark). Части описания товара (`[data-parts]`: две-четыре
+     строки под подзаголовком) — тем же потолком: слово заказчика 17.10.2026, мера `--measure-detail`. */
   for (const el of document.querySelectorAll('main :is(p, li, dd, blockquote)')) {
     if (!shown(el) || el.closest('dialog, table, form, nav, [class*=card], [class*=Card]')) continue
     if (el.querySelector('p, li, dd, blockquote')) continue
-    const max = el.matches(':is(hgroup, [class*=pagehead]) > p:not([class*=note])') ? captionMax : measureMax
+    const max = el.matches(':is(hgroup, [class*=pagehead]) > p:not([class*=note]), [data-parts] > section > p') ? captionMax : measureMax
     const text = (el.textContent || '').replace(/\s+/g, ' ').trim()
     if (text.length <= max) continue
     const range = document.createRange()

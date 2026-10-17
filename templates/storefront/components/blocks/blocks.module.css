@@ -338,13 +338,12 @@
 .band[data-join~='prev']{margin-block-start:0}
 .band[data-join~='next']{padding-block-end:0}
 
-/* РЯД ДОВЕРИЯ (TrustLine.tsx): факты словами в одну строку, без значков (слово владельца
-   16.10.2026), рядом, тесно — переносятся целиком (`cluster`). Краска — роль чернил. Строка-ссылка — вид предмета «строка» (`b.row`, styles/btn.module.css):
-   ответ на руку и подложку даёт он, здесь — только раскладка; цель нажатия — роль
-   `--ctrl-target` (44 на касании). Слово — роль названия карточки: одна строка, без подробности. */
+/* РЯД ДОВЕРИЯ (TrustLine.tsx): слоганы словами в одну строку, без значков (слово владельца
+   16.10.2026) и без ссылок (17.10.2026) — текст, не орган: ни подложки под рукой, ни цели
+   нажатия. Рядом, тесно — переносятся целиком (`cluster`). Слово — роль названия карточки,
+   краска — чернила. */
 .trustLine{--cluster:var(--gap-row) var(--air-group)}
-.trustRow{display:inline-flex;align-items:center;min-inline-size:0;min-block-size:var(--ctrl-target);color:var(--ink);text-decoration:none}
-.trustTitle{font-size:var(--cardname-size);line-height:var(--cardname-lead);font-weight:var(--cardname-weight);letter-spacing:var(--cardname-track)}
+.trustTitle{color:var(--ink);font-size:var(--cardname-size);line-height:var(--cardname-lead);font-weight:var(--cardname-weight);letter-spacing:var(--cardname-track)}
 .hero[data-bare] .trustLine{justify-content:center}
 /* Ряд доверия и ряд пути героя — одна группа у нижнего края колонки; воздух между — ряд (`--air-row`). */
 .heroPath{--stack:var(--air-row)}
