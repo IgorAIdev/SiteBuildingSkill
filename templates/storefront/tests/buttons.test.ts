@@ -87,7 +87,8 @@ test('no button with a word forces its form past the panel, except the category 
    номера и стрелки листания полки, «пуск» видео-отзыва. */
 test('the rail head buttons and every sign button (data-pager) stay round past the panel', () => {
   const css = bare(read('../styles/btn.module.css'))
-  assert.match(css, /\.btn\[data-rail-nav\],\.btn\[data-pager\]\{--btn-r:var\(--r-pop\)\}/)
+  assert.match(css, /\.btn\[data-rail-nav\],\.btn\[data-pager\],\.btn\[data-pager-more\]\{--btn-r:var\(--r-pop\)\}/)
+  for (const f of ['Pagination', 'FoldShelf']) assert.match(read(`../components/${f}.tsx`), /data-pager-more/)
   assert.match(read('../components/ReviewPlay.tsx'), /data-pager=""/)
   const head = read('../components/RailHead.tsx')
   assert.match(head, /<a className=\{`\$\{b\.btn\} \$\{s\.wide\}`\} data-rail-nav href=\{all\}>/)

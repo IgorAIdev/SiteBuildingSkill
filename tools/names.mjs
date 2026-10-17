@@ -142,7 +142,9 @@ export const HOOKS = ['stack', 'cluster', 'switch', 'rail', 'section', 'sheet', 
   /* тихий знак (`--glyph-h`, `--glyph-box`, styles/glyph.module.css, И677): рост знака без подложки и коробка цели вокруг него */
   'glyph',
   /* переключатель (`--toggle-h`, `--toggle-pad`, styles/form.module.css, И791): высота дорожки и поле бегунка — доли роста органа */
-  'toggle']
+  'toggle',
+  /* ряд доверия (`--trust-pad`, components/blocks/blocks.module.css): поле строки-ссылки, доводящее её до цели нажатия */
+  'trust']
 
 const VALUE = [
   { rx: new RegExp(`^--${FAMS(COLOUR_FAMILIES)}-\\d{1,2}$`), family: 'ступень цвета', by: 'tools/palette.mjs' },

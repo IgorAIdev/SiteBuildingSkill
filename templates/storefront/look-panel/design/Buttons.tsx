@@ -10,6 +10,7 @@ import { VariantPicker } from '@/components/VariantPicker.tsx'
 import { SaveToggle, type SaveSign } from '@/components/SaveToggle.tsx'
 import { Pagination } from '@/components/Pagination.tsx'
 import { CategoryButton } from '@/components/CategoryButton.tsx'
+import { CategoryTile } from '@/components/CategoryTile.tsx'
 import { HelpDock } from '@/components/HelpDock.tsx'
 import { reachRows, supportHref, SUPPORT } from '@/lib/contacts.ts'
 import { shot } from '@/lib/shot.ts'
@@ -352,6 +353,8 @@ function roleList(lang: Lang, shelf: { name: string; sign: string } | undefined)
       <CategoryButton name={shopAll} sign="shop-awning" />
       {shelf ? <CategoryButton quiet name={shelf.name} sign={shelf.sign} /> : null}
     </> },
+    /* Плитка категории — второй вид той же кнопки (ось `--cat-look`, «сетка девяти»): знак над именем. */
+    { key: 'tile', name: 'Плитка категории: знак над именем', sample: <CategoryTile name={shelf?.name ?? t(lang, 'nav.shop')} sign={shelf?.sign ?? 'shop-awning'} href="#top" /> },
   ]
 }
 
