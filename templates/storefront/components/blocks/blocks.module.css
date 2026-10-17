@@ -347,3 +347,4 @@
 .hero[data-bare] .trustLine{justify-content:center}
 /* Ряд доверия и ряд пути героя — одна группа у нижнего края колонки; воздух между — ряд (`--air-row`). */
 .heroPath{--stack:var(--air-row)}
+.heroPath > *{min-inline-size:0;max-inline-size:100%} /* ряд пути и доверие не шире колонки текста (check:craft, heroLane: кнопки выходили на снимок на 900) */
