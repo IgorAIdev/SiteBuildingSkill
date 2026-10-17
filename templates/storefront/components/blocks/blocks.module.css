@@ -338,8 +338,10 @@
    приглушёнными. Строка-ссылка — вид предмета «строка» (`b.row`, styles/btn.module.css):
    ответ на руку и подложку даёт он, здесь — только раскладка; цель нажатия —
    роль `--ctrl-target` (44 на касании). */
-.trust{--cols:3;--cell-min:200px;--cols-min:1;--grid-gap:var(--gap-row);margin-block:calc(-1 * var(--air-tight))} /* поле строки-ссылки — часть воздуха раздела: видимый воздух до края полосы и подвала равен соседним (bandSeam) */
-.trustRow{display:flex;align-items:flex-start;gap:var(--gap-row);min-inline-size:0;min-block-size:var(--ctrl-target);padding:var(--air-tight) var(--pad-inner);color:var(--ink);text-decoration:none}
+.trust{--cols:3;--cell-min:200px;--cols-min:1;--grid-gap:var(--gap-row);margin-block:calc(-1 * var(--trust-pad))} /* поле строки-ссылки — часть воздуха раздела: видимый воздух до края полосы и подвала равен соседним (bandSeam) */
+/* Поле строки — воздух раздела, но не меньше того, что доводит строку из одной надписи до цели нажатия: запас под ней был невидимым четырьмя пикселями у края подвала на телефоне (52 над краем при 48 под ним, bandSeam, 18.10.2026) — теперь он делится поровну сверху и снизу и целиком уходит в отрицательное поле ряда. */
+.trust{--trust-pad:max(var(--air-tight), calc((var(--ctrl-target) - var(--cardname-size) * var(--cardname-lead)) / 2))}
+.trustRow{display:flex;align-items:flex-start;gap:var(--gap-row);min-inline-size:0;min-block-size:var(--ctrl-target);padding:var(--trust-pad) var(--pad-inner);color:var(--ink);text-decoration:none}
 .trustIcon{flex:none;inline-size:1.4em;block-size:1.4em;margin-block-start:.1em;color:var(--pop)}
 .trustCopy{display:flex;flex-direction:column;gap:var(--air-line);min-inline-size:0}
 .trustTitle{font-size:var(--cardname-size);line-height:var(--cardname-lead);font-weight:var(--cardname-weight);letter-spacing:var(--cardname-track);overflow-wrap:break-word}
