@@ -44,7 +44,7 @@ export function useFoldCount(): number {
 export function FoldMore({ className, label }: { className: string; label: string }) {
   const f = useContext(FoldCtx)
   if (!f || f.done) return null
-  return <button className={className} data-hand="pop" type="button" aria-controls={f.grid} aria-busy={f.busy || undefined} disabled={f.busy} onClick={f.more}>{label}</button>
+  return <button className={className} data-pager-more data-hand="pop" type="button" aria-controls={f.grid} aria-busy={f.busy || undefined} disabled={f.busy} onClick={f.more}>{label}</button>
 }
 
 /** Счёт свёрнутой полки — «24 of 85»: `{k}` — показанное. */

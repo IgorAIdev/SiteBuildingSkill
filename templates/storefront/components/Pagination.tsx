@@ -52,7 +52,7 @@ export function Pagination({ pages, fold = null }: { pages: PagesView | null; fo
       <div className={`${p.cluster} ${s.row}`}>
         {pages ? <Steps pages={pages} /> : null}
         {fold ? <FoldMore className={`${b.btn} ${s.unfold}`} label={fold.more} /> : null}
-        {pages?.more ? <Link className={`${b.btn} ${s.next}`} data-hand="pop" href={pages.more} scroll={false} prefetch={false}>{pages.moreLabel}</Link> : null}
+        {pages?.more ? <Link className={`${b.btn} ${s.next}`} data-pager-more data-hand="pop" href={pages.more} scroll={false} prefetch={false}>{pages.moreLabel}</Link> : null}
         {pages ? <p className={`${p.note} ${s.count}`} aria-live="polite">{pages.shown}</p> : null}
         {fold ? <FoldCount className={`${p.note} ${s.folded}`} shown={fold.shown} /> : null}
       </div>
