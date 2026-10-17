@@ -136,7 +136,7 @@ if (flags.has('--look-panel')) {
     console.error(`${OUT} — не витрина набора (нет lib/look-values.ts или опубликованного вида lib/source/sample/look.json).`)
     process.exit(1)
   }
-  const { stripPanel, stripVariants, VARIANTS, OWNED, plan } = await import(pathToFileURL(join(T, 'look-panel/scripts/remove.mjs')).href)
+  const { stripPanel, stripVariants, stripRoles, VARIANTS, OWNED, plan } = await import(pathToFileURL(join(T, 'look-panel/scripts/remove.mjs')).href)
   const look = JSON.parse(readFileSync(join(OUT, 'lib/source/sample/look.json'), 'utf8'))
   const lf = (p) => readFileSync(p, 'utf8').replace(/\r\n/g, '\n')
   const listIn = (text, name) => [...(text.match(new RegExp(`${name} = \\[([\\s\\S]*?)\\]`))?.[1] ?? '').matchAll(/'([a-z-]+)'/g)].map((m) => m[1])
@@ -152,12 +152,17 @@ if (flags.has('--look-panel')) {
      плитки категорий ушли в кнопки героя (И673), файла не стало, и возврат
      панели падал на нём (03.10.2026). */
   const MARKED = plan(T).edits.map(([rel]) => rel).filter((rel) => /\.(ts|tsx|css)$/.test(rel))
-  const stripped = (text) => VARIANTS.reduce((t, v) => (t.includes(v.tag) ? stripVariants(t, v.tag, chosen[v.tag]) : t), text.includes('look-panel') ? stripPanel(text) : text)
+  /* Ветки стилей под невыбранными значениями ролей вида снятие тоже вырезало (`stripRoles`) —
+     «как после снятия» считается с ними. */
+  const stripped = (text, rel) => {
+    const t = VARIANTS.reduce((s, v) => (s.includes(v.tag) ? stripVariants(s, v.tag, chosen[v.tag]) : s), text.includes('look-panel') ? stripPanel(text) : text)
+    return rel.endsWith('.css') ? stripRoles(t, look.vars ?? {}) : t
+  }
   const touched = MARKED.filter((rel) => {
     if (!existsSync(join(OUT, rel))) return false
     const mine = lf(join(OUT, rel))
     const theirs = lf(join(T, rel))
-    return mine !== theirs && mine !== stripped(theirs)
+    return mine !== theirs && mine !== stripped(theirs, rel)
   })
   if (touched.length && !FORCE) {
     console.error(`Эти файлы магазин поправил после снятия панели, и шаблон их затёр бы: ${touched.join(', ')}.`)

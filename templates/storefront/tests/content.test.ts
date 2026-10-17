@@ -18,7 +18,7 @@ test('home page blocks exist in every language, in one order, and point at real 
     /* Герой лежит поверх широкого снимка — снимок у него свой, а не первая
        карточка полки (флакон во весь экран под заголовком). */
     const hero = r.value.blocks.find((b) => b.type === 'hero')
-    assert.ok(hero?.type === 'hero' && hero.image.width > hero.image.height, `${lang}: снимок героя широкий`)
+    assert.ok(hero?.type === 'hero' && hero.image !== undefined && hero.image.width > hero.image.height, `${lang}: снимок героя широкий`)
     /* Кнопками героя — все полки магазина (И735, пересмотр И673): на широком ряд
        переносится вторым рядом, на телефоне едет вбок одной полосой (`data-rail="wrap"`) —
        первый экран не съедает (И595). */

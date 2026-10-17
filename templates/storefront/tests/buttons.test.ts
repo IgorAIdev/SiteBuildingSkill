@@ -90,7 +90,10 @@ test('the rail head buttons and every sign button (data-pager) stay round past t
   assert.match(css, /\.btn\[data-rail-nav\],\.btn\[data-pager\]\{--btn-r:var\(--r-pop\)\}/)
   assert.match(read('../components/ReviewPlay.tsx'), /data-pager=""/)
   const head = read('../components/RailHead.tsx')
-  assert.match(head, /<a className=\{`\$\{b\.btn\} \$\{s\.wide\}`\} data-rail-nav data-hand="pop" href=\{all\}>/)
+  assert.match(head, /<a className=\{`\$\{b\.btn\} \$\{s\.wide\}`\} data-rail-nav href=\{all\}>/)
+  /* Под рукой — тихая вуаль, как у стрелок листания, не заливка марки (слово заказчика 16.10.2026). */
+  assert.doesNotMatch(head, /data-hand="pop"/)
+  assert.doesNotMatch(read('../components/RailPager.tsx'), /data-hand="pop"/)
   /* На узкой шапке выход — слово (И761): пилюля рядом с кругами листания не помещалась. */
   assert.match(head, /<a className=\{`\$\{go\.go\} \$\{s\.narrow\}`\} href=\{all\}>/)
   const pager = read('../components/RailPager.tsx')

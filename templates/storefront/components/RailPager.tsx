@@ -9,7 +9,8 @@ type Edge = { start: boolean; end: boolean }
    Набор — «Уголок» каталога кнопок (дизайн-система, Buttons → кнопки
    листания): круглая кнопка `data-pager` среднего роста, тихий стиль сайта
    (вид Look → кнопки, тихая ось; сейчас Outline); под рукой и при нажатии —
-   заливка марки (`data-hand="pop"`, И704). Круг — при любом угле панели
+   тихая вуаль и кромка темнее, без заливки марки (слово заказчика 16.10.2026: «тихую
+   окантовку и заливку тихую при наведении, нажатии»; до того — марка, И704). Круг — при любом угле панели
    (`data-rail-nav`, И747). Уголок, а не стрелка:
    стрелка на сайте значит «куда ведёт» (View all, плашки), уголок —
    «листать здесь»; так у Allbirds (кружок 40 с кромкой, уголок; замер
@@ -61,8 +62,8 @@ export function RailPager({ rail, back, next }: { rail: string; back: string; ne
   }
   return (
     <span className={b.pager} data-idle={idle ? '' : undefined} inert={idle}>
-      <button type="button" className={b.btn} data-pager data-rail-nav data-hand="pop" data-to="back" aria-label={back} aria-controls={rail} aria-disabled={at.start || undefined} onClick={() => step(-1)}><Icon id="chevron-left" /></button>
-      <button type="button" className={b.btn} data-pager data-rail-nav data-hand="pop" aria-label={next} aria-controls={rail} aria-disabled={at.end || undefined} onClick={() => step(1)}><Icon id="chevron-right" /></button>
+      <button type="button" className={b.btn} data-pager data-rail-nav data-to="back" aria-label={back} aria-controls={rail} aria-disabled={at.start || undefined} onClick={() => step(-1)}><Icon id="chevron-left" /></button>
+      <button type="button" className={b.btn} data-pager data-rail-nav aria-label={next} aria-controls={rail} aria-disabled={at.end || undefined} onClick={() => step(1)}><Icon id="chevron-right" /></button>
     </span>
   )
 }

@@ -15,7 +15,8 @@ import { RailPager } from './RailPager.tsx'
    стороне кнопка View all, а левее её кнопки скролла»). Выход — пилюля того
    же стиля и роста, что кнопки листания (набор «Уголок» каталога кнопок,
    рост 40; заказчик 02.10.2026: «в комплект к этим стрелкам»), и так же под рукой
-   заливается маркой (`data-hand="pop"`, И704). Форма — пилюля при любом угле
+   отвечает тихой вуалью, как кнопка листания (слово заказчика 16.10.2026: «тихую
+   окантовку и заливку тихую при наведении, нажатии»; до того — заливка марки, И704). Форма — пилюля при любом угле
    панели, как и круги листания (`data-rail-nav`, И747: «тут нужны пилюли, чтоб не
    такие массивные были»). Слово выхода — одно у
    всех рядов (И536); данные дают только адрес, нет адреса — выхода нет.
@@ -34,7 +35,7 @@ export function RailHead({ id, title, lede, all, lang }: { id: string; title: st
       </hgroup>
       <div className={`${p.cluster} ${s.acts}`}>
         <RailPager rail={`${id}-rail`} back={t(lang, 'rail.prev')} next={t(lang, 'rail.next')} />
-        {all ? <a className={`${b.btn} ${s.wide}`} data-rail-nav data-hand="pop" href={all}>{t(lang, 'shelf.all')}<Icon id="arrow-right" /></a> : null}
+        {all ? <a className={`${b.btn} ${s.wide}`} data-rail-nav href={all}>{t(lang, 'shelf.all')}<Icon id="arrow-right" /></a> : null}
         {all ? <a className={`${go.go} ${s.narrow}`} href={all}>{t(lang, 'shelf.all')}<Icon id="arrow-right" /></a> : null}
       </div>
     </div>

@@ -1,5 +1,5 @@
 import type { Lang } from '@/lib/locale.ts'
-import type { Collection, Effect, Post, Review } from '@/lib/source/contract.ts'
+import type { Block, Collection, Effect, Post, Review } from '@/lib/source/contract.ts'
 import type { ShelfCard } from '@/lib/view.ts'
 import type { PledgesView } from '@/lib/pledges.ts'
 import type { Air, HomeVariant } from '@/lib/homes.ts'
@@ -19,8 +19,10 @@ import type { CartActions } from '../ProductCard.tsx'
  *  пусто, и ряда нет. `reviews` и `posts` — отзывы и статьи источника
  *  содержания для их лент (И728, И729); молчит источник — пусто, и ленты нет.
  *  `cat` — вид кнопок категорий первого экрана из вида (`--cat-look`):
- *  `dot` — ряд кнопок со знаком в кружке, `grid` — сетка плиток. */
-export type BlockCtx = { lang: Lang; home: HomeVariant; collections: Collection[]; effects: Effect[]; cards: Record<string, ShelfCard>; spotlight: ShelfCard | null; pledges: PledgesView; cart: CartActions; bands: Readonly<Record<string, Tone>>; reviews: Review[]; posts: Post[]; cat?: 'dot' | 'grid' }
+ *  `dot` — ряд кнопок со знаком в кружке, `grid` — сетка плиток. `trust` — блок
+ *  доверия, который несёт герой над рядом кнопок (`carried`, lib/homes.ts);
+ *  рецепт поставил его отдельным местом или блока нет — null. */
+export type BlockCtx = { lang: Lang; home: HomeVariant; collections: Collection[]; effects: Effect[]; cards: Record<string, ShelfCard>; spotlight: ShelfCard | null; pledges: PledgesView; cart: CartActions; bands: Readonly<Record<string, Tone>>; reviews: Review[]; posts: Post[]; cat?: 'dot' | 'grid'; trust?: Extract<Block, { type: 'trust' }> | null }
 /** Место блока на главной: воздух над ним — роль примитива `section`
  *  (`data-air`); null — воздух раздела. */
 export type Place = { air: Air | null }

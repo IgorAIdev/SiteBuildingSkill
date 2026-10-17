@@ -6,6 +6,7 @@ import { t } from '@/lib/i18n/index.ts'
 import type { BlockCtx, Place } from './types.ts'
 import { shot } from '@/lib/shot.ts'
 import { CategoryButton } from '../CategoryButton.tsx'
+import { TrustLine } from './TrustLine.tsx'
 import { CategoryTile } from '../CategoryTile.tsx'
 import cat from '../CategoryTile.module.css'
 import { heroShelves } from '@/lib/hero-shelves.ts'
@@ -41,7 +42,10 @@ type Props = { block: Extract<Block, { type: 'hero' }>; ctx: BlockCtx; place: Pl
    едет только на телефоне: рядом со снимком колонка бывает уже 560, а ряд всё равно
    переносится (styles/primitives.module.css, `.rail[data-rail='wrap']`; слово
    заказчика 08.10.2026). `data-scene="hero"` — сцена первого экрана для проверок
-   (check:craft, `heroLane`, `fold`). */
+   (check:craft, `heroLane`, `fold`). Над рядом пути — ряд доверия (`ctx.trust`,
+   TrustLine.tsx): факты словами в одну строку, без значков (слова владельца 16.10.2026; 
+   15.10.2026: «выше кнопки магазина»); слова и путь по-прежнему — верх и низ
+   колонки: ряд доверия и кнопки — одна группа у нижнего края. */
 export function Hero({ block, ctx }: Props) {
   const shelves = heroShelves(block.shelves, ctx.collections)
   /* look-home:minimal:start */
@@ -62,21 +66,24 @@ export function Hero({ block, ctx }: Props) {
           <h1>{block.title}</h1>
           <p>{block.lede}</p>
         </div>
-        <nav aria-label={t(ctx.lang, 'nav.categories')} className={ctx.cat === 'grid' ? s.heroNav : undefined}>
-          {ctx.cat === 'grid' ? (
-            <div className={`${p.stack} ${s.heroGrid}`}>
-              <CategoryButton name={t(ctx.lang, 'nav.shopAll')} sign="shop-awning" href={hrefFor(ctx.lang, { catalog: true })} />
-              <ul className={cat.grid}>
-                {shelves.map((sh) => <li key={sh.slug}><CategoryTile name={sh.name} sign={sh.sign} href={hrefFor(ctx.lang, { category: sh.slug })} /></li>)}
+        <div className={`${p.stack} ${s.heroPath}`}>
+        {ctx.trust ? <TrustLine block={ctx.trust} ctx={ctx} /> : null}
+          <nav aria-label={t(ctx.lang, 'nav.categories')} className={ctx.cat === 'grid' ? s.heroNav : undefined}>
+            {ctx.cat === 'grid' ? (
+              <div className={`${p.stack} ${s.heroGrid}`}>
+                <CategoryButton name={t(ctx.lang, 'nav.shopAll')} sign="shop-awning" href={hrefFor(ctx.lang, { catalog: true })} />
+                <ul className={cat.grid}>
+                  {shelves.map((sh) => <li key={sh.slug}><CategoryTile name={sh.name} sign={sh.sign} href={hrefFor(ctx.lang, { category: sh.slug })} /></li>)}
+                </ul>
+              </div>
+            ) : (
+              <ul className={`${p.rail} ${s.heroShelves}`} data-rail="wrap">
+                <li><CategoryButton name={t(ctx.lang, 'nav.shopAll')} sign="shop-awning" href={hrefFor(ctx.lang, { catalog: true })} /></li>
+                {shelves.map((c) => <li key={c.slug}><CategoryButton quiet name={c.name} sign={c.sign} href={hrefFor(ctx.lang, { category: c.slug })} /></li>)}
               </ul>
-            </div>
-          ) : (
-            <ul className={`${p.rail} ${s.heroShelves}`} data-rail="wrap">
-              <li><CategoryButton name={t(ctx.lang, 'nav.shopAll')} sign="shop-awning" href={hrefFor(ctx.lang, { catalog: true })} /></li>
-              {shelves.map((c) => <li key={c.slug}><CategoryButton quiet name={c.name} sign={c.sign} href={hrefFor(ctx.lang, { category: c.slug })} /></li>)}
-            </ul>
-          )}
-        </nav>
+            )}
+          </nav>
+        </div>
       </div>
     </section>
   )
