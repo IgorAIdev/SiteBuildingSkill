@@ -10,6 +10,7 @@ import { shot } from '@/lib/shot.ts'
 import { RecapLines } from './OrderReview.tsx'
 import { StateScreen } from './StateScreen.tsx'
 import { Icon } from './Icon.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Кабинет вошедшего (И771; устройство — Dawn, `customers/account.liquid`):
    заказы главной колонкой — карточкой каждый, со снимком первого товара,
@@ -33,7 +34,7 @@ export function Cabinet({ lang, view, landmark = true }: { lang: Lang; view: Cab
                 <li key={o.code} className={s.order}>
                   <span className={`${p.frame} ${c.shot}`}>{o.images[0] ? <img {...shot(o.images[0], 'thumb', true)} alt="" decoding="async" /> : null}</span>
                   <span className={s.orderWhat}>
-                    <a className={s.orderName} href={o.href}>{o.title}</a>
+                    <SiteLink className={s.orderName} href={o.href}>{o.title}</SiteLink>
                     <span className={p.note}>{o.placed} · <span className={s.status}>{o.status}</span></span>
                   </span>
                   <span className={s.orderSum}>
@@ -53,7 +54,7 @@ export function Cabinet({ lang, view, landmark = true }: { lang: Lang; view: Cab
           <section className={s.part} aria-labelledby="addresses-title">
             <h2 id="addresses-title">{view.addresses.title}</h2>
             {view.addresses.lines ? <RecapLines lines={view.addresses.lines} /> : <p className={p.note}>{view.addresses.none}</p>}
-            <a className={`${go.go} ${p.tap}`} href={view.addresses.manage.href}>{view.addresses.manage.label}<Icon id="arrow-right" /></a>
+            <SiteLink className={`${go.go} ${p.tap}`} href={view.addresses.manage.href}>{view.addresses.manage.label}<Icon id="arrow-right" /></SiteLink>
           </section>
           <form action={signOut.bind(null, lang)}>
             <button className={b.btn} type="submit"><Icon id="log-out" />{view.signOut}</button>

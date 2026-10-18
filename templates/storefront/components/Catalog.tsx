@@ -15,6 +15,7 @@ import { Icon } from './Icon.tsx'
 import { Shelf } from './Shelf.tsx'
 import { FoldGrid } from './FoldGrid.tsx'
 import { FoldShelf } from './FoldShelf.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Снимки первого экрана не ленивые: полка на ноутбуке держит в нём два ряда
    по четыре (Catalog.module.css, `--cols:4`). Снимок первого экрана, стоящий
@@ -86,8 +87,8 @@ export function Catalog({ view, search, cart, inset = false, ids, after }: { vie
                 {/* Выбранное — пилюлями в той же строке, «сбросить» — словом (И740):
                     своей строки у выбранного нет — место по высоте у полки. */}
                 {view.chips.length || view.clear ? <div className={`${p.cluster} ${s.picked}`}>
-                  {view.chips.map((c) => <a key={c.href} className={p.chip} data-pill href={c.href} aria-label={c.said}>{c.label}<Icon id="x" /></a>)}
-                  {view.clear ? <a className={b.btn} data-voice="bare" data-size="sm" href={view.clear.href}>{view.clear.label}</a> : null}
+                  {view.chips.map((c) => <SiteLink key={c.href} className={p.chip} data-pill href={c.href} scroll={false} aria-label={c.said}>{c.label}<Icon id="x" /></SiteLink>)}
+                  {view.clear ? <SiteLink className={b.btn} data-voice="bare" data-size="sm" href={view.clear.href} scroll={false}>{view.clear.label}</SiteLink> : null}
                 </div> : null}
                 {view.sort ? <SortMenu sort={view.sort} id={ids?.sort} /> : null}
               </div>
@@ -113,7 +114,7 @@ export function Catalog({ view, search, cart, inset = false, ids, after }: { vie
               ? <div><h2 className={p.said}>{view.shelf}</h2><ShelfGrid cards={view.cards} eager={FIRST_SCREEN} cart={cart} /></div>
               : view.empty.title
                 ? <StateScreen level={2} kind="none" title={view.empty.title} step={view.empty.step} href={view.empty.href} />
-                : <div>{view.empty.hint ? <p className={p.muted}>{view.empty.hint}</p> : null}<p><a className={go.go} href={view.empty.href}>{view.empty.step}<Icon id="arrow-right" /></a></p></div>}
+                : <div>{view.empty.hint ? <p className={p.muted}>{view.empty.hint}</p> : null}<p><SiteLink className={go.go} href={view.empty.href}>{view.empty.step}<Icon id="arrow-right" /></SiteLink></p></div>}
             {view.pages ? <Pagination pages={view.pages} /> : null}
           </>
         )}

@@ -6,6 +6,7 @@ import type { Lang } from '@/lib/locale.ts'
 import { t } from '@/lib/i18n/index.ts'
 import { Icon } from './Icon.tsx'
 import { RailPager } from './RailPager.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Шапка ряда, который листают вбок, — одна на сайт (правило 10, И665):
    плитки категорий и эффектов главной, полки товаров. Слева заголовок и
@@ -34,8 +35,8 @@ export function RailHead({ id, title, lede, all, lang }: { id: string; title: st
       </hgroup>
       <div className={`${p.cluster} ${s.acts}`}>
         <RailPager rail={`${id}-rail`} back={t(lang, 'rail.prev')} next={t(lang, 'rail.next')} />
-        {all ? <a className={`${b.btn} ${s.wide}`} data-rail-nav data-hand="pop" href={all}>{t(lang, 'shelf.all')}<Icon id="arrow-right" /></a> : null}
-        {all ? <a className={`${go.go} ${s.narrow}`} href={all}>{t(lang, 'shelf.all')}<Icon id="arrow-right" /></a> : null}
+        {all ? <SiteLink className={`${b.btn} ${s.wide}`} data-rail-nav data-hand="pop" href={all}>{t(lang, 'shelf.all')}<Icon id="arrow-right" /></SiteLink> : null}
+        {all ? <SiteLink className={`${go.go} ${s.narrow}`} href={all}>{t(lang, 'shelf.all')}<Icon id="arrow-right" /></SiteLink> : null}
       </div>
     </div>
   )

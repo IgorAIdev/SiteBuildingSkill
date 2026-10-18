@@ -5,6 +5,7 @@ import type { ReviewView } from '@/lib/review-view.ts'
 import { Stars } from './Rating.tsx'
 import { Icon } from './Icon.tsx'
 import { ReviewPlay } from './ReviewPlay.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Карточка отзыва — одна на сайт (И728): лента отзывов главной и образцы
    дизайн-системы. Устройство — по образцу HyperUI «Reviews with Star Rating»
@@ -71,5 +72,5 @@ function Byline({ r }: { r: ReviewView }) {
 }
 
 function Product({ product }: { product: NonNullable<ReviewView['product']> }) {
-  return <a className={`${go.go} ${s.product}`} href={product.href}>{product.name}<Icon id="arrow-right" /></a>
+  return <SiteLink className={`${go.go} ${s.product}`} href={product.href}>{product.name}<Icon id="arrow-right" /></SiteLink>
 }

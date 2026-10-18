@@ -6,6 +6,7 @@ import type { OrderPageView } from '@/lib/account-view.ts'
 import { OrderReview } from './OrderReview.tsx'
 import { OrderTotals } from './OrderTotals.tsx'
 import { Icon } from './Icon.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Заказ в кабинете (И771) — рама «спасибо» (OrderDone): номер именем
    страницы, под ним когда поставлен и в каком состоянии; слева — как
@@ -27,7 +28,7 @@ export function OrderPage({ view, landmark = true }: { view: OrderPageView; land
         <aside className={p.aside}>
           <div className={`${p.stack} ${p.pinned} ${c.summary}`}>
             <OrderTotals totals={view.totals} />
-            <a className={`${go.go} ${p.tap}`} data-to="back" href={view.back.href}><Icon id="arrow-left" />{view.back.label}</a>
+            <SiteLink className={`${go.go} ${p.tap}`} data-to="back" href={view.back.href}><Icon id="arrow-left" />{view.back.label}</SiteLink>
           </div>
         </aside>
       </div>

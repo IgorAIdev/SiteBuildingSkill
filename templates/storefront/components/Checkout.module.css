@@ -68,7 +68,7 @@
 .steps{display:flex;align-items:center;gap:var(--gap-targets);list-style:none;padding:0;margin:0}
 .stepItem{display:flex;align-items:center;gap:var(--gap-targets);color:var(--ink-soft)}
 .stepItem + .stepItem::before{content:'';inline-size:var(--air-group);border-block-start:var(--line-w) solid var(--rule)}
-.stepItem[aria-current='step']{color:var(--ink);font-weight:var(--label-weight)}
+.stepItem[aria-current='step']{color:var(--ink);text-decoration:underline;text-underline-offset:.3em}
 .stepItem[data-done]{color:var(--ink)}
 .stepItem a,.stepHere{display:inline-flex;align-items:center;gap:var(--gap-targets);min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target);color:inherit}
 .stepNo{display:inline-grid;place-items:center;flex:none;inline-size:1.9em;block-size:1.9em;border-radius:50%;box-shadow:inset 0 0 0 var(--line-w) var(--edge);font-variant-numeric:tabular-nums}

@@ -103,7 +103,7 @@ main:has(> [data-ground='deck']:last-child) + .foot{margin-block-start:0}
 /* Под рукой ссылка подвала — полным словом, без подчёркивания (слово
    заказчика 29.09.2026: «подчёркивание — архаика»; И578): вид «слово и знак»
    (`word`, Footer.tsx; И685), тот же, что у соцсетей и шапки. */
-.list a[aria-current='true']{color:var(--ink);font-weight:var(--label-weight)}
+.list a[aria-current='true']{color:var(--ink);text-decoration:underline;text-underline-offset:.3em}
 /* Основание — правила и продавец слева, оговорка о CBD справа у правого
    края (слово заказчика 29.09.2026; И548): одна полоса вместо двух, отбита
    волоском. Оговорка — в меру короткой строки, текст к правому краю;

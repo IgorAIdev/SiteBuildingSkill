@@ -24,6 +24,7 @@ import { ReachList } from './ReachList.tsx'
 import { PaneHead } from './PaneHead.tsx'
 import { MenuFoot } from './MenuFoot.tsx'
 import { reachRows } from '@/lib/contacts.ts'
+import { SiteLink } from './SiteLink.tsx'
 
 /** Меню шапки: полки, служебное шторки и верхняя строка. */
 type Menu = { links: NavLink[]; service: ServiceLink[]; top: TopBar; at: string }
@@ -45,7 +46,7 @@ type Props = { lang: Lang; nav: NavLink[]; service: Menu['service']; top: TopBar
    левому краю»; И753); полки уходят в шторку по `popovertarget`, без
    скрипта. */
 
-const logo = (lang: Lang) => <a className={s.logo} href={hrefFor(lang, { home: true })}><Logo /></a>
+const logo = (lang: Lang) => <SiteLink className={s.logo} href={hrefFor(lang, { home: true })}><Logo /></SiteLink>
 const cart = (lang: Lang, labelled: boolean) => <CartLink lang={lang} title={t(lang, 'cart.title')} close={t(lang, 'nav.close')} href={hrefFor(lang, { cart: true })} label={t(lang, 'nav.cart')} added={t(lang, 'cart.added')} countUrl={`/api/cart?lang=${lang}`} labelled={labelled} />
 /* Верхняя строка — одна у всех вариантов (бриф docs/design/шапка.md; образец —
    cbdin.bg): слева «куда ещё» — служебные ссылки, по центру обещание доставки
@@ -64,11 +65,11 @@ const topRow = (lang: Lang, top: TopBar) => (
   <>
     {top.links.length ? (
       <nav className={s.topLinks} aria-label={t(lang, 'header.links')}>
-        <ul>{top.links.map((l) => <li key={l.href}><a className={b.word} data-hand="menu" href={l.href}>{l.label}</a></li>)}</ul>
+        <ul>{top.links.map((l) => <li key={l.href}><SiteLink className={b.word} data-hand="menu" href={l.href}>{l.label}</SiteLink></li>)}</ul>
       </nav>
     ) : null}
     {top.promo.href
-      ? <a className={`${s.promo} ${b.word}`} data-hand="menu" href={top.promo.href}><Icon id="truck" />{top.promo.text}</a>
+      ? <SiteLink className={`${s.promo} ${b.word}`} data-hand="menu" href={top.promo.href}><Icon id="truck" />{top.promo.text}</SiteLink>
       : <p className={s.promo}><Icon id="truck" />{top.promo.text}</p>}
     <div className={s.topTools}>{tools(lang)}</div>
   </>
@@ -267,7 +268,7 @@ export function CheckoutHeader({ lang }: { lang: Lang }) {
       <div className={`${p.wrap} ${s.bar}`}>
         {logo(lang)}
         <div className={s.actions}>
-          <a className={go.go} data-to="back" href={hrefFor(lang, { cart: true })}><Icon id="arrow-left" />{t(lang, 'checkout.back')}</a>
+          <SiteLink className={go.go} data-to="back" href={hrefFor(lang, { cart: true })}><Icon id="arrow-left" />{t(lang, 'checkout.back')}</SiteLink>
         </div>
       </div>
     </header>

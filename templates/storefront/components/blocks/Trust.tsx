@@ -5,6 +5,7 @@ import { Icon } from '../Icon.tsx'
 import type { Block } from '@/lib/source/contract.ts'
 import { hrefFor } from '@/lib/href.ts'
 import type { BlockCtx, Place } from './types.ts'
+import { SiteLink } from '../SiteLink.tsx'
 
 type Row = { key: string; icon: string; title: string; text?: string; href: string | null }
 
@@ -35,7 +36,7 @@ export function Trust({ block, ctx, place }: { block: Extract<Block, { type: 'tr
               </span>
             </>
           )
-          return <li key={row.key}>{row.href ? <a className={`${b.row} ${s.trustRow}`} href={row.href}>{body}</a> : <span className={s.trustRow}>{body}</span>}</li>
+          return <li key={row.key}>{row.href ? <SiteLink className={`${b.row} ${s.trustRow}`} href={row.href}>{body}</SiteLink> : <span className={s.trustRow}>{body}</span>}</li>
         })}
       </ul>
     </section>

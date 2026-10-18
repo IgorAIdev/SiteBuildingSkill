@@ -6,6 +6,7 @@ import type { AccountState } from '@/lib/actions/account.ts'
 import { AuthForm } from './AuthForm.tsx'
 import { SocialSignIn } from './SocialSignIn.tsx'
 import { PolicyLine } from './PolicyLine.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 type Action = (prev: AccountState, form: FormData) => Promise<AccountState>
 
@@ -33,7 +34,7 @@ export function AuthPage({ view, action, social, permalink, landmark = true, at 
             {view.links.map((w) => (
               <p key={w.link.href} className={s.way}>
                 {w.text ? <span>{w.text}</span> : null}
-                <a className={`${b.word} ${p.tap} ${s.wayLink}`} href={w.link.href}>{w.link.label}</a>
+                <SiteLink className={`${b.word} ${p.tap} ${s.wayLink}`} href={w.link.href}>{w.link.label}</SiteLink>
               </p>
             ))}
             {view.note ? <p className={p.note}>{view.note}</p> : null}

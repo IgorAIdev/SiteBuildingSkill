@@ -1,5 +1,6 @@
 import tb from '@/styles/table.module.css'
 import type { Para } from '@/lib/doc-view.ts'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Строка документа и таблица документа — у одного хозяина (правило 10): их берут
    страница-документ (DocView, сервер) и окно настроек cookie (ConsentPrefs,
@@ -15,7 +16,7 @@ const offsetOf = (runs: Para, run: Para[number]) => textOf(runs.slice(0, runs.in
 /* Строка документа: текст и ссылки (lib/doc-view.ts). Ссылка в тексте — вид
    «в тексте» (`prose` у колонки текста), на чужой сайт — с `noopener`. */
 export function Line({ runs }: { runs: Para }) {
-  return <>{runs.map((r, _, all) => (r.href ? <a key={offsetOf(all, r)} href={r.href} rel={r.external ? 'noopener' : undefined}>{r.text}</a> : r.text))}</>
+  return <>{runs.map((r, _, all) => (r.href ? <SiteLink key={offsetOf(all, r)} href={r.href} rel={r.external ? 'noopener' : undefined}>{r.text}</SiteLink> : r.text))}</>
 }
 
 /** Таблица документа — одна разметка на раздел с таблицей и на таблицы cookie из

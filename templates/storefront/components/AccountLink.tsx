@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import { hrefFor } from '@/lib/href.ts'
 import type { Lang } from '@/lib/locale.ts'
 import { Icon } from './Icon.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Кабинет (И771): знаком человека сразу за сердцем, перед корзиной, как у своей
    витрины заказчика (cbdshop.bg: «Любими · Вход в профила»). Ведёт на кабинет: гостю
@@ -17,5 +18,5 @@ export function AccountLink({ lang, label, sheet = false }: { lang: Lang; label:
   const home = hrefFor(lang, { account: 'home' })
   const path = usePathname()
   const current = path === home || path.startsWith(`${home}/`) ? 'page' : undefined
-  return <a className={sheet ? s.glyph : `${s.glyph} ${s.account}`} href={home} aria-current={current} aria-label={label}><Icon id="user" /></a>
+  return <SiteLink className={sheet ? s.glyph : `${s.glyph} ${s.account}`} href={home} aria-current={current} aria-label={label}><Icon id="user" /></SiteLink>
 }

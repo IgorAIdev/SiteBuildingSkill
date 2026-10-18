@@ -2,6 +2,7 @@ import go from '@/styles/go.module.css'
 import p from '@/styles/primitives.module.css'
 import s from './Breadcrumbs.module.css'
 import { Icon } from './Icon.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Крошки. Цепочка целиком стоит в разметке всегда; на узкой коробке крошек
    (меньше 560) вместо неё — один шаг назад к родителю, «← CBD oils»: путь
@@ -24,9 +25,9 @@ export function Breadcrumbs({ trail, label }: { trail: { name: string; href?: st
   return (
     <nav aria-label={label} className={s.crumbs} data-print="skip">
       <ol>
-        {trail.map((c) => <li key={c.href ?? c.name}>{c.href ? <a className={p.tap} href={c.href}><span className={s.name}>{c.name}</span></a> : <span aria-current="page"><span className={s.name}>{c.name}</span></span>}</li>)}
+        {trail.map((c) => <li key={c.href ?? c.name}>{c.href ? <SiteLink className={p.tap} href={c.href}><span className={s.name}>{c.name}</span></SiteLink> : <span aria-current="page"><span className={s.name}>{c.name}</span></span>}</li>)}
       </ol>
-      {parent ? <a className={`${go.go} ${s.back}`} data-to="back" href={parent.href}><Icon id="arrow-left" /><span className={s.name}>{parent.name}</span></a> : null}
+      {parent ? <SiteLink className={`${go.go} ${s.back}`} data-to="back" href={parent.href}><Icon id="arrow-left" /><span className={s.name}>{parent.name}</span></SiteLink> : null}
     </nav>
   )
 }

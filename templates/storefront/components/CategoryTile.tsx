@@ -1,5 +1,6 @@
 import c from './CategoryTile.module.css'
 import { Icon } from './Icon.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Плитка категории — вид «сетка девяти» оси «Кнопки категорий» (панель Look →
    Home; слово заказчика 14.10.2026: «давай сетка девяти попробуем»). Знак
@@ -10,9 +11,9 @@ import { Icon } from './Icon.tsx'
    рисует пустой — знак листа `shop-awning` стоит вместо него. */
 export function CategoryTile({ name, sign, href }: { name: string; sign: string | null; href: string }) {
   return (
-    <a className={c.tile} href={href} data-tile="" data-lines="">
+    <SiteLink className={c.tile} href={href} data-tile="" data-lines="">
       <Icon id={sign ?? 'shop-awning'} className={c.sign} />
       <span className={c.name}>{name}</span>
-    </a>
+    </SiteLink>
   )
 }

@@ -8,6 +8,7 @@ import b from '@/styles/btn.module.css' // look-home:button,glass
 import go from '@/styles/go.module.css'
 import { Icon } from '../Icon.tsx'
 import { shot } from '@/lib/shot.ts'
+import { SiteLink } from '../SiteLink.tsx'
 
 /** Дверь — имя, адрес, кадр и строка о ней; нет кадра — дверь стоит на
  *  краске пола, нет строки — стоит имя одно. */
@@ -90,7 +91,7 @@ export function Doors({ id, home, doors }: { id: string; home: HomeVariant; door
       {doors.map((d) => (
         <li key={d.key} className={s.door} data-plate={PLATE[home] === 'door' ? '' : undefined}>
           <div className={`${p.frame} ${s.doorShot}`}>{d.image ? <img {...shot(d.image, 'shelf', true)} alt="" decoding="async" /> : null}</div>
-          <h3 className={s.doorName} data-plate={PLATE[home] === 'name' ? '' : undefined}><a className={LINK[home]} data-frost={FROST[home] ? '' : undefined} href={d.href}><span className={s.doorLabel}>{d.name}</span><Icon id="arrow-right" className={go.to} /></a></h3>
+          <h3 className={s.doorName} data-plate={PLATE[home] === 'name' ? '' : undefined}><SiteLink className={LINK[home]} data-frost={FROST[home] ? '' : undefined} href={d.href}><span className={s.doorLabel}>{d.name}</span><Icon id="arrow-right" className={go.to} /></SiteLink></h3>
           {LINE[home] && d.line ? <p className={s.doorLine}>{d.line}</p> : null}
         </li>
       ))}

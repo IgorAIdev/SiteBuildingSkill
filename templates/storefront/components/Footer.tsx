@@ -16,6 +16,7 @@ import { Newsletter } from './Newsletter.tsx'
 import { PayMarks } from './PayMarks.tsx'
 import { subscribe } from '@/lib/actions/subscribe.ts'
 import { COMPANY_IS_REAL } from '@/lib/flags.ts'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Документы по группам подвала (И748; румынский рынок: Legea 365/2002, OUG
    34/2014, OUG 140/2021, GDPR, Legea 506/2004, Legea 232/2022). Порядок —
@@ -51,13 +52,13 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
      05.10.2026: «сокращай названия до коротких общепринятых»): полное название —
      заголовок его страницы; документа без короткого имени — по заголовку. */
   const name = (d: Doc) => { const key = `footer.doc.${d.slug}`; return isKey(key) ? t(lang, key) : d.title }
-  const links = (slugs: string[]) => slugs.flatMap((slug) => docs.filter((d) => d.slug === slug)).map((d) => <li key={d.slug}><a className={b.word} href={hrefFor(lang, { doc: d.slug })}>{name(d)}</a></li>)
+  const links = (slugs: string[]) => slugs.flatMap((slug) => docs.filter((d) => d.slug === slug)).map((d) => <li key={d.slug}><SiteLink className={b.word} href={hrefFor(lang, { doc: d.slug })}>{name(d)}</SiteLink></li>)
   /* Кнопка отказа от договора — первый шаг (ст. 11a Директивы 2011/83, с
      19.06.2026: видна всё время права на отказ; И748) — ссылкой «Помощи»
      сразу за возвратом. Надпись — та же, что на кнопке страницы возврата
      (`withdraw.button`, «Retrageți-vă din contract aici»): у одной функции одна
      надпись, однозначная по ст. 11a (И791). */
-  const withdrawLink = <li key="withdraw"><a className={b.word} href={hrefFor(lang, { withdraw: true })}>{t(lang, 'withdraw.button')}</a></li>
+  const withdrawLink = <li key="withdraw"><SiteLink className={b.word} href={hrefFor(lang, { withdraw: true })}>{t(lang, 'withdraw.button')}</SiteLink></li>
   const chats = MESSENGERS.flatMap((m) => { const href = chatHref(m, ''); return href ? [{ key: m.key, label: m.label, href }] : [] })
   return (
     <footer className={s.foot} data-ground="deck" data-print="skip">
@@ -72,7 +73,7 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
       </div>
       <div className={`${p.wrap} ${s.top}`}>
         <div className={s.brand}>
-          <a className={s.logo} href={hrefFor(lang, { home: true })}><Logo /></a>
+          <SiteLink className={s.logo} href={hrefFor(lang, { home: true })}><Logo /></SiteLink>
           <p className={s.tagline}>{t(lang, 'footer.tagline')}</p>
           {/* Соцсети — знаками без слова, тихой кнопкой сайта без плиты
               (`btn`, `bare`): ответ на руку — вида «слово и знак», тот же,
@@ -89,16 +90,16 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
               <li><a className={b.word} href={telHref()}><Icon id="phone" />{CONTACTS.phone}</a></li>
               {/* Почта переносится по «@» (`wbr`): в половине телефона она шире ячейки (И760). */}
               <li><a className={b.word} href={mailHref()}><Icon id="mail" /><span>{CONTACTS.email.replace(/@.*/, '')}<wbr />{CONTACTS.email.replace(/^[^@]*/, '')}</span></a></li>
-              {chats.map((m) => <li key={m.key}><a className={b.word} href={m.href} rel="noopener" data-mark={m.key}><Icon id={SIGN[m.key]} />{m.label}</a></li>)}
+              {chats.map((m) => <li key={m.key}><SiteLink className={b.word} href={m.href} rel="noopener" data-mark={m.key}><Icon id={SIGN[m.key]} />{m.label}</SiteLink></li>)}
             </ul>
           </div>
           <nav className={s.col} aria-labelledby={`${idPrefix}foot-shop`}>
             <p className={s.head} id={`${idPrefix}foot-shop`}>{t(lang, 'footer.shop')}</p>
-            <ul className={s.list}>{shelves.map((x) => <li key={x.href}><a className={b.word} href={x.href}><span className={s.shelf}>{x.label}</span></a></li>)}</ul>
+            <ul className={s.list}>{shelves.map((x) => <li key={x.href}><SiteLink className={b.word} href={x.href}><span className={s.shelf}>{x.label}</span></SiteLink></li>)}</ul>
           </nav>
           <nav className={s.col} aria-labelledby={`${idPrefix}foot-about`}>
             <p className={s.head} id={`${idPrefix}foot-about`}>{t(lang, 'footer.about')}</p>
-            <ul className={s.list}>{links(ABOUT)}<li><a className={b.word} href={hrefFor(lang, { blog: true })}>{t(lang, 'nav.blog')}</a></li></ul>
+            <ul className={s.list}>{links(ABOUT)}<li><SiteLink className={b.word} href={hrefFor(lang, { blog: true })}>{t(lang, 'nav.blog')}</SiteLink></li></ul>
           </nav>
           <nav className={s.col} aria-labelledby={`${idPrefix}foot-help`}>
             <p className={s.head} id={`${idPrefix}foot-help`}>{t(lang, 'footer.help')}</p>
@@ -114,7 +115,7 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
           <ul className={s.legalLinks}>
             {links(LEGAL)}
             {hasOptional() ? <li><ConsentOpen label={t(lang, 'consent.open')} voice="word" /></li> : null}
-            <li><a className={b.word} href={ANPC_URL} rel="noopener">{t(lang, 'footer.anpcHome')}</a></li>
+            <li><SiteLink className={b.word} href={ANPC_URL} rel="noopener">{t(lang, 'footer.anpcHome')}</SiteLink></li>
             {ANPC_SAL_BADGE.src ? null : <li><a className={b.word} href={ANPC_SAL_URL} rel="noopener">{t(lang, 'footer.anpc')}</a></li>}
           </ul>
           {/* Знак SAL — официальная картинка без изменений (приказ 270/2026): своей

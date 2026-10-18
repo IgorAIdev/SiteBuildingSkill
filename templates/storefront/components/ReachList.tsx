@@ -3,6 +3,7 @@ import s from './ReachList.module.css'
 import type { ReachRow } from '@/lib/contacts.ts'
 import { Icon } from './Icon.tsx'
 import { SIGN } from './marks.ts'
+import { SiteLink } from './SiteLink.tsx'
 
 /** Первая строка окна помощи — кто отвечает: буква имени в круге вместо
  *  знака, роль и под ней имя. */
@@ -28,7 +29,7 @@ const row = (key: string, href: string | null, sign: ReactNode, name: string, va
   return (
     <li key={key}>
       {href
-        ? <a className={`${s.row} ${s.mark}`} data-mark={mark} href={href} {...away(href)}>{inner}</a>
+        ? <SiteLink className={`${s.row} ${s.mark}`} data-mark={mark} href={href} {...away(href)}>{inner}</SiteLink>
         : <span className={`${s.row} ${s.mark}`} data-mark={mark} aria-disabled="true">{inner}</span>}
     </li>
   )

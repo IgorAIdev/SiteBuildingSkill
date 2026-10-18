@@ -6,6 +6,7 @@ import type { DonePageView } from '@/lib/checkout-view.ts'
 import { OrderReview, RecapLines } from './OrderReview.tsx'
 import { OrderTotals } from './OrderTotals.tsx'
 import { Icon } from './Icon.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* «Спасибо» — конец пути, и он должен читаться концом (разбор 24.09.2026,
    O8): знак успеха краской события (`--ok`), заголовок, номер заказа
@@ -48,7 +49,7 @@ export function OrderDone({ view, landmark = true }: { view: DonePageView; landm
         <aside className={p.aside}>
           <div className={`${p.stack} ${p.pinned} ${c.summary}`}>
             <OrderTotals totals={view.totals} />
-            <a className={go.go} href={view.more.href}>{view.more.label}<Icon id="arrow-right" /></a>
+            <SiteLink className={go.go} href={view.more.href}>{view.more.label}<Icon id="arrow-right" /></SiteLink>
           </div>
         </aside>
       </div>

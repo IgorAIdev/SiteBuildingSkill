@@ -9,6 +9,7 @@ import { Icon } from './Icon.tsx'
 import { Turn } from './Turn.tsx'
 import { PaneHead } from './PaneHead.tsx'
 import { ApplyCount, LiveFilter, ValueTick } from './LiveFilter.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Одна разметка граней на все виды (И739) — вид решают стили по роли вида и
    коробке органов полки (Filters.module.css), разметка одна:
@@ -95,7 +96,7 @@ export function Filters({ f: view, id = 'filters' }: { f: FiltersView; id?: stri
               покупки), со счётом того, что даст выбор («Arată 12 produse», ApplyCount).
               До 05.10.2026 они стояли столбиком во всю ширину — громкая и контур, —
               а низ корзины был словом и кнопкой рядом: «кнопки внизу в разных формах». */}
-          {view.clear ? <a className={b.btn} href={view.clear.href}>{view.clear.label}</a> : null}
+          {view.clear ? <SiteLink className={b.btn} href={view.clear.href} scroll={false}>{view.clear.label}</SiteLink> : null}
           <ApplyCount className={b.btn} data-voice="loud" idle={view.apply} />
         </div>
         </LiveFilter>

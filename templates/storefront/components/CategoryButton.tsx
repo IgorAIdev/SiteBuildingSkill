@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react'
 import b from '@/styles/btn.module.css'
 import { Icon } from './Icon.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Кнопка категории — одна на сайт: ряд категорий на снимке героя (Hero.tsx)
    и вкладка «Кнопки» дизайн-системы берут её отсюда, а не рисуют вторую.
@@ -20,6 +21,6 @@ import { Icon } from './Icon.tsx'
 export function CategoryButton({ name, sign, href, size, style, quiet }: { name: string; sign: string | null; href?: string; size?: 'lg'; style?: CSSProperties; quiet?: boolean }) {
   const inner = <><span className={b.catName}>{name}</span>{sign ? <Icon id={sign} className={b.signDot} /> : null}</>
   return href
-    ? <a className={b.btn} data-voice="loud" data-shape data-cat={quiet ? 'quiet' : ''} data-plate="" data-size={size} href={href} style={style}>{inner}</a>
+    ? <SiteLink className={b.btn} data-voice="loud" data-shape data-cat={quiet ? 'quiet' : ''} data-plate="" data-size={size} href={href} style={style}>{inner}</SiteLink>
     : <button className={b.btn} data-voice="loud" data-shape data-cat={quiet ? 'quiet' : ''} data-plate="" data-size={size} type="button" style={style}>{inner}</button>
 }

@@ -1,6 +1,7 @@
 import b from '@/styles/btn.module.css'
 import s from './ShelfRows.module.css'
 import { Icon } from './Icon.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 export type ShelfRow = { label: string; href: string; sign: string | null }
 
@@ -15,7 +16,7 @@ export type ShelfRow = { label: string; href: string; sign: string | null }
 export function ShelfRows({ rows, label, bleed = false }: { rows: ShelfRow[]; label?: string; bleed?: boolean }) {
   const list = (
     <ul className={s.shelves} data-bleed={bleed ? '' : undefined}>
-      {rows.map((x) => <li key={x.href}><a className={`${b.row} ${s.shelf}`} href={x.href}><Icon id={x.sign ?? 'arrow-right'} /><span className={s.shelfName}>{x.label}</span></a></li>)}
+      {rows.map((x) => <li key={x.href}><SiteLink className={`${b.row} ${s.shelf}`} href={x.href}><Icon id={x.sign ?? 'arrow-right'} /><span className={s.shelfName}>{x.label}</span></SiteLink></li>)}
     </ul>
   )
   return label ? <nav aria-label={label}>{list}</nav> : list
