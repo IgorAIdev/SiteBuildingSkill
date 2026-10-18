@@ -12,6 +12,7 @@ import { SaveToggle } from './SaveToggle.tsx'
 import { t } from '@/lib/i18n/index.ts'
 import { shot } from '@/lib/shot.ts'
 import { SITE_INFO, type CardInfo, type CardVariant } from '@/lib/cards.ts'
+import { SiteLink } from './SiteLink.tsx'
 
 /** Запись в корзину — действия сервера, которые карточке передаёт страница
  *  (компонент в бекенд сам не ходит, И248): те же, что у кнопки карты
@@ -69,7 +70,7 @@ export async function ProductCard({ card, eager = false, cart, info = SITE_INFO,
       <SaveToggle id={card.id} add={t(card.lang, 'save.add', { name: card.name })} remove={t(card.lang, 'save.remove', { name: card.name })} over="picture" className={s.save} />
       <div className={s.body}>
         <div className={s.what}>
-          <a className={s.link} href={sample ? undefined : card.href}>
+          <SiteLink className={s.link} href={sample ? undefined : card.href}>
             {/* Марка — первой строкой над именем, как на карте товара: слово
                 заказчика 27.09.2026 «бренд · название · параметры · цена ·
                 кнопка». Не переводится — имя собственное. */}
@@ -79,7 +80,7 @@ export async function ProductCard({ card, eager = false, cart, info = SITE_INFO,
                 «нет» отменяет покупку, а скидку цена и так говорит строкой. */}
             {card.flag ? <span className={`${p.cut} ${s.flag}`} data-cut={card.flag.level}>{' '}{card.flag.text}</span>
               : card.sale ? <span className={`${p.cut} ${s.flag}`} data-cut="sale">{' '}<span className={p.cutText}>{card.sale}</span></span> : null}
-          </a>
+          </SiteLink>
           <Facts card={card} info={info} />
         </div>
         <div className={s.foot}>
@@ -96,7 +97,7 @@ export async function ProductCard({ card, eager = false, cart, info = SITE_INFO,
               </button>
             </CartForm>
           ) : (
-            <a className={`${b.btn} ${p.tap} ${s.add}`} data-hand="pop" href={card.buy.ask} aria-label={card.buy.name}>{card.buy.choose}</a>
+            <SiteLink className={`${b.btn} ${p.tap} ${s.add}`} data-hand="pop" href={card.buy.ask} aria-label={card.buy.name}>{card.buy.choose}</SiteLink>
           )}
         </div>
       </div>

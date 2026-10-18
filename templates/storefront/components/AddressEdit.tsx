@@ -8,6 +8,7 @@ import s from './Account.module.css'
 import type { AddressFormView, Link } from '@/lib/account-view.ts'
 import type { AccountState } from '@/lib/actions/account.ts'
 import { Fields } from './Field.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 type Action = (prev: AccountState, form: FormData) => Promise<AccountState>
 
@@ -28,7 +29,7 @@ export function AddressEdit({ form, action, permalink, cancel }: { form: Address
       {form.id ? <input type="hidden" name="id" value={form.id} /> : null}
       <div className={s.acts}>
         <button className={b.btn} data-voice="loud" data-size="lg" type="submit" disabled={pending}>{form.submit}</button>
-        {cancel ? <a className={`${b.word} ${p.tap}`} href={cancel.href}>{cancel.label}</a> : null}
+        {cancel ? <SiteLink className={`${b.word} ${p.tap}`} href={cancel.href}>{cancel.label}</SiteLink> : null}
       </div>
     </form>
   )

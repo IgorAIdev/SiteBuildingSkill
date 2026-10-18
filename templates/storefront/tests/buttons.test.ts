@@ -91,12 +91,12 @@ test('the rail head buttons and every sign button (data-pager) stay round past t
   for (const f of ['Pagination', 'FoldShelf']) assert.match(read(`../components/${f}.tsx`), /data-pager-more/)
   assert.match(read('../components/ReviewPlay.tsx'), /data-pager=""/)
   const head = read('../components/RailHead.tsx')
-  assert.match(head, /<a className=\{`\$\{b\.btn\} \$\{s\.wide\}`\} data-rail-nav href=\{all\}>/)
+  assert.match(head, /<(?:a|SiteLink) className=\{`\$\{b\.btn\} \$\{s\.wide\}`\} data-rail-nav href=\{all\}>/)
   /* Под рукой — тихая вуаль, как у стрелок листания, не заливка марки (слово заказчика 16.10.2026). */
   assert.doesNotMatch(head, /data-hand="pop"/)
   assert.doesNotMatch(read('../components/RailPager.tsx'), /data-hand="pop"/)
   /* На узкой шапке выход — слово (И761): пилюля рядом с кругами листания не помещалась. */
-  assert.match(head, /<a className=\{`\$\{go\.go\} \$\{s\.narrow\}`\} href=\{all\}>/)
+  assert.match(head, /<(?:a|SiteLink) className=\{`\$\{go\.go\} \$\{s\.narrow\}`\} href=\{all\}>/)
   const pager = read('../components/RailPager.tsx')
   assert.equal([...pager.matchAll(/<button\b[^>]*\bdata-pager data-rail-nav\b/g)].length, 2)
   assert.doesNotMatch(read('../components/Pagination.tsx'), /\bdata-rail-nav\b/)
@@ -146,7 +146,7 @@ test('the published look wears the pill twin of its corners: buttons with a word
 test('every chip with a cross is a pill', () => {
   let n = 0
   for (const { f, src } of SITE_TSX) {
-    for (const m of src.matchAll(/<(a|button)\b([^>]*className=\{p\.chip\}[^>]*)>([\s\S]*?)<\/\1>/g)) {
+    for (const m of src.matchAll(/<(a|SiteLink|button)\b([^>]*className=\{p\.chip\}[^>]*)>([\s\S]*?)<\/\1>/g)) {
       if (!m[3].includes('<Icon id="x"')) continue
       n++
       assert.match(m[2], /\bdata-pill\b/, `${f}: фишка с крестиком без data-pill`)
@@ -191,7 +191,7 @@ test('a forward arrow follows the word; a back arrow comes first and says data-t
     assert.doesNotMatch(src, /<Icon id="arrow-right" \/>\s*(\{|[A-Za-zА-Яа-я])/, `${f}: стрелка вперёд перед словом`)
     for (const m of src.matchAll(/<(a|button|span)\b([^>]*)>\s*<Icon id="arrow-left" \/>/g)) assert.match(m[2], /data-to="back"/, `${f}: стрелка назад без data-to="back"`)
   }
-  assert.match(read('../app/[lang]/blog/[slug]/page.tsx'), /<a className=\{go\.go\} data-to="back" href=\{hrefFor\(lang, \{ blog: true \}\)\}><Icon id="arrow-left" \/>/)
+  assert.match(read('../app/[lang]/blog/[slug]/page.tsx'), /<(?:a|SiteLink) className=\{go\.go\} data-to="back" href=\{hrefFor\(lang, \{ blog: true \}\)\}><Icon id="arrow-left" \/>/)
   assert.equal([...read('../components/QuickOrder.tsx').matchAll(/\{view\.call\}<Icon id="arrow-right" \/>/g)].length, 2)
 })
 

@@ -7,6 +7,7 @@ import s from './Account.module.css'
 import type { AuthView } from '@/lib/account-view.ts'
 import type { AccountState } from '@/lib/actions/account.ts'
 import { Fields } from './Field.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 type Action = (prev: AccountState, form: FormData) => Promise<AccountState>
 
@@ -28,7 +29,7 @@ export function AuthForm({ view, action, permalink, at = '' }: { view: AuthView;
       {view.rows.length ? (
         <fieldset className={`${f.rows} ${s.plain}`} disabled={pending}>
           <Fields rows={view.rows} state={state} at={at} />
-          {view.forgot ? <a className={`${b.word} ${p.tap} ${s.forgot}`} href={view.forgot.href}>{view.forgot.label}</a> : null}
+          {view.forgot ? <SiteLink className={`${b.word} ${p.tap} ${s.forgot}`} href={view.forgot.href}>{view.forgot.label}</SiteLink> : null}
         </fieldset>
       ) : null}
       {Object.entries(view.hidden).map(([name, value]) => <input key={name} type="hidden" name={name} value={value} />)}

@@ -8,6 +8,7 @@ import m from '@/styles/menu.module.css'
 import s from './LangSwitch.module.css'
 import { Turn } from './Turn.tsx'
 import { LANG_NAMES, LOCALES, type Lang } from '@/lib/locale.ts'
+import { SiteLink } from './SiteLink.tsx'
 
 const FIRST = new RegExp(`^/(${LOCALES.join('|')})(?=/|$)`)
 
@@ -61,9 +62,9 @@ export function LangSwitch({ lang, label, drop = false, trigger = b.btn }: { lan
         <ul id={list} popover="auto" className={`${p.menu} ${fs.drop} ${m.list}`} data-align="end" aria-label={label}>
           {LOCALES.map((l) => (
             <li key={l}>
-              <a className={b.row} href={path.replace(FIRST, `/${l}`)} hrefLang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>
+              <SiteLink className={b.row} href={path.replace(FIRST, `/${l}`)} scroll={false} hrefLang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>
                 {l.toUpperCase()}<span className={m.aside}>{LANG_NAMES[l]}</span>
-              </a>
+              </SiteLink>
             </li>
           ))}
         </ul>
@@ -77,9 +78,9 @@ export function LangSwitch({ lang, label, drop = false, trigger = b.btn }: { lan
       <ul className={`${p.cluster} ${s.words}`}>
         {LOCALES.map((l) => (
           <li key={l}>
-            <a className={`${b.word} ${p.tap} ${s.word}`} href={path.replace(FIRST, `/${l}`)} hrefLang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>
+            <SiteLink className={`${b.word} ${p.tap} ${s.word}`} href={path.replace(FIRST, `/${l}`)} scroll={false} hrefLang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>
               {l.toUpperCase()}<span className={p.said}> {LANG_NAMES[l]}</span>
-            </a>
+            </SiteLink>
           </li>
         ))}
       </ul>

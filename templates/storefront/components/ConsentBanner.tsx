@@ -7,6 +7,7 @@ import type { ConsentView } from '@/lib/consent-view.ts'
 import { CONSENT_EVENT, CONSENT_PREFS, kindOf, type Choice, type Optional } from '@/lib/consent.ts'
 import { saveChoice } from '@/lib/consent-save.ts'
 import { ConsentOpen } from './ConsentOpen.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 type Done = ReturnType<typeof kindOf>
 
@@ -69,7 +70,7 @@ export function ConsentBanner({ view, optional, target = CONSENT_PREFS, idPrefix
           <>
             <div className={`${p.stack} ${p.prose} ${s.text}`}>
               <p>{view.lead}</p>
-              <p>{view.choose}{view.policy ? <> <a href={view.policy.href}>{view.policy.label}</a></> : null}</p>
+              <p>{view.choose}{view.policy ? <> <SiteLink href={view.policy.href}>{view.policy.label}</SiteLink></> : null}</p>
             </div>
             <div className={`${p.cluster} ${s.acts}`}>
               <div className={`${p.switcher} ${s.pair}`}>

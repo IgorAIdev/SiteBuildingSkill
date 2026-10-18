@@ -3,6 +3,7 @@ import s from './PostParts.module.css'
 import type { Image } from '@/lib/source/contract.ts'
 import type { PostHeadView } from '@/lib/post-view.ts'
 import { shot } from '@/lib/shot.ts'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Части статьи блога (И749; бриф docs/design/блог.md, образец — cbdshop.bg).
    Документ (DocView) даёт колонку текста, оглавление и разделы; здесь — то,
@@ -14,7 +15,7 @@ export function PostHead({ view }: { view: PostHeadView }) {
   const { topic, title, subtitle, author, meta } = view
   return (
     <>
-      {topic ? <p className={`${p.note} ${s.topic}`}><a href={topic.href}>{topic.name}</a></p> : null}
+      {topic ? <p className={`${p.note} ${s.topic}`}><SiteLink href={topic.href}>{topic.name}</SiteLink></p> : null}
       <h1>{title}</h1>
       {subtitle ? <p>{subtitle}</p> : null}
       {author ? <p className={p.note}>{author.line} · {author.role}</p> : null}
@@ -51,7 +52,7 @@ export function PostSources({ title, sources, important, disclaimer }: { title: 
         <section className={p.stack} aria-labelledby="post-sources">
           <h2 id="post-sources" className={s.heading}>{title}</h2>
           <ol className={s.sources}>
-            {sources.map((x, i) => <li key={x.url} id={`source-${i + 1}`}><a href={x.url} rel="noopener">{x.title}</a></li>)}
+            {sources.map((x, i) => <li key={x.url} id={`source-${i + 1}`}><SiteLink href={x.url} rel="noopener">{x.title}</SiteLink></li>)}
           </ol>
         </section>
       ) : null}

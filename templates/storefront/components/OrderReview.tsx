@@ -2,6 +2,7 @@ import s from './Checkout.module.css'
 import b from '@/styles/btn.module.css'
 import type { ItemView, Recap } from '@/lib/checkout-view.ts'
 import { OrderItems } from './OrderItems.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Строки сверки — одной записью, как адрес на конверте: строка под
    строкой, без воздуха между ними. Это строки данных, а не абзац: блок, а
@@ -25,7 +26,7 @@ export function OrderReview({ title, recaps, itemsTitle, items, id = 'review-tit
         <div key={r.title} className={s.recap}>
           <div className={s.recapHead}>
             <h3 className={s.recapTitle}>{r.title}</h3>
-            {r.change ? <a className={b.word} href={r.change.href} aria-label={r.change.aria}>{r.change.label}</a> : null}
+            {r.change ? <SiteLink className={b.word} href={r.change.href} aria-label={r.change.aria}>{r.change.label}</SiteLink> : null}
           </div>
           <RecapLines lines={r.lines} />
         </div>

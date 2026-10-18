@@ -6,6 +6,7 @@ import s from './Pagination.module.css'
 import type { FoldView, PagesView } from '@/lib/catalog-view.ts'
 import { Icon } from './Icon.tsx'
 import { FoldCount, FoldMore } from './FoldShelf.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Листание под полкой (И721, И731) — одной строкой по центру, слева направо:
    назад, номера, вперёд; «Показать ещё»; строка «Показано 25–48 из 85» (слово
@@ -69,7 +70,7 @@ function Steps({ pages }: { pages: PagesView }) {
         {pages.items.map((it) => (
           <Fragment key={it.n}>
             {it.gap ? <li className={s.gap} aria-hidden="true">…</li> : null}
-            <li>{it.href ? <a className={b.btn} data-pager href={it.href}>{it.n}</a> : <span className={b.btn} data-pager aria-current="page">{it.n}</span>}</li>
+            <li>{it.href ? <SiteLink className={b.btn} data-pager href={it.href}>{it.n}</SiteLink> : <span className={b.btn} data-pager aria-current="page">{it.n}</span>}</li>
           </Fragment>
         ))}
       </ol>
@@ -83,6 +84,6 @@ function Steps({ pages }: { pages: PagesView }) {
  *  и из чтения вслух уходит (ссылки некуда), место в ряду держит. */
 function Step({ href, label, rel, sign }: { href: string | null; label: string; rel: 'prev' | 'next'; sign: string }) {
   return href
-    ? <a className={b.btn} data-pager data-hand="pop" href={href} rel={rel} aria-label={label}><Icon id={sign} /></a>
+    ? <SiteLink className={b.btn} data-pager data-hand="pop" href={href} rel={rel} aria-label={label}><Icon id={sign} /></SiteLink>
     : <span className={b.btn} data-pager aria-disabled="true" aria-hidden="true"><Icon id={sign} /></span>
 }

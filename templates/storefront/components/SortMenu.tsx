@@ -5,6 +5,7 @@ import fs from './Filters.module.css'
 import m from '@/styles/menu.module.css'
 import type { SortView } from '@/lib/catalog-view.ts'
 import { Icon } from './Icon.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Порядок полки — в полосе органов, справа (разбор 24.09.2026, C1): стоял
    внизу колонки фильтров под четырьмя гранями, и его не находили.
@@ -42,7 +43,7 @@ export function SortMenu({ sort, id = 'sort-list' }: { sort: SortView; id?: stri
     <div className={s.sort}>
       <button className={`${b.btn} ${fs.trigger}`} data-voice="bare" data-hang="end" type="button" popoverTarget={id} aria-label={sort.said}><Icon id="list-filter" /><span className={s.sortWord}>{sort.current}</span></button>
       <ul id={id} popover="auto" className={`${p.menu} ${fs.drop} ${m.list}`} data-align="end" aria-label={sort.label}>
-        {sort.options.map((o) => <li key={o.value}><a className={b.row} href={o.href} aria-current={o.on ? 'true' : undefined}>{o.label}</a></li>)}
+        {sort.options.map((o) => <li key={o.value}><SiteLink className={b.row} href={o.href} scroll={false} aria-current={o.on ? 'true' : undefined}>{o.label}</SiteLink></li>)}
       </ul>
     </div>
   )

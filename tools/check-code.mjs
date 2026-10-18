@@ -283,7 +283,7 @@ for (const path of files) {
    * записан строкой («/cart»), у переключателя собран из элемента списка
    * (`/product/${x.id}`) — то есть адресов столько же, сколько вариантов,
    * и страницы за ними однотипные. */
-  for (const m of src.matchAll(/<Link\b[^>]*>/g)) {
+  for (const m of src.matchAll(/<(?:Link|SiteLink)\b[^>]*>/g)) {
     const tag = m[0]
     if (!/aria-current/.test(tag)) continue
     if (!/href=\{`[^`]*\$\{/.test(tag)) continue
@@ -345,6 +345,27 @@ for (const path of files) {
 
   for (const m of src.matchAll(/href\s*=\s*(?:"#"|'#'|\{\s*['"]#['"]\s*\})/g)) {
     found.deadLink.push(`${at(m.index)}  href="#" — ссылка на верх страницы вместо адреса`)
+  }
+
+  /* ── семья: внутренняя ссылка — обычная <a>, а не SiteLink ──────────────
+   *
+   * `<a href="/…">` грузит документ заново: шапка и подвал рисуются с нуля,
+   * числа из склада браузера (избранное, корзина) на миг исчезают, страница
+   * прыгает наверх. Заказчик 18.10.2026: «при переключении языка меню
+   * перезагружается, число избранного пропадает; а при выборе Strength
+   * страница не прыгает». Выбор варианта шёл мягко, остальное — нет.
+   *
+   * Решает ссылка набора (components/SiteLink.tsx): внутренний адрес — мягкий
+   * переход, чужой, tel:, mailto:, якорь, новая вкладка — обычная <a>.
+   * Обычной <a> остаются ровно эти случаи; здесь ловится всё прочее. */
+  if (!/(^|\/)SiteLink\.tsx$/.test(rel)) {
+    for (const m of src.matchAll(/<a\b[^>]*>/g)) {
+      const tag = m[0]
+      if (!/\bhref\s*=/.test(tag)) continue
+      if (/href\s*=\s*(?:"(?:#|https?:|tel:|mailto:)|\{\s*['"`]#|\{`#)/.test(tag)) continue
+      if (/target\s*=\s*"_blank"|\bdownload\b|telHref\(|mailHref\(|_URL\b/.test(tag)) continue
+      found.hardLink.push(`${at(m.index)}  <a href> на внутренний адрес — грузит страницу заново; берите SiteLink`)
+    }
   }
 
   /* ── семья: адрес канала связи набран заново, а не спрошен у lib/contacts.ts

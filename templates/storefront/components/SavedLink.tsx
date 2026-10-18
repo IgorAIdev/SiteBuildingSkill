@@ -5,6 +5,7 @@ import { useSaved } from '@/lib/saved.ts'
 import { hrefFor } from '@/lib/href.ts'
 import type { Lang } from '@/lib/locale.ts'
 import { Icon } from './Icon.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Избранное — знаком сердца с числом на углу, тем же, что у корзины
    (`badge`). Ведёт на страницу избранного со списком в адресе. На самой странице
@@ -17,11 +18,11 @@ export function SavedLink({ lang, label }: { lang: Lang; label: string }) {
   const here = usePathname() === new URL(hrefFor(lang, { saved: [] }), 'http://x').pathname
   const href = hrefFor(lang, { saved })
   return (
-    <a className={s.glyph} href={href} aria-current={here ? 'page' : undefined} aria-label={saved.length ? `${label} (${saved.length})` : label}>
+    <SiteLink className={s.glyph} href={href} aria-current={here ? 'page' : undefined} aria-label={saved.length ? `${label} (${saved.length})` : label}>
       <span className={s.cartSign}>
         <Icon id="heart" />
         {saved.length ? <span className={s.badge} aria-hidden="true">{saved.length}</span> : null}
       </span>
-    </a>
+    </SiteLink>
   )
 }
