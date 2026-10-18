@@ -1,6 +1,5 @@
 // look-panel — страница дизайн-системы принадлежит панели вида (look-panel/PANEL.md).
-// Открыта, пока включён DESIGN_SYSTEM=on (сама, без панели вида: слово заказчика 16.10.2026 — «отдели
-// look от дизайн-системы») или LOOK_PICKER=on (вместе с панелью); `npm run look:remove` удаляет эту папку вместе с look-panel/.
+// Открыта, пока включён DESIGN_SYSTEM=on (сама, без панели вида) или LOOK_PICKER=on (вместе с панелью); `npm run look:remove` удаляет эту папку вместе с look-panel/.
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { langOf } from '@/lib/route.ts'

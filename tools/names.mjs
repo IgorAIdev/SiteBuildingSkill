@@ -233,9 +233,9 @@ export const REQUIRED = {
      в пустой проект он не ставится, но имя — не про запас (И626). */
   '--menu-size': 'роль меню шапки — кегль, ступенью ниже тела, не мельче 1rem; регулировки в панели нет (templates/storefront, Header.module.css; И580, И633)',
   '--head-full': 'вся шапка на нуле прокрутки: прилипшая строка, верхняя полоса и линия — от неё герой считает первый экран (templates/storefront, blocks.module.css; И655)',
-  '--head-open': 'шапка целиком на нуле прокрутки — строка за строкой теми же ролями, что её рисуют; от неё первое окно считает верх до кадра карты товара (templates/storefront, ProductView.module.css; И795)',
-  '--head-stuck': 'прилипшая часть шапки «boutique» после ухода верхней полосы: строка знака и строка полок; прилипшая колонка карты товара встаёт на неё (templates/storefront, ProductView.module.css; И795)',
-  '--notice-top': 'сколько верха занимает полоса «сайт строится» над шапкой; нет полосы — ноль (templates/storefront, BuildingNotice.tsx, ProductView.module.css; И795)',
+  '--head-open': 'шапка целиком на нуле прокрутки — строка за строкой теми же ролями, что её рисуют; от неё первое окно считает верх до кадра карты товара (templates/storefront, ProductView.module.css; И796)',
+  '--head-stuck': 'прилипшая часть шапки «boutique» после ухода верхней полосы: строка знака и строка полок; прилипшая колонка карты товара встаёт на неё (templates/storefront, ProductView.module.css; И796)',
+  '--notice-top': 'сколько верха занимает полоса «сайт строится» над шапкой; нет полосы — ноль (templates/storefront, BuildingNotice.tsx, ProductView.module.css; И796)',
   '--shot-frame': 'пропорция снимка товара, постоянная 1 / 1 (Gallery, ProductCard, ProductView; decisions.md 01.10.2026)',
   '--measure-form': 'колонка формы входа по центру страницы, 25rem — в коридоре образцов 320…446 (templates/storefront, Account.module.css; И780)',
   '--sh-far-3': 'дальний слой тени всплывающего — набор теней витрины (templates/storefront/styles/look.css; И593)',
