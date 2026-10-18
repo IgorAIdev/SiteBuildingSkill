@@ -4,6 +4,7 @@ import p from '@/styles/primitives.module.css'
 import s from './LabReport.module.css'
 import type { LabView } from '@/lib/product-view.ts'
 import { Icon } from './Icon.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Протокол партии — ОДИН на карте товара (заголовок второго уровня) и в
    листе лаборатории главной (третьего: там он внутри своего раздела). Он
@@ -23,7 +24,7 @@ export function LabReport({ lab, level = 2 }: { lab: LabView; level?: 2 | 3 }) {
       <dl className={s.facts}>
         {lab.rows.map(([k, v]) => <div key={k} className={s.fact}><dt>{k}</dt><dd>{v}</dd></div>)}
       </dl>
-      {lab.open ? <a className={go.go} href={lab.open.href}>{lab.open.label}<Icon id="arrow-right" /></a> : null}
+      {lab.open ? <SiteLink className={go.go} href={lab.open.href}>{lab.open.label}<Icon id="arrow-right" /></SiteLink> : null}
     </section>
   )
 }

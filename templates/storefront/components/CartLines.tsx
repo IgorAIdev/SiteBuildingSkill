@@ -4,6 +4,7 @@ import s from './Cart.module.css'
 import type { CartLineView } from '@/lib/cart-view.ts'
 import { QuantityStepper } from './QuantityStepper.tsx'
 import { shot } from '@/lib/shot.ts'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Строки корзины — одни на страницу корзины и на её шторку (CartPane):
    одна вещь — одно место (правило 10). Стоят внутри формы корзины
@@ -24,7 +25,7 @@ export function CartLines({ lines }: { lines: CartLineView[] }) {
         <li key={l.id} className={s.line}>
           <div className={`${p.frame} ${s.thumb}`}><img {...shot(l.image, 'thumb', true)} alt="" decoding="async" /></div>
           <div className={s.what}>
-            <a className={s.name} href={l.href}>{l.name}</a>
+            <SiteLink className={s.name} href={l.href}>{l.name}</SiteLink>
             {l.facts ? <p className={`${p.note} ${s.facts}`}>{l.facts}</p> : null}
           </div>
           <p className={s.unit}><span aria-hidden="true">{l.unit}</span><span className={p.said}>{l.unitSay}</span></p>

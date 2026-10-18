@@ -23,6 +23,7 @@ import { PostHead, PostIntro, PostSources } from '@/components/PostParts.tsx'
 import { Shelf } from '@/components/Shelf.tsx'
 import { Faq } from '@/components/blocks/Faq.tsx'
 import { Unavailable } from '@/components/StateScreen.tsx'
+import { SiteLink } from '../../../../components/SiteLink.tsx'
 
 type Props = { params: Promise<{ lang: string; slug: string }> }
 
@@ -87,7 +88,7 @@ export default async function PostPage({ params }: Props) {
           <ul className={p.rail} data-rail="goods">{reads.map((c) => <li key={c.slug}><PostCard post={c} /></li>)}</ul>
         </section>
       ) : null}
-      <p className={`${p.section} ${p.cluster}`}><a className={go.go} data-to="back" href={hrefFor(lang, { blog: true })}><Icon id="arrow-left" />{t(lang, 'blog.back')}</a></p>
+      <p className={`${p.section} ${p.cluster}`}><SiteLink className={go.go} data-to="back" href={hrefFor(lang, { blog: true })}><Icon id="arrow-left" />{t(lang, 'blog.back')}</SiteLink></p>
     </main>
   )
 }

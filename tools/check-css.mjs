@@ -1473,6 +1473,14 @@ for (const path of files) {
    * content») — узлу нужен `inline-size`. */
   for (const { rel, css, at } of sheets) {
     for (const m of css.matchAll(/\b100(vw|vh|lvw|lvh)\b/g)) add('fullVw', `${at(m.index)}  100${m[1]}`)
+    /* Выбранное меняет толщину шрифта — ширина кнопки меняется, соседи по
+     * ряду едут. Строка списка с заливкой (background) на всю ширину не
+     * двигает никого и допустима; кнопка в ряду с одной толщиной — нет. */
+    for (const m of css.matchAll(/([^{}]*\[(?:aria-current|aria-pressed|aria-selected|aria-checked|data-on)[^{}]*)\{([^}]*)\}/g)) {
+      if (/(^|[;\s])font-weight\s*:/.test(m[2]) && !/background/.test(m[2]) && !/^\s*@/.test(m[1])) {
+        add('stateWeight', `${at(m.index + m[1].length - m[1].trimStart().length)}  ${m[1].trim().slice(0, 70)}`)
+      }
+    }
     for (const m of css.matchAll(/container-type\s*:\s*size\b/g)) add('sizeContain', `${at(m.index)}  container-type: size`)
   }
 

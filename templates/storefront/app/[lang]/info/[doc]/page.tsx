@@ -20,6 +20,7 @@ import { docView, plainOf } from '@/lib/doc-view.ts'
 import b from '@/styles/btn.module.css'
 import { JsonLd } from '@/components/JsonLd.tsx'
 import { Unavailable } from '@/components/StateScreen.tsx'
+import { SiteLink } from '../../../../components/SiteLink.tsx'
 
 type Props = { params: Promise<{ lang: string; doc: string }> }
 
@@ -58,7 +59,7 @@ export default async function DocPage({ params }: Props) {
      где они есть (раздел `when: consent`); уведомление ЕС о гарантии — картинкой
      ЕС без изменений (Регл. 2025/1960; нет файла — ничего). */
   const slots = {
-    withdrawal: <p><a className={b.btn} data-voice="loud" href={hrefFor(lang, { withdraw: true })}>{t(lang, 'withdraw.button')}</a></p>,
+    withdrawal: <p><SiteLink className={b.btn} data-voice="loud" href={hrefFor(lang, { withdraw: true })}>{t(lang, 'withdraw.button')}</SiteLink></p>,
     'cookie-settings': <p><ConsentOpen label={t(lang, 'consent.open')} voice="quiet" /></p>,
     'cookie-optional': optionalOf().map((c) => { const x = storageTable(lang, c); const id = `storage-${c}`; return <div key={c} className={p.stack}><h3 id={id}>{x.caption}</h3><DocTable head={x.head} rows={x.rows} labelledBy={id} /></div> }),
     'guarantee-notice': <GuaranteeNotice lang={lang} inline />,

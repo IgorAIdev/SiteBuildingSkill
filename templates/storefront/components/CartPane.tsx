@@ -12,6 +12,7 @@ import { GoalMeter } from './GoalMeter.tsx'
 import { OrderTotals } from './OrderTotals.tsx'
 import { EmptyPaths } from './EmptyPaths.tsx'
 import { PaneHead } from './PaneHead.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 type View = Pick<CartPageView, 'title' | 'count' | 'lines' | 'totals' | 'goal' | 'coupon' | 'couponNotice' | 'checkout' | 'open' | 'empty' | 'messages'>
 
@@ -83,8 +84,8 @@ export function CartPane({ lang, id, src, title, close, pane, shown }: { lang: s
           <CartCoupon lang={lang} view={view} submit={cartSubmit} call={cartCall} />
           <OrderTotals totals={view.totals} />
           <div className={pn.acts}>
-            <a className={b.btn} href={view.open.href}>{view.open.label}</a>
-            <a className={b.btn} data-voice="loud" href={view.checkout.href}>{view.checkout.label}</a>
+            <SiteLink className={b.btn} href={view.open.href}>{view.open.label}</SiteLink>
+            <SiteLink className={b.btn} data-voice="loud" href={view.checkout.href}>{view.checkout.label}</SiteLink>
           </div>
         </div>
       ) : null}

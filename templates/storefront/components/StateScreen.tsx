@@ -8,6 +8,7 @@ import { t } from '@/lib/i18n/index.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { Icon } from './Icon.tsx'
 import { SearchForm } from './SearchForm.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 type Kind = 'empty' | 'none' | 'unavailable' | 'not-found'
 
@@ -42,8 +43,8 @@ export function StateScreen({ level, kind, title, lead, flush = false, step, hre
         {step === undefined ? null : retry
           ? <button className={b.btn} data-voice={loud ? 'loud' : undefined} data-size={loud ? 'lg' : undefined} type="button" onClick={retry}>{step}</button>
           : loud
-            ? <a className={b.btn} data-voice="loud" data-size="lg" href={href}>{step}</a>
-            : <a className={go.go} href={href}>{step}<Icon id="arrow-right" /></a>}
+            ? <SiteLink className={b.btn} data-voice="loud" data-size="lg" href={href}>{step}</SiteLink>
+            : <SiteLink className={go.go} href={href}>{step}<Icon id="arrow-right" /></SiteLink>}
         {after}
       </div>
     </section>

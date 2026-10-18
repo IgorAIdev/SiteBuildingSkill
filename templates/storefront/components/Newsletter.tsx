@@ -5,6 +5,7 @@ import f from '@/styles/form.module.css'
 import p from '@/styles/primitives.module.css'
 import s from './Newsletter.module.css'
 import type { NewsState } from '@/lib/actions/subscribe.ts'
+import { SiteLink } from './SiteLink.tsx'
 
 type Words = { title: string; lead: string; label: string; hint: string; submit: string; consent: string; policy: string; done: string }
 type Action = (prev: NewsState, form: FormData) => Promise<NewsState>
@@ -47,7 +48,7 @@ export function Newsletter({ words, action, policy }: { words: Words; action: Ac
               {state?.message ? <p className={f.say} data-state="error" id={`${id}-say`} role="alert">{state.message}</p> : null}
             </form>
           )}
-        <p className={s.consent}>{words.consent} <a href={policy}>{words.policy}</a></p>
+        <p className={s.consent}>{words.consent} <SiteLink href={policy}>{words.policy}</SiteLink></p>
       </div>
     </div>
   )

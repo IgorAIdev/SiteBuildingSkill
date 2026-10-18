@@ -1,6 +1,7 @@
 import s from './Checkout.module.css'
 import type { StepsView } from '@/lib/checkout-view.ts'
 import { Icon } from './Icon.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Шаги: пройденные — ссылками назад с галочкой, текущий —
    `aria-current="step"`, будущие — текстом: к ним не пускает сервер.
@@ -19,7 +20,7 @@ export function CheckoutSteps({ steps }: { steps: StepsView }) {
           const name = <span className={s.stepName}>{i.name}</span>
           return (
             <li key={i.name} className={s.stepItem} aria-current={i.current ? 'step' : undefined} data-done={i.done ? '' : undefined}>
-              {i.href ? <a href={i.href}>{mark}{name}</a> : <span className={s.stepHere}>{mark}{name}</span>}
+              {i.href ? <SiteLink href={i.href}>{mark}{name}</SiteLink> : <span className={s.stepHere}>{mark}{name}</span>}
             </li>
           )
         })}

@@ -6,6 +6,7 @@ import go from '@/styles/go.module.css'
 import d from './DocView.module.css'
 import { Faq } from './blocks/Faq.tsx'
 import s from './CatalogCopy.module.css'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Ссылки без своих у страницы — общие две; свои пишет текст страницы (`links`), словами запроса цели. */
 const LINKS = {
@@ -30,12 +31,12 @@ export function CatalogCopy({ copy, lang }: { copy: ShopCopy; lang: Lang }) {
         ))}
         <div className={p.cluster}>
           {copy.links
-            ? copy.links.map((link) => <a key={link.label} className={go.go} href={hrefFor(lang, link.to)}>{link.label}</a>)
+            ? copy.links.map((link) => <SiteLink key={link.label} className={go.go} href={hrefFor(lang, link.to)}>{link.label}</SiteLink>)
             : <>
-              <a className={go.go} href={hrefFor(lang, { doc: 'analize-de-laborator' })}>{LINKS[lang].lab}</a>
-              <a className={go.go} href={hrefFor(lang, { catalog: true })}>{LINKS[lang].all}</a>
+              <SiteLink className={go.go} href={hrefFor(lang, { doc: 'analize-de-laborator' })}>{LINKS[lang].lab}</SiteLink>
+              <SiteLink className={go.go} href={hrefFor(lang, { catalog: true })}>{LINKS[lang].all}</SiteLink>
             </>}
-          {copy.sources?.map((source) => <a key={source.url} className={go.go} href={source.url}>{source.label}</a>)}
+          {copy.sources?.map((source) => <SiteLink key={source.url} className={go.go} href={source.url}>{source.label}</SiteLink>)}
         </div>
       </div>
       <Faq block={{ type: 'faq', ...copy.faq }} place={{ air: null }} inset />

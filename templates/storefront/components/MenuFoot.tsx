@@ -8,6 +8,7 @@ import { Icon } from './Icon.tsx'
 import { SavedLink } from './SavedLink.tsx'
 import { AccountLink } from './AccountLink.tsx'
 import { LangSwitch } from './LangSwitch.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Низ шторки меню — служебное под полками (И770, поправка И772). Слово заказчика
    05.10.2026: «внизу плохо, огромная неаккуратная панель выбора языка, одинокий
@@ -35,7 +36,7 @@ export function MenuFoot({ lang, top, service }: { lang: Lang; top: ServiceLink[
     <div className={s.sheetFoot}>
       {links.length ? (
         <ul className={m.list} data-tone="quiet">
-          {links.map((l) => <li key={l.href}><a className={b.row} href={l.href}>{l.sign ? <Icon id={l.sign} /> : null}{l.label}</a></li>)}
+          {links.map((l) => <li key={l.href}><SiteLink className={b.row} href={l.href}>{l.sign ? <Icon id={l.sign} /> : null}{l.label}</SiteLink></li>)}
         </ul>
       ) : null}
       <div className={s.sheetTools}>

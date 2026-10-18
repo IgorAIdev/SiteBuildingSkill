@@ -9,6 +9,7 @@ import type { PaymentPageView } from '@/lib/checkout-view.ts'
 import type { FormState } from '@/lib/checkout-form.ts'
 import { OrderTotals } from './OrderTotals.tsx'
 import { Pledges } from './Pledges.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 type Action = (prev: FormState, form: FormData) => Promise<FormState>
 
@@ -55,7 +56,7 @@ export function PaymentForm({ view, action, permalink, children, notice, labelle
         <div className={`${p.stack} ${p.pinned} ${c.summary}`}>
           <OrderTotals totals={view.totals} />
           <div className={c.decide}>
-            <p className={s.terms}>{view.terms.note} <a href={view.terms.link.href}>{view.terms.link.label}</a></p>
+            <p className={s.terms}>{view.terms.note} <SiteLink href={view.terms.link.href}>{view.terms.link.label}</SiteLink></p>
             {/* Уведомление ЕС о гарантии — у кнопки заказа (Регл. 2025/1960; И791): страница кладёт его сама. */}
             {notice}
             <button className={b.btn} data-voice="loud" data-size="lg" data-wide type="submit" disabled={pending}>{view.submit}</button>

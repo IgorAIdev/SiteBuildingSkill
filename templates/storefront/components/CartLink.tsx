@@ -6,6 +6,7 @@ import p from '@/styles/primitives.module.css'
 import { Icon } from './Icon.tsx'
 import { CartPane } from './CartPane.tsx'
 import { holdAll } from '@/lib/in-cart.ts'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Корзина в шапке. Число приходит своим запросом после загрузки и заново —
    после каждого перехода (шапка не размонтируется между страницами, а
@@ -80,7 +81,7 @@ export function CartLink({ lang, href, label, added, countUrl, title, close, lab
   }, [])
   return (
     <span className={s.cartBox}>
-      <a className={`${s.glyph} ${s.cart}`} href={href} onClick={open} aria-haspopup="dialog" aria-current={pathname === new URL(href, 'http://x').pathname ? 'page' : undefined} aria-label={count ? `${label} (${count}${sum ? `, ${sum}` : ''})` : label}>
+      <SiteLink className={`${s.glyph} ${s.cart}`} href={href} onClick={open} aria-haspopup="dialog" aria-current={pathname === new URL(href, 'http://x').pathname ? 'page' : undefined} aria-label={count ? `${label} (${count}${sum ? `, ${sum}` : ''})` : label}>
         <span className={s.cartSign}>
           <span className={s.signCart}><Icon id="shopping-cart" /></span>
           <span className={s.signBag}><Icon id="shopping-handbag" /></span>
@@ -88,7 +89,7 @@ export function CartLink({ lang, href, label, added, countUrl, title, close, lab
         </span>
         {labelled ? <span className={s.cartLabel} aria-hidden="true">{label}</span> : null}
         {sum ? <b className={s.cartSum} aria-hidden="true">{sum}</b> : null}
-      </a>
+      </SiteLink>
       <span className={s.told} data-shown={told} aria-hidden="true"><Icon id="check" />{added}</span>
       <span className={p.said} role="status">{told ? added : ''}</span>
       <CartPane lang={lang} id={id} src={countUrl} title={title} close={close} pane={pane} />

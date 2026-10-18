@@ -2,6 +2,7 @@ import p from '@/styles/primitives.module.css'
 import s from './PostCard.module.css'
 import type { PostCardView } from '@/lib/post-view.ts'
 import { shot } from '@/lib/shot.ts'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Карточка статьи — одна на сайт (И729): лента блога главной, список блога и
    рубрики, «Citește mai departe», образцы дизайн-системы. Устройство — по
@@ -30,7 +31,7 @@ export function PostCard({ post, wide = false, label, level = 3 }: { post: PostC
       <div className={s.text}>
         {label ? <p className={p.chip} data-pill>{label}</p> : null}
         <p className={`${p.note} ${s.meta}`}>{post.meta ?? <time dateTime={post.date.iso}>{post.date.text}</time>}</p>
-        <Title className={s.title}><a className={s.link} href={post.href}>{post.title}</a></Title>
+        <Title className={s.title}><SiteLink className={s.link} href={post.href}>{post.title}</SiteLink></Title>
         <p className={s.summary}>{post.summary}</p>
       </div>
     </article>

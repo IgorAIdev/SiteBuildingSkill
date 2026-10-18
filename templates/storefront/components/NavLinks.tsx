@@ -9,6 +9,7 @@ import m from '@/styles/menu.module.css'
 import type { NavGroup, NavLink } from '@/lib/shell.ts'
 import { Icon } from './Icon.tsx'
 import { Turn } from './Turn.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Полки шапки. Каждая строка несёт всё, чем её может нарисовать шапка:
    знак полки, имя, строку о полке. Стрелка обозначает только раскрытие. Снимков полок в меню нет —
@@ -63,7 +64,7 @@ function Facets({ groups, id }: { groups: NavGroup[]; id: string }) {
         <div key={g.name} className={s.sheetGroup}>
           <p className={s.groupName} id={`${id}-${k}`}>{g.name}</p>
           <ul className={`${p.cluster} ${s.pills}`} aria-labelledby={`${id}-${k}`}>
-            {g.links.map((x) => <li key={x.href}><a className={p.chip} data-pill="" href={x.href}><span className={s.pillName}>{x.label}</span></a></li>)}
+            {g.links.map((x) => <li key={x.href}><SiteLink className={p.chip} data-pill="" href={x.href}><span className={s.pillName}>{x.label}</span></SiteLink></li>)}
           </ul>
         </div>
       ))}
@@ -83,7 +84,7 @@ function FacetList({ groups, id }: { groups: NavGroup[]; id: string }) {
         <div key={g.name} className={s.sheetGroup}>
           <p className={m.group} id={`${id}-${k}`}>{g.name}</p>
           <ul className={m.list} aria-labelledby={`${id}-${k}`}>
-            {g.links.map((x) => <li key={x.href}><a className={b.row} href={x.href}><span className={s.name}>{x.label}</span></a></li>)}
+            {g.links.map((x) => <li key={x.href}><SiteLink className={b.row} href={x.href}><span className={s.name}>{x.label}</span></SiteLink></li>)}
           </ul>
         </div>
       ))}
@@ -104,10 +105,10 @@ export function DropBody({ link, id }: { link: NavLink; id: string }) {
     <ul className={m.list}>
       {link.kids.map((k) => (
         <li key={k.href}>
-          <a className={b.row} href={k.href} aria-current={k.href === path ? 'true' : undefined}>
+          <SiteLink className={b.row} href={k.href} aria-current={k.href === path ? 'true' : undefined}>
             {k.sign ? <Icon id={k.sign} /> : null}
             <span className={s.name}>{k.label}</span>
-          </a>
+          </SiteLink>
         </li>
       ))}
     </ul>
@@ -181,11 +182,11 @@ export function NavLinks({ links, className, more, overflow }: { links: NavLink[
         const drops = l.menu || l.kids.length > 0
         return (
           <li key={l.href} data-params={l.menu ? '' : undefined} data-drops={drops ? '' : undefined} data-over={cut !== null && i >= cut ? '' : undefined} style={drops ? { '--shelf-anchor': `--${at}-${i}` } as CSSProperties : undefined} onPointerEnter={drops ? (e) => glide(e, true) : undefined} onPointerLeave={drops ? (e) => glide(e, false) : undefined}>
-            <a className={b.word} data-hand="menu" href={l.href} aria-current={l.href === path ? 'page' : undefined}>
+            <SiteLink className={b.word} data-hand="menu" href={l.href} aria-current={l.href === path ? 'page' : undefined}>
               {l.sign ? <span className={s.sign} aria-hidden="true"><Icon id={l.sign} /></span> : null}
               <span className={s.name}>{l.label}</span>
               {l.line ? <span className={s.line}>{l.line}</span> : null}
-            </a>
+            </SiteLink>
             {l.menu ? (
               <>
                 <button className={`${b.btn} ${s.params}`} data-voice="bare" data-pager="" type="button" aria-expanded={shown} aria-controls={id} aria-label={more.replace('{name}', l.label)} onClick={() => setOpen(shown ? null : l.href)}>
@@ -213,7 +214,7 @@ export function NavLinks({ links, className, more, overflow }: { links: NavLink[
         <li className={s.more} data-more="" data-on={cut !== null ? '' : undefined}>
           <button className={`${s.moreBtn} ${fs.trigger} ${b.word}`} type="button" data-hand="menu" popoverTarget={moreId}>{overflow}<Turn /></button>
           <ul id={moreId} popover="auto" className={`${p.menu} ${fs.drop} ${m.list}`} data-align="end" aria-label={overflow}>
-            {links.slice(cut ?? links.length).map((l) => <li key={l.href}><a className={b.row} href={l.href} aria-current={l.href === path ? 'page' : undefined}>{l.label}</a></li>)}
+            {links.slice(cut ?? links.length).map((l) => <li key={l.href}><SiteLink className={b.row} href={l.href} aria-current={l.href === path ? 'page' : undefined}>{l.label}</SiteLink></li>)}
           </ul>
         </li>
       ) : null}

@@ -3,6 +3,7 @@ import b from '@/styles/btn.module.css'
 import s from './BlogIndex.module.css'
 import type { BlogIndexView } from '@/lib/post-view.ts'
 import { PostCard } from './PostCard.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 /* Список блога и страница рубрики — одна разметка (И749; бриф
    docs/design/блог.md, образец — блог cbdshop.bg): шапка страницы (имя,
@@ -22,7 +23,7 @@ export function BlogIndex({ view, label }: { view: BlogIndexView; label: string 
       </div>
       <nav aria-label={label}>
         <ul className={p.cluster}>
-          {view.topics.map((x) => <li key={x.href}><a className={b.btn} href={x.href} aria-current={x.current ? 'page' : undefined}>{x.label}</a></li>)}
+          {view.topics.map((x) => <li key={x.href}><SiteLink className={b.btn} href={x.href} aria-current={x.current ? 'page' : undefined}>{x.label}</SiteLink></li>)}
         </ul>
       </nav>
       {view.featured ? <PostCard post={view.featured} wide label={view.startHere} level={2} /> : null}

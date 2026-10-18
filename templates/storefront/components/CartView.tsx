@@ -12,6 +12,7 @@ import { EmptyPaths } from './EmptyPaths.tsx'
 import { CartFresh } from './CartFresh.tsx'
 import { CartLines } from './CartLines.tsx'
 import { GoalMeter } from './GoalMeter.tsx'
+import { SiteLink } from './SiteLink.tsx'
 
 type Actions = { submit: (form: FormData) => Promise<void>; call: (form: FormData) => Promise<Outcome> }
 
@@ -70,7 +71,7 @@ export function CartView({ lang, view, submit, call, landmark = true }: { lang: 
           <div className={`${p.stack} ${p.pinned} ${s.summary}`}>
             {view.goal ? <GoalMeter goal={view.goal} /> : null}
             <OrderTotals totals={view.totals} />
-            <a className={b.btn} data-voice="loud" data-size="lg" data-wide href={view.checkout.href}>{view.checkout.label}</a>
+            <SiteLink className={b.btn} data-voice="loud" data-size="lg" data-wide href={view.checkout.href}>{view.checkout.label}</SiteLink>
             <CartCoupon lang={lang} view={view} submit={submit} call={call} />
           </div>
         </aside>

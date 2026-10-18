@@ -1244,7 +1244,7 @@
    при тёмной марке это та же заливка, что у «в корзину» (тёмное на сайте
    одно, И694; Gymshark, Allbirds — выбранный размер краской кнопки покупки),
    при светлой — чернила (И497: громкая марка одна на экран). */
-.seg :is([aria-pressed="true"], [aria-current="true"]){background:var(--chosen);color:var(--on-chosen);font-weight:var(--label-weight);box-shadow:none}
+.seg :is([aria-pressed="true"], [aria-current="true"]){background:var(--chosen);color:var(--on-chosen);box-shadow:none}
 .seg [aria-disabled="true"]{opacity:var(--state-off);cursor:not-allowed}
 /* Вид сегментов — роль вида `--seg-look` (И396): `chips` (умолчание,
    выше), `joined` — встык в волоске края, угол у крайних, выбранный — тон

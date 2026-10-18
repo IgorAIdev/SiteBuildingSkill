@@ -13,5 +13,6 @@
   "deadStyle": 0,
   "deadSetting": 0,
   "contactScheme": 0,
-  "actionRedraw": 0
+  "actionRedraw": 0,
+  "hardLink": 0
 }

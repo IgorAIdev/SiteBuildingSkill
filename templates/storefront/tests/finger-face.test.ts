@@ -33,11 +33,11 @@ test('the pane foot is one pair — quiet on the left, loud on the right, one ro
   const panecss = read('../styles/pane.module.css')
   assert.match(panecss, /\.acts\{\s*display:flex;flex-wrap:wrap-reverse/)
   /* Корзина и фильтры берут пару окна, а не пишут свою: тихая первой в разметке. */
-  assert.match(pane, /<div className=\{pn\.acts\}>\s*<a className=\{b\.btn\} href=\{view\.open\.href\}>[^\n]*\n\s*<a className=\{b\.btn\} data-voice="loud" href/)
+  assert.match(pane, /<div className=\{pn\.acts\}>\s*<(?:a|SiteLink) className=\{b\.btn\} href=\{view\.open\.href\}>[^\n]*\n\s*<(?:a|SiteLink) className=\{b\.btn\} data-voice="loud" href/)
   assert.doesNotMatch(cart, /\.paneGo\b|\.paneOpen\b/)
   assert.doesNotMatch(pane, /data-voice="loud" data-size="lg"/)
   const filters = read('../components/Filters.tsx')
-  assert.match(filters, /className=\{`\$\{pn\.foot\} \$\{pn\.acts\} \$\{s\.actions\}`\}>[\s\S]*?view\.clear \? <a className=\{b\.btn\}[\s\S]*?<ApplyCount className=\{b\.btn\} data-voice="loud"/)
+  assert.match(filters, /className=\{`\$\{pn\.foot\} \$\{pn\.acts\} \$\{s\.actions\}`\}>[\s\S]*?view\.clear \? <(?:a|SiteLink) className=\{b\.btn\}[\s\S]*?<ApplyCount className=\{b\.btn\} data-voice="loud"/)
 })
 
 test('the heart on a picture keeps a small circle under a finger, its target outside', () => {
