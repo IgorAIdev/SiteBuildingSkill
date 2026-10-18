@@ -85,12 +85,18 @@ const topBar = (lang: Lang, top: TopBar) => <div className={s.top}><div classNam
    рядом с корзиной, как «Пишете ни», «Запазени» у cbdin.bg (слово заказчика
    28.09.2026). Контакты на узкой коробке уходят в шторку меню — там они
    строкой служебных ссылок; знаков в строке телефона остаётся четыре. */
+/* В «Categories» окна поиска идут только страницы: рельса («By effect») — название группы, её ссылка — якорь главной (слово заказчика 18.10.2026; скилл shop, «Имя рельсы — не страница»). */
+/* look-panel: знак дизайн-системы — рядом с поиском (слово заказчика 18.10.2026: «ссылка на дизайн-систему рядом с поиском»); есть, пока страница открыта (DESIGN_SYSTEM=on или панель вида), в боевом магазине её нет. */
+const designLink = (lang: Lang) => (process.env.DESIGN_SYSTEM === 'on' || process.env.LOOK_PICKER === 'on') ? <a className={s.glyph} href={`/${lang}/design`} aria-label="Design system"><Icon id="layout-grid" /></a> : null // look-panel: знак страницы дизайн-системы
 const find = (lang: Lang, nav: Menu) => (
+  <>
   <SearchPane
     lang={lang} action={hrefFor(lang, { search: '' })} trigger={s.glyph}
-    shelves={nav.links}
+    shelves={nav.links.filter((l) => !l.href.includes('#'))}
     words={{ clear: t(lang, 'search.clear'), open: t(lang, 'search.open'), close: t(lang, 'search.close'), label: t(lang, 'search.label'), submit: t(lang, 'search.submit'), all: t(lang, 'search.all', { q: '{q}' }), found: t(lang, 'search.found'), none: t(lang, 'search.none', { q: '{q}' }), shelves: t(lang, 'nav.categories') }}
   />
+  {designLink(lang)} {/* look-panel: знак дизайн-системы */}
+  </>
 )
 const reach = (lang: Lang, nav: Menu) => (
   <>
