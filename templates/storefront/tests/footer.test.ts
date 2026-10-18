@@ -69,10 +69,10 @@ test('a footer link keeps its air when its name wraps', () => {
 test('the legal row links ANPC and SAL, has no EU ODR, and the withdrawal function keeps one label', () => {
   assert.equal(ANPC_URL, 'https://anpc.ro/')
   assert.equal(ANPC_SAL_URL, 'https://reclamatiisal.anpc.ro/')
-  assert.match(footer, /<a className=\{b\.word\} href=\{ANPC_URL\} rel="noopener">\{t\(lang, 'footer\.anpcHome'\)\}<\/a>/, 'ссылка ANPC в ряду закона')
+  assert.match(footer, /<(?:a|SiteLink) className=\{b\.word\} href=\{ANPC_URL\} rel="noopener">\{t\(lang, 'footer\.anpcHome'\)\}<\/(?:a|SiteLink)>/, 'ссылка ANPC в ряду закона')
   assert.deepEqual([ANPC_SAL_BADGE.width, ANPC_SAL_BADGE.height], [250, 50], 'пиктограмма SAL — 250 × 50 по приказу')
-  assert.match(footer, /ANPC_SAL_BADGE\.src \? <a className=\{s\.sal\} href=\{ANPC_SAL_URL\}[^>]*><img src=\{ANPC_SAL_BADGE\.src\} width=\{ANPC_SAL_BADGE\.width\} height=\{ANPC_SAL_BADGE\.height\} alt=\{t\(lang, 'footer\.salAlt'\)\}/, 'знак SAL картинкой без изменений')
-  assert.match(footer, /ANPC_SAL_BADGE\.src \? null : <li><a className=\{b\.word\} href=\{ANPC_SAL_URL\}/, 'без файла — текстовая ссылка на SAL')
+  assert.match(footer, /ANPC_SAL_BADGE\.src \? <(?:a|SiteLink) className=\{s\.sal\} href=\{ANPC_SAL_URL\}[^>]*><img src=\{ANPC_SAL_BADGE\.src\} width=\{ANPC_SAL_BADGE\.width\} height=\{ANPC_SAL_BADGE\.height\} alt=\{t\(lang, 'footer\.salAlt'\)\}/, 'знак SAL картинкой без изменений')
+  assert.match(footer, /ANPC_SAL_BADGE\.src \? null : <li><(?:a|SiteLink) className=\{b\.word\} href=\{ANPC_SAL_URL\}/, 'без файла — текстовая ссылка на SAL')
   if (ANPC_SAL_BADGE.src) assert.ok(existsSync(new URL(`../public${ANPC_SAL_BADGE.src}`, import.meta.url)), 'файл пиктограммы SAL назван, а не положен')
   for (const file of ['../components/Footer.tsx', '../lib/company.ts', '../lib/docs.json']) assert.doesNotMatch(read(file), /ec\.europa\.eu\/consumers\/odr/, `${file}: ссылка на закрытую платформу ODR`)
   assert.equal(isKey('footer.withdraw'), false, 'вторая надпись функции отказа')
