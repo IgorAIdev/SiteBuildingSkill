@@ -53,7 +53,7 @@ Dr. Max, Catena) и eMAG.
 | запрещено | замена |
 | --- | --- |
 | «Ulei CBD pentru anxietate», «pentru dureri» в имени и H1 | «Ulei CBD 10 %, 10 ml, full spectrum» — состав и форма |
-| раздел-эффект («Somn», «Relaxare», «ulei CBD pentru somn») | **разрешён** (И803): «Somn: uleiuri CBD și capsule pentru somn»; нельзя — «pentru un somn odihnitor» |
+| раздел-эффект («Somn», «Relaxare», «ulei CBD pentru somn») | **разрешён** (И804): «Somn: uleiuri CBD și capsule pentru somn»; нельзя — «pentru un somn odihnitor» |
 | «somn odihnitor», «adormi mai ușor», «reduce stresul», «relaxează-te» | хаб «Seara»: «uleiuri cu CBN, capsule, ceai pentru rutina de seară» |
 | «împotriva durerilor», «ameliorează», «analgezic», «antiinflamator» | «Cremă de masaj cu CBD și mentol, efect de răcorire pe piele» — ощущение на коже, не результат |
 | «recuperare după antrenament», «pentru mușchi obosiți» | хаб «Sport și masaj»: «creme, balsamuri și ulei de masaj cu CBD» |
@@ -175,7 +175,7 @@ cbdsol.hr, naturecan.hr, аптеки и dm. Обращение у всех ли
 ### Право: запрещено → продающая замена
 
 Словарь — `assets/claims/hr.json`. «Za spavanje» как имя раздела —
-разрешено (И803), «za bolji san» — обещание. Рынок обещает «protiv bolova»,
+разрешено (И804), «za bolji san» — обещание. Рынок обещает «protiv bolova»,
 «za anksioznost», «terapeutski učinak» — на продающей странице это
 `fail` или `fix`: наружное — состав и место нанесения («gel za masažu s
 CBD-om»), вечер — момент дня («za večernju rutinu»), масло — сила, мг, мл и
