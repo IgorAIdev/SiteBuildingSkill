@@ -776,9 +776,12 @@
 .btn:disabled,
 .btn[aria-disabled='true']{opacity:var(--state-off);cursor:not-allowed}
 /* Кромка выключенной — не у занятой формы (base.css, «Занятая форма — не
-   выключенная», И464): там орган вида не меняет. */
-.btn:disabled:not([aria-busy='true'] *),
-.btn[aria-disabled='true']{--btn-edge:var(--edge-off)}
+   выключенная», И464): там орган вида не меняет. И не у знака без подложки:
+   у него кромки нет и в покое, выключенный читается тоном. Стрелка листания
+   «назад» на первом шаге вырастала кругом рядом с голой «вперёд» —
+   два вида одной пары (заказчик 21.10.2026). */
+.btn:disabled:not([aria-busy='true'] *, [data-voice='bare']),
+.btn[aria-disabled='true']:not([data-voice='bare']){--btn-edge:var(--edge-off)}
 
 /* Accepted press remains visible through pending/disabled; colours stay in existing roles. */
 .btn.btn[data-press-feedback]{transition-duration:0s;opacity:1}
