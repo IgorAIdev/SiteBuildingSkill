@@ -196,10 +196,7 @@
 .btn[data-voice='bare']{--press-bg:transparent;--btn-edge:transparent;--press-ink:var(--ink-dim);--state-hover:0%;--state-press:0%}
 @media (hover:hover){ .btn[data-voice='bare']:not(:disabled):not([aria-disabled='true']):hover{--press-ink:var(--ink)} }
 .btn[data-voice='bare']:not(:disabled):not([aria-disabled='true']):active,
-.btn[data-voice='bare'][data-press-feedback]{--press-ink:var(--ink);transform:none}
-/* Знак без подложки при нажатии не прыгает: ответ — только краска, как у
-   слова «View all» рядом (заказчик 21.10.2026: «какого хуя они прыгают при
-   нажатии?» — стрелки листания сжимались и опускались, выход рядом стоял). */
+.btn[data-voice='bare'][data-press-feedback]{--press-ink:var(--ink)}
 /* Слово без плиты у края колонки (`data-hang="start"` / `"end"`, И740): поле
    кнопки — только место под палец, плиты под ним нет, и слово стояло бы на
    поле правее линии колонки (у «Filtre» над полкой — на 18 от заголовка).
