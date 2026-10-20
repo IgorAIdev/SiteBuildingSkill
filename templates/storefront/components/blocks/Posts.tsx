@@ -14,7 +14,7 @@ export function Posts({ block, ctx, place }: { block: Extract<Block, { type: 'po
   if (!posts.length) return null
   return (
     <section className={`${p.wrap} ${p.section}`} data-air={place.air ?? undefined} aria-labelledby="posts">
-      <RailHead id="posts" title={block.title} lede={block.lede} all={hrefFor(ctx.lang, { blog: true })} lang={ctx.lang} />
+      <RailHead id="posts" title={block.title} lede={block.lede} all={hrefFor(ctx.lang, { blog: true })} lang={ctx.lang} exit={place.exit} />
       <ul id="posts-rail" className={p.rail} data-rail="goods">{posts.map((x) => <li key={x.slug}><PostCard post={postCard(ctx.lang, x)} /></li>)}</ul>
     </section>
   )

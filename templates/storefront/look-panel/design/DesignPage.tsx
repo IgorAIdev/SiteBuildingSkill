@@ -317,12 +317,13 @@ function Signs({ lang }: { lang: Lang }) {
   /* Подразделы по смыслу (signGroups.ts, И625): каждый знак — в два роста,
      знак кнопки и знак в строке; длинный знак (Visa) держит свою пропорцию
      сам — Icon ставит окно неквадратному знаку. Рядом — русская подпись и
-     имя в листе. Знак листа вне подразделов — «Прочее». */
+     имя в листе. Знак листа вне подразделов — «Прочее». Подраздел `row`
+     (оплата) — только в росте строки: в кнопке его знаков нет. */
   const placed = new Set(SIGN_GROUPS.flatMap((g) => g.signs.map(([id]) => id)))
   const groups = [...SIGN_GROUPS.map((g) => ({ ...g, signs: g.signs.filter(([id]) => all.includes(id)) })),
     { title: 'Прочее', lede: 'Иконки листа, которым ещё не назначен подраздел.', signs: all.filter((id) => !placed.has(id)).map((id) => [id, ''] as [string, string]) }]
     .filter((g) => g.signs.length)
-  const signOf = (id: string) => <><Icon id={id} /><Icon id={id} className={s.small} /></>
+  const signOf = (id: string, row?: true) => row ? <Icon id={id} className={s.small} /> : <><Icon id={id} /><Icon id={id} className={s.small} /></>
   return (
     <>
       <p className={p.note}>Один лист на весь сайт: иконка рисуется в одном месте, и поломка чинится в одном месте. Каждая иконка — в двух ростах: иконка кнопки и иконка в строке; длинная иконка держит свою пропорцию. Иконка, которую сайт где-то красит своей краской, стоит и в ней — следующей плиткой, подписанной ролью палитры.</p>
@@ -330,8 +331,8 @@ function Signs({ lang }: { lang: Lang }) {
         <Part key={g.title} title={g.title} lede={g.lede}>
           <ul className={`${p.grid} ${s.icons}`}>
             {g.signs.flatMap(([id, name]) => [
-              <li key={id} className={s.icon}><span className={s.iconPair}>{signOf(id)}</span>{name ? <span className={s.iconName}>{name}</span> : null}<code>{id}</code></li>,
-              ...tinted(id, signOf(id), name),
+              <li key={id} className={s.icon}><span className={s.iconPair}>{signOf(id, g.row)}</span>{name ? <span className={s.iconName}>{name}</span> : null}<code>{id}</code></li>,
+              ...tinted(id, signOf(id, g.row), name),
             ])}
           </ul>
         </Part>

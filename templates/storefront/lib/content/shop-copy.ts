@@ -17,6 +17,8 @@ export type ShopCopy = {
   sign?: string
   /** Запрос покупателя этой страницы (навык seo-content): не выводится, держит проверку текста. */
   query?: { primary: string; secondary: string[]; origin: string }
+  /** Слова темы для подзаголовков: формы полки, момент хаба, ярлык с «коллекцией»; не выводится (И803). */
+  topic?: string[]
   /** Ссылки под текстом: гиды, соседние полки — словами запроса цели. */
   links?: { label: string; to: { doc: string } | { post: string } | { category: string } }[]
   heading: string

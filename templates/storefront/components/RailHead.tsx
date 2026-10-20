@@ -8,6 +8,13 @@ import { Icon } from './Icon.tsx'
 import { RailPager } from './RailPager.tsx'
 import { SiteLink } from './SiteLink.tsx'
 
+/** Вид выхода «View all»: `pill` — пилюля (И747); три на волосяной линии —
+ *  на смотрины заказчику 20.10.2026 («пилюля не подходит, нужно решение на
+ *  линиях-волосках»): `line` — слово, подчёркнутое волоском; `lead` — волосок
+ *  от заголовка до выхода; `shaft` — стрелка с длинным древком-волоском.
+ *  Выберет — останется один, остальные снимаются (docs/open.md). */
+export type Exit = 'pill' | 'line' | 'lead' | 'shaft'
+
 /* Шапка ряда, который листают вбок, — одна на сайт (правило 10, И665):
    плитки категорий и эффектов главной, полки товаров. Слева заголовок и
    описание ряда одной подписью (`hgroup`; описания нет в данных — заголовок
@@ -26,18 +33,29 @@ import { SiteLink } from './SiteLink.tsx'
    (`go`), как «View All» у Gymshark (заказчик 05.10.2026: «кнопка View all
    какая-то большая по сравнению с заголовком»; И759). Какой из двух видно,
    решает ширина шапки ряда (RailHead.module.css); адрес один.
+   Выход на волоске (`exit` не `pill`) — словом на любой ширине: рамки у него
+   нет, крупнее заголовка он не встаёт.
    Рельса ряда — `${id}-rail`: её листают кнопки. */
-export function RailHead({ id, title, lede, all, lang }: { id: string; title: string; lede?: string; all: string | null; lang: Lang }) {
+export function RailHead({ id, title, lede, all, lang, exit = 'pill' }: { id: string; title: string; lede?: string; all: string | null; lang: Lang; exit?: Exit }) {
+  const word = t(lang, 'shelf.all')
+  const hair = all !== null && exit !== 'pill'
   return (
-    <div className={p.sectionHead} data-row>
+    <div className={p.sectionHead} data-row data-exit={hair ? exit : undefined}>
       <hgroup>
         <h2 id={id}>{title}</h2>
         {lede ? <p>{lede}</p> : null}
       </hgroup>
       <div className={`${p.cluster} ${s.acts}`}>
+        {hair && exit === 'lead' ? <span className={s.lead} aria-hidden="true" /> : null}
         <RailPager rail={`${id}-rail`} back={t(lang, 'rail.prev')} next={t(lang, 'rail.next')} />
-        {all ? <SiteLink className={`${b.btn} ${s.wide}`} data-rail-nav href={all}>{t(lang, 'shelf.all')}<Icon id="arrow-right" /></SiteLink> : null}
-        {all ? <SiteLink className={`${go.go} ${s.narrow}`} href={all}>{t(lang, 'shelf.all')}<Icon id="arrow-right" /></SiteLink> : null}
+        {all && !hair ? <SiteLink className={`${b.btn} ${s.wide}`} data-rail-nav href={all}>{word}<Icon id="arrow-right" /></SiteLink> : null}
+        {all && !hair ? <SiteLink className={`${go.go} ${s.narrow}`} href={all}>{word}<Icon id="arrow-right" /></SiteLink> : null}
+        {all && hair ? (
+          <SiteLink className={`${go.go} ${s.word}`} data-exit={exit} data-still={exit === 'shaft' ? '' : undefined} href={all}>
+            <span>{word}</span>
+            {exit === 'shaft' ? <span className={s.shaft} aria-hidden="true"><Icon id="chevron-right" /></span> : <Icon id="arrow-right" />}
+          </SiteLink>
+        ) : null}
       </div>
     </div>
   )

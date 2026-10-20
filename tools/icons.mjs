@@ -96,6 +96,11 @@ const brand = (file) => {
   const body = live ? `<g transform="matrix(.89 0 0 .89 1.32 1.32)">${shapes.join('')}</g>` : shapes.join('')
   return `  <symbol id="${id}" viewBox="${box}"${box === '0 0 24 24' ? '' : ' overflow="visible"'} fill="currentColor" stroke="none">${body}</symbol>`
 }
+/* Рост знаков категорий (`icons/fit.json`, считает tools/icons-fit.mjs): знак
+   сжимается или растягивается к центру окна до одной большой стороны. Штрих
+   не масштабируется (`vector-effect`), так что перо остаётся одним. */
+const FIT_FILE = path.join(path.dirname(FROM), 'fit.json')
+const fit = existsSync(FIT_FILE) ? JSON.parse(readFileSync(FIT_FILE, 'utf8')) : {}
 const symbols = names.map((file) => {
   if (brands.includes(file)) return brand(file)
   const id = file.replace(/\.svg$/, '')
@@ -107,7 +112,9 @@ const symbols = names.map((file) => {
      браузер залил бы каждую фигуру чёрным. Атрибутом `fill="none"` она
      стояла жёстко и стиль сайта её не пробивал — сердце в избранном не
      заливалось (слово заказчика 01.10.2026, И625). */
-  return `  <symbol id="${id}" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">${shapes.join('')}</symbol>`
+  const [k, tx, ty] = fit[id] ?? []
+  const drawn = k ? `<g transform="matrix(${k} 0 0 ${k} ${tx} ${ty})">${shapes.join('')}</g>` : shapes.join('')
+  return `  <symbol id="${id}" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">${drawn}</symbol>`
 })
 
 /* Вид знака (`#<имя>-view`): тот же рисунок, поставленный в ряд, и окно на

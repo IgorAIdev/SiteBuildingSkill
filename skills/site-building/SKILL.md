@@ -91,6 +91,7 @@ description: Процесс сайта от брифа до выпуска — �
 | П3 | [overlays.md](references/overlays.md) | формы в окнах: рост по содержимому, предел экрана, действия, потребители |
 | П3 | [cbd-profile.md](references/cbd-profile.md) | **только для CBD-проекта**: партия и протокол, формулировки, оплата, перевозчики |
 | П5 | [quality-ci.md](references/quality-ci.md) | Lighthouse CI, бюджет загрузки, браузерные сценарии, границы измерений |
+| П5 | [design-system-packaging.md](references/design-system-packaging.md) | вынести дизайн-систему в переносимую папку и проверить отделимость: сверка с эталонами поиском, состав папки, охранники импортов, разделение тестов |
 | П5 | [handoff.md](references/handoff.md) | утверждение, пакет дизайн-системы, MD/PDF, чистая копия, перенос в репозиторий магазина |
 | П5 | [template-storefront.md](references/template-storefront.md) | **только витрина-образец набора**: установка, экспорт, жесты, тестовая покупка, приёмка |
 | скилл | [workflow.md](references/workflow.md) | развитие скилла: итерация, основания решений, контрольные брифы |

@@ -36,6 +36,12 @@
 
 {{fontsMediaComponentsLicensesAndVersions}}
 
+## Упаковка и перенос
+
+{{folderLayoutEntryPointsDependenciesAndHowToConnectInAnotherProject}}
+
+Правила — references/design-system-packaging.md.
+
 ## Проверки и остаток работ
 
 {{evidenceEnvironmentResultsUnverifiedAndNextStage}}

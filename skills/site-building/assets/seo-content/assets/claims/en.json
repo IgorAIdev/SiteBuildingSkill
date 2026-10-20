@@ -2,7 +2,6 @@
   "lang": "en",
   "note": "Own lexicon of the seo-content skill for English pages of an EU shop: Reg. 1924/2006, 432/2012, 2015/2283, Dir. 2001/83/EC (references/compliance.md, references/market-packs.md). Patterns run on lower-case text.",
   "condition": [
-    "sleep",
     "insomnia",
     "anxiety",
     "anxious",
@@ -26,6 +25,9 @@
   ],
   "conditionAllow": [
     "stress-free delivery"
+  ],
+  "collection": [
+    "collection"
   ],
   "hedge": [
     "\\bdoes not (establish|guarantee|prove|mean)\\b",
@@ -85,7 +87,8 @@
       "id": "en-sleep",
       "level": "fix",
       "patterns": [
-        "\\b(sleep better|better sleep|fall asleep faster|restful sleep|deeper sleep)\\b"
+        "\\b(sleep better|better sleep|fall asleep faster|restful sleep|deeper sleep)\\b",
+        "\\bhelps? (you |me )?(to )?(fall )?(a)?sleep\\b"
       ],
       "rewrite": "the moment, not the effect: «for your evening routine», CBN oil"
     },

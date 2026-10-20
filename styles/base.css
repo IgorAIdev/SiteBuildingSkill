@@ -299,7 +299,7 @@ summary{min-block-size:var(--ctrl-target);align-content:center;cursor:pointer}
    (кнопка, поле, галочка, «куда ведёт», лоток), и занятая форма отменяет
    её здесь, одной строкой; кромку выключенной кнопки отменяет её модуль. */
 [aria-busy='true']{--state-off:1}
-[aria-busy='true'] :disabled{cursor:progress}
+[aria-busy='true'] :is(:disabled, button){cursor:progress}
 
 /* Серая рамка, которую Android рисует поверх нажатой ссылки и держит ещё
    долю секунды после того, как палец ушёл, — это отклик БРАУЗЕРА за
