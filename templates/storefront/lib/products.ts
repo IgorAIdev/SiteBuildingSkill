@@ -51,13 +51,14 @@ export const CATEGORIES: SampleCategory[] = [
  *  вынесенный в навигацию, обязан быть страницей»), плитка на главной и
  *  описание для поиска. Имена — из плиток cbdin (слово заказчика 30.09.2026);
  *  ключ записан `effect:` — по нему дерево адресов (tools/routes.mjs)
- *  находит страницы эффектов. */
+ *  находит страницы эффектов. «Кожа и лицо» эффектом не была: это полка
+ *  «Cosmetice» под другим именем (заказчик 20.10.2026, shop, catalog.md:
+ *  «Эффект — повод, а не полка»). */
 export type SampleEffect = { effect: string; name: T; description: T }
 export const EFFECTS: SampleEffect[] = [
   { effect: 'sleep', name: { ro: 'Somn', en: 'Sleep', hu: 'Alvás' }, description: { ro: 'Produse pe care clienții le iau seara: uleiuri și capsule, fiecare cu buletin de analiză pentru lotul său.', en: 'Products customers take in the evening: oils and capsules, each with a lab report for its batch.', hu: 'Termékek, amelyeket a vásárlók este használnak: olajok és kapszulák, mindegyik a tétel laborjegyzőkönyvével.' } },
   { effect: 'relief', name: { ro: 'Îngrijirea corpului', en: 'Body care', hu: 'Testápolás' }, description: { ro: 'Creme și uleiuri concentrate pentru îngrijirea corpului și masaj, fiecare cu buletin de analiză pentru lotul său.', en: 'Creams and stronger oils for body care and massage, each with a lab report for its batch.', hu: 'Krémek és erősebb olajok testápoláshoz és masszázshoz, mindegyik a tétel laborjegyzőkönyvével.' } },
   { effect: 'relax', name: { ro: 'Stres și anxietate', en: 'Stress and anxiety', hu: 'Stressz és szorongás' }, description: { ro: 'Uleiuri și capsule pe care clienții le aleg pentru o zi liniștită, fiecare cu buletin de analiză pentru lotul său.', en: 'Oils and capsules customers choose for a calm day, each with a lab report for its batch.', hu: 'Olajok és kapszulák, amelyeket a vásárlók egy nyugodt naphoz választanak, mindegyik a tétel laborjegyzőkönyvével.' } },
-  { effect: 'skin', name: { ro: 'Piele și față', en: 'Skin and face', hu: 'Bőr és arc' }, description: { ro: 'Ser de față și balsam de buze cu CBD pentru îngrijirea zilnică, fiecare cu buletin de analiză pentru lotul său.', en: 'Face serum and lip balm with CBD for daily care, each with a lab report for its batch.', hu: 'CBD-s arcszérum és ajakbalzsam a napi ápoláshoz, mindegyik a tétel laborjegyzőkönyvével.' } },
   { effect: 'recovery', name: { ro: 'Sport și masaj', en: 'Sport and massage', hu: 'Sport és masszázs' }, description: { ro: 'Cremă pentru masaj după antrenament, cu buletin de analiză pentru lotul său.', en: 'Cream for massage after training, with a lab report for its batch.', hu: 'Krém edzés utáni masszázshoz, a tétel laborjegyzőkönyvével.' } },
   { effect: 'dogs', name: { ro: 'Câini', en: 'Dogs', hu: 'Kutyák' }, description: { ro: 'Ulei CBD pentru câini, în concentrație potrivită pentru animale, cu buletin de analiză pentru lotul său.', en: 'CBD oil for dogs in a strength made for pets, with a lab report for its batch.', hu: 'CBD olaj kutyáknak, állatokhoz illő erősségben, a tétel laborjegyzőkönyvével.' } },
 ]
@@ -158,14 +159,14 @@ const LINES: SampleProduct[] = [
     name: { ro: 'Balsam de buze cu CBD', en: 'CBD lip balm', hu: 'CBD ajakbalzsam' },
     summary: { ro: 'Balsam de buze cu 50 mg CBD, ceară de albine și ulei de cânepă. Hrănește buzele uscate de vânt și frig și încape în orice buzunar.', en: 'A lip balm with 50 mg of CBD, beeswax and hemp oil. It soothes lips dried by wind and cold, and fits in any pocket.', hu: 'Ajakbalzsam 50 mg CBD-vel, méhviasszal és kenderolajjal. Ápolja a széltől és hidegtől kiszáradt ajkakat, és bármelyik zsebbe belefér.' },
     description: { ro: 'Balsam cu ceară de albine și CBD.', en: 'Beeswax balm with CBD.', hu: 'Méhviaszos balzsam CBD-vel.' },
-    facets: { forma: ['crema'], effect: ['skin'] },
+    facets: { forma: ['crema'] },
     groups: [],
     variants: [{ id: 'bb-5', sku: 'BB-5', options: {}, price: 1190, stock: 'in', batch: 'RO-2408-BB', pack: { mg: 50, size: 5, unit: 'g' } }] },
   { id:'ser-fata-cbd', cat:'cosmetice', label: 'ser', hue: 300, popular: 11, added: '2026-07-09', brand: null, rating: { value: 4.4, count: 29 }, strength: 'mg',
     name: { ro: 'Ser de față cu CBD', en: 'CBD face serum', hu: 'CBD arcszérum' },
     summary: { ro: 'Ser ușor pentru față cu CBD și acid hialuronic, în 30 ml. Textură fluidă care se așază sub cremă, dimineața sau seara.', en: 'A light face serum with CBD and hyaluronic acid, in 30 ml. A fluid texture that sits well under your cream, morning or evening.', hu: 'Könnyű arcszérum CBD-vel és hialuronsavval, 30 ml. Folyékony állag, amely jól illik a krém alá, reggel vagy este.' },
     description: { ro: 'Ser cu CBD și acid hialuronic.', en: 'Serum with CBD and hyaluronic acid.', hu: 'Szérum CBD-vel és hialuronsavval.' },
-    facets: { forma: ['crema'], effect: ['skin'] },
+    facets: { forma: ['crema'] },
     groups: [],
     variants: [{ id: 'sf-30', sku: 'SF-30', options: {}, price: 3290, stock: 'out', batch: 'RO-2407-SF', pack: { mg: null, size: 30, unit: 'ml' } }] },
   { id:'ulei-caini-cbd', cat:'animale', family:'animale-caini', label: 'dog', hue: 90, popular: 7, added: '2026-01-22', brand: 'Câmpia', rating: { value: 4.7, count: 46 }, strength: 'percent', standard: 'ac-10',
