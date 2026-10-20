@@ -90,10 +90,9 @@ test('the rail head buttons and every sign button (data-pager) stay round past t
   assert.match(css, /\.btn\[data-rail-nav\],\.btn\[data-pager\],\.btn\[data-pager-more\]\{--btn-r:var\(--r-pop\)\}/)
   for (const f of ['Pagination', 'FoldShelf']) assert.match(read(`../components/${f}.tsx`), /data-pager-more/)
   assert.match(read('../components/ReviewPlay.tsx'), /data-pager=""/)
-  const head = read('../components/RailHead.tsx')
-  assert.match(head, /<(?:a|SiteLink) className=\{`\$\{b\.btn\} \$\{s\.wide\}`\} data-rail-nav data-hand="pop" href=\{all\}>/)
-  /* На узкой шапке выход — слово (И761): пилюля рядом с кругами листания не помещалась. */
-  assert.match(head, /<(?:a|SiteLink) className=\{`\$\{go\.go\} \$\{s\.narrow\}`\} href=\{all\}>/)
+  /* «View all» пилюлей больше не стоит (заказчик 20.10.2026: «без окантовки») —
+     слово со стрелкой, его держит tests/rail-head.test.ts; кругом остаются ‹ ›. */
+  assert.doesNotMatch(read('../components/RailHead.tsx'), /data-rail-nav/)
   const pager = read('../components/RailPager.tsx')
   assert.equal([...pager.matchAll(/<button\b[^>]*\bdata-pager data-rail-nav\b/g)].length, 2)
   assert.doesNotMatch(read('../components/Pagination.tsx'), /\bdata-rail-nav\b/)
