@@ -30,7 +30,7 @@ export function RailHead({ id, title, lede, all, lang }: { id: string; title: st
       </hgroup>
       <div className={p.cluster}>
         <RailPager rail={`${id}-rail`} back={t(lang, 'rail.prev')} next={t(lang, 'rail.next')} />
-        {all ? <SiteLink className={`${b.word} ${p.tap} ${s.all}`} data-hand="menu" href={all}>{t(lang, 'shelf.all')}<Icon id="arrow-up-right" /></SiteLink> : null}
+        {all ? <SiteLink className={`${b.word} ${p.tap} ${s.all}`} data-hand="menu" data-out href={all}>{t(lang, 'shelf.all')}<Icon id="arrow-up-right" /></SiteLink> : null}
       </div>
     </div>
   )
