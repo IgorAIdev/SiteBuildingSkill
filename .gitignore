@@ -8,6 +8,9 @@
 /proof-stand.html
 /button-stand.html
 node_modules/
+# Окружение с ключами — не в git (И799)
+.env
+.env*.local
 dist/
 .lighthouseci/
 /palette-stand.html

@@ -4,7 +4,7 @@ import { isLang } from '../locale.ts'
 import { t } from '../i18n/index.ts'
 import { momentOf } from '../format.ts'
 import { CONTACTS } from '../contacts.ts'
-import { EMAIL, LIMITS } from '../checkout-form.ts'
+import { EMAIL, LIMITS, field } from '../checkout-form.ts'
 
 /** Что введено: остаётся в полях при отказе. */
 export type WithdrawValues = { name: string; order: string; email: string }
@@ -13,7 +13,6 @@ export type WithdrawValues = { name: string; order: string; email: string }
 export type WithdrawState = { done: string | null; message: string | null; values: WithdrawValues } | null
 
 const ORDER_MAX = 40
-const text = (form: FormData, key: string) => { const v = form.get(key); return typeof v === 'string' ? v.trim() : '' }
 
 /** Второй шаг отказа от договора — кнопка «Confirmați retragerea» (ст. 11a
  *  Директивы 2011/83, с 19.06.2026; И748): спрашивается только имя, номер
@@ -22,7 +21,7 @@ const text = (form: FormData, key: string) => { const v = form.get(key); return 
 export async function withdraw(rawLang: string, _prev: WithdrawState, form: FormData): Promise<WithdrawState> {
   if (!isLang(rawLang)) throw new Error(`withdraw: язык «${rawLang}» не из списка`)
   const lang = rawLang
-  const values = { name: text(form, 'name'), order: text(form, 'order'), email: text(form, 'email') }
+  const values = { name: field(form, 'name'), order: field(form, 'order'), email: field(form, 'email') }
   const ok = values.name && values.name.length <= LIMITS.firstName + LIMITS.lastName && values.order && values.order.length <= ORDER_MAX && EMAIL.test(values.email) && values.email.length <= LIMITS.email
   if (!ok) return { done: null, message: t(lang, 'withdraw.bad'), values }
   const r = await commerce().withdraw(lang, values)

@@ -36,6 +36,7 @@ import { CODE_FAMILIES, CODE_LABELS as NAMES, LONG_FILE, NEAR_LONG, MANY_HOOKS }
 /* Где код, где стили, с каких папок спрашивают — `kit.config.json` проекта
    или соглашения набора (И168). */
 import { CODE_DIRS as DIRS, BLOCK_DIRS, STYLE_DIRS, ALIASES, STORES } from './kit-config.mjs'
+import { secretsIn } from './secrets.mjs'
 
 const relative = (...args) => nativeRelative(...args).split(String.fromCharCode(92)).join('/')
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
@@ -91,6 +92,32 @@ function commonRoot(dirs) {
 }
 
 const found = Object.fromEntries(CODE_FAMILIES.map((k) => [k, []]))
+
+/** Скобка вызова, внутри которого стоит знак `i`, и имя вызванного; до `{`,
+ *  `}` или `;` своего уровня скобки нет — значение не аргумент. */
+function enclosingCall(src, i) {
+  let depth = 0
+  for (let j = i - 1; j >= 0; j--) {
+    const c = src[j]
+    if (c === ')' || c === ']') depth++
+    else if (c === '[') depth--
+    else if (c === '(') {
+      if (depth === 0) return { at: j, name: src.slice(0, j).match(/([A-Za-z_$][\w$.]*)\s*$/)?.[1] ?? '' }
+      depth--
+    } else if (depth === 0 && (c === '{' || c === '}' || c === ';')) return null
+  }
+  return null
+}
+
+/** Закрывающая скобка к открывающей `open`. */
+function closeOf(src, open) {
+  let depth = 0
+  for (let j = open; j < src.length; j++) {
+    if (src[j] === '(') depth++
+    else if (src[j] === ')' && --depth === 0) return j
+  }
+  return src.length
+}
 
 /* Комментарий — не код: длину сохраняем, чтобы номера строк не уехали.
    Тот же приём, что в check-css.mjs, и заведён там по той же беде. */
@@ -412,6 +439,73 @@ for (const path of files) {
     }
   }
 
+  /* ── семья: вход действия сервера не проверен (И800) ────────────────────
+   *
+   * Действие сервера — открытая дверь: позвать его может кто угодно, с любым
+   * телом. Замер 20.10.2026 на шаблоне — одиннадцать чтений поля через
+   * `String(form.get(…) ?? '')`: файл в поле превращается в «[object File]»,
+   * и проверка «не пусто» его пропускает; пять из них уходили движку вовсе без
+   * проверки (жетон сброса пароля, жетон почты, id адреса, способ доставки
+   * дважды). Чтение поля законно, если значение проверено: именем с проверкой
+   * ниже (`!имя`, `isX(имя)`, `.test(имя)`, `typeof имя`, `имя ===`) или сразу
+   * отдано разбору (`parse…`, `safe…`, `is…`, `valid…`). Прочее — находка. */
+  if (/^\s*['"]use server['"]/.test(raw)) {
+    const PARSER = /\b(?:is|parse|safe|valid|check)\w*$/i
+    const reads = [
+      ...[...src.matchAll(/\b\w*form\w*\s*\.\s*get\s*\(/gi)].map((m) => m.index),
+      ...[...src.matchAll(/\bfield\s*\(\s*\w+\s*,/g)].map((m) => m.index),
+    ]
+    for (const i of reads) {
+      /* Обёртка `String(…)` вокруг чтения — приведение вместо проверки типа. */
+      const open = enclosingCall(src, i)
+      if (open && open.name === 'String') {
+        found.rawInput.push(`${at(i)}  String(form.get(…)) — файл станет «[object File]»; читать типом (field)`)
+        continue
+      }
+      const end = closeOf(src, src.indexOf('(', i))
+      if (/^\s*as\s+string\b/.test(src.slice(end + 1))) {
+        found.rawInput.push(`${at(i)}  form.get(…) as string — тип не проверен; читать типом (field)`)
+        continue
+      }
+      /* Имя значения: `const имя = чтение` или поле объекта
+         `const все = { имя: чтение, … }` — тогда проверяется `все.имя`. */
+      const before = src.slice(Math.max(0, i - 80), i)
+      let named = before.match(/(?:const|let)\s+([A-Za-z_$][\w$]*)\s*=\s*$/)?.[1]
+      const prop = before.match(/([A-Za-z_$][\w$]*)\s*:\s*$/)?.[1]
+      if (!named && prop && !open) {
+        const brace = src.lastIndexOf('{', i)
+        const owner = src.slice(Math.max(0, brace - 80), brace).match(/(?:const|let)\s+([A-Za-z_$][\w$]*)\s*=\s*$/)?.[1]
+        if (owner && !src.slice(brace + 1, i).includes('}')) named = `${owner}.${prop}`
+      }
+      if (named) {
+        const name = named.replace(/[$.]/g, '\\$&')
+        const rest = src.slice(end)
+        const checked = new RegExp(`!\\s*${name}\\b|\\b${name}\\s*(?:===|!==|&&|\\?(?!\\.))|typeof\\s+${name}\\b|\\b(?:is|parse|safe|valid|check)\\w*\\([^)]*\\b${name}\\b|\\.test\\(\\s*${name}\\b|\\b${name}\\.length\\b`)
+        if (checked.test(rest)) continue
+        found.rawInput.push(`${at(i)}  ${named} из формы уходит дальше без проверки`)
+        continue
+      }
+      if (open && PARSER.test(open.name)) continue
+      if (/^\s*(?:===|!==)/.test(src.slice(end + 1))) continue
+      found.rawInput.push(`${at(i)}  поле формы уходит дальше без проверки — проверить до использования и ответить ошибкой`)
+    }
+  }
+
+  /* ── семья: маршрут отвечает ошибкой с кодом 200 (И800) ─────────────────
+   *
+   * `Response.json({ error })` без `status` — это 200: клиент, кэш и проверка
+   * здоровья видят «всё хорошо», а разбирать тело никто не обязан. У
+   * маршрутов шаблона коды стоят (401 секрет, 400 тег, 503 источник молчит);
+   * семья сторожит, чтобы новый маршрут не забыл. */
+  if (/(?:^|\/)app\/api\/.*route\.tsx?$/.test(rel)) {
+    for (const m of src.matchAll(/\b(?:Next)?Response\s*\.\s*json\s*\(/g)) {
+      const open = m.index + m[0].length - 1
+      const args = src.slice(open + 1, closeOf(src, open))
+      if (!/\berror\s*:|\bok\s*:\s*false\b/.test(args) || /\bstatus\s*:/.test(args)) continue
+      found.errorOk.push(`${at(m.index)}  ошибка в теле, а код ответа — 200`)
+    }
+  }
+
   /* Сортировка, переставляющая ЧУЖОЙ массив.
    *
    * `sort` не возвращает новый список — он переставляет тот, у которого его
@@ -728,6 +822,13 @@ for (const path of files) {
     }
   }
 }
+
+/* ── семья: ключ или пароль едет в git (И799) ─────────────────────────────
+ *
+ * Не по папкам кода, а по всему, что отслеживает git: ключ в Dockerfile,
+ * в образце окружения или в записке так же уходит в историю. Узоры и
+ * исключения — `tools/secrets.mjs`. */
+found.secretInGit.push(...secretsIn(ROOT))
 
 for (const [, v] of bodies) {
   if (!v.also.length) continue
