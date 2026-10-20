@@ -396,7 +396,7 @@ async function Blocks({ lang }: { lang: Lang }) {
         <Shelf title={t(lang, 'catalog.title')} id="design-shelf" all={hrefFor(lang, { catalog: true })} cards={cards} cart={{ submit: cartSubmit, call: cartCall }} />
       </Part>
       <Socials />
-      <Part title="Пустой экран" lede="Экран, когда показывать нечего: слово, строка о том, как это наполнить, и тихие строки категорий, как в окне поиска. Так стоят пустое избранное и пустая корзина.">
+      <Part title="Пустой экран" lede="Экран, когда показывать нечего: слово, строка о том, как это наполнить, и тихие строки категорий, как в окне поиска. Так стоит пустая корзина; пустое избранное вместо строк предлагает полку «Best sellers».">
         <EmptyPaths level={2} title={t(lang, 'saved.empty')} lead={t(lang, 'saved.emptyLead')} shelves={shelvesView(lang, await mainShelves(lang))} />
       </Part>
       <Part title="Экраны состояний" lede="Почему пусто и куда дальше: четыре причины — четыре экрана. Пусто, ничего не найдено, источник не ответил, страницы нет. Шаг — одна ссылка; когда экран и есть вся страница, шаг — громкая кнопка.">
