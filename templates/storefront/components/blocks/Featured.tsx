@@ -13,5 +13,5 @@ export function Featured({ block, ctx, place }: { block: Extract<Block, { type: 
   if (!cards.length) return null
   /* Полка — общая (components/Shelf.tsx, И481); выход — ко всему каталогу. */
   const all = block.to ? hrefFor(ctx.lang, { category: block.to }) : hrefFor(ctx.lang, { catalog: true })
-  return <Shelf title={block.title} lede={block.lede} id={`shelf-${block.to ?? block.ids[0] ?? 'top'}`} all={all} cards={cards} cart={ctx.cart} className={p.wrap} air={place.air ?? undefined} />
+  return <Shelf title={block.title} lede={block.lede} id={`shelf-${block.to ?? block.ids[0] ?? 'top'}`} all={all} cards={cards} cart={ctx.cart} className={p.wrap} air={place.air ?? undefined} exit={place.exit} />
 }

@@ -5,6 +5,7 @@ import type { PledgesView } from '@/lib/pledges.ts'
 import type { Air, HomeVariant } from '@/lib/homes.ts'
 import type { Tone } from '@/lib/bands.ts'
 import type { CartActions } from '../ProductCard.tsx'
+import type { Exit } from '../RailHead.tsx'
 
 /** Доставка для блока главной: способы — тем же видом, что выбор на
  *  оформлении (`deliveryView`, И95), и адрес страницы условий доставки,
@@ -23,4 +24,4 @@ import type { CartActions } from '../ProductCard.tsx'
 export type BlockCtx = { lang: Lang; home: HomeVariant; collections: Collection[]; effects: Effect[]; cards: Record<string, ShelfCard>; spotlight: ShelfCard | null; pledges: PledgesView; cart: CartActions; bands: Readonly<Record<string, Tone>>; reviews: Review[]; posts: Post[]; cat?: 'dot' | 'grid' }
 /** Место блока на главной: воздух над ним — роль примитива `section`
  *  (`data-air`); null — воздух раздела. */
-export type Place = { air: Air | null }
+export type Place = { air: Air | null; exit?: Exit }
