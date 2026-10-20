@@ -6,7 +6,7 @@ import { isLang, type Lang } from '../locale.ts'
 import { hrefFor } from '../href.ts'
 import { t, type Key } from '../i18n/index.ts'
 import { deliveryReady } from '../checkout-steps.ts'
-import { parseAddress, parseContact, type FormState, type Values } from '../checkout-form.ts'
+import { field, parseAddress, parseContact, type FormState, type Values } from '../checkout-form.ts'
 import type { CommerceError, Money } from '../source/contract.ts'
 
 const MESSAGE: Partial<Record<CommerceError, Key>> = {
@@ -54,7 +54,7 @@ export async function saveContact(rawLang: string, _prev: FormState, form: FormD
  *  прежний адрес) — сразу на оплату; иначе — назад на шаг за подробностями. */
 export async function chooseMethod(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
   const lang = langFrom(rawLang)
-  const methodId = String(form.get('method') ?? '')
+  const methodId = field(form, 'method')
   if (!methodId) return { errors: {}, values: {}, message: t(lang, 'delivery.methodMissing') }
   const r = await commerce().setDelivery(await sessionOr(lang), lang, { methodId, address: null, pointId: null })
   if (!r.ok) return refused(lang, r.error)
@@ -66,7 +66,9 @@ export async function saveAddress(rawLang: string, _prev: FormState, form: FormD
   const lang = langFrom(rawLang)
   const parsed = parseAddress(lang, form)
   if (!parsed.ok) return { errors: parsed.errors, values: parsed.values, message: t(lang, 'checkout.fix') }
-  const r = await commerce().setDelivery(await sessionOr(lang), lang, { methodId: String(form.get('method') ?? ''), address: parsed.value, pointId: null })
+  const methodId = field(form, 'method')
+  if (!methodId) return { errors: {}, values: parsed.value, message: t(lang, 'delivery.methodMissing') }
+  const r = await commerce().setDelivery(await sessionOr(lang), lang, { methodId, address: parsed.value, pointId: null })
   if (!r.ok) return refused(lang, r.error, parsed.value)
   sessionChanged()
   redirect(hrefFor(lang, { checkout: 'payment' }))
@@ -74,9 +76,11 @@ export async function saveAddress(rawLang: string, _prev: FormState, form: FormD
 
 export async function choosePoint(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
   const lang = langFrom(rawLang)
-  const pointId = String(form.get('point') ?? '')
+  const pointId = field(form, 'point')
   if (!pointId) return { errors: {}, values: {}, message: t(lang, 'delivery.pointMissing') }
-  const r = await commerce().setDelivery(await sessionOr(lang), lang, { methodId: String(form.get('method') ?? ''), address: null, pointId })
+  const methodId = field(form, 'method')
+  if (!methodId) return { errors: {}, values: {}, message: t(lang, 'delivery.methodMissing') }
+  const r = await commerce().setDelivery(await sessionOr(lang), lang, { methodId, address: null, pointId })
   if (!r.ok) return refused(lang, r.error)
   sessionChanged()
   redirect(hrefFor(lang, { checkout: 'payment' }))
@@ -86,8 +90,8 @@ export async function choosePoint(rawLang: string, _prev: FormState, form: FormD
  *  валюты. Нет или кривой — не угадывается: страница перерисуется с
  *  нынешним итогом. */
 function expectedOf(form: FormData): Money | null {
-  const minor = String(form.get('total') ?? '')
-  const currency = String(form.get('currency') ?? '')
+  const minor = field(form, 'total')
+  const currency = field(form, 'currency')
   return /^\d{1,15}$/.test(minor) && /^[A-Z]{3}$/.test(currency) ? { minor: Number(minor), currency } : null
 }
 
@@ -107,7 +111,7 @@ function totalChanged(lang: Lang): FormState {
  *  свежего заказа — на корзину (`refused`). */
 export async function placeOrder(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
   const lang = langFrom(rawLang)
-  const code = String(form.get('payment') ?? '')
+  const code = field(form, 'payment')
   if (!code) return { errors: {}, values: {}, message: t(lang, 'payment.missing') }
   const expected = expectedOf(form)
   if (!expected) return totalChanged(lang)

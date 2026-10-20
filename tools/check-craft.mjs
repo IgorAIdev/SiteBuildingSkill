@@ -167,14 +167,14 @@ const TEXT_ROLES = [...new Set([...readFileSync(new URL('../styles/scale.css', i
 
 /** Что меряется в самой странице. Одной функцией, потому что она уезжает
  *  в браузер целиком и ничего оттуда не импортирует. */
-const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines, autofill, textRoles, measureMax, captionMax, tileFace }) => {
+const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines, autofill, textRoles, captionMax, tileFace }) => {
   const out = { placeholder: [], measure: [], target: [], contrast: [], collision: [],
                 weight: [], jump: [], name: [], heads: [], dress: [], clip: [],
                 swipe: [], stretch: [], broken: [], spill: [], offColumn: [], focus: [], wrap: [],
                 anchor: [], outline: [], marker: [], dark: [], ladder: [], wideCtrl: [], lopsided: [],
                 markInk: [],
                 covered: [],
-                lane: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], lineLong: [], headActs: [],
+                lane: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], lineLong: [], textShort: [], headActs: [],
                 autofill: [], fieldZoom: [], h1Lines: [], twoWays: [], edge: [], fontLate: [], shift: [], ruleAir: [], rowShape: [], railTail: [], tileGrow: [] }
   const seen = new Set()
 
@@ -1287,30 +1287,44 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
     }
   }
 
-  /* 4a7 · строка длиннее меры (И676). Читаемый абзац вне карточек, таблиц,
-     форм, окон и меню: знаков в строке в среднем больше верхнего края
-     `TYPE.measure` (75; Bringhurst 45–75, WCAG 1.4.8 — не больше 80) — глаз
-     теряет начало следующей строки. Слово заказчика 03.10.2026 о подписи
-     полки в 150 знаков: «должен быть 53–74, как у профессионалов? … давай».
-     Прежде здесь стояла обратная семья «потолок у текста» (И525: «у текста потолка
-     нет»). Строк — сколько разных верхов у прямоугольников текста абзаца.
-     Одна строка — не мера, её не меряем. Подпись под заголовком (`hgroup > p`,
-     строка под именем страницы) — одна-три строки одним взглядом с
-     заголовком: её потолок — 90, верх коридора Баттерика (`TYPE.measureCaption`,
-     И680: ширину подписи заказчик взял у Gymshark). Части описания товара (`[data-parts]`: две-четыре
-     строки под подзаголовком) — тем же потолком: слово заказчика 17.10.2026, мера `--measure-detail`. */
+  /* 4a7 · подпись длиннее меры (И680) и текст короче своей колонки (И802).
+     Потолок строки — только у подписи под заголовком (`hgroup > p`, строка под
+     именем страницы): её читают одним взглядом с заголовком, потолок — 90, верх
+     коридора Баттерика (`TYPE.measureCaption`; ширину подписи заказчик взял у
+     Gymshark). У бегущего текста потолка нет: заказчик снимал его трижды
+     (сентябрь, 17.10.2026, 20.10.2026 — «почему текст только до половины, а нижняя
+     строка со ссылками на всю ширину»), и обратная семья `textShort` ловит абзац,
+     список или подзаголовок, который переносится, не дойдя до правого края своей
+     колонки: у частей одного блока край один. Строк — сколько разных верхов у
+     прямоугольников текста; одна строка не меряется. */
   for (const el of document.querySelectorAll('main :is(p, li, dd, blockquote)')) {
     if (!shown(el) || el.closest('dialog, table, form, nav, [class*=card], [class*=Card]')) continue
     if (el.querySelector('p, li, dd, blockquote')) continue
-    const max = el.matches(':is(hgroup, [class*=pagehead]) > p:not([class*=note]), [data-parts] > section > p') ? captionMax : measureMax
-    const text = (el.textContent || '').replace(/\s+/g, ' ').trim()
-    if (text.length <= max) continue
+    if (!el.matches(':is(hgroup, [class*=pagehead]) > p:not([class*=note])')) continue
+    const text = (el.textContent || '').replace(/s+/g, ' ').trim()
+    if (text.length <= captionMax) continue
     const range = document.createRange()
     range.selectNodeContents(el)
     const lines = new Set([...range.getClientRects()].filter((r) => r.width > 0 && r.height > 0).map((r) => Math.round(r.top))).size
     if (lines < 2) continue
     const perLine = text.length / lines
-    if (perLine > max) out.lineLong.push(`${name(el)} — ${Math.round(perLine)} знаков в строке при норме до ${max}`)
+    if (perLine > captionMax) out.lineLong.push(`${name(el)} — ${Math.round(perLine)} знаков в строке при норме подписи до ${captionMax}`)
+  }
+  for (const el of document.querySelectorAll('main [class*=prose] :is(p, ul, ol, dl, blockquote, h2, h3, h4)')) {
+    if (!shown(el) || el.closest('dialog, table, form, nav, hgroup, [class*=card], [class*=Card], [class*=pagehead]')) continue
+    const parent = el.parentElement
+    if (!parent) continue
+    const ps = getComputedStyle(parent)
+    const column = ps.display === 'block' || ps.display === 'flow-root' || ((ps.display === 'flex' || ps.display === 'inline-flex') && ps.flexDirection.startsWith('column')) || ps.display === 'grid'
+    if (!column) continue
+    const range = document.createRange()
+    range.selectNodeContents(el)
+    const lines = new Set([...range.getClientRects()].filter((r) => r.width > 0 && r.height > 0).map((r) => Math.round(r.top))).size
+    if (lines < 2) continue
+    const box = parent.getBoundingClientRect()
+    const right = box.right - parseFloat(ps.paddingRight || '0') - parseFloat(ps.borderRightWidth || '0')
+    const short = right - el.getBoundingClientRect().right
+    if (short > 2) out.textShort.push(`${name(el)} — переносится, а до края колонки ${Math.round(short)}px`)
   }
 
   /* 4a8 · шапка ряда (И678). Шапка со строкой (`data-row`, заголовок в
@@ -2888,7 +2902,7 @@ const found = { lane: [], heroLane: [], placeholder: [], measure: [], target: []
                 anchor: [], outline: [], marker: [], sticky: [], fold: [], theme: [], coarse: [], calm: [],
                 inkDip: [], markInk: [],
                 covered: [],
-                ladder: [], wideCtrl: [], lopsided: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], lineLong: [], headActs: [],
+                ladder: [], wideCtrl: [], lopsided: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], lineLong: [], textShort: [], headActs: [],
                 twiceLift: [], sheetSize: [],
                 autofill: [], fieldZoom: [], h1Lines: [], twoWays: [], edge: [], fontLate: [], shift: [], ruleAir: [], rowShape: [], railTail: [], tileGrow: [] }
 
@@ -3000,7 +3014,6 @@ async function visit(path, w, { finger, dark = false }) {
          оформления с полной корзиной: там меряется автозаполнение. */
       autofill: path.includes('#as='),
       textRoles: TEXT_ROLES,
-      measureMax: TYPE.measure[1],
       captionMax: TYPE.measureCaption,
       tileFace: CONTROL.faceMd,
     })

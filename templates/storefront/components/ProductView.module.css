@@ -71,9 +71,9 @@
   .pin:not(:has([data-many])){--gallery-fit:calc(var(--gallery-room) * var(--gallery-r))}
   /* Колонка покупки не шире меры строки: цена, кнопка и абзац читаются
      одним взглядом, а не расползаются по широкому окну. */
-  /* Колонка — до меры подписей (`--measure-detail`), одна правая кромка у всех её частей: имя, цена, кнопки, сведения
-     (check:craft, «рваная правая кромка»: мера строки у одних и мера подписей у других давали две вертикали, 162 px). */
-  .offer{max-inline-size:var(--measure-detail)}
+  /* Колонка — до меры вводного текста (`--measure-lede`): имя, цена, кнопки и сведения о товаре идут в ней одним
+     правым краем (И802); текст занимает колонку целиком, потолка строки у него нет. */
+  .offer{max-inline-size:var(--measure-lede)}
 }
 /* Миниатюры сбоку: полоса слева шириной в пятую часть кадра, высота блока —
    высота кадра. Точки: под кадром строка ростом с цель. */
@@ -137,11 +137,12 @@
    а 16, а мы исправляли, что текст везде 20»). Стояло вторичным ярусом
    (`blurb`, 16), чтобы марка была на шаг крупнее (И511); марка теперь
    ростом текста (И563) — не мельче описания, вровень с ним (`ROLE_ORDER`).
-   Мера — текста, а не подписи заголовка: описание читают абзацем, и на 700
-   колонка в столбике давала 85 знаков в строке (check:craft lineLong, И676). */
+   Ширина — колонки покупки: у описания своей меры нет, правый край один с
+   именем, ценой и кнопками (И802; слово заказчика 17.10.2026 «текст описания
+   сделай, чтобы продолжался вправо»). */
 /* Описание под именем — не больше трёх строк (слово заказчика 17.10.2026: «описание товара сделай три строки»);
    в данных до трёх предложений (lib/source/vendure/product.ts), лишнее уходит в «Description» ниже. */
-.summary{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;margin:0;font-size:var(--lede-size);line-height:var(--lede-lead);font-weight:var(--lede-weight);letter-spacing:var(--lede-track);color:var(--ink-soft);max-inline-size:var(--body-measure)}
+.summary{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;margin:0;font-size:var(--lede-size);line-height:var(--lede-lead);font-weight:var(--lede-weight);letter-spacing:var(--lede-track);color:var(--ink-soft)}
 /* Марка — первая строка заголовка (ProductView.tsx, И441): ростом и
    межстрочьем тела, краской подписи — имя остаётся главным, марка читается
    раньше него. */

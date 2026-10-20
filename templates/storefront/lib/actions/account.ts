@@ -9,7 +9,7 @@ import { parseEmail, parseNewPassword, parseSavedAddress, parseSignIn, parseSign
 import { callbackPath, land, packFlow, start } from '../social.ts'
 import { enterWith } from '../social-entry.ts'
 import { absolute } from '../seo.ts'
-import type { Errors, Values } from '../checkout-form.ts'
+import { field, type Errors, type Values } from '../checkout-form.ts'
 import type { AccountError, Entry, Provider } from '../source/contract.ts'
 
 /** Ответ формы кабинета — как у кассы (ошибки у полей, введённое, слово
@@ -106,16 +106,20 @@ export async function resetPassword(rawLang: string, _prev: AccountState, form: 
   const lang = langFrom(rawLang)
   const parsed = parseNewPassword(lang, form)
   if (!parsed.ok) return said(t(lang, 'checkout.fix'), parsed.values, parsed.errors)
+  const token = field(form, 'token')
+  if (!token) return refused(lang, 'token')
   const before = await readSession()
-  const r = await commerce().resetPassword(before, lang, String(form.get('token') ?? ''), parsed.value)
+  const r = await commerce().resetPassword(before, lang, token, parsed.value)
   if (!r.change.ok) return refused(lang, r.change.error)
   return enter(lang, before, r, null)
 }
 
 export async function verifyEmail(rawLang: string, _prev: AccountState, form: FormData): Promise<AccountState> {
   const lang = langFrom(rawLang)
+  const token = field(form, 'token')
+  if (!token) return refused(lang, 'token', {}, 'verify.token')
   const before = await readSession()
-  const r = await commerce().verify(before, lang, String(form.get('token') ?? ''))
+  const r = await commerce().verify(before, lang, token)
   if (!r.change.ok) return refused(lang, r.change.error, {}, 'verify.token')
   return enter(lang, before, r, null)
 }
@@ -147,8 +151,12 @@ export async function saveAddress(rawLang: string, _prev: AccountState, form: Fo
 
 export async function removeAddress(rawLang: string, form: FormData): Promise<void> {
   const lang = langFrom(rawLang)
-  const r = await commerce().removeAddress(await readSession(), lang, String(form.get('id') ?? ''))
+  const list = hrefFor(lang, { account: 'addresses' })
+  /* Без id убирать нечего — назад к адресам, движок не спрашивается. */
+  const id = field(form, 'id')
+  if (!id) redirect(list)
+  const r = await commerce().removeAddress(await readSession(), lang, id)
   if (!r.ok && r.error === 'signed-out') toSignIn(lang)
   sessionChanged()
-  redirect(hrefFor(lang, { account: 'addresses' }))
+  redirect(list)
 }

@@ -10,5 +10,5 @@
    8), но читаются одним текстом. Разделы документа (DocView, «Доставка»,
    «Возврат») — другое отношение: h2 с воздухом блока (И524). Отбивка от
    верха карты — воздух блока. */
-.details{--stack:var(--air-row);--body-measure:var(--measure-detail);margin-block-start:var(--air-block)}
+.details{--stack:var(--air-row);margin-block-start:var(--air-block)}
 .title{margin-block:0 var(--air-tight);font-size:var(--parthead-size);line-height:var(--parthead-lead);font-weight:var(--parthead-weight);letter-spacing:var(--parthead-track)}
