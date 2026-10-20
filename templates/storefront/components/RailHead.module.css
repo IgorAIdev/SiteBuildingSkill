@@ -1,37 +1,11 @@
-/* Выход «View all» шапки ряда (RailHead.tsx, И759): на широком — пилюля рядом с
-   кругами листания (И747), на узкой коробке шапки (шов 560) — слово со стрелкой
-   (`go`): кругов там нет, полку листают свайпом, и пилюля одна стояла рядом с
-   заголовком крупнее его смысла (Gymshark на 390 — «View All» ссылкой 14 px без
-   кромки). Коробка — шапка ряда (`sectionHead`, `inline-size`), не окно
-   (правило 6). Сила — местом (0,2,0): показ у `.btn` и `.go` объявлен голым
-   классом. */
-/* Слово выхода — надписью кнопки (`--ctrl-fs`), как у пилюли на широком: ссылка
-   иначе наследует кегль шапки ряда, а он — заголовка (27 на 390). */
-.acts > .narrow{display:none;font-size:var(--ctrl-fs);font-weight:var(--label-weight)}
-@container (max-width:559px){
-  .acts > .wide{display:none}
-  .acts > .narrow{display:inline-flex}
-}
-
-/* Выход на волоске (`data-exit` у шапки, RailHead.tsx) — словом на любой
-   ширине, кеглем надписи кнопки, как слово на телефоне. Три вида — смотрины
-   заказчика 20.10.2026 («нужно иное решение, завязанное на линиях-волосках»). */
-.word{font-size:var(--ctrl-fs);font-weight:var(--label-weight)}
-/* А · слово, подчёркнутое волоском: линия под словом — толщиной линии
-   (`--line-w`), стрелка рядом едет под рукой (go.module.css). */
-.word[data-exit='line'] > span{text-decoration:underline;text-decoration-thickness:var(--line-w);text-underline-offset:.35em}
-/* Б · волосок-проводник: линия-разделитель (`--rule`) тянется от заголовка до кнопок ряда и под рукой
-   на выходе темнеет. Шапка — двумя колонками «заголовок своей ширины | всё
-   остальное», группа кнопок растянута на свою колонку, линия берёт свободное. */
-[data-exit='lead']:has(> .acts){grid-template-columns:minmax(0, max-content) minmax(var(--sp-8), 1fr)}
-[data-exit='lead'] > .acts{justify-self:stretch;flex-wrap:nowrap}
-.lead{flex:1 1 0;min-inline-size:var(--sp-6);block-size:var(--line-w);background:var(--rule);transition:background-color var(--hover-t) var(--ease)}
-@media (hover:hover){ .acts:has(> .word:hover) > .lead{background:var(--ink)} }
-/* В · стрелка-волосок: древко — линия весом штриха знака (`--icon-stroke`),
-   голова — знак `chevron-right` из листа; его остриё (15 из 24 окна) ложится
-   на конец древка. Под рукой древко вытягивается вместо сдвига стрелки
-   (`data-still` снимает сдвиг). */
-.shaft{display:inline-flex;align-items:center;inline-size:2.4em;transition:inline-size var(--hover-t) var(--ease)}
-.shaft::before{content:'';flex:1;block-size:var(--icon-stroke);background:currentColor;border-radius:var(--icon-stroke)}
-.word .shaft svg{margin-inline-start:-.72em}
-@media (hover:hover) and (prefers-reduced-motion:no-preference){ .word:hover .shaft{inline-size:3.4em} }
+/* Выход «View all» шапки ряда (RailHead.tsx) — слово со стрелкой под 45° без
+   кромки на любой ширине (заказчик 20.10.2026: «View all без окантовки, а
+   стрелочка под углом 45 град»). Пилюля (И747) и пара «пилюля на широком —
+   слово на телефоне» (И759) сняты: слово без рамки крупнее заголовка не
+   встаёт ни на какой ширине. Ответ на руку — вид «слово» пункта меню
+   (btn.module.css, `data-hand="menu"`), здесь только кегль и строй. */
+/* Слово выхода — надписью кнопки (`--ctrl-fs`): ссылка иначе наследует кегль
+   шапки ряда, а он — заголовка (27 на 390). Знак — соизмерим со строкой, как у
+   ссылки «куда ведёт» (go.module.css). */
+.all{display:inline-flex;align-items:center;gap:.35em;font-size:var(--ctrl-fs);font-weight:var(--label-weight)}
+.all svg{inline-size:1.15em;block-size:1.15em;flex:none}

@@ -1,6 +1,5 @@
 import p from '@/styles/primitives.module.css'
 import b from '@/styles/btn.module.css'
-import go from '@/styles/go.module.css'
 import s from './RailHead.module.css'
 import type { Lang } from '@/lib/locale.ts'
 import { t } from '@/lib/i18n/index.ts'
@@ -8,54 +7,30 @@ import { Icon } from './Icon.tsx'
 import { RailPager } from './RailPager.tsx'
 import { SiteLink } from './SiteLink.tsx'
 
-/** Вид выхода «View all»: `pill` — пилюля (И747); три на волосяной линии —
- *  на смотрины заказчику 20.10.2026 («пилюля не подходит, нужно решение на
- *  линиях-волосках»): `line` — слово, подчёркнутое волоском; `lead` — волосок
- *  от заголовка до выхода; `shaft` — стрелка с длинным древком-волоском.
- *  Выберет — останется один, остальные снимаются (docs/open.md). */
-export type Exit = 'pill' | 'line' | 'lead' | 'shaft'
-
 /* Шапка ряда, который листают вбок, — одна на сайт (правило 10, И665):
    плитки категорий и эффектов главной, полки товаров. Слева заголовок и
    описание ряда одной подписью (`hgroup`; описания нет в данных — заголовок
    стоит один), справа — кнопки листания и выход «View all» одной группой,
    выход у самого края (заказчик 28.09.2026: «справа приклеивается к правой
-   стороне кнопка View all, а левее её кнопки скролла»). Выход — пилюля того
-   же стиля и роста, что кнопки листания (набор «Уголок» каталога кнопок,
-   рост 40; заказчик 02.10.2026: «в комплект к этим стрелкам»), и так же под рукой
-   отвечает тихой вуалью, как кнопка листания (слово заказчика 16.10.2026: «тихую
-   окантовку и заливку тихую при наведении, нажатии»; до того — заливка марки, И704). Форма — пилюля при любом угле
-   панели, как и круги листания (`data-rail-nav`, И747: «тут нужны пилюли, чтоб не
-   такие массивные были»). Слово выхода — одно у
+   стороне кнопка View all, а левее её кнопки скролла»). Слово выхода — одно у
    всех рядов (И536); данные дают только адрес, нет адреса — выхода нет.
-   На телефоне кругов листания нет (полку листают свайпом), и пилюля одна
-   стояла рядом с заголовком крупнее его смысла — там выход словом со стрелкой
-   (`go`), как «View All» у Gymshark (заказчик 05.10.2026: «кнопка View all
-   какая-то большая по сравнению с заголовком»; И759). Какой из двух видно,
-   решает ширина шапки ряда (RailHead.module.css); адрес один.
-   Выход на волоске (`exit` не `pill`) — словом на любой ширине: рамки у него
-   нет, крупнее заголовка он не встаёт.
+   Выход — слово со стрелкой под 45° без кромки, на любой ширине (заказчик
+   20.10.2026: «View all без окантовки, а стрелочка под углом 45 град»; до того —
+   пилюля у кругов листания, И747, и слово только на телефоне, И759). Под рукой —
+   как пункт меню, только оттенок: тихое слово становится полным, без движения
+   (`word`, `data-hand="menu"`; заказчик 20.10.2026: «эффекты нужны простые, как в
+   меню, изменение оттенка»). Цель пальца — запасом `tap`.
    Рельса ряда — `${id}-rail`: её листают кнопки. */
-export function RailHead({ id, title, lede, all, lang, exit = 'pill' }: { id: string; title: string; lede?: string; all: string | null; lang: Lang; exit?: Exit }) {
-  const word = t(lang, 'shelf.all')
-  const hair = all !== null && exit !== 'pill'
+export function RailHead({ id, title, lede, all, lang }: { id: string; title: string; lede?: string; all: string | null; lang: Lang }) {
   return (
-    <div className={p.sectionHead} data-row data-exit={hair ? exit : undefined}>
+    <div className={p.sectionHead} data-row>
       <hgroup>
         <h2 id={id}>{title}</h2>
         {lede ? <p>{lede}</p> : null}
       </hgroup>
-      <div className={`${p.cluster} ${s.acts}`}>
-        {hair && exit === 'lead' ? <span className={s.lead} aria-hidden="true" /> : null}
+      <div className={p.cluster}>
         <RailPager rail={`${id}-rail`} back={t(lang, 'rail.prev')} next={t(lang, 'rail.next')} />
-        {all && !hair ? <SiteLink className={`${b.btn} ${s.wide}`} data-rail-nav href={all}>{word}<Icon id="arrow-right" /></SiteLink> : null}
-        {all && !hair ? <SiteLink className={`${go.go} ${s.narrow}`} href={all}>{word}<Icon id="arrow-right" /></SiteLink> : null}
-        {all && hair ? (
-          <SiteLink className={`${go.go} ${s.word}`} data-exit={exit} data-still={exit === 'shaft' ? '' : undefined} href={all}>
-            <span>{word}</span>
-            {exit === 'shaft' ? <span className={s.shaft} aria-hidden="true"><Icon id="chevron-right" /></span> : <Icon id="arrow-right" />}
-          </SiteLink>
-        ) : null}
+        {all ? <SiteLink className={`${b.word} ${p.tap} ${s.all}`} data-hand="menu" href={all}>{t(lang, 'shelf.all')}<Icon id="arrow-up-right" /></SiteLink> : null}
       </div>
     </div>
   )

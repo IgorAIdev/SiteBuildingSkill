@@ -32,3 +32,4 @@
 - [Best examples, not local](best-examples-not-local.md) — orient on the best stores in the world, not local/market competitors; never offer a local-competitor review (owner 13.10.2026)
 - [Home: product first](home-product-first.md) — product at the top, trust/proof strip (lab, delivery, returns) last before the footer; owner overrode "proof-first" research (13.10.2026)
 - [cbdshop.hr is Croatia](cbdshop-is-croatia.md) — storefront4 = Croatia (hr + en); ro/hu removed 15.10.2026; sample legal texts still Romanian, replace before launch
+- [Show in chat, not ports](show-in-chat-not-ports.md) — look questions and effects drawn live in the chat; no extra storefront servers to show him (20.10.2026)

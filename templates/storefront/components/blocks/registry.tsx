@@ -10,7 +10,6 @@ import { Story } from './Story.tsx'
 import { Reviews } from './Reviews.tsx'
 import { Posts } from './Posts.tsx'
 import { Trust } from './Trust.tsx'
-import type { Exit } from '../RailHead.tsx'
 import s from './blocks.module.css'
 
 type Renderers = { [K in Block['type']]: (props: { block: Extract<Block, { type: K }>; ctx: BlockCtx; place: Place }) => ReactNode }
@@ -35,18 +34,10 @@ const BANDED = new Set<string>(Object.keys(RENDERERS).filter((type) => type !== 
 /* Порядок и воздух — у рецепта главной (lib/homes.ts, `arrange`); здесь
    только отрисовка места. Ключ — место рецепта, а не индекс массива
    (check:lint, react/no-array-index-key). */
-/* Смотрины выхода «View all» на волоске (заказчик 20.10.2026: «покажи все три
-   варианта на главной, по одному варианту на рельсе»): первые три ряда с выходом
-   получают по виду, остальные — пилюлю для сравнения. Выбор — один вид на все
-   ряды, тогда эта раздача снимается (docs/open.md). */
-const SHOW: readonly Exit[] = ['line', 'lead', 'shaft']
-const RAILED = new Set<string>(['featured', 'posts'])
-
 export function Blocks({ placed, ctx }: { placed: Placed[]; ctx: BlockCtx }) {
-  const rails = placed.filter((x) => RAILED.has(x.block.type)).map((x) => x.key)
   return placed.map(({ block, air, key }, at) => {
     const Render = RENDERERS[block.type] as (props: { block: Block; ctx: BlockCtx; place: Place }) => ReactNode
-    const one = <Render block={block} ctx={ctx} place={{ air, exit: SHOW[rails.indexOf(key)] }} />
+    const one = <Render block={block} ctx={ctx} place={{ air }} />
     const tone = ctx.bands[block.type] ?? 'none'
     if (!BANDED.has(block.type) || tone === 'none') return <Fragment key={key}>{one}</Fragment>
     /* Подложка (И591): обёртка одна, цвет — роль по слову вида. Соседи одного
