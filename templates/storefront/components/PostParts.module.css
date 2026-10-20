@@ -13,7 +13,6 @@
   display:flex;flex-direction:column;align-items:flex-start;gap:var(--gap-row);
   padding:var(--pad-card);border-radius:var(--r-card);background:var(--pop-tint)
 }
-.tldr > p:last-child{max-inline-size:var(--body-measure)}
 
 /* Заголовок «Surse» — ступень раздела документа (DocView: `--h2-at` на роль ниже). */
 .heading{--h2-at:var(--h3-size)}
@@ -27,10 +26,9 @@
 
 /* «Important» — тихая строка сноски, тоном вторичного текста ролью палитры (у
    cbdshop.bg — серый через прозрачность 48 %, 3 : 1). */
-/* Мера — у строки текста, а не у коробки: коробка уже колонки рвала её правую
-   вертикаль (762 при колонке 1386, check:craft lopsided 05.10.2026). */
+/* Сноска — во всю колонку, как текст статьи над ней (И802): коробка уже колонки
+   рвала её правую вертикаль (762 при колонке 1386, check:craft lopsided 05.10.2026). */
 .important{font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft)}
-.important > p{max-inline-size:var(--body-measure)}
 /* Рубрика над именем статьи — ссылка вплотную к заголовку. Заголовок срезан сверху
    по заглавным (`text-box`, И738), а попадание браузер считает по несрезанной
    строке: полоса над буквами принадлежала заголовку, и нижние три четверти
