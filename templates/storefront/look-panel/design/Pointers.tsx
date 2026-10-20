@@ -76,7 +76,7 @@ export async function Pointers({ lang }: { lang: Lang }) {
           <Pair name="Сердце на снимке">{() => (
             <div className={`${p.frame} ${s.heartShot}`}>
               {picture ? <img {...shot(picture, 'shelf', true)} alt="" decoding="async" /> : null}
-              <span className={p.cut}>−17 %</span>
+              <span className={p.cut} data-cut="sale">−17 %</span>
               <SaveToggle id="design-finger-heart" add="В избранное" remove="Убрать из избранного" over="picture" />
             </div>
           )}</Pair>

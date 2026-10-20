@@ -47,8 +47,12 @@ let loading: Promise<Studio> | null = null
 const load = () => (loading ??= import(/* webpackIgnore: true */ /* turbopackIgnore: true */ URL_).then((m: { studio: () => Promise<Studio> }) => m.studio()))
 
 /** Состояние выбора и номер его перемены — компонент перерисовывается на каждую. */
-export function useStudio(): { s: Studio | null; said: { code: string; detail?: string } | null } {
+/** `off` — панели вида на сайте нет (вход закрыт без LOOK_PICKER=on, а страница
+   дизайн-системы открыта и одна, DESIGN_SYSTEM=on): выбор не загрузится
+   никогда, и «Загружаю…» висело вечно (заказчик 21.10.2026). */
+export function useStudio(): { s: Studio | null; said: { code: string; detail?: string } | null; off: boolean } {
   const [s, setS] = useState<Studio | null>(null)
+  const [off, setOff] = useState(false)
   const [said, setSaid] = useState<{ code: string; detail?: string } | null>(null)
   const [, bump] = useState(0)
   useEffect(() => {
@@ -58,10 +62,10 @@ export function useStudio(): { s: Studio | null; said: { code: string; detail?: 
       if (!live) return
       setS(x)
       off = x.on((what, d) => { if (what === 'say') setSaid(d ?? null); else bump((n) => n + 1) })
-    }, () => {})
+    }, () => { loading = null; if (live) setOff(true) })
     return () => { live = false; off() }
   }, [])
-  return { s, said }
+  return { s, said, off }
 }
 
 const never = () => () => {}
