@@ -292,3 +292,13 @@ test('a label chip does not answer the hand; a checkout option card does; the ca
   assert.match(badge[1], /block-size:1\.6em;[^}]*border-radius:calc\(var\(--ctrl-fs-xs\) \* \.8\);[^}]*font-size:var\(--ctrl-fs-xs\)/)
   assert.doesNotMatch(badge[1], /border-radius:50%/)
 })
+
+/* Занятая форма корзины не выключает свои органы: выключенная кнопка теряет наведение и
+   нажатие (`:not(:disabled):hover`), и заливка под мышью на время запроса пропадала
+   («Added» моргает после отпускания, заказчик 20.10.2026). «Жду» — `aria-busy`, вторую
+   запись отклоняет полоса `cartLane`. */
+test('the cart form keeps its controls enabled while it writes', () => {
+  const form = read('../components/CartForm.tsx').replace(/\{\/\*[\s\S]*?\*\/\}/g, '')
+  assert.match(form, /aria-busy=\{busy\}/)
+  assert.doesNotMatch(form, /<fieldset[^>]*disabled/)
+})
