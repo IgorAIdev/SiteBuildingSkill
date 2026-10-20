@@ -26,7 +26,8 @@
  *   · обе темы, все браузеры машины.
  * На карте товара — то же для счётчика сайта и порядок строки покупки:
  * счётчик, «В корзину», «Быстрый заказ» — одной линией и одной высоты (сердце
- * с 04.10.2026 стоит на снимке товара, как на карточке полки, — не в строке).
+ * с 04.10.2026 стоит на снимке товара, как на карточке полки, — не в строке);
+ * сердце нажатием: не сжимается, отметка меняется (И801).
  * На полке телефона (320…412, три языка) — надпись «в корзину» нажатием:
  * одной строкой до нажатия и после, число видно, после перезагрузки число
  * берётся из корзины (И469, И763).
@@ -490,6 +491,25 @@ for (const engine of use) {
         if (tops.size > 1) found.push(tag(`строка покупки не в одну линию: ${row.map((r) => `${r.what} ${r.w}×${r.h} на ${r.top}`).join(', ')}`))
         if (heights.size > 1) found.push(tag(`строка покупки: части разной высоты (${[...heights].join(', ')} px)`))
         if (await page.locator('main form [data-save]').count()) found.push(tag('сердце вернулось в строку покупки — оно стоит на снимке товара'))
+        /* Сердце — переключатель (И801): при нажатии не сжимается и не опускается, как
+           «В корзину», — отвечает состоянием (залитый знак) и подложкой. Один орган на
+           сайт (SaveToggle): карточка полки берёт тот же. Настоящей мышью — синтетическое
+           событие `:active` не включает; после замера отметка снимается обратно. */
+        const heart = page.locator('main [data-save]').first()
+        if (!(await heart.count())) found.push(tag('сердца «в избранное» на карте товара нет'))
+        else {
+          await heart.scrollIntoViewIfNeeded()
+          await heart.hover()
+          const over = await measure(page, heart)
+          const was = await heart.getAttribute('aria-pressed')
+          await page.mouse.down()
+          const held = await measure(page, heart)
+          if (held.transform !== over.transform) found.push(tag(`сердце «в избранное» при нажатии сжимается (${held.transform}) — переключатель отвечает состоянием, не движением`))
+          await page.mouse.up()
+          const flipped = await page.waitForFunction(([el, w]) => el.getAttribute('aria-pressed') !== w, [await heart.elementHandle(), was], { timeout: 5000 }).then(() => true, () => false)
+          if (!flipped) found.push(tag('сердце «в избранное»: после нажатия отметка не сменилась'))
+          else await heart.click()
+        }
         const proof = await page.evaluate(() => { const m = document.querySelector('main [data-level]'); return m ? { first: m.parentElement.firstElementChild === m, inPrice: !!m.closest('[class*=Price]') } : null })
         if (!proof) found.push(tag('наличие на карте товара не найдено'))
         else if (!proof.first || proof.inPrice) found.push(tag('наличие стоит не первым в строке отзывов и артикула'))
