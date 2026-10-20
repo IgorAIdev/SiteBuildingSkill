@@ -85,6 +85,8 @@ const PAGES_FEW: PagesView = {
 
 /** Виды сердца на снимке — карточки полки и главного кадра товара (`--save-look`, панель Look → Card → Heart): на стекле палитры и без подложки, ростом с плашку скидки. Первый — как на сайте. Квадратная кнопка в строке заказа снята 04.10.2026 (заказчик: «избранное перенеси на изображение»). */
 const HEART_LOOKS: [string, string][] = [['disc', 'Сердце на снимке: на стекле'], ['bare', 'Сердце на снимке: без подложки']]
+/** Плашки на снимке полки (`.cut`, primitives.module.css): скидка и наличие — одна форма. */
+const CUTS: [string, string, string][] = [['sale', '−15 %', 'Плашка: скидка'], ['low', 'Мало осталось', 'Плашка: мало осталось'], ['out', 'Нет в наличии', 'Плашка: нет в наличии']]
 
 /** Виды выбора варианта (`--seg-look`, панель Look → Product page): пилюли, встык, в подложке и плашки размера двумя видами (элемент 97). */
 const SEGMENTS: [string, string][] = [['chips', 'Выбор: пилюли'], ['joined', 'Выбор: встык'], ['tray', 'Выбор: в подложке'], ['tiles', 'Плашки размера: чернилами'], ['tint', 'Плашки размера: тоном марки']]
@@ -479,12 +481,31 @@ export async function ButtonList({ lang }: { lang: Lang }) {
                 <span className={s.famSample}>
                   <div className={`${p.frame} ${s.heartShot}`} style={cssVar('--save-look', look)}>
                     {picture ? <img {...shot(picture, 'shelf', true)} alt="" decoding="async" /> : null}
-                    <span className={p.cut}>−17 %</span>
+                    <span className={p.cut} data-cut="sale">−17 %</span>
                     <SaveToggle id={`design-heart-shot-${look}`} add="В избранное" remove="Убрать из избранного" over="picture" />
                   </div>
                 </span>
                 <span className={s.btnName}>{name}</span>
                 <Worn on={look === (names['save-look'] ?? 'disc')} />
+              </li>
+            ))}
+          </ul>
+        </div>
+        {/* Плашки на снимке — одна форма на три смысла (заказчик 21.10.2026:
+            «мало» и «нет» в том же дизайне, что скидка): форма — выбранный вид
+            скидки, краска слова — свой смысл. */}
+        <div className={s.group}>
+          <ul className={`${p.grid} ${s.btnStyles}`}>
+            {CUTS.map(([cut, word, name]) => (
+              <li key={cut} className={s.btnStyle}>
+                <span className={s.famSample}>
+                  <div className={`${p.frame} ${s.heartShot}`}>
+                    {picture ? <img {...shot(picture, 'shelf', true)} alt="" decoding="async" /> : null}
+                    <span className={p.cut} data-cut={cut}><span className={p.cutText}>{word}</span></span>
+                    <SaveToggle id={`design-cut-${cut}`} add="В избранное" remove="Убрать из избранного" over="picture" />
+                  </div>
+                </span>
+                <span className={s.btnName}>{name}</span>
               </li>
             ))}
           </ul>

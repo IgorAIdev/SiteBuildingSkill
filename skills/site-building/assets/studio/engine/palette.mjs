@@ -1089,10 +1089,20 @@ export function groundRoles(n, a, mode, set = {}) {
      снимке товара. Это текст — норма текста (4.5 : 1) на плотной плашке;
      ближайшая к скидке ступень, которая её держит. Ни одна не держит —
      краска стекла: плашка читается, но не красная. */
-  const saleGlassSteps = [10, 9, 11, 8, 7, 6, 5].map((i) => saleRow[i])
-  const saleOnGlass = saleGlassSteps.find((c) => ratio(c, glassLight) >= NEED.text) ?? glassDark
+  const textOnGlass = (row) => [10, 9, 11, 8, 7, 6, 5].map((i) => row[i]).find((c) => ratio(c, glassLight) >= NEED.text) ?? glassDark
+  const saleOnGlass = textOnGlass(saleRow)
   out['--sale-on-glass'] = saleOnGlass
   check('glass-sale', 'цифра скидки на плотной плашке читается', ratio(saleOnGlass, glassLight), NEED.text)
+  /* «Мало» и «нет» на снимке полки — та же белая плашка, что у скидки
+     (заказчик 21.10.2026: «в таком же дизайне должны быть, как и скидка»):
+     слово краской своего смысла, ступень выбрана тем же замером. Готовое
+     слово сигнала (`--warn`, `--bad`) не годится: ночью плашка остаётся
+     светлой, а слово сигнала светлеет под тёмный лист. */
+  for (const [job, name, rule] of [['warn', '--warn-on-glass', 'слово «мало осталось» на плотной плашке читается'], ['error', '--bad-on-glass', 'слово «нет в наличии» на плотной плашке читается']]) {
+    const c = set.paper && set[job] ? textOnGlass(scale(set.paper, set.ink, set[job], mode, n[1])) : glassDark
+    out[name] = c
+    check(`glass-${job}`, rule, ratio(c, glassLight), NEED.text)
+  }
 
   /* Кромка выключенного органа: видна и под прозрачностью выключенного —
      на нижнем краю коридора STATE.off; первая ступень нейтрали от пола,

@@ -1622,16 +1622,22 @@
   position:absolute;inset-block-start:var(--pad-inner);inset-inline-start:var(--pad-inner);z-index:2;
   block-size:calc(var(--ctrl-h-sm) * .8);padding-inline:calc(var(--ctrl-h-sm) * .35);border-radius:var(--r-ctrl);
   display:inline-flex;align-items:center;
-  background:var(--sale-fill);color:var(--on-sale);
+  --cut-fill:var(--sale-fill);--cut-on:var(--on-sale);--cut-glass:var(--sale-on-glass);
+  background:var(--cut-fill);color:var(--cut-on);
   font-size:var(--ctrl-fs-xs);font-weight:var(--label-weight);font-variant-numeric:tabular-nums
 }
 /* Наличие на кадре полки — та же метка, одетая иначе: атрибут на том же
    узле, а не второй класс (И230). Только исключение: «мало» — внимание,
    «нет» — потеряно сейчас; краски — плашки палитры, заведённые ровно для
    них (tokens.css, «плашки: скидка, «мало осталось», заливки к ошибке»).
-   Слово, а не число, — вес ступенью тише, чем у цифры скидки. */
-.cut[data-cut='low']{background:var(--warn-fill);color:var(--on-warn);font-weight:var(--label-weight)}
-.cut[data-cut='out']{background:var(--bad-fill);color:var(--on-bad);font-weight:var(--label-weight)}
+   Смысл плашки задаёт ТОЛЬКО краски — три ручки: заливка, слово на ней,
+   слово на белой плашке. Форма одна на все смыслы при любом виде скидки
+   (заказчик 21.10.2026: «в таком же дизайне должны быть, как и скидка —
+   единообразные»): вид переделали у скидки, а «мало» и «нет» остались
+   угловатыми заливками рядом с белой пилюлей. Проверка — check:system,
+   семья `kindForm`. */
+.cut[data-cut='low']{--cut-fill:var(--warn-fill);--cut-on:var(--on-warn);--cut-glass:var(--warn-on-glass)}
+.cut[data-cut='out']{--cut-fill:var(--bad-fill);--cut-on:var(--on-bad);--cut-glass:var(--bad-on-glass)}
 /* Скидка пилюлей (`--sale-look: pill`; слово заказчика 16.10.2026: «пилюлей
    сделай» и «такой же высоты, как фон сердечка»): та же плашка, ростом с круг
    сердечка на снимке: рост даёт ручка места `--sale-h`, умолчание —
@@ -1639,12 +1645,15 @@
    карте товара сердце растёт иначе, и главный кадр ставит свой `--sale-h`
    (Gallery.module.css). Два органа в двух углах кадра стоят на одной высоте. Концы скруглены до половины роста — не
    `--r-pop`: полный круг носит только главное действие (И790). Поле по
-   бокам шире на треть — круглому концу нужен воздух под слово. Только скидка:
-   «мало» и «нет» остаются метками с углом контрола. Вес (0,3,0) — по той же
+   бокам шире на треть — круглому концу нужен воздух под слово. Форма — у
+   всех плашек кадра: «мало» и «нет» стоят в том же углу и носят ту же
+   пилюлю (заказчик 21.10.2026: «в таком же дизайне должны быть, как и
+   скидка — единообразные»; угловатые метки рядом с пилюлей скидки читались
+   двумя системами). Вес (0,3,0) — по той же
    причине, что у ленты ниже: место (`.card .flag`, у него свой угол «по
    кадру» и своя высота) форму не перебивает. */
 @container style(--sale-look: pill) or style(--sale-look: quiet){
-  .cut[data-cut='sale']:not([hidden]){
+  .cut[data-cut]:not([hidden]){
     block-size:var(--sale-h, var(--ctrl-face));min-block-size:var(--sale-h, var(--ctrl-face));
     border-radius:calc(var(--sale-h, var(--ctrl-face)) / 2);padding-inline:calc(var(--sale-h, var(--ctrl-face)) * .4)
   }
@@ -1654,9 +1663,11 @@
    круг сердечка, но не заливка скидки, а белая плашка сердца — плотная
    (`--plate-glass-hand`), с цифрой краской скидки, выбранной на ней по
    норме текста (`--sale-on-glass`, строитель палитры). Скидка остаётся
-   краской — не заливкой: рядом с кнопкой покупки красная заливка кричит. */
+   краской — не заливкой: рядом с кнопкой покупки красная заливка кричит.
+   «Мало» и «нет» — та же белая плашка, слово краской своего смысла,
+   выбранной на ней тем же замером (`--warn-on-glass`, `--bad-on-glass`). */
 @container style(--sale-look: quiet){
-  .cut[data-cut='sale']:not([hidden]){background:var(--plate-glass-hand);color:var(--sale-on-glass)}
+  .cut[data-cut]:not([hidden]){background:var(--plate-glass-hand);color:var(--cut-glass)}
 }
 /* Скидка лентой (`--sale-look: ribbon`; слово заказчика 16.10.2026: «косая
    лента поставь в витрину»). Лента — угол кадра: квадрат от роста органа
@@ -1668,18 +1679,18 @@
    кадр товара: место (`.card .flag`, `.gallery .badge`) даёт только угол.
    Вес (0,3,0): место с весом (0,2,0) форму не перебивает; `min-*` сильнее
    `max-*`, поэтому поле места «не шире места слева от сердца» ленте не
-   мешает. Только скидка: «мало» и «нет» остаются метками. */
+   мешает. Лента — у всех плашек кадра, краской своего смысла. */
 @container style(--sale-look: ribbon){
-  .cut[data-cut='sale']:not([hidden]){
+  .cut[data-cut]:not([hidden]){
     --sale-size:calc(var(--ctrl-h-sm) * 2.8);
     inset-block-start:0;inset-inline-start:0;
     inline-size:var(--sale-size);min-inline-size:var(--sale-size);max-inline-size:none;
     block-size:var(--sale-size);min-block-size:var(--sale-size);
     display:block;padding:0;border-radius:0;
-    background:linear-gradient(to bottom right,transparent 0 30%,var(--sale-fill) 30% 50%,transparent 50%);
-    color:var(--on-sale)
+    background:linear-gradient(to bottom right,transparent 0 30%,var(--cut-fill) 30% 50%,transparent 50%);
+    color:var(--cut-on)
   }
-  .cut[data-cut='sale'] .cutText{
+  .cut[data-cut] .cutText{
     position:absolute;inset-block-start:40%;inset-inline-start:40%;translate:-50% -50%;rotate:-45deg;
     white-space:nowrap;line-height:1
   }

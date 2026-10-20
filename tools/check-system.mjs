@@ -25,6 +25,13 @@
  *   placeClips   — место решает, режется ли знак (`svg{overflow…}`). Можно
  *                  ли рисунку за окно — свойство знака (Icon.tsx), иначе
  *                  в одном месте он цел, в другом обрезан;
+ *   kindForm     — смысл плашки на снимке (`.cut[data-cut='low']`) задаёт
+ *                  не только краски: форму, рост, угол, поле. Смысл — это
+ *                  ручки краски (`--cut-fill`, `--cut-on`, `--cut-glass`),
+ *                  форма одна на все смыслы. Слово заказчика 21.10.2026:
+ *                  «low stock, out of stock — в таком же дизайне должны быть,
+ *                  как и скидка, единообразные»: вид скидки переделали в
+ *                  пилюлю, а «мало» и «нет» остались угловатыми заливками;
  *   ownedPart    — часть общего контрола, у которой есть своя разметка
  *                  (компонент), написана на месте руками: классы шапки окна
  *                  (`pn.bar`, `pn.title`, `pn.close`) вне PaneHead.tsx. Слово
@@ -64,6 +71,7 @@ const FAMILIES = {
   placePaints: 'место красит взятый контрол своим классом',
   placeClips: 'место решает, режется ли знак',
   ownedPart: 'часть общего контрола написана на месте, а не взята его компонентом',
+  kindForm: 'смысл плашки на снимке меняет не только краски, а форму',
 }
 
 const walk = (dir, test, out = []) => {
@@ -145,6 +153,10 @@ for (const c of components) {
    `<Компонент … className={s.x}>` в узле, у которого `s` — его модуль
    стилей, и правило `.x{…}` в этом модуле с фоном, обводкой, углом или
    тенью. Позиция, отступ и размер места — можно: это «где стоит». */
+/* Не контрол, а сам элемент: `SiteLink` — та же `<a>`, только мягким
+   переходом (components/SiteLink.tsx). Место красит свою ссылку, как красило
+   `<Link>` до него; ложные находки 21.10.2026 — плитка категории и промо шапки. */
+const ELEMENTS = new Set(['SiteLink'])
 const PAINT = /(?:^|;)\s*(background(?:-color)?|border(?:-[a-z-]+)?|outline(?:-[a-z]+)?|box-shadow)\s*:/
 const rules = (css) => [...css.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' ')).matchAll(/([^{}]+)\{([^{}]*)\}/g)]
 for (const file of siteCode) {
@@ -154,7 +166,7 @@ for (const file of siteCode) {
   const mine = (p) => [join(SITE, 'components'), join(SITE, 'app')].some((d) => p.startsWith(resolve(d)))
   const own = imports(file).filter((i) => i.path.endsWith('.module.css') && mine(i.path) && existsSync(i.path) && /^\w+$/.test(i.names.trim()))
   if (!own.length) continue
-  const comps = new Set(imports(file).filter((i) => i.path.endsWith('.tsx')).flatMap((i) => i.names.replace(/[{}]/g, '').split(',').map((x) => x.trim().split(/\s+as\s+/).pop())).filter((n) => /^[A-Z]/.test(n)))
+  const comps = new Set(imports(file).filter((i) => i.path.endsWith('.tsx')).flatMap((i) => i.names.replace(/[{}]/g, '').split(',').map((x) => x.trim().split(/\s+as\s+/).pop())).filter((n) => /^[A-Z]/.test(n) && !ELEMENTS.has(n)))
   for (const tag of text.matchAll(/<([A-Z]\w*)((?:[^<>{}]|\{(?:[^{}]|\{[^{}]*\})*\})*)>/g)) {
     if (!comps.has(tag[1])) continue
     const cls = tag[2].match(/className=\{([\s\S]*?)\}\s*(?=\w+=|\/?$)/)?.[1] ?? tag[2].match(/className=\{([^}]*)\}/)?.[1] ?? ''
@@ -187,6 +199,19 @@ for (const file of styleFiles) {
     if (r[1].split(',').some((s) => /\bsvg(?:\.[\w-]+|\[[^\]]*\])*\s*$/.test(s.trim())) && /(?:^|;)\s*overflow(?:-[xy])?\s*:/.test(r[2])) {
       found.placeClips.push(`${rel(file)}:${lineOf(css, r.index + r[1].length)}  ${r[1].trim().slice(0, 80)} — обрезку знака решает место`)
     }
+  }
+}
+
+/* ── kindForm ─────────────────────────────────────────────────────────────
+   Правило, селектор которого называет один смысл плашки (`[data-cut='…']`),
+   и в теле у него что-то кроме собственных свойств `--…`. */
+for (const file of styleFiles) {
+  const css = read(file)
+  for (const r of rules(css)) {
+    if (!/\[data-cut=['"][^'"]+['"]\]/.test(r[1])) continue
+    const props = r[2].split(';').map((d) => d.split(':')[0].trim()).filter(Boolean)
+    const bad = props.filter((x) => !x.startsWith('--'))
+    if (bad.length) found.kindForm.push(`${rel(file)}:${lineOf(css, r.index + r[1].length)}  ${r[1].trim().slice(0, 80)} {${bad.join(', ')}} — смысл задаёт только краски`)
   }
 }
 

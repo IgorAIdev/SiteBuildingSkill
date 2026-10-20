@@ -137,6 +137,8 @@ export const MODIFIERS = new Set([
 /** Ручки примитивов — узлы. Объявляются на примитиве, не на корне. */
 export const HOOKS = ['stack', 'cluster', 'switch', 'rail', 'section', 'sheet', 'lede', 'hero', 'grid', 'cols', 'cell',
   'pin', 'tray', 'leaf', 'chip', 'qty', 'chan', 'side', 'prose', 'pinned', 'sidebar', 'frame', 'btn', 'seg', 'gallery', 'pane', 'turn',
+  /* плашка на снимке (`.cut`): смысл — только краски, `--cut-fill`, `--cut-on`, `--cut-glass` (kindForm, 21.10.2026) */
+  'cut',
   /* размер точки указателя слайдов (`--dot`, styles/slides.module.css, И502) */
   'dot',
   /* тихий знак (`--glyph-h`, `--glyph-box`, styles/glyph.module.css, И677): рост знака без подложки и коробка цели вокруг него */
