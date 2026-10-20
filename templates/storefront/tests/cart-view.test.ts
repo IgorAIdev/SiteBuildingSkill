@@ -191,12 +191,14 @@ test('the cart page puts the lines on a sheet like the summary', () => {
   assert.match(css, /\.sheet \.line:last-child\{padding-block-end:0;border-block-end:0\}/)
 })
 
-/* Пустое избранное — тот же экран, что пустая корзина (`EmptyPaths`): слово, строка о сердце, тихие строки
-   категорий; ни знака в круге, ни громкой кнопки (слово заказчика 08.10.2026: «и пустое избранное так же
-   сделаем»; И689). Образец в дизайн-системе — тот же компонент. */
-test('the empty favourites is the same word-and-rows screen as the empty cart', async () => {
+/* Пустое избранное — слово, строка о сердце и полка ходовых товаров («popular» источника, как у пустого
+   поиска); строк категорий нет — они в меню над страницей (слово заказчика 20.10.2026: «в избранном не нужно
+   повторять категории… если нет товаров, предложи best sale»; прежде — экран пустой корзины, И689). */
+test('the empty favourites offers best sellers, not the category rows of the menu', async () => {
   const page = readFileSync(new URL('../app/[lang]/saved/page.tsx', import.meta.url), 'utf8')
-  assert.match(page, /<EmptyPaths level=\{1\} title=\{t\(lang, 'saved\.empty'\)\} lead=\{t\(lang, 'saved\.emptyLead'\)\}/)
-  assert.doesNotMatch(page, /icon="heart"|loud/)
+  assert.match(page, /<StateScreen level=\{1\} kind="empty" title=\{t\(lang, 'saved\.empty'\)\} lead=\{t\(lang, 'saved\.emptyLead'\)\}/)
+  assert.match(page, /sort: 'popular'/)
+  assert.match(page, /<Shelf title=\{t\(lang, 'shelf\.popular'\)\}/)
+  assert.doesNotMatch(page, /EmptyPaths|mainShelves|icon="heart"|loud/)
   for (const lang of ['en', 'ro', 'hu'] as const) assert.doesNotMatch(t(lang, 'saved.emptyLead'), /!/, lang)
 })
