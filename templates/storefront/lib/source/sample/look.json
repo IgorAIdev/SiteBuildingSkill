@@ -276,7 +276,7 @@
     "--filter-look": "drawer",
     "--filter-phone": "drawer",
     "--save-look": "disc",
-    "--sale-look": "pill",
+    "--sale-look": "quiet",
     "--quick-look": "tiles",
     "--star": "var(--star-trade)"
   },
@@ -317,7 +317,7 @@
     "filter-look": "drawer",
     "filter-phone": "drawer",
     "save-look": "disc",
-    "sale-look": "pill",
+    "sale-look": "quiet",
     "quick-look": "tiles",
     "star": "gold"
   },

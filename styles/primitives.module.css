@@ -1642,11 +1642,20 @@
    «мало» и «нет» остаются метками с углом контрола. Вес (0,3,0) — по той же
    причине, что у ленты ниже: место (`.card .flag`, у него свой угол «по
    кадру» и своя высота) форму не перебивает. */
-@container style(--sale-look: pill){
+@container style(--sale-look: pill) or style(--sale-look: quiet){
   .cut[data-cut='sale']:not([hidden]){
     block-size:var(--sale-h, var(--ctrl-face));min-block-size:var(--sale-h, var(--ctrl-face));
     border-radius:calc(var(--sale-h, var(--ctrl-face)) / 2);padding-inline:calc(var(--sale-h, var(--ctrl-face)) * .4)
   }
+}
+/* Скидка тихой плашкой (`--sale-look: quiet`; слово заказчика 21.10.2026:
+   «тихая форма, как сердечко» → «А · белая плашка»): та же пилюля ростом с
+   круг сердечка, но не заливка скидки, а белая плашка сердца — плотная
+   (`--plate-glass-hand`), с цифрой краской скидки, выбранной на ней по
+   норме текста (`--sale-on-glass`, строитель палитры). Скидка остаётся
+   краской — не заливкой: рядом с кнопкой покупки красная заливка кричит. */
+@container style(--sale-look: quiet){
+  .cut[data-cut='sale']:not([hidden]){background:var(--plate-glass-hand);color:var(--sale-on-glass)}
 }
 /* Скидка лентой (`--sale-look: ribbon`; слово заказчика 16.10.2026: «косая
    лента поставь в витрину»). Лента — угол кадра: квадрат от роста органа

@@ -107,7 +107,7 @@ test('panel sections: every field sits in exactly one sub-tab; System is colour,
   /* Листание страниц (образец 95): слова по умолчанию, три вида вариантами. */
   /* Сердце на снимке: стекло и bare; siteFirst первым ставит вид профиля. */
   assert.deepEqual(catalog.groups['save-look'].map((o) => o.id).sort(), ['bare', 'disc'], 'сердце — на стекле или без подложки; первым стоит опубликованный вид сайта')
-  assert.deepEqual(catalog.groups['sale-look'].map((o) => o.id).sort(), ['pill', 'ribbon', 'tag'], 'скидка на снимке — плашка, пилюля или косая лента')
+  assert.deepEqual(catalog.groups['sale-look'].map((o) => o.id).sort(), ['pill', 'quiet', 'ribbon', 'tag'], 'скидка на снимке — плашка, пилюля, тихая плашка или косая лента')
   assert.deepEqual(catalog.groups['filter-look'].map((o) => o.id), ['drawer', 'bar'], 'фильтр на широком — шторка, как корзина (вид сайта), и строка раскрытий (И739); панель колонками снята 04.10.2026')
   assert.deepEqual(catalog.groups['filter-phone'].map((o) => o.id), ['drawer', 'pills'], 'фильтр на узком — шторка (вид сайта) и пилюли вбок (И739)')
   assert.deepEqual(catalog.groups['pager-look'].map((o) => o.id), ['rings', 'compact'], 'листание — номера тихой кнопкой сайта по умолчанию и «2 / 4» вариантом; номеров без кромки нет (И721, поправка 08.10.2026)')
