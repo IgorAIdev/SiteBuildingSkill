@@ -20,7 +20,7 @@
 - [Verify states by pressing](verify-states-by-pressing.md) — hover/press/disabled/focus checked with a real mouse+keyboard; samples in working position; owner hands written ТЗ to GPT (02.10.2026)
 - [Final-check running list](final-check-running-list.md) — unverified items go into docs/open.md the moment they appear; daily «Проверить ночью <дата>» section read by the 01:00 night task
 - [Harvest from sources](harvest-from-sources.md) — while researching a question, also pull out what the kit needs later and record it in docs/sources-harvest.md (owner 03.10.2026)
-- [Act without confirming](act-without-confirming.md) — owner tired of approvals (03.10.2026): no in-chat «ok?», permission mode is theirs to switch
+- [Act without confirming](act-without-confirming.md) — owner tired of approvals (03.10.2026): no in-chat «ok?»; 21.10.2026: no questions at all, no wrap-up question buttons — do the obvious next step and report
 - [Moved elements are deleted](moved-elements-are-deleted.md) — element carried into the system → delete from elements/ in the same pass; compare by meaning first (03.10.2026)
 - [Owner's window ≈1253 px](owner-window-width.md) — his screenshots are 1880 px at 150 % scaling; reproduce his view at 1253 CSS px first
 - [Variants in chat](variants-in-chat.md) — asked for variants in chat: fix with the recommended one, then draw ≤3 mockups with real content; he picks fast
