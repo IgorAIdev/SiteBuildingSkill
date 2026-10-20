@@ -625,7 +625,8 @@
    описания сделай, чтобы продолжался вправо») и 20.10.2026 («почему текст только
    до половины… а нижняя строка со ссылками на всю ширину»); И676 вернуло потолок
    по его «давай» 03.10.2026, но то слово было о подписи под заголовком полки — у
-   подписи мера осталась (`--lede-measure`, И680). Ширину колонки решает раскладка
+   подписи мера была (`--lede-measure`, И680) — снята 21.10.2026, текст везде
+   одной ширины. Ширину колонки решает раскладка
    (холст `--wrap`, сетка, сайдбар), не текст. Текст, не дошедший до края своей
    колонки, меряет семья `textShort` (check:craft). */
 .prose{max-inline-size:none}
@@ -1408,6 +1409,14 @@
    клетками первой строки сетки, описание — клеткой второй. */
 .sectionHead[data-row] > hgroup{display:contents}
 .sectionHead[data-row] > hgroup > p{grid-area:lede}
+/* Подпись ряда и выход «View all» (`data-out`) — один текст шапки: размер и вес
+   из одних ролей тела, одним правилом. Раньше выход брал кегль и вес надписи
+   кнопки (15 / 500) против подписи (16.85 / 400) — двумя текстами в одной
+   строке (слово заказчика 21.10.2026: «токен текста описания и View all
+   одинаков? только системно через одинаковые токены»). Ссылка иначе
+   наследует кегль заголовка группы кнопок (`--h2-at`, ниже). */
+.sectionHead[data-row] > hgroup > p,
+.sectionHead[data-row] [data-out]{font-size:var(--body-size);font-weight:var(--body-weight)}
 .sectionHead[data-row] > hgroup + *{grid-area:acts}
 /* Заголовок срезан сверху по заглавным (И738) — середина его коробки ушла
    ниже букв, а кнопки выше коробки (40 против 34 на 1253) растягивали строку:
@@ -1418,12 +1427,13 @@
    строки шапки — строку заголовка не растит. */
 .sectionHead[data-row] h2{align-self:start}
 .sectionHead[data-row] > hgroup + *{grid-row:1 / span 2;align-self:start;font-size:var(--h2-at, var(--h2-size));translate:0 calc(.5cap - 50%)}
-/* Подпись под заголовком — мерой подписи (`--lede-measure`, 73ch ≈ 800px:
-   ширина вводного текста Gymshark, около 70% шапки на ноутбуке; И680,
-   слово заказчика 03.10.2026). Во всю ширину (И525, до 150 знаков в строке)
-   и узкой колонкой в 55ch (И676, 52%) она уже стояла — обе отменены. */
+/* Подпись под заголовком — без своего потолка: текст описания везде занимает
+   колонку целиком, как бегущий текст (`prose`, И802), и стоит одной шириной с
+   ним. Потолок подписи (`--lede-measure`, И680, Gymshark 03.10.2026) снят
+   21.10.2026: «ширина текста описания в одном месте одна, в другом другая —
+   одинаково везде, от ширины поля». Роль `lede` больше меры не несёт
+   (`styles/scale.json`, «мера»: «нет»). */
 .sectionHead p{
-  max-inline-size:var(--lede-measure);
   color:var(--ink-soft);
   font-size:var(--lede-size);line-height:var(--lede-lead);font-weight:var(--lede-weight);letter-spacing:var(--lede-track);
   min-inline-size:0
@@ -1476,7 +1486,6 @@
    было у нас, и это меньшинство. Вводная роль осталась у первого экрана
    главной: там заголовок витринный. */
 .pagehead p:not(.note){
-  max-inline-size:var(--lede-measure);
   color:var(--ink-soft);margin-top:var(--air-line);
   font-size:var(--lede-size);line-height:var(--lede-lead);font-weight:var(--lede-weight);letter-spacing:var(--lede-track)
 }
@@ -1634,11 +1643,20 @@
    «мало» и «нет» остаются метками с углом контрола. Вес (0,3,0) — по той же
    причине, что у ленты ниже: место (`.card .flag`, у него свой угол «по
    кадру» и своя высота) форму не перебивает. */
-@container style(--sale-look: pill){
+@container style(--sale-look: pill) or style(--sale-look: quiet){
   .cut[data-cut='sale']:not([hidden]){
     block-size:var(--sale-h, var(--ctrl-face));min-block-size:var(--sale-h, var(--ctrl-face));
     border-radius:calc(var(--sale-h, var(--ctrl-face)) / 2);padding-inline:calc(var(--sale-h, var(--ctrl-face)) * .4)
   }
+}
+/* Скидка тихой плашкой (`--sale-look: quiet`; слово заказчика 21.10.2026:
+   «тихая форма, как сердечко» → «А · белая плашка»): та же пилюля ростом с
+   круг сердечка, но не заливка скидки, а белая плашка сердца — плотная
+   (`--plate-glass-hand`), с цифрой краской скидки, выбранной на ней по
+   норме текста (`--sale-on-glass`, строитель палитры). Скидка остаётся
+   краской — не заливкой: рядом с кнопкой покупки красная заливка кричит. */
+@container style(--sale-look: quiet){
+  .cut[data-cut='sale']:not([hidden]){background:var(--plate-glass-hand);color:var(--sale-on-glass)}
 }
 /* Скидка лентой (`--sale-look: ribbon`; слово заказчика 16.10.2026: «косая
    лента поставь в витрину»). Лента — угол кадра: квадрат от роста органа

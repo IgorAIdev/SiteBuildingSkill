@@ -358,6 +358,7 @@ export const PRODUCT_PAGE = {
   'sale-look': [
     { id: 'tag', name: 'Tag', line: 'A small tag with slightly rounded corners inside the picture, level with the heart', vars: { '--sale-look': 'tag' } },
     { id: 'pill', name: 'Pill', line: 'The same tag with fully rounded ends, like a pill', vars: { '--sale-look': 'pill' } },
+    { id: 'quiet', name: 'Quiet', line: 'A white pill like the heart plate, level with the heart; the discount is the colour of the figure, not a red fill', vars: { '--sale-look': 'quiet' } },
     { id: 'ribbon', name: 'Ribbon', line: 'A diagonal ribbon across the corner of the picture, its ends running into the picture edges', vars: { '--sale-look': 'ribbon' } },
   ],
   'pager-look': [

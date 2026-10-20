@@ -9,10 +9,10 @@ type Edge = { start: boolean; end: boolean }
    Набор — «Уголок» каталога кнопок (дизайн-система, Buttons → кнопки
    листания): кнопка-знак `data-pager` среднего роста без кромки и подложки
    (`data-voice="bare"`, ниже; до 21.10.2026 — круг тихого стиля с заливкой
-   марки под рукой, И704, И747). Уголок, а не стрелка:
-   стрелка на сайте значит «куда ведёт» (View all, плашки), уголок —
-   «листать здесь»; так у Allbirds (кружок 40 с кромкой, уголок; замер
-   03.10.2026). Рост 40 — слово заказчика 03.10.2026: «48 чрезмерно большие,
+   марки под рукой, И704, И747). Стрелка, а не уголок (слово заказчика
+   21.10.2026: «уголки не подходят по дизайну, давай стрелки»; до этого стоял
+   уголок — «листать здесь» против стрелки «куда ведёт», Allbirds, замер
+   03.10.2026): рядом «View all ↗» и стрелки меню — один знак хода. Рост 40 — слово заказчика 03.10.2026: «48 чрезмерно большие,
    давай 40»; под пальцем средний рост сам встаёт на 48 (scale.css,
    `pointer: coarse`), цель пальца 44 не теряется.
    Шаг — до первой спрятанной плитки (слово заказчика 03.10.2026: «по одной
@@ -63,8 +63,8 @@ export function RailPager({ rail, back, next }: { rail: string; back: string; ne
   }
   return (
     <span className={b.pager} data-idle={idle ? '' : undefined} inert={idle}>
-      <button type="button" className={b.btn} data-pager data-rail-nav data-voice="bare" data-to="back" aria-label={back} aria-controls={rail} aria-disabled={at.start || undefined} onClick={() => step(-1)}><Icon id="chevron-left" /></button>
-      <button type="button" className={b.btn} data-pager data-rail-nav data-voice="bare" aria-label={next} aria-controls={rail} aria-disabled={at.end || undefined} onClick={() => step(1)}><Icon id="chevron-right" /></button>
+      <button type="button" className={b.btn} data-pager data-rail-nav data-voice="bare" data-to="back" aria-label={back} aria-controls={rail} aria-disabled={at.start || undefined} onClick={() => step(-1)}><Icon id="arrow-left" /></button>
+      <button type="button" className={b.btn} data-pager data-rail-nav data-voice="bare" aria-label={next} aria-controls={rail} aria-disabled={at.end || undefined} onClick={() => step(1)}><Icon id="arrow-right" /></button>
     </span>
   )
 }

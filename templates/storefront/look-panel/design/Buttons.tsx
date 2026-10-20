@@ -115,6 +115,7 @@ const COUNTERS: [Look, string][] = [
    панели, как в шапке ряда на сайте (`data-rail-nav`, И747). */
 const PAGER_SIGNS: [string, string, string, 'lg' | undefined, boolean][] = [
   ['Стрелки', 'arrow-left', 'arrow-right', 'lg', false],
+  ['Стрелки 40', 'arrow-left', 'arrow-right', undefined, false], // на сайте: шапка ряда и листание полки (слово заказчика 21.10.2026)
   ['Уголок', 'chevron-left', 'chevron-right', undefined, false],
   ['Уголок 48', 'chevron-left', 'chevron-right', 'lg', false],
   ['Стрелки с анимацией', 'arrow-left', 'arrow-right', 'lg', true],

@@ -167,7 +167,7 @@ const TEXT_ROLES = [...new Set([...readFileSync(new URL('../styles/scale.css', i
 
 /** Что меряется в самой странице. Одной функцией, потому что она уезжает
  *  в браузер целиком и ничего оттуда не импортирует. */
-const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines, autofill, textRoles, captionMax, tileFace }) => {
+const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines, autofill, textRoles, tileFace }) => {
   const out = { placeholder: [], measure: [], target: [], contrast: [], collision: [],
                 weight: [], jump: [], name: [], heads: [], dress: [], clip: [],
                 swipe: [], stretch: [], broken: [], spill: [], offColumn: [], focus: [], wrap: [],
@@ -1287,28 +1287,22 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
     }
   }
 
-  /* 4a7 · подпись длиннее меры (И680) и текст короче своей колонки (И802).
-     Потолок строки — только у подписи под заголовком (`hgroup > p`, строка под
-     именем страницы): её читают одним взглядом с заголовком, потолок — 90, верх
-     коридора Баттерика (`TYPE.measureCaption`; ширину подписи заказчик взял у
-     Gymshark). У бегущего текста потолка нет: заказчик снимал его трижды
-     (сентябрь, 17.10.2026, 20.10.2026 — «почему текст только до половины, а нижняя
-     строка со ссылками на всю ширину»), и обратная семья `textShort` ловит абзац,
-     список или подзаголовок, который переносится, не дойдя до правого края своей
+  /* 4a7 · текст короче своей колонки (И802). Потолка строки у текста описания нет
+     нигде: ни у бегущего текста (заказчик снимал его трижды — сентябрь,
+     17.10.2026, 20.10.2026: «почему текст только до половины, а нижняя строка со
+     ссылками на всю ширину»), ни у подписи под заголовком (потолок подписи, И680,
+     снят 21.10.2026: «ширина текста описания в одном месте одна, в другом
+     другая — одинаково везде»). Обратная семья `textShort` ловит абзац, список
+     или подзаголовок, который переносится, не дойдя до правого края своей
      колонки: у частей одного блока край один. Строк — сколько разных верхов у
-     прямоугольников текста; одна строка не меряется. */
-  for (const el of document.querySelectorAll('main :is(p, li, dd, blockquote)')) {
+     прямоугольников текста; одна строка не меряется.
+     И сам потолок ловится прямо: текст описания (`hgroup > p`, подпись под
+     именем страницы, абзацы бегущего текста) с конечным `max-inline-size` —
+     это второе значение ширины рядом с первым (`lineLong`). */
+  for (const el of document.querySelectorAll('main :is(hgroup > p, [class*=pagehead] > p:not([class*=note]), [class*=prose] p)')) {
     if (!shown(el) || el.closest('dialog, table, form, nav, [class*=card], [class*=Card]')) continue
-    if (el.querySelector('p, li, dd, blockquote')) continue
-    if (!el.matches(':is(hgroup, [class*=pagehead]) > p:not([class*=note])')) continue
-    const text = (el.textContent || '').replace(/s+/g, ' ').trim()
-    if (text.length <= captionMax) continue
-    const range = document.createRange()
-    range.selectNodeContents(el)
-    const lines = new Set([...range.getClientRects()].filter((r) => r.width > 0 && r.height > 0).map((r) => Math.round(r.top))).size
-    if (lines < 2) continue
-    const perLine = text.length / lines
-    if (perLine > captionMax) out.lineLong.push(`${name(el)} — ${Math.round(perLine)} знаков в строке при норме подписи до ${captionMax}`)
+    const cap = getComputedStyle(el).maxWidth
+    if (cap !== 'none') out.lineLong.push(`${name(el)} — потолок строки ${cap}: текст описания везде занимает колонку целиком`)
   }
   for (const el of document.querySelectorAll('main [class*=prose] :is(p, ul, ol, dl, blockquote, h2, h3, h4)')) {
     if (!shown(el) || el.closest('dialog, table, form, nav, hgroup, [class*=card], [class*=Card], [class*=pagehead]')) continue
@@ -3014,7 +3008,6 @@ async function visit(path, w, { finger, dark = false }) {
          оформления с полной корзиной: там меряется автозаполнение. */
       autofill: path.includes('#as='),
       textRoles: TEXT_ROLES,
-      captionMax: TYPE.measureCaption,
       tileFace: CONTROL.faceMd,
     })
 

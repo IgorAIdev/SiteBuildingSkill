@@ -4,8 +4,8 @@
    слово на телефоне» (И759) сняты: слово без рамки крупнее заголовка не
    встаёт ни на какой ширине. Ответ на руку — вид «слово» пункта меню
    (btn.module.css, `data-hand="menu"`), здесь только кегль и строй. */
-/* Слово выхода — надписью кнопки (`--ctrl-fs`): ссылка иначе наследует кегль
-   шапки ряда, а он — заголовка (27 на 390). Знак — соизмерим со строкой, как у
-   ссылки «куда ведёт» (go.module.css). */
-.all{display:inline-flex;align-items:center;gap:.35em;font-size:var(--ctrl-fs);font-weight:var(--label-weight)}
+/* Размер и вес слова выхода — у подписи ряда, одним правилом (`data-out`,
+   primitives.module.css, «sectionHead»): здесь только строй. Знак —
+   соизмерим со строкой, как у ссылки «куда ведёт» (go.module.css). */
+.all{display:inline-flex;align-items:center;gap:.35em}
 .all svg{inline-size:1.15em;block-size:1.15em;flex:none}
