@@ -51,16 +51,15 @@ export const CATEGORIES: SampleCategory[] = [
  *  вынесенный в навигацию, обязан быть страницей»), плитка на главной и
  *  описание для поиска. Имена — из плиток cbdin (слово заказчика 30.09.2026);
  *  ключ записан `effect:` — по нему дерево адресов (tools/routes.mjs)
- *  находит страницы эффектов. «Кожа и лицо» эффектом не была: это полка
- *  «Cosmetice» под другим именем (заказчик 20.10.2026, shop, catalog.md:
- *  «Эффект — повод, а не полка»). */
+ *  находит страницы эффектов. «Кожа и лицо» и «Собаки» эффектами не были:
+ *  это полки «Cosmetice» и «Pentru animale» под другим именем (заказчик
+ *  20.10.2026, shop, catalog.md: «Эффект — повод, а не полка»). */
 export type SampleEffect = { effect: string; name: T; description: T }
 export const EFFECTS: SampleEffect[] = [
   { effect: 'sleep', name: { ro: 'Somn', en: 'Sleep', hu: 'Alvás' }, description: { ro: 'Produse pe care clienții le iau seara: uleiuri și capsule, fiecare cu buletin de analiză pentru lotul său.', en: 'Products customers take in the evening: oils and capsules, each with a lab report for its batch.', hu: 'Termékek, amelyeket a vásárlók este használnak: olajok és kapszulák, mindegyik a tétel laborjegyzőkönyvével.' } },
   { effect: 'relief', name: { ro: 'Îngrijirea corpului', en: 'Body care', hu: 'Testápolás' }, description: { ro: 'Creme și uleiuri concentrate pentru îngrijirea corpului și masaj, fiecare cu buletin de analiză pentru lotul său.', en: 'Creams and stronger oils for body care and massage, each with a lab report for its batch.', hu: 'Krémek és erősebb olajok testápoláshoz és masszázshoz, mindegyik a tétel laborjegyzőkönyvével.' } },
   { effect: 'relax', name: { ro: 'Stres și anxietate', en: 'Stress and anxiety', hu: 'Stressz és szorongás' }, description: { ro: 'Uleiuri și capsule pe care clienții le aleg pentru o zi liniștită, fiecare cu buletin de analiză pentru lotul său.', en: 'Oils and capsules customers choose for a calm day, each with a lab report for its batch.', hu: 'Olajok és kapszulák, amelyeket a vásárlók egy nyugodt naphoz választanak, mindegyik a tétel laborjegyzőkönyvével.' } },
   { effect: 'recovery', name: { ro: 'Sport și masaj', en: 'Sport and massage', hu: 'Sport és masszázs' }, description: { ro: 'Cremă pentru masaj după antrenament, cu buletin de analiză pentru lotul său.', en: 'Cream for massage after training, with a lab report for its batch.', hu: 'Krém edzés utáni masszázshoz, a tétel laborjegyzőkönyvével.' } },
-  { effect: 'dogs', name: { ro: 'Câini', en: 'Dogs', hu: 'Kutyák' }, description: { ro: 'Ulei CBD pentru câini, în concentrație potrivită pentru animale, cu buletin de analiză pentru lotul său.', en: 'CBD oil for dogs in a strength made for pets, with a lab report for its batch.', hu: 'CBD olaj kutyáknak, állatokhoz illő erősségben, a tétel laborjegyzőkönyvével.' } },
 ]
 
 export const FACETS: { code: string; name: T; values: { code: string; name: T }[] }[] = [
@@ -173,7 +172,7 @@ const LINES: SampleProduct[] = [
     name: { ro: 'Ulei CBD pentru câini', en: 'CBD oil for dogs', hu: 'CBD olaj kutyáknak' },
     summary: { ro: 'Ulei CBD pentru câini, cu ulei de somon pe care îl mănâncă bucuros. Picurătorul gradat ajută la doza potrivită greutății câinelui.', en: 'A CBD oil for dogs, with salmon oil they happily eat. The marked dropper helps you give the dose that suits your dog’s weight.', hu: 'CBD olaj kutyáknak, lazacolajjal, amelyet szívesen megesznek. A jelölt pipetta segít a kutya testsúlyához illő adagot adni.' },
     description: { ro: 'Ulei CBD 5 % cu ulei de somon, pentru câini.', en: 'CBD oil 5 % with salmon oil, for dogs.', hu: '5 %-os CBD olaj lazacolajjal, kutyáknak.' },
-    facets: { forma: ['pentru-animale'], effect: ['dogs'] },
+    facets: { forma: ['pentru-animale'] },
     groups: [volume(['10', '30'])],
     variants: [
       { id: 'ac-10', sku: 'AC-10', options: { volum: '10' }, price: 2290, stock: 'in', batch: 'RO-2409-AC', pack: { mg: 500, size: 10, unit: 'ml' } },
