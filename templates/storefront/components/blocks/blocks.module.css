@@ -297,9 +297,9 @@
 .ask::-webkit-details-marker{display:none}
 .askSign{flex:none;display:grid;place-items:center;inline-size:1.75em;block-size:1.75em;border-radius:50%;background:var(--quiet);color:var(--ink)}
 .askSign svg{inline-size:55%;block-size:55%}
-/* Ответ — мерой текста: под статьёй вопросы стоят во всю колонку, и строка
-   ответа шла 87–95 знаками (check:craft lineLong, И676). */
-.answer{padding:0 var(--pad-inner) var(--pad-card);color:var(--ink);max-inline-size:var(--body-measure)}
+/* Ответ — во всю ширину своего вопроса: правый край у вопроса и ответа один,
+   у текста своей меры нет (И801). */
+.answer{padding:0 var(--pad-inner) var(--pad-card);color:var(--ink)}
 
 /* СЛОВО МАГАЗИНА — место заказчика, во всех вариантах (Story.tsx): слова и
    снимок рядом, в узкой коробке столбиком (`switcher`); пустое молчит. */

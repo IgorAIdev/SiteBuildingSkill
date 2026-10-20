@@ -126,9 +126,10 @@
    а 16, а мы исправляли, что текст везде 20»). Стояло вторичным ярусом
    (`blurb`, 16), чтобы марка была на шаг крупнее (И511); марка теперь
    ростом текста (И563) — не мельче описания, вровень с ним (`ROLE_ORDER`).
-   Мера — текста, а не подписи заголовка: описание читают абзацем, и на 700
-   колонка в столбике давала 85 знаков в строке (check:craft lineLong, И676). */
-.summary{margin:0;font-size:var(--lede-size);line-height:var(--lede-lead);font-weight:var(--lede-weight);letter-spacing:var(--lede-track);color:var(--ink-soft);max-inline-size:var(--body-measure)}
+   Ширина — колонки покупки: у описания своей меры нет, правый край один с
+   именем, ценой и кнопками (И801; слово заказчика 17.10.2026 «текст описания
+   сделай, чтобы продолжался вправо»). */
+.summary{margin:0;font-size:var(--lede-size);line-height:var(--lede-lead);font-weight:var(--lede-weight);letter-spacing:var(--lede-track);color:var(--ink-soft)}
 /* Марка — первая строка заголовка (ProductView.tsx, И441): ростом и
    межстрочьем тела, краской подписи — имя остаётся главным, марка читается
    раньше него. */
