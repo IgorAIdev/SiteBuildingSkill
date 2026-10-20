@@ -43,6 +43,7 @@ function lexicon(lang) {
       promise: (d.promise ?? []).map((p) => new RegExp(p)),
       condition: d.condition.map((c) => new RegExp(`(^|[^\\p{L}])${c}`, 'u')),
       allow: (d.conditionAllow ?? []).map(norm),
+      collection: (d.collection ?? []).map(norm),
       hedge: d.hedge.map((h) => new RegExp(h)),
       rules: d.rules.map((r) => ({ ...r, re: r.patterns.map((p) => new RegExp(p)) })),
     })
@@ -57,6 +58,9 @@ const CURRENCY = /(€|\$|\beur\b|\blei\b|\bron\b|\bft\b|\bhuf\b)/
 /** Где имя раздела стоит как имя: в подзаголовках и вопросах ярлык не прикрывает состояние. */
 const LABEL_FIELDS = new Set(['title', 'heading', 'name', 'caption', 'faq.title'])
 const SELLING = new Set(['home', 'category', 'hub', 'product', 'slice', 'faq', 'trust'])
+/** Страницы одной темы: каждый раздел под сеткой о ней, а не о соседней полке. */
+const TOPICAL = new Set(['category', 'hub', 'slice'])
+const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 function heads(p) {
   return [
@@ -135,9 +139,15 @@ export function lintPages(pages, { profile = DEFAULT_PROFILE } = {}) {
     if (selling) {
       const label = p.nameIsLabel && p.name ? norm(p.name) : null
       if (p.nameIsLabel && !p.name) add(p, 'condition', 'fail', 'nameIsLabel', 'ярлык без имени раздела')
+      // в подзаголовке и вопросе ярлык — только рядом со словом «коллекция» языка:
+      // «How the Sleep collection is chosen» называет раздел, «CBD for sleep» — состояние
+      const named = label && lex.collection.length
+        ? new RegExp(`(${lex.collection.map(escape).join('|')})\\p{L}* ${escape(label)}|${escape(label)} (${lex.collection.map(escape).join('|')})`, 'gu')
+        : null
       for (const [field, text] of heads(p)) {
         let t = norm(text)
         if (label && LABEL_FIELDS.has(field)) t = t.replaceAll(label, ' ')
+        else if (named) t = t.replace(named, ' ')
         for (const a of lex.allow) t = t.replaceAll(a, ' ')
         const c = lex.condition.find((re) => re.test(t))
         if (c) add(p, 'condition', 'fail', field, `состояние здоровья на продающей странице: «${text}»`)
@@ -165,6 +175,15 @@ export function lintPages(pages, { profile = DEFAULT_PROFILE } = {}) {
     for (const s of p.sections ?? []) {
       const h = norm(s.heading)
       if (GENERIC.has(h) || h === norm(p.heading)) add(p, 'generic', 'warn', 'sections', `подзаголовок «${s.heading}» ничего не называет`)
+    }
+    // topic — подзаголовок раздела под сеткой называет тему страницы: главный запрос
+    // или слово темы из `topic` (момент хаба, ярлык с «коллекцией»). Без этого текст
+    // уходит в соседнюю полку: «Hemp tea is not CBD oil» на странице Sleep.
+    if (TOPICAL.has(p.type) && q) {
+      const terms = [q, ...(p.topic ?? [])]
+      ;(p.sections ?? []).forEach((s, i) => {
+        if (!terms.some((t) => hasPhrase(s.heading, t))) add(p, 'topic', 'fail', `sections[${i}].heading`, `«${s.heading}» не о теме страницы: нет ни «${q}», ни слова из topic`)
+      })
     }
   }
   // dup — пары страниц одного языка

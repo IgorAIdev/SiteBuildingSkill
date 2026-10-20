@@ -115,8 +115,10 @@ test('lint-copy fails the defects of the 06.10 copy: no query in head, echo, hed
   assert.ok(families([e]).includes('echo'))
   const h = good(); h.lede = 'Ulei CBD pentru seară, fără a presupune un beneficiu pentru somn.'
   assert.ok(families([h]).includes('hedge'))
-  const c = good(); c.faq.items[0].q = 'Ajută uleiul CBD la somn?'
+  const c = good(); c.faq.items[0].q = 'Ajută uleiul CBD la anxietate?'
   assert.ok(families([c]).includes('condition'))
+  const s = good(); s.faq.items[0].q = 'Ajută uleiul CBD la somn?'
+  assert.ok(families([s]).includes('claims'), 'the effect name is allowed, the result verb is not (И803)')
   const m = good(); m.sections[0].paragraphs[0] = 'Livrare gratuită de la 100 €.'
   assert.ok(families([m]).includes('currency'))
 })
@@ -142,8 +144,8 @@ test('lint-copy: a promise «on every product» fails in all three languages; «
 })
 
 test('lint-copy: claimAllow lifts exactly one dictionary rule on that page and nothing else', () => {
-  const p = good(); p.title = 'Ulei CBD pentru somn și rutina de seară | CBDin'
-  assert.ok(families([p]).includes('claims'), 'pentru somn in a title is a claim')
+  const p = good(); p.title = 'Ulei CBD pentru un somn odihnitor | CBDin'
+  assert.ok(families([p]).includes('claims'), 'somn odihnitor in a title is a claim')
   p.claimAllow = { 'ro-sleep': 'owner 09.10.2026' }
   assert.ok(!families([p]).includes('claims'))
   p.sections[0].paragraphs.push('Ameliorează durerile.')
@@ -171,12 +173,34 @@ test('volumes builds a DataForSEO request and keeps unmeasured volume as null', 
   assert.throws(() => parseVolumes({ status_code: 40100, status_message: 'auth' }), /DataForSEO/)
 })
 
-test('lint-copy: a section name the owner chose like the market is a label, not a claim; the text around still is checked', () => {
-  const p = good(); p.type = 'hub'; p.name = 'Somn'; p.heading = 'Somn'; p.title = 'Somn: uleiuri CBD, capsule și ceai pentru seară'
-  p.query.primary = 'cbd somn'; p.lede = 'Colecția Somn adună uleiuri CBD, capsule și ceai. Comparați CBD-ul pe porție.'
-  assert.ok(families([p]).includes('condition'), 'without the owner decision the name is a condition')
-  p.nameIsLabel = 'owner 08.10.2026'
-  assert.ok(!families([p]).includes('condition'))
-  p.faq.items[0].q = 'Ajută uleiul CBD la somn?'
-  assert.ok(families([p]).includes('condition'), 'the label does not cover a question about the condition')
+test('lint-copy: an effect name (Sleep, Somn, Alvás, za spavanje) is allowed everywhere; disease and result verb still fail (И803)', () => {
+  const p = good(); p.type = 'hub'; p.name = 'Somn'; p.heading = 'Somn'; p.title = 'Somn: uleiuri CBD și capsule pentru somn'
+  p.query.primary = 'cbd pentru somn'; p.lede = 'Colecția pentru somn adună uleiuri CBD și capsule. Comparați CBD-ul pe picătură.'
+  p.sections = [{ heading: 'Ulei CBD sau capsule pentru somn?', paragraphs: ['Uleiul se alege picătură cu picătură.'] }]
+  p.faq.items[0].q = 'Ce ulei CBD pentru somn să aleg?'
+  assert.deepEqual(families([p]), [], 'no owner decision needed for the effect name')
+  for (const [lang, h] of [['en', 'CBD oil or capsules for sleep?'], ['hu', 'CBD olaj vagy kapszula alváshoz?'], ['hr', 'CBD ulje ili kapsule za spavanje?']]) {
+    assert.ok(!lintPages([{ ...p, lang, sections: [{ heading: h, paragraphs: ['x'] }] }]).some((f) => f.family === 'condition' || f.family === 'claims'), `${lang}: ${h}`)
+  }
+  const d = { ...p, sections: [{ heading: 'Ulei CBD pentru insomnie', paragraphs: ['x'] }] }
+  assert.ok(families([d]).includes('condition'), 'a disease is still a condition')
+  const r = { ...p, faq: { ...p.faq, items: [{ q: 'Ajută uleiul CBD la somn?', a: 'Da.' }, ...p.faq.items.slice(1)] } }
+  assert.ok(families([r]).includes('claims'), 'a result verb is still a claim')
+})
+
+test('lint-copy: every section of a shelf or hub names the page topic; the label stands in a subheading only beside «collection» (И802)', () => {
+  const p = good(); p.type = 'hub'; p.name = 'Somn'; p.heading = 'Somn'; p.nameIsLabel = 'owner 08.10.2026'
+  p.title = 'Somn: uleiuri CBD și capsule pentru seară'; p.query.primary = 'cbd somn'
+  p.lede = 'Colecția Somn adună uleiuri CBD și capsule pentru seară. Comparați CBD-ul pe picătură.'
+  p.sections = [{ heading: 'Ceaiul de cânepă nu este ulei CBD', paragraphs: ['Ceaiul are puțin CBD.'] }]
+  assert.ok(families([p]).includes('topic'), 'a section about the neighbouring shelf is off topic')
+  p.topic = ['colectia somn', 'seara']
+  p.sections[0].heading = 'Ulei CBD cu lavandă pentru seară'
+  assert.ok(!families([p]).includes('topic'))
+  p.sections[0].heading = 'Cum este alcătuită colecția Somn'
+  assert.deepEqual(families([p]).filter((f) => f === 'topic' || f === 'condition'), [], '«colecția Somn» is the name of the section')
+  p.sections[0].heading = 'Ulei CBD pentru somn'
+  assert.deepEqual(families([p]).filter((f) => f === 'topic' || f === 'condition'), [], 'the effect name itself names the topic (И803)')
+  const c = good(); c.sections[0].heading = 'Full spectrum, broad sau izolat?'
+  assert.ok(families([c]).includes('topic'), 'a shelf subheading names its product too')
 })

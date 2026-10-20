@@ -18334,3 +18334,63 @@ root layouts … full page load»), Shopify Hydrogen (число корзины 
 
 Источник: Material Design 3, «Icon buttons» — toggle: состояние выбранного
 заливкой знака и слой состояния, без масштаба (m3.material.io/components/icon-buttons).
+
+## И802 · Раздел под сеткой — о теме страницы, а не о соседней полке
+
+**Дефект.** Заказчик 20.10.2026 открыл хаб Sleep: под товарами раздел «Hemp
+tea is not CBD oil» — про чай, не про сон и не про раздел. Чая в наборе Sleep
+образца нет вовсе: там масла (с лавандой и без) и капсулы. Причина в
+проверке, а не в небрежности: словарь запретов держит «sleep» состоянием
+здоровья, и `lint-copy` не пускал слово раздела в подзаголовок; писавший
+обходил тему — и подзаголовки ушли в формы вообще. Тот же класс нашёлся на
+Relax (мармелад и уход за телом, которых в наборе нет; «How to compare across
+formats»), Mood & focus, Women's health и на полках: «Full spectrum, broad
+spectrum or isolate?» без масла, «What is inside the shell?», «Dry, normal or
+oily skin» без косметики — 66 подзаголовков на трёх языках.
+**Как правильно:** каждый подзаголовок раздела на полке и хабе называет тему
+страницы — главный запрос или слово из поля `topic` (формы полки, момент хаба:
+evening, before bed, working day; ярлык с «коллекцией»). Ярлык раздела
+(`nameIsLabel`) стоит и в подзаголовке, но только рядом со словом «коллекция»
+языка: «How the Sleep collection is put together» называет раздел, «CBD for
+sleep» — обещание. Текст хаба называет формы, которые лежат в наборе. Семья
+`topic` в `lint-copy` (fail), слово «коллекция» — `collection` в словарях
+`assets/claims/*.json`; правило — навык `seo-content`, `references/pages.md`,
+«Хаб потребности».
+
+**Где искать то же самое.** Срезы спектра, новые полки и хабы, текст
+товара-линейки; хаб, у которого набор в данных сменился, а текст остался.
+
+Источник: Google Search Central, «Creating helpful, reliable, people-first
+content» (developers.google.com/search/docs/fundamentals/creating-helpful-content)
+— страница отвечает на то, ради чего пришли; «SEO Starter Guide», раздел о
+заголовках, которые описывают содержание раздела.
+
+## И803 · Имя категории и эффекта — не обещание: «Sleep», «Somn», «za spavanje» разрешены везде
+
+**Дефект.** Словари запретов навыка `seo-content` держали «sleep», «somn»,
+«alvás», «spavanj» в списке состояний здоровья, а «pentru somn» и «za
+spavanje» — правилами обещаний. Имя раздела-эффекта нельзя было поставить ни
+в подзаголовок, ни в вопрос без особого решения владельца (`nameIsLabel`,
+`claimAllow`). Тексты хабов обходили собственную тему, и на странице Sleep
+под товарами вышел раздел «Hemp tea is not CBD oil» (И802). Заказчик
+20.10.2026: «категории и эффекты как-то запрещать — это разрешено… посмотри
+конкурентов, они вполне пишут слип, релакс». **Как правильно:** имя эффекта
+(«Sleep», «Relax», «Recovery», «Focus», «Somn», «Alvás», «CBD oil for sleep»,
+«ulje za spavanje») стоит открыто в имени, H1, title, подзаголовке, вопросе и
+тексте; запрещены болезнь («insomnia», «anxietate», «fájdalom») и глагол
+результата («sleep better», «helps you sleep», «ajută la somn», «segít
+elaludni», «za bolji san»). Словари `assets/claims/*.json`: имена эффектов
+сняты с `condition`, «помогает уснуть» добавлен к правилам `*-sleep`; закон
+«Имя категории и эффекта — разрешено» в `SKILL.md`, `references/compliance.md`,
+`intent-map.md` (эффект → хаб, болезнь → статья B), `market-packs.md`.
+
+**Где искать то же самое.** Другие слова эффектов в словарях (`stres`,
+`stressz` — болезнь или раздел?), новый рынок со своим словарём, `claimAllow`,
+оставшиеся от старого запрета.
+
+Источник: витрины конкурентов — Prima «Shop sleep»
+(prima.co/collections/shop-sleep), Alchemy Naturals «Sleep CBD Oil»
+(marketplace.cannigma.com/product/sleep-cbd-oil-1500mg), SleepWell «CBD Oil for
+Sleep» (madeinbritain.org/products/item/sleepwell-cbd-oil-for-sleep); Рег. (ЕС)
+1924/2006, ст. 2 — заявление о здоровье есть связь товара с результатом для
+здоровья, а не имя раздела.
