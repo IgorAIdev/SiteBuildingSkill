@@ -1,8 +1,9 @@
 {
   "lang": "ro",
   "note": "Own lexicon of the seo-content skill, written from Reg. 1924/2006, 432/2012, 2015/2283, Dir. 2001/83/EC and the Romanian practice described in references/compliance.md and references/market-packs.md. Patterns run on lower-case text without diacritics. fail = never on a shop page; fix = rewrite (fails in names, headings, questions and captions).",
-  "condition": ["somn", "insomni", "anxiet", "stres", "durer", "articulat", "inflam", "menstru", "menopauz", "depresi", "epilep", "cancer", "diabet", "imunit", "tratament", "vindec", "boala", "boli", "afectiun", "migren", "tensiun", "colesterol"],
+  "condition": ["insomni", "anxiet", "stres", "durer", "articulat", "inflam", "menstru", "menopauz", "depresi", "epilep", "cancer", "diabet", "imunit", "tratament", "vindec", "boala", "boli", "afectiun", "migren", "tensiun", "colesterol"],
   "conditionAllow": ["fara stres", "livrare fara stres"],
+  "collection": ["colecti"],
   "hedge": ["\\bnu (dovedeste|garanteaza|stabileste|confirma|inseamna automat)\\b", "\\bfara a presupune\\b", "\\bverificati eticheta\\b", "\\bnu poate fi garantat", "\\bnu este o dovada\\b"],
   "promise": ["\\bla fiecare (produs|ulei|flacon)\\b", "\\bfiecare (produs|ulei) (scrie|arata|are|da|poarta)\\b"],
   "rules": [
@@ -13,7 +14,7 @@
     { "id": "ro-approved", "level": "fail", "patterns": ["\\baprobat de (ansvsa|efsa|ministerul)\\b", "\\bcertificat de ansvsa\\b"], "rewrite": "fără aprobare inventată; notificarea CPNP nu este aprobare" },
     { "id": "ro-guarantee", "level": "fail", "patterns": ["\\b(rezultate garantate|efect garantat|efectul apare in)\\b"], "rewrite": "—" },
     { "id": "ro-replace", "level": "fail", "patterns": ["\\b(inlocuieste (somniferele|medicamentele|antidepresivele)|alternativa la (medicamente|antidepresive|somnifere)|mai eficient decat)\\b"], "rewrite": "—" },
-    { "id": "ro-sleep", "level": "fix", "patterns": ["\\b(somn odihnitor|adormi(ti)? mai usor|imbunatateste (calitatea )?somnul|pentru somn)\\b"], "rewrite": "momentul, nu efectul: «pentru rutina de seară», ulei cu CBN" },
+    { "id": "ro-sleep", "level": "fix", "patterns": ["\\b(somn odihnitor|adormi(ti)? mai usor|imbunatateste (calitatea )?somnul)\\b", "\\bajuta( \\S+){0,3} la (somn|adormire)\\b"], "rewrite": "momentul, nu efectul: «pentru rutina de seară», ulei cu CBN" },
     { "id": "ro-calm", "level": "fix", "patterns": ["\\b(reduce stresul|anti ?stres|relaxeaza-te|relaxare profunda|mai putin stres|echilibru interior|calm interior|liniste interioara)\\b"], "rewrite": "compoziție și moment: «ulei CBD 5 %, 10 ml, pentru folosire zilnică»" },
     { "id": "ro-recovery", "level": "fix", "patterns": ["\\b(recuperare(a)? (dupa antrenament|musculara)|pentru muschi obositi|refacere musculara)\\b"], "rewrite": "«creme, balsamuri și ulei de masaj cu CBD»" },
     { "id": "ro-function", "level": "fix", "patterns": ["\\b(sustine|sprijina|intareste|echilibreaza) (sanatatea|sistemul|imunitatea|articulatiile|sistemul endocanabinoid)\\b"], "rewrite": "locul aplicării, fără funcție a corpului" },

@@ -1,8 +1,9 @@
 {
   "lang": "hr",
   "note": "Own lexicon of the seo-content skill for Croatian pages of an EU shop, written 20.10.2026 from Reg. 1924/2006, 432/2012, 2015/2283, Dir. 2001/83/EC and the Croatian demand dossier (CBDSeoMarketResearch/HR/hr-market-2026-10-20: the market searches «protiv bolova», «za spavanje», «za anksioznost» — words a shop page must not use). Patterns run on lower-case text with č ć š ž stripped to c c s z; đ stays đ. fail = never on a shop page; fix = rewrite (fails in names, headings, questions and captions).",
-  "condition": ["spavanj", "nesanic", "anksio", "tjeskob", "stres", "bolov", "bolni", "zglob", "upal", "menstru", "menopauz", "depresi", "epilep", "karcinom", "dijabet", "imunit", "lijecenj", "migren", "artritis", "ekcem", "psorija", "bolest", "kolesterol", "krvni tlak"],
+  "condition": ["nesanic", "anksio", "tjeskob", "stres", "bolov", "bolni", "zglob", "upal", "menstru", "menopauz", "depresi", "epilep", "karcinom", "dijabet", "imunit", "lijecenj", "migren", "artritis", "ekcem", "psorija", "bolest", "kolesterol", "krvni tlak"],
   "conditionAllow": ["bez stresa", "dostava bez stresa"],
+  "collection": ["kolekcij"],
   "hedge": ["\\bne (dokazuje|jamci|garantira|potvr(đ|d)uje|znaci automatski)\\b", "\\bbez pretpostavke\\b", "\\bprovjerite deklaraciju\\b", "\\bne moze se jamciti\\b", "\\bnije dokaz\\b"],
   "promise": ["\\bna svakom (proizvodu|ulju|bocici)\\b", "\\bsvaki (proizvod|ulje) (pise|pokazuje|ima|daje|nosi)\\b"],
   "rules": [
@@ -13,7 +14,7 @@
     { "id": "hr-approved", "level": "fail", "patterns": ["\\bodobren\\w* od (halmed|efsa|ministarstva)\\b", "\\bcertificiran\\w* od halmed\\w*\\b"], "rewrite": "bez izmišljenog odobrenja; prijava kozmetike u CPNP nije odobrenje" },
     { "id": "hr-guarantee", "level": "fail", "patterns": ["\\b(zajamcen\\w* rezultat\\w*|zajamcen\\w* ucinak|ucinak nastupa za)\\b"], "rewrite": "—" },
     { "id": "hr-replace", "level": "fail", "patterns": ["\\b(zamjenjuje (tablete|lijekove|antidepresive)|alternativa (lijekovima|antidepresivima|tabletama)|ucinkovitiji od)\\b"], "rewrite": "—" },
-    { "id": "hr-sleep", "level": "fix", "patterns": ["\\b((bolji|miran|dublji|kvalitetan) san|lakse (zaspati|zaspite|zaspis)|poboljsava san|za (bolji )?san|za spavanje)\\b"], "rewrite": "trenutak, ne učinak: «za večernju rutinu», ulje s CBN-om" },
+    { "id": "hr-sleep", "level": "fix", "patterns": ["\\b((bolji|miran|dublji|kvalitetan) san|lakse (zaspati|zaspite|zaspis)|poboljsava san|za bolji san)\\b", "\\bpomaze( \\S+){0,4} (pri |kod |za )?(spavanj\\S*|snu|san|zaspati)\\b"], "rewrite": "trenutak, ne učinak: «za večernju rutinu», ulje s CBN-om" },
     { "id": "hr-calm", "level": "fix", "patterns": ["\\b(smanjuje stres|protiv stresa|anti ?stres|duboko opustanje|manje stresa|unutarnji mir|unutarnja ravnoteza|za anksioznost|protiv anksioznosti)\\b"], "rewrite": "sastav i trenutak: «CBD ulje 5 %, 10 ml, za svakodnevnu upotrebu»" },
     { "id": "hr-recovery", "level": "fix", "patterns": ["\\b(oporavak (nakon treninga|misica)|za umorne misice|regeneracija misica)\\b"], "rewrite": "«kreme, balzami i ulje za masažu s CBD-om»" },
     { "id": "hr-function", "level": "fix", "patterns": ["\\b(podrzava|pomaze|jaca|uravnotezuje) (zdravlje|sustav|imunitet|zglobove|endokanabinoidni sustav)\\b"], "rewrite": "mjesto nanošenja, bez funkcije tijela" },
