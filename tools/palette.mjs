@@ -1082,6 +1082,17 @@ export function groundRoles(n, a, mode, set = {}) {
   const popOnGlass = popSteps.find((c) => onGlass(c) >= NEED.control) ?? glassDark
   out['--pop-on-glass'] = popOnGlass
   check('glass-pop', 'отмеченный знак (краска марки) на стекле читается над любым снимком', onGlass(popOnGlass), NEED.control)
+  /* Цифра скидки на белой плашке — тихая плашка скидки (`--sale-look: quiet`,
+     слово заказчика 21.10.2026: «А · белая плашка»): тот же круг, что у
+     сердца, но плотный (`--plate-glass-hand`), а не стекло — слово на стекле
+     над чёрным снимком не удержало бы норму, а плашка скидки стоит на
+     снимке товара. Это текст — норма текста (4.5 : 1) на плотной плашке;
+     ближайшая к скидке ступень, которая её держит. Ни одна не держит —
+     краска стекла: плашка читается, но не красная. */
+  const saleGlassSteps = [10, 9, 11, 8, 7, 6, 5].map((i) => saleRow[i])
+  const saleOnGlass = saleGlassSteps.find((c) => ratio(c, glassLight) >= NEED.text) ?? glassDark
+  out['--sale-on-glass'] = saleOnGlass
+  check('glass-sale', 'цифра скидки на плотной плашке читается', ratio(saleOnGlass, glassLight), NEED.text)
 
   /* Кромка выключенного органа: видна и под прозрачностью выключенного —
      на нижнем краю коридора STATE.off; первая ступень нейтрали от пола,
