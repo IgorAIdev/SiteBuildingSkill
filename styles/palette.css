@@ -141,6 +141,8 @@
   --plate-glass-hand: light-dark(#FCFBF9, #EDEBE8);
   --pop-on-glass: light-dark(#917236, #745C35);
   --sale-on-glass: light-dark(#B52C4B, #A9384D);
+  --warn-on-glass: light-dark(#9B4C25, #994920);
+  --bad-on-glass: light-dark(#990003, #A83B3E);
   --edge-off-paper: light-dark(#BDBAB6, #695F51);
   --edge-off-deck: light-dark(#BDBAB6, #82796C);
   --field-paper: light-dark(#F9F9F8, #1B1915);
@@ -286,6 +288,8 @@
   --plate-glass-hand: light-dark(#FCFBF9, #EDEBE8);
   --pop-on-glass: light-dark(#917236, #745C35);
   --sale-on-glass: light-dark(#B52C4B, #A9384D);
+  --warn-on-glass: light-dark(#9B4C25, #994920);
+  --bad-on-glass: light-dark(#990003, #A83B3E);
   --edge-off-paper: light-dark(#BDBAB6, #695F51);
   --edge-off-deck: light-dark(#BDBAB6, #82796C);
   --field-paper: light-dark(#F9F9F8, #1B1915);

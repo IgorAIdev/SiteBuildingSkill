@@ -145,6 +145,10 @@ for (const c of components) {
    `<Компонент … className={s.x}>` в узле, у которого `s` — его модуль
    стилей, и правило `.x{…}` в этом модуле с фоном, обводкой, углом или
    тенью. Позиция, отступ и размер места — можно: это «где стоит». */
+/* Не контрол, а сам элемент: `SiteLink` — та же `<a>`, только мягким
+   переходом (components/SiteLink.tsx). Место красит свою ссылку, как красило
+   `<Link>` до него; ложные находки 21.10.2026 — плитка категории и промо шапки. */
+const ELEMENTS = new Set(['SiteLink'])
 const PAINT = /(?:^|;)\s*(background(?:-color)?|border(?:-[a-z-]+)?|outline(?:-[a-z]+)?|box-shadow)\s*:/
 const rules = (css) => [...css.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' ')).matchAll(/([^{}]+)\{([^{}]*)\}/g)]
 for (const file of siteCode) {
@@ -154,7 +158,7 @@ for (const file of siteCode) {
   const mine = (p) => [join(SITE, 'components'), join(SITE, 'app')].some((d) => p.startsWith(resolve(d)))
   const own = imports(file).filter((i) => i.path.endsWith('.module.css') && mine(i.path) && existsSync(i.path) && /^\w+$/.test(i.names.trim()))
   if (!own.length) continue
-  const comps = new Set(imports(file).filter((i) => i.path.endsWith('.tsx')).flatMap((i) => i.names.replace(/[{}]/g, '').split(',').map((x) => x.trim().split(/\s+as\s+/).pop())).filter((n) => /^[A-Z]/.test(n)))
+  const comps = new Set(imports(file).filter((i) => i.path.endsWith('.tsx')).flatMap((i) => i.names.replace(/[{}]/g, '').split(',').map((x) => x.trim().split(/\s+as\s+/).pop())).filter((n) => /^[A-Z]/.test(n) && !ELEMENTS.has(n)))
   for (const tag of text.matchAll(/<([A-Z]\w*)((?:[^<>{}]|\{(?:[^{}]|\{[^{}]*\})*\})*)>/g)) {
     if (!comps.has(tag[1])) continue
     const cls = tag[2].match(/className=\{([\s\S]*?)\}\s*(?=\w+=|\/?$)/)?.[1] ?? tag[2].match(/className=\{([^}]*)\}/)?.[1] ?? ''

@@ -176,9 +176,10 @@ function Promises({ s }: { s: Studio }) {
 }
 
 export function PaletteStudio() {
-  const { s } = useStudio()
+  const { s, off } = useStudio()
   const desk = useDesk()
   const [building, setBuilding] = useState<boolean | null>(null)
+  if (!s && off) return <p className={p.note}>Выбор и сборка палитры здесь выключены: на сайте не включена панель вида.</p>
   if (!s) return <p className={p.note}>Загружаю выбор палитры…</p>
   const open = building ?? s.custom()
   return (
