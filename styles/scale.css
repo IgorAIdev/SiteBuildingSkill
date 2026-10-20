@@ -138,7 +138,6 @@
   --lede-lead: 1.5;
   --lede-weight: 400;
   --lede-track: 0;
-  --lede-measure: var(--measure-lede);
   --menu-size: max(1rem, var(--fs-sm));
   --menu-lead: 1.45;
   --menu-weight: 500;
@@ -304,7 +303,6 @@
   --lede-lead: 1.5;
   --lede-weight: 400;
   --lede-track: 0;
-  --lede-measure: var(--measure-lede);
   --menu-size: max(1rem, var(--fs-sm));
   --menu-lead: 1.45;
   --menu-weight: 500;
@@ -470,7 +468,6 @@
   --lede-lead: 1.5;
   --lede-weight: 400;
   --lede-track: 0;
-  --lede-measure: var(--measure-lede);
   --menu-size: max(1rem, var(--fs-sm));
   --menu-lead: 1.45;
   --menu-weight: 500;
@@ -636,7 +633,6 @@
   --lede-lead: 1.5;
   --lede-weight: 400;
   --lede-track: 0;
-  --lede-measure: var(--measure-lede);
   --menu-size: max(1rem, var(--fs-sm));
   --menu-lead: 1.45;
   --menu-weight: 500;
@@ -802,7 +798,6 @@
   --lede-lead: 1.5;
   --lede-weight: 400;
   --lede-track: 0;
-  --lede-measure: var(--measure-lede);
   --menu-size: max(1rem, var(--fs-sm));
   --menu-lead: 1.45;
   --menu-weight: 500;
@@ -968,7 +963,6 @@
   --lede-lead: 1.5;
   --lede-weight: 400;
   --lede-track: 0;
-  --lede-measure: var(--measure-lede);
   --menu-size: max(1rem, var(--fs-sm));
   --menu-lead: 1.45;
   --menu-weight: 500;
@@ -1134,7 +1128,6 @@
   --lede-lead: 1.5;
   --lede-weight: 400;
   --lede-track: 0;
-  --lede-measure: var(--measure-lede);
   --menu-size: max(1rem, var(--fs-sm));
   --menu-lead: 1.45;
   --menu-weight: 500;
@@ -1300,7 +1293,6 @@
   --lede-lead: 1.5;
   --lede-weight: 400;
   --lede-track: 0;
-  --lede-measure: var(--measure-lede);
   --menu-size: max(1rem, var(--fs-sm));
   --menu-lead: 1.45;
   --menu-weight: 500;

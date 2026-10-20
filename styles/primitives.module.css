@@ -625,7 +625,8 @@
    описания сделай, чтобы продолжался вправо») и 20.10.2026 («почему текст только
    до половины… а нижняя строка со ссылками на всю ширину»); И676 вернуло потолок
    по его «давай» 03.10.2026, но то слово было о подписи под заголовком полки — у
-   подписи мера осталась (`--lede-measure`, И680). Ширину колонки решает раскладка
+   подписи мера была (`--lede-measure`, И680) — снята 21.10.2026, текст везде
+   одной ширины. Ширину колонки решает раскладка
    (холст `--wrap`, сетка, сайдбар), не текст. Текст, не дошедший до края своей
    колонки, меряет семья `textShort` (check:craft). */
 .prose{max-inline-size:none}
@@ -1426,12 +1427,13 @@
    строки шапки — строку заголовка не растит. */
 .sectionHead[data-row] h2{align-self:start}
 .sectionHead[data-row] > hgroup + *{grid-row:1 / span 2;align-self:start;font-size:var(--h2-at, var(--h2-size));translate:0 calc(.5cap - 50%)}
-/* Подпись под заголовком — мерой подписи (`--lede-measure`, 73ch ≈ 800px:
-   ширина вводного текста Gymshark, около 70% шапки на ноутбуке; И680,
-   слово заказчика 03.10.2026). Во всю ширину (И525, до 150 знаков в строке)
-   и узкой колонкой в 55ch (И676, 52%) она уже стояла — обе отменены. */
+/* Подпись под заголовком — без своего потолка: текст описания везде занимает
+   колонку целиком, как бегущий текст (`prose`, И802), и стоит одной шириной с
+   ним. Потолок подписи (`--lede-measure`, И680, Gymshark 03.10.2026) снят
+   21.10.2026: «ширина текста описания в одном месте одна, в другом другая —
+   одинаково везде, от ширины поля». Роль `lede` больше меры не несёт
+   (`styles/scale.json`, «мера»: «нет»). */
 .sectionHead p{
-  max-inline-size:var(--lede-measure);
   color:var(--ink-soft);
   font-size:var(--lede-size);line-height:var(--lede-lead);font-weight:var(--lede-weight);letter-spacing:var(--lede-track);
   min-inline-size:0
@@ -1484,7 +1486,6 @@
    было у нас, и это меньшинство. Вводная роль осталась у первого экрана
    главной: там заголовок витринный. */
 .pagehead p:not(.note){
-  max-inline-size:var(--lede-measure);
   color:var(--ink-soft);margin-top:var(--air-line);
   font-size:var(--lede-size);line-height:var(--lede-lead);font-weight:var(--lede-weight);letter-spacing:var(--lede-track)
 }
