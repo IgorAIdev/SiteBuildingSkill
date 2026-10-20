@@ -33,6 +33,9 @@ type Edge = { start: boolean; end: boolean }
    Голос — `bare`, без кромки и подложки (слово заказчика 21.10.2026: «очевидно же,
    что View all и кнопки скрола должны сочетаться, они ж в едином блоке»): выход
    рядом — слово без рамки, под рукой у обоих только оттенок, тихий → полный.
+   Ответ на руку — тот же, что у выхода: вид «пункт меню» (`data-hand="menu"`):
+   тихое → полное, без прыжка нажатия (заказчик 21.10.2026: «они в одном блоке
+   стоят, и поведение у них должно быть одинаковым»).
    Помнит компонент одно — где рельса стоит. */
 export function RailPager({ rail, back, next }: { rail: string; back: string; next: string }) {
   const [edge, setEdge] = useState<Edge | null>(null)
@@ -63,8 +66,8 @@ export function RailPager({ rail, back, next }: { rail: string; back: string; ne
   }
   return (
     <span className={b.pager} data-idle={idle ? '' : undefined} inert={idle}>
-      <button type="button" className={b.btn} data-pager data-rail-nav data-voice="bare" data-to="back" aria-label={back} aria-controls={rail} aria-disabled={at.start || undefined} onClick={() => step(-1)}><Icon id="arrow-left" /></button>
-      <button type="button" className={b.btn} data-pager data-rail-nav data-voice="bare" aria-label={next} aria-controls={rail} aria-disabled={at.end || undefined} onClick={() => step(1)}><Icon id="arrow-right" /></button>
+      <button type="button" className={b.btn} data-pager data-rail-nav data-voice="bare" data-hand="menu" data-to="back" aria-label={back} aria-controls={rail} aria-disabled={at.start || undefined} onClick={() => step(-1)}><Icon id="arrow-left" /></button>
+      <button type="button" className={b.btn} data-pager data-rail-nav data-voice="bare" data-hand="menu" aria-label={next} aria-controls={rail} aria-disabled={at.end || undefined} onClick={() => step(1)}><Icon id="arrow-right" /></button>
     </span>
   )
 }
