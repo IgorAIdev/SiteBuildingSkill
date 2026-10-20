@@ -25,6 +25,13 @@
  *   placeClips   — место решает, режется ли знак (`svg{overflow…}`). Можно
  *                  ли рисунку за окно — свойство знака (Icon.tsx), иначе
  *                  в одном месте он цел, в другом обрезан;
+ *   kindForm     — смысл плашки на снимке (`.cut[data-cut='low']`) задаёт
+ *                  не только краски: форму, рост, угол, поле. Смысл — это
+ *                  ручки краски (`--cut-fill`, `--cut-on`, `--cut-glass`),
+ *                  форма одна на все смыслы. Слово заказчика 21.10.2026:
+ *                  «low stock, out of stock — в таком же дизайне должны быть,
+ *                  как и скидка, единообразные»: вид скидки переделали в
+ *                  пилюлю, а «мало» и «нет» остались угловатыми заливками;
  *   ownedPart    — часть общего контрола, у которой есть своя разметка
  *                  (компонент), написана на месте руками: классы шапки окна
  *                  (`pn.bar`, `pn.title`, `pn.close`) вне PaneHead.tsx. Слово
@@ -64,6 +71,7 @@ const FAMILIES = {
   placePaints: 'место красит взятый контрол своим классом',
   placeClips: 'место решает, режется ли знак',
   ownedPart: 'часть общего контрола написана на месте, а не взята его компонентом',
+  kindForm: 'смысл плашки на снимке меняет не только краски, а форму',
 }
 
 const walk = (dir, test, out = []) => {
@@ -191,6 +199,19 @@ for (const file of styleFiles) {
     if (r[1].split(',').some((s) => /\bsvg(?:\.[\w-]+|\[[^\]]*\])*\s*$/.test(s.trim())) && /(?:^|;)\s*overflow(?:-[xy])?\s*:/.test(r[2])) {
       found.placeClips.push(`${rel(file)}:${lineOf(css, r.index + r[1].length)}  ${r[1].trim().slice(0, 80)} — обрезку знака решает место`)
     }
+  }
+}
+
+/* ── kindForm ─────────────────────────────────────────────────────────────
+   Правило, селектор которого называет один смысл плашки (`[data-cut='…']`),
+   и в теле у него что-то кроме собственных свойств `--…`. */
+for (const file of styleFiles) {
+  const css = read(file)
+  for (const r of rules(css)) {
+    if (!/\[data-cut=['"][^'"]+['"]\]/.test(r[1])) continue
+    const props = r[2].split(';').map((d) => d.split(':')[0].trim()).filter(Boolean)
+    const bad = props.filter((x) => !x.startsWith('--'))
+    if (bad.length) found.kindForm.push(`${rel(file)}:${lineOf(css, r.index + r[1].length)}  ${r[1].trim().slice(0, 80)} {${bad.join(', ')}} — смысл задаёт только краски`)
   }
 }
 

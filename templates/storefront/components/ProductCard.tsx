@@ -78,7 +78,7 @@ export async function ProductCard({ card, eager = false, cart, info = SITE_INFO,
             <h3 className={s.name}>{card.name}</h3>
             {/* Плашка на снимке одна: наличие-исключение важнее скидки —
                 «нет» отменяет покупку, а скидку цена и так говорит строкой. */}
-            {card.flag ? <span className={`${p.cut} ${s.flag}`} data-cut={card.flag.level}>{' '}{card.flag.text}</span>
+            {card.flag ? <span className={`${p.cut} ${s.flag}`} data-cut={card.flag.level}>{' '}<span className={p.cutText}>{card.flag.text}</span></span>
               : card.sale ? <span className={`${p.cut} ${s.flag}`} data-cut="sale">{' '}<span className={p.cutText}>{card.sale}</span></span> : null}
           </SiteLink>
           <Facts card={card} info={info} />
