@@ -7,10 +7,9 @@ type Edge = { start: boolean; end: boolean }
 
 /* Кнопки листания ряда (И502, И665) — вместо полосы прокрутки под рельсой.
    Набор — «Уголок» каталога кнопок (дизайн-система, Buttons → кнопки
-   листания): круглая кнопка `data-pager` среднего роста, тихий стиль сайта
-   (вид Look → кнопки, тихая ось; сейчас Outline); под рукой и при нажатии —
-   заливка марки (`data-hand="pop"`, И704). Круг — при любом угле панели
-   (`data-rail-nav`, И747). Стрелка, а не уголок (слово заказчика
+   листания): кнопка-знак `data-pager` среднего роста без кромки и подложки
+   (`data-voice="bare"`, ниже; до 21.10.2026 — круг тихого стиля с заливкой
+   марки под рукой, И704, И747). Стрелка, а не уголок (слово заказчика
    21.10.2026: «уголки не подходят по дизайну, давай стрелки»; до этого стоял
    уголок — «листать здесь» против стрелки «куда ведёт», Allbirds, замер
    03.10.2026): рядом «View all ↗» и стрелки меню — один знак хода. Рост 40 — слово заказчика 03.10.2026: «48 чрезмерно большие,
@@ -31,6 +30,9 @@ type Edge = { start: boolean; end: boolean }
    пальцем (И506; `.pager` в btn.module.css). Не измерен ряд или весь помещается —
    кнопки не видно (`data-idle`), а место остаётся: появившись после загрузки,
    пара сдвигала соседний выход «View all» (отрисованная проверка, `shift`).
+   Голос — `bare`, без кромки и подложки (слово заказчика 21.10.2026: «очевидно же,
+   что View all и кнопки скрола должны сочетаться, они ж в едином блоке»): выход
+   рядом — слово без рамки, под рукой у обоих только оттенок, тихий → полный.
    Помнит компонент одно — где рельса стоит. */
 export function RailPager({ rail, back, next }: { rail: string; back: string; next: string }) {
   const [edge, setEdge] = useState<Edge | null>(null)
@@ -61,8 +63,8 @@ export function RailPager({ rail, back, next }: { rail: string; back: string; ne
   }
   return (
     <span className={b.pager} data-idle={idle ? '' : undefined} inert={idle}>
-      <button type="button" className={b.btn} data-pager data-rail-nav data-hand="pop" data-to="back" aria-label={back} aria-controls={rail} aria-disabled={at.start || undefined} onClick={() => step(-1)}><Icon id="arrow-left" /></button>
-      <button type="button" className={b.btn} data-pager data-rail-nav data-hand="pop" aria-label={next} aria-controls={rail} aria-disabled={at.end || undefined} onClick={() => step(1)}><Icon id="arrow-right" /></button>
+      <button type="button" className={b.btn} data-pager data-rail-nav data-voice="bare" data-to="back" aria-label={back} aria-controls={rail} aria-disabled={at.start || undefined} onClick={() => step(-1)}><Icon id="arrow-left" /></button>
+      <button type="button" className={b.btn} data-pager data-rail-nav data-voice="bare" aria-label={next} aria-controls={rail} aria-disabled={at.end || undefined} onClick={() => step(1)}><Icon id="arrow-right" /></button>
     </span>
   )
 }
