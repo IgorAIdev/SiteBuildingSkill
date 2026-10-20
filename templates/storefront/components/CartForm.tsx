@@ -87,7 +87,14 @@ export function CartForm({ lang, className, refresh = true, quiet = false, submi
     <form className={className} action={submit} onSubmit={onSubmit} aria-busy={busy} data-said={said?.kind}>
       <input type="hidden" name="lang" value={lang} />
       <PendingOp.Provider value={pending}>
-        <fieldset className={s.bare} disabled={busy}>{children}</fieldset>
+        {/* Не `disabled`: выключенная кнопка теряет всё наведение и нажатие
+            (`:not(:disabled):hover`), и заливка под мышью на время запроса
+            (0.4–1.1 с) пропадала, а с ответом возвращалась — «кнопка Added
+            моргает после отпускания» (заказчик 20.10.2026; замер: под мышью
+            oklab 0.51, выключенная — белёсая прозрачная). Вторую запись и так
+            отклоняет полоса (`cartLane.pending` в onSubmit), «жду» говорит
+            `aria-busy` у формы. */}
+        <fieldset className={s.bare}>{children}</fieldset>
       </PendingOp.Provider>
       <p className={quiet && said?.kind !== 'error' ? `${f.say} ${p.said}` : f.say} data-state={said?.kind === 'error' ? 'error' : undefined} data-field={aboutField ? '' : undefined} role="status">{said?.message}</p>
       {said && said.kind !== 'error' ? after : null}
