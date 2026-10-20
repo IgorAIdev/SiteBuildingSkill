@@ -23,8 +23,15 @@ const PHONE = /^\+?\d{7,15}$/
    телефона — образец, у уезда — «выберите»; у остальных — общий. */
 const EMPTY: Partial<Record<Field, Key>> = { email: 'field.emailEmpty', phone: 'field.phoneShape', region: 'field.regionPick' }
 
+/** Поле формы строкой: нет поля или пришёл файл — пустая строка. `String(файл)`
+ *  дало бы «[object File]», и проверка «не пусто» пропустила бы его (И800). */
+export const field = (form: FormData, name: string): string => {
+  const v = form.get(name)
+  return typeof v === 'string' ? v.trim() : ''
+}
+
 export const read = (form: FormData, fields: readonly Field[]): Values =>
-  Object.fromEntries(fields.map((f) => [f, String(form.get(f) ?? '').trim()])) as Values
+  Object.fromEntries(fields.map((f) => [f, field(form, f)])) as Values
 
 export function check(lang: Lang, v: Values, rules: Partial<Record<Field, (s: string) => string | null>>): Errors {
   const errors: Errors = {}

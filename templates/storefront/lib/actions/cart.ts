@@ -5,9 +5,10 @@ import { readSession, writeSession } from '../session.ts'
 import { readCartOp, runCartOp, outcomeOf, type Outcome } from '../cart-ops.ts'
 import { DEFAULT_LANG, isLang, type Lang } from '../locale.ts'
 import { hrefFor } from '../href.ts'
+import { field } from '../checkout-form.ts'
 
 async function apply(form: FormData): Promise<{ lang: Lang; code: string; count: number | null; inCart: number | null }> {
-  const raw = String(form.get('lang') ?? '')
+  const raw = field(form, 'lang')
   const lang = isLang(raw) ? raw : DEFAULT_LANG
   const before = await readSession()
   const done = await runCartOp(commerce(), before, lang, readCartOp(form))

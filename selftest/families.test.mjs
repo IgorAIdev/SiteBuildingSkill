@@ -446,3 +446,76 @@ test('paneFill: a window part that paints itself is a finding; none, transparent
   assert.doesNotMatch(out, /\.line —/, 'строка внутри тела не часть окна')
   assert.doesNotMatch(run('.list { background: none }\n.paneGoal { background: transparent }\n'), /часть окна красит себя/)
 })
+
+/* Ключи собираются по частям: файл теста сам едет в git, и целый ключ в нём
+   был бы находкой семьи на самом наборе. */
+test('secretInGit: ключ, секрет в образце окружения, незакрытый .env — находки; ссылка и чужая страница — нет (И799)', () => {
+  const dir = project({
+    '.gitignore': 'node_modules/\n.env\n',
+    'docs/note.md': ['-----BEGIN ', 'RSA PRIVATE KEY-----'].join('') + '\nMIIE\n',
+    '.env.example': 'SOURCE=sample\nREVALIDATE_SECRET=' + 'x1' + '\nPREVIEW_SECRET=\n',
+    'deploy/run.sh': 'export API_TOKEN=$API_TOKEN\nVENDURE_CHANNEL_TOKEN=cbdin\n',
+    'lib/server.ts': "const TOKEN = makeToken()\nconst STRIPE_SECRET = '" + 'q'.repeat(24) + "'\n",
+    'research/raw/sources/page.html': '<script>key="' + 'AIza' + 'k'.repeat(35) + '"</script>\n',
+  })
+  try {
+    const out = code(dir).stdout + code(dir).stderr
+    assert.match(out, /docs\/note\.md:1 {2}закрытый ключ/)
+    assert.match(out, /\.env\.example:2 {2}REVALIDATE_SECRET= со значением в образце окружения/)
+    assert.doesNotMatch(out, /PREVIEW_SECRET=|SOURCE=/, 'пустой секрет и не секрет — не находка')
+    assert.doesNotMatch(out, /run\.sh/, 'ссылка на переменную и короткое имя канала — не ключ')
+    assert.match(out, /lib\/server\.ts:2 {2}STRIPE_SECRET=/)
+    assert.doesNotMatch(out, /lib\/server\.ts:1/, 'выражение в коде — не значение')
+    assert.doesNotMatch(out, /page\.html/, 'снятая чужая страница — не наш ключ')
+    assert.match(out, /\.gitignore {2}\.env\.local не закрыт/)
+    assert.doesNotMatch(out, /\.gitignore {2}\.env не закрыт/)
+  } finally { rmSync(dir, { recursive: true, force: true }) }
+})
+
+test('rawInput: чтение поля приведением или без проверки — находка; проверенное и отданное разбору — нет (И800)', () => {
+  const dir = project({
+    'lib/actions/a.ts': [
+      "'use server'",
+      'export async function a(form: FormData) {',
+      "  const token = String(form.get('token') ?? '')",
+      "  await engine().reset(field(form, 'id'))",
+      "  const code = field(form, 'code')",
+      "  if (!code) return 'missing'",
+      "  const raw = form.get('email')",
+      "  const email = typeof raw === 'string' ? raw : ''",
+      "  const next = safeNext(form.get('next'))",
+      "  const values = { name: field(form, 'name'), note: field(form, 'note') }",
+      '  if (!values.name) return null',
+      "  const loose = field(form, 'loose')",
+      '  return engine().go(token, code, email, next, values, loose)',
+      '}',
+    ].join('\n') + '\n',
+    'lib/plain.ts': "export const read = (form: FormData) => String(form.get('x') ?? '')\n",
+  })
+  try {
+    const out = code(dir).stdout + code(dir).stderr
+    assert.match(out, /a\.ts:3 {2}String\(form\.get/, 'приведение вместо проверки типа')
+    assert.match(out, /a\.ts:4 {2}поле формы уходит дальше без проверки/, 'сразу движку')
+    assert.match(out, /a\.ts:10 {2}values\.note из формы уходит дальше без проверки/)
+    assert.match(out, /a\.ts:12 {2}loose из формы/)
+    assert.doesNotMatch(out, /a\.ts:(?:5|7|9) /, 'проверенное и отданное разбору — не находка')
+    assert.doesNotMatch(out, /plain\.ts/, 'не действие сервера — не эта семья')
+  } finally { rmSync(dir, { recursive: true, force: true }) }
+})
+
+test('errorOk: ошибка маршрута без кода — находка; с кодом и успех — нет (И800)', () => {
+  const dir = project({
+    'app/api/x/route.ts': [
+      'export async function POST() {',
+      "  if (a) return Response.json({ ok: false, error: 'tag' })",
+      "  if (b) return Response.json({ ok: false, error: 'secret' }, { status: 401 })",
+      '  return Response.json({ ok: true })',
+      '}',
+    ].join('\n') + '\n',
+  })
+  try {
+    const out = code(dir).stdout + code(dir).stderr
+    assert.match(out, /route\.ts:2 {2}ошибка в теле, а код ответа — 200/)
+    assert.doesNotMatch(out, /route\.ts:[34] /)
+  } finally { rmSync(dir, { recursive: true, force: true }) }
+})

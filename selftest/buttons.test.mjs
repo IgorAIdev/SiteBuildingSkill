@@ -141,11 +141,11 @@ test('shelf bar organs: words without a plate, chosen chips as pills (И707, И7
     ['кнопка грани', line(filters, '${s.trigger}`}')],
     ['кнопка шторки', line(filters, '${s.open}`}')],
     ['кнопка порядка', line(sort, '${fs.trigger}`}')],
-    ['сбросить фильтры', line(shelf, '{view.clear ? <a className=')],
+    ['сбросить фильтры', line(shelf, '{view.clear ? <SiteLink className=')],
   ]) assert.match(l, /data-voice="bare"/, `${name} — словом без плиты (И740)`)
   assert.match(line(shelf, 'view.chips.map'), /data-pill/, 'фишка выбранного — пилюлей')
   assert.doesNotMatch(btn, /\.btn\[data-pill\]\{[^}]*--btn-r/, 'признак формы у кнопки со словом снят: угол решает ось Shape → Corners (--r-btn, 04.10.2026)')
-  assert.match(btn, /\.btn\[data-rail-nav\],\.btn\[data-pager\]\{--btn-r:var\(--r-pop\)\}/, 'кнопка-знак — круг при любом угле (И747, поправка 08.10.2026)')
+  assert.match(btn, /\.btn\[data-rail-nav\],\.btn\[data-pager\],\.btn\[data-pager-more\]\{--btn-r:var\(--r-pop\)\}/, 'кнопка-знак — круг при любом угле (И747, поправка 08.10.2026)')
   const prims = readFileSync(join(KIT, 'styles/primitives.module.css'), 'utf8')
   assert.match(prims, /\.chip\[data-pill\]\{border-radius:calc\(var\(--chip-h\) \/ 2\)\}/, 'фишка-пилюля — угол в половину своего роста (`--chip-h`, И764)')
 })
@@ -159,7 +159,7 @@ test('brand under the hand, a floor button keeps its ink, the hero is a light ha
   assert.match(btn, /\.btn\[data-hand='pop'\]\{--ctrl-btn-hand-fill:1;--ctrl-btn-hand-edge:1;--ctrl-btn-edge-hand:var\(--pop\)\}/, 'заливка маркой под рукой — долей тихой, кромка марки')
   /* Признаки — каждый у кнопки, порядок атрибутов не важен (`data-rail-nav` встал между ними 04.10.2026). */
   assert.equal((site('components/RailPager.tsx').match(/<button\b(?=[^>]*\bdata-pager\b)(?=[^>]*\bdata-hand="pop")[^>]*>/g) ?? []).length, 2, 'обе стрелки листания')
-  assert.match(site('components/RailHead.tsx'), /<a className=\{`\$\{b\.btn\} \$\{s\.wide\}`\}(?=[^>]*\bdata-hand="pop")[^>]*>/, '«View all» на широкой шапке — тем же ответом; на узкой — слово (И761)')
+  assert.match(site('components/RailHead.tsx'), /<SiteLink className=\{`\$\{b\.btn\} \$\{s\.wide\}`\}(?=[^>]*\bdata-hand="pop")[^>]*>/, '«View all» на широкой шапке — тем же ответом; на узкой — слово (И761)')
   const hero = site('components/blocks/Hero.tsx')
   assert.match(hero, /p\.lede\}/, 'герой — примитив «текст и кадр»')
   assert.match(hero, /p\.frame\}/, 'снимок — кадр с потолком')
