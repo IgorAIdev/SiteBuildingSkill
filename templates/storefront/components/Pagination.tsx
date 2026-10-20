@@ -17,7 +17,7 @@ import { SiteLink } from './SiteLink.tsx'
 
    Всё — органы набора, ничего не нарисовано здесь: «Показать ещё» — пилюля,
    как «View all» полок (марка под рукой `data-hand="pop"`, И704);
-   стрелки — круглые кнопки листания полки (`data-pager`, уголок); номер —
+   стрелки — круглые кнопки листания полки (`data-pager`, стрелка); номер —
    та же круглая кнопка, текущий — заливкой выбранного (`aria-current`,
    btn.module.css). Номера — по Material UI «Pagination» (круг 32–40,
    текущий залит) и Mantine «Pagination» (круг в волоске), обе MIT. Под
@@ -65,7 +65,7 @@ export function Pagination({ pages, fold = null }: { pages: PagesView | null; fo
 function Steps({ pages }: { pages: PagesView }) {
   return (
     <div className={`${p.cluster} ${s.steps}`}>
-      <Step href={pages.prev} label={pages.prevLabel} rel="prev" sign="chevron-left" />
+      <Step href={pages.prev} label={pages.prevLabel} rel="prev" sign="arrow-left" />
       <ol className={`${p.cluster} ${s.numbers}`}>
         {pages.items.map((it) => (
           <Fragment key={it.n}>
@@ -75,7 +75,7 @@ function Steps({ pages }: { pages: PagesView }) {
         ))}
       </ol>
       <p className={s.total}><b>{pages.now}</b> / {pages.total}</p>
-      <Step href={pages.next} label={pages.nextLabel} rel="next" sign="chevron-right" />
+      <Step href={pages.next} label={pages.nextLabel} rel="next" sign="arrow-right" />
     </div>
   )
 }
