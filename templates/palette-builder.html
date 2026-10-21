@@ -295,7 +295,10 @@ const PROFILE_JSON = {
 /** Контраст текста и органа. WCAG 2.2, 1.4.3 (AA): текст 4.5 : 1, крупный
  *  текст и части органов 3 : 1 (1.4.11). Крупный — от 24px, или от 18.66px
  *  при весе 700. */
-const CONTRAST = { text: 4.5, control: 3, largePx: 24, largeBoldPx: 18.66 }
+/** `badge` — слово плашки на снимке (скидка, «мало», «нет»): мелкий текст поверх
+ *  снимка держит норму усиленного контраста WCAG AAA, 7 : 1 (1.4.6), а не 4.5 :
+ *  при 4.5 цифра скидки на телефоне «малоразличима» (заказчик 21.10.2026). */
+const CONTRAST = { text: 4.5, control: 3, largePx: 24, largeBoldPx: 18.66, badge: 7 }
 
 /** Расстояние между марками палитры (ΔE76) и обещание читаемости по APCA
  *  (Lc): приглушённый текст 60, основной 90 — из строителя палитры (И189).
@@ -672,7 +675,7 @@ const SOLID_GAP = { light: 4.2, dark: 5.5 }
 /* Четвёртый и пятый — обещание САМОГО эталона, снятое с его файлов: 11-я
    ступень даёт Lc 60 на 2-й той же шкалы, 12-я — Lc 90. Это единственная
    метрика, в которой эталон вообще что-то обещает (И191). */
-const NEED = { text: CONTRAST.text, control: CONTRAST.control, brandApart: COLOUR.brandApart, mutedLc: COLOUR.mutedLc, mainLc: COLOUR.mainLc, decorLc: COLOUR.decorLc }
+const NEED = { text: CONTRAST.text, badge: CONTRAST.badge, control: CONTRAST.control, brandApart: COLOUR.brandApart, mutedLc: COLOUR.mutedLc, mainLc: COLOUR.mainLc, decorLc: COLOUR.decorLc }
 
 /* ── Краски: перевод и замер ─────────────────────────────────────────── */
 
@@ -1716,13 +1719,34 @@ function groundRoles(n, a, mode, set = {}) {
      слово заказчика 21.10.2026: «А · белая плашка»): тот же круг, что у
      сердца, но плотный (`--plate-glass-hand`), а не стекло — слово на стекле
      над чёрным снимком не удержало бы норму, а плашка скидки стоит на
-     снимке товара. Это текст — норма текста (4.5 : 1) на плотной плашке;
+     снимке товара. Это мелкий текст поверх снимка — усиленная норма (7 : 1) на плотной плашке;
      ближайшая к скидке ступень, которая её держит. Ни одна не держит —
      краска стекла: плашка читается, но не красная. */
-  const textOnGlass = (row) => [10, 9, 11, 8, 7, 6, 5].map((i) => row[i]).find((c) => ratio(c, glassLight) >= NEED.text) ?? glassDark
+  /* Норма — усиленная, 7 : 1 (`NEED.badge`): мелкое слово поверх снимка. Краска — ступень
+     слова лестницы смысла — та из 9 и 11, что темнее (ночью 11 светлая и бледная); не
+     держит — она темнеет ровно до нормы, а не
+     берётся последняя ступень: та почти чёрная, и красная цифра скидки теряла бы свой
+     цвет. */
+  const textOnGlass = (row) => {
+    const word = lightness(row[8]) < lightness(row[10]) ? row[8] : row[10]
+    if (ratio(word, glassLight) >= NEED.badge) return word
+    /* Темнеет в OKLCH: тон и насыщенность держатся, уходит только светлота (вне охвата —
+       гасится насыщенность, clampChroma). Смесь с чёрным в RGB гасила красноту — ночью
+       цифра выходила бурой (#6F4146). */
+    const [L, C, H] = oklch(word)
+    const at = (l) => toHex(clampChroma([l, C, H]).map((v) => v * 255))
+    let low = 0, high = L
+    for (let k = 0; k < 24; k += 1) {
+      const mid = (low + high) / 2
+      if (ratio(at(mid), glassLight) >= NEED.badge) low = mid
+      else high = mid
+    }
+    return ratio(at(low), glassLight) >= NEED.badge ? at(low) : glassDark
+  }
+
   const saleOnGlass = textOnGlass(saleRow)
   out['--sale-on-glass'] = saleOnGlass
-  check('glass-sale', 'цифра скидки на плотной плашке читается', ratio(saleOnGlass, glassLight), NEED.text)
+  check('glass-sale', 'цифра скидки на плотной плашке читается', ratio(saleOnGlass, glassLight), NEED.badge)
   /* «Мало» и «нет» на снимке полки — та же белая плашка, что у скидки
      (заказчик 21.10.2026: «в таком же дизайне должны быть, как и скидка»):
      слово краской своего смысла, ступень выбрана тем же замером. Готовое
@@ -1731,7 +1755,7 @@ function groundRoles(n, a, mode, set = {}) {
   for (const [job, name, rule] of [['warn', '--warn-on-glass', 'слово «мало осталось» на плотной плашке читается'], ['error', '--bad-on-glass', 'слово «нет в наличии» на плотной плашке читается']]) {
     const c = set.paper && set[job] ? textOnGlass(scale(set.paper, set.ink, set[job], mode, n[1])) : glassDark
     out[name] = c
-    check(`glass-${job}`, rule, ratio(c, glassLight), NEED.text)
+    check(`glass-${job}`, rule, ratio(c, glassLight), NEED.badge)
   }
 
   /* Кромка выключенного органа: видна и под прозрачностью выключенного —
