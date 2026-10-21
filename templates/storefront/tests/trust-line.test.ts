@@ -11,8 +11,9 @@ const NB = ' '
 test('trust slogans: free delivery and returns come from the shop facts, not from the engine delivery list', () => {
   const facts = { returnDays: 14, freeDeliveryFrom: { minor: 10000, currency: 'EUR' } }
   assert.equal(sloganLines('en', facts).length, 2, 'доставка и возврат; лаборатория — третьим, словом блока')
-  assert.match(sloganLines('en', facts)[0], /^Free delivery from /)
-  assert.equal(sloganLines('en', facts)[1], '14-day returns')
+  assert.match(sloganLines('en', facts)[0].text, /^Free delivery from /)
+  assert.equal(sloganLines('en', facts)[1].text, '14-day returns')
+  assert.deepEqual(sloganLines('en', facts).map((x) => x.sign), ['truck', 'rotate-ccw'], 'знак у каждого слогана')
   assert.equal(sloganLines('ro', facts).length, 2, 'на каждом языке рынка — доставка и возврат')
   assert.deepEqual(sloganLines('en', { returnDays: null, freeDeliveryFrom: null }), [], 'нет факта — нет слогана')
   assert.deepEqual(sloganLines('en', null), [])
@@ -20,7 +21,8 @@ test('trust slogans: free delivery and returns come from the shop facts, not fro
 
 test('trust slogans are text, not links: no anchor, no hand response in the markup', () => {
   const tsx = readFileSync(new URL('../components/blocks/TrustLine.tsx', import.meta.url), 'utf8')
-  assert.doesNotMatch(tsx, /<a[ >]|href=|b\.row|<Icon/)
+  assert.doesNotMatch(tsx, /<a[ >]|href=|b\.row/)
+  assert.match(tsx, /<Icon id=\{row\.sign\} \/>/, 'знак у слогана (слово владельца 21.10.2026)')
   const css = readFileSync(new URL('../components/blocks/blocks.module.css', import.meta.url), 'utf8')
   assert.doesNotMatch(css, /\.trustRow|\.trustIcon/)
 })
