@@ -4,8 +4,8 @@ import { hasOptional } from './consent-view.ts'
 import { hrefFor } from './href.ts'
 import { dayOf } from './format.ts'
 import { t } from './i18n/index.ts'
-import { COMPANY, EU_GUARANTEE_NOTICE } from './company.ts'
-import { CONTACTS } from './contacts.ts'
+import { shopCompany, euGuaranteeNotice } from './company.ts'
+import { shopContacts } from './contacts.ts'
 
 /* Вид документа (И748): текст данных — в разметку страницы. Документ пишет
    абзацы через пустую строку, ссылки `[слова](цель)` и реквизиты
@@ -31,8 +31,8 @@ export const TOC_MIN = 4
 /** Реквизиты, которые документ может назвать. Других нет: незнакомое имя
  *  остаётся в тексте как написано и ловится тестом (`unknownMarks`). */
 const MARKS: Record<string, string> = {
-  'company.name': COMPANY.name, 'company.cui': COMPANY.cui, 'company.regCom': COMPANY.regCom, 'company.address': COMPANY.address,
-  'contacts.phone': CONTACTS.phone, 'contacts.email': CONTACTS.email,
+  'company.name': shopCompany().name, 'company.cui': shopCompany().cui, 'company.regCom': shopCompany().regCom, 'company.address': shopCompany().address,
+  'contacts.phone': shopContacts().phone, 'contacts.email': shopContacts().email,
 }
 const MARK = /\{([a-z]+\.[a-zA-Z]+)\}/g
 const LINK = /\[([^\]]+)\]\(([^)\s]+)\)/g
@@ -83,7 +83,7 @@ type AnySection = Pick<DocSection, 'heading' | 'body'> & Partial<Omit<DocSection
  *  `notice` — есть ли файл уведомления ЕС о гарантии на этом языке: раздел со
  *  слотом `guarantee-notice` обещает показ, и без файла его нет — текст не
  *  обещает того, чего страница не рисует (разбор 08.10.2026). */
-export function docView(lang: Lang, doc: { title: string; summary: string; updated?: string | null; numbered?: boolean; sections: AnySection[] }, lead: { id: string; heading: string } | null = null, { optional = hasOptional(), notice = EU_GUARANTEE_NOTICE[lang] !== null }: { optional?: boolean; notice?: boolean } = {}): DocPageView {
+export function docView(lang: Lang, doc: { title: string; summary: string; updated?: string | null; numbered?: boolean; sections: AnySection[] }, lead: { id: string; heading: string } | null = null, { optional = hasOptional(), notice = euGuaranteeNotice(lang) !== null }: { optional?: boolean; notice?: boolean } = {}): DocPageView {
   const shown = doc.sections.filter((s) => (!s.when || (s.when === 'consent') === optional) && (s.slot !== 'guarantee-notice' || notice))
   const first = doc.numbered && lead ? 2 : 1
   const numOf = (i: number) => (doc.numbered ? String(i + first) : null)

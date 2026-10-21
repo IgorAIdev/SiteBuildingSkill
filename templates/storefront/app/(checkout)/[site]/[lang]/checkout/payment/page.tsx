@@ -8,7 +8,7 @@ import { emptyCheckout, paymentView, stepsView } from '@/lib/checkout-view.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { t } from '@/lib/i18n/index.ts'
 import { toMetadata } from '@/lib/seo.ts'
-import { TERMS_DOC } from '@/lib/company.ts'
+import { termsDoc } from '@/lib/company.ts'
 import { placeOrder } from '@/lib/actions/checkout.ts'
 import { CheckoutFrame, CheckoutEmpty } from '@/components/CheckoutFrame.tsx'
 import { PaymentForm } from '@/components/PaymentForm.tsx'
@@ -31,11 +31,11 @@ export default async function PaymentStep({ params }: Props) {
   const go = stepFor(r.value, 'payment')
   if (!r.value || !session || go === 'cart') return <CheckoutEmpty empty={emptyCheckout(lang)} />
   if (go !== 'payment') redirect(hrefFor(lang, { checkout: go }))
-  const [pay, terms, facts] = await Promise.all([commerce().paymentMethods(session, lang), content().doc(lang, TERMS_DOC), content().facts()])
+  const [pay, terms, facts] = await Promise.all([commerce().paymentMethods(session, lang), content().doc(lang, termsDoc()), content().facts()])
   if (!pay.ok) return <Unavailable lang={lang} />
   const view = paymentView(lang, {
     methods: pay.value, checkout: r.value,
-    terms: { title: terms.ok ? terms.value.title : t(lang, 'footer.legal'), href: hrefFor(lang, { doc: TERMS_DOC }) },
+    terms: { title: terms.ok ? terms.value.title : t(lang, 'footer.legal'), href: hrefFor(lang, { doc: termsDoc() }) },
     returnDays: facts.ok ? facts.value.returnDays : null,
   })
   return (

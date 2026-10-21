@@ -39,7 +39,7 @@ import { GuaranteeNotice } from '@/components/GuaranteeNotice.tsx'
 import { PolicyLine } from '@/components/PolicyLine.tsx'
 import { STORAGE_ROWS, consentView, optionalOf } from '@/lib/consent-view.ts'
 import type { StorageRow } from '@/lib/consent.ts'
-import { COOKIE_DOC, EU_GUARANTEE_NOTICE, PRIVACY_DOC } from '@/lib/company.ts'
+import { cookieDoc, euGuaranteeNotice, privacyDoc } from '@/lib/company.ts'
 import { Part, Worn, cssVar } from './parts.tsx'
 import s from './catalogPages.module.css'
 
@@ -139,7 +139,7 @@ export async function CatalogPages({ lang }: { lang: Lang }) {
   const ctx = { lang, cart: CART, cards: cards?.ok ? Object.fromEntries(cards.value.map((c) => [c.id, shelfCard(lang, c)])) : {} } as Pick<BlockCtx, 'lang' | 'cart' | 'cards'> as BlockCtx
   const table = methods.ok ? deliveryTable(lang, methods.value) : null
   const saved = savedCards(lang, cards?.ok ? cards.value.slice(0, 3) : [])
-  const consent = consentView(lang, { label: t(lang, 'footer.doc.cookie-uri'), href: hrefFor(lang, { doc: COOKIE_DOC }) }, CONSENT_SAMPLE)
+  const consent = consentView(lang, { label: t(lang, 'footer.doc.cookie-uri'), href: hrefFor(lang, { doc: cookieDoc() }) }, CONSENT_SAMPLE)
   const optional = optionalOf(CONSENT_SAMPLE)
 
   return (
@@ -226,7 +226,7 @@ export async function CatalogPages({ lang }: { lang: Lang }) {
         </div>
       </Part>
       {/* Файла уведомления на этом языке нет — на сайте не стоит ничего (ни картинки, ни раздела о ней), и плитки нет. */}
-      {EU_GUARANTEE_NOTICE[lang] ? (
+      {euGuaranteeNotice(lang) ? (
         <Part title="Уведомление ЕС о гарантии" lede="Картинка ЕС о законной гарантии 2 года — без изменений, на языке страницы: на странице гарантии в разделе «Informarea armonizată a UE» и в кассе у кнопки заказа словом «Garanție legală 2 ani», открывающим окно с картинкой.">
           <div className={p.cluster} lang={lang}>
             <GuaranteeNotice lang={lang} inline />
@@ -235,7 +235,7 @@ export async function CatalogPages({ lang }: { lang: Lang }) {
         </Part>
       ) : null}
       <Part title="Строка о данных" lede="«Как мы используем данные» — тихой сноской там, где собирают данные: под формой кабинета и под полями контакта в кассе. Одна строка на оба места.">
-        <div lang={lang}><PolicyLine link={{ label: t(lang, 'account.policy'), href: hrefFor(lang, { doc: PRIVACY_DOC }) }} /></div>
+        <div lang={lang}><PolicyLine link={{ label: t(lang, 'account.policy'), href: hrefFor(lang, { doc: privacyDoc() }) }} /></div>
       </Part>
       <Part title="Таблица доставки" lede="Первый раздел страницы «Доставка и оплата»: способ, срок и цена — строкой на способ. Способы — те же, что покупатель выбирает при оформлении.">
         {table ? (

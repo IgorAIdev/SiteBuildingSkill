@@ -12,7 +12,7 @@ import { Pagination } from '@/components/Pagination.tsx'
 import { CategoryButton } from '@/components/CategoryButton.tsx'
 import { CategoryTile } from '@/components/CategoryTile.tsx'
 import { HelpDock } from '@/components/HelpDock.tsx'
-import { reachRows, supportHref, SUPPORT } from '@/lib/contacts.ts'
+import { reachRows, supportHref, shopSupport } from '@/lib/contacts.ts'
 import { shot } from '@/lib/shot.ts'
 import type { OptionGroupLinks } from '@/lib/variant.ts'
 import { Part, Worn, cssVar } from './parts.tsx'
@@ -383,7 +383,7 @@ export async function ButtonList({ lang }: { lang: Lang }) {
           <li className={s.btnStyle}>
             <span className={s.famSample}>
               <div className={s.dockSample}>
-                <HelpDock bare rows={reachRows({ phone: t(lang, 'reach.phone'), email: t(lang, 'reach.email') })} who={{ name: SUPPORT.name, href: supportHref() }} words={{ open: t(lang, 'reach.menu'), online: t(lang, 'reach.online'), top: t(lang, 'reach.top') }} />
+                <HelpDock bare rows={reachRows({ phone: t(lang, 'reach.phone'), email: t(lang, 'reach.email') })} who={{ name: shopSupport().name, href: supportHref() }} words={{ open: t(lang, 'reach.menu'), online: t(lang, 'reach.online'), top: t(lang, 'reach.top') }} />
               </div>
             </span>
             <span className={s.btnName}>Висящая кнопка-знак: связь и «Наверх»</span>
