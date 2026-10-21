@@ -14,7 +14,7 @@ import { hrefFor } from '@/lib/href.ts'
 import { t } from '@/lib/i18n/index.ts'
 import { money } from '@/lib/money.ts'
 import { market } from '@/lib/market.ts'
-import { TERMS_DOC } from '@/lib/company.ts'
+import { termsDoc } from '@/lib/company.ts'
 import { COUPONS, PAYMENTS } from '@/lib/shipping.ts'
 import { CartView } from '@/components/CartView.tsx'
 import { CartCoupon } from '@/components/CartCoupon.tsx'
@@ -129,7 +129,7 @@ async function pointsOf(lang: Lang, m: DeliveryMethod): Promise<{ listed: boolea
 const Missing = ({ what }: { what: string }) => <p className={p.note}>{what}</p>
 
 export async function CheckoutParts({ lang }: { lang: Lang }) {
-  const [lines, methodsR, facts, terms, shelves] = await Promise.all([sampleLines(lang), sampleCommerce.deliveryMethods(null, lang), content().facts(), content().doc(lang, TERMS_DOC), mainShelves(lang)])
+  const [lines, methodsR, facts, terms, shelves] = await Promise.all([sampleLines(lang), sampleCommerce.deliveryMethods(null, lang), content().facts(), content().doc(lang, termsDoc()), mainShelves(lang)])
   if (!lines.length) return <Part title="Корзина и заказ" lede="Каталог сейчас не отвечает — собрать корзину образца не из чего."><Missing what="Товаров нет." /></Part>
   const methods = methodsR.ok ? methodsR.value : []
   const door = methods.find((m) => m.kind === 'address') ?? null
@@ -163,7 +163,7 @@ export async function CheckoutParts({ lang }: { lang: Lang }) {
 
   const pay = delivery ? paymentView(lang, {
     methods: payments, checkout: { cart: chosen, contact: CONTACT, delivery },
-    terms: { title: terms.ok ? terms.value.title : t(lang, 'footer.legal'), href: hrefFor(lang, { doc: TERMS_DOC }) },
+    terms: { title: terms.ok ? terms.value.title : t(lang, 'footer.legal'), href: hrefFor(lang, { doc: termsDoc() }) },
     returnDays,
   }) : null
   const paidBy = payments.find((x) => x.eligible) ?? null

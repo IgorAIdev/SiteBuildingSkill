@@ -21,12 +21,12 @@ import '@/styles/look.css'
 import { PressFeedback } from './PressFeedback.tsx'
 import { PaneSwipe } from './PaneSwipe.tsx'
 import { HelpDock } from './HelpDock.tsx'
-import { reachRows, supportHref, SUPPORT } from '@/lib/contacts.ts'
+import { reachRows, supportHref, shopSupport } from '@/lib/contacts.ts'
 import { THEME_BOOT } from '@/lib/theme.ts'
 import { CONSENT_BOOT } from '@/lib/consent.ts'
 import { consentView, optionalOf } from '@/lib/consent-view.ts'
 import { hrefFor } from '@/lib/href.ts'
-import { COOKIE_DOC } from '@/lib/company.ts'
+import { cookieDoc } from '@/lib/company.ts'
 import { ConsentBanner } from './ConsentBanner.tsx'
 import { ConsentPrefs } from './ConsentPrefs.tsx'
 import { ConsentScripts } from './ConsentScripts.tsx'
@@ -55,8 +55,8 @@ import { ordersOpen } from '@/lib/source/index.ts'
    рамах: закон о cookie действует и в кассе. Нет необязательных — нет ничего. */
 export function Shell({ lang, data, look, chrome = 'full', children }: { lang: Lang; data: ShellData; look: Look; chrome?: 'full' | 'checkout'; children: ReactNode }) {
   const optional = optionalOf()
-  const policy = data.docs.find((d) => d.slug === COOKIE_DOC)
-  const consent = optional.length ? consentView(lang, policy ? { label: policy.title, href: hrefFor(lang, { doc: COOKIE_DOC }) } : null) : null
+  const policy = data.docs.find((d) => d.slug === cookieDoc())
+  const consent = optional.length ? consentView(lang, policy ? { label: policy.title, href: hrefFor(lang, { doc: cookieDoc() }) } : null) : null
   /* `suppressHydrationWarning` — только на атрибуты самого <html>: скрипт
      панели вида ставит `data-look-panel` до оживления страницы, и React в
      разработке показывал «1 Issue» поверх витрины (28.09.2026). Так принято
@@ -84,7 +84,7 @@ export function Shell({ lang, data, look, chrome = 'full', children }: { lang: L
         {chrome === 'checkout' ? null : <Footer lang={lang} docs={data.docs} shelves={data.nav} />}
         {/* Окно помощи у края экрана (И547) — в магазине; касса закрыта, её
             выход один — «назад в корзину». */}
-        {chrome === 'full' ? <HelpDock rows={reachRows({ phone: t(lang, 'reach.phone'), email: t(lang, 'reach.email') })} who={{ name: SUPPORT.name, href: supportHref() }} words={{ open: t(lang, 'reach.menu'), online: t(lang, 'reach.online'), top: t(lang, 'reach.top') }} /> : null}
+        {chrome === 'full' ? <HelpDock rows={reachRows({ phone: t(lang, 'reach.phone'), email: t(lang, 'reach.email') })} who={{ name: shopSupport().name, href: supportHref() }} words={{ open: t(lang, 'reach.menu'), online: t(lang, 'reach.online'), top: t(lang, 'reach.top') }} /> : null}
         {consent ? <><ConsentPrefs view={consent} /><ConsentScripts /></> : null}
         {/* Окна за пальцем — один жест на документ (И494). */}
         <PaneSwipe />

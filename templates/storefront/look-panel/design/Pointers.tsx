@@ -12,7 +12,7 @@ import { CartLines } from '@/components/CartLines.tsx'
 import { CartPane } from '@/components/CartPane.tsx'
 import type { OptionGroupLinks } from '@/lib/variant.ts'
 import { cartView } from '@/lib/cart-view.ts'
-import { reachRows, supportHref, SUPPORT } from '@/lib/contacts.ts'
+import { reachRows, supportHref, shopSupport } from '@/lib/contacts.ts'
 import { shot } from '@/lib/shot.ts'
 import { source } from '@/lib/source/index.ts'
 import { t } from '@/lib/i18n/index.ts'
@@ -85,7 +85,7 @@ export async function Pointers({ lang }: { lang: Lang }) {
           <Pair name="Счётчик на странице товара" pick="[role='group'] button">{() => <QuantityStepper look={SITE_LOOK} field={FIELD} />}</Pair>
           <Pair name="Связь и «Наверх»">{() => (
             <div className={s.dockSample}>
-              <HelpDock bare rows={reachRows({ phone: t(lang, 'reach.phone'), email: t(lang, 'reach.email') })} who={{ name: SUPPORT.name, href: supportHref() }} words={{ open: t(lang, 'reach.menu'), online: t(lang, 'reach.online'), top: t(lang, 'reach.top') }} />
+              <HelpDock bare rows={reachRows({ phone: t(lang, 'reach.phone'), email: t(lang, 'reach.email') })} who={{ name: shopSupport().name, href: supportHref() }} words={{ open: t(lang, 'reach.menu'), online: t(lang, 'reach.online'), top: t(lang, 'reach.top') }} />
             </div>
           )}</Pair>
         </ul>

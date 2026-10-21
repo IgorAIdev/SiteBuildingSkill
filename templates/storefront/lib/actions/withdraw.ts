@@ -3,7 +3,7 @@ import { commerce } from '../source/index.ts'
 import { isLang } from '../locale.ts'
 import { t } from '../i18n/index.ts'
 import { momentOf } from '../format.ts'
-import { CONTACTS } from '../contacts.ts'
+import { shopContacts } from '../contacts.ts'
 import { EMAIL, LIMITS, field } from '../checkout-form.ts'
 import { inRequestSite } from '../request-site.ts'
 
@@ -26,7 +26,7 @@ async function withdraw_(rawLang: string, _prev: WithdrawState, form: FormData):
   const ok = values.name && values.name.length <= LIMITS.firstName + LIMITS.lastName && values.order && values.order.length <= ORDER_MAX && EMAIL.test(values.email) && values.email.length <= LIMITS.email
   if (!ok) return { done: null, message: t(lang, 'withdraw.bad'), values }
   const r = await commerce().withdraw(lang, values)
-  if (!r.ok) return { done: null, message: t(lang, 'withdraw.error', { email: CONTACTS.email }), values }
+  if (!r.ok) return { done: null, message: t(lang, 'withdraw.error', { email: shopContacts().email }), values }
   return { done: t(lang, 'withdraw.done', { at: momentOf(lang, r.value.at), email: values.email }), message: null, values: { name: '', order: '', email: '' } }
 }
 

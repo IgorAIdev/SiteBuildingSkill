@@ -2,7 +2,7 @@ import type { Product, Variant } from './source/contract.ts'
 import { titleOf } from './variant.ts'
 import { PRICES_ARE_REAL, REVIEWS_ARE_REAL } from './flags.ts'
 import { market } from './market.ts'
-import { COMPANY } from './company.ts'
+import { shopCompany } from './company.ts'
 import { SITE_URL, absolute } from './seo.ts'
 
 /* JSON-LD — то, что читает машина. Всё — из тех же данных, что нарисованы:
@@ -43,7 +43,7 @@ export function productLd(product: Product, variant: Variant | null): Record<str
 export const articleLd = (a: { title: string; summary: string; date: string; href: string; lang: string }) => ({
   '@context': 'https://schema.org', '@type': 'Article', headline: a.title, description: a.summary,
   datePublished: a.date, inLanguage: a.lang, mainEntityOfPage: absolute(a.href),
-  publisher: { '@type': 'Organization', name: COMPANY.name, url: SITE_URL() },
+  publisher: { '@type': 'Organization', name: shopCompany().name, url: SITE_URL() },
 })
 export const breadcrumbLd = (trail: { name: string; href: string }[]) => ({
   '@context': 'https://schema.org',
@@ -51,5 +51,5 @@ export const breadcrumbLd = (trail: { name: string; href: string }[]) => ({
   itemListElement: trail.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, item: absolute(c.href) })),
 })
 
-export const organizationLd = () => ({ '@context': 'https://schema.org', '@type': 'Organization', name: COMPANY.name, url: SITE_URL() })
-export const websiteLd = () => ({ '@context': 'https://schema.org', '@type': 'WebSite', name: COMPANY.name, url: SITE_URL() })
+export const organizationLd = () => ({ '@context': 'https://schema.org', '@type': 'Organization', name: shopCompany().name, url: SITE_URL() })
+export const websiteLd = () => ({ '@context': 'https://schema.org', '@type': 'WebSite', name: shopCompany().name, url: SITE_URL() })

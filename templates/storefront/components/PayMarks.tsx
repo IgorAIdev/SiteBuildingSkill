@@ -1,6 +1,6 @@
 import p from '@/styles/primitives.module.css'
 import s from './PayMarks.module.css'
-import { PAYMENTS } from '@/lib/company.ts'
+import { shopPayments } from '@/lib/company.ts'
 import { Icon } from './Icon.tsx'
 import { SIGN } from './marks.ts'
 
@@ -14,7 +14,7 @@ import { SIGN } from './marks.ts'
 export function PayMarks({ label }: { label: string }) {
   return (
     <ul className={`${p.cluster} ${s.pay}`} aria-label={label}>
-      {PAYMENTS.map((x) => <li key={x.key}><span className={s.mark} role="img" aria-label={x.label}><Icon id={SIGN[x.key]} /></span></li>)}
+      {shopPayments().map((x) => <li key={x.key}><span className={s.mark} role="img" aria-label={x.label}><Icon id={SIGN[x.key]} /></span></li>)}
     </ul>
   )
 }

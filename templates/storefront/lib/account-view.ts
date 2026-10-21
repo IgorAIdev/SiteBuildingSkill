@@ -6,7 +6,7 @@ import { hrefFor } from './href.ts'
 import { money } from './money.ts'
 import { momentOf } from './format.ts'
 import { market } from './market.ts'
-import { PRIVACY_DOC } from './company.ts'
+import { privacyDoc } from './company.ts'
 import { PASSWORD_MIN } from './account-form.ts'
 import { isProvider, isRefusal, PROVIDER_NAME, type From } from './social.ts'
 import { totalsView, type TotalsView } from './cart-view.ts'
@@ -51,7 +51,7 @@ const password = (lang: Lang, fresh: boolean) => field(lang, 'password', '', {
   show: t(lang, 'field.passwordShow'), ...(fresh ? { hint: t(lang, 'field.passwordHint', { n: PASSWORD_MIN }) } : {}),
 })
 const home = (lang: Lang, next?: string) => hrefFor(lang, { account: 'home', ...(next ? { next } : {}) })
-const policyLink = (lang: Lang): Link => ({ label: t(lang, 'account.policy'), href: hrefFor(lang, { doc: PRIVACY_DOC }) })
+const policyLink = (lang: Lang): Link => ({ label: t(lang, 'account.policy'), href: hrefFor(lang, { doc: privacyDoc() }) })
 
 /** Кнопки поставщиков (И787): подпись — строка самого поставщика на языке
  *  страницы (кнопки Google Identity Services и Facebook SDK, снято 08.10.2026),
