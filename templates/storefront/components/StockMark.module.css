@@ -1,9 +1,10 @@
-/* Наличие — вторичным ярусом (`blurb`, 0.8 текста), как рейтинг и протокол:
+/* Наличие — вторичным ярусом (`blurb`: кегль, межстрочье и вес — целиком роль, как у рейтинга, артикула и крошек рядом;
+   прежде вес брался у надписи органа 500 и слово стояло жирнее артикула — слово заказчика 17.10.2026: «в наличии и SKU одного размера»), как рейтинг и протокол:
    наличие решает покупку, это не юридическая сноска (И561). Краска — текст
    сигнала (palette, roles.md, «Текст и знаки»: «в наличии» ok11, «осталось
    двое» warn11, «нет в наличии» e11; И472): серым оно стояло одним цветом на
    все три смысла. */
-.stock{display:inline-flex;align-items:center;gap:.35em;font-size:var(--blurb-size);line-height:var(--blurb-lead);font-weight:var(--label-weight);color:var(--ink-soft)}
+.stock{display:inline-flex;align-items:center;gap:.35em;font-size:var(--blurb-size);line-height:var(--blurb-lead);font-weight:var(--blurb-weight);color:var(--ink-soft)}
 .stock[data-level='in']{color:var(--ok)}
 .stock[data-level='low']{color:var(--warn)}
 .stock[data-level='out']{color:var(--bad)}

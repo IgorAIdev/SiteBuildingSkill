@@ -61,13 +61,21 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
                 «Cod produs» под именем). Наличие — первым в этой строке (слово заказчика
                 02.10.2026: «in stock размещать первым в одной строке с отзывами и
                 SKU»; раньше стояло у цены). Нет ничего — строки нет. */}
-            {view.stock || view.rating || view.lab || view.sku ? (
+            {view.stock || view.sku || view.rating || view.lab || view.trust.length ? (
               <div className={s.proof}>
-                {view.stock ? <StockMark level={view.stockLevel}>{view.stock}</StockMark> : null}
-                {view.rating ? <Rating rating={view.rating} /> : null}
-                {view.lab ? <button className={b.btn} data-voice="bare" data-size="sm" type="button" popoverTarget="lab-report"><Icon id="flask" />{view.lab.chip}</button> : null}
-                {view.trust.map((x) => <span key={x.icon} className={b.btn} data-voice="bare" data-size="sm" data-hang="inline" data-static><Icon id={x.icon} />{x.text}</span>)}
-                {view.sku ? <span className={s.sku} translate="no">{view.sku}</span> : null}
+                {view.stock || view.sku ? (
+                  <div className={s.proofRow}>
+                    {view.stock ? <StockMark level={view.stockLevel}>{view.stock}</StockMark> : null}
+                    {view.sku ? <span className={s.sku} translate="no">{view.sku}</span> : null}
+                  </div>
+                ) : null}
+                {view.rating || view.lab || view.trust.length ? (
+                  <div className={s.proofRow}>
+                    {view.rating ? <Rating rating={view.rating} /> : null}
+                    {view.lab ? <button className={b.btn} data-voice="bare" data-size="sm" type="button" popoverTarget="lab-report"><Icon id="flask" />{view.lab.chip}</button> : null}
+                    {view.trust.map((x) => <span key={x.icon} className={b.btn} data-voice="bare" data-size="sm" data-hang="inline" data-static><Icon id={x.icon} />{x.text}</span>)}
+                  </div>
+                ) : null}
               </div>
             ) : null}
             {/* Описание — между именем и выбором (слово заказчика 28.09.2026:
@@ -84,10 +92,12 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
             <AddToCart lang={lang} buy={view.buy} hint={view.message} submit={submit} call={call} />
           </div>
           {view.facts ? <KeyFacts facts={view.facts} /> : null}
+          {/* Сведения о товаре — в колонке справа, под покупкой (слово заказчика 17.10.2026: «фиксация картинки и скролл
+              информации справа»): галерея стоит, пока читается колонка; в одну колонку порядок прежний — после сведений. */}
+          <ProductDetails details={view.details} />
         </div>
         <StickyBuy buy="buy" label={view.buy.add} variant={view.buy.variant} added={view.buy.addedShort}><Price now={view.price} was={view.was} /></StickyBuy>
       </section>
-      <ProductDetails details={view.details} />
       {/* Протокол партии — окном общего модуля (styles/pane.module.css):
           немодальное, `popover` — Escape, щелчок мимо и крестик закрывают
           сами (правило 8). */}

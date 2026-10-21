@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { blockedBy, clashes, complete, compose, CUSTOM, fieldsOf, migrate, paletteChecks, paletteVars, reresolve, ruleGroup, sectionsOf, STRUCTURE, uncovered } from '../ui/choice.mjs'
 import { toCss } from '../../tools/palette.mjs'
-import { stripHeaders, stripPanel, stripVariants, OWNED } from '../scripts/remove.mjs'
+import { foreignRoleBlocks, stripHeaders, stripPanel, stripRoles, stripVariants, OWNED } from '../scripts/remove.mjs'
 import { pairsOf } from '../scripts/pairs.mjs'
 import { parseFaces } from '../scripts/fonts.mjs'
 import { acceptLook, problems, type Facts } from '../../lib/look-rule.ts'
@@ -86,7 +86,7 @@ test('panel sections: every field sits in exactly one sub-tab; System is colour,
   const rows = sectionsOf(catalog)[1].subs.find((s) => s.id === 'sections')!.fields.map((f) => f[0])
   assert.deepEqual(rows, ['band-effects', 'band-featured', 'band-story', 'band-reviews', 'band-posts', 'band-faq', 'band-trust'])
   /* Первой в каталоге стоит выбранная на сайте, поэтому состав сверяется без порядка. */
-  for (const f of rows) assert.deepEqual(catalog.groups[f].map((o) => o.id).sort(), ['brand', 'dark', 'none', 'quiet'])
+  for (const f of rows) assert.deepEqual(catalog.groups[f].map((o) => o.id).sort(), ['brand', 'dark', 'line', 'none', 'quiet'])
   assert.equal(catalog.defaults.home, HOMES[0])
   for (const o of catalog.groups.home) assert.ok(o.name && o.line, `${o.id}: имя и строка`)
   /* Карта товара (И278): доля ряда, край снимка, миниатюры — значения
@@ -301,6 +301,30 @@ test('panel fonts: a subset beyond latin and cyrillic is fetched when a market l
   assert.deepEqual(parseFaces(css, new Set([0x3b1, 0x61])).map((f) => f.subset), ['greek', 'latin-ext', 'latin'])
   /* ă — румынская, и она уже в расширенной латинице: вьетнамский файл не нужен. */
   assert.deepEqual(parseFaces(css, new Set([0x103])).map((f) => f.subset), ['latin-ext', 'latin'])
+})
+
+/* Ветки стилей под невыбранными значениями ролей вида уходят со снятием панели (слово
+   заказчика 16.10.2026: лишнее из дизайн-системы не должно ехать на сайт): блок
+   `@container style(--роль: значение)` с чужим значением вырезается, со своим — остаётся;
+   условие с `not`, `and` или ролью, которой у вида нет, не трогается — чужого не решаем. */
+test('panel removal: style branches of roles the look wears other values for are cut, the rest stays', () => {
+  const css = [
+    '.a{color:red}',
+    '@container style(--seg-look: joined){ .seg{gap:0} .seg a{ margin:0 } }',
+    '@container style(--seg-look: tiles) or style(--seg-look: tint){ .seg a{color:blue} }',
+    '@container style(--seg-look: chips){ .seg a{color:green} }',
+    '@container style(--nav-look: dots){ .n{color:pink} }',
+    '@container not style(--seg-look: joined){ .x{color:gray} }',
+    '@container (min-width:600px){ .w{color:black} }',
+    '.b{color:blue}',
+  ].join('\n')
+  const vars = { '--seg-look': 'chips' }
+  assert.deepEqual((foreignRoleBlocks(css, vars) as [number, number, [string, string][]][]).map(([, , c]) => c.map(([n, v]) => `${n}=${v}`).join('|')), ['--seg-look=joined', '--seg-look=tiles|--seg-look=tint'])
+  const out = stripRoles(css, vars)
+  assert.ok(!out.includes('@container style(--seg-look: joined)') && !out.includes('tiles'), 'чужие значения вырезаны')
+  for (const keep of ['.a{color:red}', 'style(--seg-look: chips)', 'style(--nav-look: dots)', 'not style(--seg-look: joined)', '(min-width:600px)', '.b{color:blue}']) assert.ok(out.includes(keep), `остаётся: ${keep}`)
+  assert.equal(stripRoles(out, vars), out, 'второй проход ничего не меняет')
+  assert.equal(stripRoles(css, {}), css, 'вид не носит ролей — ничего не вырезается')
 })
 
 /* Скрипт панели отдаётся браузеру как есть, без сборки: ни tsc, ни сборка

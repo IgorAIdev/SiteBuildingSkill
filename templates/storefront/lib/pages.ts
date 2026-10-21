@@ -29,7 +29,7 @@ export const PAGES: Record<string, SamplePage> = {
         { type: 'reviews', ...words.reviews, all: null },
         { type: 'posts', ...words.posts },
         { type: 'faq', ...words.faq },
-        { type: 'trust', ...words.trust, deliveryDoc: 'livrare-si-plata', returnsDoc: 'retur', lab: { ...words.trust.lab, doc: 'analize-de-laborator' } },
+        { type: 'trust', title: words.trust.title, lab: { title: words.trust.lab.title } },
       ]
     }),
   },

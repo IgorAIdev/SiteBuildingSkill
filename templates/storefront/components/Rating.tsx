@@ -8,8 +8,8 @@ import { Icon } from './Icon.tsx'
    «пока нет отзывов» (слово заказчика 30.09.2026: «давай всем ставь
    звёзды»; И590): строка у каждого товара, имя стоит одинаково.
 
-   Звезда — залитый знак листа (`star-fill`), заливка — половинами: пустая
-   звезда краской кромки, поверх — залитая, срезанная до половины у
+   Звезда — два знака листа в одной клетке: пустая — контур (`star`, без заливки; слово заказчика
+   17.10.2026: «звёздочки без заливки лучше»), поверх — залитая (`star-fill`), срезанная до половины у
    `half`. Чтец слышит одну фразу (`label`), а не пять картинок. */
 export function Rating({ rating }: { rating: RatingView }) {
   return (
@@ -29,7 +29,7 @@ export function Stars({ stars, label }: { stars: readonly Star[]; label: string 
 function StarRow({ stars }: { stars: readonly Star[] }) {
   return (
     <span className={s.stars}>
-      {stars.map((on, i) => ({ on, place: i + 1 })).map(({ on, place }) => <span key={place} className={s.star} data-on={on}><Icon id="star-fill" /><Icon id="star-fill" /></span>)}
+      {stars.map((on, i) => ({ on, place: i + 1 })).map(({ on, place }) => <span key={place} className={s.star} data-on={on}><Icon id="star" /><Icon id="star-fill" /></span>)}
     </span>
   )
 }

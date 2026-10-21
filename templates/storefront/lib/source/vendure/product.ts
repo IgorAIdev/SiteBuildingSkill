@@ -33,7 +33,7 @@ export function productOf({ channelOf, speak }: Engine, reads: Reads) {
       ok: true,
       value: {
         id: nativeSlug(c, p), category: p.collections[0] ? nativeSlug(c, p.collections[0]) : '', brand: p.customFields?.brand?.trim() || null, name: p.name,
-        summary: p.customFields?.seoDescription?.trim() || text.split(/(?<=[.!?])\s/)[0] || '',
+        summary: p.customFields?.seoDescription?.trim() || text.split(/(?<=[.!?])\s/).slice(0, 3).join(' ') || '',
         description: text,
         /* Состав и применение — стандартные тексты вида товара (И482): текст
            один на полку, а не поле на каждом товаре; вид — по грани полки

@@ -52,6 +52,11 @@ const told = (e: Effect, lang: Lang): string => { const c = effectCopy(lang, e.c
 const namedFacets = (facets: Facet[], lang: Lang): Facet[] => facets.map((f) => (f.code === EFFECT_FACET ? { ...f, values: f.values.map((v) => ({ ...v, name: effectCopy(lang, v.code)?.name ?? v.name })) } : f))
 const shotOf = (e: Effect, lang: Lang): Effect => ({ ...e, name: effectCopy(lang, e.code)?.name ?? e.name, image: e.image ?? effectShot(e.code, e.name), description: told(e, lang) })
 
+/** Сколько товаров движка берёт рельса главной: все видимые карточки (`--shelf-cols`, Shelf.module.css), соседняя
+ *  выглядывает краем, и ещё есть что листать (craft/references/layout.md, «Рельса товаров»: «соседняя выглядывает»;
+ *  слово заказчика 17.10.2026: на полке пять карточек, а шестая должна быть видна краем и полка — листаться). */
+const SHELF_TAKE = 10
+
 /* Торговля движка — своя на канал: канал сайта (lib/sites.json, `channel`),
    у сайта без своего — окружение. */
 const trades = new Map<string, { source: Source; commerce: Commerce; content: Content }>()
@@ -110,7 +115,7 @@ function standIn(catalog: Source): Content {
       }
       const firstOf = async (category?: string) => {
         const top = await catalog.listing(lang, { category, facets: {}, sort: 'popular', page: null })
-        return top.ok ? top.value.items.slice(0, category ? 5 : 4).map((c) => c.id) : []
+        return top.ok ? top.value.items.slice(0, SHELF_TAKE).map((c) => c.id) : []
       }
       /* Полки кнопками героя — тем же ходом: полка движка того же вида. */
       const blocks: Block[] = await Promise.all(r.value.blocks.map(async (b): Promise<Block> => (b.type === 'featured' ? (b.to ? { ...b, to: engineShelf(b.to), ids: engineShelf(b.to) ? await firstOf(engineShelf(b.to)) : [] } : { ...b, ids: await firstOf() })

@@ -326,23 +326,25 @@
 .band{display:flow-root;margin-block-start:var(--air-page);padding-block-end:var(--air-page);background:var(--band)}
 .band[data-tone='brand']{background:var(--pop-tint)}
 .band[data-tone='dark']{background:var(--page-deck)}
+/* `line` — шов без заливки (слово владельца 15.10.2026: подложки вплотную к светлой шапке
+   «совсем плохо», цвет — не фоном): страница та же, над секцией — тонкая черта роли `--rule`
+   во всю ширину коробки, воздух над ней — отбивка подложки, под ней — воздух самой секции.
+   Низ без набивки: воздух до следующей секции даёт её собственная отбивка. */
+.band[data-tone='line']{background:none;padding-block-end:0}
+.band[data-tone='line']::before{content:'';display:block;inline-size:calc(var(--page-box) - var(--page-line) * 2);max-inline-size:100%;margin-inline:auto;block-size:var(--line-w);background:var(--rule)}
 /* Блок промолчал (слов магазина нет) — обёртка пуста и подложки не даёт. */
 .band:empty{display:none}
 /* Соседи одного типа сливаются: шов и лишний воздух между ними снимаются. */
 .band[data-join~='prev']{margin-block-start:0}
 .band[data-join~='next']{padding-block-end:0}
 
-/* РЯД ДОВЕРИЯ перед подвалом (Trust.tsx): значок, слово, подробность — три в
-   ряд на столе, столбиком на телефоне; число колонок считает сетка (`grid`),
-   порога окна нет. Краска — роли: значок акцентом, слово чернилами, подробность
-   приглушёнными. Строка-ссылка — вид предмета «строка» (`b.row`, styles/btn.module.css):
-   ответ на руку и подложку даёт он, здесь — только раскладка; цель нажатия —
-   роль `--ctrl-target` (44 на касании). */
-.trust{--cols:3;--cell-min:200px;--cols-min:1;--grid-gap:var(--gap-row);margin-block:calc(-1 * var(--trust-pad))} /* поле строки-ссылки — часть воздуха раздела: видимый воздух до края полосы и подвала равен соседним (bandSeam) */
-/* Поле строки — воздух раздела, но не меньше того, что доводит строку из одной надписи до цели нажатия: запас под ней был невидимым четырьмя пикселями у края подвала на телефоне (52 над краем при 48 под ним, bandSeam, 18.10.2026) — теперь он делится поровну сверху и снизу и целиком уходит в отрицательное поле ряда. */
-.trust{--trust-pad:max(var(--air-tight), calc((var(--ctrl-target) - var(--cardname-size) * var(--cardname-lead)) / 2))}
-.trustRow{display:flex;align-items:flex-start;gap:var(--gap-row);min-inline-size:0;min-block-size:var(--ctrl-target);padding:var(--trust-pad) var(--pad-inner);color:var(--ink);text-decoration:none}
-.trustIcon{flex:none;inline-size:1.4em;block-size:1.4em;margin-block-start:.1em;color:var(--pop)}
-.trustCopy{display:flex;flex-direction:column;gap:var(--air-line);min-inline-size:0}
-.trustTitle{font-size:var(--cardname-size);line-height:var(--cardname-lead);font-weight:var(--cardname-weight);letter-spacing:var(--cardname-track);overflow-wrap:break-word}
-.trustText{font-size:var(--blurb-size);line-height:var(--blurb-lead);font-weight:var(--blurb-weight);letter-spacing:var(--blurb-track);color:var(--ink-dim);overflow-wrap:break-word}
+/* РЯД ДОВЕРИЯ (TrustLine.tsx): слоганы словами в одну строку, без значков (слово владельца
+   16.10.2026) и без ссылок (17.10.2026) — текст, не орган: ни подложки под рукой, ни цели
+   нажатия. Рядом, тесно — переносятся целиком (`cluster`). Слово — роль названия карточки,
+   краска — чернила. */
+.trustLine{--cluster:var(--gap-row) var(--air-group)}
+.trustTitle{color:var(--ink);font-size:var(--cardname-size);line-height:var(--cardname-lead);font-weight:var(--cardname-weight);letter-spacing:var(--cardname-track)}
+.hero[data-bare] .trustLine{justify-content:center}
+/* Ряд доверия и ряд пути героя — одна группа у нижнего края колонки; воздух между — ряд (`--air-row`). */
+.heroPath{--stack:var(--air-row)}
+.heroPath > *{min-inline-size:0;max-inline-size:100%} /* ряд пути и доверие не шире колонки текста (check:craft, heroLane: кнопки выходили на снимок на 900) */

@@ -233,6 +233,7 @@ export const HEAD_PARTS = {
  *  новый блок получает строку в панели сам. Краски — роли палитры. */
 export const TONES = [
   { id: 'none', name: 'Off', line: 'No band: the section stands on the page colour' },
+  { id: 'line', name: 'Line', line: 'No fill: the page colour and a thin line above the section — a seam, not a band' },
   { id: 'quiet', name: 'Quiet', line: 'A quiet full-width band, a touch deeper than the page' },
   { id: 'brand', name: 'Brand', line: 'A light tint of the brand colour — to stand a section out' },
   { id: 'dark', name: 'Dark', line: 'The dark tone of the header and footer — the loudest section' },

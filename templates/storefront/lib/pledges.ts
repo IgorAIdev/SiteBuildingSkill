@@ -1,7 +1,7 @@
 import type { Lang } from './locale.ts'
-import type { DeliveryMethod, PaymentMethod } from './source/contract.ts'
+import type { DeliveryMethod, PaymentMethod, ShopFacts } from './source/contract.ts'
 import { t, tn } from './i18n/index.ts'
-import { money } from './money.ts'
+import { money, moneyShort } from './money.ts'
 
 /** Обещание у кнопки заказа: знак из листа и строка. */
 export type PledgeView = { icon: 'package' | 'truck' | 'rotate-ccw'; text: string }
@@ -35,4 +35,17 @@ export function pledgesView(lang: Lang, a: { payments: PaymentMethod[] | null; m
     ...(a.returnDays ? [{ icon: 'rotate-ccw' as const, text: tn(lang, 'pledge.returns', a.returnDays) }] : []),
   ]
   return { label: t(lang, 'pledge.label'), items }
+}
+
+/** Слоганы ряда доверия главной — три слова о магазине, не ссылки (слово заказчика 17.10.2026: «это
+ *  мотивационная вещь, а не ссылка»): лаборатория — слово блока (`trust.lab`), доставка — порог
+ *  бесплатной доставки и возврат — срок из данных магазина (`ShopFacts`), те же, что в полосе над
+ *  шапкой и у кнопки заказа. От способов доставки движка не зависят: у Vendure без корзины их нет, и
+ *  слоган пропадал. Нет факта — нет слогана. */
+export function sloganLines(lang: Lang, facts: ShopFacts | null): string[] {
+  if (!facts) return []
+  return [
+    ...(facts.freeDeliveryFrom ? [t(lang, 'header.freeFrom', { price: moneyShort(facts.freeDeliveryFrom, lang) })] : []),
+    ...(facts.returnDays ? [tn(lang, 'pledge.returns', facts.returnDays)] : []),
+  ]
 }
