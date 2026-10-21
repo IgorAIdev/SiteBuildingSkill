@@ -50,6 +50,18 @@
    (заказчик 21.10.2026: «ритмы в блоге проебаны»). */
 .cardWide{position:relative;grid-column:1 / -1;display:grid;grid-template-columns:subgrid;row-gap:var(--air-row);align-items:center}
 .cardWide > .shot{grid-column:1}
-.cardWide > .text{grid-column:2 / -1}
+.cardWide > .text{grid-column:2 / -1;max-inline-size:var(--body-measure)}
 .cardWide .text > [data-pill]{align-self:start}
 .cardWide :is(.meta, .title, .summary){min-block-size:0}
+
+/* Карточка списка блога (`data-place='list'`, PostCard.tsx): снимок —
+   пропорция обложки статьи (`--cover-frame`, та же, что над статьёй, —
+   миниатюра совпадает с тем, что откроется), заголовок — ступень
+   подзаголовка (`--h3-*`; cbdshop.bg — 24 / 600 над выдержкой). Закреплённая
+   поднимает заголовок до раздела (`--h2-*`) и выдержку до вводной — так
+   «Start here» читается обложкой номера, а не карточкой с пустым полем
+   рядом (замер 21.10.2026: заголовок 16 и выдержка 14 в поле 758 × 369). */
+[data-place='list'] > .shot{--frame:var(--cover-frame)}
+[data-place='list'] .title{font-size:var(--h3-size);line-height:var(--h3-lead);font-weight:var(--h3-weight);letter-spacing:var(--h3-track)}
+.cardWide .title{font-size:var(--h2-size);line-height:var(--h2-lead);font-weight:var(--h2-weight);letter-spacing:var(--h2-track);text-wrap:balance}
+.cardWide .summary{font-size:var(--lede-size);line-height:var(--lede-lead);font-weight:var(--lede-weight);letter-spacing:var(--lede-track);-webkit-line-clamp:3;line-clamp:3}
