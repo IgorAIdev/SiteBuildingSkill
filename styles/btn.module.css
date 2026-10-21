@@ -72,6 +72,12 @@
   --press-fill:color-mix(in oklab, var(--press-bg), var(--press-ink) var(--state-press));
   transform:var(--press-move);
 }
+/* Кнопка со знаком сжимается одной картинкой (`will-change`): знак рисуется
+   штрихом, который не масштабируется (`vector-effect`, styles/icons.svg), и
+   без своего слоя браузер перерисовывал его отдельно от кнопки, на кадр позже —
+   корзинка на «Add to cart» скакала при нажатии (заказчик 21.10.2026: «кнопка и
+   корзинка уменьшаются не одновременно»). Слой — только у кнопок со знаком. */
+.press:has(svg){will-change:transform}
 @media (prefers-reduced-motion:reduce){
   .press{transition:background-color var(--hover-t) var(--ease), border-color var(--hover-t) var(--ease), box-shadow var(--hover-t) var(--ease), color var(--hover-t) var(--ease), backdrop-filter var(--hover-t) var(--ease)}
   .press:not(:disabled):not([aria-disabled='true']):active,
@@ -664,6 +670,10 @@
 .fit[data-fit='2'] [data-part='word']{display:none}
 
 .btn[data-size='sm']{--btn-h:var(--ctrl-h-sm)}
+/* Факт в строке органов (`data-static`, заказчик 21.10.2026: «0.2% THC» и
+   «Made in the EU» рядом с «Lab report»): тот же рост, кегль, знак и тон, что у
+   соседней кнопки без подложки, — но это не орган: ни руки, ни нажатия. */
+.btn[data-static]{cursor:default;pointer-events:none}
 .btn[data-size='lg']{--btn-h:var(--ctrl-h-lg)}
 .btn[data-wide]{display:flex;inline-size:100%}
 /* Плитка «знак над словом» (`data-stack`, И790): мессенджеры «Быстрого заказа» — знак
@@ -776,9 +786,12 @@
 .btn:disabled,
 .btn[aria-disabled='true']{opacity:var(--state-off);cursor:not-allowed}
 /* Кромка выключенной — не у занятой формы (base.css, «Занятая форма — не
-   выключенная», И464): там орган вида не меняет. */
-.btn:disabled:not([aria-busy='true'] *),
-.btn[aria-disabled='true']{--btn-edge:var(--edge-off)}
+   выключенная», И464): там орган вида не меняет. И не у знака без подложки:
+   у него кромки нет и в покое, выключенный читается тоном. Стрелка листания
+   «назад» на первом шаге вырастала кругом рядом с голой «вперёд» —
+   два вида одной пары (заказчик 21.10.2026). */
+.btn:disabled:not([aria-busy='true'] *, [data-voice='bare']),
+.btn[aria-disabled='true']:not([data-voice='bare']){--btn-edge:var(--edge-off)}
 
 /* Accepted press remains visible through pending/disabled; colours stay in existing roles. */
 .btn.btn[data-press-feedback]{transition-duration:0s;opacity:1}

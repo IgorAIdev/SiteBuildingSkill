@@ -41,8 +41,15 @@
 }
 
 /* Закреплённая статья списка («Începe de aici», И749; cbdshop.bg — карточка на
-   две колонки, снимок слева): снимок и слова рядом — примитив `switcher`, на
-   узкой коробке столбиком. Слова — по низу снимка не тянутся; ярлык — фишка
-   сайта над строкой данных. */
-.cardWide{--switch-at:40rem;--switch-gap:var(--air-group);position:relative;align-items:center}
-.cardWide .text{justify-content:center}
+   две колонки, снимок слева): колонки — колонки сетки списка (`subgrid`,
+   BlogIndex.module.css): снимок — в первой, ростом с карточку ряда, слова — в
+   остальных; на одной колонке — под снимком, тем же воздухом, что у карточки.
+   Ярлык — фишка сайта своей ширины, не во всю колонку. Запасы строк ряда
+   (`2lh` у строки данных, заголовка и описания) — для соседей в ряду; у
+   закреплённой соседей нет, и запасы стояли пустыми строками между словами
+   (заказчик 21.10.2026: «ритмы в блоге проебаны»). */
+.cardWide{position:relative;grid-column:1 / -1;display:grid;grid-template-columns:subgrid;row-gap:var(--air-row);align-items:center}
+.cardWide > .shot{grid-column:1}
+.cardWide > .text{grid-column:2 / -1}
+.cardWide .text > [data-pill]{align-self:start}
+.cardWide :is(.meta, .title, .summary){min-block-size:0}

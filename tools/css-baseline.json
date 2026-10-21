@@ -68,5 +68,6 @@
   "placeTie": 0,
   "paneFill": 0,
   "sideLiteral": 0,
-  "stateWeight": 0
+  "stateWeight": 0,
+  "signLags": 0
 }

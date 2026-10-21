@@ -60,7 +60,7 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
                 «Cod produs» под именем). Наличие — первым в этой строке (слово заказчика
                 02.10.2026: «in stock размещать первым в одной строке с отзывами и
                 SKU»; раньше стояло у цены). Нет ничего — строки нет. */}
-            {view.stock || view.sku || view.rating || view.lab ? (
+            {view.stock || view.sku || view.rating || view.lab || view.trust.length ? (
               <div className={s.proof}>
                 {view.stock || view.sku ? (
                   <div className={s.proofRow}>
@@ -68,10 +68,11 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
                     {view.sku ? <span className={s.sku} translate="no">{view.sku}</span> : null}
                   </div>
                 ) : null}
-                {view.rating || view.lab ? (
+                {view.rating || view.lab || view.trust.length ? (
                   <div className={s.proofRow}>
                     {view.rating ? <Rating rating={view.rating} /> : null}
                     {view.lab ? <button className={b.btn} data-voice="bare" data-size="sm" type="button" popoverTarget="lab-report"><Icon id="flask" />{view.lab.chip}</button> : null}
+                    {view.trust.map((x) => <span key={x.icon} className={b.btn} data-voice="bare" data-size="sm" data-static><Icon id={x.icon} />{x.text}</span>)}
                   </div>
                 ) : null}
               </div>
