@@ -3,7 +3,7 @@ import f from '@/styles/form.module.css'
 import s from './design.module.css'
 import type { Lang } from '@/lib/locale.ts'
 import { goalOf } from '@/lib/cart-view.ts'
-import { MARKET } from '@/lib/market.ts'
+import { market } from '@/lib/market.ts'
 import { content } from '@/lib/source/index.ts'
 import { GoalMeter } from '@/components/GoalMeter.tsx'
 import { Switch } from '@/components/Switch.tsx'
@@ -28,7 +28,7 @@ const STATES: [string, number][] = [['Добрано треть', 0.3], ['Поч
 
 export async function FieldsMeters({ lang }: { lang: Lang }) {
   const facts = await content().facts()
-  const from = (facts.ok ? facts.value.freeDeliveryFrom : null) ?? { minor: 10000, currency: MARKET.currency }
+  const from = (facts.ok ? facts.value.freeDeliveryFrom : null) ?? { minor: 10000, currency: market().currency }
   return (
     <>
       <Part title="Поле ввода" lede="Одно поле на весь сайт: поиск, почта, касса. Подпись над полем, ошибка — строкой под ним.">

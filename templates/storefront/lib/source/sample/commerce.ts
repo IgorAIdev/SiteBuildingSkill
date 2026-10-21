@@ -6,7 +6,7 @@ import type {
 } from '../contract.ts'
 import { PRODUCTS, type SampleProduct, type SampleVariant } from '../../products.ts'
 import { METHODS, POINTS, PAYMENTS, COUPONS, type SampleMethod, type SamplePoint } from '../../shipping.ts'
-import { MARKET } from '../../market.ts'
+import { market } from '../../market.ts'
 import { money as moneyText } from '../../money.ts'
 import { deliveryReady } from '../../checkout-steps.ts'
 import { productArt } from './art.ts'
@@ -33,7 +33,7 @@ const SAMPLE_AGO = 10 * 60 * 1000
 const FEW = 3
 /* Остаток образца: у данных каталога есть только «в наличии / мало / нет». */
 const AVAILABLE = { in: 50, low: 3, out: 0 } as const
-const money = (minor: number): Money => ({ minor, currency: MARKET.currency })
+const money = (minor: number): Money => ({ minor, currency: market().currency })
 const ok = <T,>(value: T): Result<T> => ({ ok: true, value })
 const fail = <T,>(error: CommerceError): Change<T> => ({ ok: false, error })
 const fold = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().trim()
@@ -50,7 +50,7 @@ export const FIXTURES = {
   account: 'sample-account',
 } as const
 const SAMPLE_CONTACT: Contact = { email: 'ana.popescu@example.com', firstName: 'Ana', lastName: 'Popescu', phone: '0722 123 456' }
-const SAMPLE_ADDRESS: Address = { street: 'Str. Exemplului 1', city: 'București', region: 'București', postalCode: '010011', country: MARKET.country }
+const SAMPLE_ADDRESS: Address = { street: 'Str. Exemplului 1', city: 'București', region: 'București', postalCode: '010011', country: market().country }
 
 /* Не замыкания внутри fixture(): не берут ничего снаружи, и линтер
    (unicorn/consistent-function-scoping) просит держать их уровнем выше. */

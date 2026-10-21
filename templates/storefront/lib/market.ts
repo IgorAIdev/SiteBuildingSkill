@@ -1,4 +1,5 @@
 import type { Lang } from './locale.ts'
+import { siteNow } from './site-now.ts'
 
 /* Рынок шаблона — Румыния. Валюта, её запись и запись индекса — факты рынка,
    не вёрстки: проверка поля берёт образец отсюда, а не из кода формы.
@@ -19,7 +20,7 @@ import type { Lang } from './locale.ts'
    не свободная строка: «Buc.», «Bucuresti» и «Sector 3» курьер не ищет
    (разбор 24.09.2026, O4). Список закрытый — проверка адреса берёт его
    отсюда (lib/checkout-form.ts). */
-export const MARKET = {
+const RO = {
   country: 'RO', currency: 'EUR', precision: 2, display: 'narrowSymbol',
   /* Предел THC рынка, % — строка доверия у имени товара показывает «Under 0.2% THC»,
      только если протокол партии ниже него (заказчик 21.10.2026). */
@@ -35,5 +36,18 @@ export const MARKET = {
     'Vâlcea', 'Vrancea',
   ],
 } as const
-const TAGS: Record<Lang, string> = { ro: 'ro-RO', en: 'en-RO', hu: 'hu-RO' }
-export const intlLocale = (lang: Lang): string => TAGS[lang]
+
+/* Пакеты рынков — по коду страны (docs/plans/multi-site.md, Ш2): рынок — у
+   сайта (`market` в lib/sites.json), витрина одна. Пакет держит то же
+   устройство, что румынский; новый рынок — новый пакет здесь. */
+export type Market = {
+  country: string; currency: string; precision: number; display: 'narrowSymbol' | 'symbol' | 'code'
+  thcLimit: number; postal: { pattern: string; example: string }; phone: { example: string }; regions: readonly string[]
+}
+export const MARKETS: Readonly<Record<string, Market>> = { RO }
+
+/** Рынок сайта запроса (lib/site-now.ts). */
+export const market = (): Market => MARKETS[siteNow().market] ?? RO
+
+/** Тег рынка для `Intl` — язык страницы и страна рынка (`en-RO`, `nl-BE`). */
+export const intlLocale = (lang: Lang): string => `${lang}-${market().country}`

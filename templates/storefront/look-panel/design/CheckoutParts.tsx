@@ -13,7 +13,7 @@ import { contactView, deliveryView, doneView, paymentView, stepsView, summaryVie
 import { hrefFor } from '@/lib/href.ts'
 import { t } from '@/lib/i18n/index.ts'
 import { money } from '@/lib/money.ts'
-import { MARKET } from '@/lib/market.ts'
+import { market } from '@/lib/market.ts'
 import { TERMS_DOC } from '@/lib/company.ts'
 import { COUPONS, PAYMENTS } from '@/lib/shipping.ts'
 import { CartView } from '@/components/CartView.tsx'
@@ -50,7 +50,7 @@ import { Part } from './parts.tsx'
 /* Покупатель и адрес образца — в памяти страницы, как у заготовки образца
    (lib/source/sample/commerce.ts): данные показа, а не чей-то заказ. */
 const CONTACT: Contact = { email: 'ana.popescu@example.com', firstName: 'Ana', lastName: 'Popescu', phone: '0722 123 456' }
-const ADDRESS: Address = { street: 'Str. Exemplului 1', city: 'București', region: 'București', postalCode: MARKET.postal.example, country: MARKET.country }
+const ADDRESS: Address = { street: 'Str. Exemplului 1', city: 'București', region: 'București', postalCode: market().postal.example, country: market().country }
 const ORDER_CODE = 'EXEMPLU1'
 /* Строк в корзине образца — две: одна в штуку, вторая в две. */
 const LINES = 2
@@ -96,7 +96,7 @@ export async function sampleLines(lang: Lang): Promise<CartLine[]> {
 /** Корзина так, как её считает источник образца: код скидки — первый
  *  действующий код образца, доставка — цена выбранного способа. */
 export function cartOf(lines: CartLine[], delivery: Money | null): Cart {
-  const zero: Money = { minor: 0, currency: lines[0]?.unit.currency ?? MARKET.currency }
+  const zero: Money = { minor: 0, currency: lines[0]?.unit.currency ?? market().currency }
   const subtotal = sum(zero, lines.reduce((n, l) => n + l.total.minor, 0))
   const coupon = [...COUPONS].find(([, c]) => !c.expired)
   const discounts = coupon ? [{ code: coupon[0], amount: sum(zero, Math.round((subtotal.minor * coupon[1].percent) / 100)) }] : []

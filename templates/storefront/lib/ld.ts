@@ -1,7 +1,7 @@
 import type { Product, Variant } from './source/contract.ts'
 import { titleOf } from './variant.ts'
 import { PRICES_ARE_REAL, REVIEWS_ARE_REAL } from './flags.ts'
-import { MARKET } from './market.ts'
+import { market } from './market.ts'
 import { COMPANY } from './company.ts'
 import { SITE_URL, absolute } from './seo.ts'
 
@@ -31,8 +31,8 @@ export function productLd(product: Product, variant: Variant | null): Record<str
   }
   if (PRICES_ARE_REAL && variant) {
     ld.offers = {
-      '@type': 'Offer', priceCurrency: MARKET.currency,
-      price: (variant.price.minor / 10 ** MARKET.precision).toFixed(MARKET.precision),
+      '@type': 'Offer', priceCurrency: market().currency,
+      price: (variant.price.minor / 10 ** market().precision).toFixed(market().precision),
       availability: variant.stock === 'out' ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
     }
   }

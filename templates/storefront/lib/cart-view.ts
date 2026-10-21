@@ -4,7 +4,7 @@ import { outcomeOf, type Outcome } from './cart-ops.ts'
 import { t, tn } from './i18n/index.ts'
 import { money } from './money.ts'
 import { hrefFor } from './href.ts'
-import { MARKET } from './market.ts'
+import { market } from './market.ts'
 import { shelfCard, type ShelfCard } from './view.ts'
 import { factsLine } from './facts.ts'
 import { shelvesView, type ShelvesView } from './shelves-view.ts'
@@ -46,7 +46,7 @@ export type CartExtras = { freeFrom: Money | null; popular: Card[]; shelves: Col
 /** Предел количества в строке — один на корзину и карту товара (в договоре
  *  его пока нет, docs/open.md, «Предел количества»). */
 export const QTY_MAX = 99
-const zero = (): Money => ({ minor: 0, currency: MARKET.currency })
+const zero = (): Money => ({ minor: 0, currency: market().currency })
 const EMPTY: Cart = { lines: [], quantity: 0, subtotal: zero(), discounts: [], delivery: null, total: zero() }
 const NO_EXTRAS: CartExtras = { freeFrom: null, popular: [], shelves: [] }
 

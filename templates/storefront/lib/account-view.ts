@@ -5,7 +5,7 @@ import { t, tn, type Key } from './i18n/index.ts'
 import { hrefFor } from './href.ts'
 import { money } from './money.ts'
 import { momentOf } from './format.ts'
-import { MARKET } from './market.ts'
+import { market } from './market.ts'
 import { PRIVACY_DOC } from './company.ts'
 import { PASSWORD_MIN } from './account-form.ts'
 import { isProvider, isRefusal, PROVIDER_NAME, type From } from './social.ts'
@@ -177,7 +177,7 @@ function addressForm(lang: Lang, a: SavedAddress | null, first: boolean): Addres
     id: a?.id ?? null, at: `ad-${a?.id ?? 'new'}-`, rows: addressRows(lang, a),
     /* Первый адрес — по умолчанию сам: другого нет. */
     isDefault: { label: t(lang, 'addresses.makeDefault'), checked: a ? a.isDefault : first },
-    country: { label: t(lang, 'field.country'), value: countryName(lang, MARKET.country) }, submit: t(lang, 'addresses.save'),
+    country: { label: t(lang, 'field.country'), value: countryName(lang, market().country) }, submit: t(lang, 'addresses.save'),
   }
 }
 

@@ -5,6 +5,7 @@ import { money } from '@/lib/money.ts'
 import { cartStamp, cartView } from '@/lib/cart-view.ts'
 import { cartHeld } from '@/lib/cart-ops.ts'
 import { mainShelves } from '@/lib/main-shelves.ts'
+import { inRequestSite } from '@/lib/request-site.ts'
 
 /* Счётчик шапки. Личное не кэшируется нигде, а страницы каталога остаются
    общими и статическими: счётчик приходит отдельным запросом, а не делает
@@ -23,7 +24,7 @@ import { mainShelves } from '@/lib/main-shelves.ts'
    `held` — штук каждого варианта в корзине: по нему кнопки «в корзину»
    страницы показывают «Added · 4» уже при загрузке (lib/in-cart.ts, И469).
    Источник молчит — `null`: кнопки остаются, какими были. */
-export async function GET(request: Request) {
+async function GET_(request: Request) {
   const query = new URL(request.url).searchParams
   const asked = query.get('lang') ?? ''
   const lang = isLang(asked) ? asked : DEFAULT_LANG
@@ -38,3 +39,6 @@ export async function GET(request: Request) {
   const view = query.has('view') && r.ok ? cartView(lang, cart, null, { freeFrom, popular: [], shelves }) : null
   return Response.json({ count, sum, held: r.ok ? cartHeld(cart) : null, stamp: r.ok ? cartStamp(cart) : null, view }, { headers: { 'Cache-Control': 'private, no-store' } })
 }
+
+/* Обработчик — с сайтом запроса (lib/request-site.ts). */
+export async function GET(...a: Parameters<typeof GET_>): ReturnType<typeof GET_> { return inRequestSite(() => GET_(...a)) }

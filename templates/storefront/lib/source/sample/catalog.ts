@@ -4,7 +4,7 @@ import { CATEGORIES, EFFECTS, FACETS, LAB_REPORTS, PRODUCTS, type SampleProduct 
 import { EFFECT_FACET, onSite } from '../effect.ts'
 import { facetValueFilters, pageVariables, pageCount } from '../vendure/core/search.mjs'
 import { PAGE_SIZE } from '../page.ts'
-import { MARKET } from '../../market.ts'
+import { market } from '../../market.ts'
 import { overallStock, standardOf } from '../stock.ts'
 import { standardDetails } from '../details.ts'
 import { percentOf } from '../../facts.ts'
@@ -21,7 +21,7 @@ const PAGE = PAGE_SIZE
 /* Грань полок образца — форма товара: масло, капсулы, крем, для животных. */
 const SHELF_FACET = 'forma'
 const ok = <T,>(value: T): Result<T> => ({ ok: true, value })
-const money = (minor: number) => ({ minor, currency: MARKET.currency })
+const money = (minor: number) => ({ minor, currency: market().currency })
 const image = (p: SampleProduct, lang: Lang) => ({ src: productArt(p.cat, p.hue, p.label), alt: p.name[lang], width: 800, height: 800 })
 /* Подпись снимка — имя товара и что на снимке; у главного — одно имя. Это
    данные образца: настоящие снимки приходят из админки с готовым `alt`. */
