@@ -11,6 +11,9 @@ import { clipOf, isClip } from './review-clips.ts'
 import DOCS from '../../docs.json' with { type: 'json' }
 import BLOG from '../../blog.json' with { type: 'json' }
 import BLOG_META from '../../blog-meta.json' with { type: 'json' }
+import { siteNow } from '../../site-now.ts'
+import { DEFAULT_SITE } from '../../sites.ts'
+import { lookFileName } from '../../look-file.ts'
 import REVIEWS from '../../reviews.json' with { type: 'json' }
 
 type L = Record<Lang, string>
@@ -116,7 +119,12 @@ export const sampleContent: Content = {
      рядом (look.draft.json), как черновая версия global у Payload; его нет —
      черновой режим видит опубликованное. */
   async look(options) {
-    const file = options?.draft && existsSync(lookFile('look.draft.json')) ? 'look.draft.json' : 'look.json'
+    /* Вид — сайта запроса (lib/look-file.ts): свой файл, а пока его нет — вид
+       сайта по умолчанию. */
+    const site = siteNow(), main = site.id === DEFAULT_SITE.id
+    const own = (draft: boolean) => lookFileName(site, main, draft)
+    const pick = [...(options?.draft ? [own(true), lookFileName(site, true, true)] : []), own(false), 'look.json']
+    const file = pick.find((name) => existsSync(lookFile(name))) ?? 'look.json'
     try {
       return { ok: true, value: JSON.parse(readFileSync(lookFile(file), 'utf8')) as unknown }
     } catch {

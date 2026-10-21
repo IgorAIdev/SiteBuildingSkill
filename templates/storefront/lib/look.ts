@@ -8,6 +8,7 @@ import { HEADERS } from './headers.ts'
 import { CARDS } from './cards.ts'
 import { HOMES } from './homes.ts'
 import type { Slots } from './look-values.ts'
+import { runWithSite, siteNow } from './site-now.ts'
 import { acceptLook, type Facts } from './look-rule.ts'
 
 /* Вид витрины — ОДИН, готовыми значениями (CLAUDE.md, «Панель настройки
@@ -43,10 +44,18 @@ export function accept(raw: unknown): Look {
   return look
 }
 
-const published = unstable_cache(async () => {
-  const r = await content().look()
-  return r.ok ? r.value : null
-}, ['look'], { tags: ['look'] })
+/* Опубликованный вид — у каждого сайта свой (lib/look-file.ts): запись кэша
+   на сайт, метка «look» одна — публикация сбрасывает все. */
+const publishedBy = new Map<string, () => Promise<unknown>>()
+const published = (): Promise<unknown> => {
+  const id = siteNow().id
+  /* Внутри кэша сайт держится областью: запись кэша считается вне отрисовки. */
+  if (!publishedBy.has(id)) publishedBy.set(id, unstable_cache(() => runWithSite(id, async () => {
+    const r = await content().look()
+    return r.ok ? r.value : null
+  }), ['look', id], { tags: ['look'] }))
+  return publishedBy.get(id)!()
+}
 
 /** Вид, которым рисуется страница: опубликованный, а в черновом режиме —
  *  черновик источника. Один раз на запрос (`cache` React): его спрашивают
