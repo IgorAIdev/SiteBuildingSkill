@@ -174,7 +174,7 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
                 anchor: [], outline: [], marker: [], dark: [], ladder: [], wideCtrl: [], lopsided: [],
                 markInk: [],
                 covered: [],
-                lane: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], lineLong: [], textShort: [], headActs: [],
+                lane: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], lineLong: [], textShort: [], headActs: [],
                 autofill: [], fieldZoom: [], h1Lines: [], twoWays: [], edge: [], fontLate: [], shift: [], ruleAir: [], rowShape: [], railTail: [], tileGrow: [] }
   const seen = new Set()
 
@@ -1260,6 +1260,79 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
       for (let i = 1; i < parts.length; i++) {
         const gap = parts[i].getBoundingClientRect().top - parts[i - 1].getBoundingClientRect().bottom
         if (want > 0 && Math.abs(gap - want) > 2) out.partAir.push(`${name(parts[i - 1])} → ${name(parts[i])} — ${Math.round(gap)}px, а часть → часть одного описания ${Math.round(want)}px`)
+      }
+    }
+  }
+
+  /* 4a5c · верх страницы одним шагом (слово заказчика 21.10.2026: «ритмы блять
+     разные на разных страницах… должны быть одинаковы»). Первая строка страницы —
+     крошки, заголовок, слова героя — стоит от низа шапки шагом головы страницы
+     `--air-group` (`.section[data-air='head']`) на ЛЮБОЙ странице: главная стояла
+     на 56 (шов «текст ↔ кадр» героя срабатывал без кадра), каталог и документы — на 24.
+     Снимок во всю ширину (галерея товара) может стоять вплотную к шапке — ноль. */
+  {
+    const probe = document.createElement("div")
+    probe.style.cssText = "position:absolute;visibility:hidden;inline-size:0;block-size:var(--air-group)"
+    document.querySelector("main")?.append(probe)
+    const want = probe.getBoundingClientRect().height
+    probe.remove()
+    const heads = [...document.querySelectorAll("header")].filter((h) => shown(h) && !h.closest("main, dialog, [popover], article, section"))
+    const chrome = heads.length ? Math.max(...heads.map((h) => h.getBoundingClientRect().bottom)) : null
+    const main = document.querySelector("main")
+    if (main && chrome !== null && want > 0) {
+      const first = [...main.querySelectorAll("h1, h2, p, nav, img, picture, video, button, a")].find((e) => shown(e) && !e.closest("dialog, [popover]") && e.getBoundingClientRect().height > 2)
+      if (first) {
+        const gap = first.getBoundingClientRect().top - chrome
+        const picture = /^(IMG|PICTURE|VIDEO)$/.test(first.tagName)
+        if (!(picture && Math.abs(gap) <= 2) && Math.abs(gap - want) > 2) out.pageTop.push(`${name(first)} — ${Math.round(gap)}px от шапки, а верх страницы ${Math.round(want)}px`)
+      }
+    }
+  }
+
+  /* 4a5d · видимый шаг колонки (слово заказчика 21.10.2026: «на странице товара с
+     ритмами беда полная»). В колонке с `data-rhythm` (колонка покупки) просвет между
+     соседними строками меряется ПО КРАСКЕ — от низа слова, кнопки или знака до верха
+     следующих, — и он обязан быть одной из ступеней ритма (±3: край слова — не край буквы): пара (`--sp-2`), строки
+     одной мысли (`--air-line`), строка (`--air-row`), группа (`--air-group`).
+     По файлу шаги были ролями, а глаз видел 14, 23, 27, 28, 10: поле тихой кнопки под
+     палец и полстроки межстрочья на краю блока добавлялись к роли. */
+  {
+    const probe = document.createElement("div")
+    probe.style.cssText = "position:absolute;visibility:hidden;inline-size:0"
+    document.querySelector("main")?.append(probe)
+    const steps = ["--sp-2", "--air-line", "--air-row", "--air-group"].map((v) => { probe.style.blockSize = `var(${v})`; return probe.getBoundingClientRect().height }).filter((x) => x > 0)
+    probe.remove()
+    const paint = (c) => (c.backgroundColor !== "rgba(0, 0, 0, 0)" && c.backgroundColor !== "transparent") || (parseFloat(c.borderTopWidth) > 0 && c.borderTopStyle !== "none" && c.borderTopColor !== "rgba(0, 0, 0, 0)")
+    const boxed = (e) => { const c = getComputedStyle(e); if (c.display === "contents") return false; if (paint(c)) return true; const b = getComputedStyle(e, "::before"); return b.content !== "none" && b.position === "absolute" && paint(b) }
+    const live = (e) => { const c = getComputedStyle(e); if (c.display === "contents") return true; const r = e.getBoundingClientRect(); return r.width > 2 && r.height > 2 && c.visibility !== "hidden" && +c.opacity > 0 }
+    for (const col of document.querySelectorAll("main [data-rhythm]")) {
+      if (!shown(col) || !steps.length) continue
+      const atoms = []
+      const walk = (e) => {
+        for (const n of e.childNodes) {
+          if (n.nodeType === 3) {
+            if (!n.textContent.trim()) continue
+            const r = document.createRange(); r.selectNodeContents(n)
+            const rs = [...r.getClientRects()].filter((b) => b.height > 0)
+            /* Строки за краем своей коробки (описание до трёх строк, `line-clamp`) не видны — их нет. */
+            const box = n.parentElement && getComputedStyle(n.parentElement).overflowY !== "visible" ? n.parentElement.getBoundingClientRect() : null
+            const seen = box ? rs.filter((x) => x.top < box.bottom - 1) : rs
+            if (seen.length) atoms.push({ t: Math.min(...seen.map((x) => x.top)), b: Math.min(box ? box.bottom : Infinity, Math.max(...seen.map((x) => x.bottom))), what: n.textContent.trim().slice(0, 24) })
+          } else if (n.nodeType === 1) {
+            if (!live(n) || n.matches("script, style, template, dialog, [popover], input[type=hidden]")) continue
+            if ((n !== col && boxed(n)) || n.matches("svg, img")) { const b = n.getBoundingClientRect(); atoms.push({ t: b.top, b: b.bottom, what: (n.textContent.trim() || n.getAttribute("aria-label") || n.tagName.toLowerCase()).slice(0, 24) }); continue }
+            walk(n)
+          }
+        }
+      }
+      walk(col)
+      atoms.sort((a, b) => a.t - b.t)
+      const rows = []
+      for (const a of atoms) { const last = rows.at(-1); if (last && a.t < last.b - 1) { last.b = Math.max(last.b, a.b); continue } rows.push({ ...a }) }
+      for (let i = 1; i < rows.length; i++) {
+        const gap = rows[i].t - rows[i - 1].b
+        if (gap <= 3) continue
+        if (!steps.some((s) => Math.abs(gap - s) <= 3)) out.inkStep.push(`«${rows[i - 1].what}» → «${rows[i].what}» — ${Math.round(gap)}px, ступени колонки ${steps.map(Math.round).join(" / ")}`)
       }
     }
   }
@@ -2896,7 +2969,7 @@ const found = { lane: [], heroLane: [], placeholder: [], measure: [], target: []
                 anchor: [], outline: [], marker: [], sticky: [], fold: [], theme: [], coarse: [], calm: [],
                 inkDip: [], markInk: [],
                 covered: [],
-                ladder: [], wideCtrl: [], lopsided: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], lineLong: [], textShort: [], headActs: [],
+                ladder: [], wideCtrl: [], lopsided: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], lineLong: [], textShort: [], headActs: [],
                 twiceLift: [], sheetSize: [],
                 autofill: [], fieldZoom: [], h1Lines: [], twoWays: [], edge: [], fontLate: [], shift: [], ruleAir: [], rowShape: [], railTail: [], tileGrow: [] }
 

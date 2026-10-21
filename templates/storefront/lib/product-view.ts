@@ -62,7 +62,8 @@ export type QuickView = {
 export type Slide = Image & { id: string; show: string }
 /** Галерея готовыми строками: снимки по порядку (первый — главный), плашка
  *  скидки, имена стрелок и ленты. */
-export type GalleryView = { label: string; slides: Slide[]; badge: string | null }
+/** `prev`, `next` — имена стрелок листания кадра (у мыши, Gallery.tsx). */
+export type GalleryView = { label: string; prev: string; next: string; slides: Slide[]; badge: string | null }
 /* Прежняя цена (`WasView`) и скидка (`saleOf`) — одни на полку и карту,
    lib/view.ts. */
 export type { WasView }
@@ -80,7 +81,7 @@ export type ProductPageView = {
   /** Факты доверия в строке протокола (заказчик 21.10.2026: «0.2% и сделано в ЕС
    *  в строку с lab report, иконки для них»): THC ниже предела рынка — по
    *  протоколу партии; происхождение — из данных товара. Нет данных — нет факта. */
-  trust: { icon: 'cannabis' | 'eu-stars'; text: string }[]
+  trust: { icon: 'cannabis-tilt' | 'eu-stars'; text: string }[]
   rating: RatingView | null
   related: ShelfCard[]; relatedTitle: string
   /** Выход ко всей полке товара у «похожих» — та же строка, что у полки
@@ -94,7 +95,7 @@ export type ProductPageView = {
 /** Галерея товара: якоря слайдов, имена ссылок миниатюр, плашка скидки. */
 export function galleryView(lang: Lang, images: Image[], badge: string | null): GalleryView {
   return {
-    label: t(lang, 'gallery.label'), badge,
+    label: t(lang, 'gallery.label'), prev: t(lang, 'rail.prev'), next: t(lang, 'rail.next'), badge,
     slides: images.map((image, i) => ({ ...image, id: `shot-${i + 1}`, show: t(lang, 'gallery.show', { n: i + 1, total: images.length }) })),
   }
 }
@@ -155,7 +156,7 @@ function trustOf(lang: Lang, product: Product, chosen: Product['variants'][numbe
   const report = product.labReports.find((r) => r.batch === chosen?.batch) ?? product.labReports[0] ?? null
   const limit = market().thcLimit
   return [
-    ...(report && report.thcPercent < limit ? [{ icon: 'cannabis' as const, text: t(lang, 'product.thcUnder', { limit: percent(lang, limit, 1) }) }] : []),
+    ...(report && report.thcPercent < limit ? [{ icon: 'cannabis-tilt' as const, text: t(lang, 'product.thcUnder', { limit: percent(lang, limit, 1) }) }] : []),
     ...(product.origin === 'EU' ? [{ icon: 'eu-stars' as const, text: t(lang, 'product.origin.EU') }] : []),
   ]
 }

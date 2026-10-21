@@ -55,23 +55,6 @@ import { SiteLink } from './SiteLink.tsx'
 const ENTER = 120
 const LEAVE = 220
 
-/** Грани полки — группы с именем и значениями-фишками: в шторке под строкой
- *  полки и в панели подменю строки. Ссылка фишки ведёт в полку с фильтром. */
-function Facets({ groups, id }: { groups: NavGroup[]; id: string }) {
-  return (
-    <>
-      {groups.map((g, k) => (
-        <div key={g.name} className={s.sheetGroup}>
-          <p className={s.groupName} id={`${id}-${k}`}>{g.name}</p>
-          <ul className={`${p.cluster} ${s.pills}`} aria-labelledby={`${id}-${k}`}>
-            {g.links.map((x) => <li key={x.href}><SiteLink className={p.chip} data-pill="" href={x.href}><span className={s.pillName}>{x.label}</span></SiteLink></li>)}
-          </ul>
-        </div>
-      ))}
-    </>
-  )
-}
-
 /** Те же грани строками, без фишек — в панели подменю строки (образец
  *  меню cbdin.bg: «По концентрация» и значения столбиком). Одна грань —
  *  столбик со своим именем. Строка и подпись группы — меню набора
@@ -115,7 +98,32 @@ export function DropBody({ link, id }: { link: NavLink; id: string }) {
   )
 }
 
-export function NavLinks({ links, className, more, overflow }: { links: NavLink[]; className: string; more: string; overflow?: string }) {
+/** Раскрытие строки в шторке телефона (как у cbdin.bg): под строкой — список
+ *  строк меню (styles/menu.module.css). У «By effect» — эффекты со знаком, у
+ *  масел — грани группами и в конце «смотреть всё» на саму полку. Только
+ *  названия: пояснений в шторке нет (правило cbdin.bg). */
+function Fold({ link, id, all }: { link: NavLink; id: string; all: string }) {
+  const path = usePathname()
+  return link.facets.length ? (
+    <>
+      <FacetList groups={link.facets} id={id} />
+      <div className={s.sheetGroup}><ul className={m.list}><li><SiteLink className={b.row} href={link.href}><span className={s.name}>{all}</span></SiteLink></li></ul></div>
+    </>
+  ) : (
+    <ul className={m.list}>
+      {link.kids.map((k) => (
+        <li key={k.href}>
+          <SiteLink className={b.row} href={k.href} aria-current={k.href === path ? 'true' : undefined}>
+            {k.sign ? <Icon id={k.sign} /> : null}
+            <span className={s.name}>{k.label}</span>
+          </SiteLink>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+export function NavLinks({ links, className, more, overflow, all = '' }: { links: NavLink[]; className: string; more: string; overflow?: string; all?: string }) {
   const path = usePathname()
   const [open, setOpen] = useState<string | null>(null)
   const [cut, setCut] = useState<number | null>(null)
@@ -189,11 +197,11 @@ export function NavLinks({ links, className, more, overflow }: { links: NavLink[
             </SiteLink>
             {l.menu ? (
               <>
-                <button className={`${b.btn} ${s.params}`} data-voice="bare" data-pager="" type="button" aria-expanded={shown} aria-controls={id} aria-label={more.replace('{name}', l.label)} onClick={() => setOpen(shown ? null : l.href)}>
+                <button className={`${b.btn} ${s.params}`} data-voice="bare" data-pager="" type="button" aria-expanded={shown} aria-controls={id} aria-label={l.facets.length ? more.replace('{name}', l.label) : l.label} onClick={() => setOpen(shown ? null : l.href)}>
                   <Turn />
                 </button>
                 <div className={s.paramsPanel} id={id} hidden={!shown}>
-                  <Facets groups={l.facets} id={id} />
+                  <Fold link={l} id={id} all={all} />
                 </div>
               </>
             ) : null}

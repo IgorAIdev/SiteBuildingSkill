@@ -351,6 +351,10 @@
   /* Кабинет — в шторку меню, строкой «моё» (И771): на 360 между знаком и
      знаками остаётся 48, пятый знак (48 и просвет) лёг бы на знак. */
   .contact,.account{display:none}
+  /* Знак дизайн-системы — инструмент владельца, не покупателя: на узкой коробке
+     его нет (слово заказчика 21.10.2026: «в мобильной версии не нужно иконку
+     дизайн системы показывать» — на 390 знаки налезали на логотип). */
+  .design{display:none}
   .topRow{grid-template-columns:var(--ctrl-target) minmax(0,1fr) var(--ctrl-target);gap:var(--sp-1)}
   .promo{grid-column:2;justify-self:center}
   /* look-header:classic,search,tray,nested,step,capsule:start */
@@ -367,6 +371,11 @@
   .util{justify-content:center} /* look-header:tray,nested,step */
   .head[data-variant='tray'] .row{margin-block-start:0} /* look-header:tray */
   .shop{display:inline-flex} /* look-header:boutique */
+  /* Узко знак магазина — сразу за бургером, у начального края, знаки действий — у конечного
+     (слово владельца 21.10.2026 с телефона: «логотип сделай левее, к бургер-меню»; так же у
+     «tray», 14.10.2026): центр строки на 390 оставлял по 60 пустоты по бокам знака. */
+  .head[data-variant='boutique'] .bar{grid-template-columns:auto auto minmax(0, 1fr)} /* look-header:boutique */
+  .head[data-variant='boutique'] .logo{justify-self:start} /* look-header:boutique */
   .shelfRow{border:0;padding:0} /* look-header:search,boutique */
   /* look-header:search:start */
   /* Поле поиска «search» — своей строкой во всю ширину под строкой знака. */
@@ -409,7 +418,13 @@
    (`> li > a`): пилюли граней под строкой — фишки, у них своя одежда, и
    `.links a` давал им рост и поле строки (56 вместо 44). */
 .nav:is(:popover-open, [data-leaving]) .links{flex-direction:column;align-items:stretch;gap:var(--sp-1);overflow:visible;margin-block:0;padding-block:0}
-.nav:is(:popover-open, [data-leaving]) .links > li > a{display:flex;min-block-size:var(--ctrl-h-lg);padding:var(--sp-2) var(--pad-inner);border-radius:var(--r-ctrl);font-size:var(--menu-size);text-decoration-line:none}
+/* Строка полки — тем же ростом и полем, что строка меню набора под ней
+   (styles/menu.module.css, `.list`: цель пальца `--ctrl-target`, поле строки,
+   шаг `--sp-1`): полки стояли ростом крупного органа (56, шаг 60), а служебные
+   ссылки той же шторки — 44, шаг 48, и строки поиска — своим; заказчик
+   21.10.2026: «проверь ритмы… между пунктами меню». Одна строка меню — один
+   шаг во всех списках. */
+.nav:is(:popover-open, [data-leaving]) .links > li > a{display:flex;align-items:center;min-block-size:var(--ctrl-target);padding:0 var(--pad-inner);border-radius:var(--r-ctrl);font-size:var(--menu-size);text-decoration-line:none}
 /* Знак полки — тот же, что у кнопки категории (И753): снимков в меню нет
    (слово заказчика 05.10.2026: «само меню убирай изображения, иконки
    категорий можно использовать»). Ростом с букву, приглушённый, как знак
@@ -422,7 +437,7 @@
    строчными — «oil», «capsules»). Данные не трогаем, пишем экраном: первая
    буква, а не каждое слово — «All products» не станет «All Products». Имя —
    элемент внутри ссылки-флекса: у флекса своей первой буквы нет. */
-.name::first-letter,.pillName::first-letter{text-transform:uppercase}
+.name::first-letter{text-transform:uppercase}
 /* Текущая страница в шторке выделена (И716, поправка 05.10.2026; слово
    заказчика со снимком меню cbdin.bg: «логику делай такую, текущая страница
    выделена»): строка — плашкой тихой марки `--pop-tint`, слово — марочным
@@ -454,19 +469,10 @@
 .sheetTools{--seg-h:var(--ctrl-face);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;column-gap:0;row-gap:var(--gap-row)}
 .sheetSigns{--sign-box:var(--ctrl-h-sm);display:flex;align-items:center;margin-inline-start:calc(var(--pad-inner) + var(--icon-size) / 2 - var(--sign-box) / 2)}
 .sheetTools .glyph{min-block-size:var(--sign-box);min-inline-size:var(--sign-box)}
-/* Грани полки в шторке — пилюлями под её строкой (меню телефона cbdin.bg,
-   И478; слово заказчика 05.10.2026: «пилюлями как на скрине 1»): полки
-   остаются строками — там выбирают место; пилюли — значения, по которым
-   выбирают. Пилюля круглая (`data-pill`), как у образца. Групп всего
-   каталога под полками нет — повторяли грани масел (И430). Подпись группы —
-   ростом тела, полужирная: рядом с пилюлями она не тонет. */
-.sheetGroup{display:flex;flex-direction:column;gap:var(--sp-2)}
-.groupName{font-size:var(--menu-size);font-weight:var(--h3-weight);color:var(--ink)}
-.pills{--cluster:var(--gap-targets);list-style:none;padding:0;margin:0}
-/* Пилюля повода в шторке — пункт меню, и кегль у неё тела, а не органа
-   (`check:design`, `navSmall`: меню не мельче тела; И286). Фишка набора
-   набрана ступенью органа — у фильтра она примечание, здесь — меню. */
-.pills a{font-size:var(--menu-size)}
+/* Группа граней в раскрытии (FacetList): подпись группы меню набора и её строки.
+   Пилюль в шторке больше нет — раскрытие списком строк, как у cbdin.bg (слово
+   заказчика 21.10.2026). */
+.sheetGroup{display:flex;flex-direction:column;gap:var(--sp-1)}
 /* Общие параметры полки (NavLinks, И478): раскрытие — только в шторке; в
    строке шапки полки остаются ссылками. Строка с параметрами — ссылка и
    раскрытие рядом, под ними — панель граней во всю строку. Стрелка
@@ -508,9 +514,17 @@
 .nav:is(:popover-open, [data-leaving]) .links li[data-params]{display:grid;grid-template-columns:minmax(0, 1fr) auto;align-items:center;column-gap:var(--gap-row)}
 .nav:is(:popover-open, [data-leaving]) .params{display:inline-flex;--btn-h:var(--ctrl-target)}
 .nav:is(:popover-open, [data-leaving]) .paramsPanel:not([hidden]){
-  display:flex;flex-direction:column;gap:var(--air-row);grid-column:1 / -1;
-  padding:var(--sp-2) var(--pad-inner) var(--pad-inner)
+  /* Раскрытие — строки меню под строкой полки, сдвинутые на знак строки: слово
+     подстроки стоит под словом полки (как у cbdin.bg). Шаг — шаг строк меню. */
+  display:flex;flex-direction:column;gap:var(--sp-1);grid-column:1 / -1;
+  --menu-inset:0
 }
+/* Группы граней и «View all» — под словом пункта (как у cbdin.bg): подпись группы и «View
+   all» на линии слова «CBD oil», значения — ступенью глубже (`menu.module.css`, строки под
+   подписью). Было: подписи на 12, значения на 20, «View all» на 44 — три отступа в одном
+   раскрытии (слово заказчика 21.10.2026 со снимком). Эффекты со знаком строк — без сдвига:
+   знак под знаком пункта, слово под словом. */
+.nav:is(:popover-open, [data-leaving]) .paramsPanel .sheetGroup{padding-inline-start:calc(var(--icon-size) + var(--gap-row))}
 
 
 

@@ -47,7 +47,8 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
         <div className={`${p.pinned} ${p.bias} ${s.pin}`}>
           <Gallery view={view.gallery} save={{ id: view.id, ...view.save }} />
         </div>
-        <div className={`${p.stack} ${s.offer}`}>
+        {/* `data-rhythm` — видимые просветы колонки меряет check:craft (`inkStep`): только ступени ритма. */}
+        <div className={`${p.stack} ${s.offer}`} data-rhythm="">
           <div className={s.identity}>
             {/* Сердце «в избранное» стоит не у имени, а квадратной кнопкой в строке покупки — рядом с «В корзину» и «Быстрым заказом» (слово заказчика 02.10.2026). */}
             <div className={s.title}>
@@ -72,7 +73,7 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
                   <div className={s.proofRow}>
                     {view.rating ? <Rating rating={view.rating} /> : null}
                     {view.lab ? <button className={b.btn} data-voice="bare" data-size="sm" type="button" popoverTarget="lab-report"><Icon id="flask" />{view.lab.chip}</button> : null}
-                    {view.trust.map((x) => <span key={x.icon} className={b.btn} data-voice="bare" data-size="sm" data-static><Icon id={x.icon} />{x.text}</span>)}
+                    {view.trust.map((x) => <span key={x.icon} className={b.btn} data-voice="bare" data-size="sm" data-hang="block" data-static><Icon id={x.icon} />{x.text}</span>)}
                   </div>
                 ) : null}
               </div>

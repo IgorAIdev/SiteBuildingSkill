@@ -38,6 +38,16 @@
 .save{position:absolute;z-index:1;inset-block-start:var(--sp-2);inset-inline-end:var(--sp-2)}
 @container style(--save-look: bare){ .save{inset-block-start:var(--pad-inner);inset-inline-end:var(--pad-inner)} }
 
+/* Стрелки листания кадра (Gallery.tsx): по краям кадра посередине высоты, полем
+   сердца (`--sp-2`). Только у мыши и в две колонки: палец листает свайпом, а в
+   одну колонку кадр — лента под пальцем с точками. */
+.gallery .step{display:none;position:absolute;z-index:1;inset-block-start:calc(50% - var(--btn-h) / 2)}
+.gallery .step[data-side='back']{inset-inline-start:var(--sp-2)}
+.gallery .step[data-side='next']{inset-inline-end:var(--sp-2)}
+@media (hover:hover) and (pointer:fine){
+  @container pdp (min-width:820px){ .gallery .step{display:inline-flex} }
+}
+
 /* Ряд миниатюр: четыре во всю ширину кадра; больше четырёх — ряд
    листается вбок, а не сжимает миниатюры. */
 .thumbs{
