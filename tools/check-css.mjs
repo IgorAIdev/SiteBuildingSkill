@@ -2131,6 +2131,23 @@ for (const path of files) {
    выдвижная панель 200–500. Дольше — это уже не отклик, а ожидание. */
 const LAYOUT_PROPS = /(?:^|[\s,])(width|height|top|left|right|bottom|margin|padding|inset|block-size|inline-size|font-size|border-width)[a-z-]*(?=[\s,]|$)/
 
+/* Знак в сжимаемой кнопке (21.10.2026): нажатие сжимает кнопку
+   (`--press-shrink` меньше 1), а штрих знака не масштабируется
+   (`vector-effect`, styles/icons.svg) — без своего слоя браузер перерисовывал
+   знак отдельно, на кадр позже, и корзинка на «Add to cart» скакала (заказчик:
+   «кнопка и корзинка уменьшаются не одновременно»). Сжатие есть — должно быть и
+   правило слоя у кнопки со знаком: `.press:has(svg){will-change:transform}`. */
+{
+  const all = files.map((f) => [f, readFileSync(f, 'utf8')])
+  /* Самое сильное сжатие из объявленных: `1` у «меньше движения» (base.css) — не довод. */
+  const shrink = Math.min(...all.flatMap(([, css]) => [...css.matchAll(/--press-shrink\s*:\s*([\d.]+)/g)].map((m) => Number(m[1]))))
+  const layered = all.some(([, css]) => /\.press:has\(svg\)\s*\{[^}]*will-change\s*:\s*transform/.test(css))
+  if (shrink < 1 && !layered) {
+    const [f] = all.find(([, css]) => [...css.matchAll(/--press-shrink\s*:\s*([\d.]+)/g)].some((m) => Number(m[1]) === shrink)) ?? all[0]
+    found.signLags.push(`${relative(ROOT, f)}  нажатие сжимает (--press-shrink ${shrink}), а у кнопки со знаком нет слоя: .press:has(svg){will-change:transform} (btn.module.css)`)
+  }
+}
+
 for (const file of files) {
   /* Комментарии вырезаются, но длину сохраняем: номера строк считаются по
      смещению, и если текст просто убрать, все они уедут. Пробел вместо

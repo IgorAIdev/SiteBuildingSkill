@@ -31,6 +31,7 @@ export const CSS_FAMILIES = [
   'msLiteral', 'motionOut', 'stateOut',
   'dressClass', 'stateClass', 'dressGrown', 'varMissing',
   'colorOut', 'knobTie', 'placeTie', 'captionRole', 'handOut', 'rowShape', 'turnFlip', 'fingerTwin', 'paneFill', 'stateWeight',
+  'signLags',
 ]
 
 /** Пустая база: ноль по каждой семье. На новом проекте долга нет, и первое
@@ -70,6 +71,7 @@ export const CSS_LABELS = {
   colLadder: 'лестница колонок на медиазапросах вместо auto-fit (правило 5)',
   proseCols: 'сплошной абзац разрезан на колонки — читается сверху вниз один раз',
   twiceDrawn: 'контрол нарисован дважды: знак и его ответ живут в одном месте (правило 10)',
+  signLags: 'нажатие сжимает кнопку, а знак в ней рисуется отдельно: без своего слоя (`will-change`) знак отстаёт на кадр и скачет',
   deadEffect: 'строка, которая молча не работает: vector-effect на самом svg (писать «svg *»); фрагмент знака в маске, которого нет в листе, или знак, выбранный переменной и вырезанный маской (И630)',
   tapGrows: 'запас под палец вырос коробкой — орган поднял всё, что стоит с ним в строке',
   dressLayout: 'вид предмета пишет свою раскладку — одна и та же, но у каждого вида своя копия',
