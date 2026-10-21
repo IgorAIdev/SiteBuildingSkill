@@ -6,7 +6,7 @@ import { t } from '@/lib/i18n/index.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { shellData } from '@/lib/shell.ts'
 import { HEADERS, type HeaderVariant } from '@/lib/headers.ts'
-import { reachRows, supportHref, SUPPORT } from '@/lib/contacts.ts'
+import { reachRows, supportHref, shopSupport } from '@/lib/contacts.ts'
 import { subscribe } from '@/lib/actions/subscribe.ts'
 import { CheckoutHeader, Header } from '@/components/Header.tsx'
 import { Footer } from '@/components/Footer.tsx'
@@ -164,7 +164,7 @@ export async function SiteFrame({ lang }: { lang: Lang }) {
           </li>
           <li className={s.sample}>
             <h3>В окне помощи</h3>
-            <div className={`${p.menu} ${s.paper}`} data-wide><ReachList rows={rows} lead={{ role: t(lang, 'reach.online'), name: SUPPORT.name, href: supportHref() }} /></div>
+            <div className={`${p.menu} ${s.paper}`} data-wide><ReachList rows={rows} lead={{ role: t(lang, 'reach.online'), name: shopSupport().name, href: supportHref() }} /></div>
           </li>
         </ul>
       </Part>

@@ -5,10 +5,10 @@ import type { Lang } from '@/lib/locale.ts'
 import type { Doc } from '@/lib/source/contract.ts'
 import { isKey, t } from '@/lib/i18n/index.ts'
 import { hrefFor } from '@/lib/href.ts'
-import { COMPANY, ANPC_SAL_BADGE, ANPC_SAL_URL, ANPC_URL, TERMS_DOC } from '@/lib/company.ts'
+import { shopCompany, complaintsBadge, complaintsUrl, authorityUrl, termsDoc } from '@/lib/company.ts'
 import { hasOptional } from '@/lib/consent-view.ts'
 import { ConsentOpen } from './ConsentOpen.tsx'
-import { CONTACTS, MESSENGERS, SOCIALS, chatHref, telHref, mailHref } from '@/lib/contacts.ts'
+import { shopContacts, shopMessengers, shopSocials, chatHref, telHref, mailHref } from '@/lib/contacts.ts'
 import { Icon } from './Icon.tsx'
 import { SIGN } from './marks.ts'
 import { Logo } from './Logo.tsx'
@@ -23,7 +23,7 @@ import { SiteLink } from './SiteLink.tsx'
    порядок списка; документа нет у магазина — нет ссылки. */
 const HELP = ['livrare-si-plata', 'retur', 'garantie', 'contact']
 const ABOUT = ['despre-noi', 'analize-de-laborator']
-const LEGAL = [TERMS_DOC, 'confidentialitate', 'cookie-uri', 'accesibilitate']
+const LEGAL = [termsDoc(), 'confidentialitate', 'cookie-uri', 'accesibilitate']
 /* Год строки прав — год сборки страницы, не отрисовки: страницы статичны. */
 const YEAR = new Date().getFullYear()
 
@@ -48,6 +48,7 @@ const YEAR = new Date().getFullYear()
 /* `idPrefix` — приставка к id подписей столбцов: второй подвал на странице
    (образец в дизайн-системе) не повторяет id первого. На сайте — пусто. */
 export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; docs: Doc[]; shelves: { href: string; label: string }[]; idPrefix?: string }) {
+  const authority = authorityUrl(), complaints = complaintsUrl(), badge = complaintsBadge(), company = shopCompany()
   /* Документ в подвале — коротким общепринятым именем по адресу (И760; заказчик
      05.10.2026: «сокращай названия до коротких общепринятых»): полное название —
      заголовок его страницы; документа без короткого имени — по заголовку. */
@@ -59,7 +60,7 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
      (`withdraw.button`, «Retrageți-vă din contract aici»): у одной функции одна
      надпись, однозначная по ст. 11a (И791). */
   const withdrawLink = <li key="withdraw"><SiteLink className={b.word} href={hrefFor(lang, { withdraw: true })}>{t(lang, 'withdraw.button')}</SiteLink></li>
-  const chats = MESSENGERS.flatMap((m) => { const href = chatHref(m, ''); return href ? [{ key: m.key, label: m.label, href }] : [] })
+  const chats = shopMessengers().flatMap((m) => { const href = chatHref(m, ''); return href ? [{ key: m.key, label: m.label, href }] : [] })
   return (
     <footer className={s.foot} data-print="skip">
       {/* Языка в подвале нет (И484): он в шапке и в меню — там, где его
@@ -80,16 +81,16 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
               что у ссылок рядом (правило 10, И685). Оплата — ниже всех ссылок
               в основании подвала, знаками без плашки (`PayMarks`, И549, И783). */}
           <ul className={`${p.cluster} ${s.social}`} aria-label={t(lang, 'footer.social')}>
-            {SOCIALS.filter((x) => x.href).map((x) => <li key={x.key}><a className={b.btn} data-voice="bare" data-pager="" href={x.href} target="_blank" rel="noopener noreferrer" aria-label={x.label}><Icon id={SIGN[x.key]} /></a></li>)}
+            {shopSocials().filter((x) => x.href).map((x) => <li key={x.key}><a className={b.btn} data-voice="bare" data-pager="" href={x.href} target="_blank" rel="noopener noreferrer" aria-label={x.label}><Icon id={SIGN[x.key]} /></a></li>)}
           </ul>
         </div>
         <div className={`${p.cluster} ${s.cols}`}>
           <div className={s.col}>
             <p className={s.head} id={`${idPrefix}foot-contact`}>{t(lang, 'footer.contact')}</p>
             <ul className={s.list} aria-labelledby={`${idPrefix}foot-contact`}>
-              <li><a className={b.word} href={telHref()}><Icon id="phone" />{CONTACTS.phone}</a></li>
+              <li><a className={b.word} href={telHref()}><Icon id="phone" />{shopContacts().phone}</a></li>
               {/* Почта переносится по «@» (`wbr`): в половине телефона она шире ячейки (И760). */}
-              <li><a className={b.word} href={mailHref()}><Icon id="mail" /><span>{CONTACTS.email.replace(/@.*/, '')}<wbr />{CONTACTS.email.replace(/^[^@]*/, '')}</span></a></li>
+              <li><a className={b.word} href={mailHref()}><Icon id="mail" /><span>{shopContacts().email.replace(/@.*/, '')}<wbr />{shopContacts().email.replace(/^[^@]*/, '')}</span></a></li>
               {chats.map((m) => <li key={m.key}><SiteLink className={b.word} href={m.href} rel="noopener" data-mark={m.key}><Icon id={SIGN[m.key]} />{m.label}</SiteLink></li>)}
             </ul>
           </div>
@@ -115,18 +116,20 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
           <div className={s.base}>
             <PayMarks label={t(lang, 'footer.pay')} />
             <address className={s.seller}>
-              © {YEAR} <span translate="no">{COMPANY.name}</span> · CUI {COMPANY.cui} · {COMPANY.regCom} · {COMPANY.address}
+              © {YEAR} <span translate="no">{company.name}</span> · CUI {company.cui} · {company.regCom} · {company.address}
               {COMPANY_IS_REAL ? null : ` · ${t(lang, 'sample')}`}
             </address>
             <ul className={s.legalLinks}>
               {links(LEGAL)}
               {hasOptional() ? <li><ConsentOpen label={t(lang, 'consent.open')} voice="word" /></li> : null}
-              <li><SiteLink className={b.word} href={ANPC_URL} rel="noopener">{t(lang, 'footer.anpcHome')}</SiteLink></li>
-              {ANPC_SAL_BADGE.src ? null : <li><a className={b.word} href={ANPC_SAL_URL} rel="noopener">{t(lang, 'footer.anpc')}</a></li>}
+              {/* Орган защиты потребителей и платформа жалоб — у рынка сайта
+                  (lib/shop-data.ts, `consumer`); рынок без них — строк нет. */}
+              {authority ? <li><SiteLink className={b.word} href={authority} rel="noopener">{t(lang, 'footer.anpcHome')}</SiteLink></li> : null}
+              {complaints && !badge.src ? <li><a className={b.word} href={complaints} rel="noopener">{t(lang, 'footer.anpc')}</a></li> : null}
             </ul>
             {/* Знак SAL — официальная картинка без изменений (приказ 270/2026): своей
                 краски, угла и рамки у знака нет, размер — его данные. */}
-            {ANPC_SAL_BADGE.src ? <a className={s.sal} href={ANPC_SAL_URL} rel="noopener"><img src={ANPC_SAL_BADGE.src} width={ANPC_SAL_BADGE.width} height={ANPC_SAL_BADGE.height} alt={t(lang, 'footer.salAlt')} loading="lazy" decoding="async" /></a> : null}
+            {complaints && badge.src ? <a className={s.sal} href={complaints} rel="noopener"><img src={badge.src} width={badge.width} height={badge.height} alt={t(lang, 'footer.salAlt')} loading="lazy" decoding="async" /></a> : null}
           </div>
           <p className={s.notice}>{t(lang, 'footer.disclaimer')}</p>
         </div>

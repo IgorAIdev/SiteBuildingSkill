@@ -1,5 +1,5 @@
 import s from './Logo.module.css'
-import { BRAND } from '@/lib/company.ts'
+import { shopBrand } from '@/lib/company.ts'
 
 /* Знак магазина — один на сайт: шапка и подвал берут его отсюда (правило
    10). Четыре варианта в разметке, виден один — вид `--logo` из панели
@@ -12,7 +12,7 @@ import { BRAND } from '@/lib/company.ts'
      leaf   точка над «i» — лист конопли краской марки (3).
    Скрытые варианты — `display:none`: вслух читается только видимый. */
 export function Logo() {
-  const { head, tail, country } = BRAND
+  const { head, tail, country } = shopBrand()
   const low = `${head}${tail}`.toLowerCase()
   const at = low.indexOf('i')
   const end = <span className={s.end}>.{country.toLowerCase()}</span>

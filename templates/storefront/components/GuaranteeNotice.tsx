@@ -2,7 +2,7 @@ import b from '@/styles/btn.module.css'
 import pn from '@/styles/pane.module.css'
 import s from './GuaranteeNotice.module.css'
 import type { Lang } from '@/lib/locale.ts'
-import { EU_GUARANTEE_NOTICE } from '@/lib/company.ts'
+import { euGuaranteeNotice } from '@/lib/company.ts'
 import { t } from '@/lib/i18n/index.ts'
 import { PaneHead } from './PaneHead.tsx'
 
@@ -14,11 +14,11 @@ import { PaneHead } from './PaneHead.tsx'
    местах). Окно — немодальное (`popover`, правило 8): посмотреть и закрыть,
    решения в нём нет; роль `dialog` — имя окна (у безымянного `div` имя не
    читается); тройка окна и шапка — общие (PaneHead). Файла нет
-   (`EU_GUARANTEE_NOTICE`, lib/company.ts; кладёт человек с EUR-Lex) — не
+   (`euGuaranteeNotice`, lib/shop-data.ts; кладёт человек с EUR-Lex) — не
    рисуется ничего, и раздела о нём на странице гарантии тоже нет
    (lib/doc-view.ts, `notice`): своё «подобие» знака ЕС уведомлением не является. */
 export function GuaranteeNotice({ lang, inline = false, id = 'eu-guarantee' }: { lang: Lang; inline?: boolean; id?: string }) {
-  const file = EU_GUARANTEE_NOTICE[lang]
+  const file = euGuaranteeNotice(lang)
   if (!file) return null
   const shot = <img className={s.shot} src={file.src} width={file.width} height={file.height} alt={t(lang, 'guarantee.alt')} loading="lazy" decoding="async" />
   if (inline) return <figure>{shot}</figure>

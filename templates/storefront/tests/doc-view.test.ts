@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { badLinks, docView, fill, runsOf, TOC_MIN, unknownMarks } from '../lib/doc-view.ts'
-import { COMPANY } from '../lib/company.ts'
+import { shopCompany } from '../lib/company.ts'
 import { DOC_SLOTS } from '../lib/source/contract.ts'
 import { sampleContent } from '../lib/source/sample/content.ts'
 import { LOCALES } from '../lib/locale.ts'
@@ -72,7 +72,7 @@ test('the Romanian shop has its mandatory documents and the withdrawal button', 
 })
 
 test('marks are filled from the shop data, links become hrefs, long documents get a table of contents', () => {
-  assert.equal(fill('{company.name}, CUI {company.cui}'), `${COMPANY.name}, CUI ${COMPANY.cui}`)
+  assert.equal(fill('{company.name}, CUI {company.cui}'), `${shopCompany().name}, CUI ${shopCompany().cui}`)
   assert.deepEqual(runsOf('ro', 'Vezi [retur](doc:retur) sau [ANPC](https://reclamatiisal.anpc.ro).'), [
     { text: 'Vezi ' }, { text: 'retur', href: '/ro/info/retur', external: false }, { text: ' sau ' },
     { text: 'ANPC', href: 'https://reclamatiisal.anpc.ro', external: true }, { text: '.' },

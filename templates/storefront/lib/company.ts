@@ -1,56 +1,30 @@
 import type { Lang } from './locale.ts'
+import { siteNow } from './site-now.ts'
+import { DEFAULT_SHOP, SHOPS, type Pay, type Picture, type ShopData } from './shop-data.ts'
 
-/* Реквизиты — образец (COMPANY_IS_REAL = false в lib/flags.ts): настоящие
-   даёт заказчик. На витрине румынского рынка обязательны ссылка на ANPC и SAL
-   (приказ 270/2026); SOL — нет: платформа ЕС закрыта 20.07.2025. */
+/* Данные магазина сайта запроса (lib/shop-data.ts): у каждого сайта свои —
+   имя для знака, реквизиты, оплата, документы, органы защиты потребителей
+   рынка. Читает только сервер: сайт запроса знает он (lib/site-now.ts). */
+export type { Pay }
+export const shop = (): ShopData => SHOPS[siteNow().id] ?? DEFAULT_SHOP
+
 /* Имя магазина для знака (components/Logo.tsx): голова, хвост и страна —
    данные магазина, знак только ставит их по варианту вида. */
-export const BRAND = { head: 'CBD', tail: 'in', country: 'RO' }
-
-export const COMPANY = {
-  name: 'SC Exemplu Cânepă SRL',
-  cui: 'RO00000000',
-  regCom: 'J00/0000/2026',
-  address: 'Str. Exemplu 1, București',
-}
-/* SAL ANPC — платформа жалоб приказа ANPC 270/2026 (в силе с 19.05.2026), в
-   подвале — пиктограммой 250 × 50; ссылка на ANPC (anpc.ro) — приказ 72/2010 в
-   ред. 505/2026, с 04.09.2026;
-   платформы ЕС (ODR/SOL) больше нет — закрыта 20.07.2025 (Регламент (ЕС)
-   2024/3228), ссылка и пиктограмма SOL сняты. */
-export const ANPC_SAL_URL = 'https://reclamatiisal.anpc.ro/'
-/** Пиктограмма SAL — официальная картинка ANPC без изменений, 250 × 50 (приказ
- *  270/2026, И791). Файл кладёт человек руками (сайт ANPC за проверкой на бота):
- *  `public/legal/anpc-sal.png`; пока файла нет — `src: null`, и подвал ставит
- *  текстовую ссылку на SAL. Размер — данные знака, а не вид. */
-export const ANPC_SAL_BADGE: { src: string | null; width: number; height: number } = { src: null, width: 250, height: 50 }
-/** ANPC — орган защиты потребителей: ссылкой «ANPC» в ряду закона подвала на
- *  всех страницах, значит и на главной (приказ 72/2010 в ред. 505/2026). */
-export const ANPC_URL = 'https://anpc.ro/'
-/** Уведомление ЕС о законной гарантии (Имплементационный регламент (ЕС)
- *  2025/1960, Приложение I; с 27.09.2026) — картинкой ЕС без изменений на языке
- *  страницы, с EUR-Lex (повторное использование — Решение 2011/833/ЕС). Файлы
- *  кладёт человек: `public/legal/eu-guarantee-<язык>.png`; пока файла нет —
- *  `null`, и не рисуется ничего (своё «подобие» знака ЕС — не уведомление). */
-export const EU_GUARANTEE_NOTICE: Record<Lang, { src: string; width: number; height: number } | null> = { ro: null, en: null, hu: null }
-
-/* Условия магазина — документ с этим адресом: на него ссылаются подвал и
-   последний шаг оформления (заказ принимается по этим условиям). */
-export const TERMS_DOC = 'termeni'
-/* Как магазин обращается с данными — документ с этим адресом: на него
-   ссылается форма создания кабинета (И771). */
-export const PRIVACY_DOC = 'confidentialitate'
-/* Политика cookie — документ с этим адресом: на него ссылается полоса согласия
-   (И791). */
-export const COOKIE_DOC = 'cookie-uri'
-
-/* Чем магазин принимает оплату — знаки в подвале (слово заказчика
-   29.09.2026, И549). Данные магазина, а не вид: список ставит заказчик по
-   договору с банком; образец — четыре частых в Румынии. Имя — для чтеца. */
-export type Pay = 'visa' | 'mastercard' | 'applepay' | 'googlepay'
-export const PAYMENTS: readonly { key: Pay; label: string }[] = [
-  { key: 'visa', label: 'Visa' },
-  { key: 'mastercard', label: 'Mastercard' },
-  { key: 'applepay', label: 'Apple Pay' },
-  { key: 'googlepay', label: 'Google Pay' },
-]
+export const shopBrand = () => shop().brand
+export const shopCompany = () => shop().company
+/** Ссылка на орган защиты потребителей — в ряду закона подвала; у рынка без
+ *  такого требования — null. */
+export const authorityUrl = (): string | null => shop().consumer?.authorityUrl ?? null
+/** Платформа жалоб рынка (SAL ANPC в Румынии) и её пиктограмма. */
+export const complaintsUrl = (): string | null => shop().consumer?.complaintsUrl ?? null
+export const complaintsBadge = (): { src: string | null; width: number; height: number } => shop().consumer?.complaintsBadge ?? { src: null, width: 250, height: 50 }
+/** Уведомление ЕС о законной гарантии на языке страницы; файла нет — null. */
+export const euGuaranteeNotice = (lang: Lang): Picture | null => shop().euGuarantee[lang] ?? null
+/* Условия магазина — на них ссылаются подвал и последний шаг оформления. */
+export const termsDoc = () => shop().docs.terms
+/* Как магазин обращается с данными — на них ссылается форма кабинета (И771). */
+export const privacyDoc = () => shop().docs.privacy
+/* Политика cookie — на неё ссылается полоса согласия (И791). */
+export const cookieDoc = () => shop().docs.cookies
+/* Чем магазин принимает оплату — знаки в подвале (И549). */
+export const shopPayments = () => shop().payments

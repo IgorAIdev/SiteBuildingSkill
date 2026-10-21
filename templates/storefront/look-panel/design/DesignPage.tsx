@@ -25,7 +25,7 @@ import { mainShelves } from '@/lib/main-shelves.ts'
 import { shelvesView } from '@/lib/shelves-view.ts'
 import { KeyFacts } from '@/components/KeyFacts.tsx'
 import { Pledges } from '@/components/Pledges.tsx'
-import { MESSENGERS } from '@/lib/contacts.ts'
+import { shopMessengers } from '@/lib/contacts.ts'
 import { ThemeToggle } from '@/components/ThemeToggle.tsx'
 import { Probe } from './Probe.tsx'
 import { PaletteStudio } from './PaletteStudio.tsx'
@@ -288,7 +288,7 @@ function Color({ lang }: { lang: Lang }) {
 const LOGOS: [string, string[]][] = [['viber', ['viber']], ['whatsapp', ['whatsapp']], ['telegram', ['telegram']], ['instagram', ['instagram', 'instagram-line']],
   ['facebook', ['facebook', 'facebook-square', 'facebook-line']], ['messenger', ['messenger']], ['youtube', ['youtube', 'youtube-line']], ['gmail', ['gmail']]]
 const TINTS: Record<string, { role: string; fill?: true }[]> = {
-  ...Object.fromEntries(MESSENGERS.map((m) => [SIGN[m.key], [{ role: `--mark-${m.key}` }]])),
+  ...Object.fromEntries(shopMessengers().map((m) => [SIGN[m.key], [{ role: `--mark-${m.key}` }]])),
   /* Логотип в цвете своей компании — у каждого, чья краска есть в палитре
      (MARKS, tools/palette.mjs; И628), а не только у знаков меню связи. */
   ...Object.fromEntries(LOGOS.flatMap(([role, ids]) => ids.map((id) => [id, [{ role: `--mark-${role}` }]]))),
@@ -297,7 +297,7 @@ const TINTS: Record<string, { role: string; fill?: true }[]> = {
 }
 /** Подпись окрашенной плитки — чьей краской знак стоит на сайте (И625). */
 const TINT_NAME: Record<string, string> = {
-  ...Object.fromEntries(MESSENGERS.map((m) => [`--mark-${m.key}`, `краской ${m.label}`])),
+  ...Object.fromEntries(shopMessengers().map((m) => [`--mark-${m.key}`, `краской ${m.label}`])),
   '--mark-facebook': 'краской Facebook', '--mark-messenger': 'краской Messenger', '--mark-youtube': 'краской YouTube', '--mark-gmail': 'краской Gmail',
   '--star': 'звёзды отзывов', '--pop': 'в избранном, на сайте',
 }

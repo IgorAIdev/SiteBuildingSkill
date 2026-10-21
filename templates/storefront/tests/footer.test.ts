@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { existsSync, readFileSync } from 'node:fs'
 import { isKey, t } from '../lib/i18n/index.ts'
 import { LOCALES } from '../lib/locale.ts'
-import { ANPC_SAL_BADGE, ANPC_SAL_URL, ANPC_URL } from '../lib/company.ts'
+import { complaintsBadge, complaintsUrl, authorityUrl } from '../lib/company.ts'
 
 /* Подвал телефона (И760): документы — короткими общепринятыми именами, четыре
    столбца — двумя рядами по два, шаг строк ровный при переносе. Заказчик
@@ -12,7 +12,7 @@ import { ANPC_SAL_BADGE, ANPC_SAL_URL, ANPC_URL } from '../lib/company.ts'
 const read = (path: string) => readFileSync(new URL(path, import.meta.url), 'utf8')
 const footer = read('../components/Footer.tsx')
 const css = read('../components/Footer.module.css')
-const slugs = (name: string) => footer.split(`const ${name} = [`)[1].split(']')[0].split(',').map((x) => x.trim().replace(/'/g, '')).map((x) => (x === 'TERMS_DOC' ? 'termeni' : x))
+const slugs = (name: string) => footer.split(`const ${name} = [`)[1].split(']')[0].split(',').map((x) => x.trim().replace(/'/g, '')).map((x) => (x === 'termsDoc()' ? 'termeni' : x))
 
 test('every footer document has a short name in every language, shorter than its title', () => {
   for (const slug of [...slugs('HELP'), ...slugs('ABOUT'), ...slugs('LEGAL')]) {
@@ -39,7 +39,8 @@ test('the checkout page has no footer; the order step still links the terms', ()
   assert.match(read('../components/Shell.tsx'), /chrome === 'checkout' \? null : <Footer /)
   assert.doesNotMatch(css, /\.legal\{|\.legalRow/)
   assert.match(read('../components/PaymentForm.tsx'), /view\.terms\.link\.href/)
-  assert.match(footer, /\{COMPANY\.name\}<\/span> · CUI \{COMPANY\.cui\}/)
+  assert.match(footer, /\{company\.name\}<\/span> · CUI \{company\.cui\}/)
+  assert.match(footer, /company = shopCompany\(\)/, 'реквизиты — сайта запроса (lib/shop-data.ts)')
 })
 
 /* Знаки оплаты — без пилюль (И783): знак не нажимают, плашка обещала бы действие. Один компонент на
@@ -67,13 +68,15 @@ test('a footer link keeps its air when its name wraps', () => {
    же надписью, что кнопка на странице возврата (ст. 11a Директивы 2011/83): одна надпись
    на функцию. «Setări cookie» — только у магазина с необязательными cookie. */
 test('the legal row links ANPC and SAL, has no EU ODR, and the withdrawal function keeps one label', () => {
-  assert.equal(ANPC_URL, 'https://anpc.ro/')
-  assert.equal(ANPC_SAL_URL, 'https://reclamatiisal.anpc.ro/')
-  assert.match(footer, /<(?:a|SiteLink) className=\{b\.word\} href=\{ANPC_URL\} rel="noopener">\{t\(lang, 'footer\.anpcHome'\)\}<\/(?:a|SiteLink)>/, 'ссылка ANPC в ряду закона')
-  assert.deepEqual([ANPC_SAL_BADGE.width, ANPC_SAL_BADGE.height], [250, 50], 'пиктограмма SAL — 250 × 50 по приказу')
-  assert.match(footer, /ANPC_SAL_BADGE\.src \? <(?:a|SiteLink) className=\{s\.sal\} href=\{ANPC_SAL_URL\}[^>]*><img src=\{ANPC_SAL_BADGE\.src\} width=\{ANPC_SAL_BADGE\.width\} height=\{ANPC_SAL_BADGE\.height\} alt=\{t\(lang, 'footer\.salAlt'\)\}/, 'знак SAL картинкой без изменений')
-  assert.match(footer, /ANPC_SAL_BADGE\.src \? null : <li><(?:a|SiteLink) className=\{b\.word\} href=\{ANPC_SAL_URL\}/, 'без файла — текстовая ссылка на SAL')
-  if (ANPC_SAL_BADGE.src) assert.ok(existsSync(new URL(`../public${ANPC_SAL_BADGE.src}`, import.meta.url)), 'файл пиктограммы SAL назван, а не положен')
+  assert.equal(authorityUrl(), 'https://anpc.ro/')
+  assert.equal(complaintsUrl(), 'https://reclamatiisal.anpc.ro/')
+  /* Орган и платформа — у рынка сайта (lib/shop-data.ts, `consumer`): подвал ставит их из данных. */
+  assert.match(footer, /authority = authorityUrl\(\), complaints = complaintsUrl\(\), badge = complaintsBadge\(\)/)
+  assert.match(footer, /authority \? <li><(?:a|SiteLink) className=\{b\.word\} href=\{authority\} rel="noopener">\{t\(lang, 'footer\.anpcHome'\)\}<\/(?:a|SiteLink)><\/li> : null/, 'ссылка ANPC в ряду закона')
+  assert.deepEqual([complaintsBadge().width, complaintsBadge().height], [250, 50], 'пиктограмма SAL — 250 × 50 по приказу')
+  assert.match(footer, /complaints && badge\.src \? <(?:a|SiteLink) className=\{s\.sal\} href=\{complaints\}[^>]*><img src=\{badge\.src\} width=\{badge\.width\} height=\{badge\.height\} alt=\{t\(lang, 'footer\.salAlt'\)\}/, 'знак SAL картинкой без изменений')
+  assert.match(footer, /complaints && !badge\.src \? <li><(?:a|SiteLink) className=\{b\.word\} href=\{complaints\}/, 'без файла — текстовая ссылка на SAL')
+  if (complaintsBadge().src) assert.ok(existsSync(new URL(`../public${complaintsBadge().src}`, import.meta.url)), 'файл пиктограммы SAL назван, а не положен')
   for (const file of ['../components/Footer.tsx', '../lib/company.ts', '../lib/docs.json']) assert.doesNotMatch(read(file), /ec\.europa\.eu\/consumers\/odr/, `${file}: ссылка на закрытую платформу ODR`)
   assert.equal(isKey('footer.withdraw'), false, 'вторая надпись функции отказа')
   for (const lang of LOCALES) assert.ok(t(lang, 'withdraw.button').length > 0)

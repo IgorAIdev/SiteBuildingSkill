@@ -9,7 +9,7 @@ import { hrefFor } from './href.ts'
 import { intlLocale, market } from './market.ts'
 import { lineFacts, priceOrFree, totalsView, type TotalsView } from './cart-view.ts'
 import { pledgesView, type PledgesView } from './pledges.ts'
-import { PRIVACY_DOC } from './company.ts'
+import { privacyDoc } from './company.ts'
 
 /** Поле формы готовыми строками. `short` — ввод короткий по природе
  *  (индекс): поле шириной с ожидаемый ввод, а не во всю колонку (Baymard).
@@ -103,7 +103,7 @@ export function contactView(lang: Lang, contact: Contact | null): ContactView {
       [field(lang, 'phone', c.phone, { key: 'field.phone', type: 'tel', auto: 'tel' })],
     ],
     submit: t(lang, 'checkout.continue'),
-    policy: { label: t(lang, 'account.policy'), href: hrefFor(lang, { doc: PRIVACY_DOC }) },
+    policy: { label: t(lang, 'account.policy'), href: hrefFor(lang, { doc: privacyDoc() }) },
   }
 }
 
