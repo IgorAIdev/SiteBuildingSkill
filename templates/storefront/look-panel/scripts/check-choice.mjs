@@ -96,7 +96,7 @@ async function craft(pages, cookie) {
 }
 
 async function check(mode, args) {
-  const raw = mode === 'choice' ? await lookOfChoice(args) : read(`lib/source/sample/${mode === 'draft' ? 'look.draft.json' : 'look.json'}`)
+  const raw = mode === 'choice' ? await lookOfChoice(args) : read(`lib/source/sample/${mode === 'draft' ? (process.env.LOOK_DRAFT || 'look.draft.json') : 'look.json'}`)
   /* Правило сайта — то же, что принимает вид на сервере. */
   const { look, notes } = acceptLook(raw, slots, facts)
   if (notes.length) fail(notes.map((n) => `${n.what} ${n.why}`))

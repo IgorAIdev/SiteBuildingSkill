@@ -33,6 +33,9 @@ import { acceptLook, problems, type Facts } from '@/lib/look-rule.ts'
 import type { LookFont } from '@/lib/source/contract.ts'
 import { CUSTOM, clashes, compose, fieldsOf, paletteChecks, paletteVars, validPaints, valuesOf } from '../ui/choice.mjs'
 import { fetchFonts } from '../scripts/fonts.mjs'
+import { siteNow } from '@/lib/site-now.ts'
+import { DEFAULT_SITE } from '@/lib/sites.ts'
+import { lookFileName } from '@/lib/look-file.ts'
 import { pairsOf } from '../scripts/pairs.mjs'
 
 const ROOT = process.cwd()
@@ -65,6 +68,10 @@ const intentOf = (x: unknown): Intent | undefined => {
     ? { brand: r.brand, paper: r.paper as string, tint: r.tint as string, inkTowardBrand: r.inkTowardBrand === true } : undefined
 }
 
+/* Вид — сайта запроса (lib/look-file.ts): панель публикует и черновит вид
+   того сайта, на чьём адресе она открыта (docs/plans/multi-site.md, Ш3). */
+const pub = () => lookFileName(siteNow(), siteNow().id === DEFAULT_SITE.id)
+const drf = () => lookFileName(siteNow(), siteNow().id === DEFAULT_SITE.id, true)
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'cache-control': 'no-store' } })
 const langOf = (request: Request): Lang => { const l = new URL(request.url).searchParams.get('lang') ?? ''; return isLang(l) ? l : DEFAULT_LANG }
 const firstProduct = async (lang: Lang): Promise<string | null> => { const r = await source().listing(lang, { facets: {}, sort: 'popular', page: null }); return r.ok ? r.value.items[0]?.id ?? null : null }
@@ -140,7 +147,7 @@ const selfAddress = (request: Request) => `http://127.0.0.1:${process.env.PORT |
    (прод, `npm run serve`) проверяется целиком. */
 const QUICK = process.env.NODE_ENV !== 'production' ? ['--quick'] : []
 const checkDraft = (site: string) => new Promise<{ ok: boolean; out: string }>((done) => {
-  const run = spawn(process.execPath, [join(ROOT, 'look-panel/scripts/check-choice.mjs'), '--draft', ...QUICK], { cwd: ROOT, env: { ...process.env, SITE: site } })
+  const run = spawn(process.execPath, [join(ROOT, 'look-panel/scripts/check-choice.mjs'), '--draft', ...QUICK], { cwd: ROOT, env: { ...process.env, SITE: site, LOOK_DRAFT: drf() } })
   let out = ''
   run.stdout.on('data', (d: Buffer) => { out += d.toString() })
   run.stderr.on('data', (d: Buffer) => { out += d.toString() })
@@ -162,8 +169,8 @@ export async function handle(request: Request, path: string[]): Promise<Response
   }
   if (method === 'GET' && head === 'state') {
     const previewing = (await draftMode()).isEnabled
-    const published = stateOf('look.json')
-    const draft = existsSync(join(SAMPLE, 'look.draft.json')) ? stateOf('look.draft.json') : { names: null, paints: null }
+    const published = stateOf(existsSync(join(SAMPLE, pub())) ? pub() : 'look.json')
+    const draft = existsSync(join(SAMPLE, drf())) ? stateOf(drf()) : { names: null, paints: null }
     return json({ published: published.names, publishedPaints: published.paints, draft: draft.names, draftPaints: draft.paints, previewing })
   }
   /* Места вкладок (заказчик 28.09.2026: «открываешь вкладку в панели, и
@@ -199,7 +206,7 @@ export async function handle(request: Request, path: string[]): Promise<Response
     return json({ ok: false, error: 'no product in stock' }, 404)
   }
   if (method === 'GET' && head === 'published') {
-    return new Response(readFileSync(join(SAMPLE, 'look.json')), { headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } })
+    return new Response(readFileSync(join(SAMPLE, existsSync(join(SAMPLE, pub())) ? pub() : 'look.json')), { headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } })
   }
   if (!sameOrigin(request)) return json({ ok: false, error: 'origin' }, 403)
   if (head === 'preview' && method === 'POST') { (await draftMode()).enable(); return json({ ok: true }) }
@@ -215,12 +222,12 @@ export async function handle(request: Request, path: string[]): Promise<Response
     if (typeof asked === 'string') return json({ ok: false, error: asked }, 400)
     const built = await build(asked.chosen, asked.paints, cat).catch((e: Error) => ({ error: e.message }))
     if ('error' in built) return json({ ok: false, error: built.error }, 422)
-    writeFileSync(join(SAMPLE, 'look.draft.json'), JSON.stringify(built.look, null, 2) + '\n')
+    writeFileSync(join(SAMPLE, drf()), JSON.stringify(built.look, null, 2) + '\n')
     ;(await draftMode()).enable()
     if (head === 'draft') return json({ ok: true })
     const verdict = await checkDraft(selfAddress(request))
     if (!verdict.ok) return json({ ok: false, error: 'check', verdict: verdict.out.trim().split('\n').slice(-12) }, 409)
-    writeFileSync(join(SAMPLE, 'look.json'), JSON.stringify(built.look, null, 2) + '\n')
+    writeFileSync(join(SAMPLE, pub()), JSON.stringify(built.look, null, 2) + '\n')
     /* «Устарело, пересчитай» (app/api/revalidate/route.ts): сброс
        применяется, когда этот ответ ушёл, — поэтому страницы досчитывает
        панель: ей отдаётся блок вида, которого ждать на главной. */
