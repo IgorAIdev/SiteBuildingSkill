@@ -31,9 +31,10 @@
 
 /* Мессенджеры — вид панели `--quick-look` (И470): плитки по две в ряд
    (умолчание) или строки во всю ширину. Обе формы — тихая строка путей
-   (ReachList.module.css, `tile`): без обводки, подложка только под рукой,
-   как в окне контактов (слово заказчика 21.10.2026). Здесь — только сетка. */
-.rows{--cols:2;--cols-min:2;--cell-min:0px;--grid-gap:0px;list-style:none;margin:0;padding:0}
+   (ReachList.module.css, `tile`), собранная тихой плашкой (`group`): без
+   обводки у каждой, ячейки через волосяную линию (слово заказчика
+   21.10.2026). Здесь — только сетка: просвет ячеек — толщина линии. */
+.rows{--cols:2;--cols-min:2;--cell-min:0px;--grid-gap:var(--line-w);list-style:none;margin:0;padding:0}
 @container style(--quick-look: rows){
   .rows{--cols:1;--cols-min:1}
 }
