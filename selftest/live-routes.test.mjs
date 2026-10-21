@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url'
 
 const KIT = fileURLToPath(new URL('..', import.meta.url))
 const TOOLS = ['kit-config.mjs', 'seams.mjs', 'thresholds.mjs', 'routes.mjs', 'sessions.mjs']
-const PAGES = ['app/[lang]/page.tsx', 'app/[lang]/cart/page.tsx', 'app/[lang]/catalog/[cat]/page.tsx', 'app/[lang]/product/[id]/page.tsx']
+const PAGES = ['app/[site]/[lang]/page.tsx', 'app/[site]/[lang]/cart/page.tsx', 'app/[site]/[lang]/catalog/[cat]/page.tsx', 'app/[site]/[lang]/product/[id]/page.tsx']
 
 function site(env) {
   const root = mkdtempSync(join(tmpdir(), 'kit-live-'))

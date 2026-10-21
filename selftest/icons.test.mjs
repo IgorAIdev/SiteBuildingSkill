@@ -16,6 +16,7 @@ const LUCIDE = join(KIT, 'skills/site-building/assets/icons/lucide')
 /* Залитые знаки — марки, звёзды оценки (`solid/`, И512) и знаки оплаты
    (`pay/`, И549, своё окно у каждого): пятно без штриха. */
 const FILLED = ['brands', 'solid', 'pay'].map((d) => join(KIT, 'skills/site-building/assets/icons', d))
+const FIT = join(KIT, 'skills/site-building/assets/icons/fit.json')
 const brandIds = FILLED.flatMap((dir) => readdirSync(dir).filter((n) => n.endsWith('.svg')).map((n) => n.replace('.svg', '')))
 const boxes = readFileSync(join(KIT, 'styles/icons.json'), 'utf8')
 const sheet = readFileSync(join(KIT, 'styles/icons.svg'), 'utf8')
@@ -66,6 +67,8 @@ test('check fails when an icon is added to the kit and the sheet is not re-emitt
     cpSync(join(KIT, 'tools'), join(dir, 'tools'), { recursive: true })
     cpSync(LUCIDE, join(dir, 'skills/site-building/assets/icons/lucide'), { recursive: true })
     for (const d of FILLED) cpSync(d, join(dir, 'skills/site-building/assets/icons', basename(d)), { recursive: true })
+    /* Рост знаков (`fit.json`, tools/icons-fit.mjs) — часть набора знаков: без него лист другой. */
+    cpSync(FIT, join(dir, 'skills/site-building/assets/icons/fit.json'))
     mkdirSync(join(dir, 'styles'))
     writeFileSync(join(dir, 'styles/icons.svg'), sheet)
     writeFileSync(join(dir, 'styles/icons.json'), boxes)
@@ -89,6 +92,7 @@ test('check finds the kit icons where an installed site keeps the skill', () => 
     cpSync(join(KIT, 'tools'), join(dir, 'tools'), { recursive: true })
     cpSync(LUCIDE, join(dir, '.agents/skills/site-building/assets/icons/lucide'), { recursive: true })
     for (const d of FILLED) cpSync(d, join(dir, '.agents/skills/site-building/assets/icons', basename(d)), { recursive: true })
+    cpSync(FIT, join(dir, '.agents/skills/site-building/assets/icons/fit.json'))
     mkdirSync(join(dir, 'styles'))
     writeFileSync(join(dir, 'styles/icons.svg'), sheet)
     writeFileSync(join(dir, 'styles/icons.json'), boxes)

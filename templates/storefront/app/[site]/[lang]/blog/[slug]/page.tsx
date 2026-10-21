@@ -23,7 +23,7 @@ import { PostHead, PostIntro, PostSources } from '@/components/PostParts.tsx'
 import { Shelf } from '@/components/Shelf.tsx'
 import { Faq } from '@/components/blocks/Faq.tsx'
 import { Unavailable } from '@/components/StateScreen.tsx'
-import { SiteLink } from '../../../../components/SiteLink.tsx'
+import { SiteLink } from '@/components/SiteLink.tsx'
 
 type Props = { params: Promise<{ lang: string; slug: string }> }
 

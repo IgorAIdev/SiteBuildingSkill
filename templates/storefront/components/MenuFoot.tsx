@@ -7,6 +7,7 @@ import { t } from '@/lib/i18n/index.ts'
 import { Icon } from './Icon.tsx'
 import { SavedLink } from './SavedLink.tsx'
 import { AccountLink } from './AccountLink.tsx'
+import { siteNow } from '@/lib/site-now.ts'
 import { LangSwitch } from './LangSwitch.tsx'
 import { SiteLink } from './SiteLink.tsx'
 
@@ -44,7 +45,7 @@ export function MenuFoot({ lang, top, service }: { lang: Lang; top: ServiceLink[
           <SavedLink lang={lang} label={t(lang, 'nav.saved')} />
           <AccountLink lang={lang} label={t(lang, 'nav.account')} sheet />
         </div>
-        <LangSwitch lang={lang} label={t(lang, 'nav.lang')} />
+        <LangSwitch lang={lang} langs={siteNow().langs} label={t(lang, 'nav.lang')} />
       </div>
     </div>
   )

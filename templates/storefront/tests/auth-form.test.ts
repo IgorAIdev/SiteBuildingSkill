@@ -56,7 +56,7 @@ test('sign-in and sign-up: the form, then «or» and the provider buttons, then 
   assert.match(social, /<Icon id=\{PROVIDER_SIGN\[x\.provider\]\} \/>/, 'знак — из карты знаков поставщиков, не нарисован на месте')
   assert.ok(social.indexOf('</button>') < social.indexOf('type="hidden"'), 'скрытые поля после кнопок: шаг стопки не встаёт над первой кнопкой')
   assert.match(read('../components/AuthForm.tsx'), /useActionState\(action, view\.alert \?.*message: view\.alert/, 'отказ поставщика — в слоте ошибки формы с первого показа')
-  for (const path of ['../app/[lang]/account/page.tsx', '../app/[lang]/account/register/page.tsx']) {
+  for (const path of ['../app/[site]/[lang]/account/page.tsx', '../app/[site]/[lang]/account/register/page.tsx']) {
     const src = read(path)
     assert.match(src, /commerce\(\)\.socialProviders\(\)/, `${path}: кнопки — только у названных источником`)
     assert.match(src, /social=\{socialSignIn\.bind\(null, lang\)\}/, `${path}: те же кнопки на входе и на создании`)

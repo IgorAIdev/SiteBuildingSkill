@@ -22,7 +22,7 @@ function routesWith(config) {
   try {
     mkdirSync(join(root, 'tools'))
     for (const f of TOOLS) copyFileSync(join(KIT, 'tools', f), join(root, 'tools', f))
-    for (const page of ['app/[lang]/page.tsx', 'app/[lang]/search/page.tsx', 'app/[lang]/cart/page.tsx']) {
+    for (const page of ['app/[site]/[lang]/page.tsx', 'app/[site]/[lang]/search/page.tsx', 'app/[site]/[lang]/cart/page.tsx']) {
       mkdirSync(join(root, page, '..'), { recursive: true })
       writeFileSync(join(root, page), 'export default function Page() { return null }\n')
     }

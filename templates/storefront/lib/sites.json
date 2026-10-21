@@ -1,0 +1,11 @@
+{
+  "default": "demo",
+  "sites": [
+    {
+      "id": "demo",
+      "hosts": [],
+      "langs": ["en", "ro", "hu"],
+      "defaultLang": "en"
+    }
+  ]
+}

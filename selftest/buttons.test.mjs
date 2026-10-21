@@ -157,9 +157,12 @@ test('brand under the hand, a floor button keeps its ink, the hero is a light ha
   const site = (rel) => readFileSync(join(KIT, 'templates/storefront', rel), 'utf8')
   assert.match(btn, /\.btn\[data-plate\]\{color:var\(--press-ink\)\}/, 'кнопка, объявившая себя полом, красит надпись своей краской')
   assert.match(btn, /\.btn\[data-hand='pop'\]\{--ctrl-btn-hand-fill:1;--ctrl-btn-hand-edge:1;--ctrl-btn-edge-hand:var\(--pop\)\}/, 'заливка маркой под рукой — долей тихой, кромка марки')
-  /* Признаки — каждый у кнопки, порядок атрибутов не важен (`data-rail-nav` встал между ними 04.10.2026). */
-  assert.equal((site('components/RailPager.tsx').match(/<button\b(?=[^>]*\bdata-pager\b)(?=[^>]*\bdata-hand="pop")[^>]*>/g) ?? []).length, 2, 'обе стрелки листания')
-  assert.match(site('components/RailHead.tsx'), /<SiteLink className=\{`\$\{b\.btn\} \$\{s\.wide\}`\}(?=[^>]*\bdata-hand="pop")[^>]*>/, '«View all» на широкой шапке — тем же ответом; на узкой — слово (И761)')
+  /* Признаки — каждый у кнопки, порядок атрибутов не важен (`data-rail-nav` встал между ними 04.10.2026).
+     Стрелки листания и выход «View all» — одним ответом пункта меню (`data-hand="menu"`: тихое →
+     полное, без прыжка; слово владельца 21.10.2026: «они в одном блоке стоят, и поведение у них
+     должно быть одинаковым»). */
+  assert.equal((site('components/RailPager.tsx').match(/<button\b(?=[^>]*\bdata-pager\b)(?=[^>]*\bdata-hand="menu")[^>]*>/g) ?? []).length, 2, 'обе стрелки листания')
+  assert.match(site('components/RailHead.tsx'), /<SiteLink className=\{`\$\{b\.word\}[^`]*`\}(?=[^>]*\bdata-hand="menu")[^>]*>/, '«View all» — слово тем же ответом, что стрелки')
   const hero = site('components/blocks/Hero.tsx')
   assert.match(hero, /p\.lede\}/, 'герой — примитив «текст и кадр»')
   assert.match(hero, /p\.frame\}/, 'снимок — кадр с потолком')

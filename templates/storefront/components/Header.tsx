@@ -18,6 +18,7 @@ import { SavedLink } from './SavedLink.tsx'
 import { AccountLink } from './AccountLink.tsx'
 import { SearchPane } from './SearchPane.tsx'
 import { NavLinks } from './NavLinks.tsx'
+import { siteNow } from '@/lib/site-now.ts'
 import { LangSwitch } from './LangSwitch.tsx'
 import { ThemeToggle } from './ThemeToggle.tsx'
 import { ReachList } from './ReachList.tsx'
@@ -57,7 +58,7 @@ const cart = (lang: Lang, labelled: boolean) => <CartLink lang={lang} title={t(l
 const tools = (lang: Lang) => (
   <>
     {/* В верхней строке — раскрытием при трёх языках и больше (И501). */}
-    <span className={s.topLanguage}><LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop trigger={s.glyph} /></span>
+    <span className={s.topLanguage}><LangSwitch lang={lang} langs={siteNow().langs} label={t(lang, 'nav.lang')} drop trigger={s.glyph} /></span>
     <ThemeToggle label={t(lang, 'theme.toggle')} className={s.glyph} sun={s.sun} moon={s.moon} />
   </>
 )

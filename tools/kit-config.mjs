@@ -77,7 +77,7 @@ const DEFAULTS = {
   /** канонические дома контролов — где контрол и должен быть описан */
   controls: ['styles/go.module.css', 'styles/btn.module.css', 'styles/glyph.module.css', 'styles/menu.module.css', 'styles/buttons.css', 'styles/form.module.css', 'styles/pane.module.css', 'styles/turn.module.css', 'styles/base.css'],
   /** файлы, которым шкала не предписана: сама шкала, панель настроек, лист набора */
-  exempt: ['styles/tokens.css', 'styles/scale.css', 'styles/studio.module.css', 'app/[lang]/design/design.module.css'],
+  exempt: ['styles/tokens.css', 'styles/scale.css', 'styles/studio.module.css', 'app/[site]/[lang]/design/design.module.css'],
   /** предметы над страницей, которым положена фирменная заливка */
   floating: ['components/TabBar.module.css', 'components/Toast.module.css', 'components/Helper.module.css'],
   /** имена шкал: `--fs-*`, `--sp-*`, `--layer-*` */
@@ -89,7 +89,7 @@ const DEFAULTS = {
   seams: DEFAULT_SEAMS,
   /** склады: единственные места, которым разрешена память браузера */
   stores: ['lib/shop.ts', 'lib/studio/store.ts', 'lib/studio/presets.ts',
-    'lib/studio/boot.ts', 'app/[lang]/layout.tsx'],
+    'lib/studio/boot.ts', 'app/[site]/[lang]/layout.tsx'],
   /** чем заменить имя пакета в `composes … from '@shop/ui/control.css'`: путь от корня проекта */
   aliases: {},
   /** пробы `check:open` сверх обхода дерева. `notFound` — несуществующий

@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
 import type { Viewport } from 'next'
-import { LOCALES } from '@/lib/locale.ts'
+import { SITES } from '@/lib/sites.ts'
+import { setSite } from '@/lib/site-now.ts'
 import { LangDocument, docViewport } from '@/components/Shell.tsx'
 
-export const generateStaticParams = () => LOCALES.map((lang) => ({ lang }))
+/* Страницы — заранее на каждую пару «сайт × его язык» (lib/sites.ts). */
+export const generateStaticParams = () => SITES.flatMap((site) => site.langs.map((lang) => ({ site: site.id, lang })))
 
 /* Язык — закрытый список, как у макета магазина (app/[lang]/layout.tsx). */
 export const dynamicParams = false
@@ -20,6 +22,8 @@ export const viewport: Viewport = docViewport
    не может. Адреса те же — `/ro/checkout/…`: группа адреса не даёт.
    «Спасибо» (`app/[lang]/checkout/done`) — уже магазин: коридор кончился, и
    полки снова нужны. */
-export default async function CheckoutLayout({ children, params }: { children: ReactNode; params: Promise<{ lang: string }> }) {
-  return <LangDocument lang={(await params).lang} chrome="checkout">{children}</LangDocument>
+export default async function CheckoutLayout({ children, params }: { children: ReactNode; params: Promise<{ site: string; lang: string }> }) {
+  const { site, lang } = await params
+  setSite(site)
+  return <LangDocument lang={lang} chrome="checkout">{children}</LangDocument>
 }

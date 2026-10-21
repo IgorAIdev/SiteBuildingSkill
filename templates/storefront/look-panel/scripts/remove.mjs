@@ -4,7 +4,7 @@
    Панель физически отделена от сайта (CLAUDE.md, «Панель настройки
    физически отделена от сайта»): всё её — папка look-panel/; в сайт она
    входит тремя местами с меткой `look-panel` — адрес app/look-panel/,
-   страница дизайн-системы app/[lang]/(look-panel)/ и строка подключения в
+   страница дизайн-системы app/[site]/[lang]/(look-panel)/ и строка подключения в
    components/Shell.tsx. Снять — значит удалить папку,
    адрес и строку, свои команды в package.json, флаг LOOK_PICKER, черновик
    вида и шрифты, которых опубликованный вид не носит, варианты шапки,
@@ -38,7 +38,7 @@ export const TAG = 'look-panel'
 /** Всё, что принадлежит панели целиком. */
 /* Страница дизайн-системы (`/<язык>/design`) — тоже панели: её папка маршрута
    уходит целиком, как и вход панели. */
-export const OWNED = ['look-panel', 'app/look-panel', 'app/[lang]/(look-panel)']
+export const OWNED = ['look-panel', 'app/look-panel', 'app/[site]/[lang]/(look-panel)']
 /** Где искать метки и упоминания: код и настройки сайта (не документы). */
 const CODE = ['app', 'components', 'lib', 'styles', 'scripts', 'public', 'tests']
 const ROOT_FILES = ['package.json', 'next.config.ts', 'proxy.ts', 'tsconfig.json', 'kit.config.json', '.env', '.env.local', '.env.example', '.gitignore']
