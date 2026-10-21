@@ -130,6 +130,9 @@
    именем, ценой и кнопками (И802; слово заказчика 17.10.2026 «текст описания
    сделай, чтобы продолжался вправо»). */
 .summary{margin:0;font-size:var(--lede-size);line-height:var(--lede-lead);font-weight:var(--lede-weight);letter-spacing:var(--lede-track);color:var(--ink-soft)}
+/* Межстрочье под последней строкой описания срезано по край букв (`text-box`): видимый шов до
+   выбора или цены — шаг группы, а не группа и полстроки (28 при 24; check:craft `inkStep`). */
+.summary{text-box:trim-end text}
 /* Марка — первая строка заголовка (ProductView.tsx, И441): ростом и
    межстрочьем тела, краской подписи — имя остаётся главным, марка читается
    раньше него. */
@@ -177,7 +180,9 @@
    40 под мышью, 48 под пальцем), а не малые фишки: это выбор, без которого
    не купить. */
 .group{--seg-h:var(--ctrl-h);border:0;padding:0;margin:0;min-inline-size:0}
-.legend{padding:0;margin-block-end:var(--sp-2);font-size:var(--ctrl-fs-sm);font-weight:var(--label-weight);color:var(--ink)}
+/* Подпись выбора открывает группу: межстрочье над ней срезано по край букв, как под описанием
+   (`text-box`, check:craft `inkStep`): шов «описание → выбор» — шаг группы. */
+.legend{padding:0;margin-block-end:var(--sp-2);text-box:trim-start text;font-size:var(--ctrl-fs-sm);font-weight:var(--label-weight);color:var(--ink)}
 /* «Choose an option» — строка ошибки поля (form.module.css, `.say`) под
    опциями первой невыбранной группы, на той же ступени оптики, что подпись
    над ними. */

@@ -1,9 +1,11 @@
 'use client'
 import p from '@/styles/primitives.module.css'
+import b from '@/styles/btn.module.css'
 import sl from '@/styles/slides.module.css'
 import s from './Gallery.module.css'
 import type { GalleryView } from '@/lib/product-view.ts'
 import { Dots } from './Dots.tsx'
+import { Icon } from './Icon.tsx'
 import { SaveToggle } from './SaveToggle.tsx'
 import { useSlides } from './useSlides.ts'
 import { shot } from '@/lib/shot.ts'
@@ -21,7 +23,7 @@ import { shot } from '@/lib/shot.ts'
    (SaveToggle, `--save-look`); галерея решает только, где оно стоит. */
 export function Gallery({ view, save }: { view: GalleryView; save?: { id: string; add: string; remove: string } }) {
   /* Лента и точки — общее устройство (useSlides, Dots; И493). */
-  const { strip, current, pick, onScroll } = useSlides(view.slides.length)
+  const { strip, current, show, pick, onScroll } = useSlides(view.slides.length)
   const many = view.slides.length > 1
 
   return (
@@ -40,6 +42,17 @@ export function Gallery({ view, save }: { view: GalleryView; save?: { id: string
           ))}
         </div>
         {view.badge ? <span className={`${p.cut} ${s.badge}`} data-cut="sale"><span className={p.cutText}>{view.badge}</span></span> : null}
+        {/* Стрелки листания кадра — для мыши (слово заказчика 21.10.2026: «на десктопе нужны
+            уголки или стрелки листания»): круги по краям кадра посередине высоты, висящая
+            плита (`data-float`, как «наверх»): на снимке тихий контур терялся бы. Знак — тот
+            же, что у листания ряда (RailPager). Лента кольцом: с последнего — на первый.
+            Палец листает свайпом и точками — там стрелок нет (Gallery.module.css). */}
+        {many ? (
+          <>
+            <button type="button" className={`${b.btn} ${s.step}`} data-side="back" data-pager="" data-float="" aria-label={view.prev} onClick={() => show(current - 1)}><Icon id="arrow-left" /></button>
+            <button type="button" className={`${b.btn} ${s.step}`} data-side="next" data-pager="" data-float="" aria-label={view.next} onClick={() => show(current + 1)}><Icon id="arrow-right" /></button>
+          </>
+        ) : null}
         {save ? <SaveToggle id={save.id} add={save.add} remove={save.remove} over="picture" className={s.save} /> : null}
       </div>
       {many ? (

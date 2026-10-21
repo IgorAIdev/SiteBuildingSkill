@@ -5,6 +5,7 @@ import { hrefFor } from './href.ts'
 import { source, content } from './source/index.ts'
 import { moneyShort } from './money.ts'
 import { effectCopy } from './content/shop-copy.ts'
+import { EFFECT_FACET } from './source/effect.ts'
 import { formOf } from './source/details.ts'
 
 /* Пустой список — общий на оба провала источника: своя `[]` в JSX-пропе на
@@ -95,7 +96,9 @@ export async function shellData(lang: Lang): Promise<ShellData> {
   const groupsOf = (facets: Facet[], to: (code: string, value: string) => string): NavGroup[] => facets
     /* Посчитанные отрезки (мг, цена — `Facet.bands`, И742) в меню не идут:
        ссылка из меню на отрезок стареет вместе с ассортиментом полки. */
-    .filter((f) => !f.bands)
+    /* Эффект в меню полки не идёт: у эффектов свой пункт «By effect», и в фильтре полки
+       они есть (слово заказчика 21.10.2026: «эффекты из масел из меню удали»). */
+    .filter((f) => !f.bands && f.code !== EFFECT_FACET)
     .map((f): Facet => ({ code: f.code, name: f.name, values: f.values.filter((v) => v.count > 0) }))
     .filter((f) => f.values.length > 1 && !mirrorsShelves(f, shelves))
     .map((f) => ({ name: f.name, links: f.values.map((v) => ({ label: v.name, href: to(f.code, v.code) })) }))

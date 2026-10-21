@@ -10,5 +10,8 @@
    8), но читаются одним текстом. Разделы документа (DocView, «Доставка»,
    «Возврат») — другое отношение: h2 с воздухом блока (И524). Отбивка от
    верха карты — воздух блока. */
-.details{--stack:var(--air-row);margin-block-start:var(--air-block)}
+/* В колонке покупки разделы — её группа, как выбор и поле параметров: шагом группы
+   `--air-group`, а не воздухом блока (просвет 30 при 24 у соседних групп, слово
+   заказчика 21.10.2026: «на странице товара с ритмами беда»; check:craft `inkStep`). */
+.details{--stack:var(--air-row);margin-block-start:var(--air-group)}
 .title{margin-block:0 var(--air-tight);font-size:var(--parthead-size);line-height:var(--parthead-lead);font-weight:var(--parthead-weight);letter-spacing:var(--parthead-track)}
