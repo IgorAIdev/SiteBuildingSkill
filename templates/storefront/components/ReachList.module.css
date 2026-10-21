@@ -22,6 +22,20 @@
 }
 .name{font-weight:var(--label-weight)}
 .value{font-size:var(--ctrl-fs-sm);color:var(--ink-soft);font-variant-numeric:tabular-nums}
+/* Плитка — та же строка столбцом: знак над именем (быстрый заказ, вид
+   «плитки» панели `--quick-look`, И470); вид «строки» возвращает строку.
+   Одежда — одна: тихая строка, подложка под рукой, без обводки (слово
+   заказчика 21.10.2026: «в минимализме всё тихое»). Имя плитки — короткое
+   (`short`), строки — «Order via …» (`long`). */
+.tile{grid-template-columns:1fr;grid-template-rows:auto;justify-items:center;row-gap:calc(var(--ctrl-h-lg) * .12);text-align:center;block-size:100%}
+.tile svg{grid-row:auto}
+.long{display:none}
+@container style(--quick-look: rows){
+  .tile{grid-template-columns:auto 1fr;justify-items:start;text-align:start}
+  .tile svg{grid-row:1 / -1}
+  .short{display:none}
+  .long{display:inline}
+}
 /* Строка без адреса ждёт номера: видна, но тише (И442). */
 .row[aria-disabled='true']{color:var(--ink-soft)}
 
