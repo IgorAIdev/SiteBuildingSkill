@@ -20,7 +20,7 @@ export function Trust({ block, ctx, place }: { block: Extract<Block, { type: 'tr
   const doc = (slug?: string) => (slug ? hrefFor(ctx.lang, { doc: slug }) : null)
   const rows: Row[] = [
     ...(block.lab ? [{ key: 'lab', icon: 'certificate', title: block.lab.title, text: block.lab.text, href: doc(block.lab.doc) }] : []),
-    ...ctx.pledges.items.map((x, at) => ({ key: `pledge-${at}`, icon: x.icon, title: x.text, href: doc(x.icon === 'check-shield' ? block.returnsDoc : block.deliveryDoc) })),
+    ...ctx.pledges.items.map((x, at) => ({ key: `pledge-${at}`, icon: x.icon, title: x.text, href: doc(x.icon === 'rotate-ccw' ? block.returnsDoc : block.deliveryDoc) })),
   ]
   if (!rows.length) return null
   return (

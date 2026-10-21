@@ -86,7 +86,7 @@ test('pledges come from the shop data, not from words in code', async () => {
   assert.deepEqual(pledgesView('en', { payments: pay.value, methods: methods.value, returnDays: facts.value.returnDays }).items, [
     { icon: 'package', text: 'Cash on delivery' },
     { icon: 'truck', text: 'Delivery from €3.49, pickup free' },
-    { icon: 'check-shield', text: '14-day returns' },
+    { icon: 'rotate-ccw', text: '14-day returns' },
   ])
   const over = pay.value.map((m) => (m.kind === 'on-delivery' ? { ...m, eligible: false } : m))
   assert.deepEqual(pledgesView('en', { payments: over, methods: null, returnDays: null }).items, [], 'COD not allowed for this cart — no line; nothing known — nothing said')
