@@ -55,7 +55,7 @@ export const SIGN_GROUPS: SignGroup[] = [
     ['instagram', 'Instagram'], ['instagram-line', 'Instagram, линией'], ['youtube', 'YouTube'], ['youtube-line', 'YouTube, линией'], ['tiktok', 'TikTok'],
   ] },
   { title: 'Состояния и сообщения', lede: 'Готово, проверено, внимание, ошибка, подсказка.', signs: [
-    ['check', 'галочка'], ['check-circle', 'готово'], ['check-badge', 'проверено'], ['check-shield', 'гарантия'], ['check-file', 'отчёт лаборатории'],
+    ['check', 'галочка'], ['check-circle', 'готово'], ['check-badge', 'проверено'], ['check-shield', 'THC ниже предела'], ['check-file', 'отчёт лаборатории'],
     ['info', 'подсказка'], ['alert-circle', 'ошибка'], ['alert-triangle', 'внимание'],
   ] },
   { title: 'Наличие', lede: 'В наличии, мало, нет: знак в круге и точка — два вида одной строки на карточке товара; выбранный вид — ниже, в образце.', signs: [
