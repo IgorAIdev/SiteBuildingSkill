@@ -189,17 +189,18 @@ const iconRow = async () => {
     const open = src.match(new RegExp(`<symbol[^>]*id="${id}"[^>]*>`))?.[0]
     if (!open) return null
     const body = src.slice(src.indexOf(open) + open.length).split('</symbol>')[0].replace(/currentColor/g, '#000')
-    const px = Math.round(s.getBoundingClientRect().height)
+    /* Окно знака бывает не квадратом (флаг, знак оплаты): холст — по рамке знака на странице. */
+    const px = Math.round(s.getBoundingClientRect().height), wd = Math.max(1, Math.round(s.getBoundingClientRect().width))
     const filled = /fill="currentColor"/.test(open)
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${px}" height="${px}" viewBox="${open.match(/viewBox="([^"]+)"/)?.[1] ?? '0 0 24 24'}" fill="${filled ? '#000' : 'none'}" stroke="${filled ? 'none' : '#000'}" stroke-width="${parseFloat(getComputedStyle(s).strokeWidth) || 2}" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${wd}" height="${px}" viewBox="${open.match(/viewBox="([^"]+)"/)?.[1] ?? '0 0 24 24'}" fill="${filled ? '#000' : 'none'}" stroke="${filled ? 'none' : '#000'}" stroke-width="${parseFloat(getComputedStyle(s).strokeWidth) || 2}" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`
     const img = new Image()
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg)
     try { await img.decode() } catch { return null }
-    const cv = document.createElement('canvas'); cv.width = cv.height = px
+    const cv = document.createElement('canvas'); cv.width = wd; cv.height = px
     const cx = cv.getContext('2d'); cx.drawImage(img, 0, 0, px, px)
-    const data = cx.getImageData(0, 0, px, px).data
+    const data = cx.getImageData(0, 0, wd, px).data
     let top = -1, bottom = -1
-    for (let y = 0; y < px; y++) for (let x = 0; x < px; x++) if (data[(y * px + x) * 4 + 3] >= 128) { if (top < 0) top = y; bottom = y; break }
+    for (let y = 0; y < px; y++) for (let x = 0; x < wd; x++) if (data[(y * wd + x) * 4 + 3] >= 128) { if (top < 0) top = y; bottom = y; break }
     return top < 0 ? null : { id, h: bottom - top + 1 }
   }
   const rows = new Map()
@@ -229,7 +230,7 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
                 anchor: [], outline: [], marker: [], dark: [], ladder: [], wideCtrl: [], lopsided: [],
                 markInk: [],
                 covered: [],
-                lane: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], bareMove: [], iconRow: [], lineLong: [], textShort: [], headActs: [],
+                lane: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], bareMove: [], iconRow: [], inkGap: [], lineLong: [], textShort: [], headActs: [],
                 autofill: [], fieldZoom: [], h1Lines: [], twoWays: [], edge: [], fontLate: [], shift: [], ruleAir: [], rowShape: [], railTail: [], tileGrow: [] }
   const seen = new Set()
 
@@ -1415,6 +1416,40 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
       if (seen.has(key)) continue
       seen.add(key)
       out.bareMove.push(`${name(e)} — без заливки и кромки, а нажатие двигает (${move})`)
+    }
+  }
+
+  /* 4a5f · строка слов одним шагом (слово заказчика 21.10.2026: «с ритмами в этой строке полная
+     херня»). В колонке `data-rhythm` ряд из трёх и больше соседей в одну строку (оценка, «Lab
+     report», «THC < 0.2 %», «EU-grown hemp») меряется по краске: от правого края слова или знака
+     до левого края следующего. Просветы одной строки расходятся больше чем на 2px — находка:
+     поле кнопки под палец прибавлялось к зазору у одних и не у других (15 и 45). */
+  {
+    const inkX = (e) => {
+      const xs = []
+      for (const n of e.querySelectorAll("*")) if (n.matches("svg, img")) { const b = n.getBoundingClientRect(); if (b.width) xs.push(b.left, b.right) }
+      const walker = document.createTreeWalker(e, NodeFilter.SHOW_TEXT)
+      for (let t = walker.nextNode(); t; t = walker.nextNode()) {
+        if (!t.textContent.trim()) continue
+        const r = document.createRange(); r.selectNodeContents(t)
+        for (const b of r.getClientRects()) if (b.width) xs.push(b.left, b.right)
+      }
+      return xs.length ? { l: Math.min(...xs), r: Math.max(...xs) } : null
+    }
+    for (const row of document.querySelectorAll("main [data-rhythm] *")) {
+      const c = getComputedStyle(row)
+      if (!/flex|grid/.test(c.display) || c.flexDirection.startsWith("column")) continue
+      const kids = [...row.children].filter((k) => shown(k))
+      const lines = new Map()
+      for (const k of kids) { const b = k.getBoundingClientRect(); const key = [...lines.keys()].find((y) => Math.abs(y - (b.top + b.height / 2)) <= 4) ?? b.top + b.height / 2; if (!lines.has(key)) lines.set(key, []); lines.get(key).push(k) }
+      for (const line of lines.values()) {
+        if (line.length < 3) continue
+        const ink = line.map(inkX)
+        if (ink.some((x) => !x)) continue
+        ink.sort((a, b) => a.l - b.l)
+        const gaps = ink.slice(1).map((x, i) => Math.round(x.l - ink[i].r))
+        if (Math.max(...gaps) - Math.min(...gaps) > 2) out.inkGap.push(`${name(row)} — просветы строки по краске ${gaps.join(" / ")}px, у строки слов шаг один`)
+      }
     }
   }
 
@@ -3050,7 +3085,7 @@ const found = { lane: [], heroLane: [], placeholder: [], measure: [], target: []
                 anchor: [], outline: [], marker: [], sticky: [], fold: [], theme: [], coarse: [], calm: [],
                 inkDip: [], markInk: [],
                 covered: [],
-                ladder: [], wideCtrl: [], lopsided: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], bareMove: [], iconRow: [], lineLong: [], textShort: [], headActs: [],
+                ladder: [], wideCtrl: [], lopsided: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], bareMove: [], iconRow: [], inkGap: [], lineLong: [], textShort: [], headActs: [],
                 twiceLift: [], sheetSize: [],
                 autofill: [], fieldZoom: [], h1Lines: [], twoWays: [], edge: [], fontLate: [], shift: [], ruleAir: [], rowShape: [], railTail: [], tileGrow: [] }
 
