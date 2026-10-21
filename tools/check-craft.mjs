@@ -174,7 +174,7 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
                 anchor: [], outline: [], marker: [], dark: [], ladder: [], wideCtrl: [], lopsided: [],
                 markInk: [],
                 covered: [],
-                lane: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], lineLong: [], textShort: [], headActs: [],
+                lane: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], bareMove: [], lineLong: [], textShort: [], headActs: [],
                 autofill: [], fieldZoom: [], h1Lines: [], twoWays: [], edge: [], fontLate: [], shift: [], ruleAir: [], rowShape: [], railTail: [], tileGrow: [] }
   const seen = new Set()
 
@@ -1334,6 +1334,32 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
         if (gap <= 3) continue
         if (!steps.some((s) => Math.abs(gap - s) <= 3)) out.inkStep.push(`«${rows[i - 1].what}» → «${rows[i].what}» — ${Math.round(gap)}px, ступени колонки ${steps.map(Math.round).join(" / ")}`)
       }
+    }
+  }
+
+  /* 4a5e · без плиты — без движения (слово заказчика 21.10.2026: «всё, что без окантовки
+     или фона, как Lab report, не может уменьшаться при нажатии, может только менять
+     оттенок, как меню»). Орган, чьё нажатие двигает его (`--press-move` у `press`, `btn`,
+     `word`, фишки, лотка, счётчика, сегмента), без заливки, кромки, тени и плиты-подложки в
+     покое — находка: сжимается одна надпись. Мерится в покое: ручка движения у органа —
+     та, что сработает при нажатии. */
+  {
+    const clear = (c) => c === "transparent" || /rgba\([^)]*,\s*0\)$/.test(c)
+    const painted = (c) => !clear(c.backgroundColor) || (parseFloat(c.borderTopWidth) > 0 && c.borderTopStyle !== "none" && !clear(c.borderTopColor)) || (c.boxShadow && c.boxShadow !== "none")
+    const moves = (e) => /(^|[_\s-])(press|btn|word|chip)(\b|_)/.test(String(e.className)) || !!e.parentElement?.matches('[class*="tray"], [class*="qty"], [class*="seg"]')
+    for (const e of document.querySelectorAll("button, a[href], [role=button]")) {
+      /* Панель вида (`lp-*`) снимается одной командой и в магазин не едет — её органы не судятся. */
+      if (!shown(e) || e.closest("dialog:not([open]), [popover]:not(:popover-open)") || /(^|\s)lp-/.test(String(e.className)) || e.disabled || e.getAttribute("aria-disabled") === "true" || !moves(e)) continue
+      const c = getComputedStyle(e)
+      const move = c.getPropertyValue("--press-move").trim()
+      if (!move || move === "none") continue
+      const b = getComputedStyle(e, "::before"), a = getComputedStyle(e, "::after")
+      const plate = painted(c) || (b.content !== "none" && painted(b)) || (a.content !== "none" && painted(a)) || (e.parentElement && painted(getComputedStyle(e.parentElement)))  // у кнопки в лотке или счётчике плита — их жёлоб
+      if (plate) continue
+      const key = "bareMove " + name(e)
+      if (seen.has(key)) continue
+      seen.add(key)
+      out.bareMove.push(`${name(e)} — без заливки и кромки, а нажатие двигает (${move})`)
     }
   }
 
@@ -2969,7 +2995,7 @@ const found = { lane: [], heroLane: [], placeholder: [], measure: [], target: []
                 anchor: [], outline: [], marker: [], sticky: [], fold: [], theme: [], coarse: [], calm: [],
                 inkDip: [], markInk: [],
                 covered: [],
-                ladder: [], wideCtrl: [], lopsided: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], lineLong: [], textShort: [], headActs: [],
+                ladder: [], wideCtrl: [], lopsided: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], bareMove: [], lineLong: [], textShort: [], headActs: [],
                 twiceLift: [], sheetSize: [],
                 autofill: [], fieldZoom: [], h1Lines: [], twoWays: [], edge: [], fontLate: [], shift: [], ruleAir: [], rowShape: [], railTail: [], tileGrow: [] }
 
