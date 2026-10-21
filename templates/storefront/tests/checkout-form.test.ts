@@ -2,7 +2,8 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readdirSync, readFileSync } from 'node:fs'
 import { parseContact, parseAddress } from '../lib/checkout-form.ts'
-import { MARKET } from '../lib/market.ts'
+import { MARKETS } from '../lib/market.ts'
+const MARKET = MARKETS.RO
 
 const form = (fields: Record<string, string>) => {
   const f = new FormData()

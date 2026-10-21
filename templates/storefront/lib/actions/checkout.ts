@@ -8,6 +8,7 @@ import { t, type Key } from '../i18n/index.ts'
 import { deliveryReady } from '../checkout-steps.ts'
 import { field, parseAddress, parseContact, type FormState, type Values } from '../checkout-form.ts'
 import type { CommerceError, Money } from '../source/contract.ts'
+import { inRequestSite } from '../request-site.ts'
 
 const MESSAGE: Partial<Record<CommerceError, Key>> = {
   'unavailable': 'cart.error.unavailable',
@@ -40,7 +41,7 @@ function refused(lang: Lang, error: CommerceError, values: Values = {}): FormSta
   return { errors: {}, values, message: t(lang, MESSAGE[error] ?? 'cart.error.request') }
 }
 
-export async function saveContact(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
+async function saveContact_(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
   const lang = langFrom(rawLang)
   const parsed = parseContact(lang, form)
   if (!parsed.ok) return { errors: parsed.errors, values: parsed.values, message: t(lang, 'checkout.fix') }
@@ -52,7 +53,7 @@ export async function saveContact(rawLang: string, _prev: FormState, form: FormD
 
 /** Выбор способа. Способ с готовыми подробностями (одна точка магазина или
  *  прежний адрес) — сразу на оплату; иначе — назад на шаг за подробностями. */
-export async function chooseMethod(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
+async function chooseMethod_(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
   const lang = langFrom(rawLang)
   const methodId = field(form, 'method')
   if (!methodId) return { errors: {}, values: {}, message: t(lang, 'delivery.methodMissing') }
@@ -62,7 +63,7 @@ export async function chooseMethod(rawLang: string, _prev: FormState, form: Form
   redirect(hrefFor(lang, { checkout: deliveryReady(r.value.delivery) ? 'payment' : 'delivery' }))
 }
 
-export async function saveAddress(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
+async function saveAddress_(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
   const lang = langFrom(rawLang)
   const parsed = parseAddress(lang, form)
   if (!parsed.ok) return { errors: parsed.errors, values: parsed.values, message: t(lang, 'checkout.fix') }
@@ -74,7 +75,7 @@ export async function saveAddress(rawLang: string, _prev: FormState, form: FormD
   redirect(hrefFor(lang, { checkout: 'payment' }))
 }
 
-export async function choosePoint(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
+async function choosePoint_(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
   const lang = langFrom(rawLang)
   const pointId = field(form, 'point')
   if (!pointId) return { errors: {}, values: {}, message: t(lang, 'delivery.pointMissing') }
@@ -109,7 +110,7 @@ function totalChanged(lang: Lang): FormState {
  *  источник узнаёт — корзина пуста, заказ поставлен только что (`placed`), —
  *  и оно ведёт на «спасибо», где этот заказ и показан. Пустая корзина без
  *  свежего заказа — на корзину (`refused`). */
-export async function placeOrder(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
+async function placeOrder_(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
   const lang = langFrom(rawLang)
   const code = field(form, 'payment')
   if (!code) return { errors: {}, values: {}, message: t(lang, 'payment.missing') }
@@ -122,3 +123,11 @@ export async function placeOrder(rawLang: string, _prev: FormState, form: FormDa
   sessionChanged()
   redirect(hrefFor(lang, { checkout: 'done' }))
 }
+
+/* Каждое действие — с сайтом запроса (lib/request-site.ts): рынок, адрес и
+   каталог внутри — сайта, с которого пришла форма. */
+export async function saveContact(...a: Parameters<typeof saveContact_>): ReturnType<typeof saveContact_> { return inRequestSite(() => saveContact_(...a)) }
+export async function chooseMethod(...a: Parameters<typeof chooseMethod_>): ReturnType<typeof chooseMethod_> { return inRequestSite(() => chooseMethod_(...a)) }
+export async function saveAddress(...a: Parameters<typeof saveAddress_>): ReturnType<typeof saveAddress_> { return inRequestSite(() => saveAddress_(...a)) }
+export async function choosePoint(...a: Parameters<typeof choosePoint_>): ReturnType<typeof choosePoint_> { return inRequestSite(() => choosePoint_(...a)) }
+export async function placeOrder(...a: Parameters<typeof placeOrder_>): ReturnType<typeof placeOrder_> { return inRequestSite(() => placeOrder_(...a)) }

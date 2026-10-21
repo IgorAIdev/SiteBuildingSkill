@@ -2,7 +2,7 @@ import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto'
 import type { Lang } from '../../locale.ts'
 import type { Account, Contact, Customer, Order, OrderStatus, PastOrder, Provider, SavedAddress } from '../contract.ts'
 import { ORDERS_SHOWN, PROVIDERS } from '../contract.ts'
-import { MARKET } from '../../market.ts'
+import { market } from '../../market.ts'
 /* Правило пароля образца — то же, что у формы (lib/account-form.ts). */
 import { PASSWORD_MIN } from '../../account-form.ts'
 import { SAMPLE_CODE } from '../../social.ts'
@@ -68,8 +68,8 @@ export const HISTORY = [
 export function sampleAccount(): SampleAccount {
   const a = newAccount(SAMPLE_EMAIL, SAMPLE_PASSWORD, { firstName: 'Ana', lastName: 'Popescu' }, '0722 123 456')
   a.addresses = [
-    { id: 'a1', street: 'Str. Exemplului 1', city: 'București', region: 'București', postalCode: '010011', country: MARKET.country, isDefault: true },
-    { id: 'a2', street: 'Bd. Eroilor 12, ap. 4', city: 'Cluj-Napoca', region: 'Cluj', postalCode: '400129', country: MARKET.country, isDefault: false },
+    { id: 'a1', street: 'Str. Exemplului 1', city: 'București', region: 'București', postalCode: '010011', country: market().country, isDefault: true },
+    { id: 'a2', street: 'Bd. Eroilor 12, ap. 4', city: 'Cluj-Napoca', region: 'Cluj', postalCode: '400129', country: market().country, isDefault: false },
   ]
   a.orders = HISTORY.map((h) => h.code)
   a.seq = 2

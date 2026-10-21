@@ -1,7 +1,7 @@
 import type { Lang } from './locale.ts'
 import type { Address, Contact } from './source/contract.ts'
 import { t, type Key } from './i18n/index.ts'
-import { MARKET } from './market.ts'
+import { market } from './market.ts'
 
 /* Поля форм магазина — кассы и кабинета (lib/account-form.ts, И771): одно
    имя поля, один предел длины, одна проверка пустого и длинного. */
@@ -63,22 +63,22 @@ export function parseContact(lang: Lang, form: FormData): Parsed<Contact> {
 
 /** Уезд — из закрытого списка рынка: поле выбора шлёт его имя, а чужое имя
  *  (правленый адрес, старая форма) не угадывается — просит выбрать. */
-export const isRegion = (s: string): boolean => (MARKET.regions as readonly string[]).includes(s)
+export const isRegion = (s: string): boolean => (market().regions as readonly string[]).includes(s)
 
 /** Адрес доставки. Страна, запись индекса и список уездов — рынка
- *  (`MARKET`), не формы. */
+ *  (`market()`), не формы. */
 export function parseAddress(lang: Lang, form: FormData): Parsed<Address> {
   const v = read(form, ['street', 'city', 'region', 'postalCode'])
-  const postal = new RegExp(MARKET.postal.pattern)
+  const postal = new RegExp(market().postal.pattern)
   const errors = check(lang, v, {
     street: any,
     city: any,
     region: (s) => (isRegion(s) ? null : t(lang, 'field.regionPick')),
-    postalCode: (s) => (postal.test(s.replace(/\s/g, '')) ? null : t(lang, 'field.postal', { example: MARKET.postal.example })),
+    postalCode: (s) => (postal.test(s.replace(/\s/g, '')) ? null : t(lang, 'field.postal', { example: market().postal.example })),
   })
   if (Object.keys(errors).length) return { ok: false, errors, values: v }
   return {
     ok: true,
-    value: { street: v.street ?? '', city: v.city ?? '', region: v.region ?? '', postalCode: (v.postalCode ?? '').replace(/\s/g, ''), country: MARKET.country },
+    value: { street: v.street ?? '', city: v.city ?? '', region: v.region ?? '', postalCode: (v.postalCode ?? '').replace(/\s/g, ''), country: market().country },
   }
 }

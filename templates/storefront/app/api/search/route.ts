@@ -2,6 +2,7 @@ import { source } from '@/lib/source/index.ts'
 import { DEFAULT_LANG, isLang } from '@/lib/locale.ts'
 import { shelfCard } from '@/lib/view.ts'
 import { hrefFor } from '@/lib/href.ts'
+import { inRequestSite } from '@/lib/request-site.ts'
 
 /* Подсказки поиска в шапке (SearchPane): первые товары того же поиска, что
    у страницы поиска (`source().listing` с `q`), карточками полки — имя,
@@ -10,7 +11,7 @@ import { hrefFor } from '@/lib/href.ts'
    поле работает как прежде: Enter ведёт на страницу поиска. */
 const SHOWN = 6
 
-export async function GET(request: Request) {
+async function GET_(request: Request) {
   const query = new URL(request.url).searchParams
   const asked = query.get('lang') ?? ''
   const lang = isLang(asked) ? asked : DEFAULT_LANG
@@ -24,3 +25,6 @@ export async function GET(request: Request) {
     { headers: { 'Cache-Control': 'private, max-age=60' } },
   )
 }
+
+/* Обработчик — с сайтом запроса (lib/request-site.ts). */
+export async function GET(...a: Parameters<typeof GET_>): ReturnType<typeof GET_> { return inRequestSite(() => GET_(...a)) }
