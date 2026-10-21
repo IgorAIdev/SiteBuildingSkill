@@ -39,7 +39,6 @@ export const SIGN_GROUPS: SignGroup[] = [
     ['google-color', 'вход через Google, «G» в цвете'], ['facebook-color', 'вход через Facebook, «f» в цвете'],
   ] },
   { title: 'Доверие и помощь', lede: 'Сертификаты, лаборатория, защита платежа и поддержка — то, что успокаивает перед покупкой.', signs: [
-    ['eu-stars', 'сделано в ЕС · круг из двенадцати звёзд'],
     ['certificate', 'сертификат'], ['award', 'награда'], ['heart-handshake', 'забота'], ['microscope', 'лаборатория'], ['test-pipe', 'анализ'],
     ['lock-check', 'платёж защищён'], ['shield-lock', 'безопасность'], ['headset', 'поддержка'], ['message-dots', 'пишет'], ['help-circle', 'вопрос'],
   ] },
@@ -55,7 +54,7 @@ export const SIGN_GROUPS: SignGroup[] = [
     ['instagram', 'Instagram'], ['instagram-line', 'Instagram, линией'], ['youtube', 'YouTube'], ['youtube-line', 'YouTube, линией'], ['tiktok', 'TikTok'],
   ] },
   { title: 'Состояния и сообщения', lede: 'Готово, проверено, внимание, ошибка, подсказка.', signs: [
-    ['check', 'галочка'], ['check-circle', 'готово'], ['check-badge', 'проверено'], ['check-shield', 'гарантия'], ['check-file', 'отчёт лаборатории'],
+    ['check', 'галочка'], ['check-circle', 'готово'], ['check-badge', 'проверено'], ['check-shield', 'THC ниже предела'], ['check-file', 'отчёт лаборатории'],
     ['info', 'подсказка'], ['alert-circle', 'ошибка'], ['alert-triangle', 'внимание'],
   ] },
   { title: 'Наличие', lede: 'В наличии, мало, нет: знак в круге и точка — два вида одной строки на карточке товара; выбранный вид — ниже, в образце.', signs: [

@@ -73,7 +73,7 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
                   <div className={s.proofRow}>
                     {view.rating ? <Rating rating={view.rating} /> : null}
                     {view.lab ? <button className={b.btn} data-voice="bare" data-size="sm" type="button" popoverTarget="lab-report"><Icon id="flask" />{view.lab.chip}</button> : null}
-                    {view.trust.map((x) => <span key={x.icon} className={b.btn} data-voice="bare" data-size="sm" data-hang="block" data-static><Icon id={x.icon} />{x.text}</span>)}
+                    {view.trust.map((x) => <span key={x.icon} className={b.btn} data-voice="bare" data-size="sm" data-hang="inline" data-static><Icon id={x.icon} />{x.text}</span>)}
                   </div>
                 ) : null}
               </div>

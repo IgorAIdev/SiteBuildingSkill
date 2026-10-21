@@ -20,7 +20,7 @@ export const CRAFT_FAMILIES = [
   'broken', 'spill', 'offColumn', 'focus', 'wrap', 'anchor', 'covered', 'outline',
   'marker', 'sticky', 'fold', 'theme', 'coarse', 'calm', 'ladder', 'wideCtrl',
   'lopsided', 'sunk', 'stolen', 'inkDip', 'markInk', 'field', 'alone',
-  'catalogueColumns', 'twoAir', 'airOrder', 'bandSeam', 'h1Size', 'headCase', 'paneTop', 'typeRole', 'brandTier', 'headAir', 'partAir', 'pageTop', 'inkStep', 'lineLong', 'textShort', 'headActs', 'twiceLift', 'sheetSize',
+  'catalogueColumns', 'twoAir', 'airOrder', 'bandSeam', 'h1Size', 'headCase', 'paneTop', 'typeRole', 'brandTier', 'headAir', 'partAir', 'pageTop', 'inkStep', 'bareMove', 'iconRow', 'inkGap', 'lineLong', 'textShort', 'headActs', 'twiceLift', 'sheetSize',
   'autofill', 'fieldZoom', 'h1Lines', 'twoWays', 'edge', 'fontLate', 'shift', 'heroLane', 'ruleAir', 'rowShape', 'railTail', 'tileGrow',
 ]
 
@@ -92,6 +92,9 @@ export const CRAFT_LABELS = {
   bandSeam: 'у края полосы (смена фона) воздух над краем и под ним не равен по видимому: от низа соседа до края и от края до заглавных первой строки (И738)',
   airOrder: 'шов между разными блоками не больше шва между частями одного блока — подблоки читаются отдельными блоками (И520)',
   headAir: 'заголовок → его текст (лид, описание, справка) стоит одним воздухом --air-line на всех страницах (И524)',
+  inkGap: 'строка слов (data-rhythm: оценка, «Lab report», факты) с разными видимыми просветами: поле кнопки под палец прибавилось к зазору у одних слов и не у других (слово заказчика 21.10.2026)',
+  iconRow: 'знаки при словах в одной строке разной видимой высоты (по закрашенным пикселям в настоящем размере, больше 1px): тонкая деталь у края знака не прорисовывается, и знак читается мельче соседей (слово заказчика 21.10.2026)',
+  bareMove: 'орган без заливки и кромки сжимается при нажатии: у слова без плиты сжимается одна надпись — оно отвечает только оттенком, как пункт меню (слово заказчика 21.10.2026)',
   pageTop: 'верх страницы не одним шагом: первая строка страницы (крошки, заголовок, слова героя) стоит от низа шапки не шагом головы страницы --air-group — на разных страницах разный верх (слово заказчика 21.10.2026)',
   inkStep: 'видимый просвет колонки (data-rhythm, колонка покупки) не ступень ритма: от низа слова, кнопки или знака до следующих не --sp-2 / --air-line / --air-row / --air-group — поле тихой кнопки или межстрочье края блока добавились к роли (слово заказчика 21.10.2026)',
   partAir: 'раздел с заголовком h2 → следующий такой же внутри одного блока стоит одним воздухом --air-block на всех страницах (И524); часть одного описания → следующая — воздухом строки --air-row (И581)',

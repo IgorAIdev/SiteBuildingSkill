@@ -46,6 +46,10 @@
 .glyph svg{inline-size:var(--glyph-h);block-size:var(--glyph-h);flex:none}
 @media (hover:hover){ .glyph:not(:disabled):hover{color:var(--ink)} }
 .glyph:not(:disabled):active{color:var(--ink)}
+/* Тихий знак без плиты (шапка: поиск, избранное, корзина) при нажатии не сжимается — только
+   полный оттенок, как пункт меню (слово заказчика 21.10.2026, check:craft `bareMove`); знак
+   на снимке (`data-over`) стоит на стекле — плита есть, он сжимается. */
+.glyph:not([data-over]){--press-move:none}
 /* «Открыто» (раскрытие рядом стоит открытым: язык шапки, меню связи; И733) — полное
    слово, как под рукой; подложки у тихого знака нет и открытым. */
 .glyph:has(+ :popover-open){color:var(--ink)}

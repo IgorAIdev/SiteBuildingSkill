@@ -165,6 +165,62 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url))
  *  styles/scale.css): семья `typeRole` сверяет с ними отрисованный текст (И674). */
 const TEXT_ROLES = [...new Set([...readFileSync(new URL('../styles/scale.css', import.meta.url), 'utf8').matchAll(/--([a-z][a-z0-9]*)-weight\s*:/g)].map((m) => m[1]))]
 
+/** Знаки одной строки — одной ВИДИМОЙ высоты (слово заказчика 21.10.2026: «иконки в одной
+ *  строке должны быть одинаковые по высоте»). Знак при слове (колба «Lab report», щит
+ *  «Under 0.2 % THC», знак ЕС) рисуется заново в своём настоящем размере на холсте, и
+ *  высота меряется по пикселям, закрашенным хотя бы наполовину: так видит глаз. По
+ *  рисунку кольцо из двенадцати звёзд было ростом 20, как щит, а на экране звёзды в
+ *  полтора пикселя не прорисовывались, и знак читался ростом внутреннего кольца — 13.
+ *  Соседи по строке (одна коробка строки, одна высота центра) расходятся больше чем
+  *  пиксель — находка (на 13 пикселях разница в 2 видна). Асинхронно: лист знаков читается запросом. */
+const iconRow = async () => {
+  const out = []
+  const sheets = new Map()
+  const sheet = (url) => { if (!sheets.has(url)) sheets.set(url, fetch(url).then((r) => (r.ok ? r.text() : '')).catch(() => '')); return sheets.get(url) }
+  const shown = (e) => { const r = e.getBoundingClientRect(); const c = getComputedStyle(e); return r.width > 0 && r.height > 0 && c.visibility !== 'hidden' }
+  const worded = [...document.querySelectorAll('main svg, header svg')].filter((s) =>
+    shown(s) && s.querySelector('use') && !s.closest('dialog:not([open]), [popover]:not(:popover-open)') &&
+    [...s.parentElement.childNodes].some((n) => n !== s && n.textContent.trim()))
+  const ink = async (s) => {
+    const use = s.querySelector('use')
+    const [file, id] = (use.getAttribute('href') || use.getAttribute('xlink:href') || '').split('#')
+    if (!id) return null
+    const src = file ? await sheet(file) : document.documentElement.outerHTML
+    const open = src.match(new RegExp(`<symbol[^>]*id="${id}"[^>]*>`))?.[0]
+    if (!open) return null
+    const body = src.slice(src.indexOf(open) + open.length).split('</symbol>')[0].replace(/currentColor/g, '#000')
+    /* Окно знака бывает не квадратом (флаг, знак оплаты): холст — по рамке знака на странице. */
+    const px = Math.round(s.getBoundingClientRect().height), wd = Math.max(1, Math.round(s.getBoundingClientRect().width))
+    const filled = /fill="currentColor"/.test(open)
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${wd}" height="${px}" viewBox="${open.match(/viewBox="([^"]+)"/)?.[1] ?? '0 0 24 24'}" fill="${filled ? '#000' : 'none'}" stroke="${filled ? 'none' : '#000'}" stroke-width="${parseFloat(getComputedStyle(s).strokeWidth) || 2}" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`
+    const img = new Image()
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg)
+    try { await img.decode() } catch { return null }
+    const cv = document.createElement('canvas'); cv.width = wd; cv.height = px
+    const cx = cv.getContext('2d'); cx.drawImage(img, 0, 0, px, px)
+    const data = cx.getImageData(0, 0, wd, px).data
+    let top = -1, bottom = -1
+    for (let y = 0; y < px; y++) for (let x = 0; x < wd; x++) if (data[(y * wd + x) * 4 + 3] >= 128) { if (top < 0) top = y; bottom = y; break }
+    return top < 0 ? null : { id, h: bottom - top + 1 }
+  }
+  const rows = new Map()
+  for (const s of worded) {
+    const r = s.getBoundingClientRect()
+    const box = s.parentElement.parentElement
+    const key = [...rows.keys()].find((k) => k.box === box && Math.abs(k.cy - (r.top + r.height / 2)) <= 4) ?? { box, cy: r.top + r.height / 2 }
+    if (!rows.has(key)) rows.set(key, [])
+    rows.get(key).push(s)
+  }
+  for (const list of rows.values()) {
+    if (list.length < 2) continue
+    const got = (await Promise.all(list.map(ink))).filter(Boolean)
+    if (got.length < 2) continue
+    const hs = got.map((g) => g.h)
+    if (Math.max(...hs) - Math.min(...hs) > 1) out.push(`${got.map((g) => `${g.id} ${g.h}px`).join(', ')} — знаки одной строки разной видимой высоты`)
+  }
+  return out
+}
+
 /** Что меряется в самой странице. Одной функцией, потому что она уезжает
  *  в браузер целиком и ничего оттуда не импортирует. */
 const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines, autofill, textRoles, tileFace }) => {
@@ -174,7 +230,7 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
                 anchor: [], outline: [], marker: [], dark: [], ladder: [], wideCtrl: [], lopsided: [],
                 markInk: [],
                 covered: [],
-                lane: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], lineLong: [], textShort: [], headActs: [],
+                lane: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], bareMove: [], iconRow: [], inkGap: [], lineLong: [], textShort: [], headActs: [],
                 autofill: [], fieldZoom: [], h1Lines: [], twoWays: [], edge: [], fontLate: [], shift: [], ruleAir: [], rowShape: [], railTail: [], tileGrow: [] }
   const seen = new Set()
 
@@ -1333,6 +1389,66 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
         const gap = rows[i].t - rows[i - 1].b
         if (gap <= 3) continue
         if (!steps.some((s) => Math.abs(gap - s) <= 3)) out.inkStep.push(`«${rows[i - 1].what}» → «${rows[i].what}» — ${Math.round(gap)}px, ступени колонки ${steps.map(Math.round).join(" / ")}`)
+      }
+    }
+  }
+
+  /* 4a5e · без плиты — без движения (слово заказчика 21.10.2026: «всё, что без окантовки
+     или фона, как Lab report, не может уменьшаться при нажатии, может только менять
+     оттенок, как меню»). Орган, чьё нажатие двигает его (`--press-move` у `press`, `btn`,
+     `word`, фишки, лотка, счётчика, сегмента), без заливки, кромки, тени и плиты-подложки в
+     покое — находка: сжимается одна надпись. Мерится в покое: ручка движения у органа —
+     та, что сработает при нажатии. */
+  {
+    const clear = (c) => c === "transparent" || /rgba\([^)]*,\s*0\)$/.test(c)
+    const painted = (c) => !clear(c.backgroundColor) || (parseFloat(c.borderTopWidth) > 0 && c.borderTopStyle !== "none" && !clear(c.borderTopColor)) || (c.boxShadow && c.boxShadow !== "none")
+    const moves = (e) => /(^|[_\s-])(press|btn|word|chip)(\b|_)/.test(String(e.className)) || !!e.parentElement?.matches('[class*="tray"], [class*="qty"], [class*="seg"]')
+    for (const e of document.querySelectorAll("button, a[href], [role=button]")) {
+      /* Панель вида (`lp-*`) снимается одной командой и в магазин не едет — её органы не судятся. */
+      if (!shown(e) || e.closest("dialog:not([open]), [popover]:not(:popover-open)") || /(^|\s)lp-/.test(String(e.className)) || e.disabled || e.getAttribute("aria-disabled") === "true" || !moves(e)) continue
+      const c = getComputedStyle(e)
+      const move = c.getPropertyValue("--press-move").trim()
+      if (!move || move === "none") continue
+      const b = getComputedStyle(e, "::before"), a = getComputedStyle(e, "::after")
+      const plate = painted(c) || (b.content !== "none" && painted(b)) || (a.content !== "none" && painted(a)) || (e.parentElement && painted(getComputedStyle(e.parentElement)))  // у кнопки в лотке или счётчике плита — их жёлоб
+      if (plate) continue
+      const key = "bareMove " + name(e)
+      if (seen.has(key)) continue
+      seen.add(key)
+      out.bareMove.push(`${name(e)} — без заливки и кромки, а нажатие двигает (${move})`)
+    }
+  }
+
+  /* 4a5f · строка слов одним шагом (слово заказчика 21.10.2026: «с ритмами в этой строке полная
+     херня»). В колонке `data-rhythm` ряд из трёх и больше соседей в одну строку (оценка, «Lab
+     report», «THC < 0.2 %», «EU-grown hemp») меряется по краске: от правого края слова или знака
+     до левого края следующего. Просветы одной строки расходятся больше чем на 2px — находка:
+     поле кнопки под палец прибавлялось к зазору у одних и не у других (15 и 45). */
+  {
+    const inkX = (e) => {
+      const xs = []
+      for (const n of e.querySelectorAll("*")) if (n.matches("svg, img")) { const b = n.getBoundingClientRect(); if (b.width) xs.push(b.left, b.right) }
+      const walker = document.createTreeWalker(e, NodeFilter.SHOW_TEXT)
+      for (let t = walker.nextNode(); t; t = walker.nextNode()) {
+        if (!t.textContent.trim()) continue
+        const r = document.createRange(); r.selectNodeContents(t)
+        for (const b of r.getClientRects()) if (b.width) xs.push(b.left, b.right)
+      }
+      return xs.length ? { l: Math.min(...xs), r: Math.max(...xs) } : null
+    }
+    for (const row of document.querySelectorAll("main [data-rhythm] *")) {
+      const c = getComputedStyle(row)
+      if (!/flex|grid/.test(c.display) || c.flexDirection.startsWith("column")) continue
+      const kids = [...row.children].filter((k) => shown(k))
+      const lines = new Map()
+      for (const k of kids) { const b = k.getBoundingClientRect(); const key = [...lines.keys()].find((y) => Math.abs(y - (b.top + b.height / 2)) <= 4) ?? b.top + b.height / 2; if (!lines.has(key)) lines.set(key, []); lines.get(key).push(k) }
+      for (const line of lines.values()) {
+        if (line.length < 3) continue
+        const ink = line.map(inkX)
+        if (ink.some((x) => !x)) continue
+        ink.sort((a, b) => a.l - b.l)
+        const gaps = ink.slice(1).map((x, i) => Math.round(x.l - ink[i].r))
+        if (Math.max(...gaps) - Math.min(...gaps) > 2) out.inkGap.push(`${name(row)} — просветы строки по краске ${gaps.join(" / ")}px, у строки слов шаг один`)
       }
     }
   }
@@ -2969,7 +3085,7 @@ const found = { lane: [], heroLane: [], placeholder: [], measure: [], target: []
                 anchor: [], outline: [], marker: [], sticky: [], fold: [], theme: [], coarse: [], calm: [],
                 inkDip: [], markInk: [],
                 covered: [],
-                ladder: [], wideCtrl: [], lopsided: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], lineLong: [], textShort: [], headActs: [],
+                ladder: [], wideCtrl: [], lopsided: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], bareMove: [], iconRow: [], inkGap: [], lineLong: [], textShort: [], headActs: [],
                 twiceLift: [], sheetSize: [],
                 autofill: [], fieldZoom: [], h1Lines: [], twoWays: [], edge: [], fontLate: [], shift: [], ruleAir: [], rowShape: [], railTail: [], tileGrow: [] }
 
@@ -3083,6 +3199,8 @@ async function visit(path, w, { finger, dark = false }) {
       textRoles: TEXT_ROLES,
       tileFace: CONTROL.faceMd,
     })
+    /* Знаки одной строки — одной видимой высоты: меряется отдельно, асинхронно (iconRow). */
+    if (!dark) r.iconRow = await page.evaluate(iconRow)
 
     /* ── приклеенное — в НИЗКОМ окне ───────────────────────────────────────
        Приклеенный блок выше окна нельзя увидеть целиком никогда: его низ

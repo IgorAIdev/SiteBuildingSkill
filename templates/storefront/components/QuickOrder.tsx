@@ -76,16 +76,18 @@ export function QuickOrder({ view }: { view: QuickView }) {
           </div>
           {/* Мессенджеры — вид панели (`--quick-look`, И470): плитками по две
               в ряд — знак над именем — или строками «Order via …». Строка —
-              тихая кнопка сайта, знак — краской своей марки (`data-mark`,
+              та же тихая строка, что в меню трубки и окне помощи (ReachList,
+              правило 10; слово заказчика 21.10.2026: кнопки с обводкой рядом
+              с тихим окном контактов — разнобой), знак — краской своей марки (`data-mark`,
               И471: cbdin.bg, WhatsApp Brand Guidelines). Имя ссылки для
               чтеца — полное «Order via …», видимое слово в нём есть
               (WCAG 2.5.3). */}
-          <ul className={`${p.grid} ${s.rows}`}>
+          <ul className={`${p.grid} ${s.rows} ${rl.group}`} data-size="lg">
             {rows.map((r) => (
               <li key={r.key}>
                 {r.href
-                  ? <a className={`${b.btn} ${s.row} ${rl.mark}`} data-size="lg" data-stack="" data-mark={r.key} href={r.href} target="_blank" rel="noopener noreferrer" aria-label={r.label}><Icon id={SIGN[r.key]} /><span className={s.name}>{r.name}</span><span className={s.via}>{r.label}</span></a>
-                  : <span className={`${b.btn} ${s.row} ${rl.mark}`} data-size="lg" data-stack="" data-mark={r.key} aria-disabled="true" aria-label={r.label}><Icon id={SIGN[r.key]} /><span className={s.name}>{r.name}</span><span className={s.via}>{r.label}</span></span>}
+                  ? <a className={`${rl.row} ${rl.tile} ${rl.mark}`} data-mark={r.key} href={r.href} target="_blank" rel="noopener noreferrer" aria-label={r.label}><Icon id={SIGN[r.key]} /><span className={`${rl.name} ${rl.short}`}>{r.name}</span><span className={`${rl.name} ${rl.long}`}>{r.label}</span></a>
+                  : <span className={`${rl.row} ${rl.tile} ${rl.mark}`} data-mark={r.key} aria-disabled="true" aria-label={r.label}><Icon id={SIGN[r.key]} /><span className={`${rl.name} ${rl.short}`}>{r.name}</span><span className={`${rl.name} ${rl.long}`}>{r.label}</span></span>}
               </li>
             ))}
           </ul>

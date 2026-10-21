@@ -429,7 +429,7 @@
    (слово заказчика 05.10.2026: «само меню убирай изображения, иконки
    категорий можно использовать»). Ростом с букву, приглушённый, как знак
    строки меню набора (styles/menu.module.css). */
-.nav:is(:popover-open, [data-leaving]) .sign{display:inline-flex;flex:none;color:var(--ink-soft)}
+.nav:is(:popover-open, [data-leaving]) .sign{display:inline-flex;flex:none;color:var(--sign-ink, var(--pop-ink))} /* знак полки в шторке — фирменной краской, как в меню (styles/menu.module.css) */
 .nav:is(:popover-open, [data-leaving]) .sign svg{inline-size:var(--icon-size);block-size:var(--icon-size)}
 .nav:is(:popover-open, [data-leaving]) .name{flex:1 1 auto}
 /* Слово меню — всегда с заглавной (слово заказчика 25.09.2026: «в меню

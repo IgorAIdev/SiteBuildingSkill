@@ -237,10 +237,11 @@ test('places do not restyle a button: Lab report, search Clear, messenger tiles'
   assert.doesNotMatch(read('../components/ProductView.tsx'), /s\.lab\b/)
   assert.doesNotMatch(bare(read('../components/ProductView.module.css')), /(^|\})\.lab\{/)
   assert.doesNotMatch(bare(read('../components/SearchPane.module.css')).match(/(?:^|\})\s*\.clear\{([^}]*)\}/)?.[1] ?? '', /color:/)
-  assert.equal([...read('../components/QuickOrder.tsx').matchAll(/\$\{s\.row\} \$\{rl\.mark\}`\} data-size="lg" data-stack=""/g)].length, 2)
+  /* Мессенджеры быстрого заказа — тихая строка путей, как в окне контактов (слово
+     заказчика 21.10.2026): не кнопка с обводкой; место ставит только сетку. */
+  assert.equal([...read('../components/QuickOrder.tsx').matchAll(/`\$\{rl\.row\} \$\{rl\.tile\} \$\{rl\.mark\}`\} data-mark=\{r\.key\}/g)].length, 2)
   const quick = bare(read('../components/QuickOrder.module.css'))
-  assert.match(quick, /(^|\})\s*\.row\{inline-size:100%;block-size:100%\}/)
-  assert.doesNotMatch(quick, /\.row svg/)
+  assert.doesNotMatch(quick, /\.row\b|svg|padding-|border/)
   assert.match(bare(read('../styles/btn.module.css')), /\.btn\[data-stack\]\{flex-direction:column;gap:calc\(var\(--btn-h\) \* \.1\);padding:calc\(var\(--btn-h\) \* \.22\) calc\(var\(--btn-h\) \* \.2\);--btn-icon:1\.5em\}/)
 })
 
