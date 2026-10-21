@@ -29,22 +29,13 @@
    высоты и ещё одну серую площадь). */
 .what{margin:0;font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--cardname-weight);font-variant-numeric:tabular-nums}
 
-/* Мессенджеры — вид панели `--quick-look` (И470). Плитки (умолчание) — две
-   колонки всегда: ячейка без пола, ряд — ровно две (ручки примитива
-   `grid`); знак над именем. Строки — одна колонка, знак слева, надпись
-   «Order via …», как у cbdin.bg. Геометрия — от роста кнопки (правило 2). */
-.rows{--cols:2;--cols-min:2;--cell-min:0px;--grid-gap:var(--gap-targets);list-style:none;margin:0;padding:0}
-/* Плитка — кнопка модуля «знак над словом» (`data-stack`: столбцом, поле и знак от
-   роста); место ставит только ячейку (разбор 08.10.2026, И790: поле и знак плитки
-   весили здесь как `.btn`, и порядок кусков CSS решал, чьи они). */
-.row{inline-size:100%;block-size:100%}
-.via{display:none}
-/* Вид строками — раскладка плитки на месте, весом выше `.btn[data-stack]` (0,2,1). */
+/* Мессенджеры — вид панели `--quick-look` (И470): плитки по две в ряд
+   (умолчание) или строки во всю ширину. Обе формы — тихая строка путей
+   (ReachList.module.css, `tile`): без обводки, подложка только под рукой,
+   как в окне контактов (слово заказчика 21.10.2026). Здесь — только сетка. */
+.rows{--cols:2;--cols-min:2;--cell-min:0px;--grid-gap:0px;list-style:none;margin:0;padding:0}
 @container style(--quick-look: rows){
   .rows{--cols:1;--cols-min:1}
-  .rows > li > .row{flex-direction:row;justify-content:flex-start;gap:calc(var(--btn-h) * .25);padding-block:0;padding-inline:calc(var(--btn-h) * .4)}
-  .name{display:none}
-  .via{display:inline}
 }
 /* Знак — краской своей марки: класс `mark` списка путей (ReachList.module.css). */
 
