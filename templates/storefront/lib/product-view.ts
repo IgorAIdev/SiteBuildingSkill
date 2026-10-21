@@ -80,7 +80,7 @@ export type ProductPageView = {
   /** Факты доверия в строке протокола (заказчик 21.10.2026: «0.2% и сделано в ЕС
    *  в строку с lab report, иконки для них»): THC ниже предела рынка — по
    *  протоколу партии; происхождение — из данных товара. Нет данных — нет факта. */
-  trust: { icon: 'cannabis' | 'eu-stars'; text: string }[]
+  trust: { icon: 'cannabis-tilt' | 'eu-stars'; text: string }[]
   rating: RatingView | null
   related: ShelfCard[]; relatedTitle: string
   /** Выход ко всей полке товара у «похожих» — та же строка, что у полки
@@ -155,7 +155,7 @@ function trustOf(lang: Lang, product: Product, chosen: Product['variants'][numbe
   const report = product.labReports.find((r) => r.batch === chosen?.batch) ?? product.labReports[0] ?? null
   const limit = market().thcLimit
   return [
-    ...(report && report.thcPercent < limit ? [{ icon: 'cannabis' as const, text: t(lang, 'product.thcUnder', { limit: percent(lang, limit, 1) }) }] : []),
+    ...(report && report.thcPercent < limit ? [{ icon: 'cannabis-tilt' as const, text: t(lang, 'product.thcUnder', { limit: percent(lang, limit, 1) }) }] : []),
     ...(product.origin === 'EU' ? [{ icon: 'eu-stars' as const, text: t(lang, 'product.origin.EU') }] : []),
   ]
 }
