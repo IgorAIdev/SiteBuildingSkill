@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next'
 import { headers } from 'next/headers'
 import { SITE_HEADER, DEFAULT_SITE, siteById } from '@/lib/sites.ts'
 import { siteUrlOf } from '@/lib/seo.ts'
+import { runWithSite } from '@/lib/site-now.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { source, content } from '@/lib/source/index.ts'
 
@@ -15,7 +16,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const site = siteById((await headers()).get(SITE_HEADER) ?? '') ?? DEFAULT_SITE
   const { langs, defaultLang: DEFAULT_LANG } = site
   const absolute = (path: string) => `${siteUrlOf(site)}${path}`
-  const [cols, effects, ids, docs, posts] = await Promise.all([source().collections(DEFAULT_LANG), source().effects(DEFAULT_LANG), source().productIds(), content().docs(DEFAULT_LANG), content().posts(DEFAULT_LANG)])
+  /* Каталог — сайта запроса: его источник и канал (lib/source/index.ts). */
+  const [cols, effects, ids, docs, posts] = await runWithSite(site.id, () => Promise.all([source().collections(DEFAULT_LANG), source().effects(DEFAULT_LANG), source().productIds(), content().docs(DEFAULT_LANG), content().posts(DEFAULT_LANG)]))
   if (!cols.ok || !effects.ok || !ids.ok || !docs.ok || !posts.ok) throw new Error('sitemap: источник не ответил — карта не пишется пустой')
   const paths = langs.flatMap((lang) => [
     hrefFor(lang, { home: true }),

@@ -15,16 +15,20 @@ import { isLang, type Lang } from './locale.ts'
 /** `url` — адрес сайта для canonical, карты и JSON-LD (`https://cbdbuy.be`);
  *  нет — окружение `SITE_URL` (lib/seo.ts). */
 /** `market` — код пакета рынка (lib/market.ts: `RO`, `BE`, `HR`). */
-export type Site = { id: string; hosts: string[]; langs: Lang[]; defaultLang: Lang; url: string | null; market: string }
+/** `source` — откуда каталог сайта (`sample` образец, `vendure` движок);
+ *  нет — окружение `SOURCE`. `channel` — канал Vendure сайта (рынок у движка —
+ *  канал: свои товары, валюта, цены, языки, налоги, доставка); нет —
+ *  окружение `VENDURE_CHANNEL_TOKEN`. */
+export type Site = { id: string; hosts: string[]; langs: Lang[]; defaultLang: Lang; url: string | null; market: string; source: string | null; channel: string | null }
 
 /** Запись реестра как она лежит в файле: языки — словами, адреса — по желанию. */
-type Row = { id: string; hosts: string[]; langs: string[]; defaultLang: string; url?: string; market: string }
+type Row = { id: string; hosts: string[]; langs: string[]; defaultLang: string; url?: string; market: string; source?: string; channel?: string }
 
 const sites: Site[] = (REGISTRY.sites as Row[]).map((s) => {
   const langs = s.langs.filter(isLang)
   if (langs.length !== s.langs.length) throw new Error(`sites.json: у сайта «${s.id}» язык без перевода — ${s.langs.filter((l) => !isLang(l)).join(', ')}`)
   if (!isLang(s.defaultLang) || !langs.includes(s.defaultLang)) throw new Error(`sites.json: основной язык сайта «${s.id}» не из его языков`)
-  return { id: s.id, hosts: s.hosts.map((h) => h.toLowerCase()), langs, defaultLang: s.defaultLang, url: s.url ?? null, market: s.market }
+  return { id: s.id, hosts: s.hosts.map((h) => h.toLowerCase()), langs, defaultLang: s.defaultLang, url: s.url ?? null, market: s.market, source: s.source ?? null, channel: s.channel ?? null }
 })
 
 export const SITES: readonly Site[] = sites
