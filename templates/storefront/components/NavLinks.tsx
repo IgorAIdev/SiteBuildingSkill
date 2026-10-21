@@ -197,7 +197,7 @@ export function NavLinks({ links, className, more, overflow, all = '' }: { links
             </SiteLink>
             {l.menu ? (
               <>
-                <button className={`${b.btn} ${s.params}`} data-voice="bare" data-pager="" type="button" aria-expanded={shown} aria-controls={id} aria-label={more.replace('{name}', l.label)} onClick={() => setOpen(shown ? null : l.href)}>
+                <button className={`${b.btn} ${s.params}`} data-voice="bare" data-pager="" type="button" aria-expanded={shown} aria-controls={id} aria-label={l.facets.length ? more.replace('{name}', l.label) : l.label} onClick={() => setOpen(shown ? null : l.href)}>
                   <Turn />
                 </button>
                 <div className={s.paramsPanel} id={id} hidden={!shown}>
