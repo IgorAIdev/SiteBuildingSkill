@@ -2,9 +2,15 @@
    общий модуль (styles/pane.module.css, `data-pane="top"`): шапка с заголовком
    стоит, поле, действия и подсказки прокручиваются. Они стоят в мере страницы
    (`wrap`), как строка шапки над ними. */
-.form{inline-size:100%;display:flex;align-items:center;gap:var(--gap-row);flex:1 1 auto;min-inline-size:0}
-.form > svg{flex:none;inline-size:1.25em;block-size:1.25em;color:var(--ink-soft)}
+/* Лупа — внутри поля, у его начала (как у поиска магазинов; слово заказчика 21.10.2026:
+   «поиск проверь ритмы» — лупа стояла снаружи, левее поля, и поле начиналось не от края
+   строк под ним). Поле во всю строку; слово набора отступает на знак: поле поля
+   (`form.module.css`, `.box`: доля роста органа) + знак + зазор строки. */
+.form{position:relative;inline-size:100%;display:flex;align-items:center;flex:1 1 auto;min-inline-size:0}
+.form > svg{position:absolute;inset-inline-start:var(--sp-2);inline-size:1.25em;block-size:1.25em;color:var(--ink-soft);pointer-events:none}
 .input{flex:1 1 auto;min-inline-size:0}
+/* Два класса — место сильнее поля `.box` при любом порядке кусков сборки (И755). */
+.form .input{padding-inline-start:calc(var(--sp-2) + 1.25em + var(--gap-row))}
 .input::-webkit-search-cancel-button{appearance:none}
 /* Ритм окна: поле — одна группа, подпись и строки под ним — вторая (`list`), между группами воздух
    одной мысли, внутри группы строки идут шагом соседних целей, а не воздухом строки; сверху поле
