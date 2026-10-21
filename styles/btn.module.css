@@ -72,6 +72,12 @@
   --press-fill:color-mix(in oklab, var(--press-bg), var(--press-ink) var(--state-press));
   transform:var(--press-move);
 }
+/* Кнопка со знаком сжимается одной картинкой (`will-change`): знак рисуется
+   штрихом, который не масштабируется (`vector-effect`, styles/icons.svg), и
+   без своего слоя браузер перерисовывал его отдельно от кнопки, на кадр позже —
+   корзинка на «Add to cart» скакала при нажатии (заказчик 21.10.2026: «кнопка и
+   корзинка уменьшаются не одновременно»). Слой — только у кнопок со знаком. */
+.press:has(svg){will-change:transform}
 @media (prefers-reduced-motion:reduce){
   .press{transition:background-color var(--hover-t) var(--ease), border-color var(--hover-t) var(--ease), box-shadow var(--hover-t) var(--ease), color var(--hover-t) var(--ease), backdrop-filter var(--hover-t) var(--ease)}
   .press:not(:disabled):not([aria-disabled='true']):active,
