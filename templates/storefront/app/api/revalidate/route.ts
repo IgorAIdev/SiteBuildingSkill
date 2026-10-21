@@ -6,7 +6,7 @@ import { sameSecret } from '@/lib/same-secret.ts'
    сбрасывает. Профиль `max` — «устарело, пересчитай»: первый запрос ещё
    получает прежнюю страницу и запускает пересчёт, следующий — новую (вид
    меняется через секунды). Не `expire: 0`: он стирает запись страницы, а
-   у языков `dynamicParams = false` (app/[lang]/layout.tsx) — и Next,
+   у языков `dynamicParams = false` (app/[site]/[lang]/layout.tsx) — и Next,
    не найдя записи, отвечает «не найдено» вместо пересчёта (NoFallbackError,
    поймано на `next start` 24.09.2026; И270). */
 const TAGS = ['look', 'catalog'] as const

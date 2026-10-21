@@ -249,7 +249,7 @@ test('panel pairs: every button axis option × palette agrees with the kit butto
 })
 
 test('panel removal: the panel lines go, the chosen header stays without its marks', () => {
-  assert.deepEqual(OWNED, ['look-panel', 'app/look-panel', 'app/[lang]/(look-panel)'])
+  assert.deepEqual(OWNED, ['look-panel', 'app/look-panel', 'app/[site]/[lang]/(look-panel)'])
   const shell = stripPanel(read('components/Shell.tsx'))
   assert.ok(!shell.includes('look-panel'))
   assert.match(shell, /<style href="look" precedence="look">/)

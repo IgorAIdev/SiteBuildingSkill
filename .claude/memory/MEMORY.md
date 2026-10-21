@@ -33,3 +33,4 @@
 - [Home: product first](home-product-first.md) — product at the top, trust/proof strip (lab, delivery, returns) last before the footer; owner overrode "proof-first" research (13.10.2026)
 - [cbdshop.hr is Croatia](cbdshop-is-croatia.md) — storefront4 = Croatia (hr + en); ro/hu removed 15.10.2026; sample legal texts still Romanian, replace before launch
 - [Show in chat, not ports](show-in-chat-not-ports.md) — look questions and effects drawn live in the chat; no extra storefront servers to show him (20.10.2026)
+- [One storefront, all domains](one-storefront-all-domains.md) — owner 21.10.2026: sites are data (host → site → langs, market, look, Vendure channel, Payload site), never a new storefront copy per domain; Belgium cbdbuy.be first, Croatia cbdshop.hr later

@@ -160,7 +160,7 @@ test('the free-delivery strip says what is left, then that it is unlocked; no th
    налепил»; плашка тоном внутри листа — И772), и данных на неё страница не собирает. */
 test('the cart page has no pledges plate and gathers no data for one', async () => {
   const view = readFileSync(new URL('../components/CartView.tsx', import.meta.url), 'utf8')
-  const page = readFileSync(new URL('../app/[lang]/cart/page.tsx', import.meta.url), 'utf8')
+  const page = readFileSync(new URL('../app/[site]/[lang]/cart/page.tsx', import.meta.url), 'utf8')
   assert.doesNotMatch(view, /Pledges/)
   assert.doesNotMatch(page, /paymentMethods|deliveryMethods|returnDays/)
   const v = cartView('en', await fixtureCart(), null)
@@ -195,7 +195,7 @@ test('the cart page puts the lines on a sheet like the summary', () => {
    поиска); строк категорий нет — они в меню над страницей (слово заказчика 20.10.2026: «в избранном не нужно
    повторять категории… если нет товаров, предложи best sale»; прежде — экран пустой корзины, И689). */
 test('the empty favourites offers best sellers, not the category rows of the menu', async () => {
-  const page = readFileSync(new URL('../app/[lang]/saved/page.tsx', import.meta.url), 'utf8')
+  const page = readFileSync(new URL('../app/[site]/[lang]/saved/page.tsx', import.meta.url), 'utf8')
   assert.match(page, /<StateScreen level=\{1\} kind="empty" title=\{t\(lang, 'saved\.empty'\)\} lead=\{t\(lang, 'saved\.emptyLead'\)\}/)
   assert.match(page, /sort: 'popular'/)
   assert.match(page, /<Shelf title=\{t\(lang, 'shelf\.popular'\)\}/)

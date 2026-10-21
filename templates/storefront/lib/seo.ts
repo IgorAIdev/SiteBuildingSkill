@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
-import { LOCALES, DEFAULT_LANG, type Lang } from './locale.ts'
+import type { Lang } from './locale.ts'
+import { siteNow } from './site-now.ts'
+import type { Site } from './sites.ts'
 import { CATALOG_IS_REAL } from './flags.ts'
 
 /** Адрес сайта для canonical, hreflang, карты сайта и JSON-LD. Пока каталог —
@@ -13,7 +15,10 @@ export function siteUrlFrom(isReal: boolean, env: Record<string, string | undefi
   if (isReal) throw new Error('SITE_URL не задан, а каталог настоящий (CATALOG_IS_REAL): canonical, hreflang, карта сайта и JSON-LD ушли бы на localhost. Задайте SITE_URL=https://… в окружении сборки и сервера.')
   return 'http://localhost:3020'
 }
-export const SITE_URL = () => siteUrlFrom(CATALOG_IS_REAL, process.env)
+/* Адрес — у сайта запроса (реестр, `url`); у сайта без адреса — окружение
+   (`SITE_URL`), как было до многих сайтов (lib/sites.ts). */
+export const siteUrlOf = (site: Site): string => site.url ?? siteUrlFrom(CATALOG_IS_REAL, process.env)
+export const SITE_URL = () => siteUrlOf(siteNow())
 export const absolute = (path: string) => `${SITE_URL()}${path}`
 const OG: Record<Lang, string> = { ro: 'ro_RO', en: 'en_RO', hu: 'hu_RO' }
 
@@ -26,8 +31,10 @@ export const headCase = (lang: Lang, title: string) => title.replace(/^\p{Ll}/u,
  *  x-default на основной. `path` — та же функция адреса, что у ссылок.
  *  Пока каталог — образец, страница закрыта от обхода (флаг настоящести). */
 export function toMetadata(lang: Lang, page: { title: string; description: string; path: (l: Lang) => string; index?: boolean }): Metadata {
-  const languages: Record<string, string> = Object.fromEntries(LOCALES.map((l) => [l, absolute(page.path(l))]))
-  languages['x-default'] = absolute(page.path(DEFAULT_LANG))
+  /* Языки — сайта запроса: у бельгийского сайта нет хорватской страницы. */
+  const site = siteNow()
+  const languages: Record<string, string> = Object.fromEntries(site.langs.map((l) => [l, absolute(page.path(l))]))
+  languages['x-default'] = absolute(page.path(site.defaultLang))
   const open = CATALOG_IS_REAL && page.index !== false
   const title = headCase(lang, page.title)
   return {

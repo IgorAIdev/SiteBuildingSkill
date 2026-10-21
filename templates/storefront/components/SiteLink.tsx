@@ -16,7 +16,7 @@ import type { AnchorHTMLAttributes } from 'react'
    мимо этого файла.
 
    Язык — первый сегмент адреса, а корень страницы лежит под ним
-   (`app/[lang]/layout.tsx`): смена языка — тот же корневой макет с другим
+   (`app/[site]/[lang]/layout.tsx`): смена языка — тот же корневой макет с другим
    параметром, то есть мягкий переход, а не загрузка. Образец — документация
    Next.js: «Navigating across multiple root layouts will cause a full page
    load» (nextjs.org/docs/app/api-reference/file-conventions/layout); у

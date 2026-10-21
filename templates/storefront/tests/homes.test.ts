@@ -31,7 +31,7 @@ test('home: a block type the recipe does not name still stands, at the end, in d
 })
 
 test('home: the page marks the tile dress it draws, and the recipe names every block once', () => {
-  assert.match(read('app/[lang]/page.tsx'), /data-home=\{look\.home\}/)
+  assert.match(read('app/[site]/[lang]/page.tsx'), /data-home=\{look\.home\}/)
   const slots = RECIPE.map(([slot]) => slot)
   assert.equal(new Set(slots).size, slots.length, 'место не повторяется')
   for (const type of ['hero', 'effects', 'featured', 'faq', 'story']) assert.ok(slots.includes(type as never), type)

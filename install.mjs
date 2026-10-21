@@ -661,12 +661,15 @@ if (STOREFRONT) {
   moved.push('вид витрины: список свойств и каталог панели')
   if (LANG) {
     /* Строку DEFAULT_LANG читает tools/routes.mjs регуляркой — запись та же,
-       меняется только код; корень переадресуется туда же. */
+       меняется только код. Корень ведёт на основной язык сайта по умолчанию
+       (lib/sites.json, `defaultLang`; переадресует прокладка proxy.ts). */
     const localeFile = join(OUT, 'lib/locale.ts')
-    const configFile = join(OUT, 'next.config.ts')
     const locale = readFileSync(localeFile, 'utf8').replace(/(export const DEFAULT_LANG: Lang = ')[a-z-]+(')/, `$1${LANG}$2`)
     writeFileSync(localeFile, locale)
-    writeFileSync(configFile, readFileSync(configFile, 'utf8').replace(/(source: '\/', destination: '\/)[a-z-]+(')/, `$1${LANG}$2`))
+    const sitesFile = join(OUT, 'lib/sites.json')
+    const reg = JSON.parse(readFileSync(sitesFile, 'utf8'))
+    for (const s of reg.sites) if (s.id === reg.default && s.langs.includes(LANG)) s.defaultLang = LANG
+    writeFileSync(sitesFile, `${JSON.stringify(reg, null, 2)}\n`)
     moved.push(`основной язык витрины — ${LANG}`)
   }
   if (CURRENCY) {

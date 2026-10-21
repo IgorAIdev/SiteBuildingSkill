@@ -1,6 +1,6 @@
 import type { Block } from './source/contract.ts'
 
-/* Главная (app/[lang]/page.tsx, components/blocks/*). Раскладка — одна:
+/* Главная (app/[site]/[lang]/page.tsx, components/blocks/*). Раскладка — одна:
    герой со снимком, полки, ходовые, слово магазина, справка (сцена,
    docs/design/home.md). Семь раскладок на выбор (И360) сняты словом
    заказчика 01.10.2026: «этот layout в панели и херо-блок меняет, вообще

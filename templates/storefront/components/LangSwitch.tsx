@@ -49,10 +49,12 @@ export const DROP_FROM = 3
    (`trigger` — их класс из шапки): слово заказчика 28.09.2026 «не должна
    быть кнопка языка более кричащей, чем корзина». В рамке кнопки она
    перекрикивала значки без рамки. */
-export function LangSwitch({ lang, label, drop = false, trigger = b.btn }: { lang: Lang; label: string; drop?: boolean; trigger?: string }) {
+/* `langs` — языки сайта (lib/sites.ts): у каждого сайта свои; адрес меняет
+   только приставку языка. */
+export function LangSwitch({ lang, langs, label, drop = false, trigger = b.btn }: { lang: Lang; langs: readonly Lang[]; label: string; drop?: boolean; trigger?: string }) {
   const path = usePathname()
   const id = useId()
-  if (drop && LOCALES.length >= DROP_FROM) {
+  if (drop && langs.length >= DROP_FROM) {
     const list = `lang-${id.replace(/:/g, '')}`
     return (
       <div className={s.drop}>
@@ -60,7 +62,7 @@ export function LangSwitch({ lang, label, drop = false, trigger = b.btn }: { lan
           {lang.toUpperCase()}<Turn />
         </button>
         <ul id={list} popover="auto" className={`${p.menu} ${fs.drop} ${m.list}`} data-align="end" aria-label={label}>
-          {LOCALES.map((l) => (
+          {langs.map((l) => (
             <li key={l}>
               <SiteLink className={b.row} href={path.replace(FIRST, `/${l}`)} scroll={false} hrefLang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>
                 {l.toUpperCase()}<span className={m.aside}>{LANG_NAMES[l]}</span>
@@ -76,7 +78,7 @@ export function LangSwitch({ lang, label, drop = false, trigger = b.btn }: { lan
        навигация по разделам. */
     <div className={s.lang} role="group" aria-label={label}>
       <ul className={`${p.cluster} ${s.words}`}>
-        {LOCALES.map((l) => (
+        {langs.map((l) => (
           <li key={l}>
             <SiteLink className={`${b.word} ${p.tap} ${s.word}`} href={path.replace(FIRST, `/${l}`)} scroll={false} hrefLang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>
               {l.toUpperCase()}<span className={p.said}> {LANG_NAMES[l]}</span>

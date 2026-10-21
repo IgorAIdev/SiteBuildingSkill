@@ -93,7 +93,7 @@ if (!built) {
     windowsHide: true,
     /* Как запускатель витрины (tools/storefront.mjs, `LOOK_PICKER`): с панелью вида, пока
        она стоит у сайта, — иначе страница дизайн-системы (её маршрут лежит в дереве,
-       app/[lang]/(look-panel)/design) отвечала 404 и проверка краснела на своём же
+       app/[site]/[lang]/(look-panel)/design) отвечала 404 и проверка краснела на своём же
        сервере (08.10.2026: /en|ro|hu/design — 404, на запущенной витрине — 200). */
     env: { ...process.env, BROWSER: 'none', ...(existsSync(join(ROOT, 'look-panel')) ? { LOOK_PICKER: process.env.LOOK_PICKER ?? 'on' } : {}) },
   })
@@ -271,7 +271,7 @@ if (bad.length || lost.length) {
     console.error('    · язык этой страницы — из адреса: proxy.ts копирует язык первого сегмента')
     console.error('      в заголовок запроса, страница читает его через headers();')
     console.error('    · язык — закрытый список: dynamicParams = false в макете языка')
-    console.error('      (app/[lang]/layout.tsx), чужое слово на месте языка уходит мимо дерева;')
+    console.error('      (app/[site]/[lang]/layout.tsx), чужое слово на месте языка уходит мимо дерева;')
     console.error('    · промах данных — notFound() и noindex: 404, поиск адрес не запомнит.')
     console.error('  Отказаться от проб можно только словом проекта: kit.config.json →')
     console.error('  "probes": { "notFound": false } — и проверка скажет, что они пропущены.')

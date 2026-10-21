@@ -29,7 +29,7 @@ type Kind = 'empty' | 'none' | 'unavailable' | 'not-found'
    одним воздухом `--air-line`, И524) и пути (`after`), тихие строки полок (`ShelfRows`, И689).
    `flush` — без собственного верхнего и нижнего воздуха полосы: экран внутри окна лежит от
    шапки на поле тела окна, как поле поиска (И786). */
-/* Экран сбоя (app/[lang]/error.tsx) — тот же экран: путь дальше у него —
+/* Экран сбоя (app/[site]/[lang]/error.tsx) — тот же экран: путь дальше у него —
    кнопка повтора (`retry`), а не ссылка. Своя разметка сбоя повторяла
    раскладку этого экрана вручную (разбор 27.09.2026; И476). */
 export function StateScreen({ level, kind, title, lead, flush = false, step, href, icon, loud = false, retry, children, after }: { level: 1 | 2; kind: Kind; title: string; lead?: string; flush?: boolean; step?: string; href?: string; icon?: string; loud?: boolean; retry?: () => void; children?: ReactNode; after?: ReactNode }) {
@@ -59,7 +59,7 @@ export function Unavailable({ lang }: { lang: Lang }) {
   )
 }
 
-/* «Не найдено» — один экран на оба пути: промах данных (app/[lang]/not-found.tsx,
+/* «Не найдено» — один экран на оба пути: промах данных (app/[site]/[lang]/not-found.tsx,
    после гидратации) и адрес мимо дерева (app/global-not-found.tsx, с сервера).
    Выход — не одна ссылка: адрес сломан, а что искали, человек знает, —
    поле поиска первым путём, «ко всем товарам» — вторым (разбор, E1). Поле —

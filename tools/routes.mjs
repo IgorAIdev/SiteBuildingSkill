@@ -196,7 +196,8 @@ export const isNative = (url) =>
 
 /** Формы маршрутов из дерева `app/**\/page.tsx`: `/[lang]`, `/[lang]/catalog`,
  *  `/[lang]/catalog/[cat]`, … Группы `(x)`, приватные `_x` и параллельные
- *  `@x` папки адреса не дают и отбрасываются. */
+ *  `@x` папки адреса не дают и отбрасываются. Сайт `[site]` — тоже: его ставит
+ *  прокладка по хосту (proxy.ts, lib/sites.ts), в публичном адресе его нет. */
 export function shapes() {
   const out = []
   walk(join(ROOT, 'app'), '')
@@ -206,7 +207,7 @@ export function shapes() {
       const path = join(dir, name)
       if (statSync(path).isDirectory()) {
         if (name.startsWith('_') || name.startsWith('@')) continue
-        walk(path, /^\(.*\)$/.test(name) ? url : `${url}/${name}`)
+        walk(path, /^\(.*\)$/.test(name) || name === '[site]' ? url : `${url}/${name}`)
       } else if (/^page\.(tsx|ts|jsx|js)$/.test(name)) {
         out.push(url || '/')
       }
