@@ -28,7 +28,7 @@ export function BlogIndex({ view, label }: { view: BlogIndexView; label: string 
       </nav>
       <ul className={`${p.grid} ${s.grid}`}>
         {view.featured ? <li className={s.lead}><PostCard post={view.featured} wide label={view.startHere} level={2} /></li> : null}
-        {view.cards.map((c) => <li key={c.slug}><PostCard post={c} level={2} /></li>)}
+        {view.cards.map((c) => <li key={c.slug}><PostCard post={c} list level={2} /></li>)}
       </ul>
     </div>
   )

@@ -20,14 +20,21 @@ import { SiteLink } from './SiteLink.tsx'
    слова рядом в колонках сетки списка (BlogIndex.module.css, `lead`), над
    заголовком — ярлык.
 
+   `list` — карточка списка блога и рубрики, а не ряда главной: там она стоит
+   не рядом с товаром, и снимок — обложка статьи в миниатюре (пропорция
+   обложки, как у cbdshop.bg 343 : 200 и cbdin.bg 365 × 205), заголовок —
+   ступенью подзаголовка, а не имени товара (заказчик 21.10.2026: «дизайн в
+   блоге плох» — квадрат 369 и заголовок 16 читались полкой товара).
+   Закреплённая (`wide`) — всегда списка.
+
    `level` — ступень заголовка по месту: под заголовком раздела (лента главной,
    «Citește mai departe») — третья; в списке блога над карточками только имя
    страницы — вторая, иначе лестница для чтения вслух прыгает с h1 на h3
    (check:craft, heads). Вид от ступени не зависит — его даёт класс. */
-export function PostCard({ post, wide = false, label, level = 3 }: { post: PostCardView; wide?: boolean; label?: string; level?: 2 | 3 }) {
+export function PostCard({ post, wide = false, list = wide, label, level = 3 }: { post: PostCardView; wide?: boolean; list?: boolean; label?: string; level?: 2 | 3 }) {
   const Title = level === 2 ? 'h2' : 'h3'
   return (
-    <article className={wide ? s.cardWide : s.card}>
+    <article className={wide ? s.cardWide : s.card} data-place={list ? 'list' : undefined}>
       <div className={`${p.frame} ${s.shot}`}>{post.image ? <img {...shot(post.image, 'shelf', true)} alt="" decoding="async" /> : null}</div>
       <div className={s.text}>
         {label ? <p className={p.chip} data-pill>{label}</p> : null}
