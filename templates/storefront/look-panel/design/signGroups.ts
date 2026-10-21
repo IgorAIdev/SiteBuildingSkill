@@ -39,6 +39,7 @@ export const SIGN_GROUPS: SignGroup[] = [
     ['google-color', 'вход через Google, «G» в цвете'], ['facebook-color', 'вход через Facebook, «f» в цвете'],
   ] },
   { title: 'Доверие и помощь', lede: 'Сертификаты, лаборатория, защита платежа и поддержка — то, что успокаивает перед покупкой.', signs: [
+    ['eu-stars', 'сделано в ЕС · круг из двенадцати звёзд'],
     ['certificate', 'сертификат'], ['award', 'награда'], ['heart-handshake', 'забота'], ['microscope', 'лаборатория'], ['test-pipe', 'анализ'],
     ['lock-check', 'платёж защищён'], ['shield-lock', 'безопасность'], ['headset', 'поддержка'], ['message-dots', 'пишет'], ['help-circle', 'вопрос'],
   ] },

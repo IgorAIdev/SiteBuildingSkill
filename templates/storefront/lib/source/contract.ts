@@ -34,7 +34,10 @@ export type LineMember = { id: string; options: Record<string, string>; stock: S
 /** Оценка покупателей: средняя звёзд из пяти и число отзывов. `null` — отзывов
  *  нет или движок их не ведёт; витрина тогда строки звёзд не рисует вовсе. */
 export type Rating = { value: number; count: number }
-export type Product = { id: string; category: string; brand: string | null; rating: Rating | null; name: string; summary: string; description: string; ingredients: string | null; usage: string | null; standard: string | null; images: Image[]; optionGroups: OptionGroup[]; variants: Variant[]; labReports: LabReport[]; strength: Strength; line: LineMember[] }
+export type Product = { id: string; category: string; brand: string | null; rating: Rating | null; name: string; summary: string; description: string; ingredients: string | null; usage: string | null; standard: string | null; images: Image[]; optionGroups: OptionGroup[]; variants: Variant[]; labReports: LabReport[]; strength: Strength; line: LineMember[]
+  /** Откуда сырьё — код страны или союза (`EU`): строка доверия у имени товара
+   *  («Made in the EU», заказчик 21.10.2026). Движок не знает — null, строки нет. */
+  origin?: string | null }
 export type Price = { kind: 'single'; value: Money } | { kind: 'range'; min: Money; max: Money }
 /** Упаковка варианта — то, что покупатель CBD сравнивает на полке (shop,
  *  «Сила — две шкалы, проценты и миллиграммы»): CBD во всей упаковке, мг, и

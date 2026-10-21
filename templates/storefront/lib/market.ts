@@ -21,6 +21,9 @@ import type { Lang } from './locale.ts'
    отсюда (lib/checkout-form.ts). */
 export const MARKET = {
   country: 'RO', currency: 'EUR', precision: 2, display: 'narrowSymbol',
+  /* Предел THC рынка, % — строка доверия у имени товара показывает «Under 0.2% THC»,
+     только если протокол партии ниже него (заказчик 21.10.2026). */
+  thcLimit: 0.2,
   postal: { pattern: '^\\d{6}$', example: '010011' },
   /* Запись номера рынка — образец поля телефона (окно быстрого заказа). */
   phone: { example: '+40 712 345 678' },

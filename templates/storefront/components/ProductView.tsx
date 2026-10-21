@@ -65,6 +65,7 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
                 {view.stock ? <StockMark level={view.stockLevel}>{view.stock}</StockMark> : null}
                 {view.rating ? <Rating rating={view.rating} /> : null}
                 {view.lab ? <button className={b.btn} data-voice="bare" data-size="sm" type="button" popoverTarget="lab-report"><Icon id="flask" />{view.lab.chip}</button> : null}
+                {view.trust.map((x) => <span key={x.icon} className={b.btn} data-voice="bare" data-size="sm" data-static><Icon id={x.icon} />{x.text}</span>)}
                 {view.sku ? <span className={s.sku} translate="no">{view.sku}</span> : null}
               </div>
             ) : null}

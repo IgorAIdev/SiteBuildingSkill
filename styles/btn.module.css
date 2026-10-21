@@ -670,6 +670,10 @@
 .fit[data-fit='2'] [data-part='word']{display:none}
 
 .btn[data-size='sm']{--btn-h:var(--ctrl-h-sm)}
+/* Факт в строке органов (`data-static`, заказчик 21.10.2026: «0.2% THC» и
+   «Made in the EU» рядом с «Lab report»): тот же рост, кегль, знак и тон, что у
+   соседней кнопки без подложки, — но это не орган: ни руки, ни нажатия. */
+.btn[data-static]{cursor:default;pointer-events:none}
 .btn[data-size='lg']{--btn-h:var(--ctrl-h-lg)}
 .btn[data-wide]{display:flex;inline-size:100%}
 /* Плитка «знак над словом» (`data-stack`, И790): мессенджеры «Быстрого заказа» — знак

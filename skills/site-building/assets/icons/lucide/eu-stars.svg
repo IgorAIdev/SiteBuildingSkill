@@ -1,0 +1,13 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M12.00 3.00h.01 M16.50 4.21h.01 M19.79 7.50h.01 M21.00 12.00h.01 M19.79 16.50h.01 M16.50 19.79h.01 M12.00 21.00h.01 M7.50 19.79h.01 M4.21 16.50h.01 M3.00 12.00h.01 M4.21 7.50h.01 M7.50 4.21h.01" />
+</svg>
