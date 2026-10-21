@@ -17,7 +17,8 @@ import { SiteLink } from './SiteLink.tsx'
    кадром той же меры — ряд не скачет.
 
    `wide` — закреплённая статья списка («Începe de aici», cbdshop.bg): снимок и
-   слова рядом (примитив `switcher`), над заголовком — ярлык.
+   слова рядом в колонках сетки списка (BlogIndex.module.css, `lead`), над
+   заголовком — ярлык.
 
    `level` — ступень заголовка по месту: под заголовком раздела (лента главной,
    «Citește mai departe») — третья; в списке блога над карточками только имя
@@ -26,7 +27,7 @@ import { SiteLink } from './SiteLink.tsx'
 export function PostCard({ post, wide = false, label, level = 3 }: { post: PostCardView; wide?: boolean; label?: string; level?: 2 | 3 }) {
   const Title = level === 2 ? 'h2' : 'h3'
   return (
-    <article className={wide ? `${p.switcher} ${s.cardWide}` : s.card}>
+    <article className={wide ? s.cardWide : s.card}>
       <div className={`${p.frame} ${s.shot}`}>{post.image ? <img {...shot(post.image, 'shelf', true)} alt="" decoding="async" /> : null}</div>
       <div className={s.text}>
         {label ? <p className={p.chip} data-pill>{label}</p> : null}
