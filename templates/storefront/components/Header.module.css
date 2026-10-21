@@ -371,6 +371,11 @@
   .util{justify-content:center} /* look-header:tray,nested,step */
   .head[data-variant='tray'] .row{margin-block-start:0} /* look-header:tray */
   .shop{display:inline-flex} /* look-header:boutique */
+  /* Узко знак магазина — сразу за бургером, у начального края, знаки действий — у конечного
+     (слово владельца 21.10.2026 с телефона: «логотип сделай левее, к бургер-меню»; так же у
+     «tray», 14.10.2026): центр строки на 390 оставлял по 60 пустоты по бокам знака. */
+  .head[data-variant='boutique'] .bar{grid-template-columns:auto auto minmax(0, 1fr)} /* look-header:boutique */
+  .head[data-variant='boutique'] .logo{justify-self:start} /* look-header:boutique */
   .shelfRow{border:0;padding:0} /* look-header:search,boutique */
   /* look-header:search:start */
   /* Поле поиска «search» — своей строкой во всю ширину под строкой знака. */
