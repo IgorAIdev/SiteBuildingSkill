@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <!-- Собран tools/icons.mjs из skills/site-building/assets/icons/lucide (Lucide, ISC) icons/brands (Simple Icons, CC0) и icons/solid (Lucide, ISC); см. LICENSE там же.
-       Руками не правят: первый же выпуск сотрёт правку. Знаков: 202. -->
+       Руками не правят: первый же выпуск сотрёт правку. Знаков: 201. -->
   <symbol id="account-line" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.6" r="3.6" vector-effect="non-scaling-stroke"/><path d="M5.4 20.2a6.6 6.6 0 0 1 13.2 0" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="alert-circle" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" vector-effect="non-scaling-stroke"/><line x1="12" x2="12" y1="8" y2="12" vector-effect="non-scaling-stroke"/><line x1="12" x2="12.01" y1="16" y2="16" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="alert-triangle" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" vector-effect="non-scaling-stroke"/><path d="M12 9v4" vector-effect="non-scaling-stroke"/><path d="M12 17h.01" vector-effect="non-scaling-stroke"/></symbol>
@@ -180,7 +180,6 @@
   <symbol id="yoga" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g transform="matrix(1.087 0 0 1.087 -1.01 -0.47)"><path d="M4 20h4l1.5 -3" vector-effect="non-scaling-stroke"/><path d="M17 20l-1 -5h-5l1 -7" vector-effect="non-scaling-stroke"/><path d="M4 10l4 -1l4 -1l4 1.5l4 1.5" vector-effect="non-scaling-stroke"/><path d="M10.007 5a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" vector-effect="non-scaling-stroke"/></g></symbol>
   <symbol id="youtube-line" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" vector-effect="non-scaling-stroke"/><path d="m10 15 5-3-5-3z" vector-effect="non-scaling-stroke"/></symbol>
   <symbol id="zap" viewBox="0 0 24 24" style="fill:var(--sign-fill, none)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z" vector-effect="non-scaling-stroke"/></symbol>
-  <symbol id="eu-stars" viewBox="0 0 24 18" overflow="visible" fill="currentColor" stroke="none"><rect width="24" height="18" rx="2.5" fill="#003399"/><path fill="#FFCC00" d="M12.00 2.55L12.25 3.26L13.00 3.28L12.40 3.73L12.62 4.45L12.00 4.02L11.38 4.45L11.60 3.73L11.00 3.28L11.75 3.26ZM14.70 3.27L14.95 3.98L15.70 4.00L15.10 4.45L15.32 5.17L14.70 4.74L14.08 5.17L14.30 4.45L13.70 4.00L14.45 3.98ZM16.68 5.25L16.92 5.96L17.68 5.98L17.08 6.43L17.29 7.15L16.68 6.72L16.06 7.15L16.28 6.43L15.68 5.98L16.43 5.96ZM17.40 7.95L17.65 8.66L18.40 8.68L17.80 9.13L18.02 9.85L17.40 9.42L16.78 9.85L17.00 9.13L16.40 8.68L17.15 8.66ZM16.68 10.65L16.92 11.36L17.68 11.38L17.08 11.83L17.29 12.55L16.68 12.12L16.06 12.55L16.28 11.83L15.68 11.38L16.43 11.36ZM14.70 12.63L14.95 13.34L15.70 13.35L15.10 13.81L15.32 14.53L14.70 14.10L14.08 14.53L14.30 13.81L13.70 13.35L14.45 13.34ZM12.00 13.35L12.25 14.06L13.00 14.08L12.40 14.53L12.62 15.25L12.00 14.82L11.38 15.25L11.60 14.53L11.00 14.08L11.75 14.06ZM9.30 12.63L9.55 13.34L10.30 13.35L9.70 13.81L9.92 14.53L9.30 14.10L8.68 14.53L8.90 13.81L8.30 13.35L9.05 13.34ZM7.32 10.65L7.57 11.36L8.32 11.38L7.72 11.83L7.94 12.55L7.32 12.12L6.71 12.55L6.92 11.83L6.32 11.38L7.08 11.36ZM6.60 7.95L6.85 8.66L7.60 8.68L7.00 9.13L7.22 9.85L6.60 9.42L5.98 9.85L6.20 9.13L5.60 8.68L6.35 8.66ZM7.32 5.25L7.57 5.96L8.32 5.98L7.72 6.43L7.94 7.15L7.32 6.72L6.71 7.15L6.92 6.43L6.32 5.98L7.08 5.96ZM9.30 3.27L9.55 3.98L10.30 4.00L9.70 4.45L9.92 5.17L9.30 4.74L8.68 5.17L8.90 4.45L8.30 4.00L9.05 3.98Z"/></symbol>
   <symbol id="facebook-color" viewBox="0 0 24 24" fill="currentColor" stroke="none"><g transform="matrix(.89 0 0 .89 1.32 1.32)"><circle fill="#FFFFFF" cx="12" cy="12" r="11.8"/><path fill="#0866FF" d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></g></symbol>
   <symbol id="facebook-square" viewBox="0 0 24 24" fill="currentColor" stroke="none"><g transform="matrix(.89 0 0 .89 1.32 1.32)"><path d="M22.676 0H1.324C.593 0 0 .593 0 1.324v21.352C0 23.408.593 24 1.324 24h11.494v-9.294H9.689v-3.621h3.129V8.41c0-3.099 1.894-4.785 4.659-4.785 1.325 0 2.464.097 2.796.141v3.24h-1.921c-1.5 0-1.792.721-1.792 1.771v2.311h3.584l-.465 3.63H16.56V24h6.115c.733 0 1.325-.592 1.325-1.324V1.324C24 .593 23.408 0 22.676 0"/></g></symbol>
   <symbol id="facebook" viewBox="0 0 24 24" fill="currentColor" stroke="none"><g transform="matrix(.89 0 0 .89 1.32 1.32)"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></g></symbol>
@@ -382,27 +381,26 @@
   <use href="#yoga" x="4224" y="0" width="24" height="24" stroke-width="1.75"/><view id="yoga-view" viewBox="4224 0 24 24"/>
   <use href="#youtube-line" x="4248" y="0" width="24" height="24" stroke-width="1.75"/><view id="youtube-line-view" viewBox="4248 0 24 24"/>
   <use href="#zap" x="4272" y="0" width="24" height="24" stroke-width="1.75"/><view id="zap-view" viewBox="4272 0 24 24"/>
-  <use href="#eu-stars" x="4296" y="0" width="24" height="24" stroke-width="1.75"/><view id="eu-stars-view" viewBox="4296 0 24 24"/>
-  <use href="#facebook-color" x="4320" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-color-view" viewBox="4320 0 24 24"/>
-  <use href="#facebook-square" x="4344" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-square-view" viewBox="4344 0 24 24"/>
-  <use href="#facebook" x="4368" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-view" viewBox="4368 0 24 24"/>
-  <use href="#gmail-color" x="4392" y="0" width="24" height="24" stroke-width="1.75"/><view id="gmail-color-view" viewBox="4392 0 24 24"/>
-  <use href="#gmail" x="4416" y="0" width="24" height="24" stroke-width="1.75"/><view id="gmail-view" viewBox="4416 0 24 24"/>
-  <use href="#google-color" x="4440" y="0" width="24" height="24" stroke-width="1.75"/><view id="google-color-view" viewBox="4440 0 24 24"/>
-  <use href="#instagram" x="4464" y="0" width="24" height="24" stroke-width="1.75"/><view id="instagram-view" viewBox="4464 0 24 24"/>
-  <use href="#messenger" x="4488" y="0" width="24" height="24" stroke-width="1.75"/><view id="messenger-view" viewBox="4488 0 24 24"/>
-  <use href="#telegram" x="4512" y="0" width="24" height="24" stroke-width="1.75"/><view id="telegram-view" viewBox="4512 0 24 24"/>
-  <use href="#tiktok" x="4536" y="0" width="24" height="24" stroke-width="1.75"/><view id="tiktok-view" viewBox="4536 0 24 24"/>
-  <use href="#viber" x="4560" y="0" width="24" height="24" stroke-width="1.75"/><view id="viber-view" viewBox="4560 0 24 24"/>
-  <use href="#whatsapp" x="4584" y="0" width="24" height="24" stroke-width="1.75"/><view id="whatsapp-view" viewBox="4584 0 24 24"/>
-  <use href="#youtube" x="4608" y="0" width="24" height="24" stroke-width="1.75"/><view id="youtube-view" viewBox="4608 0 24 24"/>
-  <use href="#droplet-fill" x="4632" y="0" width="24" height="24" stroke-width="1.75"/><view id="droplet-fill-view" viewBox="4632 0 24 24"/>
-  <use href="#heart-fill" x="4656" y="0" width="24" height="24" stroke-width="1.75"/><view id="heart-fill-view" viewBox="4656 0 24 24"/>
-  <use href="#pause" x="4680" y="0" width="24" height="24" stroke-width="1.75"/><view id="pause-view" viewBox="4680 0 24 24"/>
-  <use href="#play" x="4704" y="0" width="24" height="24" stroke-width="1.75"/><view id="play-view" viewBox="4704 0 24 24"/>
-  <use href="#star-fill" x="4728" y="0" width="24" height="24" stroke-width="1.75"/><view id="star-fill-view" viewBox="4728 0 24 24"/>
-  <use href="#applepay" x="4752" y="0" width="24" height="24" stroke-width="1.75"/><view id="applepay-view" viewBox="4752 0 24 24"/>
-  <use href="#googlepay" x="4776" y="0" width="24" height="24" stroke-width="1.75"/><view id="googlepay-view" viewBox="4776 0 24 24"/>
-  <use href="#mastercard" x="4800" y="0" width="24" height="24" stroke-width="1.75"/><view id="mastercard-view" viewBox="4800 0 24 24"/>
-  <use href="#visa" x="4824" y="0" width="24" height="24" stroke-width="1.75"/><view id="visa-view" viewBox="4824 0 24 24"/>
+  <use href="#facebook-color" x="4296" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-color-view" viewBox="4296 0 24 24"/>
+  <use href="#facebook-square" x="4320" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-square-view" viewBox="4320 0 24 24"/>
+  <use href="#facebook" x="4344" y="0" width="24" height="24" stroke-width="1.75"/><view id="facebook-view" viewBox="4344 0 24 24"/>
+  <use href="#gmail-color" x="4368" y="0" width="24" height="24" stroke-width="1.75"/><view id="gmail-color-view" viewBox="4368 0 24 24"/>
+  <use href="#gmail" x="4392" y="0" width="24" height="24" stroke-width="1.75"/><view id="gmail-view" viewBox="4392 0 24 24"/>
+  <use href="#google-color" x="4416" y="0" width="24" height="24" stroke-width="1.75"/><view id="google-color-view" viewBox="4416 0 24 24"/>
+  <use href="#instagram" x="4440" y="0" width="24" height="24" stroke-width="1.75"/><view id="instagram-view" viewBox="4440 0 24 24"/>
+  <use href="#messenger" x="4464" y="0" width="24" height="24" stroke-width="1.75"/><view id="messenger-view" viewBox="4464 0 24 24"/>
+  <use href="#telegram" x="4488" y="0" width="24" height="24" stroke-width="1.75"/><view id="telegram-view" viewBox="4488 0 24 24"/>
+  <use href="#tiktok" x="4512" y="0" width="24" height="24" stroke-width="1.75"/><view id="tiktok-view" viewBox="4512 0 24 24"/>
+  <use href="#viber" x="4536" y="0" width="24" height="24" stroke-width="1.75"/><view id="viber-view" viewBox="4536 0 24 24"/>
+  <use href="#whatsapp" x="4560" y="0" width="24" height="24" stroke-width="1.75"/><view id="whatsapp-view" viewBox="4560 0 24 24"/>
+  <use href="#youtube" x="4584" y="0" width="24" height="24" stroke-width="1.75"/><view id="youtube-view" viewBox="4584 0 24 24"/>
+  <use href="#droplet-fill" x="4608" y="0" width="24" height="24" stroke-width="1.75"/><view id="droplet-fill-view" viewBox="4608 0 24 24"/>
+  <use href="#heart-fill" x="4632" y="0" width="24" height="24" stroke-width="1.75"/><view id="heart-fill-view" viewBox="4632 0 24 24"/>
+  <use href="#pause" x="4656" y="0" width="24" height="24" stroke-width="1.75"/><view id="pause-view" viewBox="4656 0 24 24"/>
+  <use href="#play" x="4680" y="0" width="24" height="24" stroke-width="1.75"/><view id="play-view" viewBox="4680 0 24 24"/>
+  <use href="#star-fill" x="4704" y="0" width="24" height="24" stroke-width="1.75"/><view id="star-fill-view" viewBox="4704 0 24 24"/>
+  <use href="#applepay" x="4728" y="0" width="24" height="24" stroke-width="1.75"/><view id="applepay-view" viewBox="4728 0 24 24"/>
+  <use href="#googlepay" x="4752" y="0" width="24" height="24" stroke-width="1.75"/><view id="googlepay-view" viewBox="4752 0 24 24"/>
+  <use href="#mastercard" x="4776" y="0" width="24" height="24" stroke-width="1.75"/><view id="mastercard-view" viewBox="4776 0 24 24"/>
+  <use href="#visa" x="4800" y="0" width="24" height="24" stroke-width="1.75"/><view id="visa-view" viewBox="4800 0 24 24"/>
 </svg>
