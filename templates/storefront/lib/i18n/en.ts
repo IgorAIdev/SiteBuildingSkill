@@ -88,6 +88,8 @@ export const EN: Record<keyof typeof RO, string> = {
   'product.choose': 'Choose an option',
   'product.missing': 'This combination does not exist',
   'product.lab': 'Lab report',
+  'product.thcUnder': 'Under {limit} THC',
+  'product.origin.EU': 'Made in the EU',
   'product.batch': 'Batch {batch}',
   'product.sku': 'SKU: {sku}',
   'product.related': 'Similar products',

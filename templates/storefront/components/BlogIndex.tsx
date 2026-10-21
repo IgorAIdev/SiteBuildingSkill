@@ -26,8 +26,8 @@ export function BlogIndex({ view, label }: { view: BlogIndexView; label: string 
           {view.topics.map((x) => <li key={x.href}><SiteLink className={b.btn} href={x.href} aria-current={x.current ? 'page' : undefined}>{x.label}</SiteLink></li>)}
         </ul>
       </nav>
-      {view.featured ? <PostCard post={view.featured} wide label={view.startHere} level={2} /> : null}
       <ul className={`${p.grid} ${s.grid}`}>
+        {view.featured ? <li className={s.lead}><PostCard post={view.featured} wide label={view.startHere} level={2} /></li> : null}
         {view.cards.map((c) => <li key={c.slug}><PostCard post={c} level={2} /></li>)}
       </ul>
     </div>

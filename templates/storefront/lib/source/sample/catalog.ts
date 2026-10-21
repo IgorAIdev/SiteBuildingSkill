@@ -159,6 +159,8 @@ export function sampleSource(pageSize = PAGE): Source {
           return { batch: b, lab: r.lab, date: r.date, cbdPercent: r.cbdPercent, thcPercent: r.thcPercent, url: `#lab-${b}` }
         }),
         strength: p.strength, line: p.line ?? [],
+        /* Образец: конопля сортов общего каталога ЕС — так говорят и тексты товаров. */
+        origin: 'EU',
       }
       return ok(product)
     },

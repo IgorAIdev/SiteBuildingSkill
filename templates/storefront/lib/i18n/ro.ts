@@ -86,6 +86,8 @@ export const RO = {
   'product.choose': 'Alegeți o variantă',
   'product.missing': 'Această combinație nu există',
   'product.lab': 'Buletin de analiză',
+  'product.thcUnder': 'Sub {limit} THC',
+  'product.origin.EU': 'Fabricat în UE',
   'product.batch': 'Lot {batch}',
   'product.sku': 'Cod produs: {sku}',
   'product.related': 'Produse similare',
