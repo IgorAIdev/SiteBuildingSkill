@@ -231,7 +231,7 @@
       "license": "ISC and MIT for Feather-derived icons",
       "licenseFile": "assets/icons/lucide/LICENSE",
       "changes": "Upstream LICENSE at tag 1.49.0 (ISC plus the MIT notice for Feather-derived icons) unmodified; a local provenance note in Russian is appended after a '---' line: icons come from lucide-static via jsDelivr, unmodified drawing, only the license comment and class removed, and the list of icons added on 01.10.2026 from lucide-static 1.49.0 with their local names. No Simple Icons text here (brand icons carry their own assets/icons/brands/LICENSE).",
-      "sha256": "c102c5de3f9f77e716305c6fb139bda5231d844b58e9a777b4163465ed78986e"
+      "sha256": "c51fa499581a98397b383ada242b0daefe7771b0a9225a1824f1e60eee535d76"
     },
     {
       "local": "assets/icons/lucide/menu.svg",

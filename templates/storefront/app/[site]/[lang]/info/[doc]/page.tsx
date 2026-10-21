@@ -20,7 +20,7 @@ import { docView, plainOf } from '@/lib/doc-view.ts'
 import b from '@/styles/btn.module.css'
 import { JsonLd } from '@/components/JsonLd.tsx'
 import { Unavailable } from '@/components/StateScreen.tsx'
-import { SiteLink } from '../../../../components/SiteLink.tsx'
+import { SiteLink } from '@/components/SiteLink.tsx'
 
 type Props = { params: Promise<{ lang: string; doc: string }> }
 

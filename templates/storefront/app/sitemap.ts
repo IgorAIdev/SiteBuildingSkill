@@ -1,16 +1,23 @@
 import type { MetadataRoute } from 'next'
-import { LOCALES, DEFAULT_LANG } from '@/lib/locale.ts'
+import { headers } from 'next/headers'
+import { SITE_HEADER, DEFAULT_SITE, siteById } from '@/lib/sites.ts'
+import { siteUrlOf } from '@/lib/seo.ts'
 import { hrefFor } from '@/lib/href.ts'
-import { absolute } from '@/lib/seo.ts'
 import { source, content } from '@/lib/source/index.ts'
 
 /* Обещанное — каждая страница для поиска на всех языках, из того же
    источника, что и сами страницы (check:urls сверяет в обе стороны).
    Источник не ответил — карта не пишется пустой: это была бы ложь. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  /* Карта — сайта запроса: его языки и его адрес (прокладка ставит сайт
+     заголовком; ячейка запроса `siteNow` в обработчике не живёт — сайт
+     передаётся прямо). */
+  const site = siteById((await headers()).get(SITE_HEADER) ?? '') ?? DEFAULT_SITE
+  const { langs, defaultLang: DEFAULT_LANG } = site
+  const absolute = (path: string) => `${siteUrlOf(site)}${path}`
   const [cols, effects, ids, docs, posts] = await Promise.all([source().collections(DEFAULT_LANG), source().effects(DEFAULT_LANG), source().productIds(), content().docs(DEFAULT_LANG), content().posts(DEFAULT_LANG)])
   if (!cols.ok || !effects.ok || !ids.ok || !docs.ok || !posts.ok) throw new Error('sitemap: источник не ответил — карта не пишется пустой')
-  const paths = LOCALES.flatMap((lang) => [
+  const paths = langs.flatMap((lang) => [
     hrefFor(lang, { home: true }),
     hrefFor(lang, { catalog: true }),
   ]

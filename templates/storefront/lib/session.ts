@@ -32,7 +32,9 @@ export async function clearSession(): Promise<void> {
  *  хотя они сохранены (сценарий гостя приёмки плана 2). Вызывается записью
  *  после удачи, перед переходом. */
 export function sessionChanged(): void {
-  for (const shape of PERSONAL) revalidatePath(shape, 'page')
+  /* Формы — публичные (`/[lang]/cart`); дерево страниц стоит под сайтом
+     (`app/[site]`, lib/sites.ts) — сброс идёт по форме дерева. */
+  for (const shape of PERSONAL) revalidatePath(`/[site]${shape}`, 'page')
 }
 
 /** Вход сделан — паролем, письмом или через поставщика: новая сессия — в

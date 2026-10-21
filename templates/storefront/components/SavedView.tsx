@@ -12,7 +12,7 @@ import { ShelfGrid, FIRST_SCREEN } from './Catalog.tsx'
 export const savedCards = (lang: Lang, items: Card[]): ShelfCard[] => items.map((c) => shelfCard(lang, c))
 
 /* Тело страницы избранного — имя, строка о ней и полка сохранённых карточек — та же, что у каталога (`ShelfGrid`).
-   Одно на страницу сайта (app/[lang]/saved) и на образец в дизайн-системе
+   Одно на страницу сайта (app/[site]/[lang]/saved) и на образец в дизайн-системе
    (look-panel/design/CatalogPages.tsx): рисуется один раз (правило 10). Пустой
    список — экран состояния, его рисует сама страница. */
 export function SavedView({ lang, cards, cart }: { lang: Lang; cards: ShelfCard[]; cart: CartActions }) {

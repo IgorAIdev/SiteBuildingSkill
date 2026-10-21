@@ -12,6 +12,7 @@ import { ReachList } from '@/components/ReachList.tsx'
 import { reachRows } from '@/lib/contacts.ts'
 import { Part } from './parts.tsx'
 import sf from './siteframe.module.css'
+import { siteNow } from '@/lib/site-now.ts'
 
 /* Контролы → «Меню» (И730; слово заказчика 04.10.2026: «у нас есть образец меню в
    дизайн-системе — давай делай страницу образцом меню… и делай единый источник
@@ -94,7 +95,7 @@ export function Menus({ lang }: { lang: Lang }) {
       <Part title="Живые раскрытия" lede="Те же меню, что на сайте: нажмите — раскроются под своей кнопкой, Escape и щелчок мимо закрывают.">
         <div className={p.cluster}>
           <SortMenu sort={sort} id="design-menu-sort" />
-          <LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop />
+          <LangSwitch lang={lang} langs={siteNow().langs} label={t(lang, 'nav.lang')} drop />
         </div>
       </Part>
     </>

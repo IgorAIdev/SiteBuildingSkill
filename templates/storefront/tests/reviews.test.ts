@@ -114,7 +114,7 @@ test('dates: one writer, in the market order', () => {
   assert.equal(dayOf('ro', '2026-09-20'), '20 septembrie 2026')
   assert.equal(dayOf('en', '2026-09-20'), '20 September 2026')
   assert.equal(dayOf('hu', '2026-09-20'), '2026. szeptember 20.')
-  for (const page of ['app/[lang]/blog/page.tsx', 'app/[lang]/blog/[slug]/page.tsx', 'lib/product-view.ts', 'lib/review-view.ts', 'lib/post-view.ts']) {
+  for (const page of ['app/[site]/[lang]/blog/page.tsx', 'app/[site]/[lang]/blog/[slug]/page.tsx', 'lib/product-view.ts', 'lib/review-view.ts', 'lib/post-view.ts']) {
     assert.doesNotMatch(read(page), /DateTimeFormat/, `${page}: дату пишет dayOf`)
   }
 })

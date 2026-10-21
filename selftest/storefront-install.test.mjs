@@ -19,7 +19,7 @@ test('--storefront lays the template over the foundation and copies the kit help
   try {
     const r = install('--storefront', dir)
     assert.equal(r.status, 0, r.stderr)
-    for (const f of ['app/[lang]/layout.tsx', 'app/[lang]/page.tsx', 'lib/locale.ts', 'next.config.ts', 'tsconfig.json',
+    for (const f of ['app/[site]/[lang]/layout.tsx', 'app/[site]/[lang]/page.tsx', 'lib/locale.ts', 'next.config.ts', 'tsconfig.json',
       'styles/tokens.css', 'styles/btn.module.css', 'styles/icons.svg', 'CLAUDE.md', 'tools/check-css.mjs', 'tests/kit.test.ts',
       'lib/source/vendure/core/money.mjs', 'lib/source/vendure/core/search.mjs', 'lib/source/vendure/core/INTEGRATION.md',
       'lib/commerce/variant-selection.mjs', 'lib/commerce/VERCEL-LICENSE.md']) {
@@ -150,7 +150,7 @@ test('--storefront refuses a non-empty folder: a create-next-app project keeps i
     assert.match(r.stderr, /package\.json/)
     assert.match(r.stderr, /--force/)
     assert.equal(readFileSync(join(dir, 'package.json'), 'utf8'), pkg, 'package.json проекта изменён')
-    assert.ok(!existsSync(join(dir, 'app/[lang]')), 'шаблон лёг в чужое приложение')
+    assert.ok(!existsSync(join(dir, 'app/[site]')), 'шаблон лёг в чужое приложение')
     assert.ok(!existsSync(join(dir, 'CLAUDE.md')), 'отказ после записи, а не до неё')
   } finally { rmSync(root, { recursive: true, force: true }) }
 })
@@ -187,12 +187,13 @@ test('--storefront opens in English; --lang ro makes Romanian the main language'
     const plain = join(root, 'plain')
     assert.equal(install('--storefront', plain).status, 0)
     assert.match(readFileSync(join(plain, 'lib/locale.ts'), 'utf8'), /DEFAULT_LANG: Lang = 'en'/)
-    assert.match(readFileSync(join(plain, 'next.config.ts'), 'utf8'), /destination: '\/en'/)
+    /* Корень ведёт на основной язык сайта по умолчанию (lib/sites.json, прокладка proxy.ts). */
+    assert.equal(JSON.parse(readFileSync(join(plain, 'lib/sites.json'), 'utf8')).sites[0].defaultLang, 'en')
     const ro = join(root, 'ro')
     const r = install('--storefront', '--lang', 'ro', ro)
     assert.equal(r.status, 0, r.stderr)
     assert.match(readFileSync(join(ro, 'lib/locale.ts'), 'utf8'), /DEFAULT_LANG: Lang = 'ro'/)
-    assert.match(readFileSync(join(ro, 'next.config.ts'), 'utf8'), /destination: '\/ro'/)
+    assert.equal(JSON.parse(readFileSync(join(ro, 'lib/sites.json'), 'utf8')).sites[0].defaultLang, 'ro')
     assert.notEqual(install('--storefront', '--lang', 'bg', join(root, 'bg')).status, 0, 'языка нет в LOCALES')
     assert.notEqual(install('--lang', 'ro', join(root, 'bare')).status, 0, 'без --storefront')
   } finally { rmSync(root, { recursive: true, force: true }) }
@@ -221,15 +222,15 @@ test('--storefront --force removes what the template dropped, and keeps site dat
     const T = join(kit, 'templates/storefront')
     const fromKit = (...args) => spawnSync(process.execPath, [join(kit, 'install.mjs'), ...args], { encoding: 'utf8' })
     const read = (p) => readFileSync(join(dir, p), 'utf8')
-    mkdirSync(join(T, 'app/[lang]/gone'), { recursive: true })
-    writeFileSync(join(T, 'app/[lang]/gone/page.tsx'), 'export default function Gone() { return null }\n')
+    mkdirSync(join(T, 'app/[site]/[lang]/gone'), { recursive: true })
+    writeFileSync(join(T, 'app/[site]/[lang]/gone/page.tsx'), 'export default function Gone() { return null }\n')
     writeFileSync(join(T, 'components/Dropped.tsx'), 'export const Dropped = () => null\n')
     writeFileSync(join(T, 'lib/edited.ts'), 'export const edited = 1\n')
 
     const first = fromKit('--storefront', dir)
     assert.equal(first.status, 0, first.stderr)
     const record = JSON.parse(read('.site-kit-install.json'))
-    for (const f of ['app/[lang]/gone/page.tsx', 'components/Dropped.tsx', 'lib/edited.ts', 'app/[lang]/layout.tsx', 'lib/source/vendure/core/money.mjs']) {
+    for (const f of ['app/[site]/[lang]/gone/page.tsx', 'components/Dropped.tsx', 'lib/edited.ts', 'app/[site]/[lang]/layout.tsx', 'lib/source/vendure/core/money.mjs']) {
       assert.match(record.template[f] ?? '', /^[0-9a-f]{64}$/, `в записи ставщика нет ${f}`)
     }
     assert.ok(!Object.keys(record.template).some((f) => /^(lib\/source\/sample\/look|public\/fonts|\.env$)/.test(f)), 'данные сайта попали в список файлов шаблона')
@@ -255,17 +256,17 @@ test('--storefront --force removes what the template dropped, and keeps site dat
     writeFileSync(join(dir, '.next/dev/types/routes.d.ts'), '// про /[lang]/gone\n')
 
     /* Шаблон роняет три файла. */
-    rmSync(join(T, 'app/[lang]/gone'), { recursive: true })
+    rmSync(join(T, 'app/[site]/[lang]/gone'), { recursive: true })
     rmSync(join(T, 'components/Dropped.tsx'))
     rmSync(join(T, 'lib/edited.ts'))
     const again = fromKit('--storefront', '--force', dir)
     assert.equal(again.status, 0, again.stderr)
 
     assert.ok(!existsSync(join(dir, 'components/Dropped.tsx')), 'файл, который шаблон перестал везти, остался')
-    assert.ok(!existsSync(join(dir, 'app/[lang]/gone')), 'опустевшая папка маршрута осталась')
+    assert.ok(!existsSync(join(dir, 'app/[site]/[lang]/gone')), 'опустевшая папка маршрута осталась')
     assert.ok(!existsSync(join(dir, '.next/dev/types')), 'типы прошлого next dev о снятой странице остались')
     assert.match(again.stdout, /снято — шаблон этого больше не везёт/)
-    for (const f of ['components/Dropped.tsx', 'app/[lang]/gone/page.tsx']) assert.ok(again.stdout.includes(f), `в отчёте не названо снятое: ${f}`)
+    for (const f of ['components/Dropped.tsx', 'app/[site]/[lang]/gone/page.tsx']) assert.ok(again.stdout.includes(f), `в отчёте не названо снятое: ${f}`)
     assert.match(again.stdout, /сайт это поправил — оставлено[\s\S]*lib\/edited\.ts/, 'поправленный сайтом файл не назван')
     for (const [p, text] of Object.entries(own)) assert.equal(read(p), text, `${p} — не как было`)
     assert.equal(read('lib/source/sample/look.json'), look, 'опубликованный вид тронут')
@@ -274,7 +275,7 @@ test('--storefront --force removes what the template dropped, and keeps site dat
 
     const after = JSON.parse(read('.site-kit-install.json'))
     assert.ok(!('components/Dropped.tsx' in after.template) && !('lib/edited.ts' in after.template), 'снятое осталось в списке шаблона')
-    assert.ok('app/[lang]/layout.tsx' in after.template)
+    assert.ok('app/[site]/[lang]/layout.tsx' in after.template)
 
     const third = fromKit('--storefront', '--force', dir)
     assert.equal(third.status, 0, third.stderr)

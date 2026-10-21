@@ -25,6 +25,7 @@ import { MenuFoot } from '@/components/MenuFoot.tsx'
 import { Part, Worn } from './parts.tsx'
 import { lookNow } from '@/lib/look.ts'
 import s from './siteframe.module.css'
+import { siteNow } from '@/lib/site-now.ts'
 
 /* Блоки → «Шапка и подвал»: настоящие компоненты рамы сайта на данных
    магазина — тех же, что берёт макет языка (lib/shell.ts, Shell.tsx), а не
@@ -142,11 +143,11 @@ export async function SiteFrame({ lang }: { lang: Lang }) {
         <ul className={`${p.cluster} ${s.row}`} role="list">
           <li className={s.sample}>
             <h3>В верхней строке</h3>
-            <LangSwitch lang={lang} label={t(lang, 'nav.lang')} drop trigger={h.glyph} />
+            <LangSwitch lang={lang} langs={siteNow().langs} label={t(lang, 'nav.lang')} drop trigger={h.glyph} />
           </li>
           <li className={s.sample}>
             <h3>В шторке меню</h3>
-            <LangSwitch lang={lang} label={t(lang, 'nav.lang')} />
+            <LangSwitch lang={lang} langs={siteNow().langs} label={t(lang, 'nav.lang')} />
           </li>
         </ul>
       </Part>
