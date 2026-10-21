@@ -11,6 +11,9 @@ export const shopContacts = () => shop().contacts
 export const telHref = () => `tel:${shopContacts().phone.replace(/\s+/g, '')}`
 export const mailHref = () => `mailto:${shopContacts().email}`
 export const shopMessengers = () => shop().messengers
+/** Мессенджеры заказа — без Instagram: окно помощи и быстрый заказ его не показывают (слово заказчика 29.09.2026:
+ *  «Instagram убрать»; 17.10.2026: «Instagram кнопку удали» в быстром заказе). Один список на оба места. */
+export const orderMessengers = () => shopMessengers().filter((m): m is ReturnType<typeof shopMessengers>[number] & { key: Exclude<Messenger, 'instagram'> } => m.key !== 'instagram')
 export const shopSocials = () => shop().socials
 export const shopSupport = () => shop().support
 
@@ -29,7 +32,7 @@ export type Reach = 'phone' | 'email' | Exclude<Messenger, 'instagram'>
 export type ReachRow = { key: Reach; name: string; value: string; href: string | null }
 export function reachRows(words: { phone: string; email: string }): ReachRow[] {
   const contacts = shopContacts()
-  const chats = shopMessengers().flatMap((m) => (m.key === 'instagram' ? [] : [{ key: m.key, name: m.label, value: m.value, href: chatHref(m) }]))
+  const chats = orderMessengers().map((m) => ({ key: m.key, name: m.label, value: m.value, href: chatHref(m) }))
   return [
     { key: 'phone', name: words.phone, value: contacts.phone, href: contacts.phone.trim() ? telHref() : null },
     { key: 'email', name: words.email, value: contacts.email, href: contacts.email.trim() ? mailHref() : null },

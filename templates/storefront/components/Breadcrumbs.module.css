@@ -13,7 +13,9 @@
    Крошки меряют свою коробку (контейнер), а не окно: уже 560 — цепочка
    становится одним шагом назад (шов «узкий телефон»; меняется смысл, а не
    величина — shop, blocks.md). */
-.crumbs{container-type:inline-size;margin-block-end:var(--air-row);font-size:var(--note-size);color:var(--ink-soft)}
+/* Роль текста крошек — `blurb`, та же, что у наличия, рейтинга и артикула рядом (слово заказчика
+   17.10.2026: «крошки очень мелкие — какого токена? такого же, как in stock»): 14 вместо подписи 12. */
+.crumbs{container-type:inline-size;margin-block-end:var(--air-row);font-size:var(--blurb-size);line-height:var(--blurb-lead);font-weight:var(--blurb-weight);color:var(--ink-soft)}
 /* Строка ровняется по середине: ссылка — мишень ростом `--ctrl-target`
    (24 под мышью, 44 под пальцем) с текстом по центру, а последнее звено —
    текст без мишени. Без выравнивания по середине оно вставало к верху ряда

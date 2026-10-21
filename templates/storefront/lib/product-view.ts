@@ -9,7 +9,7 @@ import { pickState, optionLinks, titleOf, type OptionGroupLinks } from './varian
 import { saleOf, shelfCard, stockText, type ShelfCard, type WasView } from './view.ts'
 import { QTY_MAX } from './cart-view.ts'
 import { factsLine, packFacts, type FactsView } from './facts.ts'
-import { shopMessengers, type Messenger } from './contacts.ts'
+import { orderMessengers, type Messenger } from './contacts.ts'
 import { market } from './market.ts'
 
 /** Протокол готовыми строками. `batch` — номер партии отдельно от заголовка:
@@ -193,7 +193,7 @@ function quickView(lang: Lang, product: Product, variant: Product['variants'][nu
     open: t(lang, 'quick.open'), title: t(lang, 'quick.open'), lead: t(lang, 'quick.lead'), close: t(lang, 'quick.close'),
     what: pack ? `${name} · ${pack}` : name,
     greet: t(lang, 'quick.greet'), qty: t(lang, 'quick.qty'), myPhone: t(lang, 'quick.myPhone'),
-    rows: shopMessengers().map((m) => ({ key: m.key, name: m.label, label: t(lang, 'quick.via', { name: m.label }), value: m.value })),
+    rows: orderMessengers().map((m) => ({ key: m.key, name: m.label, label: t(lang, 'quick.via', { name: m.label }), value: m.value })),
     phone: { label: t(lang, 'quick.phone'), hint: market().phone.example }, call: t(lang, 'quick.call'),
   }
 }

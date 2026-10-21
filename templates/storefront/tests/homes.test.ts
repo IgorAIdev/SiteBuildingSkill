@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { arrange, HOMES, RECIPE, type HomeVariant } from '../lib/homes.ts'
+import { arrange, carried, HOMES, RECIPE, type HomeVariant } from '../lib/homes.ts'
 import { PAGES } from '../lib/pages.ts'
 import type { Block } from '../lib/source/contract.ts'
 
@@ -13,7 +13,8 @@ test('home: every block of the page stands once, in the recipe order', () => {
   for (const lang of ['ro', 'en', 'hu'] as const) {
     const blocks = PAGES.home.blocks[lang]
     const placed = arrange(blocks)
-    assert.deepEqual([...placed.map((x) => x.block)].sort((a, b) => blocks.indexOf(a) - blocks.indexOf(b)), blocks, `${lang}: каждый блок — один раз`)
+    /* Блок доверия несёт герой (`carried`): в потоке его нет, и он — ровно один. */
+    assert.deepEqual([...placed.map((x) => x.block), ...[carried(blocks)].filter((b) => b !== null)].sort((a, b) => blocks.indexOf(a) - blocks.indexOf(b)), blocks, `${lang}: каждый блок — один раз`)
     const order = RECIPE.map(([slot]) => slot)
     const at = placed.map((x) => order.indexOf(x.slot))
     assert.deepEqual(at, [...at].sort((a, b) => a - b), `${lang}: порядок рецепта`)
@@ -47,19 +48,26 @@ test('home: the sport dress puts the best sellers right after the hero, every bl
   }
 })
 
-/* Ряд доверия стоит после товара, а не над ним. Исследование главной советовало
-   поставить его под героя; заказчик, увидев, сказал: «наверху товар, а не
-   политика возврата; доверие ниже, перед футером» (13.10.2026,
-   `.claude/memory/home-product-first.md`). Решение не оставляет следа в
-   поведении, и «доказательство рядом с героем» хочется вернуть из лучших
-   побуждений — поэтому падает. Снимается словом заказчика, одной работой с
-   записью. */
-test('home: the trust row stands last, after every product shelf, in every recipe', () => {
-  const fail = 'Ряд доверия стоит выше товара. Заказчик 13.10.2026: «наверху товар, а не политика возврата; доверие ниже, перед футером». Верни его последним.'
-  const recipes: Array<[string, readonly (readonly [string, ...unknown[]])[]]> = [['общий', RECIPE], ...HOMES.map((h) => [h, arrange(PAGES.home.blocks.en, h).map((x) => [x.slot] as const)] as [string, readonly (readonly [string])[]])]
-  for (const [name, steps] of recipes) {
-    const slots = steps.map(([slot]) => slot)
-    assert.equal(slots.at(-1), 'trust', `${name}: ${fail}`)
-    assert.ok(slots.lastIndexOf('featured') < slots.indexOf('trust'), `${name}: ${fail}`)
+/* Ряд доверия — в первом окне, над рядом кнопок героя: значок и слово в одной
+   строке. Слово владельца 15.10.2026 заменило прежнее («тонкая строка под героем»):
+   «выше кнопки магазина, чтобы иконки и текст были в одной строке». Блок несёт
+   герой (`carried`), а не отдельное место рецепта, и не стоит дважды; одежда,
+   чей рецепт называет `trust` сам, ставит его там, где сказано. Решение не
+   оставляет следа в поведении, и «доверие отдельной полосой» хочется вернуть из
+   лучших побуждений — поэтому падает. Снимается словом владельца, одной работой
+   с записью. */
+test('home: the trust row rides in the hero above the shop buttons, and stands nowhere else unless the recipe names it', () => {
+  const fail = 'Ряд доверия стоит не в первом окне над кнопками героя. Владелец 15.10.2026: «выше кнопки магазина, чтобы иконки и текст были в одной строке».'
+  const blocks = PAGES.home.blocks.en
+  const trust = blocks.find((b) => b.type === 'trust')
+  assert.ok(trust, 'в данных главной есть блок доверия')
+  assert.ok(!RECIPE.some(([slot]) => slot === 'trust'), `общий рецепт: ${fail}`)
+  assert.equal(carried(blocks), trust, `общий рецепт: герой несёт блок доверия. ${fail}`)
+  assert.ok(!arrange(blocks).some((x) => x.slot === 'trust'), 'в потоке страницы блока нет — он в герое, второй раз не стоит')
+  for (const home of HOMES) {
+    const placed = arrange(blocks, home).filter((x) => x.slot === 'trust').length
+    assert.equal(placed + (carried(blocks, home) ? 1 : 0), 1, `${home}: блок доверия стоит ровно один раз — в потоке или в герое`)
   }
+  const hero = read('components/blocks/Hero.tsx')
+  assert.ok(hero.indexOf('<TrustLine') > 0 && hero.indexOf('<TrustLine') < hero.indexOf('<nav aria-label'), `Hero.tsx: ряд доверия идёт раньше ряда кнопок. ${fail}`)
 })

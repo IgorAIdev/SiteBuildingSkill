@@ -7,9 +7,9 @@ import { toMetadata } from '@/lib/seo.ts'
 import { organizationLd, websiteLd } from '@/lib/ld.ts'
 import { COMPANY_IS_REAL } from '@/lib/flags.ts'
 import { lookNow } from '@/lib/look.ts'
-import { arrange } from '@/lib/homes.ts'
+import { arrange, carried } from '@/lib/homes.ts'
 import { toneOf } from '@/lib/bands.ts'
-import { pledgesView } from '@/lib/pledges.ts'
+import { pledgesView, sloganLines } from '@/lib/pledges.ts'
 import { Blocks } from '@/components/blocks/registry.tsx'
 import { JsonLd } from '@/components/JsonLd.tsx'
 import { Unavailable } from '@/components/StateScreen.tsx'
@@ -49,10 +49,10 @@ export default async function Home({ params }: Props) {
      главная стоит. */
   const shelf: BlockCtx['cards'] = Object.fromEntries(cards.value.map((c) => [c.id, shelfCard(lang, c)]))
   const ctx: BlockCtx = {
-    lang, home: look.home, cat: look.vars['--cat-look'] === 'grid' ? 'grid' : 'dot', collections: cols.value, effects: effects.ok ? effects.value : [], pledges, cart: { submit: cartSubmit, call: cartCall }, cards: shelf,
+    lang, home: look.home, slogans: sloganLines(lang, facts.ok ? facts.value : null), cat: look.vars['--cat-look'] === 'grid' ? 'grid' : 'dot', collections: cols.value, effects: effects.ok ? effects.value : [], pledges, cart: { submit: cartSubmit, call: cartCall }, cards: shelf,
     spotlight: ids.map((id) => shelf[id]).find(Boolean) ?? null,
     bands: Object.fromEntries(page.value.blocks.map((b) => [b.type, toneOf(look.vars, b.type)])),
-    reviews: reviews.ok ? reviews.value : [], posts: posts.ok ? posts.value : [],
+    reviews: reviews.ok ? reviews.value : [], posts: posts.ok ? posts.value : [], trust: carried(page.value.blocks, look.home),
   }
   return (
     /* Порядок блоков — рецепт главной (lib/homes.ts); `data-home` — одежда

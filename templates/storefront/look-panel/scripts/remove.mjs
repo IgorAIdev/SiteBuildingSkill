@@ -43,6 +43,8 @@ export const OWNED = ['look-panel', 'app/look-panel', 'app/[site]/[lang]/(look-p
 const CODE = ['app', 'components', 'lib', 'styles', 'scripts', 'public', 'tests']
 const ROOT_FILES = ['package.json', 'next.config.ts', 'proxy.ts', 'tsconfig.json', 'kit.config.json', '.env', '.env.local', '.env.example', '.gitignore']
 /** Следы панели, которых после снятия быть не должно. */
+/** Метка в плане для веток CSS под невыбранными значениями ролей вида (не метка в коде — признак правки). */
+const ROLES = 'look-roles'
 export const TRACES = [TAG, 'LOOK_PICKER', 'look:remove', 'check:look', 'check:choice', 'look-header', 'look-card', 'look-home']
 
 /** Код без панели: строки с меткой и блоки `look-panel:start … end`. */
@@ -87,6 +89,49 @@ export function stripVariants(text, tag, chosen) {
   }).join('\n')
 }
 export const stripHeaders = (text, chosen) => stripVariants(text, 'look-header', chosen)
+
+/** Ветки CSS по ролям вида — `@container style(--seg-look: joined) { … }`: у вида значение роли одно,
+ *  и блок под чужим значением в отгружаемых стилях — вариант, который панель держала для выбора
+ *  (слово заказчика 16.10.2026: «в дизайн-системе скилла много лишнего — оно же не переносится на
+ *  сайт?»; замер на cbdshop.hr — 20 блоков, 6,9 КБ из 172 КБ, их не видела ни снятие, ни
+ *  `check:look`). Блок уходит, когда ВСЕ его условия — `style(--роль: значение)`, соединённые `or`,
+ *  называют роли, которые вид носит, и ни одно значение не опубликованное. Условие с `not` или
+ *  `and`, роль, которой у вида нет, — блок остаётся: чужого здесь не решаем. Метки не нужны:
+ *  значение читается из самого условия. */
+const ROLE_AT = /@container\s+([^{};]*?)\s*\{/g
+const ROLE_ONE = /^style\(\s*(--[a-z0-9-]+)\s*:\s*([^)]*?)\s*\)$/i
+const roleConds = (prelude) => {
+  const found = prelude.trim().split(/\s+or\s+/i).map((part) => part.trim().match(ROLE_ONE))
+  return found.every(Boolean) ? found.map((m) => [m[1], m[2].replace(/^["']|["']$/g, '')]) : null
+}
+/** Блоки под чужим значением роли: [начало, конец, условия]; вложенные в уже названный не считаются. */
+export function foreignRoleBlocks(css, vars) {
+  const out = []
+  let seen = 0
+  for (const m of css.matchAll(ROLE_AT)) {
+    if (m.index < seen) continue
+    const conds = roleConds(m[1])
+    if (!conds || !conds.every(([name]) => vars[name] !== undefined)) continue
+    if (conds.some(([name, value]) => String(vars[name]).trim() === value)) continue
+    let depth = 1
+    let i = m.index + m[0].length
+    while (depth && i < css.length) { depth += (css[i] === '{') - (css[i] === '}'); i++ }
+    out.push([m.index, i, conds])
+    seen = i
+  }
+  return out
+}
+/** CSS без веток невыбранных значений ролей вида; `vars` — свойства опубликованного вида. */
+export function stripRoles(css, vars) {
+  let out = ''
+  let at = 0
+  for (const [from, to] of foreignRoleBlocks(css, vars)) {
+    out += css.slice(at, from)
+    at = to
+    while (css[at] === '\r' || css[at] === '\n') at++
+  }
+  return out + css.slice(at)
+}
 
 const walk = (dir, visit) => {
   if (!existsSync(dir)) return
@@ -141,6 +186,7 @@ export function plan(root) {
   const dirs = OWNED.filter((p) => existsSync(join(root, p)))
   /** Переписываемые файлы: [путь, новый текст, какие метки в нём]. */
   const edits = []
+  const roles = []
   const variantOnly = []
   for (const dir of ['app', 'components', 'lib', 'styles']) {
     walk(join(root, dir), (file) => {
@@ -150,7 +196,12 @@ export function plan(root) {
       if (variantFile(text, chosen)) { variantOnly.push(rel); return }
       let next = text.includes(TAG) ? stripPanel(text) : text
       for (const v of VARIANTS) if (next.includes(v.tag)) next = stripVariants(next, v.tag, chosen[v.tag])
-      if (next !== text) edits.push([rel, next, [TAG, ...VARIANTS.map((v) => v.tag)].filter((t) => text.includes(t))])
+      const tags = [TAG, ...VARIANTS.map((v) => v.tag)].filter((t) => text.includes(t))
+      if (file.endsWith('.css')) {
+        const foreign = foreignRoleBlocks(next, look.vars ?? {})
+        if (foreign.length) { next = stripRoles(next, look.vars ?? {}); tags.push(ROLES); roles.push([rel, foreign.length]) }
+      }
+      if (next !== text) edits.push([rel, next, tags])
     })
   }
   const scripts = []
@@ -168,7 +219,7 @@ export function plan(root) {
   const files = [...variantOnly, ...(existsSync(join(root, DRAFT)) ? [DRAFT] : [])]
   const used = new Set((look.fonts ?? []).flatMap((f) => f.files.map((x) => basename(x.url))))
   if (existsSync(join(root, 'public/fonts'))) for (const name of readdirSync(join(root, 'public/fonts'))) if (!used.has(name)) files.push(`public/fonts/${name}`)
-  return { chosen, dropped, dirs, edits, scripts, files }
+  return { chosen, dropped, dirs, edits, scripts, files, roles }
 }
 const empty = (p) => !p.dirs.length && !p.edits.length && !p.files.length
 
@@ -189,6 +240,7 @@ export function describe(p) {
     const what = WHAT[v.field]
     if (p.dropped[v.tag].length) lines.push(`${what}, кроме выбранного «${p.chosen[v.tag]}»: ${p.dropped[v.tag].join(', ')} (${where(v.tag)})`)
   }
+  if (p.roles?.length) lines.push(`ветки стилей под невыбранными значениями ролей вида (${p.roles.reduce((n, [, k]) => n + k, 0)} блоков): ${p.roles.map(([f, k]) => `${f} — ${k}`).join(', ')}`)
   return lines
 }
 
@@ -416,6 +468,9 @@ async function check(root) {
         const css = readFileSync(f, 'utf8')
         raw += Buffer.byteLength(css); gz += gzipSync(css, { level: 9 }).length
         for (const needle of foreign) if (css.includes(needle)) fail.push(`отгружаемый стиль ${basename(f)} несёт чужой вариант: ${needle}`)
+        /* Ветки под невыбранными значениями ролей вида (`@container style(--роль: значение)`) —
+           тот же чужой вариант, только без своего имени набора. */
+        for (const [, , conds] of foreignRoleBlocks(css, look.vars ?? {})) fail.push(`отгружаемый стиль ${basename(f)} несёт ветку невыбранной роли: ${conds.map(([n, v]) => `${n}: ${v}`).join(' | ')}`)
         for (const m of css.matchAll(/@font-face\{[^}]*?url\(([^)]+)\)/g)) if (!fontUrls.has(m[1].replace(/["']/g, ''))) fail.push(`отгружаемый стиль ${basename(f)} несёт чужой шрифт: ${m[1]}`)
         for (const [name, value] of rootDecls(css)) shipped.set(name, [...(shipped.get(name) ?? []), value])
       })
