@@ -10,6 +10,7 @@ import { CATEGORIES, EFFECTS } from '../products.ts'
 import type { Lang } from '../locale.ts'
 import { REVIEWS_ARE_REAL } from '../flags.ts'
 import { categoryCopy, effectCopy } from '../content/shop-copy.ts'
+import { siteNow } from '../site-now.ts'
 import { EFFECT_FACET } from './effect.ts'
 
 /* Один выбор источника на всю витрину (`SOURCE` в .env):
@@ -18,7 +19,9 @@ import { EFFECT_FACET } from './effect.ts'
      (`VENDURE_SHOP_API_URL`, `VENDURE_CHANNEL_TOKEN`), содержание — пока
      образец; заказы ставятся только при `VENDURE_PLACE_ORDERS=on`;
    · `live` (Vendure + Payload) — план 4, содержание из Payload. */
-const which = () => process.env.SOURCE ?? 'sample'
+/* Источник — у сайта запроса (lib/sites.json, `source`); у сайта без своего —
+   окружение. */
+const which = () => siteNow().source ?? process.env.SOURCE ?? 'sample'
 
 /** Принимает ли магазин заказы: образец ставит свои, движок — только словом
  *  `VENDURE_PLACE_ORDERS=on`. Пока нет — сайт говорит об этом полосой над
@@ -54,10 +57,15 @@ const shotOf = (e: Effect, lang: Lang): Effect => ({ ...e, name: effectCopy(lang
  *  слово заказчика 17.10.2026: на полке пять карточек, а шестая должна быть видна краем и полка — листаться). */
 const SHELF_TAKE = 10
 
-let trade: { source: Source; commerce: Commerce; content: Content } | null = null
+/* Торговля движка — своя на канал: канал сайта (lib/sites.json, `channel`),
+   у сайта без своего — окружение. */
+const trades = new Map<string, { source: Source; commerce: Commerce; content: Content }>()
 function vendure() {
+  const site = siteNow()
+  const key = site.channel ?? ''
+  let trade = trades.get(key)
   if (!trade) {
-    const env = vendureEnv()
+    const env = vendureEnv(site.channel ? { ...process.env, VENDURE_CHANNEL_TOKEN: site.channel } : process.env)
     const engine = vendureSource(env)
     const catalog: Source = {
       ...engine,
@@ -67,6 +75,7 @@ function vendure() {
       async listing(lang, query) { const r = await engine.listing(lang, query); return r.ok ? { ok: true, value: { ...r.value, facets: namedFacets(r.value.facets, lang) } } : r },
     }
     trade = { source: catalog, commerce: vendureCommerce({ ...env, placeOrders: process.env.VENDURE_PLACE_ORDERS === 'on' }), content: standIn(catalog) }
+    trades.set(key, trade)
   }
   return trade
 }
