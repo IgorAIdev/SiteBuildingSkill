@@ -114,7 +114,7 @@ export async function SiteFrame({ lang }: { lang: Lang }) {
 
       <Part title="Меню полок" lede="Полки магазина строкой в шапке, первой — все товары. Не влезли в строку — крайние уходят под «Ещё»; на телефоне полки — в шторке меню.">
         <nav className={h.nav} aria-label={t(lang, 'nav.categories')}>
-          <NavLinks links={data.nav} className={`${p.rail} ${h.links}`} more={t(lang, 'nav.params', { name: '{name}' })} overflow={t(lang, 'nav.more')} />
+          <NavLinks links={data.nav} className={`${p.rail} ${h.links}`} more={t(lang, 'nav.params', { name: '{name}' })} overflow={t(lang, 'nav.more')} all={t(lang, 'shelf.all')} />
         </nav>
       </Part>
 

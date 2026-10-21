@@ -88,7 +88,7 @@ const topBar = (lang: Lang, top: TopBar) => <div className={s.top}><div classNam
    строкой служебных ссылок; знаков в строке телефона остаётся четыре. */
 /* В «Categories» окна поиска идут только страницы: рельса («By effect») — название группы, её ссылка — якорь главной (слово заказчика 18.10.2026; скилл shop, «Имя рельсы — не страница»). */
 /* look-panel: знак дизайн-системы — рядом с поиском (слово заказчика 18.10.2026: «ссылка на дизайн-систему рядом с поиском»); есть, пока страница открыта (DESIGN_SYSTEM=on или панель вида), в боевом магазине её нет. */
-const designLink = (lang: Lang) => (process.env.DESIGN_SYSTEM === 'on' || process.env.LOOK_PICKER === 'on') ? <SiteLink className={s.glyph} href={`/${lang}/design`} aria-label="Design system"><Icon id="layout-grid" /></SiteLink> : null // look-panel: знак страницы дизайн-системы
+const designLink = (lang: Lang) => (process.env.DESIGN_SYSTEM === 'on' || process.env.LOOK_PICKER === 'on') ? <SiteLink className={`${s.glyph} ${s.design}`} href={`/${lang}/design`} aria-label="Design system"><Icon id="layout-grid" /></SiteLink> : null // look-panel: знак страницы дизайн-системы
 /** Страницы меню без рельс: у рельсы адрес — якорь главной. */
 const pages = (links: NavLink[]) => links.filter((l) => !l.href.includes('#'))
 const find = (lang: Lang, nav: Menu) => (
@@ -135,7 +135,7 @@ const shelves = (lang: Lang, nav: Menu, title: string) => (
         ней как стояли. */}
     <PaneHead className={s.sheetHead} title={title} close={t(lang, 'nav.close')} target={`${nav.at}site-menu`} />
     <div className={`${pn.body} ${s.sheetBody}`}>
-      <NavLinks links={nav.links} className={`${p.rail} ${s.links}`} more={t(lang, 'nav.params', { name: '{name}' })} overflow={t(lang, 'nav.more')} />
+      <NavLinks links={nav.links} className={`${p.rail} ${s.links}`} more={t(lang, 'nav.params', { name: '{name}' })} overflow={t(lang, 'nav.more')} all={t(lang, 'shelf.all')} />
       <MenuFoot lang={lang} top={nav.top.links} service={nav.service} />
     </div>
   </nav>

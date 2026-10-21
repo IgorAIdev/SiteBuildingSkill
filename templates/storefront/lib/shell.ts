@@ -5,6 +5,7 @@ import { hrefFor } from './href.ts'
 import { source, content } from './source/index.ts'
 import { moneyShort } from './money.ts'
 import { effectCopy } from './content/shop-copy.ts'
+import { formOf } from './source/details.ts'
 
 /* Пустой список — общий на оба провала источника: своя `[]` в JSX-пропе на
    каждый рендер словит react-perf/jsx-no-new-array-as-prop. */
@@ -19,6 +20,10 @@ const NONE: never[] = []
  *  `sign` — знак полки из данных (`Collection.sign`), у «всех товаров» — знак
  *  магазина, тот же, что у «В магазин» героя: строки полок окна поиска
  *  (И691). */
+/** `menu` — строка раскрывается в шторке телефона списком под собой (как на
+ *  cbdin.bg: имя ведёт на полку, стрелка справа раскрывает): «By effect» —
+ *  эффектами, масла — гранями (слово заказчика 21.10.2026: «By effect и масла —
+ *  раскрывающиеся списки, посмотри как у .bg сайтов»). */
 export type NavLink = { href: string; label: string; sign: string | null; line: string | null; facets: NavGroup[]; kids: NavKid[]; menu: boolean }
 /** Подменю-список строки шапки (слово заказчика 02.10.2026: «All products —
  *  раскрывающееся меню, в нём категории с иконками»): у «всех товаров» —
@@ -74,6 +79,9 @@ const BLOG_SIGN = 'newspaper'
  *  строке шапки: грани раскрываются только у этих полок (слово заказчика
  *  05.10.2026, поправка И478). */
 const MENU_SHELVES = new Set(['oil'])
+/* Полка масел — по виду (`form`), а не по одному адресу: у витрины Хорватии
+   полка масел — `ulja`, и стрелки раскрытия у неё не было (21.10.2026). */
+const foldsFacets = (c: Collection): boolean => MENU_SHELVES.has(c.slug) || (c.form ?? formOf([c.slug])) === 'oil'
 
 export async function shellData(lang: Lang): Promise<ShellData> {
   const [cols, docs, facts, posts, effects] = await Promise.all([
@@ -97,11 +105,11 @@ export async function shellData(lang: Lang): Promise<ShellData> {
        заказчика 08.10.2026: «в меню делай пункт By effects и там выбор по
        эффектам»; И788). Сама строка ведёт к ряду эффектов на главной. Эффектов
        нет — строки нет. */
-    ...(effects.ok && effects.value.length ? [{ href: `${hrefFor(lang, { home: true })}#effects`, label: t(lang, 'nav.effects'), sign: 'sparkles', line: null, facets: NONE, menu: false, kids: effects.value.map((e) => ({ href: hrefFor(lang, { effect: e.code }), label: e.name, sign: effectCopy(lang, e.code)?.sign ?? null })) }] : []),
+    ...(effects.ok && effects.value.length ? [{ href: `${hrefFor(lang, { home: true })}#effects`, label: t(lang, 'nav.effects'), sign: 'sparkles', line: null, facets: NONE, menu: true, kids: effects.value.map((e) => ({ href: hrefFor(lang, { effect: e.code }), label: e.name, sign: effectCopy(lang, e.code)?.sign ?? null })) }] : []),
     ...shelves.map((c, i) => {
       const r = facetsOf[i]
       const facets = r.ok ? groupsOf(r.value.facets, (code, value) => hrefFor(lang, { category: c.slug, facets: { [code]: [value] } })) : NONE
-      return { href: hrefFor(lang, { category: c.slug }), label: c.name, sign: c.sign, line: c.description, facets, kids: NONE, menu: MENU_SHELVES.has(c.slug) && facets.length > 0 }
+      return { href: hrefFor(lang, { category: c.slug }), label: c.name, sign: c.sign, line: c.description, facets, kids: NONE, menu: foldsFacets(c) && facets.length > 0 }
     }),
   ]
   const shown = docs.ok ? docs.value : NONE
