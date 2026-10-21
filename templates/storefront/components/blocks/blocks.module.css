@@ -343,7 +343,9 @@
    нажатия. Рядом, тесно — переносятся целиком (`cluster`). Слово — роль названия карточки,
    краска — чернила. */
 .trustLine{--cluster:var(--gap-row) var(--air-group)}
-.trustTitle{color:var(--ink);font-size:var(--cardname-size);line-height:var(--cardname-lead);font-weight:var(--cardname-weight);letter-spacing:var(--cardname-track)}
+/* Слоган со знаком: знак ростом знака при слове, краской знака при слове (`--sign-ink`). */
+.trustTitle svg{inline-size:var(--icon-size);block-size:var(--icon-size);flex:none;color:var(--sign-ink, var(--pop-ink))}
+.trustTitle{display:inline-flex;align-items:center;gap:var(--gap-row);color:var(--ink);font-size:var(--cardname-size);line-height:var(--cardname-lead);font-weight:var(--cardname-weight);letter-spacing:var(--cardname-track)}
 .hero[data-bare] .trustLine{justify-content:center}
 /* Ряд доверия и ряд пути героя — одна группа у нижнего края колонки; воздух между — ряд (`--air-row`). */
 .heroPath{--stack:var(--air-row)}

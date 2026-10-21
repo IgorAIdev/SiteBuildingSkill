@@ -4,7 +4,9 @@ import { t, tn } from './i18n/index.ts'
 import { money, moneyShort } from './money.ts'
 
 /** Обещание у кнопки заказа: знак из листа и строка. */
-export type PledgeView = { icon: 'package' | 'truck' | 'check-shield'; text: string }
+export type PledgeView = { icon: 'package' | 'truck' | 'rotate-ccw'; text: string }
+/** Слоган ряда доверия: слово и его знак (знаки — краской знака при слове, `--sign-ink`). */
+export type SloganLine = { text: string; sign: 'flask' | 'truck' | 'rotate-ccw' }
 export type PledgesView = { label: string; items: PledgeView[] }
 
 /** Доставка одной строкой — из того же списка, что выбор на оформлении
@@ -32,7 +34,7 @@ export function pledgesView(lang: Lang, a: { payments: PaymentMethod[] | null; m
   const items: PledgeView[] = [
     ...(cod ? [{ icon: 'package' as const, text: cod.name }] : []),
     ...(delivery ? [{ icon: 'truck' as const, text: delivery }] : []),
-    ...(a.returnDays ? [{ icon: 'check-shield' as const, text: tn(lang, 'pledge.returns', a.returnDays) }] : []),
+    ...(a.returnDays ? [{ icon: 'rotate-ccw' as const, text: tn(lang, 'pledge.returns', a.returnDays) }] : []),
   ]
   return { label: t(lang, 'pledge.label'), items }
 }
@@ -42,10 +44,10 @@ export function pledgesView(lang: Lang, a: { payments: PaymentMethod[] | null; m
  *  бесплатной доставки и возврат — срок из данных магазина (`ShopFacts`), те же, что в полосе над
  *  шапкой и у кнопки заказа. От способов доставки движка не зависят: у Vendure без корзины их нет, и
  *  слоган пропадал. Нет факта — нет слогана. */
-export function sloganLines(lang: Lang, facts: ShopFacts | null): string[] {
+export function sloganLines(lang: Lang, facts: ShopFacts | null): SloganLine[] {
   if (!facts) return []
   return [
-    ...(facts.freeDeliveryFrom ? [t(lang, 'header.freeFrom', { price: moneyShort(facts.freeDeliveryFrom, lang) })] : []),
-    ...(facts.returnDays ? [tn(lang, 'pledge.returns', facts.returnDays)] : []),
+    ...(facts.freeDeliveryFrom ? [{ sign: 'truck' as const, text: t(lang, 'header.freeFrom', { price: moneyShort(facts.freeDeliveryFrom, lang) }) }] : []),
+    ...(facts.returnDays ? [{ sign: 'rotate-ccw' as const, text: tn(lang, 'pledge.returns', facts.returnDays) }] : []),
   ]
 }

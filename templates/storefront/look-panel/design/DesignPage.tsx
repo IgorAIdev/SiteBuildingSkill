@@ -408,7 +408,7 @@ async function Blocks({ lang }: { lang: Lang }) {
         </div>
       </Part>
       <Part title="Обещания у кнопки" lede="Строки под кнопкой заказа — «а если…», которое держит руку над кнопкой: оплата при получении, доставка «от», срок возврата. Тихим кеглем сноски, кнопке не мешают.">
-        <Pledges pledges={{ label: 'Условия', items: [{ icon: 'package', text: 'Оплата при получении' }, { icon: 'truck', text: 'Доставка от 15 lei' }, { icon: 'check-shield', text: 'Возврат 14 дней' }] }} />
+        <Pledges pledges={{ label: 'Условия', items: [{ icon: 'package', text: 'Оплата при получении' }, { icon: 'truck', text: 'Доставка от 15 lei' }, { icon: 'rotate-ccw', text: 'Возврат 14 дней' }] }} />
       </Part>
       <Part title="Ключевые цифры" lede="Что покупатель CBD сверяет перед покупкой: сколько всего, в единице приёма, в капле, цена миллиграмма. Число крупно, подпись тихо.">
         <KeyFacts facts={{ label: 'Параметры', rows: [{ value: '1000 mg', label: 'CBD in total', note: null }, { value: '33 mg', label: 'CBD per ml', note: null }, { value: '1,5 mg', label: 'CBD per drop', note: 'ок. 20 капель в мл' }] }} />

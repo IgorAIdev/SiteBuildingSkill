@@ -11,6 +11,8 @@ import { Blocks } from '@/components/blocks/registry.tsx'
 import { Doors, effectDoors } from '@/components/blocks/Doors.tsx'
 import { RailHead } from '@/components/RailHead.tsx'
 import { RailPager } from '@/components/RailPager.tsx'
+import { TrustLine } from '@/components/blocks/TrustLine.tsx'
+import { sloganLines } from '@/lib/pledges.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { t } from '@/lib/i18n/index.ts'
 import type { BlockCtx } from '@/components/blocks/types.ts'
@@ -32,8 +34,11 @@ const FLOORS: [string, string, string][] = [
 ]
 
 export async function HomeSections({ lang }: { lang: Lang }): Promise<ReactNode> {
-  const [cols, fx, page, look] = await Promise.all([source().collections(lang), source().effects(lang), content().page(lang, 'home'), lookNow()])
+  const [cols, fx, page, look, facts] = await Promise.all([source().collections(lang), source().effects(lang), content().page(lang, 'home'), lookNow(), content().facts()])
   const blocks = page.ok ? page.value.blocks : []
+  /* Ряд доверия главной — тот же блок `trust` и те же факты магазина, что на главной. */
+  const trust = blocks.find((b): b is Extract<typeof b, { type: 'trust' }> => b.type === 'trust') ?? null
+  const slogans = sloganLines(lang, facts.ok ? facts.value : null)
   /* Две полки товара из главной: первая стоит на полу, вторая — на тихой подложке. */
   const shelves = arrange(blocks).filter((x) => x.slot === 'featured').slice(0, 2)
   const ids = shelves.flatMap((x) => (x.block.type === 'featured' ? x.block.ids : []))
@@ -71,6 +76,9 @@ export async function HomeSections({ lang }: { lang: Lang }): Promise<ReactNode>
             </section>
           </div>
         ) : null}
+      </Part>
+      <Part title="Слоганы доверия" lede="Строка слов над кнопками героя: лаборатория — словом блока главной, доставка и возврат — фактами магазина; знаки — фирменной краской знака при слове (слово владельца 21.10.2026). Не ссылки. Нет ни одного факта — ряда нет.">
+        {trust ? <TrustLine block={trust} ctx={{ ...ctx('none'), slogans }} /> : null}
       </Part>
       <Part title="Разделение секций" lede="Секции главной отделяются подложкой во всю ширину окна и воздухом. Включается и сохраняется в панели Look: Admin → Sections — у каждой секции ряд кружков: без подложки, тихая, марки, тёмная. Ниже — цвета этих подложек.">
         <div className={s.floors} aria-label="Цвет пола">
