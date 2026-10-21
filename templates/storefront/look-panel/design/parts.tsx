@@ -10,7 +10,7 @@ import { Probe } from './Probe.tsx'
 /* `tools` — органы у правого края шапки раздела: стрелки ленты образцов. */
 export const Part = ({ title, lede, tools, children }: { title: string; lede: string; tools?: ReactNode; children: ReactNode }) => (
   <section className={s.part} aria-label={title}>
-    <div className={p.sectionHead} data-row={tools ? '' : undefined}><hgroup><h2>{title}</h2><p>{lede}</p></hgroup>{tools ? <div className={p.cluster}>{tools}</div> : null}</div>
+    <div className={p.sectionHead} data-row={tools ? '' : undefined}><hgroup><h2>{title}</h2><p>{lede}</p></hgroup>{tools ? <div><div className={p.cluster}>{tools}</div></div> : null}</div>
     {children}
   </section>
 )
