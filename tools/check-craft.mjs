@@ -189,17 +189,18 @@ const iconRow = async () => {
     const open = src.match(new RegExp(`<symbol[^>]*id="${id}"[^>]*>`))?.[0]
     if (!open) return null
     const body = src.slice(src.indexOf(open) + open.length).split('</symbol>')[0].replace(/currentColor/g, '#000')
-    const px = Math.round(s.getBoundingClientRect().height)
+    /* Окно знака бывает не квадратом (флаг, знак оплаты): холст — по рамке знака на странице. */
+    const px = Math.round(s.getBoundingClientRect().height), wd = Math.max(1, Math.round(s.getBoundingClientRect().width))
     const filled = /fill="currentColor"/.test(open)
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${px}" height="${px}" viewBox="${open.match(/viewBox="([^"]+)"/)?.[1] ?? '0 0 24 24'}" fill="${filled ? '#000' : 'none'}" stroke="${filled ? 'none' : '#000'}" stroke-width="${parseFloat(getComputedStyle(s).strokeWidth) || 2}" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${wd}" height="${px}" viewBox="${open.match(/viewBox="([^"]+)"/)?.[1] ?? '0 0 24 24'}" fill="${filled ? '#000' : 'none'}" stroke="${filled ? 'none' : '#000'}" stroke-width="${parseFloat(getComputedStyle(s).strokeWidth) || 2}" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`
     const img = new Image()
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg)
     try { await img.decode() } catch { return null }
-    const cv = document.createElement('canvas'); cv.width = cv.height = px
+    const cv = document.createElement('canvas'); cv.width = wd; cv.height = px
     const cx = cv.getContext('2d'); cx.drawImage(img, 0, 0, px, px)
-    const data = cx.getImageData(0, 0, px, px).data
+    const data = cx.getImageData(0, 0, wd, px).data
     let top = -1, bottom = -1
-    for (let y = 0; y < px; y++) for (let x = 0; x < px; x++) if (data[(y * px + x) * 4 + 3] >= 128) { if (top < 0) top = y; bottom = y; break }
+    for (let y = 0; y < px; y++) for (let x = 0; x < wd; x++) if (data[(y * wd + x) * 4 + 3] >= 128) { if (top < 0) top = y; bottom = y; break }
     return top < 0 ? null : { id, h: bottom - top + 1 }
   }
   const rows = new Map()
