@@ -1,7 +1,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { money } from '../lib/money.ts'
-import { intlLocale, MARKET } from '../lib/market.ts'
+import { intlLocale, MARKETS } from '../lib/market.ts'
+const MARKET = MARKETS.RO
 
 /* Валюта образца — евро (24.09.2026); запись числа — язык страницы через
    `Intl`, одной функцией: по-английски «€29.90», по-румынски и

@@ -3,6 +3,7 @@ import { content } from '../source/index.ts'
 import { isLang } from '../locale.ts'
 import { t } from '../i18n/index.ts'
 import { EMAIL, LIMITS } from '../checkout-form.ts'
+import { inRequestSite } from '../request-site.ts'
 
 /** Ответ формы подписки: `done` — адрес принят; `message` — что не так;
  *  `email` — введённое остаётся в поле при отказе. */
@@ -10,7 +11,7 @@ export type NewsState = { done: boolean; message: string | null; email: string }
 
 /** Подписка из подвала (И549): адрес уходит источнику содержания
  *  (`Content.subscribe`) — витрина список подписчиков не ведёт. */
-export async function subscribe(rawLang: string, _prev: NewsState, form: FormData): Promise<NewsState> {
+async function subscribe_(rawLang: string, _prev: NewsState, form: FormData): Promise<NewsState> {
   if (!isLang(rawLang)) throw new Error(`subscribe: язык «${rawLang}» не из списка`)
   const lang = rawLang
   const raw = form.get('email')
@@ -20,3 +21,7 @@ export async function subscribe(rawLang: string, _prev: NewsState, form: FormDat
   if (!r.ok) return { done: false, message: t(lang, 'news.error'), email }
   return { done: true, message: null, email: '' }
 }
+
+/* Каждое действие — с сайтом запроса (lib/request-site.ts): рынок, адрес и
+   каталог внутри — сайта, с которого пришла форма. */
+export async function subscribe(...a: Parameters<typeof subscribe_>): ReturnType<typeof subscribe_> { return inRequestSite(() => subscribe_(...a)) }

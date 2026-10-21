@@ -4,6 +4,7 @@ import { takeFlow } from '@/lib/session.ts'
 import { callbackPath, land, unpackFlow } from '@/lib/social.ts'
 import { enterWith } from '@/lib/social-entry.ts'
 import { absolute } from '@/lib/seo.ts'
+import { inRequestSite } from '@/lib/request-site.ts'
 
 /* Адрес возврата входа через поставщика (И787): один на поставщика, без языка —
    его вписывают в консоли Google и Meta и в `SOCIAL_AUTH_REDIRECT_URIS` сервера.
@@ -13,7 +14,10 @@ import { absolute } from '@/lib/seo.ts'
    назад к форме; отказ — на форму словами (`?auth=…&via=…`). Не страница: в
    дерево маршрутов не входит, ссылок на него на сайте нет — только форма кнопок.
    Решают `land` и `landed` (lib/social.ts, tests/social.test.ts), вход — `enterWith`. */
-export async function GET(request: NextRequest, { params }: { params: Promise<{ provider: string }> }) {
+async function GET_(request: NextRequest, { params }: { params: Promise<{ provider: string }> }) {
   const l = land((await params).provider, unpackFlow(await takeFlow()), request.nextUrl.searchParams, (p) => absolute(callbackPath(p)))
   redirect('to' in l ? l.to : await enterWith(l))
 }
+
+/* Обработчик — с сайтом запроса (lib/request-site.ts). */
+export async function GET(...a: Parameters<typeof GET_>): ReturnType<typeof GET_> { return inRequestSite(() => GET_(...a)) }

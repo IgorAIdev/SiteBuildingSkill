@@ -5,6 +5,7 @@ import { t } from '../i18n/index.ts'
 import { momentOf } from '../format.ts'
 import { CONTACTS } from '../contacts.ts'
 import { EMAIL, LIMITS, field } from '../checkout-form.ts'
+import { inRequestSite } from '../request-site.ts'
 
 /** Что введено: остаётся в полях при отказе. */
 export type WithdrawValues = { name: string; order: string; email: string }
@@ -18,7 +19,7 @@ const ORDER_MAX = 40
  *  Директивы 2011/83, с 19.06.2026; И748): спрашивается только имя, номер
  *  заказа и адрес для подтверждения. Принял источник — строка с датой и
  *  временем приёма; нет — письмо на почту магазина, оно тоже действительно. */
-export async function withdraw(rawLang: string, _prev: WithdrawState, form: FormData): Promise<WithdrawState> {
+async function withdraw_(rawLang: string, _prev: WithdrawState, form: FormData): Promise<WithdrawState> {
   if (!isLang(rawLang)) throw new Error(`withdraw: язык «${rawLang}» не из списка`)
   const lang = rawLang
   const values = { name: field(form, 'name'), order: field(form, 'order'), email: field(form, 'email') }
@@ -28,3 +29,7 @@ export async function withdraw(rawLang: string, _prev: WithdrawState, form: Form
   if (!r.ok) return { done: null, message: t(lang, 'withdraw.error', { email: CONTACTS.email }), values }
   return { done: t(lang, 'withdraw.done', { at: momentOf(lang, r.value.at), email: values.email }), message: null, values: { name: '', order: '', email: '' } }
 }
+
+/* Каждое действие — с сайтом запроса (lib/request-site.ts): рынок, адрес и
+   каталог внутри — сайта, с которого пришла форма. */
+export async function withdraw(...a: Parameters<typeof withdraw_>): ReturnType<typeof withdraw_> { return inRequestSite(() => withdraw_(...a)) }

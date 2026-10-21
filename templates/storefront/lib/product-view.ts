@@ -10,7 +10,7 @@ import { saleOf, shelfCard, stockText, type ShelfCard, type WasView } from './vi
 import { QTY_MAX } from './cart-view.ts'
 import { factsLine, packFacts, type FactsView } from './facts.ts'
 import { ORDER_MESSENGERS, type Messenger } from './contacts.ts'
-import { MARKET } from './market.ts'
+import { market } from './market.ts'
 
 /** Протокол готовыми строками. `batch` — номер партии отдельно от заголовка:
  *  код партии не рвётся посередине (`RO-` / `2409-05`), его держит разметка.
@@ -149,11 +149,11 @@ function labOf(lang: Lang, product: Product, chosen: Product['variants'][number]
   return report ? { ...labView(lang, report), chip: t(lang, 'product.tab.lab'), close: t(lang, 'lab.close') } : null
 }
 
-/** Факты доверия: THC партии ниже предела рынка (`MARKET.thcLimit`) и
+/** Факты доверия: THC партии ниже предела рынка (`market().thcLimit`) и
  *  происхождение сырья. Слово — из данных языка, число — записью языка. */
 function trustOf(lang: Lang, product: Product, chosen: Product['variants'][number] | null): ProductPageView['trust'] {
   const report = product.labReports.find((r) => r.batch === chosen?.batch) ?? product.labReports[0] ?? null
-  const limit = MARKET.thcLimit
+  const limit = market().thcLimit
   return [
     ...(report && report.thcPercent < limit ? [{ icon: 'cannabis' as const, text: t(lang, 'product.thcUnder', { limit: percent(lang, limit, 1) }) }] : []),
     ...(product.origin === 'EU' ? [{ icon: 'eu-stars' as const, text: t(lang, 'product.origin.EU') }] : []),
@@ -193,7 +193,7 @@ function quickView(lang: Lang, product: Product, variant: Product['variants'][nu
     what: pack ? `${name} · ${pack}` : name,
     greet: t(lang, 'quick.greet'), qty: t(lang, 'quick.qty'), myPhone: t(lang, 'quick.myPhone'),
     rows: ORDER_MESSENGERS.map((m) => ({ key: m.key, name: m.label, label: t(lang, 'quick.via', { name: m.label }), value: m.value })),
-    phone: { label: t(lang, 'quick.phone'), hint: MARKET.phone.example }, call: t(lang, 'quick.call'),
+    phone: { label: t(lang, 'quick.phone'), hint: market().phone.example }, call: t(lang, 'quick.call'),
   }
 }
 

@@ -3,6 +3,7 @@ import { DEFAULT_LANG, isLang } from '@/lib/locale.ts'
 import { parseFacetParams } from '@/lib/source/vendure/core/search.mjs'
 import { EFFECT_FACET } from '@/lib/source/effect.ts'
 import { showLabel } from '@/lib/catalog-view.ts'
+import { inRequestSite } from '@/lib/request-site.ts'
 
 /* Счёт фильтра (LiveFilter.tsx): кнопка «применить» и числа у значений —
    выбор, ещё не применённый. Рамка — та же, что у полки страницы: полка
@@ -10,7 +11,7 @@ import { showLabel } from '@/lib/catalog-view.ts'
    сама); грани — из формы, тем же разбором, что адрес полки (`facet.*`).
    Источник отдаёт только счёт (`count`): выдачи и значений граней, без карточек.
    Источник молчит — 503, и кнопка остаётся «применить». */
-export async function GET(request: Request) {
+async function GET_(request: Request) {
   const query = new URL(request.url).searchParams
   const asked = query.get('lang') ?? ''
   const lang = isLang(asked) ? asked : DEFAULT_LANG
@@ -24,3 +25,6 @@ export async function GET(request: Request) {
   const counts = Object.fromEntries(r.value.facets.map((f) => [f.code, Object.fromEntries(f.values.map((v) => [v.code, v.count]))]))
   return Response.json({ total: r.value.total, label: showLabel(lang, r.value.total), facets: counts }, { headers: { 'Cache-Control': 'private, max-age=60' } })
 }
+
+/* Обработчик — с сайтом запроса (lib/request-site.ts). */
+export async function GET(...a: Parameters<typeof GET_>): ReturnType<typeof GET_> { return inRequestSite(() => GET_(...a)) }

@@ -4,8 +4,13 @@
     {
       "id": "demo",
       "hosts": [],
-      "langs": ["en", "ro", "hu"],
-      "defaultLang": "en"
+      "langs": [
+        "en",
+        "ro",
+        "hu"
+      ],
+      "defaultLang": "en",
+      "market": "RO"
     }
   ]
 }

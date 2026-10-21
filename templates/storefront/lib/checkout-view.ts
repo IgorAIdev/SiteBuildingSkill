@@ -6,7 +6,7 @@ import { STEPS, type Step } from './checkout-steps.ts'
 import { t, tn, type Key } from './i18n/index.ts'
 import { money } from './money.ts'
 import { hrefFor } from './href.ts'
-import { intlLocale, MARKET } from './market.ts'
+import { intlLocale, market } from './market.ts'
 import { lineFacts, priceOrFree, totalsView, type TotalsView } from './cart-view.ts'
 import { pledgesView, type PledgesView } from './pledges.ts'
 import { PRIVACY_DOC } from './company.ts'
@@ -128,7 +128,7 @@ export function addressRows(lang: Lang, a: Address | null): FieldRow[] {
       field(lang, 'postalCode', v.postalCode, { key: 'field.postalCode', auto: 'postal-code', numeric: true, short: true }),
       field(lang, 'city', v.city, { key: 'field.city', auto: 'address-level2' }),
     ],
-    [field(lang, 'region', v.region, { key: 'field.region', auto: 'address-level1', options: { none: t(lang, 'field.regionNone'), values: MARKET.regions } })],
+    [field(lang, 'region', v.region, { key: 'field.region', auto: 'address-level1', options: { none: t(lang, 'field.regionNone'), values: market().regions } })],
   ]
 }
 
@@ -155,7 +155,7 @@ export function deliveryView(lang: Lang, a: { methods: DeliveryMethod[]; deliver
   const chosen = a.delivery?.method ?? null
   const details = !chosen ? null
     : chosen.kind === 'address'
-      ? { kind: 'address' as const, method: chosen.id, title: t(lang, 'delivery.address'), rows: addressRows(lang, a.delivery?.address ?? null), country: { label: t(lang, 'field.country'), value: countryName(lang, MARKET.country) }, submit: t(lang, 'delivery.next') }
+      ? { kind: 'address' as const, method: chosen.id, title: t(lang, 'delivery.address'), rows: addressRows(lang, a.delivery?.address ?? null), country: { label: t(lang, 'field.country'), value: countryName(lang, market().country) }, submit: t(lang, 'delivery.next') }
       : pickupDetails(lang, chosen, a.delivery?.point?.id ?? null, a.pickup ?? { listed: false, city: '', points: [] })
   return {
     title: t(lang, 'delivery.title'),
