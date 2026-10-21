@@ -1,13 +1,20 @@
+/* Подложка висит в поле: список выходит за колонку на поле строки с обеих
+   сторон, и знак встаёт по краю заголовка над ним, а не на шаг правее
+   (заказчик 21.10.2026, снимок пустой корзины: значки на 8 px правее «Your cart
+   is empty»). Так строки ставят shadcn/ui Sidebar и меню Linear. */
 /* Полки — строками со знаком, колонок столько, сколько встаёт (правило 5),
    как подсказки ниже; слово — ролью меню (полка шапки), с заглавной, как в
    меню (имена приходят из данных строчными); знак — тихий. Под рукой —
    подложка строки (`row`, И685), её форма — у вида (И730). Не кнопки: в
    окне поиска путь — текст (И691). */
-.shelves{justify-self:stretch;list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 14rem), 1fr));gap:var(--sp-1) var(--gap-grid)}
+.shelves{justify-self:stretch;list-style:none;padding:0;margin:0 calc(var(--sp-2) * -1);display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 14rem), 1fr));gap:var(--sp-1) var(--gap-grid)}
 /* Рост и шаг — строки меню набора (styles/menu.module.css, `.list`): цель пальца и
    `--sp-1` между строками, как полки шторки и её служебные ссылки (21.10.2026). */
 .shelf{display:flex;align-items:center;gap:var(--gap-row);min-block-size:var(--ctrl-target);padding-inline:var(--sp-2);font-size:var(--menu-size);line-height:var(--menu-lead);font-weight:var(--menu-weight);color:var(--ink)}
-.shelf svg{flex:none;inline-size:1.25em;block-size:1.25em;color:var(--ink-soft)}
+/* Знак — фирменной краской, как знаки строк меню (styles/menu.module.css, ручка
+   `--sign-ink`; слово владельца 21.10.2026: «в менюшках иконки фирменного цвета»):
+   стоял тихим серым, и пустая корзина рядом с меню шапки читалась другим набором. */
+.shelf svg{flex:none;inline-size:1.25em;block-size:1.25em;color:var(--sign-ink, var(--pop-ink))}
 .shelfName::first-letter{text-transform:uppercase}
 .shelfName{display:inline-block}
 /* Строки на странице (пустое избранное, пустая корзина): строка выше своих букв на

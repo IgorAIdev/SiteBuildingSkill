@@ -9,3 +9,18 @@
    половиной ширины, 556×450 против 369×369 у карточек). На одной колонке слова
    встают под снимок. */
 .lead{grid-column:1 / -1;display:grid;grid-template-columns:subgrid}
+/* Рубрики — строка слов, как ряд полок шапки (Header.module.css, `links`):
+   тихое слово в покое, полное под рукой; текущая — полное и подчёркнутое, как
+   текущий шаг кассы и ссылка подвала. Было — кнопки сайта с заливкой
+   выбранного у «All» (заказчик 21.10.2026: «это говно ты так и оставишь?» —
+   ряд из шести рамок над статьями читался формой, а не оглавлением).
+   Редакционные ленты Aesop и Glossier ставят рубрики словами. Цель под пальцем
+   — рост цели контрола (WCAG 2.5.8). */
+.topics{--cluster:var(--gap-row) var(--air-row)}
+.topics a{
+  display:inline-flex;align-items:center;min-block-size:var(--ctrl-target);
+  color:var(--ink-soft);text-decoration:none;text-underline-offset:.3em;
+  transition:color var(--hover-t) var(--ease)
+}
+@media (hover:hover){ .topics a:hover{color:var(--ink)} }
+.topics a[aria-current='page']{color:var(--ink);text-decoration:underline}
