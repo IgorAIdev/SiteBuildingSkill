@@ -15,10 +15,11 @@
    выбранного у «All» (заказчик 21.10.2026: «это говно ты так и оставишь?» —
    ряд из шести рамок над статьями читался формой, а не оглавлением).
    Редакционные ленты Aesop и Glossier ставят рубрики словами. Цель под пальцем
-   — рост цели контрола (WCAG 2.5.8). */
+   — рост и ширина цели контрола (WCAG 2.5.8): короткое «All» и «Law» были
+   уже пальца (18 и 29 при норме 44, check:part 21.10.2026). */
 .topics{--cluster:var(--gap-row) var(--air-row)}
 .topics a{
-  display:inline-flex;align-items:center;min-block-size:var(--ctrl-target);
+  display:inline-flex;align-items:center;justify-content:center;min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target);
   color:var(--ink-soft);text-decoration:none;text-underline-offset:.3em;
   transition:color var(--hover-t) var(--ease)
 }
