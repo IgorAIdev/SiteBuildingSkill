@@ -62,7 +62,8 @@ export type QuickView = {
 export type Slide = Image & { id: string; show: string }
 /** Галерея готовыми строками: снимки по порядку (первый — главный), плашка
  *  скидки, имена стрелок и ленты. */
-export type GalleryView = { label: string; slides: Slide[]; badge: string | null }
+/** `prev`, `next` — имена стрелок листания кадра (у мыши, Gallery.tsx). */
+export type GalleryView = { label: string; prev: string; next: string; slides: Slide[]; badge: string | null }
 /* Прежняя цена (`WasView`) и скидка (`saleOf`) — одни на полку и карту,
    lib/view.ts. */
 export type { WasView }
@@ -94,7 +95,7 @@ export type ProductPageView = {
 /** Галерея товара: якоря слайдов, имена ссылок миниатюр, плашка скидки. */
 export function galleryView(lang: Lang, images: Image[], badge: string | null): GalleryView {
   return {
-    label: t(lang, 'gallery.label'), badge,
+    label: t(lang, 'gallery.label'), prev: t(lang, 'rail.prev'), next: t(lang, 'rail.next'), badge,
     slides: images.map((image, i) => ({ ...image, id: `shot-${i + 1}`, show: t(lang, 'gallery.show', { n: i + 1, total: images.length }) })),
   }
 }

@@ -517,8 +517,14 @@
   /* Раскрытие — строки меню под строкой полки, сдвинутые на знак строки: слово
      подстроки стоит под словом полки (как у cbdin.bg). Шаг — шаг строк меню. */
   display:flex;flex-direction:column;gap:var(--sp-1);grid-column:1 / -1;
-  --menu-inset:calc(var(--icon-size) + var(--gap-row))
+  --menu-inset:0
 }
+/* Группы граней и «View all» — под словом пункта (как у cbdin.bg): подпись группы и «View
+   all» на линии слова «CBD oil», значения — ступенью глубже (`menu.module.css`, строки под
+   подписью). Было: подписи на 12, значения на 20, «View all» на 44 — три отступа в одном
+   раскрытии (слово заказчика 21.10.2026 со снимком). Эффекты со знаком строк — без сдвига:
+   знак под знаком пункта, слово под словом. */
+.nav:is(:popover-open, [data-leaving]) .paramsPanel .sheetGroup{padding-inline-start:calc(var(--icon-size) + var(--gap-row))}
 
 
 

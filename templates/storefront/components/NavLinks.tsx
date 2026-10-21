@@ -107,7 +107,7 @@ function Fold({ link, id, all }: { link: NavLink; id: string; all: string }) {
   return link.facets.length ? (
     <>
       <FacetList groups={link.facets} id={id} />
-      <ul className={m.list}><li><SiteLink className={b.row} href={link.href}><span className={s.name}>{all}</span></SiteLink></li></ul>
+      <div className={s.sheetGroup}><ul className={m.list}><li><SiteLink className={b.row} href={link.href}><span className={s.name}>{all}</span></SiteLink></li></ul></div>
     </>
   ) : (
     <ul className={m.list}>
