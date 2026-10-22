@@ -239,6 +239,7 @@ export const REQUIRED = {
   '--head-stuck': 'прилипшая часть шапки «boutique» после ухода верхней полосы: строка знака и строка полок; прилипшая колонка карты товара встаёт на неё (templates/storefront, ProductView.module.css; И797)',
   '--notice-top': 'сколько верха занимает полоса «сайт строится» над шапкой; нет полосы — ноль (templates/storefront, BuildingNotice.tsx, ProductView.module.css; И797)',
   '--shot-frame': 'пропорция снимка товара, постоянная 1 / 1 (Gallery, ProductCard, ProductView; decisions.md 01.10.2026)',
+  '--measure-mark': 'место знака перечня в тексте: номер на вертикали абзаца, текст пункта отступает на 1.625em (Tailwind Typography; styles/primitives.module.css, `.prose` списки)',
   '--measure-form': 'колонка формы входа по центру страницы, 25rem — в коридоре образцов 320…446 (templates/storefront, Account.module.css; И780)',
   '--sh-far-3': 'дальний слой тени всплывающего — набор теней витрины (templates/storefront/styles/look.css; И593)',
   '--sh-far-2': 'средний слой тени подъёма — наборы теней панели (look-panel/scripts/build-catalog.mjs: «Soft» — --sh-lift, «Supersoft» — --sh-modal) и вид шаблона по умолчанию (templates/storefront/styles/look.css); при плоском виде витрины (showcase, тени «flat») его не читает никто, но имя — не про запас (И593)',
