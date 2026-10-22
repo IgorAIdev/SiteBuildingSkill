@@ -38,8 +38,11 @@
    сколько бы ни было полей. */
 .frame{
   --side-at:40%;--side-w:var(--col-side);--side-gap:var(--col-pair-gap);--side-align:stretch;
-  flex-grow:1;inline-size:100%;max-inline-size:var(--col-pair);margin-inline:auto
+  flex-grow:1;max-inline-size:var(--col-pair)
 }
+/* По середине — только в коридоре кассы (у его шапки та же ширина); «спасибо» — страница
+   магазина, и её ряд стоит от линии страницы под своим заголовком. */
+.corridor .frame{inline-size:100%;margin-inline:auto}
 /* Полоса сводки — тихая полоса раздела (`--band`, та же, что у полос главной;
    решение заказчика 03.10.2026 — фон до края окна, содержимое в рамке).
    Рисует её рамка-картинка колонки с выносом (`border-image-outset`): вверх —
@@ -190,8 +193,13 @@
    Знак успеха краской события, заголовок, номер заказа своим блоком —
    крупно, числом (кегль итога), справка при нём — сноской. */
 .doneHead{display:flex;flex-direction:column;align-items:flex-start;gap:var(--air-row);padding-block-end:var(--air-head);container-type:inline-size}
-.ok{display:grid;color:var(--ok)}
-.ok svg{inline-size:calc(var(--ctrl-h-lg) * .9);block-size:calc(var(--ctrl-h-lg) * .9)}
+/* Знак успеха — в строке заголовка, перед словами, ростом строки заголовка (Shopify:
+   «спасибо» со знаком слева). Знак над заголовком отодвигал имя страницы от шапки на 94
+   при верхе страницы 36 (check:craft `pageTop`, большая проверка 23.10.2026) — как круг
+   над пустой кассой, снятый 22.10.2026. */
+.doneTitle{display:flex;align-items:center;gap:var(--gap-row)}
+.ok{display:grid;flex:none;color:var(--ok)}
+.ok svg{inline-size:1em;block-size:1em}
 .code{display:flex;flex-direction:column}
 .code strong{font-size:var(--h3-size);line-height:var(--h3-lead);font-weight:var(--h3-weight);letter-spacing:var(--h3-track);color:var(--ink);font-variant-numeric:tabular-nums}
 .done{display:flex;flex-direction:column;gap:var(--air-block)}

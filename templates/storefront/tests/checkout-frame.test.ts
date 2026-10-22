@@ -26,7 +26,9 @@ test('the step lead stands in the left half, so the summary band starts at the h
 test('the pair is centred at the corridor width, and the checkout header shares it', () => {
   assert.match(tokens, /--col-pair-gap:calc\(var\(--air-block\) \+ var\(--pad-sheet\)\)/)
   assert.match(tokens, /--col-pair:calc\(var\(--measure\) \+ var\(--col-pair-gap\) \+ var\(--col-side\)\)/)
-  assert.match(css, /\.frame\{[^}]*--side-gap:var\(--col-pair-gap\)[^}]*max-inline-size:var\(--col-pair\);margin-inline:auto/)
+  assert.match(css, /\.frame\{[^}]*--side-gap:var\(--col-pair-gap\)[^}]*max-inline-size:var\(--col-pair\)\s*\}/)
+  /* По середине — только коридор кассы: «спасибо» — страница магазина, её ряд стоит под своим заголовком. */
+  assert.match(css, /\.corridor \.frame\{inline-size:100%;margin-inline:auto\}/)
   assert.match(header, /\.head\[data-variant='checkout'\] \.bar\{inline-size:min\(var\(--page-box\), calc\(var\(--col-pair\) \+ var\(--page-line\) \* 2\)\)\}/)
 })
 

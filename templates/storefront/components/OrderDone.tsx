@@ -23,8 +23,7 @@ export function OrderDone({ view, landmark = true }: { view: DonePageView; landm
   return (
     <Main id={landmark ? 'main' : undefined} className={`${p.wrap} ${p.section}`} data-air="head">
       <div className={s.doneHead}>
-        <span className={s.ok}><Icon id="check-circle" /></span>
-        <h1>{view.title}</h1>
+        <h1 className={s.doneTitle}><span className={s.ok}><Icon id="check-circle" /></span>{view.title}</h1>
         <div className={s.code}><span className={p.note}>{view.code.label}</span><strong translate="no">{view.code.value}</strong></div>
         <p className={p.note}>{view.keep}</p>
       </div>
