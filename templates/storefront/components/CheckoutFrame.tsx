@@ -59,10 +59,14 @@ export function CheckoutFrame({ steps, summary, children, landmark = true }: { s
 
 /** Шаг без корзины или «спасибо» без заказа — экран «почему и куда дальше»
  *  с кодом 200: адрес из дерева открывается всегда (check:open). */
+/* Пустое оформление — заголовок и одна кнопка в магазин, без знака в круге, как пустая
+   корзина (EmptyPaths; слово заказчика 08.10.2026: «ни знака в круге»). Круг ростом
+   84 стоял над именем страницы, и имя вставало на 141 от шапки при верхе страницы 35
+   (check:craft pageTop, 22.10.2026). */
 export function CheckoutEmpty({ empty }: { empty: Empty }) {
   return (
     <main id="main" className={`${p.wrap} ${p.section}`} data-air="head">
-      <StateScreen level={1} kind="empty" title={empty.title} step={empty.step} href={empty.href} icon="shopping-cart" loud />
+      <StateScreen level={1} kind="empty" title={empty.title} step={empty.step} href={empty.href} loud />
     </main>
   )
 }

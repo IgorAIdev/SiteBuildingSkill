@@ -9,7 +9,7 @@ import { plainOf } from './doc-view.ts'
  *  «дата · N мин · рубрика» (И749, по блогу cbdshop.bg). */
 export type PostCardView = {
   slug: string; title: string; summary: string; href: string; image: Image | null
-  date: { iso: string; text: string }; meta: string | null; topic: string | null; featured: boolean
+  date: { iso: string; text: string }; meta: string | null; topic: string | null; featured: boolean; read: string
 }
 
 /** Сколько статей у ленты блога главной, если блок не назвал число. */
@@ -57,17 +57,21 @@ export const postCard = (lang: Lang, post: Post): PostCardView => {
   const date = { iso: post.date, text: dayOf(lang, post.date) }
   return {
     slug: post.slug, title: post.title, summary: post.subtitle ?? post.summary, image: post.image, featured: post.featured,
-    href: hrefFor(lang, { post: post.slug }), date, topic: post.topic?.name ?? null,
-    meta: [date.text, t(lang, 'blog.minutes', { n: readingMinutes(post) }), post.topic?.name].filter(Boolean).join(' · '),
+    href: hrefFor(lang, { post: post.slug }), date, topic: post.topic?.name ?? null, read: t(lang, 'blog.read'),
+    /* Строка карточки — время чтения и рубрика, без даты (заказчик 22.10.2026: «тут
+       нужно писать, когда написано, или в самой статье даты достаточно?»): у лент
+       путеводителей (Healthline, Allbirds Stories) дата — в статье, где она и в
+       разметке Article; в карточке она только удлиняла строку. */
+    meta: [t(lang, 'blog.minutes', { n: readingMinutes(post) }), post.topic?.name].filter(Boolean).join(' · '),
   }
 }
 
 /** Список блога или рубрики: шапка со счётом и датой последней правки, рубрики
- *  ссылками (текущая отмечена), закреплённая «Începe de aici» первой — только на
+ *  ссылками (текущая отмечена), закреплённая первой той же карточкой — только на
  *  общем списке, остальное новыми первыми. */
 export type BlogIndexView = {
   title: string; lede: string; count: string; topics: { href: string; label: string; current: boolean }[]
-  featured: PostCardView | null; cards: PostCardView[]; startHere: string
+  cards: PostCardView[]
 }
 export function blogIndexView(lang: Lang, posts: readonly Post[], topics: readonly PostTopic[], topic: PostTopic | null = null): BlogIndexView {
   const shown = topic ? posts.filter((p) => p.topic?.slug === topic.slug) : posts
@@ -82,9 +86,11 @@ export function blogIndexView(lang: Lang, posts: readonly Post[], topics: readon
       { href: hrefFor(lang, { blog: true }), label: t(lang, 'blog.all'), current: !topic },
       ...used.map((x) => ({ href: hrefFor(lang, { blogTopic: x.slug }), label: x.name, current: x.slug === topic?.slug })),
     ],
-    featured: featured ? postCard(lang, featured) : null,
-    cards: shown.filter((p) => p !== featured).map((p) => postCard(lang, p)),
-    startHere: t(lang, 'blog.startHere'),
+    /* Закреплённая — первой в той же сетке, тем же видом карточки (заказчик
+       22.10.2026: «пилюлю убирай»; без ярлыка своей раскладке незачем — снимок на
+       две колонки оставлял рядом со словами пустоту 342 на 1750, а ряд ниже шёл
+       через 36). Один вид карточки на весь список. */
+    cards: (featured ? [featured, ...shown.filter((p) => p !== featured)] : shown).map((p) => postCard(lang, p)),
   }
 }
 

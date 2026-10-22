@@ -1822,9 +1822,11 @@
    И114. */
 .chan[data-empty='true']{pointer-events:none}
 .chan b{display:block;font-size:var(--ctrl-fs-base);font-weight:var(--label-weight)}
+/* Вторая строка канала (номер, адрес) читается — роль сноски (14), а не надпись
+   значка (12; 22.10.2026). */
 .chan small{
   display:block;margin-block-start:1px;
-  font-size:var(--ctrl-fs-xs);color:var(--ink-soft);font-variant-numeric:tabular-nums
+  font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft);font-variant-numeric:tabular-nums
 }
 /* Марка ростом с иконку строки, а не с подпись: мессенджер узнают по цвету
    раньше, чем по форме, и на 17px он не узнаётся вовсе. Кружка под маркой

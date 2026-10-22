@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import p from '@/styles/primitives.module.css'
-import go from '@/styles/go.module.css'
 import { langOf } from '@/lib/route.ts'
 import { content, source } from '@/lib/source/index.ts'
 import type { Lang } from '@/lib/locale.ts'
@@ -16,14 +15,13 @@ import { shelfCard } from '@/lib/view.ts'
 import { cartSubmit, cartCall } from '@/lib/actions/cart.ts'
 import { PageCrumbs } from '@/components/Breadcrumbs.tsx'
 import { DocView } from '@/components/DocView.tsx'
-import { Icon } from '@/components/Icon.tsx'
 import { JsonLd } from '@/components/JsonLd.tsx'
 import { PostCard } from '@/components/PostCard.tsx'
+import { RailHead } from '@/components/RailHead.tsx'
 import { PostHead, PostIntro, PostSources } from '@/components/PostParts.tsx'
 import { Shelf } from '@/components/Shelf.tsx'
 import { Faq } from '@/components/blocks/Faq.tsx'
 import { Unavailable } from '@/components/StateScreen.tsx'
-import { SiteLink } from '@/components/SiteLink.tsx'
 
 type Props = { params: Promise<{ lang: string; slug: string }> }
 
@@ -79,13 +77,18 @@ export default async function PostPage({ params }: Props) {
       </DocView>
       {faq ? <Faq block={faq} place={NO_AIR} /> : null}
       {shelf && cards.length ? <Shelf title={t(lang, 'blog.products')} id="post-products" all={hrefFor(lang, { category: shelf.slug })} cards={cards} cart={CART} /> : null}
+      {/* «Читать дальше» — шапкой ряда сайта (RailHead): заголовок, листание и выход
+          «View all» в блог, как у ленты статей главной. Своя сборка «h2 + рельса»
+          ставила рельсу вплотную к заголовку (0 при 44 у всех рядов: отрицательное
+          поле рельсы съедало шаг стопки), а отдельная «Back to the guide» под ней
+          вела туда же, что «View all», и стояла своей полосой (замер 22.10.2026).
+          Карточки — видом списка блога: одна карточка статьи на всю ветку блога. */}
       {reads.length ? (
-        <section className={`${p.section} ${p.stack}`} aria-labelledby="post-next">
-          <h2 id="post-next">{t(lang, 'blog.next')}</h2>
-          <ul className={p.rail} data-rail="goods">{reads.map((c) => <li key={c.slug}><PostCard post={c} /></li>)}</ul>
+        <section className={p.section} aria-labelledby="post-next">
+          <RailHead id="post-next" title={t(lang, 'blog.next')} all={hrefFor(lang, { blog: true })} lang={lang} />
+          <ul id="post-next-rail" className={p.rail} data-rail="goods">{reads.map((c) => <li key={c.slug}><PostCard post={c} list /></li>)}</ul>
         </section>
       ) : null}
-      <p className={`${p.section} ${p.cluster}`}><SiteLink className={go.go} data-to="back" href={hrefFor(lang, { blog: true })}><Icon id="arrow-left" />{t(lang, 'blog.back')}</SiteLink></p>
     </main>
   )
 }

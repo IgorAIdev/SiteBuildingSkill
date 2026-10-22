@@ -21,7 +21,6 @@ export const RO = {
   'blog.count.other': '{n} de articole',
   'blog.latest': 'actualizat la {date}',
   'blog.all': 'Toate',
-  'blog.startHere': 'Începe de aici',
   'blog.tldr': 'Pe scurt',
   'blog.sources': 'Surse',
   'blog.next': 'Citește mai departe',

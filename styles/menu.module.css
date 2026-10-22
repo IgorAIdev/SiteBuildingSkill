@@ -35,6 +35,16 @@
   font:inherit;font-size:var(--menu-size);line-height:var(--menu-lead);font-weight:var(--menu-weight);letter-spacing:var(--menu-track);
   color:var(--ink);text-align:start;text-decoration:none;white-space:nowrap;cursor:pointer
 }
+/* Список, который стоит колонкой страницы, а не раскрытием (оглавление статьи и
+   документа, `data-wrap`): строка переносится. Строка меню держит одну строку —
+   в раскрытии ширину задаёт самая длинная строка; в колонке ширина задана, и
+   «Same plant, different architecture» уходил за край — колонка, прокручиваемая
+   по высоте, получала свою полосу прокрутки вбок (заказчик 22.10.2026: «в статьях
+   мини-скролл по горизонтали — что, профессионалы так делают?»). У Healthline,
+   MDN и документации Stripe длинный пункт оглавления переносится. Строка
+   растёт от цели пальца, слово — от верха строки. */
+.list[data-wrap] > li > :is(a, button, label){white-space:normal;text-wrap:pretty;padding-block:var(--sp-1)}
+
 /* Свёртка длинного списка — «Arată toate (14)» под десятью значениями грани
    (catalog-view.ts, `foldValues`; И734): та же строка меню, тоном вторичного
    текста, стрелка раскрытия (`Turn`) в конце; раскрытый остаток — тот же список. */

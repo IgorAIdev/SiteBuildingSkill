@@ -226,7 +226,7 @@ const iconRow = async () => {
 const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines, autofill, textRoles, tileFace }) => {
   const out = { placeholder: [], measure: [], target: [], contrast: [], collision: [],
                 weight: [], jump: [], name: [], heads: [], dress: [], clip: [],
-                swipe: [], stretch: [], broken: [], spill: [], offColumn: [], focus: [], wrap: [],
+                swipe: [], stretch: [], broken: [], spill: [], offColumn: [], sideScroll: [], twinGap: [], glued: [], focus: [], wrap: [],
                 anchor: [], outline: [], marker: [], dark: [], ladder: [], wideCtrl: [], lopsided: [],
                 markInk: [],
                 covered: [],
@@ -2455,6 +2455,73 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
     }
   }
 
+  /* 13б · прокрутка вбок, которой никто не задумывал.
+   *
+   * Колонка, прокручиваемая по высоте (`overflow-y:auto`), получает от браузера и
+   * `overflow-x:auto`: стоит строке внутри не переноситься, и у колонки
+   * появляется своя полоса прокрутки вбок. Так было с оглавлением статьи —
+   * строки меню держат одну строку, «Same plant, different architecture» ушёл
+   * за край (заказчик 22.10.2026: «в статьях мини-скролл по горизонтали — что,
+   * профессионалы так делают?»). Задуманная полоса вбок объявляет себя:
+   * прилипанием (`scroll-snap-type`), лентой (`data-rail`) или таблицей внутри;
+   * всё остальное, что прокручивается вбок, — дефект. */
+  for (const el of document.querySelectorAll('main *, [popover] *, dialog *')) {
+    const cs = getComputedStyle(el)
+    if (!/^(auto|scroll)$/.test(cs.overflowX)) continue
+    if (el.scrollWidth <= el.clientWidth + 1) continue
+    const b = el.getBoundingClientRect()
+    if (b.width < 2 || b.height < 2) continue
+    if (cs.scrollSnapType !== 'none' || el.matches('[data-rail]') || el.querySelector('table')) continue
+    out.sideScroll.push(`${name(el)} — содержимое ${el.scrollWidth} при коробке ${el.clientWidth}`)
+  }
+
+  /* 13в · одинаковые карточки — одним шагом.
+   *
+   * У карточек одного ряда (список, полка, лента) одно и то же отношение — имя →
+   * описание, описание → строка данных — стоит одним видимым шагом. Запас «на две
+   * строки» под однострочным именем ставил описание одной статьи сразу под имя, а
+   * соседней — через пустую строку (заказчик 22.10.2026: «текст описания от
+   * заголовка на разном расстоянии у разных статей»). Меряется видимое: от низа
+   * строк одного текстового узла до верха следующего, по порядку узлов в
+   * карточке; разница больше 2px между карточками одного списка — находка. */
+  for (const list of document.querySelectorAll('main ul, main ol')) {
+    const cards = Array.from(list.children).filter((li) => shown(li) && li.querySelector('h2, h3') && !li.querySelector('ul, ol'))
+    if (cards.length < 2) continue
+    const steps = cards.map((li) => {
+      const parts = Array.from(li.querySelectorAll('h2, h3, p')).filter((e) => shown(e) && e.textContent.trim())
+      parts.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)
+      const out = []
+      for (let i = 1; i < parts.length; i++) {
+        const a = parts[i - 1], b = parts[i]
+        const range = document.createRange(); range.selectNodeContents(a)
+        const rs = Array.from(range.getClientRects()); const bottom = rs.length ? Math.max(...rs.map((r) => r.bottom)) : a.getBoundingClientRect().bottom
+        out.push({ pair: `${a.tagName.toLowerCase()}→${b.tagName.toLowerCase()}`, gap: Math.round(b.getBoundingClientRect().top - bottom) })
+      }
+      return out
+    })
+    const n = Math.min(...steps.map((s) => s.length))
+    for (let i = 0; i < n; i++) {
+      const pair = steps[0][i].pair
+      if (!steps.every((s) => s[i].pair === pair)) continue
+      const gaps = steps.map((s) => s[i].gap)
+      if (Math.max(...gaps) - Math.min(...gaps) > 2) out.twinGap.push(`${name(list)} ${pair} — ${[...new Set(gaps)].join(' / ')}px у карточек одного ряда`)
+    }
+  }
+
+  /* 13г · над именем страницы ничего не прилипло.
+   *
+   * Ярлык над h1 (рубрика статьи) стоял вплотную к заглавным, срезанным сверху
+   * (`text-box`), и его черта легла на буквы (заказчик 22.10.2026: «что за пиздец в
+   * блоге»). Над именем страницы стоят только крошки, через свой воздух; узел,
+   * кончающийся ближе 8px над h1, — находка. */
+  for (const h of document.querySelectorAll('main h1')) {
+    if (!shown(h)) continue
+    const prev = h.previousElementSibling
+    if (!prev || !shown(prev)) continue
+    const gap = h.getBoundingClientRect().top - prev.getBoundingClientRect().bottom
+    if (gap < 8) out.glued.push(`${name(prev)} → h1 «${h.textContent.trim().slice(0, 30)}» — ${Math.round(gap)}px`)
+  }
+
   /* 14 · фокус, которого не видно.
    *
    * `outline:none` без замены ломает клавиатуру молча: мышью всё работает,
@@ -3081,7 +3148,7 @@ async function lanes(items, work, n = LANES) {
 }
 const found = { lane: [], heroLane: [], placeholder: [], measure: [], target: [], contrast: [], collision: [],
                 weight: [], jump: [], name: [], heads: [], dress: [], clip: [],
-                swipe: [], stretch: [], broken: [], spill: [], offColumn: [], focus: [], wrap: [],
+                swipe: [], stretch: [], broken: [], spill: [], offColumn: [], sideScroll: [], twinGap: [], glued: [], focus: [], wrap: [],
                 anchor: [], outline: [], marker: [], sticky: [], fold: [], theme: [], coarse: [], calm: [],
                 inkDip: [], markInk: [],
                 covered: [],

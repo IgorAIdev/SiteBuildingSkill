@@ -23,7 +23,6 @@ export const HU: Record<keyof typeof RO, string> = {
   'blog.count.other': '{n} cikk',
   'blog.latest': 'frissítve: {date}',
   'blog.all': 'Mind',
-  'blog.startHere': 'Kezdd itt',
   'blog.tldr': 'Röviden',
   'blog.sources': 'Források',
   'blog.next': 'Olvasd tovább',

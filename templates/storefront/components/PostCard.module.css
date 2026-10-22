@@ -7,9 +7,24 @@
    потолок — половина малого окна, как у карточки отзыва. Пока снимок едет или
    его нет, место держит лист. */
 .shot{--frame:var(--card-frame);--frame-cap:50svh;border-radius:var(--r-card);background:var(--plate-2)}
-/* Ответ руке — наплыв снимка, рамка стоит (craft, controls.md). */
+/* Ответ руке — как у двери полки на главной (blocks.module.css, `.door`; craft,
+   controls.md, «карточка и кадр»: кромка → `--edge-hand`, снимок `--creep`): у
+   снимка проступает кромка, снимок плавно наплывает, имя отвечает марочной
+   краской — видно, что ссылка вся карточка. При нажатии кромка темнее. Было —
+   один наплыв за `--hover-t`, у закреплённой «Start here» не было и его
+   (заказчик 22.10.2026: «наведение / нажатие в блоге не нужно как-то
+   отобразить?»). Кромка — слоем над снимком: у кадра `overflow:hidden`. */
+.shot{position:relative}
+.shot::before{content:'';position:absolute;inset:0;z-index:1;border-radius:inherit;box-shadow:inset 0 0 0 var(--line-w) var(--line-card, transparent);pointer-events:none;transition:box-shadow var(--hover-t) var(--ease)}
+.title{transition:color var(--hover-t) var(--ease)}
+@media (hover:hover){
+  .card:hover > .shot{--line-card:var(--edge)}
+  .card:hover .title{color:var(--pop-ink)}
+}
+.card:active > .shot{--line-card:var(--edge-hand)}
+.card:active .title{color:var(--pop-ink)}
 @media (prefers-reduced-motion:no-preference){
-  .shot img{transition:scale var(--hover-t) var(--ease)}
+  .shot img{transition:scale calc(var(--hover-t) * 3) var(--ease)}
   .card:active .shot img{scale:var(--creep)}
 }
 @media (hover:hover) and (prefers-reduced-motion:no-preference){ .card:hover .shot img{scale:var(--creep)} }
@@ -40,28 +55,6 @@
   display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;min-block-size:2lh
 }
 
-/* Закреплённая статья списка («Începe de aici», И749; cbdshop.bg — карточка на
-   две колонки, снимок слева): колонки — колонки сетки списка (`subgrid`,
-   BlogIndex.module.css): снимок — в первой, ростом с карточку ряда, слова — в
-   остальных; на одной колонке — под снимком, тем же воздухом, что у карточки.
-   Ярлык — фишка сайта своей ширины, не во всю колонку. Запасы строк ряда
-   (`2lh` у строки данных, заголовка и описания) — для соседей в ряду; у
-   закреплённой соседей нет, и запасы стояли пустыми строками между словами
-   (заказчик 21.10.2026: «ритмы в блоге проебаны»). */
-/* Слова — от верха снимка (`start`), а не посередине: при снимке 490 и словах 146
-   середина оставляла по 172 пустоты сверху и снизу, и заголовок висел в воздухе
-   (заказчик 22.10.2026: «почему такая херня с ритмами», замер на 1750). Верх слов
-   на линии верха снимка — разворот журнала: глаз идёт по одной линии. */
-.cardWide{position:relative;grid-column:1 / -1;display:grid;grid-template-columns:subgrid;row-gap:var(--air-row);align-items:start}
-/* Снимок — все колонки, кроме последней, слова — в последней (второй круг
-   21.10.2026, заказчик: «хуёвый дизайн» — снимок в треть и пустое поле справа
-   от слов): закреплённая читается обложкой номера, как у cbdshop.bg (на две
-   колонки), и ряд закрыт без пустоты. На одной колонке слова — под снимком. */
-.cardWide > .shot{grid-column:1 / -2}
-.cardWide > .text{grid-column:-2 / -1}
-.cardWide .text > [data-pill]{align-self:start}
-.cardWide :is(.meta, .title, .summary){min-block-size:0}
-
 /* Карточка списка блога (`data-place='list'`, PostCard.tsx): снимок —
    пропорция обложки статьи (`--cover-frame`, та же, что над статьёй, —
    миниатюра совпадает с тем, что откроется), заголовок — ступень
@@ -70,10 +63,29 @@
    «Start here» читается обложкой номера, а не карточкой с пустым полем
    рядом (замер 21.10.2026: заголовок 16 и выдержка 14 в поле 758 × 369). */
 [data-place='list'] > .shot{--frame:var(--cover-frame)}
-/* Строка о статье — под выдержкой одной строкой, а не запасом в две над
-   заголовком: запас стоял пустой строкой между снимком и словами (снимок 21.10).
-   Ряд ровняют заголовок и выдержка — их запас в две строки остаётся. */
-[data-place='list'] .meta{order:1;min-block-size:0;margin-block-start:var(--sp-1)}
+/* Строка о статье — под выдержкой. Запасов «на две строки» в списке нет ни у
+   одной строки: под однострочным заголовком запас стоял пустой строкой, и
+   описание отъезжало на строку вниз (заказчик 21.10 и 22.10.2026: «херня с
+   ритмами», снимок карточки «CBD vs THC»). Строки идут подряд — снимок, имя,
+   описание, данные; низ ряда неровный, как у лент статей Allbirds и Glossier.
+   Запас остаётся у ленты главной (`rail`, И762): там ряд один, и его низ — шов
+   к следующему блоку. */
+[data-place='list'] :is(.meta, .title, .summary){min-block-size:0}
+/* Ритм карточки списка (замер семи сайтов 22.10.2026 — Allbirds, Into The Gloss, Aesop, Gymshark, Healthline, Ritual, cbdshop.bg; скилл scale, «Шаг 5»): имя → описание — шаг малого заголовка `--air-tight`
+   (у сайтов 8–10, 0.5–0.6 кегля описания; стояло 14 — шаг заголовка страницы);
+   описание — ролью текста (16 у пяти сайтов из семи; было 14); низ карточки — строка
+   данных и «Read the article» — отдельно, от `--air-row` и прижат к низу ряда (у
+   сайтов 24–35, в 2–3 раза дальше шага внутри). Заказчик 22.10.2026: «расстояния
+   между текстами должны быть чуть меньше, учитывая размер текста». */
+[data-place='list'] .text{flex:1;gap:var(--air-tight)}
+[data-place='list'] .summary{font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--body-weight);letter-spacing:var(--body-track)}
+[data-place='list'] .foot{margin-block-start:auto;padding-block-start:var(--air-row);display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;column-gap:var(--gap-row)}
+/* «Read the article ↗» — вид «View all» (RailHead.module.css, `.all`; primitives,
+   `sectionHead [data-out]`): слово ролью тела, знак 1.15em со своим зазором; под рукой
+   карточки слово — марочной краской, как имя, стрелка сдвигается. */
+.read{display:inline-flex;align-items:center;gap:.35em;font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--body-weight);color:var(--ink);transition:color var(--hover-t) var(--ease)}
+.read svg{inline-size:1.15em;block-size:1.15em;flex:none;transition:translate var(--hover-t) var(--ease)}
+@media (hover:hover){ .card:hover .read{color:var(--pop-ink)} }
+.card:active .read{color:var(--pop-ink)}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){ .card:hover .read svg{translate:var(--nudge) calc(var(--nudge) * -1)} }
 [data-place='list'] .title{font-size:var(--h3-size);line-height:var(--h3-lead);font-weight:var(--h3-weight);letter-spacing:var(--h3-track)}
-.cardWide .title{font-size:var(--h2-size);line-height:var(--h2-lead);font-weight:var(--h2-weight);letter-spacing:var(--h2-track);text-wrap:balance}
-.cardWide .summary{font-size:var(--lede-size);line-height:var(--lede-lead);font-weight:var(--lede-weight);letter-spacing:var(--lede-track);-webkit-line-clamp:3;line-clamp:3}

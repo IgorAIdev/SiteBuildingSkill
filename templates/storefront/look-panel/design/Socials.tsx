@@ -1,7 +1,7 @@
 import p from '@/styles/primitives.module.css'
 import go from '@/styles/go.module.css'
 import { Icon } from '@/components/Icon.tsx'
-import { SIGN } from '@/components/marks.ts'
+import { SOCIAL_SIGN } from '@/components/marks.ts'
 import { Part } from './parts.tsx'
 import { GLYPH } from './ringSigns.ts'
 import s from './socials.module.css'
@@ -42,9 +42,9 @@ export function Socials() {
               <span className={s.name}>{label}</span>
               <div className={s.deck} data-ground="deck">
                 <div className={`${p.cluster} ${s.pair}`}>
-                  <span className={s.big}><Icon id={SIGN[k]} /></span>
+                  <span className={s.big}><Icon id={SOCIAL_SIGN[k]} /></span>
                   <span className={s.big}><Ring net={k} /></span>
-                  <span className={s.small}><Icon id={SIGN[k]} /></span>
+                  <span className={s.small}><Icon id={SOCIAL_SIGN[k]} /></span>
                   <span className={s.small}><Ring net={k} /></span>
                 </div>
               </div>
@@ -60,7 +60,7 @@ export function Socials() {
               <div className={s.deck} data-ground="deck">
                 <ul className={s.col} aria-label="Соцсети">
                   {NETS.map(([k, label]) => (
-                    <li key={k}><a className={`${go.go} ${s.still}`}>{mode === 'now' ? <Icon id={SIGN[k]} /> : <Ring net={k} />}{label}</a></li>
+                    <li key={k}><a className={`${go.go} ${s.still}`}>{mode === 'now' ? <Icon id={SOCIAL_SIGN[k]} /> : <Ring net={k} />}{label}</a></li>
                   ))}
                 </ul>
               </div>

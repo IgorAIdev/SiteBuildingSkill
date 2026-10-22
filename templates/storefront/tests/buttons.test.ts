@@ -187,7 +187,9 @@ test('a forward arrow follows the word; a back arrow comes first and says data-t
     assert.doesNotMatch(src, /<Icon id="arrow-right" \/>\s*(\{|[A-Za-zА-Яа-я])/, `${f}: стрелка вперёд перед словом`)
     for (const m of src.matchAll(/<(a|button|span)\b([^>]*)>\s*<Icon id="arrow-left" \/>/g)) assert.match(m[2], /data-to="back"/, `${f}: стрелка назад без data-to="back"`)
   }
-  assert.match(read('../app/[site]/[lang]/blog/[slug]/page.tsx'), /<(?:a|SiteLink) className=\{go\.go\} data-to="back" href=\{hrefFor\(lang, \{ blog: true \}\)\}><Icon id="arrow-left" \/>/)
+  /* Статья уходит в блог выходом шапки ряда «Читать дальше» («View all»), а не
+     отдельной «Back to the guide» — та вела туда же (22.10.2026). */
+  assert.match(read('../app/[site]/[lang]/blog/[slug]/page.tsx'), /<RailHead id="post-next" title=\{t\(lang, 'blog\.next'\)\} all=\{hrefFor\(lang, \{ blog: true \}\)\}/)
   assert.equal([...read('../components/QuickOrder.tsx').matchAll(/\{view\.call\}<Icon id="arrow-right" \/>/g)].length, 2)
 })
 

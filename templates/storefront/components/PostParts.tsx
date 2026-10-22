@@ -9,17 +9,23 @@ import { SiteLink } from './SiteLink.tsx'
    Документ (DocView) даёт колонку текста, оглавление и разделы; здесь — то,
    что у статьи своё. */
 
-/** Шапка: рубрика ссылкой, имя, подзаголовок, автор и строка данных
- *  («Publicat la … · actualizat la … · N min de citit»). */
+/** Шапка: имя, подзаголовок и подпись — автор и строка данных («Published on … ·
+ *  updated on … · N min read · рубрика»). Рубрика — ссылкой в конце строки данных,
+ *  как у карточки списка, а не строкой над именем: над именем она стояла вплотную,
+ *  её черта наезжала на заглавные, а сверху её отбивало поле строки сноски — от
+ *  крошек 40 при 0 до имени (заказчик 22.10.2026: «что за пиздец в блоге»).
+ *  Подпись — одна группа в две строки: автор и даты читаются вместе, а не двумя
+ *  блоками через воздух строки. */
 export function PostHead({ view }: { view: PostHeadView }) {
   const { topic, title, subtitle, author, meta } = view
   return (
     <>
-      {topic ? <p className={`${p.note} ${s.topic}`}><SiteLink href={topic.href}>{topic.name}</SiteLink></p> : null}
       <h1>{title}</h1>
       {subtitle ? <p>{subtitle}</p> : null}
-      {author ? <p className={p.note}>{author.line} · {author.role}</p> : null}
-      <p className={p.note}>{meta}</p>
+      <p className={`${p.note} ${s.byline}`}>
+        {author ? <span>{author.line} · {author.role}</span> : null}
+        <span>{meta}{topic ? <> · <SiteLink className={s.topic} href={topic.href}>{topic.name}</SiteLink></> : null}</span>
+      </p>
     </>
   )
 }
@@ -49,7 +55,7 @@ export function PostSources({ title, sources, important, disclaimer }: { title: 
   return (
     <>
       {sources.length ? (
-        <section className={p.stack} aria-labelledby="post-sources">
+        <section className={`${p.stack} ${s.sourcesPart}`} aria-labelledby="post-sources">
           <h2 id="post-sources" className={s.heading}>{title}</h2>
           <ol className={s.sources}>
             {sources.map((x, i) => <li key={x.url} id={`source-${i + 1}`}><SiteLink href={x.url} rel="noopener">{x.title}</SiteLink></li>)}

@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -10,7 +10,9 @@ import { fileURLToPath } from 'node:url'
    у рубрики блога были, у полки «CBD oil» и страницы эффекта — нет (разбор
    28.09.2026, п. 6, так и не закрыт), а «Home» и разметку каждая из шести
    страниц собирала сама. */
-const root = fileURLToPath(new URL('../app/[site]/[lang]/', import.meta.url))
+/* Дерево набора — app/[site]/[lang]; у магазина одного сайта — app/[lang]. */
+const kit = fileURLToPath(new URL('../app/[site]/[lang]/', import.meta.url))
+const root = existsSync(kit) ? kit : fileURLToPath(new URL('../app/[lang]/', import.meta.url))
 const read = (path: string) => readFileSync(join(root, path), 'utf8')
 const pages = (dir: string): string[] => readdirSync(dir).flatMap((n) => {
   const p = join(dir, n)
