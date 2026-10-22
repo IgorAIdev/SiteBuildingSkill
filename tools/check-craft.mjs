@@ -2769,7 +2769,10 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
         continue
       }
       if (!occupied) continue
-      const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0
+      /* Браузер отступает на сумму: поле прокрутки документа (`scroll-padding-top`) и
+         отступ самой цели (`scroll-margin-top`). Мерить одно — пропустить двойной отступ
+         или ложно найти недостающий (base.css, 22.10.2026). */
+      const margin = (parseFloat(getComputedStyle(target).scrollMarginTop) || 0) + (parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0)
       const covered = coveredAt(target, margin)
       if (margin + 1 >= covered) continue
       seen.add(key)
