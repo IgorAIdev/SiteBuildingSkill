@@ -304,3 +304,13 @@ test('the cart form keeps its controls enabled while it writes', () => {
   assert.match(form, /aria-busy=\{busy\}/)
   assert.doesNotMatch(form, /<fieldset[^>]*disabled/)
 })
+
+/* Пилюля — форма того, что нажимают (кнопка, фишка с крестиком), а не ярлыка: «In short»
+   над выжимкой статьи стоял пилюлей и читался кнопкой (заказчик 22.10.2026: «пилюли не
+   нужно применять, потому что это у кнопок применяется»). `data-pill` — только у a,
+   button и SiteLink. */
+test('pill only on what is pressed: data-pill sits on a, button or SiteLink', () => {
+  for (const { f, src } of SITE_TSX) {
+    for (const m of src.matchAll(/<(\w+)\b[^>]*\bdata-pill\b/g)) assert.match(m[1], /^(a|button|SiteLink)$/, `${f}: пилюля у <${m[1]}> — ярлык не носит форму кнопки`)
+  }
+})
