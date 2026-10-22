@@ -55,10 +55,9 @@
 .body{--side-w:var(--col-narrow);--side-gap:var(--air-group)}
 .toc{display:flex;flex-direction:column;gap:var(--sp-2);overflow-y:auto;overscroll-behavior:contain}
 .peek{display:none}
-/* Колонка с тем, что едет с чтением (`side`): оглавление сверху, ниже — приклеенный
-   товар; колонка тянется на всю высоту ряда, чтобы было, по чему ехать. */
-.side{display:flex;flex-direction:column;gap:var(--air-group);align-self:stretch}
-.side > .toc{overflow:visible}
+/* Колонка с тем, что едет с чтением (`side`, товар у статьи): тянется на всю высоту ряда,
+   чтобы было, по чему ехать; оглавления в ней нет (DocView.tsx). */
+.side{display:flex;flex-direction:column;align-self:stretch}
 /* Приклеенный товар встаёт под прилипшую шапку шагом верха страницы (`--air-group`):
    от шапки до первой строки — тот же шаг, что у крошек и имени каждой страницы
    (check:craft pageTop). По умолчанию `pinned` встаёт на цель ссылки — с плавающим

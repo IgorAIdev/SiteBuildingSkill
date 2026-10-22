@@ -64,7 +64,12 @@ export function DocView({ view, table, meta, head, intro, side, slots, children 
   view: DocPageView; table?: ReactNode; meta?: ReactNode; head?: ReactNode; intro?: ReactNode
   side?: ReactNode; slots?: DocSlots; children?: ReactNode
 }) {
-  const items = view.toc ? view.toc.items.map((it) => <li key={it.id}><a className={b.row} href={`#${it.id}`}>{it.label}</a></li>) : null
+  /* `side` занимает колонку оглавления: у статьи блога колонка — товар у чтения, оглавления
+     нет ни сбоку, ни свёрткой (заказчик 22.10.2026: «можно просто отказаться от On this page,
+     он вообще нужен?» — статьи на 5–7 минут читают целиком; у журналов Allbirds и Gymshark
+     оглавления нет). Оглавление остаётся документам без `side` (условия — 17 разделов). */
+  const toc = side ? null : view.toc
+  const items = toc ? toc.items.map((it) => <li key={it.id}><a className={b.row} href={`#${it.id}`}>{it.label}</a></li>) : null
   const parts = (
     <div className={`${p.stack} ${s.parts}`}>
       {intro}
@@ -87,35 +92,29 @@ export function DocView({ view, table, meta, head, intro, side, slots, children 
         {/* Свёрнутое оглавление узкой коробки — в шапке, а не соседом шапки: скрытый на
             широкой сосед менял шаг стопки между шапкой и вступлением статьи (шов дважды,
             check:craft 08.10.2026), а раскрытый уходил под обложку. */}
-        {view.toc ? (
-          <nav className={s.peek} aria-label={view.toc.label} data-print="skip">
+        {toc ? (
+          <nav className={s.peek} aria-label={toc.label} data-print="skip">
             <details className={m.fold}>
-              <summary>{view.toc.label} ({view.toc.items.length})<Turn /></summary>
+              <summary>{toc.label} ({toc.items.length})<Turn /></summary>
               <ul className={m.list} data-wrap>{items}</ul>
             </details>
           </nav>
         ) : null}
       </div>
-      {view.toc ? (
+      {side || toc ? (
         <div className={`${p.sidebar} ${s.body}`}>
-          {/* `side` — то, что едет с чтением (товар у статьи, ReadAlong): оглавление тогда
-              стоит наверху колонки, а приклеен низ — карточка. Оглавление и карточка
-              вместе выше окна (≈730 при 636 под колонку на 800), а прокрутка внутри
-              колонки прячет вторую вещь (cbdshop.bg). Без `side` приклеено оглавление. */}
+          {/* `side` — то, что едет с чтением (товар у статьи, ReadAlong): колонка тянется на
+              высоту ряда, приклеен товар. Без `side` в колонке приклеено оглавление. */}
           {side ? (
             <div className={`${p.aside} ${s.side}`} data-print="skip">
-              <nav className={s.toc} aria-labelledby="doc-toc">
-                <p id="doc-toc" className={m.group}>{view.toc.label}</p>
-                <ul className={m.list} data-wrap>{items}</ul>
-              </nav>
               <div className={`${p.pinned} ${s.along}`}>{side}</div>
             </div>
-          ) : (
+          ) : toc ? (
             <nav className={`${p.aside} ${p.pinned} ${s.toc}`} aria-labelledby="doc-toc" data-print="skip">
-              <p id="doc-toc" className={m.group}>{view.toc.label}</p>
+              <p id="doc-toc" className={m.group}>{toc.label}</p>
               <ul className={m.list} data-wrap>{items}</ul>
             </nav>
-          )}
+          ) : null}
           {parts}
         </div>
       ) : parts}
