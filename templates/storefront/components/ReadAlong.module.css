@@ -1,14 +1,15 @@
 /* Товар у чтения (ReadAlong.tsx). Подпись — подписью группы меню, как «On this page»
    над оглавлением; карточки лежат одна на другой в одной ячейке, видна текущая. Смена —
-   движением: ушедшая уезжает вверх, новая въезжает снизу, ячейка режет по своему краю
-   (`overflow:clip`); при «уменьшить движение» — сразу, без движения. */
+   на месте, проявлением за роль раскрытия (`--open-t`): ушедшая гаснет, новая
+   проявляется, ничего не едет навстречу тексту (заказчик 22.10.2026: «смена карточек
+   странно происходит» — карточка уезжала вверх вместе со статьёй и читалась скачком);
+   при «уменьшить движение» — сразу. */
 .read{display:flex;flex-direction:column;gap:var(--sp-2)}
 .head{margin:0}
 .slots{display:grid;overflow:clip}
 .slot{grid-area:1 / 1;visibility:hidden;opacity:0}
 .slot[data-on]{visibility:visible;opacity:1}
 @media (prefers-reduced-motion:no-preference){
-  .slot{translate:0 100%;transition:translate calc(var(--hover-t) * 4) var(--ease), opacity calc(var(--hover-t) * 4) var(--ease), visibility 0s linear calc(var(--hover-t) * 4)}
-  .slot[data-gone]{translate:0 -100%}
-  .slot[data-on]{translate:0 0;transition:translate calc(var(--hover-t) * 4) var(--ease), opacity calc(var(--hover-t) * 4) var(--ease), visibility 0s}
+  .slot{transition:opacity var(--open-t) var(--ease), visibility 0s linear var(--open-t)}
+  .slot[data-on]{transition:opacity var(--open-t) var(--ease), visibility 0s}
 }
