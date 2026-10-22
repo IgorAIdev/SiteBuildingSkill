@@ -20,10 +20,11 @@ test('the card is picked on scroll by the last heading above 40 % of the window'
 })
 
 test('one card shows; the hidden ones cannot be reached; motion yields to reduced motion', () => {
-  assert.ok(css.includes('.slot{grid-area:1 / 1;visibility:hidden;opacity:0}'), 'карточки одна на другой, скрытые — visibility')
-  assert.match(css, /@media \(prefers-reduced-motion:no-preference\)\{[\s\S]*transition:opacity/, 'проявление — только без «уменьшить движение»')
+  assert.match(css, /\.slot\{grid-area:1 \/ 1;visibility:hidden;opacity:0;/, 'тройки одна на другой, скрытые — visibility')
+  assert.match(css, /@media \(prefers-reduced-motion:no-preference\)\{[\s\S]*\.slot\[data-gone\]\{translate:0 -100%\}/, 'ушедшая уезжает вверх — только без «уменьшить движение»')
+  assert.ok(css.includes('.slots{display:grid;overflow:clip}'), 'ячейка режет движение по своему краю')
 })
 
-test('the article sends the product cards to the column, drawn by ProductCard', () => {
-  assert.match(page, /side=\{shelf && cards\.length \? <ReadAlong[\s\S]*?\{cards\.slice\(0, 4\)\.map\(\(c\) => <ProductCard /)
+test('the article sends product rows to the column, drawn by ProductRow, three at a time', () => {
+  assert.match(page, /side=\{shelf && cards\.length \? <ReadAlong[\s\S]*?\{cards\.slice\(0, 6\)\.map\(\(c\) => <ProductRow key=\{c\.id\} card=\{c\} facts \/>/)
 })

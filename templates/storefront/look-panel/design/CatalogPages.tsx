@@ -28,7 +28,7 @@ import { Faq } from '@/components/blocks/Faq.tsx'
 import type { BlockCtx, Place } from '@/components/blocks/types.ts'
 import { DocView } from '@/components/DocView.tsx'
 import { ReadAlong } from '@/components/ReadAlong.tsx'
-import { ProductCard } from '@/components/ProductCard.tsx'
+import { ProductRow } from '@/components/ProductRow.tsx'
 import { BlogIndex } from '@/components/BlogIndex.tsx'
 import { PostHead, PostIntro, PostSources } from '@/components/PostParts.tsx'
 import { WithdrawForm } from '@/components/WithdrawForm.tsx'
@@ -202,7 +202,7 @@ export async function CatalogPages({ lang }: { lang: Lang }) {
               view={docView(lang, post)}
               head={<PostHead view={postHeadView(lang, post)} />}
               intro={<PostIntro image={post.image} tldr={post.tldr} tldrLabel={t(lang, 'blog.tldr')} />}
-              side={saved.length ? <ReadAlong ids={docView(lang, post).toc?.items.map((x) => x.id) ?? []} label={t(lang, 'blog.products')}>{saved.slice(0, 3).map((c) => <ProductCard key={c.id} card={c} cart={CART} />)}</ReadAlong> : undefined}
+              side={saved.length ? <ReadAlong ids={docView(lang, post).toc?.items.map((x) => x.id) ?? []} label={t(lang, 'blog.products')}>{saved.slice(0, 3).map((c) => <ProductRow key={c.id} card={c} facts />)}</ReadAlong> : undefined}
             >
               <PostSources title={t(lang, 'blog.sources')} sources={post.sources} important={t(lang, 'blog.important')} disclaimer={t(lang, 'blog.disclaimer')} />
             </DocView>

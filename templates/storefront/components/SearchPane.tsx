@@ -7,12 +7,11 @@ import f from '@/styles/form.module.css'
 import pn from '@/styles/pane.module.css'
 import s from './SearchPane.module.css'
 import type { ShelfCard } from '@/lib/view.ts'
-import { shot } from '@/lib/shot.ts'
 import { Icon } from './Icon.tsx'
 import { PaneHandle } from './PaneHandle.tsx'
 import { PaneHead } from './PaneHead.tsx'
 import { ShelfRows } from './ShelfRows.tsx'
-import { SiteLink } from './SiteLink.tsx'
+import { ProductRow } from './ProductRow.tsx'
 
 type Found = { q: string; total: number; href: string; cards: ShelfCard[] }
 type Words = { clear: string; open: string; close: string; label: string; submit: string; all: string; found: string; none: string; shelves: string }
@@ -80,13 +79,7 @@ export function SearchPane({ lang, action, words, shelves, trigger }: { lang: st
                     <ShelfRows rows={all} />
                     <ul className={s.found}>
                       {shown.cards.map((c) => (
-                        <li key={c.id}>
-                          <SiteLink className={s.hit} href={c.href}>
-                            <span className={`${p.frame} ${s.thumb}`}><img {...shot(c.image, 'thumb', true)} alt="" decoding="async" /></span>
-                            <span className={s.what}>{c.brand ? <span className={s.brand} translate="no">{c.brand}</span> : null}<span className={s.name}>{c.name}</span></span>
-                            <span className={s.price}>{c.price}</span>
-                          </SiteLink>
-                        </li>
+                        <li key={c.id}><ProductRow card={c} /></li>
                       ))}
                     </ul>
                   </>

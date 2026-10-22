@@ -1,0 +1,12 @@
+/* Строка товара (ProductRow.tsx): снимок, марка и имя, цена; строку отличает плашка под
+   рукой (вид «строка», И685). Перенесено из окна поиска (SearchPane.module.css) без
+   изменений вида; факты — сноской под именем. */
+.hit{composes:row from '../styles/btn.module.css';display:grid;grid-template-columns:var(--ctrl-h-lg) minmax(0, 1fr) auto;align-items:center;gap:var(--gap-row);padding:var(--sp-2);color:var(--ink);text-decoration:none}
+.thumb{--frame:var(--shot-frame);border-radius:var(--r-ctrl);background:var(--plate-2)}
+.what{display:flex;flex-direction:column;min-inline-size:0}
+/* Марка — роль марки, как в карточке (И563): ростом текста. */
+.brand{font-size:var(--byline-size);line-height:var(--byline-lead);font-weight:var(--byline-weight);color:var(--ink-soft)}
+/* Имя — толщиной имени товара, как на полке (И589). */
+.name{font-weight:var(--prodhead-weight);overflow-wrap:anywhere}
+.facts{font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft)}
+.price{font-weight:var(--cardprice-weight);font-variant-numeric:tabular-nums;white-space:nowrap}
