@@ -25,8 +25,33 @@ test('the cart row draws its organs at the small-organ face, not at finger heigh
 })
 
 test('a narrow cart pane puts the unit price on the facts row, not on its own row', () => {
-  assert.match(cart, /@container \(max-width: 22rem\)\{[^@]*grid-template-areas:'thumb name name' 'thumb facts unit' 'act act act'/)
+  /* Третий ряд пустой и гибкий: остаток роста снимка уходит в него, а не раздвигает имя и факты. */
+  assert.match(cart, /@container \(max-width: 22rem\)\{[^@]*grid-template-areas:'thumb name name' 'thumb facts unit' 'thumb \. \.' 'act act act';grid-template-rows:auto auto 1fr auto/)
   assert.match(cart, /\.pane \.what\{display:contents\}/)
+})
+
+/* Имя строки — растянутая ссылка: цель пальца — вся строка, своей коробки цели у имени нет.
+   Коробка в 44 под строкой текста в 24 уводила факты от имени на 44 (снимок заказчика
+   22.10.2026: «в карт расстояния несколько больший ритмы»; семья `stretchTarget`). */
+test('the cart line name is a stretched link without its own target box', () => {
+  assert.match(cart, /\.name::after\{content:'';position:absolute;inset:0\}/)
+  assert.doesNotMatch(cart, /\.name\{[^}]*(min-block-size|min-height)/)
+  /* Ритм лесенкой: имя → факты — воздух одной мысли, снимок → органы и строка → строка — воздух строки. */
+  assert.match(cart, /\.what\{[^}]*gap:var\(--air-line\)/)
+  assert.match(cart, /\.line\{[^}]*row-gap:var\(--air-row\);\s*padding-block:var\(--air-row\)/)
+})
+
+/* Страница корзины на широком листе — строкой таблицы (Dawn, Horizon, Gymshark): снимок ·
+   имя, факты, цена за штуку · количество и «Удалить» · сумма у правого края. Разметка та же,
+   что у шторки: ряд органов растворяется, органы встают в свои колонки. */
+test('the cart page line on a wide sheet is a table row, the pane keeps its rows', () => {
+  assert.match(cart, /\.sheet \.list\{container-type:inline-size\}/)
+  const wide = cart.match(/@container \(min-width: 36rem\)\{([\s\S]*?)\r?\n\}/)
+  assert.ok(wide, 'no wide-sheet block in Cart.module.css')
+  assert.match(wide[1], /grid-template-areas:'thumb what qty sum' 'thumb what drop sum' 'thumb unit \. sum' 'thumb \. \. \.'/)
+  assert.match(wide[1], /\.sheet \.act\{display:contents\}/)
+  assert.match(wide[1], /\.sheet \.act > :not\(\.sum\)\{grid-area:qty;position:relative;z-index:1;pointer-events:auto\}/)
+  assert.doesNotMatch(wide[1], /\.pane/)
 })
 
 test('the pane foot is one pair — quiet on the left, loud on the right, one row, loud above when it wraps (И772)', () => {

@@ -16,11 +16,27 @@ function Summary({ summary }: { summary: SummaryView }) {
   return <><OrderItems items={summary.items} /><OrderTotals totals={summary.totals} /></>
 }
 
+/** Шаги и имя шага — голова левой половины кассы: над формой, а не над рядом.
+ *  Шаг оплаты кладёт её в свою форму сам (PaymentForm, `lead`) — у него ряд —
+ *  сама форма. */
+export function StepLead({ steps }: { steps: StepsView }) {
+  return (
+    <div className={s.lead}>
+      <CheckoutSteps steps={steps} />
+      <h1 id="step-title">{steps.title}</h1>
+    </div>
+  )
+}
+
 /* Оформление — коридор (разбор 24.09.2026, X5): своя шапка без полок
    (корневой макет группы `(checkout)`), шаги, имя шага — заголовком
-   страницы, один раз. Под ними ряд: шаг слева, мерой строки — поле не шире
-   ожидаемого ввода; сводка с товарами — справа на полосе до края окна
-   (Shopify Checkout), едет с прокруткой.
+   страницы, один раз. Касса — две половины, как у Shopify Checkout (замер
+   allbirds.com 22.10.2026): слева шаги, имя шага и поля мерой строки, справа
+   сводка с товарами на полосе от шапки до низа окна и до его края; обе
+   половины — одной парой по середине страницы, знак в шапке стоит над началом
+   формы. Шаги — в левой половине, а не над рядом: полоса сводки начинается у
+   шапки, а не под именем шага (заказчик 22.10.2026: «чекаут тоже не сделан» —
+   серый короб висел ниже заголовка).
 
    На узкой коробке (шов 820, «телефон») колонки нет: сводка встаёт
    раскрывашкой над шагами, итог — в её строке («Sumarul comenzii · 130 €»),
@@ -40,13 +56,9 @@ export function CheckoutFrame({ steps, summary, children, landmark = true }: { s
           <div className={s.peekBody}><Summary summary={summary} /></div>
         </details>
       ) : null}
-      <div className={s.lead}>
-        <CheckoutSteps steps={steps} />
-        <h1 id="step-title">{steps.title}</h1>
-      </div>
       {summary ? (
         <div className={`${p.sidebar} ${s.frame}`}>
-          <div className={`${p.stack} ${s.step} ${s.measure}`}>{children}</div>
+          <div className={`${p.stack} ${s.step} ${s.measure}`}><StepLead steps={steps} />{children}</div>
           <aside className={`${p.aside} ${s.side} ${s.band}`} aria-labelledby="summary-title">
             <h2 id="summary-title" className={p.said}>{summary.label}</h2>
             <div className={`${p.pinned} ${s.pin}`}><Summary summary={summary} /></div>

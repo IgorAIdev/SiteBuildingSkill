@@ -10,7 +10,7 @@ import { t } from '@/lib/i18n/index.ts'
 import { toMetadata } from '@/lib/seo.ts'
 import { termsDoc } from '@/lib/company.ts'
 import { placeOrder } from '@/lib/actions/checkout.ts'
-import { CheckoutFrame, CheckoutEmpty } from '@/components/CheckoutFrame.tsx'
+import { CheckoutFrame, CheckoutEmpty, StepLead } from '@/components/CheckoutFrame.tsx'
 import { PaymentForm } from '@/components/PaymentForm.tsx'
 import { GuaranteeNotice } from '@/components/GuaranteeNotice.tsx'
 import { OrderReview } from '@/components/OrderReview.tsx'
@@ -38,9 +38,10 @@ export default async function PaymentStep({ params }: Props) {
     terms: { title: terms.ok ? terms.value.title : t(lang, 'footer.legal'), href: hrefFor(lang, { doc: termsDoc() }) },
     returnDays: facts.ok ? facts.value.returnDays : null,
   })
+  const steps = stepsView(lang, 'payment')
   return (
-    <CheckoutFrame steps={stepsView(lang, 'payment')} summary={null}>
-      <PaymentForm view={view} action={placeOrder.bind(null, lang)} permalink={hrefFor(lang, { checkout: 'payment' })} notice={<GuaranteeNotice lang={lang} />}>
+    <CheckoutFrame steps={steps} summary={null}>
+      <PaymentForm view={view} action={placeOrder.bind(null, lang)} permalink={hrefFor(lang, { checkout: 'payment' })} notice={<GuaranteeNotice lang={lang} />} lead={<StepLead steps={steps} />}>
         <OrderReview title={view.review} recaps={view.recaps} itemsTitle={view.itemsTitle} items={view.items} />
       </PaymentForm>
     </CheckoutFrame>

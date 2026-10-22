@@ -13,10 +13,15 @@
    Органы стоят под именем, которое меняют: на столе имя и его счётчик
    стояли в четырёхстах пикселях друг от друга (разбор 24.09.2026, K2).
    Снимок — колодец ростом в два крупных органа (96 под мышью, 112 под
-   пальцем): миниатюра в 38 пикселей не узнавалась (K1). Между строками —
-   воздух группы и волосок черты (`--rule`), внутри строки — воздух строки:
-   строки читаются отдельными товарами (K3; `--edge` — кромка органа, а не
-   разделитель).
+   пальцем): миниатюра в 38 пикселей не узнавалась (K1). Ритм строки один на
+   страницу и шторку, лесенкой: имя → факты — воздух одной мысли (`--air-line`),
+   снимок → ряд органов — воздух строки (`--air-row`), строка → строка — воздух
+   строки с обеих сторон волоска черты (`--rule`; K3, `--edge` — кромка органа,
+   а не разделитель). До 22.10.2026 строки страницы разводил воздух группы
+   (36 + 36 на ноутбуке), а имя под пальцем стояло в коробке цели в 44 и
+   уводило факты на 44 от себя (заказчик: «в карт расстояния несколько больший
+   ритмы»); образцы — 12–48 между строками и 2–11 от имени до варианта
+   (research/cart-2026-10-22.md, шторки восьми магазинов).
    «Удалить» — под снимком, по его левому краю (слова заказчика: 29.09.2026
    «ремув под изображение положи», 03.10.2026 «выровняй с изображением по
    левому краю»); счётчик — той же строкой под именем, сумма строки — на её
@@ -28,7 +33,7 @@
   grid-template-columns:var(--line-thumb, calc(var(--ctrl-h-lg) * 2)) minmax(0, 1fr) auto;
   grid-template-areas:'thumb what unit' 'act act act';
   column-gap:var(--gap-grid);row-gap:var(--air-row);
-  padding-block:var(--air-group);
+  padding-block:var(--air-row);
   border-block-end:var(--line-w) solid var(--rule)
 }
 .line:first-child{padding-block-start:0}
@@ -41,9 +46,12 @@
    И688). */
 .what{grid-area:what;align-self:baseline;display:flex;flex-direction:column;align-items:flex-start;gap:var(--air-line);min-inline-size:0}
 .unit{grid-area:unit;align-self:baseline;margin:0;font-size:var(--blurb-size);line-height:var(--blurb-lead);color:var(--ink-soft);white-space:nowrap;font-variant-numeric:tabular-nums}
-/* Имя — ссылка на вариант и цель пальца (`--ctrl-target`, И263); её
-   область растянута на всю строку (И110): строка ведёт на товар целиком. */
-.name{display:inline-flex;align-items:center;min-block-size:var(--ctrl-target);font-weight:var(--cardname-weight);color:var(--ink);overflow-wrap:anywhere}
+/* Имя — ссылка на вариант; её область растянута на всю строку (И110): строка
+   ведёт на товар целиком, и цель пальца — вся строка, а не коробка имени (И263).
+   Своего роста цели у имени поэтому нет: под пальцем коробка в 44 при строке
+   текста в 24 отодвигала факты от имени на 44 (снимок заказчика 22.10.2026:
+   «в карт расстояния несколько больший ритмы»), а цель от неё не росла. */
+.name{display:block;font-weight:var(--cardname-weight);color:var(--ink);overflow-wrap:anywhere}
 .name::after{content:'';position:absolute;inset:0}
 /* Что строка — ссылка, видно рукой, как у карточки полки (И717; правило вида
    И685: подчёркивание — только у ссылки в тексте): снимок чуть подаётся вперёд
@@ -108,6 +116,36 @@
    край листа замыкает её сам. */
 .sheet{background:var(--surface);border-radius:var(--r-card);padding:var(--pad-card)}
 .sheet .line:last-child{padding-block-end:0;border-block-end:0}
+/* СТРОКА СТРАНИЦЫ НА ШИРОКОМ ЛИСТЕ — строкой таблицы, как у страниц корзины Dawn,
+   Horizon и Gymshark (3 из 4 страниц; research/cart-2026-10-22.md): колонки «товар ·
+   количество · сумма», и сумма у правого края вровень с верхом строки:
+
+     снимок | имя, факты, цена за штуку | счётчик, «Удалить» | сумма строки
+
+   Прежде строка страницы была строкой шторки, растянутой на лист в 700: имя у левого
+   края, цена за штуку — в шестистах пикселях от него, ряд органов — отдельным этажом
+   под снимком; строка росла до 217 и читалась пустотой (заказчик 22.10.2026: «тут нет
+   дизайна совсем»). Теперь строка ростом в снимок: количество и «Удалить» — одним
+   столбиком, как бином у счётчика Dawn и Horizon (под снимком — в шторке, где колонки
+   нет). Разметка та же (`CartLines`, одна на страницу и шторку), меняется только сетка:
+   ряд органов растворяется (`display:contents`), его органы встают в свои колонки.
+   Лист уже 36rem (телефон, узкое окно) — строка шторки. */
+.sheet .list{container-type:inline-size}
+@container (min-width: 36rem){
+  .sheet .line{
+    grid-template-columns:var(--line-thumb, calc(var(--ctrl-h-lg) * 2)) minmax(0, 1fr) auto auto;
+    grid-template-areas:'thumb what qty sum' 'thumb what drop sum' 'thumb unit . sum' 'thumb . . .';
+    grid-template-rows:auto auto auto 1fr;
+    row-gap:0;column-gap:var(--gap-grid)
+  }
+  .sheet .act{display:contents}
+  /* Органы над растянутой ссылкой строки — каждый сам: их общего родителя больше нет. */
+  .sheet .act > :not(.sum){grid-area:qty;position:relative;z-index:1;pointer-events:auto}
+  .sheet .act > .drop{grid-area:drop;justify-self:start;max-inline-size:none;margin-block-start:var(--sp-1)}
+  .sheet .sum{grid-area:sum;margin-inline-start:var(--gap-grid);text-align:end;min-inline-size:7ch}
+  /* Цена за штуку — под фактами, тихой справкой при имени (Dawn: цена под именем). */
+  .sheet .unit{grid-area:unit;align-self:start;margin-block-start:var(--sp-1)}
+}
 .summary{composes:sheet;--stack:var(--air-group);overflow-y:auto;overscroll-behavior:contain}
 .decide{display:flex;flex-direction:column;gap:var(--air-row)}
 
@@ -179,8 +217,6 @@
    а не тон под ней. */
 .paneGoal{flex:none;padding:var(--pad-inner) var(--pane-pad, var(--pad-card));border-block-end:var(--line-w) solid var(--rule)}
 .pane .list{display:grid;container-type:inline-size}
-.pane .line{padding-block:var(--air-row)}
-.pane .line:first-child{padding-block-start:0}
 .pane .line:last-child{padding-block-end:0;border-block-end:0}
 /* Узкий список (телефон): цена за штуку не делит строку с именем — имени
    оставалось 98 из 272, четыре строки, — а встаёт строкой фактов справа
@@ -190,7 +226,9 @@
    воздух «имя → факты» — воздух одной мысли, как на широкой. На широкой
    шторке цена вверху справа, как в задании. */
 @container (max-width: 22rem){
-  .pane .line{grid-template-areas:'thumb name name' 'thumb facts unit' 'act act act';row-gap:0}
+  /* Третий ряд — пустой и гибкий: остаток роста снимка уходит в него, а не
+     раздвигает имя и факты (без него ряд фактов растягивался до низа снимка). */
+  .pane .line{grid-template-areas:'thumb name name' 'thumb facts unit' 'thumb . .' 'act act act';grid-template-rows:auto auto 1fr auto;row-gap:0}
   .pane .what{display:contents}
   .pane .name{grid-area:name}
   .pane .facts{grid-area:facts;align-self:baseline;margin-block-start:var(--air-line)}

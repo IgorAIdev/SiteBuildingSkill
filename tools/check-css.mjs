@@ -733,6 +733,36 @@ for (const path of files) {
     }
   }
 
+  /* ── растянутая ссылка не носит своей коробки цели ──────────────────────
+   *
+   * Строка корзины, карточка полки, дверь главной ведут на товар целиком:
+   * у ссылки имени `::after` растянут на всю строку (`position:absolute;
+   * inset:0`), и цель пальца — вся строка. Коробка цели у самой ссылки
+   * (`min-block-size:var(--ctrl-target)`, 44 под пальцем) цель не растит —
+   * она только раздвигает соседей. Дефект, купивший семью: под пальцем имя
+   * товара в корзине стояло в коробке 44 при строке текста 24, и факты
+   * («500 mg · 10 ml») уехали от имени на 44 — заказчик со снимка шторки
+   * 22.10.2026: «в карт расстояния несколько больший ритмы».
+   *
+   * Признак: у селектора есть `::after` с `position:absolute` и `inset:0`, и
+   * тот же селектор сам ставит себе рост из роли органа (`--ctrl-target`,
+   * `--ctrl-h*`). */
+  {
+    const stretched = new Set()
+    for (const r of css.matchAll(/([^{}]+)::after\s*\{([^{}]*)\}/g)) {
+      if (!/position\s*:\s*absolute/.test(r[2]) || !/(?:^|[;\s])inset\s*:\s*0(?:px)?\s*(?:;|$)/.test(r[2])) continue
+      for (const sel of r[1].split(',')) stretched.add(sel.trim())
+    }
+    if (stretched.size) {
+      for (const r of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+        const sel = r[1].split(',').map((x) => x.trim()).find((x) => stretched.has(x))
+        if (!sel) continue
+        const m = r[2].match(/(?:^|;)\s*(min-block-size|min-height|block-size|height)\s*:\s*var\(\s*--ctrl-(?:target|h)[\w-]*/)
+        if (m) add('stretchTarget', `${at(r.index + r[0].indexOf('{'))}  ${sel}: ${m[1]} из роли органа при растянутой ссылке — цель и так вся строка`)
+      }
+    }
+  }
+
   /* Приклеенное, написанное рукой. Колонка, едущая рядом с содержимым
      (галерея товара, сводка заказа, панель фильтров), — это примитив
      `pinned` в `styles/primitives.module.css`, и потолок от окна встроен в

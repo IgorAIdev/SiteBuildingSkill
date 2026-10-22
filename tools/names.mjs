@@ -83,6 +83,9 @@ export const MODIFIERS = new Set([
   'align',
   /* коробка цели вокруг знака (`--glyph-box`, И677) */
   'box',
+  /* пара колонок кассы — форма и сводка рядом (`--col-pair`, `--col-pair-gap`;
+     Shopify Checkout, 23.10.2026) */
+  'pair',
   /* точка кадра, которую снимок держит в обрезке (`--frame-focus`: ручка
      примитива `frame`, `object-position`; герой главной, И710) */
   'focus',

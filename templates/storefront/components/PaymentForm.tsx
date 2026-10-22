@@ -30,12 +30,15 @@ type Action = (prev: FormState, form: FormData) => Promise<FormState>
    Скрытые поля — в конце формы: первыми в стопке они дали бы пустой зазор.
 
    Имя форме даёт заголовок шага рамки (`step-title`); вне рамки (дизайн-
-   система) — свой заголовок, его адрес — `labelledBy`. */
-export function PaymentForm({ view, action, permalink, children, notice, labelledBy = 'step-title' }: { view: PaymentPageView; action: Action; permalink: string; children: ReactNode; notice?: ReactNode; labelledBy?: string }) {
+   система) — свой заголовок, его адрес — `labelledBy`. Шаги и имя шага (`lead`,
+   StepLead) — голова левой половины: ряд здесь — сама форма, и полоса сводки
+   начинается у шапки, как на шагах контакта и доставки. */
+export function PaymentForm({ view, action, permalink, children, notice, lead, labelledBy = 'step-title' }: { view: PaymentPageView; action: Action; permalink: string; children: ReactNode; notice?: ReactNode; lead?: ReactNode; labelledBy?: string }) {
   const [state, formAction, pending] = useActionState(action, null, permalink)
   return (
     <form aria-busy={pending} className={`${p.sidebar} ${s.frame}`} action={formAction} aria-labelledby={labelledBy}>
       <div className={`${p.stack} ${s.step} ${s.measure}`}>
+        {lead}
         {state?.message ? <p className={f.say} data-state="error" role="alert">{state.message}</p> : null}
         <fieldset className={`${s.options} ${s.plain}`} disabled={pending}>
           <legend className={p.said}>{view.title}</legend>
