@@ -20,8 +20,8 @@
 .topics{--cluster:var(--gap-row) var(--air-row)}
 .topics a{
   display:inline-flex;align-items:center;justify-content:center;min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target);
-  color:var(--ink-soft);text-decoration:none;text-underline-offset:.3em;
-  transition:color var(--hover-t) var(--ease)
+  text-underline-offset:.3em
 }
-@media (hover:hover){ .topics a:hover{color:var(--ink)} }
+/* Ответ на руку — видом «слово» (`b.word`, styles/btn.module.css: тихое → полное);
+   узел его не пишет (`handOut`, check:css). Текущая рубрика — полным словом с чертой. */
 .topics a[aria-current='page']{color:var(--ink);text-decoration:underline}

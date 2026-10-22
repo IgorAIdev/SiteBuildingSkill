@@ -14,6 +14,10 @@ import { ProductView } from '@/components/ProductView.tsx'
 import { JsonLd } from '@/components/JsonLd.tsx'
 import { Unavailable } from '@/components/StateScreen.tsx'
 
+/* Рельса товаров ставит четыре с половиной карточки: четыре товара оставляли пустую половину места
+   и обрыв до «View all» (разбор 23.10.2026) — рельсе даётся столько, чтобы край следующей выглядывал. */
+const RELATED = 8
+
 type Props = { params: Promise<{ lang: string; id: string }>; searchParams: Promise<Params> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -38,7 +42,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
   const product = r.value
   const query = await searchParams
   const selected = readSelection(query, product)
-  const [col, related] = await Promise.all([source().collection(lang, product.category), source().related(lang, id, 4)])
+  const [col, related] = await Promise.all([source().collection(lang, product.category), source().related(lang, id, RELATED)])
   const view = productView(lang, product, selected, { category: col.ok ? col.value : null, related: related.ok ? related.value : [], asked: askedToChoose(query) })
   return (
     <main id="main" className={`${p.wrap} ${p.section}`} data-air="head">

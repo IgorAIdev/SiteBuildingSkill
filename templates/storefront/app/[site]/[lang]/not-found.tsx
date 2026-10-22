@@ -1,5 +1,5 @@
 'use client'
-import { usePathname } from 'next/navigation'
+import { usePagePath } from '@/lib/page-path.ts'
 import { langOfPath } from '@/lib/locale.ts'
 import { Missing } from '@/components/StateScreen.tsx'
 
@@ -8,5 +8,5 @@ import { Missing } from '@/components/StateScreen.tsx'
    рисует уже в браузере: границу `not-found` сервер не отрисовывает (И257).
    Параметров экран не получает: язык — из первого сегмента адреса. */
 export default function NotFound() {
-  return <Missing lang={langOfPath(usePathname())} />
+  return <Missing lang={langOfPath(usePagePath())} />
 }

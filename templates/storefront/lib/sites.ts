@@ -43,6 +43,20 @@ export const SITE_HEADER = 'x-shop-site'
 const byId = new Map(sites.map((s) => [s.id, s]))
 export const siteById = (id: string): Site | null => byId.get(id) ?? null
 
+/** Адрес страницы, как его видит покупатель: без внутреннего сегмента сайта. Прокладка
+ *  (proxy.ts) переписывает публичный `/en/blog` на `/[site]/en/blog`, и заранее собранная
+ *  страница сайта отдаёт хукам путь с сегментом сайта: переключатель языка строил от него
+ *  `/demo/en/blog` — такой страницы нет (check:urls, большая проверка 23.10.2026). Сегмент
+ *  снимается, только когда за ним идёт ещё сегмент: язык — первый сегмент публичного адреса. */
+export function publicPath(path: string): string {
+  const m = /^\/([^/]+)(?=\/)/.exec(path)
+  return m && byId.has(m[1]) ? path.slice(m[0].length) : path
+}
+
+/** Пары «сайт × его язык» — страницы заранее: их берут оба корневых макета (магазина
+ *  и кассы); одна запись на два места (check:code, `twice`). */
+export const siteLangParams = () => SITES.flatMap((site) => site.langs.map((lang) => ({ site: site.id, lang })))
+
 /** Сайт по имени хоста: `www.` и порт не в счёт. */
 export function siteByHost(host: string | null | undefined): Site {
   const name = (host ?? '').toLowerCase().replace(/:\d+$/, '').replace(/^www\./, '')

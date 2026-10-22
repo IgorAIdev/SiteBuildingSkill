@@ -27,7 +27,7 @@ export function PostHead({ view }: { view: PostHeadView }) {
           Было — две строки сноски подряд, «свалено в кучу» (заказчик 22.10.2026). */}
       <div className={s.byline}>
         {author ? <span className={s.who}>{author.line}<span className={s.role}>{author.role}</span></span> : null}
-        <span className={s.facts}>{meta}{topic ? <> · <SiteLink className={s.topic} href={topic.href}>{topic.name}</SiteLink></> : null}</span>
+        <span className={`${s.facts} ${p.prose}`}>{meta}{topic ? <> · <SiteLink className={s.topic} href={topic.href}>{topic.name}</SiteLink></> : null}</span>
       </div>
     </>
   )

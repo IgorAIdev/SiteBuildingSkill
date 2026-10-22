@@ -329,11 +329,14 @@ button,[role='button'],a,input,select,textarea,summary,label{touch-action:manipu
    только улучшение поверх этого: MDN — «Browsers will only hyphenate if this
    attribute is present and the appropriate hyphenation dictionary is
    available», а у Chromium нет словаря для румынского (hyph-ro.hyb нет ни в
-   118, ни в main на 20.09.2026). Кавычки — по языку страницы, не по рынку:
+   118, ни в main на 20.09.2026). Перенос по словарю — только у бегущего текста
+   (`prose`, styles/primitives.module.css), не у надписей: на всех p, li и dd он
+   рвал ссылки подвала («Withdraw from con-tract here»), вводную полки
+   («percent-age») и сноску закона («dis-ease») — разбор 23.10.2026; Dawn, Allbirds
+   и Gymshark надписи не переносят. Кавычки — по языку страницы, не по рынку:
    hr и ro „…“, it «…», en "…" — `quotes: auto` берёт их из `lang`. */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 p,li,dd,figcaption,blockquote,h1,h2,h3,h4{overflow-wrap:anywhere}
-p,li,dd{hyphens:auto}
 q{quotes:auto}
 
 /* Место под полосу прокрутки занято всегда: на десктопе с классической

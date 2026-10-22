@@ -19,7 +19,7 @@ const ORDER_MAX = 40
  *  Директивы 2011/83, с 19.06.2026; И748): спрашивается только имя, номер
  *  заказа и адрес для подтверждения. Принял источник — строка с датой и
  *  временем приёма; нет — письмо на почту магазина, оно тоже действительно. */
-async function withdraw_(rawLang: string, _prev: WithdrawState, form: FormData): Promise<WithdrawState> {
+async function withdrawInSite(rawLang: string, _prev: WithdrawState, form: FormData): Promise<WithdrawState> {
   if (!isLang(rawLang)) throw new Error(`withdraw: язык «${rawLang}» не из списка`)
   const lang = rawLang
   const values = { name: field(form, 'name'), order: field(form, 'order'), email: field(form, 'email') }
@@ -32,4 +32,4 @@ async function withdraw_(rawLang: string, _prev: WithdrawState, form: FormData):
 
 /* Каждое действие — с сайтом запроса (lib/request-site.ts): рынок, адрес и
    каталог внутри — сайта, с которого пришла форма. */
-export async function withdraw(...a: Parameters<typeof withdraw_>): ReturnType<typeof withdraw_> { return inRequestSite(() => withdraw_(...a)) }
+export async function withdraw(...a: Parameters<typeof withdrawInSite>): ReturnType<typeof withdrawInSite> { return inRequestSite(() => withdrawInSite(...a)) }

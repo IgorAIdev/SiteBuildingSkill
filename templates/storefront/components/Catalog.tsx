@@ -60,7 +60,10 @@ export function ShelfGrid({ cards, eager, cart, fold }: { cards: ShelfCard[]; ea
    главное на странице одно. `ids` — свои адреса формы граней и порядка у
    второго образца на той же странице. */
 export function Catalog({ view, search, cart, inset = false, ids, crumbs, after }: { view: CatalogView; search?: ReactNode; cart: CartActions; inset?: boolean; ids?: { filters: string; sort: string }; crumbs?: ReactNode; after?: ReactNode }) {
-  const tools = Boolean(view.filters || view.sort || view.chips.length)
+  /* Строка полки стоит и тогда, когда граней и порядка нет (поиск): счёт найденного — её
+     дело (страница поиска: «счёт строкой над полкой»; Baymard — у выдачи поиска число
+     найденного). До 23.10.2026 строка шла только с гранями — на поиске счёта не было. */
+  const tools = Boolean(view.filters || view.sort || view.chips.length || view.count)
   const Root = inset ? 'section' : 'main'
   /* Адрес полки для «Показать ещё» свёртки — свой у образца в дизайн-системе (И754). */
   const grid = ids ? `${ids.filters}-grid` : 'shelf-grid'

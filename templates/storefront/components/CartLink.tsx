@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useId, useRef, useState, type MouseEvent } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePagePath } from '@/lib/page-path.ts'
 import s from './Header.module.css'
 import p from '@/styles/primitives.module.css'
 import { Icon } from './Icon.tsx'
@@ -41,7 +41,7 @@ export function CartLink({ lang, href, label, added, countUrl, title, close, lab
   const [count, setCount] = useState<number | null>(null)
   const [sum, setSum] = useState<string | null>(null)
   const [told, setTold] = useState(false)
-  const pathname = usePathname()
+  const pathname = usePagePath()
   const pane = useRef<HTMLDivElement>(null)
   const id = `cart-${useId().replace(/:/g, '')}`
   const open = (e: MouseEvent<HTMLAnchorElement>) => {

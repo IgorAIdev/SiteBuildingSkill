@@ -1,6 +1,6 @@
 'use client'
 import s from './Header.module.css'
-import { usePathname } from 'next/navigation'
+import { usePagePath } from '@/lib/page-path.ts'
 import { hrefFor } from '@/lib/href.ts'
 import type { Lang } from '@/lib/locale.ts'
 import { Icon } from './Icon.tsx'
@@ -16,7 +16,7 @@ import { SiteLink } from './SiteLink.tsx'
    класса. */
 export function AccountLink({ lang, label, sheet = false }: { lang: Lang; label: string; sheet?: boolean }) {
   const home = hrefFor(lang, { account: 'home' })
-  const path = usePathname()
+  const path = usePagePath()
   const current = path === home || path.startsWith(`${home}/`) ? 'page' : undefined
   return <SiteLink className={sheet ? s.glyph : `${s.glyph} ${s.account}`} href={home} aria-current={current} aria-label={label}><Icon id="user" /></SiteLink>
 }

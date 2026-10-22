@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 import type { Viewport } from 'next'
-import { SITES } from '@/lib/sites.ts'
+import { siteLangParams } from '@/lib/sites.ts'
 import { setSite } from '@/lib/site-now.ts'
 import { LangDocument, docViewport } from '@/components/Shell.tsx'
 
 /* Страницы — заранее на каждую пару «сайт × его язык» (lib/sites.ts). */
-export const generateStaticParams = () => SITES.flatMap((site) => site.langs.map((lang) => ({ site: site.id, lang })))
+export const generateStaticParams = siteLangParams
 
 /* Язык — закрытый список: `/contact`, `/bg`, `/xx` не принимаются за язык,
    а уходят мимо дерева — на свою страницу «не найдено» с кодом 404

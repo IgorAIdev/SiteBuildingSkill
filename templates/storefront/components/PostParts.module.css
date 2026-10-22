@@ -51,9 +51,9 @@
    краска и черта): стояла краской строки без черты, и узнать в ней ссылку было не по
    чему (заказчик 22.10.2026: «откуда известно, что For beginners — это ссылка?»;
    WCAG 1.4.1 — ссылку в тексте отличают не одним курсором). Меряет `hiddenLink`. */
-.topic{color:var(--pop-ink);text-decoration:underline;text-underline-offset:.2em}
-@media (hover:hover){ .topic:hover{color:var(--pop-ink-hover)} }
-.topic:active{color:var(--pop-ink-hover)}
+/* Краска и ответ на руку — у ссылки текста (`.prose a`, styles/primitives.module.css):
+   строка данных носит `p.prose`, узел ответа не пишет (`handOut`, check:css). */
+.topic{text-decoration:underline;text-underline-offset:.2em}
 /* «Источники» → их список — воздух строки, как заголовок раздела → абзац статьи
    (DocView.module.css, `.part`), своим столбиком, а не ручкой `--stack`: ручка,
    объявленная на ребёнке стопки, переписывает и его собственный верхний отступ, и
@@ -67,4 +67,8 @@
    И524), под ней — воздух группы: «Sources» держится за свою черту, а шов внутри статьи
    (44 + черта + 36) меньше шва статьи до вопросов (88; `airOrder`, И520 — при 44 / 44 он
    выходил 89). Заказчик 22.10.2026: «может, разделителей каких-то не хватает». */
-.sourcesPart{--stack:var(--air-block);border-block-start:var(--line-w) solid var(--rule);padding-block-start:var(--air-group)}
+/* Под чертой — воздух мысли, а не группы: при плотной шкале (Compact) шов внутри статьи
+   44 + черта + 36 = 81 выходил больше шва статьи до вопросов (72 — воздух страницы этой
+   шкалы; на 390 — 32 + черта + 16 = 49 против 48; `airOrder`, большая проверка 23.10.2026). Черта с воздухом мысли под ней держит
+   «Sources» как подпись своей черты, и шов внутри статьи меньше шва страницы при любой шкале. */
+.sourcesPart{--stack:var(--air-block);border-block-start:var(--line-w) solid var(--rule);padding-block-start:var(--air-line)}

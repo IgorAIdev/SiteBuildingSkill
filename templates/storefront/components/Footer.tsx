@@ -125,11 +125,11 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
               {/* Орган защиты потребителей и платформа жалоб — у рынка сайта
                   (lib/shop-data.ts, `consumer`); рынок без них — строк нет. */}
               {authority ? <li><SiteLink className={b.word} href={authority} rel="noopener">{t(lang, 'footer.anpcHome')}</SiteLink></li> : null}
-              {complaints && !badge.src ? <li><a className={b.word} href={complaints} rel="noopener">{t(lang, 'footer.anpc')}</a></li> : null}
+              {complaints && !badge.src ? <li><SiteLink className={b.word} href={complaints} rel="noopener">{t(lang, 'footer.anpc')}</SiteLink></li> : null}
             </ul>
             {/* Знак SAL — официальная картинка без изменений (приказ 270/2026): своей
                 краски, угла и рамки у знака нет, размер — его данные. */}
-            {complaints && badge.src ? <a className={s.sal} href={complaints} rel="noopener"><img src={badge.src} width={badge.width} height={badge.height} alt={t(lang, 'footer.salAlt')} loading="lazy" decoding="async" /></a> : null}
+            {complaints && badge.src ? <SiteLink className={s.sal} href={complaints} rel="noopener"><img src={badge.src} width={badge.width} height={badge.height} alt={t(lang, 'footer.salAlt')} loading="lazy" decoding="async" /></SiteLink> : null}
           </div>
           <p className={s.notice}>{t(lang, 'footer.disclaimer')}</p>
         </div>

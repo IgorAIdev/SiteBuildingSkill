@@ -4,7 +4,7 @@
    проявляется, ничего не едет навстречу тексту (заказчик 22.10.2026: «смена карточек
    странно происходит» — карточка уезжала вверх вместе со статьёй и читалась скачком);
    при «уменьшить движение» — сразу. */
-.read{display:flex;flex-direction:column;gap:var(--sp-2)}
+.read{display:flex;flex-direction:column;gap:var(--sp-2);flex:0 1 auto;min-block-size:0}
 .head{margin:0}
 /* Подпись стоит по краю карточки, а не по слову строк меню: поле строки у подписи группы
    (`m.group`, `--pad-inner`) — для пунктов под ней, а здесь под ней карточка, и подпись
@@ -15,9 +15,14 @@
    `--sp-1` (строка точек сама ростом цели, видимый просвет от точки до букв больше), по
    середине, как точки; сноской, тоном вторичного текста. Шаг внутри — меньше шага
    колонки (`--sp-2`), иначе подпись отрывалась от точек (check:design flatRhythm). */
-.where{display:flex;flex-direction:column;align-items:center;gap:var(--sp-1)}
+.where{flex:none;display:flex;flex-direction:column;align-items:center;gap:var(--sp-1)}
 .section{margin:0;color:var(--ink-soft);text-align:center;text-wrap:balance}
-.slots{display:grid;overflow:clip}
+/* Слоты — то, что ужимается под потолком приклеенной колонки: ячейка не выше остатка от
+   подписи и точек, карточка в ней — не выше ячейки, и уступает её снимок (ProductCard:
+   снимок сжимается первым, текст и кнопка — целиком). */
+.slots{display:grid;overflow:clip;flex:0 1 auto;min-block-size:0;grid-template-rows:minmax(0, 1fr)}
+.slots .slot{min-block-size:0}
+.slots .slot > *{max-block-size:100%}
 .slot{grid-area:1 / 1;visibility:hidden;opacity:0}
 .slot[data-on]{visibility:visible;opacity:1}
 @media (prefers-reduced-motion:no-preference){

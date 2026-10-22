@@ -69,10 +69,14 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
                     {view.sku ? <span className={s.sku} translate="no">{view.sku}</span> : null}
                   </div>
                 ) : null}
+                {/* Строка доказательств — строка слов: «Lab report» висит полем за края, как слова
+                    доверия рядом (`data-hang`), и шаг по краске один — 12 между всеми словами, а
+                    строка ростом в строку текста. Без вывеса поле кнопки прибавлялось к зазору
+                    (27 / 28 / 14) и поднимало строку до 32 (check:craft `inkGap`, `inkStep`, 23.10.2026). */}
                 {view.rating || view.lab || view.trust.length ? (
                   <div className={s.proofRow}>
                     {view.rating ? <Rating rating={view.rating} /> : null}
-                    {view.lab ? <button className={b.btn} data-voice="bare" data-size="sm" type="button" popoverTarget="lab-report"><Icon id="flask" />{view.lab.chip}</button> : null}
+                    {view.lab ? <button className={b.btn} data-voice="bare" data-size="sm" data-hang="inline" type="button" popoverTarget="lab-report"><Icon id="flask" />{view.lab.chip}</button> : null}
                     {view.trust.map((x) => <span key={x.icon} className={b.btn} data-voice="bare" data-size="sm" data-hang="inline" data-static><Icon id={x.icon} />{x.text}</span>)}
                   </div>
                 ) : null}

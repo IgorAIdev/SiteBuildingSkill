@@ -40,7 +40,12 @@ if (parts.some((x) => !x)) { console.error(`✗ В signGroups.ts нет разд
    корзина. Человек стоял площадью 16, корзина — 20 (замер 21.10.2026). Крестик,
    стрелки и полоски меню — не предметы, их рост задан рисунком Lucide. */
 const ROW = ['search', 'layout-grid', 'heart', 'user', 'shopping-cart', 'shopping-bag', 'shopping-handbag', 'shopping-basket']
-const ids = [...new Set([...parts.flatMap((x) => [...x.matchAll(/\['([a-z0-9-]+)',/g)].map((m) => m[1])), ...ROW])]
+/* Знаки при словах одной строкой — слоганы доверия главной (лаборатория, доставка,
+   возврат) и строка доказательств карты товара (протокол, ТГК, происхождение), обещания
+   у кнопки заказа: стояли ростом 21 / 17 / 19 и 13 / 11 / 11 при одном кегле
+   (check:craft `iconRow`, большая проверка 23.10.2026). */
+const TRUST = ['flask', 'truck', 'rotate-ccw', 'check-shield', 'leaf', 'package']
+const ids = [...new Set([...parts.flatMap((x) => [...x.matchAll(/\['([a-z0-9-]+)',/g)].map((m) => m[1])), ...ROW, ...TRUST])]
 const dir = path.join(root, 'skills/site-building/assets/icons/lucide')
 const out = {}
 for (const id of ids) {

@@ -32,7 +32,8 @@
    колонки плиток и одну колонку строк. Край плашки — край поля под ней. */
 .group{background:var(--rule);border-radius:var(--r-ctrl);overflow:hidden}
 .group > li{background:var(--quiet)}
-.group .row{border-radius:0;block-size:100%}
+/* Ячейка — прямоугольник во весь рост: форму даёт вид `row` по признаку списка `data-cells` (btn.module.css). */
+.group .row{block-size:100%}
 /* Плитка — та же строка столбцом: знак над именем (быстрый заказ, вид
    «плитки» панели `--quick-look`, И470); вид «строки» возвращает строку.
    Одежда — одна: тихая строка, подложка под рукой, без обводки (слово

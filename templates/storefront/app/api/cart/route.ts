@@ -26,7 +26,7 @@ import { inRequestSite } from '@/lib/request-site.ts'
    `held` — штук каждого варианта в корзине: по нему кнопки «в корзину»
    страницы показывают «Added · 4» уже при загрузке (lib/in-cart.ts, И469).
    Источник молчит — `null`: кнопки остаются, какими были. */
-async function GET_(request: Request) {
+async function GETInSite(request: Request) {
   const query = new URL(request.url).searchParams
   const asked = query.get('lang') ?? ''
   const lang = isLang(asked) ? asked : DEFAULT_LANG
@@ -44,4 +44,4 @@ async function GET_(request: Request) {
 }
 
 /* Обработчик — с сайтом запроса (lib/request-site.ts). */
-export async function GET(...a: Parameters<typeof GET_>): ReturnType<typeof GET_> { return inRequestSite(() => GET_(...a)) }
+export async function GET(...a: Parameters<typeof GETInSite>): ReturnType<typeof GETInSite> { return inRequestSite(() => GETInSite(...a)) }

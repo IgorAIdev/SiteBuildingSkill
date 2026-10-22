@@ -82,7 +82,7 @@ export function QuickOrder({ view }: { view: QuickView }) {
               И471: cbdin.bg, WhatsApp Brand Guidelines). Имя ссылки для
               чтеца — полное «Order via …», видимое слово в нём есть
               (WCAG 2.5.3). */}
-          <ul className={`${p.grid} ${s.rows} ${rl.group}`} data-size="lg">
+          <ul className={`${p.grid} ${s.rows} ${rl.group}`} data-size="lg" data-cells="">
             {rows.map((r) => (
               <li key={r.key}>
                 {r.href

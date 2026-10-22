@@ -43,7 +43,7 @@ export const AXES = {
   },
   language: {
     name: 'язык страницы',
-    how: '`<html lang>` из адреса; мера строки по языку (`:lang()`); `quotes: auto`; `hyphens: auto` только как улучшение поверх `overflow-wrap: anywhere` и `<wbr>` — у Chromium нет словаря переноса для румынского',
+    how: '`<html lang>` из адреса; мера строки по языку (`:lang()`); `quotes: auto`; `hyphens: auto` только у бегущего текста (`prose`) и только как улучшение поверх `overflow-wrap: anywhere` и `<wbr>` — у Chromium нет словаря переноса для румынского',
     features: [],
     varies: 'мера строки (--measure*), кавычки, переносы, форматы чисел и дат (Intl — в коде)',
     static: 'словарь токенов: «Spectrum tokens are not localized» — локаль меняет раскладку и содержание, а не имена',
