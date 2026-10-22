@@ -10,7 +10,11 @@
   background:var(--plate-quiet);color:var(--ink);text-align:center;text-decoration:none
 }
 .sign{inline-size:2.25rem;block-size:2.25rem;color:var(--pop);flex:none}
-.name{font-size:var(--ctrl-fs-sm);line-height:1.25;overflow-wrap:anywhere;text-wrap:balance}
+/* Имени — место двух строк всегда (`data-lines`: имя в две строки задумано): знак и
+   первая строка имени стоят в ряду на одной линии, плитки — одного роста. Прежде плитка
+   с именем в две строки («CBD capsules») поднимала знак на 8 над соседями, а ряд с
+   короткими именами был ниже на 17 (шторка пустой корзины, 22.10.2026). */
+.name{font-size:var(--ctrl-fs-sm);line-height:1.25;overflow-wrap:anywhere;text-wrap:balance;min-block-size:2lh}
 .name::first-letter{text-transform:uppercase}
 @media (hover:hover){
   .tile:hover{border-color:var(--pop)}

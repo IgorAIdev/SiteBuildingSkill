@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import p from '@/styles/primitives.module.css'
 import s from './Checkout.module.css'
-import c from './Cart.module.css'
 import type { StepsView, SummaryView } from '@/lib/checkout-view.ts'
 import type { Empty } from '@/lib/catalog-view.ts'
 import { OrderItems } from './OrderItems.tsx'
@@ -20,7 +19,8 @@ function Summary({ summary }: { summary: SummaryView }) {
 /* Оформление — коридор (разбор 24.09.2026, X5): своя шапка без полок
    (корневой макет группы `(checkout)`), шаги, имя шага — заголовком
    страницы, один раз. Под ними ряд: шаг слева, мерой строки — поле не шире
-   ожидаемого ввода; сводка с товарами — листом справа, едет с прокруткой.
+   ожидаемого ввода; сводка с товарами — справа на полосе до края окна
+   (Shopify Checkout), едет с прокруткой.
 
    На узкой коробке (шов 820, «телефон») колонки нет: сводка встаёт
    раскрывашкой над шагами, итог — в её строке («Sumarul comenzii · 130 €»),
@@ -33,7 +33,7 @@ function Summary({ summary }: { summary: SummaryView }) {
 export function CheckoutFrame({ steps, summary, children, landmark = true }: { steps: StepsView; summary: SummaryView | null; children: ReactNode; landmark?: boolean }) {
   const Main = landmark ? 'main' : 'div'
   return (
-    <Main id={landmark ? 'main' : undefined} className={`${p.wrap} ${p.section} ${s.corridor}`} data-air="head">
+    <Main id={landmark ? 'main' : undefined} className={`${p.wrap} ${p.section} ${s.corridor}`} data-air="head" data-sample={landmark ? undefined : ''}>
       {summary ? (
         <details className={s.peek}>
           <summary><span className={s.peekName}>{summary.show}<Turn /></span><b>{summary.total}</b></summary>
@@ -47,9 +47,9 @@ export function CheckoutFrame({ steps, summary, children, landmark = true }: { s
       {summary ? (
         <div className={`${p.sidebar} ${s.frame}`}>
           <div className={`${p.stack} ${s.step} ${s.measure}`}>{children}</div>
-          <aside className={`${p.aside} ${s.side}`} aria-labelledby="summary-title">
+          <aside className={`${p.aside} ${s.side} ${s.band}`} aria-labelledby="summary-title">
             <h2 id="summary-title" className={p.said}>{summary.label}</h2>
-            <div className={`${p.pinned} ${c.summary} ${s.pin}`}><Summary summary={summary} /></div>
+            <div className={`${p.pinned} ${s.pin}`}><Summary summary={summary} /></div>
           </aside>
         </div>
       ) : children}

@@ -1,6 +1,7 @@
 import p from '@/styles/primitives.module.css'
 import b from '@/styles/btn.module.css'
 import f from '@/styles/form.module.css'
+import ck from '@/components/Checkout.module.css'
 import type { Lang } from '@/lib/locale.ts'
 import type { Address, Cart, CartLine, Contact, Delivery, DeliveryMethod, Money, Order, PaymentMethod, PickupPoint } from '@/lib/source/contract.ts'
 import type { Outcome } from '@/lib/cart-ops.ts'
@@ -232,9 +233,12 @@ export async function CheckoutParts({ lang }: { lang: Lang }) {
         {pay ? (
           <>
             <h3 id="design-pay-title" className={p.said}>{t(lang, 'checkout.step.payment')}</h3>
-            <PaymentForm view={pay} action={stillStep} permalink={hrefFor(lang, { checkout: 'payment' })} labelledBy="design-pay-title">
-              <OrderReview id="design-review" title={pay.review} recaps={pay.recaps} itemsTitle={pay.itemsTitle} items={pay.items} />
-            </PaymentForm>
+            {/* Коробка коридора — полоса сводки обрезается по образцу, как в рамке оформления выше. */}
+            <div className={ck.corridor} data-sample="">
+              <PaymentForm view={pay} action={stillStep} permalink={hrefFor(lang, { checkout: 'payment' })} labelledBy="design-pay-title">
+                <OrderReview id="design-review" title={pay.review} recaps={pay.recaps} itemsTitle={pay.itemsTitle} items={pay.items} />
+              </PaymentForm>
+            </div>
           </>
         ) : <Missing what="У магазина нет доставки на адрес — проверки заказа не из чего собрать." />}
       </Part>

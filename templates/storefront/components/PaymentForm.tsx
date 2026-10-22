@@ -17,7 +17,7 @@ type Action = (prev: FormState, form: FormData) => Promise<FormState>
    кнопка называет обязанность платить (И262).
 
    Форма — сам ряд (`sidebar`), как корзина: слева способы оплаты и сверка
-   (кому, куда, что — со снимками), справа листом — итог, условия и кнопка
+   (кому, куда, что — со снимками), справа на полосе сводки — итог, условия и кнопка
    заказа. Лист короткий и едет с прокруткой (`pinned`): кнопка заказа стоит
    в первом экране ноутбука и не уходит из него (разбор 24.09.2026, O3:
    прежде сверка жила в колонке кнопки, и кнопка стояла на 1078-м пикселе
@@ -52,8 +52,8 @@ export function PaymentForm({ view, action, permalink, children, notice, labelle
         </fieldset>
         {children}
       </div>
-      <aside className={p.aside}>
-        <div className={`${p.stack} ${p.pinned} ${c.summary}`}>
+      <aside className={`${p.aside} ${s.band}`}>
+        <div className={`${p.stack} ${p.pinned} ${s.sum}`}>
           <OrderTotals totals={view.totals} />
           <div className={c.decide}>
             <p className={s.terms}>{view.terms.note} <SiteLink href={view.terms.link.href}>{view.terms.link.label}</SiteLink></p>
