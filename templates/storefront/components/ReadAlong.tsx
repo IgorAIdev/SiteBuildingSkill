@@ -38,7 +38,10 @@ export function ReadAlong({ ids, label, children }: { ids: string[]; label: stri
   }, [ids, cards.length])
   return (
     <aside className={s.read} aria-label={label}>
-      <p className={m.group}>{label}</p>
+      {/* Подпись — заголовком второго уровня видом подписи группы: имя товара в карточке —
+          h3, а колонка стоит в разметке раньше разделов статьи, и лестница прыгала с h1
+          на h3 (check:craft heads, 22.10.2026). */}
+      <h2 className={`${m.group} ${s.head}`}>{label}</h2>
       <div className={s.slots}>
         {cards.map((c, i) => <div key={i} className={s.slot} data-on={i === on ? '' : undefined} aria-hidden={i === on ? undefined : true}>{c}</div>)}
       </div>
