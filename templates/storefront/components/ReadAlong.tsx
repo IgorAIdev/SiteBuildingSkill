@@ -10,17 +10,16 @@ import s from './ReadAlong.module.css'
    замеру пятнадцати лент (shop, blocks.md, «Товар у статьи»): одна вещь за раз, смена
    по ходу чтения (mindbodygreen), без прокрутки внутри колонки (у cbdshop.bg вторая из
    двух карточек пряталась в ней). Раздел, чей заголовок поднялся выше 40 % окна, —
-   текущий; его номер по кругу выбирает тройку. Товары — строками `ProductRow` по три
-   (заказчик 22.10.2026: «и 2 и 3 продукта можно показывать, одного маловато»): целая
-   карточка помещалась в колонку одна (451 при 636 под колонку на 800), три строки — с
-   запасом. Без скрипта стоит первая тройка; неактивные скрыты `visibility`, их ссылки
+   текущий; его номер по кругу выбирает карточку. Карточка — та же, что на главной
+   (`ProductCard` в виде карточки сайта, с ценой и «в корзину»), одна за раз: заказчик
+   22.10.2026: «тут карточка товара нужна одна полная с ценой как на главной, а когда
+   скролишь страницу — чтоб карточка сменялась на другую» (тройки строк `ProductRow`
+   сняты). Без скрипта стоит первая; неактивные скрыты `visibility`, их ссылки и кнопки
    не ловят ни руку, ни таб. */
 export function ReadAlong({ ids, label, children }: { ids: string[]; label: string; children: ReactNode }) {
-  const rows = Children.toArray(children)
-  /* Тройки по порядку; последняя добирается с начала — в колонке всегда три строки. */
-  const cards = Array.from({ length: Math.ceil(rows.length / 3) }, (_, g) => [0, 1, 2].map((k) => rows[(g * 3 + k) % rows.length]))
+  const cards = Children.toArray(children)
   const [on, setOn] = useState(0)
-  /* Ушедшая тройка помнится одну смену: она уезжает вверх, новая въезжает снизу
+  /* Ушедшая карточка помнится одну смену: она уезжает вверх, новая въезжает снизу
      (заказчик 22.10.2026: «лучше пусть меняется сама карточка — уходила вверх и приходила
      другая», а не подмена на месте). */
   const [gone, setGone] = useState<number | null>(null)
@@ -52,7 +51,7 @@ export function ReadAlong({ ids, label, children }: { ids: string[]; label: stri
           на h3 (check:craft heads, 22.10.2026). */}
       <h2 className={`${m.group} ${s.head}`}>{label}</h2>
       <div className={s.slots}>
-        {cards.map((trio, i) => <ul key={i} className={s.slot} data-on={i === on ? '' : undefined} data-gone={i === gone && i !== on ? '' : undefined} aria-hidden={i === on ? undefined : true}>{trio.map((r, k) => <li key={k}>{r}</li>)}</ul>)}
+        {cards.map((card, i) => <div key={i} className={s.slot} data-on={i === on ? '' : undefined} data-gone={i === gone && i !== on ? '' : undefined} aria-hidden={i === on ? undefined : true}>{card}</div>)}
       </div>
     </aside>
   )
