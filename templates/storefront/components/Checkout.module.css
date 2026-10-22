@@ -20,33 +20,37 @@
    своей коробке — иначе она легла бы поверх соседних образцов. */
 .corridor{container-type:inline-size;display:flex;flex-direction:column}
 .corridor[data-sample]{overflow:clip}
-/* Шаги и имя шага — над рядом, одной группой: сводка справа встаёт вровень
-   с началом формы на каждом шаге. Коробка объявлена — имя страницы мерит её
-   (`cqi`), как у примитива `pagehead`. */
-.lead{display:flex;flex-direction:column;gap:var(--air-row);padding-block-end:var(--air-head);container-type:inline-size}
+/* Шаги и имя шага — голова левой половины, одной группой (StepLead): от неё до
+   формы — шаг столбика (`--stack`, воздух блока). Коробка объявлена — имя
+   страницы мерит её (`cqi`), как у примитива `pagehead`. */
+.lead{display:flex;flex-direction:column;gap:var(--air-row);container-type:inline-size}
 /* Ряд шага и сводки: колонки рядом, пока коридор шире шва 820 (форме
    остаётся не меньше 40 % ряда), — сгиб по содержимому раньше шва не
    наступает. Уже шва колонки сводки нет вовсе (ниже).
    Касса — две половины, как у Shopify Checkout, Allbirds и Gymshark (их касса
    — Shopify): слева дело на полу страницы, справа заказ на своей полосе до
-   края окна. Ряд не шире формы, просвета и сводки: сводка стоит у формы, а
-   не у правого края коробки — прежде между ними зияла пустота в 190 на 1253
-   (заказчик 22.10.2026: «и чекаут тоже без дизайна»). Колонки тянутся на
-   высоту ряда (`--side-align`): полоса идёт до низа окна, сколько бы ни было
-   полей. */
+   края окна. Ряд — ширина коридора (`--col-pair`, tokens.css: форма, просвет,
+   сводка) и стоит по середине страницы, как пара Shopify (замер allbirds.com
+   на 1238: поля по 129 с обеих сторон); по той же ширине стоит шапка кассы, и
+   знак — над началом формы. Прежде ряд жался к левому краю, а полоса справа
+   оставалась пустой на 186 (заказчик 22.10.2026: «чекаут тоже не сделан»).
+   Колонки тянутся на высоту ряда (`--side-align`): полоса идёт до низа окна,
+   сколько бы ни было полей. */
 .frame{
-  --side-at:40%;--side-w:var(--col-side);--side-gap:calc(var(--air-block) + var(--pad-sheet));--side-align:stretch;
-  flex-grow:1;max-inline-size:calc(var(--measure) + var(--side-gap) + var(--side-w))
+  --side-at:40%;--side-w:var(--col-side);--side-gap:var(--col-pair-gap);--side-align:stretch;
+  flex-grow:1;inline-size:100%;max-inline-size:var(--col-pair);margin-inline:auto
 }
 /* Полоса сводки — тихая полоса раздела (`--band`, та же, что у полос главной;
    решение заказчика 03.10.2026 — фон до края окна, содержимое в рамке).
-   Рисует её рамка-картинка колонки с выносом (`border-image-outset`): вправо —
-   до края окна, влево — на поле листа перед содержимым, вверх — на то же поле
-   над первой строкой. Вынос — краска за коробкой, а не ширина: ни прокрутки
-   вбок, ни сдвига раскладки (CSS Backgrounds 3, §6.5 — ink overflow). Лист в
-   колонке не нужен: полоса и есть её пол. На телефоне колонка уходит в
-   раскрывашку или под шаг (оплата) — там полосы нет, сводка лежит на полу. */
-.band{border-image:linear-gradient(var(--band) 0 0) fill 0 / / var(--pad-sheet) 100vmax 0 var(--pad-sheet)}
+   Рисует её рамка-картинка колонки с выносом (`border-image-outset`): вверх —
+   на воздух раздела до самой шапки (`--section-air`), вправо и вниз — до краёв
+   окна, влево — на половину просвета: черта полосы стоит посередине между
+   формой и сводкой (Shopify: 40 и 40). Вынос — краска за коробкой, а не
+   ширина: ни прокрутки, ни сдвига раскладки (CSS Backgrounds 3, §6.5 — ink
+   overflow). Лист в колонке не нужен: полоса и есть её пол. На телефоне
+   колонка уходит в раскрывашку или под шаг (оплата) — там полосы у колонки
+   нет, раскрывашка сама стоит на полосе (ниже). */
+.band{border-image:linear-gradient(var(--band) 0 0) fill 0 / / var(--section-air, var(--air-group)) 100vmax 100vmax calc(var(--side-gap) / 2)}
 /* Сводка на полосе — столбик без листа: потолок окна держит `pinned`,
    прокручивается сама сводка, а не страница под ней. */
 .sum{--stack:var(--air-group);overflow-y:auto;overscroll-behavior:contain}
@@ -74,9 +78,16 @@
 
 /* Сводка на телефоне — раскрывашка над шагами, итог в её строке: сумма
    видна до кнопки, которой шаг продолжают (Baymard; Shopify «Show order
-   summary»). На широкой коробке её нет — там колонка. */
-.peek{display:none;border-block:var(--line-w) solid var(--rule);margin-block-end:var(--air-group)}
-.peek > summary{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);min-block-size:var(--ctrl-h);list-style:none;font-weight:var(--label-weight)}
+   summary»). На широкой коробке её нет — там колонка. Стоит она на той же
+   полосе, что колонка сводки на широкой, от шапки и во всю ширину окна
+   (Shopify на 390: серая строка «Order summary · $204.98» прямо под шапкой):
+   заказ на любой ширине лежит на своей полосе. Полоса — вынос рамки-картинки
+   вбок до краёв окна, вверх — на воздух раздела. */
+.peek{
+  display:none;margin-block:calc(var(--section-air, var(--air-group)) * -1) var(--air-group);
+  border-image:linear-gradient(var(--band) 0 0) fill 0 / / 0 100vmax
+}
+.peek > summary{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);min-block-size:var(--ctrl-h-lg);list-style:none;font-weight:var(--label-weight)}
 .peek > summary::-webkit-details-marker{display:none}
 .peek > summary b{white-space:nowrap;font-variant-numeric:tabular-nums}
 .peekName{display:inline-flex;align-items:center;gap:var(--gap-targets);color:var(--ink)}
