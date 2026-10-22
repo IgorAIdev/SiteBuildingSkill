@@ -1,4 +1,5 @@
 import p from '@/styles/primitives.module.css'
+import b from '@/styles/btn.module.css'
 import s from './BlogIndex.module.css'
 import type { BlogIndexView } from '@/lib/post-view.ts'
 import { PostCard } from './PostCard.tsx'
@@ -22,7 +23,7 @@ export function BlogIndex({ view, label }: { view: BlogIndexView; label: string 
         <p className={p.note}>{view.count}</p>
         <nav aria-label={label} className={s.nav}>
           <ul className={`${p.cluster} ${s.topics}`}>
-            {view.topics.map((x) => <li key={x.href}><SiteLink href={x.href} aria-current={x.current ? 'page' : undefined}>{x.label}</SiteLink></li>)}
+            {view.topics.map((x) => <li key={x.href}><SiteLink className={b.word} href={x.href} aria-current={x.current ? 'page' : undefined}>{x.label}</SiteLink></li>)}
           </ul>
         </nav>
       </div>

@@ -29,8 +29,9 @@ type Props = { params: Promise<{ lang: string; slug: string }> }
 
 const NO_AIR = { air: null }
 const CART = { submit: cartSubmit, call: cartCall }
+const NO_HEADS: { id: string; label: string }[] = []
 /** Товаров на полке «Produse potrivite» под статьёй. */
-const PRODUCTS_SHOWN = 4
+const PRODUCTS_SHOWN = 8
 /* Снаружи тела страницы: массив, собранный в её области и отданный пропу,
    ловит react-perf/jsx-no-new-array-as-prop (так же — docTrail в info/[doc]). */
 const cardsOf = (lang: Lang, listing: Result<Listing> | null) => (listing?.ok ? listing.value.items.slice(0, PRODUCTS_SHOWN).map((c) => shelfCard(lang, c)) : [])
@@ -74,7 +75,7 @@ export default async function PostPage({ params }: Props) {
       <DocView
         view={doc}
         head={<PostHead view={postHeadView(lang, post)} />}
-        side={shelf && cards.length ? <ReadAlong heads={doc.toc?.items ?? []} label={t(lang, 'blog.products')}>{cards.slice(0, alongCount(post)).map((c) => <ProductCard key={c.id} card={c} cart={CART} />)}</ReadAlong> : undefined}
+        side={shelf && cards.length ? <ReadAlong heads={doc.toc?.items ?? NO_HEADS} label={t(lang, 'blog.products')}>{cards.slice(0, alongCount(post)).map((c) => <ProductCard key={c.id} card={c} cart={CART} />)}</ReadAlong> : undefined}
         intro={<PostIntro image={post.image} tldr={post.tldr} tldrLabel={t(lang, 'blog.tldr')} />}
       >
         <PostSources title={t(lang, 'blog.sources')} sources={post.sources} important={t(lang, 'blog.important')} disclaimer={t(lang, 'blog.disclaimer')} />

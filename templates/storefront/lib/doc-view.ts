@@ -49,6 +49,11 @@ export function targetOf(lang: Lang, target: string): { href: string; external: 
   return null
 }
 
+/* Последнее слово ссылки не остаётся строкой одно: оно держится за предыдущее
+   неразрывным пробелом («Withdraw from contract here» переносилось одним «here»,
+   «platforma SAL a ANPC» — одним «ANPC»; check:craft `measure`, 23.10.2026). */
+const glue = (words: string): string => words.replace(/ (\S+)$/, '\u00a0$1')
+
 /** Строка документа — куски: текст и ссылки. */
 export function runsOf(lang: Lang, text: string): Para {
   const out: Para = []
@@ -57,7 +62,7 @@ export function runsOf(lang: Lang, text: string): Para {
   for (const m of src.matchAll(LINK)) {
     if (m.index > at) out.push({ text: src.slice(at, m.index) })
     const to = targetOf(lang, m[2])
-    out.push(to ? { text: m[1], ...to } : { text: m[1] })
+    out.push(to ? { text: glue(m[1]), ...to } : { text: m[1] })
     at = m.index + m[0].length
   }
   if (at < src.length) out.push({ text: src.slice(at) })

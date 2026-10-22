@@ -582,9 +582,14 @@ test('реестр осей: признак → ось; язык и контра
   assert.equal(axisOf('(prefers-contrast: more)'), 'contrast'); assert.equal(axisOf('(forced-colors:active)'), 'contrast')
   assert.equal(axisOf('(max-width:820px)'), 'width'); assert.equal(axisOf('(orientation: landscape)'), null)
   const base = readFileSync(new URL('../styles/base.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
-  for (const need of ['overflow-wrap:anywhere', 'hyphens:auto', 'quotes:auto', 'text-size-adjust:100%', '@media (prefers-contrast:more)', '@media (forced-colors:active)', '@media (prefers-reduced-motion:reduce)', '@media print']) {
+  for (const need of ['overflow-wrap:anywhere', 'quotes:auto', 'text-size-adjust:100%', '@media (prefers-contrast:more)', '@media (forced-colors:active)', '@media (prefers-reduced-motion:reduce)', '@media print']) {
     assert.ok(base.includes(need), `в основании нет оси: ${need}`)
   }
+  /* Перенос по словарю — у бегущего текста (`prose`), не у надписей (разбор 23.10.2026:
+     «Withdraw from con-tract here» в подвале, «percent-age» во вводной). */
+  assert.ok(!base.includes('hyphens:auto'), 'перенос по словарю у всех p, li, dd рвёт надписи')
+  const prims = readFileSync(new URL('../styles/primitives.module.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.ok(prims.includes('.prose :is(p, li, dd){hyphens:auto;hyphenate-limit-chars:10 4 4}'), 'перенос по словарю — у бегущего текста, длинного слова')
   assert.ok(!/scrollbar-color/.test(base), 'скроллбар красится рукой — его красит color-scheme')
   const tokens = readFileSync(new URL('../styles/tokens.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
   for (const m of tokens.matchAll(/\[data-theme[^\]]*\]\s*\{([^}]*)\}/g)) {

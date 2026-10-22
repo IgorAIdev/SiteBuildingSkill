@@ -7,7 +7,7 @@ import type { BlockCtx, Place } from './types.ts'
 import { shot } from '@/lib/shot.ts'
 import { CategoryPaths } from '../CategoryPaths.tsx'
 import { TrustLine } from './TrustLine.tsx'
-import { heroShelves } from '@/lib/hero-shelves.ts'
+import { heroShelves, shelfPaths } from '@/lib/hero-shelves.ts'
 import { MinimalHero } from './MinimalHero.tsx' // look-home:minimal
 import { SportHero } from './SportHero.tsx' // look-home:sport
 
@@ -70,7 +70,7 @@ export function Hero({ block, ctx }: Props) {
             <CategoryPaths
               look={ctx.cat ?? 'dot'}
               all={{ label: t(ctx.lang, 'nav.shopAll'), sign: 'shop-awning', href: hrefFor(ctx.lang, { catalog: true }) }}
-              shelves={shelves.map((sh) => ({ label: sh.name, sign: sh.sign, href: hrefFor(ctx.lang, { category: sh.slug }) }))}
+              shelves={shelfPaths(ctx.lang, shelves)}
               list={{ className: `${p.rail} ${s.heroShelves}`, rail: 'wrap' }}
               gridClass={`${p.stack} ${s.heroGrid}`}
             />

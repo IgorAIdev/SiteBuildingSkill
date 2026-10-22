@@ -93,5 +93,7 @@ export function titleOf(product: Product): string {
      раз не пишется. */
   const said = product.optionGroups.map((g) => g.options.find((o) => o.code === own[g.code])?.name)
     .filter((x): x is string => Boolean(x) && !bare(product.name).includes(bare(x!)))
-  return said.length ? `${product.name} ${said.join(' · ')}` : product.name
+  /* Перед точкой — неразрывный пробел: на телефоне имя переносилось строкой «· 10 ml»,
+     точка начинала строку (разбор 23.10.2026). */
+  return said.length ? `${product.name} ${said.join('\u00a0· ')}` : product.name
 }

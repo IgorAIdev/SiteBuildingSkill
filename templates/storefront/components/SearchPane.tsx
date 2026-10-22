@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePagePath } from '@/lib/page-path.ts'
 import p from '@/styles/primitives.module.css'
 import b from '@/styles/btn.module.css'
 import f from '@/styles/form.module.css'
@@ -32,7 +32,7 @@ export function SearchPane({ lang, action, words, shelves, trigger }: { lang: st
   const pane = useRef<HTMLDivElement>(null)
   const field = useRef<HTMLInputElement>(null)
   /* На странице поиска лупа — текущая, с отметкой слова меню (И715). */
-  const here = usePathname() === new URL(action, 'http://x').pathname
+  const here = usePagePath() === new URL(action, 'http://x').pathname
   const [q, setQ] = useState('')
   const [found, setFound] = useState<Found | null>(null)
   useEffect(() => {

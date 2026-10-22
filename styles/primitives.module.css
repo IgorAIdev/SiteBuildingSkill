@@ -649,10 +649,18 @@
    колонки, меряет семья `textShort` (check:craft). */
 .prose{max-inline-size:none}
 .prose p{text-wrap:pretty}
+/* Перенос по словарю — только в бегущем тексте и только у длинного слова: не меньше
+   десяти букв, по четыре по краям переноса (CSS Text 4, `hyphenate-limit-chars`).
+   Надписи, ссылки и вводные не переносятся (base.css; разбор 23.10.2026). */
+.prose :is(p, li, dd){hyphens:auto;hyphenate-limit-chars:10 4 4}
 /* Ссылка в тексте — марочный текст a11, под рукой a12 (palette, roles.md,
    «Текст и знаки»; И472): ссылка в абзаце читалась чернилами — отличить её
    было нечем, кроме черты. */
 .prose a{color:var(--pop-ink);text-underline-offset:.2em}
+/* В бегущем тексте и пункт списка, и ячейка таблицы — текст, а не меню: ссылка в них
+   подчёркнута, как в абзаце (base.css). «lab report» в пункте статьи выдавал только цвет
+   2.5 : 1 к тексту (разбор 23.10.2026; WCAG 1.4.1, F73). */
+.prose :is(li, td, th) a:not([class]){text-decoration-line:underline}
 @media (hover:hover){ .prose a:hover{color:var(--pop-ink-hover)} }
 .prose a:active{color:var(--pop-ink-hover)}
 /* На бумаге ссылки не нажать: внешняя ссылка текста печатается со своим

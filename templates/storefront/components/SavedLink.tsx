@@ -1,6 +1,6 @@
 'use client'
 import s from './Header.module.css'
-import { usePathname } from 'next/navigation'
+import { usePagePath } from '@/lib/page-path.ts'
 import { useSaved } from '@/lib/saved.ts'
 import { hrefFor } from '@/lib/href.ts'
 import type { Lang } from '@/lib/locale.ts'
@@ -15,7 +15,7 @@ import { SiteLink } from './SiteLink.tsx'
    единственным словом среди знаков. */
 export function SavedLink({ lang, label }: { lang: Lang; label: string }) {
   const saved = useSaved()
-  const here = usePathname() === new URL(hrefFor(lang, { saved: [] }), 'http://x').pathname
+  const here = usePagePath() === new URL(hrefFor(lang, { saved: [] }), 'http://x').pathname
   const href = hrefFor(lang, { saved })
   return (
     <SiteLink className={s.glyph} href={href} aria-current={here ? 'page' : undefined} aria-label={saved.length ? `${label} (${saved.length})` : label}>

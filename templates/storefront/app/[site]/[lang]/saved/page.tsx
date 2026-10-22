@@ -13,7 +13,12 @@ import { StateScreen, Unavailable } from '@/components/StateScreen.tsx'
 import { Shelf } from '@/components/Shelf.tsx'
 import { SavedSync } from '@/components/SavedSync.tsx'
 
-const BEST = 4
+/* Рельса товаров ставит четыре с половиной карточки: четыре товара оставляли пустую половину места
+   и обрыв до «View all» (разбор 23.10.2026) — рельсе даётся столько, чтобы край следующей выглядывал. */
+const BEST = 8
+/* Ходовые — готовыми карточками полки; пусто — общий пустой список, не новый на каждую отрисовку. */
+const NO_CARDS: ReturnType<typeof shelfCard>[] = []
+const bestOf = (lang: Parameters<typeof shelfCard>[0], items: Parameters<typeof shelfCard>[1][]) => items.slice(0, BEST).map((card) => shelfCard(lang, card))
 
 type Props = { params: Promise<{ lang: string }>; searchParams: Promise<Params> }
 
@@ -37,7 +42,7 @@ export default async function SavedPage({ params, searchParams }: Props) {
      пустого поиска). Категорий здесь нет: они и так в меню над страницей — слово заказчика
      20.10.2026: «в избранном не нужно повторять категории… если нет товаров, предложи best sale». */
   const best = cards.length ? null : await source().listing(lang, { facets: {}, sort: 'popular', page: null })
-  const popular = best?.ok ? best.value.items.slice(0, BEST).map((card) => shelfCard(lang, card)) : []
+  const popular = best?.ok ? bestOf(lang, best.value.items) : NO_CARDS
   return (
     <main id="main" className={`${p.wrap} ${p.section}`} data-air="head">
       <SavedSync lang={lang} shown={ids.join(',')} />

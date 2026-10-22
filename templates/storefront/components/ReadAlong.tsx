@@ -1,6 +1,6 @@
 'use client'
 
-import { Children, useEffect, useState, type ReactNode } from 'react'
+import { Children, isValidElement, useEffect, useMemo, useState, type ReactNode } from 'react'
 import m from '@/styles/menu.module.css'
 import p from '@/styles/primitives.module.css'
 import s from './ReadAlong.module.css'
@@ -25,7 +25,9 @@ import { Dots } from './Dots.tsx'
    точка — карточка, её ссылка ведёт к разделу, с которого карточка стоит; имя раздела —
    сноской под точками. `heads` — разделы статьи из оглавления (id и имя). */
 export function ReadAlong({ heads, label, children }: { heads: { id: string; label: string }[]; label: string; children: ReactNode }) {
-  const cards = Children.toArray(children)
+  /* `Children.toArray` даёт каждой карточке свой ключ — по нему слот и держится. */
+  const cards = Children.toArray(children).filter(isValidElement)
+  const n = cards.length
   const [on, setOn] = useState(0)
   const [at, setAt] = useState(0)
   /* Смена — на месте, проявлением (ReadAlong.module.css). Прежде ушедшая уезжала вверх, а
@@ -34,11 +36,14 @@ export function ReadAlong({ heads, label, children }: { heads: { id: string; lab
   /* Товары делят статью на равные части по порядку разделов (1-1-2-2-3-3), а не идут по
      кругу (1-2-3-1-2-3): точки идут вперёд вместе с чтением и не прыгают назад. Точка
      ведёт к первому разделу своей части. */
-  const part = (section: number) => Math.min(cards.length - 1, Math.floor((section * cards.length) / Math.max(1, heads.length)))
-  const show = (section: number) => { setAt(section); setOn(part(section)) }
-  const marks = heads.length ? cards.map((_, i) => heads[Math.ceil((i * heads.length) / cards.length)] ?? heads[heads.length - 1]) : []
+  const dots = useMemo(() => heads.length
+    ? Array.from({ length: n }, (_, i) => {
+      const h = heads[Math.ceil((i * heads.length) / n)] ?? heads[heads.length - 1]
+      return { id: h.id, show: `${i + 1} · ${h.label}` }
+    })
+    : [], [heads, n])
   useEffect(() => {
-    if (cards.length < 2) return
+    if (n < 2) return
     const els = heads.map((h) => document.getElementById(h.id)).filter((e): e is HTMLElement => Boolean(e))
     if (!els.length) return
     /* Текущий раздел — последний, чей заголовок поднялся выше 40 % окна. Считается по
@@ -49,14 +54,15 @@ export function ReadAlong({ heads, label, children }: { heads: { id: string; lab
        приходил в фоновой странице, и смена не случалась вовсе. */
     const pick = () => {
       const line = window.innerHeight * 0.4
-      let at = 0
-      els.forEach((h, i) => { if (h.getBoundingClientRect().top < line) at = i })
-      show(at)
+      let section = 0
+      els.forEach((h, i) => { if (h.getBoundingClientRect().top < line) section = i })
+      setAt(section)
+      setOn(Math.min(n - 1, Math.floor((section * n) / Math.max(1, heads.length))))
     }
     pick()
     window.addEventListener('scroll', pick, { passive: true })
     return () => window.removeEventListener('scroll', pick)
-  }, [heads, cards.length])
+  }, [heads, n])
   return (
     <aside className={s.read} aria-label={label}>
       {/* Подпись — заголовком второго уровня видом подписи группы: имя товара в карточке —
@@ -64,12 +70,12 @@ export function ReadAlong({ heads, label, children }: { heads: { id: string; lab
           на h3 (check:craft heads, 22.10.2026). */}
       <h2 className={`${m.group} ${s.head}`}>{label}</h2>
       <div className={s.slots}>
-        {cards.map((card, i) => <div key={i} className={s.slot} data-on={i === on ? '' : undefined} aria-hidden={i === on ? undefined : true}>{card}</div>)}
+        {cards.map((card, i) => <div key={String(card.key)} className={s.slot} data-on={i === on ? '' : undefined} aria-hidden={i === on ? undefined : true}>{card}</div>)}
       </div>
       {/* Точка ведёт ссылкой к своему разделу: прокрутка сама сменит карточку. */}
-      {cards.length > 1 && marks.length ? (
+      {n > 1 && dots.length ? (
         <div className={s.where}>
-          <Dots slides={marks.map((h, i) => ({ id: h.id, show: `${i + 1} · ${h.label}` }))} current={on} pick={() => {}} plain />
+          <Dots slides={dots} current={on} pick={() => {}} plain />
           <p className={`${p.note} ${s.section}`}>{heads[at]?.label}</p>
         </div>
       ) : null}

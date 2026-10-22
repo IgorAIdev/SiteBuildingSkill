@@ -20,7 +20,8 @@ test('the byline is two groups — who wrote it, then one data row with the topi
   const byline = body.slice(body.indexOf('className={s.byline}'))
   assert.ok(byline.length < body.length, 'подпись — свой блок `byline`')
   assert.match(byline, /className=\{s\.who\}[\s\S]*className=\{s\.role\}/, 'автор: имя и роль под ним')
-  assert.match(byline, /className=\{s\.facts\}[\s\S]*topic\.href/, 'строка данных с рубрикой ссылкой')
+  /* Строка данных — бегущий текст (`p.prose`): рубрика в ней — ссылкой текста, её краска и ответ на руку — у `.prose a`. */
+  assert.match(byline, /className=\{`\$\{s\.facts\} \$\{p\.prose\}`\}[\s\S]*topic\.href/, 'строка данных с рубрикой ссылкой')
 })
 
 /* Низ статьи (craft, cascade.md, «Ручка --stack на ребёнке стопки двигает его самого»):
@@ -29,7 +30,7 @@ test('the byline is two groups — who wrote it, then one data row with the topi
 test('sources keep the section step above; the note follows them by the row step', () => {
   const css = readFileSync(new URL('../components/PostParts.module.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
   assert.ok(css.includes('.sourcesPart{display:flex;flex-direction:column;gap:var(--air-row)}'), 'источники — свой столбик')
-  assert.ok(css.includes('.sourcesPart{--stack:var(--air-block);border-block-start:var(--line-w) solid var(--rule);padding-block-start:var(--air-group)}'), 'черта перед источниками: над ней шаг раздела, под ней воздух группы')
+  assert.ok(css.includes('.sourcesPart{--stack:var(--air-block);border-block-start:var(--line-w) solid var(--rule);padding-block-start:var(--air-line)}'), 'черта перед источниками: над ней шаг раздела, под ней воздух мысли — шов внутри статьи меньше шва до вопросов при любой шкале')
   assert.ok(css.includes('.important{--stack:var(--air-row)}'), 'сноска — шагом строки')
   assert.doesNotMatch(src, /className=\{`\$\{p\.stack\} \$\{s\.sourcesPart\}`\}/, 'источники не стопка')
 })

@@ -78,6 +78,8 @@ test('marks are filled from the shop data, links become hrefs, long documents ge
     { text: 'ANPC', href: 'https://reclamatiisal.anpc.ro', external: true }, { text: '.' },
   ])
   assert.deepEqual(runsOf('en', '[here](nowhere)'), [{ text: 'here' }], 'незнакомая цель — словами без ссылки')
+  /* Последнее слово ссылки держится за предыдущее: строки из одного «here» нет (check:craft `measure`). */
+  assert.equal(runsOf('en', '[Withdraw from contract here](withdraw)')[0].text, 'Withdraw from contract\u00a0here')
   const sections = (n: number) => Array.from({ length: n }, (_, i) => ({ id: `s${i}`, heading: `H${i}`, body: 'a\n\nb' }))
   assert.equal(docView('ro', { title: 'T', summary: 'S', sections: sections(TOC_MIN - 1) }).toc, null, 'короткому — без оглавления')
   const long = docView('ro', { title: 'T', summary: 'S', updated: '2026-10-04', sections: sections(TOC_MIN) })

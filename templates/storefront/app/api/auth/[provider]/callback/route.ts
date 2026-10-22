@@ -14,10 +14,10 @@ import { inRequestSite } from '@/lib/request-site.ts'
    назад к форме; отказ — на форму словами (`?auth=…&via=…`). Не страница: в
    дерево маршрутов не входит, ссылок на него на сайте нет — только форма кнопок.
    Решают `land` и `landed` (lib/social.ts, tests/social.test.ts), вход — `enterWith`. */
-async function GET_(request: NextRequest, { params }: { params: Promise<{ provider: string }> }) {
+async function GETInSite(request: NextRequest, { params }: { params: Promise<{ provider: string }> }) {
   const l = land((await params).provider, unpackFlow(await takeFlow()), request.nextUrl.searchParams, (p) => absolute(callbackPath(p)))
   redirect('to' in l ? l.to : await enterWith(l))
 }
 
 /* Обработчик — с сайтом запроса (lib/request-site.ts). */
-export async function GET(...a: Parameters<typeof GET_>): ReturnType<typeof GET_> { return inRequestSite(() => GET_(...a)) }
+export async function GET(...a: Parameters<typeof GETInSite>): ReturnType<typeof GETInSite> { return inRequestSite(() => GETInSite(...a)) }

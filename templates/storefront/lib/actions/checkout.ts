@@ -41,7 +41,7 @@ function refused(lang: Lang, error: CommerceError, values: Values = {}): FormSta
   return { errors: {}, values, message: t(lang, MESSAGE[error] ?? 'cart.error.request') }
 }
 
-async function saveContact_(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
+async function saveContactInSite(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
   const lang = langFrom(rawLang)
   const parsed = parseContact(lang, form)
   if (!parsed.ok) return { errors: parsed.errors, values: parsed.values, message: t(lang, 'checkout.fix') }
@@ -53,7 +53,7 @@ async function saveContact_(rawLang: string, _prev: FormState, form: FormData): 
 
 /** Выбор способа. Способ с готовыми подробностями (одна точка магазина или
  *  прежний адрес) — сразу на оплату; иначе — назад на шаг за подробностями. */
-async function chooseMethod_(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
+async function chooseMethodInSite(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
   const lang = langFrom(rawLang)
   const methodId = field(form, 'method')
   if (!methodId) return { errors: {}, values: {}, message: t(lang, 'delivery.methodMissing') }
@@ -63,7 +63,7 @@ async function chooseMethod_(rawLang: string, _prev: FormState, form: FormData):
   redirect(hrefFor(lang, { checkout: deliveryReady(r.value.delivery) ? 'payment' : 'delivery' }))
 }
 
-async function saveAddress_(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
+async function saveAddressInSite(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
   const lang = langFrom(rawLang)
   const parsed = parseAddress(lang, form)
   if (!parsed.ok) return { errors: parsed.errors, values: parsed.values, message: t(lang, 'checkout.fix') }
@@ -75,7 +75,7 @@ async function saveAddress_(rawLang: string, _prev: FormState, form: FormData): 
   redirect(hrefFor(lang, { checkout: 'payment' }))
 }
 
-async function choosePoint_(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
+async function choosePointInSite(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
   const lang = langFrom(rawLang)
   const pointId = field(form, 'point')
   if (!pointId) return { errors: {}, values: {}, message: t(lang, 'delivery.pointMissing') }
@@ -110,7 +110,7 @@ function totalChanged(lang: Lang): FormState {
  *  источник узнаёт — корзина пуста, заказ поставлен только что (`placed`), —
  *  и оно ведёт на «спасибо», где этот заказ и показан. Пустая корзина без
  *  свежего заказа — на корзину (`refused`). */
-async function placeOrder_(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
+async function placeOrderInSite(rawLang: string, _prev: FormState, form: FormData): Promise<FormState> {
   const lang = langFrom(rawLang)
   const code = field(form, 'payment')
   if (!code) return { errors: {}, values: {}, message: t(lang, 'payment.missing') }
@@ -126,8 +126,8 @@ async function placeOrder_(rawLang: string, _prev: FormState, form: FormData): P
 
 /* Каждое действие — с сайтом запроса (lib/request-site.ts): рынок, адрес и
    каталог внутри — сайта, с которого пришла форма. */
-export async function saveContact(...a: Parameters<typeof saveContact_>): ReturnType<typeof saveContact_> { return inRequestSite(() => saveContact_(...a)) }
-export async function chooseMethod(...a: Parameters<typeof chooseMethod_>): ReturnType<typeof chooseMethod_> { return inRequestSite(() => chooseMethod_(...a)) }
-export async function saveAddress(...a: Parameters<typeof saveAddress_>): ReturnType<typeof saveAddress_> { return inRequestSite(() => saveAddress_(...a)) }
-export async function choosePoint(...a: Parameters<typeof choosePoint_>): ReturnType<typeof choosePoint_> { return inRequestSite(() => choosePoint_(...a)) }
-export async function placeOrder(...a: Parameters<typeof placeOrder_>): ReturnType<typeof placeOrder_> { return inRequestSite(() => placeOrder_(...a)) }
+export async function saveContact(...a: Parameters<typeof saveContactInSite>): ReturnType<typeof saveContactInSite> { return inRequestSite(() => saveContactInSite(...a)) }
+export async function chooseMethod(...a: Parameters<typeof chooseMethodInSite>): ReturnType<typeof chooseMethodInSite> { return inRequestSite(() => chooseMethodInSite(...a)) }
+export async function saveAddress(...a: Parameters<typeof saveAddressInSite>): ReturnType<typeof saveAddressInSite> { return inRequestSite(() => saveAddressInSite(...a)) }
+export async function choosePoint(...a: Parameters<typeof choosePointInSite>): ReturnType<typeof choosePointInSite> { return inRequestSite(() => choosePointInSite(...a)) }
+export async function placeOrder(...a: Parameters<typeof placeOrderInSite>): ReturnType<typeof placeOrderInSite> { return inRequestSite(() => placeOrderInSite(...a)) }

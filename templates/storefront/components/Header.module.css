@@ -29,10 +29,10 @@
    29.09.2026, И545; прежде — вторичный тон, ступень 11); прежде ссылки были серыми 400, обещание — чернилами 600, язык
    и тема — чернилами 500 («элементы имеют разный оттенок»; И538). */
 .head:has(> .top){--head-top:var(--head-strip);--head-edge:var(--line-w)}
-/* Слова верхней строки — текст для чтения: вторичная ступень `--fs-sm` (14), как крошки
+/* Слова верхней строки — текст для чтения: роль подписи `--blurb-size` (вторичная ступень, 14), как крошки
    и строка данных, а не надпись значка (12; заказчик 22.10.2026: «даже для крошек больший
    размер текста»; check:scale «текст для чтения не мельче вторичной ступени»). */
-.top{border-block-end:var(--line-w) solid var(--rule);font-size:var(--fs-sm);color:var(--ink);--icon-stroke:calc(var(--fs-sm) * var(--icon-stem))}
+.top{border-block-end:var(--line-w) solid var(--rule);font-size:var(--blurb-size);color:var(--ink);--icon-stroke:calc(var(--blurb-size) * var(--icon-stem))}
 .topRow{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:var(--gap-row);min-block-size:var(--head-top)}
 .topLinks ul{display:flex;flex-wrap:wrap;gap:var(--gap-targets);margin:0;padding:0;list-style:none}
 /* Цель — и по ширине: короткое слово («Blog») стояло 32 × 44 при норме 44 × 44
@@ -41,7 +41,7 @@
 .promo{grid-column:2;margin:0}
 .promo svg{inline-size:1.43em;block-size:1.43em;flex:none}
 .topTools{grid-column:3;justify-self:end;display:flex;align-items:center;gap:var(--gap-targets)}
-.topTools .glyph{font-size:var(--fs-sm);font-weight:var(--body-weight)}
+.topTools .glyph{font-size:var(--blurb-size);font-weight:var(--body-weight)}
 /* Язык в строке — сегменты ростом цели, а не малого органа: строка не выше
    своего `--head-top`, иначе приклеенная шапка оставляла бы её край. */
 .topTools{--seg-h:var(--ctrl-target)}
@@ -255,6 +255,11 @@
       .head:has(.nav:not(:popover-open, [data-leaving]) .links li[data-drops] > a[aria-current='page']) .bar::after{
         inset-inline-end:calc(anchor(end, 100%) - (var(--ctrl-target) + var(--menu-size)) / 2)
       }
+      /* Шапка в две строки (boutique, search): знак стоит в верхней строке, а низ шапки —
+         под строкой полок, и черта по низу вставала под чужой полкой («CBD flowers» на
+         странице поиска, «CBD Pasta» в избранном; разбор 23.10.2026). Там знак своей
+         страницы отмечен только краской, как на телефоне (И756). */
+      .head:is([data-variant='boutique'], [data-variant='search']):has(.glyph[aria-current='page']):not(:has(.nav:not(:popover-open, [data-leaving]) .links a[aria-current='page'])) .bar::after{content:none} /* look-header:search,boutique */
     }
   }
 }
@@ -320,7 +325,7 @@
 .board{display:flex;flex-direction:column}
 .util{
   display:flex;align-items:center;justify-content:space-between;gap:var(--gap-row);
-  padding-inline:var(--pad-card);min-block-size:var(--head-strip);font-size:var(--fs-sm)
+  padding-inline:var(--pad-card);min-block-size:var(--head-strip);font-size:var(--blurb-size)
 }
 .row{padding-inline:var(--pad-card) var(--sp-2);border-radius:var(--r-sheet);background:var(--page-deck)}
 .row .nav:is(:popover-open, [data-leaving]){background:var(--page-deck)}

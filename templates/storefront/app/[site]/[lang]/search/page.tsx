@@ -16,7 +16,9 @@ import { Unavailable } from '@/components/StateScreen.tsx'
 type Props = { params: Promise<{ lang: string }>; searchParams: Promise<Params> }
 
 /* Лучшее магазина под пустым поиском — один ряд полки на столе. */
-const BEST = 4
+/* Рельса товаров ставит четыре с половиной карточки: четыре товара оставляли пустую половину места
+   и обрыв до «View all» (разбор 23.10.2026) — рельсе даётся столько, чтобы край следующей выглядывал. */
+const BEST = 8
 const NOTHING: Listing = { items: [], total: 0, page: 1, pages: 1, facets: [], invalid: [] }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

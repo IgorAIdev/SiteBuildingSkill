@@ -1,6 +1,6 @@
 'use client'
 import { useId } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePagePath } from '@/lib/page-path.ts'
 import p from '@/styles/primitives.module.css'
 import b from '@/styles/btn.module.css'
 import fs from './Filters.module.css'
@@ -52,7 +52,7 @@ export const DROP_FROM = 3
 /* `langs` — языки сайта (lib/sites.ts): у каждого сайта свои; адрес меняет
    только приставку языка. */
 export function LangSwitch({ lang, langs, label, drop = false, trigger = b.btn }: { lang: Lang; langs: readonly Lang[]; label: string; drop?: boolean; trigger?: string }) {
-  const path = usePathname()
+  const path = usePagePath()
   const id = useId()
   if (drop && langs.length >= DROP_FROM) {
     const list = `lang-${id.replace(/:/g, '')}`

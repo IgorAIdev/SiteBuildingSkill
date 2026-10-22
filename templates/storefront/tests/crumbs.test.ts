@@ -45,7 +45,10 @@ test('a page does not assemble the chain or its BreadcrumbList itself', () => {
 })
 
 test('every page is sorted into one of the two lists', () => {
-  const known = new Set([...WITH, ...WITHOUT, 'product/[id]/page.tsx', '(look-panel)/design/page.tsx'])
-  const loose = pages(root).filter((f) => !known.has(f) && !f.startsWith('account/'))
+  /* Страницы группы маршрутов в скобках (дизайн-система) — не магазин: их снимает
+     панель вида вместе с собой, и имя панели в тесте оставалось бы её следом
+     (проверка снятия панели, большая проверка 23.10.2026). */
+  const known = new Set([...WITH, ...WITHOUT, 'product/[id]/page.tsx'])
+  const loose = pages(root).filter((f) => !known.has(f) && !f.startsWith('account/') && !/^\([^)]+\)\//.test(f))
   assert.deepEqual(loose, [], 'новая страница: решить, нужны ли ей крошки, и вписать её в WITH или WITHOUT')
 })

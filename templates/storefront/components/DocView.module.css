@@ -63,6 +63,11 @@
    (check:craft pageTop). По умолчанию `pinned` встаёт на цель ссылки — с плавающим
    зазором и воздухом блока, шаг другой. */
 .along{align-self:stretch;--pin-top:calc(var(--chrome-stuck) + var(--air-group))}
+/* Что ужимается под потолком приклеенного — решает блок (primitives, «pinned»): колонка —
+   столбиком, и товар у чтения ужимает снимок карточки, а подпись и точки стоят целиком
+   (ReadAlong.module.css). Прежде карточка с подписью и точками в 527 стояла при верхе 92 в
+   окне ноутбука 587 — низ не увидеть никогда (check:craft `sticky`, 23.10.2026). */
+.along{display:flex;flex-direction:column}
 @container (max-width:819px){
   .toc,.side{display:none}
   .peek{display:block;margin-block-start:var(--air-row)}

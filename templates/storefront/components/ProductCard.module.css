@@ -49,7 +49,12 @@
 .card{container-type:inline-size;max-block-size:calc(100svh - var(--anchor-top) - var(--dock))}
 .card .shot{flex:0 1 auto;min-block-size:35cqi}
 .body{flex:1 0 auto;display:flex;flex-direction:column;gap:var(--gap-row)}
-.what{flex:1 0 auto;display:flex;flex-direction:column;gap:var(--sp-1)}
+/* Цена идёт за фактами сразу, шагом тела карточки; растёт низ, и к дну прижата только
+   кнопка — кнопки ряда стоят одной линией. Прежде росло имя с фактами, и цена
+   уезжала вниз под коротким именем: факты → цена стояли 39 у одной карточки и 13 у
+   соседней (check:craft `twinGap`, большая проверка 23.10.2026; Allbirds и Gymshark —
+   цена сразу под именем). */
+.what{flex:none;display:flex;flex-direction:column;gap:var(--sp-1)}
 
 /* Ответ на руку — наплыв снимка; рама стоит (craft, controls.md, «Плавающее
    со снимком: рама стоит, движется снимок»). На столе — наведением, на
@@ -62,10 +67,11 @@
 @media (hover:hover) and (prefers-reduced-motion:no-preference){ .card:hover .shot img{scale:var(--creep)} }
 
 /* Ссылка — имя и плашка наличия; её область нажатия растянута на всю
-   карточку (`::after` от карточки: она `position:relative`). Цель не ниже
-   пальца держит имя (ниже): стоя на ссылке, высота вставала пустотой между
-   заголовком и фактами, и заголовок читался прижатым к снимку
-   (check:detect, `headCrowd`, 375). */
+   карточку (`::after` от карточки: она `position:relative`) — цель пальца вся
+   карточка, своей коробки цели у имени нет. Коробка в 44 под пальцем у имени в
+   одну строку вставала пустотой между именем и фактами: факты стояли на 26 от
+   имени у одной карточки и на 4 у соседней (check:craft `twinGap`, большая
+   проверка 23.10.2026) — тот же дефект, что у имени строки корзины (`stretchTarget`). */
 .link{display:block;color:inherit}
 /* Марка — одна роль на сайт, `byline`: та же, что над именем на карте товара
    (ProductView.module.css, `.brand`) — ростом основного текста, жирным,
@@ -115,8 +121,7 @@
    марка на шаг легче (WEIGHT_ORDER, tools/scale.mjs; И589, И669). */
 .name{
   font-size:var(--cardname-size);line-height:var(--cardname-lead);font-weight:var(--cardname-weight);letter-spacing:var(--cardname-track);overflow-wrap:anywhere;
-  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;
-  min-block-size:var(--ctrl-target)
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden
 }
 
 /* Цена — Price.tsx, одна на сайт (И476): ростом тела, жирнее имени. */
@@ -134,11 +139,14 @@
    делать меньше?»): ростом пальца 48 она повторялась на полке 24 раза и весила
    как кнопка страницы товара. Allbirds и cbdin.bg на телефоне 390 — 40. Карточка
    ставит роль местом своим органам, ручку кнопки на ней не переписывает. */
-.foot{display:flex;flex-direction:column;align-items:stretch;gap:var(--sp-2);--ctrl-h:var(--ctrl-face-md)}
+.foot{flex:1 0 auto;display:flex;flex-direction:column;align-items:stretch;gap:var(--sp-2);--ctrl-h:var(--ctrl-face-md);--ctrl-fs:var(--cardbtn-size)}
+.foot > :last-child{margin-block-start:auto}
 /* Надпись кнопки карточки — роль `cardbtn` (16, полом 1rem; заказчик 05.10.2026
-   выбрал глазами из 14 / 16 / 18, И752): карточка ставит её своим органам местом,
-   ручку кнопки на том же элементе не переписывает. */
-.buy{position:relative;display:flex;flex-direction:column;--ctrl-fs:var(--cardbtn-size)}
+   выбрал глазами из 14 / 16 / 18, И752): карточка ставит её своим органам местом —
+   низу карточки целиком, а не форме записи: кнопка «View» товара без наличия стоит
+   ссылкой мимо формы и была мельче «Add to cart» (14 против 16; разбор 23.10.2026).
+   Ручку кнопки на том же элементе не переписывает. */
+.buy{position:relative;display:flex;flex-direction:column}
 .add{position:relative;inline-size:100%;justify-content:center}
 /* Надпись до записи и после — AddLabel, одна на сайт (И469). Слово и знак
    корзины после него (слово заказчика 01.10.2026: «Add to cart + корзина»;

@@ -48,7 +48,7 @@ export function PostCard({ post, list = false, level = 3 }: { post: PostCardView
             на ту же статью и поверх растянутой ссылки заголовка (`tap` — точка отсчёта),
             но без остановки табом и чтения вслух: ссылка карточки — заголовок. */}
         {list ? (
-          <div className={s.foot}>
+          <div className={s.foot} data-foot="">
             <p className={`${p.note} ${s.meta}`}>{post.meta ?? <time dateTime={post.date.iso}>{post.date.text}</time>}</p>
             <SiteLink className={`${b.word} ${p.tap} ${rh.all} ${s.read}`} data-hand="menu" href={post.href} tabIndex={-1} aria-hidden="true">{post.read}<Icon id="arrow-up-right" /></SiteLink>
           </div>

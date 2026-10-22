@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type PointerEvent } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePagePath } from '@/lib/page-path.ts'
 import p from '@/styles/primitives.module.css'
 import b from '@/styles/btn.module.css'
 import s from './Header.module.css'
@@ -79,7 +79,7 @@ function FacetList({ groups, id }: { groups: NavGroup[]; id: string }) {
  *  строке шапки и на раскрытый образец в дизайн-системе (SiteFrame.tsx),
  *  рисуется один раз (правило 10). Обёртку (окно или образец) ставит место. */
 export function DropBody({ link, id }: { link: NavLink; id: string }) {
-  const path = usePathname()
+  const path = usePagePath()
   return link.facets.length ? (
     <div className={`${p.cluster} ${s.dropGroups}`}>
       <FacetList groups={link.facets} id={id} />
@@ -103,7 +103,7 @@ export function DropBody({ link, id }: { link: NavLink; id: string }) {
  *  масел — грани группами и в конце «смотреть всё» на саму полку. Только
  *  названия: пояснений в шторке нет (правило cbdin.bg). */
 function Fold({ link, id, all }: { link: NavLink; id: string; all: string }) {
-  const path = usePathname()
+  const path = usePagePath()
   return link.facets.length ? (
     <>
       <FacetList groups={link.facets} id={id} />
@@ -124,7 +124,7 @@ function Fold({ link, id, all }: { link: NavLink; id: string; all: string }) {
 }
 
 export function NavLinks({ links, className, more, overflow, all = '' }: { links: NavLink[]; className: string; more: string; overflow?: string; all?: string }) {
-  const path = usePathname()
+  const path = usePagePath()
   const [open, setOpen] = useState<string | null>(null)
   const [cut, setCut] = useState<number | null>(null)
   const list = useRef<HTMLUListElement>(null)

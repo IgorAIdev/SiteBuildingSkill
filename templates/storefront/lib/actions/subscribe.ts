@@ -11,7 +11,7 @@ export type NewsState = { done: boolean; message: string | null; email: string }
 
 /** Подписка из подвала (И549): адрес уходит источнику содержания
  *  (`Content.subscribe`) — витрина список подписчиков не ведёт. */
-async function subscribe_(rawLang: string, _prev: NewsState, form: FormData): Promise<NewsState> {
+async function subscribeInSite(rawLang: string, _prev: NewsState, form: FormData): Promise<NewsState> {
   if (!isLang(rawLang)) throw new Error(`subscribe: язык «${rawLang}» не из списка`)
   const lang = rawLang
   const raw = form.get('email')
@@ -24,4 +24,4 @@ async function subscribe_(rawLang: string, _prev: NewsState, form: FormData): Pr
 
 /* Каждое действие — с сайтом запроса (lib/request-site.ts): рынок, адрес и
    каталог внутри — сайта, с которого пришла форма. */
-export async function subscribe(...a: Parameters<typeof subscribe_>): ReturnType<typeof subscribe_> { return inRequestSite(() => subscribe_(...a)) }
+export async function subscribe(...a: Parameters<typeof subscribeInSite>): ReturnType<typeof subscribeInSite> { return inRequestSite(() => subscribeInSite(...a)) }

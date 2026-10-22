@@ -51,7 +51,7 @@ export function CheckoutFrame({ steps, summary, children, landmark = true }: { s
   return (
     <Main id={landmark ? 'main' : undefined} className={`${p.wrap} ${p.section} ${s.corridor}`} data-air="head" data-sample={landmark ? undefined : ''}>
       {summary ? (
-        <details className={s.peek}>
+        <details className={s.peek} data-flush="">
           <summary><span className={s.peekName}>{summary.show}<Turn /></span><b>{summary.total}</b></summary>
           <div className={s.peekBody}><Summary summary={summary} /></div>
         </details>

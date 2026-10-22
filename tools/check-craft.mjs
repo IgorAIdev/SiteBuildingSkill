@@ -1325,7 +1325,9 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
      крошки, заголовок, слова героя — стоит от низа шапки шагом головы страницы
      `--air-group` (`.section[data-air='head']`) на ЛЮБОЙ странице: главная стояла
      на 56 (шов «текст ↔ кадр» героя срабатывал без кадра), каталог и документы — на 24.
-     Снимок во всю ширину (галерея товара) может стоять вплотную к шапке — ноль. */
+     Снимок во всю ширину (галерея товара) может стоять вплотную к шапке — ноль; так же —
+     полоса во всю ширину окна, объявленная `data-flush` (сводка заказа на телефоне —
+     раскрывашка на полосе сразу под шапкой кассы, как у Shopify; 23.10.2026). */
   {
     const probe = document.createElement("div")
     probe.style.cssText = "position:absolute;visibility:hidden;inline-size:0;block-size:var(--air-group)"
@@ -1336,10 +1338,10 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
     const chrome = heads.length ? Math.max(...heads.map((h) => h.getBoundingClientRect().bottom)) : null
     const main = document.querySelector("main")
     if (main && chrome !== null && want > 0) {
-      const first = [...main.querySelectorAll("h1, h2, p, nav, img, picture, video, button, a")].find((e) => shown(e) && !e.closest("dialog, [popover]") && e.getBoundingClientRect().height > 2)
+      const first = [...main.querySelectorAll("h1, h2, p, nav, img, picture, video, button, a, summary")].find((e) => shown(e) && !e.closest("dialog, [popover]") && e.getBoundingClientRect().height > 2)
       if (first) {
         const gap = first.getBoundingClientRect().top - chrome
-        const picture = /^(IMG|PICTURE|VIDEO)$/.test(first.tagName)
+        const picture = /^(IMG|PICTURE|VIDEO)$/.test(first.tagName) || Boolean(first.closest("[data-flush]"))
         if (!(picture && Math.abs(gap) <= 2) && Math.abs(gap - want) > 2) out.pageTop.push(`${name(first)} — ${Math.round(gap)}px от шапки, а верх страницы ${Math.round(want)}px`)
       }
     }
@@ -2484,27 +2486,47 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
    * заголовка на разном расстоянии у разных статей»). Меряется видимое: от низа
    * строк одного текстового узла до верха следующего, по порядку узлов в
    * карточке; разница больше 2px между карточками одного списка — находка. */
+  /* Сравниваются карточки одного вида — с одним набором строк по порядку (видео-отзыв
+     и отзыв-цитата в одной ленте — разные карточки, и «текст → подпись» одной не
+     сравнивается с «подпись → дата» другой). Шаг через край своей поверхности (цитата
+     в листе кадра → подпись под кадром) — не шаг текста, а кадр: его пропорция держит
+     ряд ровным, как снимок (большая проверка 23.10.2026). Низ карточки, прижатый к низу
+     ряда (`data-foot`: строка данных и «Read the article» у карточки блога — слово
+     заказчика 22.10.2026), стоит от текста на сколько придётся: шаг до него не мерится. */
+  const framedApart = (a, b, li) => {
+    for (let el = a.parentElement; el && el !== li; el = el.parentElement) {
+      if (el.contains(b)) return false
+      const cs = getComputedStyle(el)
+      if (parseFloat(cs.borderTopWidth) > 0 || alpha(cs.backgroundColor) > 0.02) return true
+    }
+    return false
+  }
   for (const list of document.querySelectorAll('main ul, main ol')) {
     const cards = Array.from(list.children).filter((li) => shown(li) && li.querySelector('h2, h3') && !li.querySelector('ul, ol'))
     if (cards.length < 2) continue
-    const steps = cards.map((li) => {
+    const kinds = new Map()
+    for (const li of cards) {
       const parts = Array.from(li.querySelectorAll('h2, h3, p')).filter((e) => shown(e) && e.textContent.trim())
       parts.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)
-      const out = []
+      const steps = []
       for (let i = 1; i < parts.length; i++) {
         const a = parts[i - 1], b = parts[i]
         const range = document.createRange(); range.selectNodeContents(a)
         const rs = Array.from(range.getClientRects()); const bottom = rs.length ? Math.max(...rs.map((r) => r.bottom)) : a.getBoundingClientRect().bottom
-        out.push({ pair: `${a.tagName.toLowerCase()}→${b.tagName.toLowerCase()}`, gap: Math.round(b.getBoundingClientRect().top - bottom) })
+        steps.push({ pair: `${a.tagName.toLowerCase()}→${b.tagName.toLowerCase()}`, gap: Math.round(b.getBoundingClientRect().top - bottom), framed: framedApart(a, b, li) || (Boolean(b.closest('[data-foot]')) && !a.closest('[data-foot]')) })
       }
-      return out
-    })
-    const n = Math.min(...steps.map((s) => s.length))
-    for (let i = 0; i < n; i++) {
-      const pair = steps[0][i].pair
-      if (!steps.every((s) => s[i].pair === pair)) continue
-      const gaps = steps.map((s) => s[i].gap)
-      if (Math.max(...gaps) - Math.min(...gaps) > 2) out.twinGap.push(`${name(list)} ${pair} — ${[...new Set(gaps)].join(' / ')}px у карточек одного ряда`)
+      const kind = steps.map((x) => x.pair).join(' ')
+      if (!kinds.has(kind)) kinds.set(kind, [])
+      kinds.get(kind).push(steps)
+    }
+    for (const group of kinds.values()) {
+      if (group.length < 2) continue
+      for (let i = 0; i < group[0].length; i++) {
+        /* Шаг через край поверхности или к прижатому низу — не шаг текста; строки рядом, а не одна под другой (зазор меньше нуля), — не шаг вовсе. */
+        if (group.some((st) => st[i].framed || st[i].gap < 0)) continue
+        const gaps = group.map((st) => st[i].gap)
+        if (Math.max(...gaps) - Math.min(...gaps) > 2) out.twinGap.push(`${name(list)} ${group[0][i].pair} — ${[...new Set(gaps)].join(' / ')}px у карточек одного ряда`)
+      }
     }
   }
 

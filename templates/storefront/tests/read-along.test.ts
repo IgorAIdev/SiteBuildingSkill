@@ -29,12 +29,12 @@ test('one card shows; the hidden ones cannot be reached; the change fades in pla
 })
 
 test('the article sends the home product card, two or three by the length of the article', () => {
-  assert.match(page, /<ReadAlong heads=\{doc\.toc\?\.items \?\? \[\]\}[\s\S]*?\{cards\.slice\(0, alongCount\(post\)\)\.map\(\(c\) => <ProductCard key=\{c\.id\} card=\{c\} cart=\{CART\} \/>/)
+  assert.match(page, /<ReadAlong heads=\{doc\.toc\?\.items \?\? NO_HEADS\}[\s\S]*?\{cards\.slice\(0, alongCount\(post\)\)\.map\(\(c\) => <ProductCard key=\{c\.id\} card=\{c\} cart=\{CART\} \/>/)
 })
 
 test('under the card: plain dots of the site pointer and the section name; products go in order', () => {
   assert.match(tsx, /<Dots [\s\S]*? plain \/>/, 'точки — указатель сайта без ползунка')
-  assert.match(tsx, /Math\.floor\(\(section \* cards\.length\) \/ Math\.max\(1, heads\.length\)\)/, 'части статьи по порядку, не по кругу')
+  assert.match(tsx, /Math\.floor\(\(section \* n\) \/ Math\.max\(1, heads\.length\)\)/, 'части статьи по порядку, не по кругу')
 })
 
 const post = (words: number) => ({ tldr: null, faq: [], sections: [{ heading: '', body: Array.from({ length: words }, () => 'word').join(' ') }] }) as never

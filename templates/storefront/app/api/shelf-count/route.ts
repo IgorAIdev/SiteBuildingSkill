@@ -11,7 +11,7 @@ import { inRequestSite } from '@/lib/request-site.ts'
    сама); грани — из формы, тем же разбором, что адрес полки (`facet.*`).
    Источник отдаёт только счёт (`count`): выдачи и значений граней, без карточек.
    Источник молчит — 503, и кнопка остаётся «применить». */
-async function GET_(request: Request) {
+async function GETInSite(request: Request) {
   const query = new URL(request.url).searchParams
   const asked = query.get('lang') ?? ''
   const lang = isLang(asked) ? asked : DEFAULT_LANG
@@ -27,4 +27,4 @@ async function GET_(request: Request) {
 }
 
 /* Обработчик — с сайтом запроса (lib/request-site.ts). */
-export async function GET(...a: Parameters<typeof GET_>): ReturnType<typeof GET_> { return inRequestSite(() => GET_(...a)) }
+export async function GET(...a: Parameters<typeof GETInSite>): ReturnType<typeof GETInSite> { return inRequestSite(() => GETInSite(...a)) }

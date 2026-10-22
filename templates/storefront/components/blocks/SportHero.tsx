@@ -5,7 +5,7 @@ import type { Block } from '@/lib/source/contract.ts'
 import type { BlockCtx } from './types.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { t } from '@/lib/i18n/index.ts'
-import { heroShelves } from '@/lib/hero-shelves.ts'
+import { heroShelves, shelfPaths } from '@/lib/hero-shelves.ts'
 import { CategoryPaths } from '../CategoryPaths.tsx'
 
 /* Первый экран «Sport» (docs/design/четвёртая-витрина.md): плакат без снимка —
@@ -25,7 +25,7 @@ export function SportHero({ block, ctx }: { block: Extract<Block, { type: 'hero'
           <CategoryPaths
             look={ctx.cat ?? 'dot'}
             all={{ label: t(ctx.lang, 'nav.shopAll'), sign: 'shop-awning', href: hrefFor(ctx.lang, { catalog: true }) }}
-            shelves={shelves.map((c) => ({ label: c.name, sign: c.sign, href: hrefFor(ctx.lang, { category: c.slug }) }))}
+            shelves={shelfPaths(ctx.lang, shelves)}
             list={{ className: `${p.rail} ${s.heroShelves}`, rail: 'wrap' }}
             gridClass={`${p.stack} ${s.heroGrid}`}
           />
