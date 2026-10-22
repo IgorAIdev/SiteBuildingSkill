@@ -58,7 +58,7 @@ export function PostSources({ title, sources, important, disclaimer }: { title: 
   return (
     <>
       {sources.length ? (
-        <section className={`${p.stack} ${s.sourcesPart}`} aria-labelledby="post-sources">
+        <section className={s.sourcesPart} aria-labelledby="post-sources">
           <h2 id="post-sources" className={s.heading}>{title}</h2>
           <ol className={s.sources}>
             {sources.map((x, i) => <li key={x.url} id={`source-${i + 1}`}><SiteLink href={x.url} rel="noopener">{x.title}</SiteLink></li>)}

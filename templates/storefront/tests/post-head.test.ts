@@ -22,3 +22,14 @@ test('the byline is two groups — who wrote it, then one data row with the topi
   assert.match(byline, /className=\{s\.who\}[\s\S]*className=\{s\.role\}/, 'автор: имя и роль под ним')
   assert.match(byline, /className=\{s\.facts\}[\s\S]*topic\.href/, 'строка данных с рубрикой ссылкой')
 })
+
+/* Низ статьи (craft, cascade.md, «Ручка --stack на ребёнке стопки двигает его самого»):
+   «Sources» — своим столбиком, иначе ручка `--stack` уводила его к предыдущему списку на
+   20 вместо 44; «Important» — сноской, 20 после источников. */
+test('sources keep the section step above; the note follows them by the row step', () => {
+  const css = readFileSync(new URL('../components/PostParts.module.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.ok(css.includes('.sourcesPart{display:flex;flex-direction:column;gap:var(--air-row)}'), 'источники — свой столбик')
+  assert.ok(!/\.sourcesPart\{[^}]*--stack/.test(css), 'не ручкой --stack')
+  assert.ok(css.includes('.important{--stack:var(--air-row)}'), 'сноска — шагом строки')
+  assert.doesNotMatch(src, /className=\{`\$\{p\.stack\} \$\{s\.sourcesPart\}`\}/, 'источники не стопка')
+})
