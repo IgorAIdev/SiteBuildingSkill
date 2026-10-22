@@ -17,7 +17,7 @@ import { PageCrumbs } from '@/components/Breadcrumbs.tsx'
 import { DocView } from '@/components/DocView.tsx'
 import { JsonLd } from '@/components/JsonLd.tsx'
 import { PostCard } from '@/components/PostCard.tsx'
-import { ProductCard } from '@/components/ProductCard.tsx'
+import { ProductRow } from '@/components/ProductRow.tsx'
 import { ReadAlong } from '@/components/ReadAlong.tsx'
 import { RailHead } from '@/components/RailHead.tsx'
 import { PostHead, PostIntro, PostSources } from '@/components/PostParts.tsx'
@@ -74,7 +74,7 @@ export default async function PostPage({ params }: Props) {
       <DocView
         view={doc}
         head={<PostHead view={postHeadView(lang, post)} />}
-        side={shelf && cards.length ? <ReadAlong ids={doc.toc?.items.map((x) => x.id) ?? []} label={t(lang, 'blog.products')}>{cards.slice(0, 4).map((c) => <ProductCard key={c.id} card={c} cart={CART} />)}</ReadAlong> : undefined}
+        side={shelf && cards.length ? <ReadAlong ids={doc.toc?.items.map((x) => x.id) ?? []} label={t(lang, 'blog.products')}>{cards.slice(0, 6).map((c) => <ProductRow key={c.id} card={c} facts />)}</ReadAlong> : undefined}
         intro={<PostIntro image={post.image} tldr={post.tldr} tldrLabel={t(lang, 'blog.tldr')} />}
       >
         <PostSources title={t(lang, 'blog.sources')} sources={post.sources} important={t(lang, 'blog.important')} disclaimer={t(lang, 'blog.disclaimer')} />

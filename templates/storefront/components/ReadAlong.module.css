@@ -1,12 +1,14 @@
 /* Товар у чтения (ReadAlong.tsx). Подпись — подписью группы меню, как «On this page»
-   над оглавлением; карточки лежат одна на другой в одной ячейке, видна текущая. Смена —
-   спокойным проявлением за `--hover-t` × 3; при «уменьшить движение» — сразу. */
+   над оглавлением; тройки лежат одна на другой в одной ячейке, видна текущая. Смена —
+   движением: ушедшая уезжает вверх, новая въезжает снизу, ячейка режет по своему краю
+   (`overflow:clip`); при «уменьшить движение» — сразу, без движения. */
 .read{display:flex;flex-direction:column;gap:var(--sp-2)}
 .head{margin:0}
-.slots{display:grid}
-.slot{grid-area:1 / 1;visibility:hidden;opacity:0}
+.slots{display:grid;overflow:clip}
+.slot{grid-area:1 / 1;visibility:hidden;opacity:0;list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--sp-1)}
 .slot[data-on]{visibility:visible;opacity:1}
 @media (prefers-reduced-motion:no-preference){
-  .slot{transition:opacity calc(var(--hover-t) * 3) var(--ease), visibility 0s linear calc(var(--hover-t) * 3)}
-  .slot[data-on]{transition:opacity calc(var(--hover-t) * 3) var(--ease), visibility 0s}
+  .slot{translate:0 100%;transition:translate calc(var(--hover-t) * 4) var(--ease), opacity calc(var(--hover-t) * 4) var(--ease), visibility 0s linear calc(var(--hover-t) * 4)}
+  .slot[data-gone]{translate:0 -100%}
+  .slot[data-on]{translate:0 0;transition:translate calc(var(--hover-t) * 4) var(--ease), opacity calc(var(--hover-t) * 4) var(--ease), visibility 0s}
 }

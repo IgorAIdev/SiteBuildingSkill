@@ -29,7 +29,7 @@ test('the byline is two groups — who wrote it, then one data row with the topi
 test('sources keep the section step above; the note follows them by the row step', () => {
   const css = readFileSync(new URL('../components/PostParts.module.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
   assert.ok(css.includes('.sourcesPart{display:flex;flex-direction:column;gap:var(--air-row)}'), 'источники — свой столбик')
-  assert.ok(!/\.sourcesPart\{[^}]*--stack/.test(css), 'не ручкой --stack')
+  assert.ok(css.includes('.sourcesPart{--stack:var(--air-block);border-block-start:var(--line-w) solid var(--rule);padding-block-start:var(--air-group)}'), 'черта перед источниками: над ней шаг раздела, под ней воздух группы')
   assert.ok(css.includes('.important{--stack:var(--air-row)}'), 'сноска — шагом строки')
   assert.doesNotMatch(src, /className=\{`\$\{p\.stack\} \$\{s\.sourcesPart\}`\}/, 'источники не стопка')
 })
