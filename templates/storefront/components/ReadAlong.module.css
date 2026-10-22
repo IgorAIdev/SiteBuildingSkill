@@ -2,6 +2,7 @@
    над оглавлением; карточки лежат одна на другой в одной ячейке, видна текущая. Смена —
    спокойным проявлением за `--hover-t` × 3; при «уменьшить движение» — сразу. */
 .read{display:flex;flex-direction:column;gap:var(--sp-2)}
+.head{margin:0}
 .slots{display:grid}
 .slot{grid-area:1 / 1;visibility:hidden;opacity:0}
 .slot[data-on]{visibility:visible;opacity:1}
