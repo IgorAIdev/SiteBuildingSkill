@@ -41,7 +41,13 @@
 .byline{display:flex;flex-direction:column;gap:var(--air-tight);margin-block-start:var(--air-row)}
 .who{display:flex;flex-direction:column;font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--label-weight);color:var(--ink)}
 .role,.facts{font-size:var(--note-size);line-height:var(--note-lead);font-weight:var(--note-weight);color:var(--ink-soft)}
-.topic{color:inherit;text-underline-offset:.2em}
+/* Рубрика в строке данных — ссылка в тексте, видом ссылки текста (`prose a`: марочная
+   краска и черта): стояла краской строки без черты, и узнать в ней ссылку было не по
+   чему (заказчик 22.10.2026: «откуда известно, что For beginners — это ссылка?»;
+   WCAG 1.4.1 — ссылку в тексте отличают не одним курсором). Меряет `hiddenLink`. */
+.topic{color:var(--pop-ink);text-decoration:underline;text-underline-offset:.2em}
+@media (hover:hover){ .topic:hover{color:var(--pop-ink-hover)} }
+.topic:active{color:var(--pop-ink-hover)}
 /* «Источники» → их список — воздух строки, как заголовок раздела → абзац статьи
    (DocView.module.css, `.part`); стоял шаг стопки по умолчанию — воздух блока 44 / 32
    (замер 22.10.2026). */

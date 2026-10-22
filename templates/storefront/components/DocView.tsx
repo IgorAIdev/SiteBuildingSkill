@@ -56,7 +56,9 @@ function SectionBody({ sec, slots }: { sec: SectionView; slots?: DocSlots }) {
    Таблица способов доставки или строго необходимых cookie — первым разделом
    (`table`, D2; имя и номер — `view.lead`). Статья блога — тот же документ
    (И749): `head` — своя шапка (рубрика, имя, подзаголовок, автор, строка
-   данных), `intro` — между шапкой и текстом (обложка, «Pe scurt»), `children` —
+   данных), `intro` — первым в колонке текста (обложка, «In short»: справа от
+   оглавления, а не во всю ширину над ним — заказчик 22.10.2026, вариант А:
+   «изображение на всю ширину — это херня»), `children` —
    в колонке текста после разделов (источники, «Important»). */
 export function DocView({ view, table, meta, head, intro, slots, children }: {
   view: DocPageView; table?: ReactNode; meta?: ReactNode; head?: ReactNode; intro?: ReactNode
@@ -65,6 +67,7 @@ export function DocView({ view, table, meta, head, intro, slots, children }: {
   const items = view.toc ? view.toc.items.map((it) => <li key={it.id}><a className={b.row} href={`#${it.id}`}>{it.label}</a></li>) : null
   const parts = (
     <div className={`${p.stack} ${s.parts}`}>
+      {intro}
       {table && view.lead ? <Part sec={view.lead} body={table} /> : null}
       {view.sections.map((sec) => <Part key={sec.id} sec={sec} body={<SectionBody sec={sec} slots={slots} />} />)}
       {children}
@@ -93,7 +96,6 @@ export function DocView({ view, table, meta, head, intro, slots, children }: {
           </nav>
         ) : null}
       </div>
-      {intro}
       {view.toc ? (
         <div className={`${p.sidebar} ${s.body}`}>
           <nav className={`${p.aside} ${p.pinned} ${s.toc}`} aria-labelledby="doc-toc" data-print="skip">
