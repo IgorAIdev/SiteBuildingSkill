@@ -19,11 +19,11 @@ import s from './ReadAlong.module.css'
 export function ReadAlong({ ids, label, children }: { ids: string[]; label: string; children: ReactNode }) {
   const cards = Children.toArray(children)
   const [on, setOn] = useState(0)
-  /* Ушедшая карточка помнится одну смену: она уезжает вверх, новая въезжает снизу
-     (заказчик 22.10.2026: «лучше пусть меняется сама карточка — уходила вверх и приходила
-     другая», а не подмена на месте). */
-  const [gone, setGone] = useState<number | null>(null)
-  const show = (next: number) => setOn((was) => { if (was !== next) setGone(was); return next })
+  /* Смена — на месте, проявлением (ReadAlong.module.css). Прежде ушедшая уезжала вверх, а
+     новая въезжала снизу, пока сама статья ехала вверх, — заказчик 22.10.2026: «смена
+     карточек странно происходит, предложи другие варианты»; из трёх нарисованных взят
+     рекомендованный «тихая смена на месте». */
+  const show = (next: number) => setOn(next)
   useEffect(() => {
     if (cards.length < 2) return
     const heads = ids.map((id) => document.getElementById(id)).filter((e): e is HTMLElement => Boolean(e))
@@ -51,7 +51,7 @@ export function ReadAlong({ ids, label, children }: { ids: string[]; label: stri
           на h3 (check:craft heads, 22.10.2026). */}
       <h2 className={`${m.group} ${s.head}`}>{label}</h2>
       <div className={s.slots}>
-        {cards.map((card, i) => <div key={i} className={s.slot} data-on={i === on ? '' : undefined} data-gone={i === gone && i !== on ? '' : undefined} aria-hidden={i === on ? undefined : true}>{card}</div>)}
+        {cards.map((card, i) => <div key={i} className={s.slot} data-on={i === on ? '' : undefined} aria-hidden={i === on ? undefined : true}>{card}</div>)}
       </div>
     </aside>
   )
