@@ -23,6 +23,8 @@ import { StateScreen } from '@/components/StateScreen.tsx'
 import { EmptyPaths } from '@/components/EmptyPaths.tsx'
 import { mainShelves } from '@/lib/main-shelves.ts'
 import { shelvesView } from '@/lib/shelves-view.ts'
+import { lookNow } from '@/lib/look.ts'
+import { catLook } from '@/lib/look-values.ts'
 import { KeyFacts } from '@/components/KeyFacts.tsx'
 import { Pledges } from '@/components/Pledges.tsx'
 import { shopMessengers } from '@/lib/contacts.ts'
@@ -398,7 +400,7 @@ async function Blocks({ lang }: { lang: Lang }) {
       </Part>
       <Socials />
       <Part title="Пустой экран" lede="Экран, когда показывать нечего: слово, строка о том, как это наполнить, и тихие строки категорий, как в окне поиска. Так стоит пустая корзина; пустое избранное вместо строк предлагает полку «Best sellers».">
-        <EmptyPaths level={2} title={t(lang, 'saved.empty')} lead={t(lang, 'saved.emptyLead')} shelves={shelvesView(lang, await mainShelves(lang))} />
+        <EmptyPaths level={2} title={t(lang, 'saved.empty')} lead={t(lang, 'saved.emptyLead')} shelves={shelvesView(lang, await mainShelves(lang))} cat={catLook(await lookNow())} />
       </Part>
       <Part title="Экраны состояний" lede="Почему пусто и куда дальше: четыре причины — четыре экрана. Пусто, ничего не найдено, источник не ответил, страницы нет. Шаг — одна ссылка; когда экран и есть вся страница, шаг — громкая кнопка.">
         <div className={`${p.grid} ${s.floors}`}>

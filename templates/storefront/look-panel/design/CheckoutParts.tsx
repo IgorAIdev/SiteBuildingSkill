@@ -2,6 +2,8 @@ import p from '@/styles/primitives.module.css'
 import b from '@/styles/btn.module.css'
 import f from '@/styles/form.module.css'
 import ck from '@/components/Checkout.module.css'
+import { lookNow } from '@/lib/look.ts'
+import { catLook } from '@/lib/look-values.ts'
 import type { Lang } from '@/lib/locale.ts'
 import type { Address, Cart, CartLine, Contact, Delivery, DeliveryMethod, Money, Order, PaymentMethod, PickupPoint } from '@/lib/source/contract.ts'
 import type { Outcome } from '@/lib/cart-ops.ts'
@@ -142,7 +144,7 @@ export async function CheckoutParts({ lang }: { lang: Lang }) {
   const view = cartView(lang, cart, null, { freeFrom: facts.ok ? facts.value.freeDeliveryFrom : null, popular: [], shelves: [] })
   const msgs = { timeout: view.messages.timeout, failed: view.messages.failed }
   /* Пустая корзина: «к покупкам» и главные полки кнопками (И689). */
-  const empty = cartView(lang, null, null, { freeFrom: null, popular: [], shelves }).empty
+  const empty = cartView(lang, null, null, { freeFrom: null, popular: [], shelves, cat: catLook(await lookNow()) }).empty
 
   /* Оформление: курьер на адрес образца. */
   const delivery: Delivery | null = door ? { method: door, address: ADDRESS, point: null } : null
@@ -195,7 +197,7 @@ export async function CheckoutParts({ lang }: { lang: Lang }) {
         <CartPane lang={lang} id="design-cart-pane" src={`/api/cart?lang=${lang}`} title={t(lang, 'cart.title')} close={t(lang, 'nav.close')} shown={view} />
       </Part>
       <Part title="Пустая корзина" lede="Так выглядит шторка и страница корзины, когда в ней ничего нет: слово и тихие строки категорий, те же, что в окне поиска под пустым полем.">
-        <EmptyPaths level={2} title={empty.title} lead={empty.lead} shelves={empty.shelves} />
+        <EmptyPaths level={2} title={empty.title} lead={empty.lead} shelves={empty.shelves} cat={empty.cat} />
       </Part>
       <Part title="Строки корзины" lede="Строка товара — одна на страницу корзины и её шторку: снимок, имя, вариант и цена за штуку, сумма строки, под ними счётчик и «Удалить».">
         <CartForm lang={lang} submit={stillSubmit} call={stillCall} initial={null} {...msgs}>

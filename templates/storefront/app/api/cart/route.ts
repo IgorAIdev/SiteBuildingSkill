@@ -5,6 +5,8 @@ import { money } from '@/lib/money.ts'
 import { cartStamp, cartView } from '@/lib/cart-view.ts'
 import { cartHeld } from '@/lib/cart-ops.ts'
 import { mainShelves } from '@/lib/main-shelves.ts'
+import { lookNow } from '@/lib/look.ts'
+import { catLook } from '@/lib/look-values.ts'
 import { inRequestSite } from '@/lib/request-site.ts'
 
 /* Счётчик шапки. Личное не кэшируется нигде, а страницы каталога остаются
@@ -36,7 +38,8 @@ async function GET_(request: Request) {
   const facts = query.has('view') && r.ok ? await content().facts() : null
   const freeFrom = facts?.ok ? facts.value.freeDeliveryFrom : null
   const shelves = query.has('view') && r.ok && !cart?.lines.length ? await mainShelves(lang) : []
-  const view = query.has('view') && r.ok ? cartView(lang, cart, null, { freeFrom, popular: [], shelves }) : null
+  const cat = shelves.length ? catLook(await lookNow()) : undefined
+  const view = query.has('view') && r.ok ? cartView(lang, cart, null, { freeFrom, popular: [], shelves, cat }) : null
   return Response.json({ count, sum, held: r.ok ? cartHeld(cart) : null, stamp: r.ok ? cartStamp(cart) : null, view }, { headers: { 'Cache-Control': 'private, no-store' } })
 }
 

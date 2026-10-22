@@ -1,31 +1,29 @@
+import p from '@/styles/primitives.module.css'
 import type { ShelvesView } from '@/lib/shelves-view.ts'
-import cat from './CategoryTile.module.css'
-import { CategoryTile } from './CategoryTile.tsx'
+import type { CatLook } from '@/lib/look-values.ts'
+import { CategoryPaths } from './CategoryPaths.tsx'
 import { StateScreen } from './StateScreen.tsx'
 
 /* Пустой экран с путями — слово и пути, ничего больше: пустая корзина (шторка, страница,
    образец). Слово заказчика 08.10.2026: «в пустой корзине предложи категории примерно как
    в поиске… не наляписто, минималистично»; И689. Пустое избранное ушло на полку ходовых
    товаров (20.10.2026: «в избранном не нужно повторять категории, они же в меню есть»). Заголовок, под ним одна строка-приглашение (спокойно, без «!», как
-   велит голос витрины) и полки плитками «сетки девяти» (`CategoryTile`): «все товары»
-   первой, дальше главные полки. Ни знака в круге, ни громкой кнопки.
+   велит голос витрины) и полки — кнопками категорий сайта (`CategoryPaths`): тот же вид,
+   что на первом экране (`--cat-look`: пилюли или плитки), «все товары» первой. Ни знака в
+   круге, ни громкой кнопки сверх «всех товаров».
 
-   Плитки, а не тихие строки (`ShelfRows`, как в окне поиска): строками по 24 полки стояли
-   столбиком ссылок под заголовком, и две трети шторки оставались пустыми (заказчик
-   22.10.2026, снимок пустой корзины: «тут дизайн сделай»). Пустая корзина — начало
-   покупки: у Allbirds и Gymshark под «корзина пуста» — крупные пути в магазин, не строка
-   текста. Плитка — тот же контрол, что сетка полок первого экрана (слово заказчика
-   14.10.2026: «давай сетка девяти попробуем»), и колонок у неё столько, сколько встаёт
-   (правило 5): в шторке 400 — три. Одна разметка на все пустые экраны этого рода
-   (правило 10). */
-export function EmptyPaths({ level, title, lead, shelves }: { level: 1 | 2; title: string; lead: string; shelves: ShelvesView }) {
+   Прежде (22.10.2026) пустая корзина ставила плитки сетки при опубликованных пилюлях — вид,
+   которого на сайте не было нигде; заказчик: «на такой же дизайн где-то ещё есть на сайте?».
+   Новое место берёт контрол в том виде, что сайт уже выбрал, а не придумывает свой.
+   Пилюли в окне — рядом с переносом (`cluster`): полоса вбок первого экрана в окне 400
+   показала бы полторы кнопки. Одна разметка на все пустые экраны этого рода (правило 10). */
+export function EmptyPaths({ level, title, lead, shelves, cat }: { level: 1 | 2; title: string; lead: string; shelves: ShelvesView; cat: CatLook }) {
+  const [all, ...rest] = shelves.links
   return (
-    <StateScreen level={level} kind="empty" title={title} lead={lead} flush after={(
+    <StateScreen level={level} kind="empty" title={title} lead={lead} flush after={all ? (
       <nav aria-label={shelves.label}>
-        <ul className={cat.grid}>
-          {shelves.links.map((x) => <li key={x.href}><CategoryTile name={x.label} sign={x.sign} href={x.href} /></li>)}
-        </ul>
+        <CategoryPaths look={cat} all={all} shelves={rest} list={{ className: p.cluster }} gridClass={p.stack} />
       </nav>
-    )} />
+    ) : null} />
   )
 }

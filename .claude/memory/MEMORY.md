@@ -38,3 +38,4 @@
 - [Icons shown at real size](icons-shown-at-real-size.md) — icon variants drawn in chat beside neighbours at real size (13/16/20 px) before setting; no detail under 2px (21.10.2026)
 - [Storefront4 local only](storefront4-local-only.md) — since 21.10.2026 storefront4 changes stay on localhost:3051, no cbdbuy.be deploy until the owner says
 - [Design system address](design-system-address.md) — /<lang>/design of the storefront: localhost:3051/en/design today's work, cbdbuy.be/en/design last deploy (public, LOOK_PICKER on)
+- [Design from the system](design-from-system.md) — owner 22.10.2026: new places only from controls in the look the site chose; no spare panel variants; read look.json before «as you chose»

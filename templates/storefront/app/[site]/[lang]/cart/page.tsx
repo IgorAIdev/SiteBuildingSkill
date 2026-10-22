@@ -6,6 +6,8 @@ import { readSession } from '@/lib/session.ts'
 import { first, type Params } from '@/lib/listing.ts'
 import { cartView, type CartExtras } from '@/lib/cart-view.ts'
 import { mainShelves } from '@/lib/main-shelves.ts'
+import { lookNow } from '@/lib/look.ts'
+import { catLook } from '@/lib/look-values.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { t } from '@/lib/i18n/index.ts'
 import { toMetadata } from '@/lib/seo.ts'
@@ -30,8 +32,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
    полки. Молчит источник чего-то из этого — строки нет, корзина стоит. */
 async function extrasOf(lang: Lang, filled: boolean): Promise<CartExtras> {
   if (!filled) {
-    const [shelf, shelves] = await Promise.all([source().listing(lang, { facets: {}, sort: 'popular', page: null }), mainShelves(lang)])
-    return { freeFrom: null, popular: shelf.ok ? shelf.value.items.slice(0, POPULAR) : [], shelves }
+    const [shelf, shelves, look] = await Promise.all([source().listing(lang, { facets: {}, sort: 'popular', page: null }), mainShelves(lang), lookNow()])
+    return { freeFrom: null, popular: shelf.ok ? shelf.value.items.slice(0, POPULAR) : [], shelves, cat: catLook(look) }
   }
   const facts = await content().facts()
   return { freeFrom: facts.ok ? facts.value.freeDeliveryFrom : null, popular: [], shelves: [] }

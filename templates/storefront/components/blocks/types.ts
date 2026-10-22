@@ -5,6 +5,7 @@ import type { ShelfCard } from '@/lib/view.ts'
 import type { PledgesView } from '@/lib/pledges.ts'
 import type { Air, HomeVariant } from '@/lib/homes.ts'
 import type { Tone } from '@/lib/bands.ts'
+import type { CatLook } from '@/lib/look-values.ts'
 import type { CartActions } from '../ProductCard.tsx'
 
 /** Доставка для блока главной: способы — тем же видом, что выбор на
@@ -23,7 +24,7 @@ import type { CartActions } from '../ProductCard.tsx'
  *  `dot` — ряд кнопок со знаком в кружке, `grid` — сетка плиток. `trust` — блок
  *  доверия, который несёт герой над рядом кнопок (`carried`, lib/homes.ts);
  *  рецепт поставил его отдельным местом или блока нет — null. */
-export type BlockCtx = { lang: Lang; home: HomeVariant; collections: Collection[]; effects: Effect[]; cards: Record<string, ShelfCard>; spotlight: ShelfCard | null; pledges: PledgesView; slogans: SloganLine[]; cart: CartActions; bands: Readonly<Record<string, Tone>>; reviews: Review[]; posts: Post[]; cat?: 'dot' | 'grid'; trust?: Extract<Block, { type: 'trust' }> | null }
+export type BlockCtx = { lang: Lang; home: HomeVariant; collections: Collection[]; effects: Effect[]; cards: Record<string, ShelfCard>; spotlight: ShelfCard | null; pledges: PledgesView; slogans: SloganLine[]; cart: CartActions; bands: Readonly<Record<string, Tone>>; reviews: Review[]; posts: Post[]; cat?: CatLook; trust?: Extract<Block, { type: 'trust' }> | null }
 /** Место блока на главной: воздух над ним — роль примитива `section`
  *  (`data-air`); null — воздух раздела. */
 export type Place = { air: Air | null }
