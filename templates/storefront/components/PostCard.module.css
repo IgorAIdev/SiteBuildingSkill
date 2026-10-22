@@ -9,20 +9,17 @@
 .shot{--frame:var(--card-frame);--frame-cap:50svh;border-radius:var(--r-card);background:var(--plate-2)}
 /* Ответ руке — как у двери полки на главной (blocks.module.css, `.door`; craft,
    controls.md, «карточка и кадр»: кромка → `--edge-hand`, снимок `--creep`): у
-   снимка проступает кромка, снимок плавно наплывает, имя отвечает марочной
-   краской — видно, что ссылка вся карточка. При нажатии кромка темнее. Было —
+   снимка проступает кромка, снимок плавно наплывает — видно, что ссылка вся
+   карточка. При нажатии кромка темнее. Имя не перекрашивается: у двери полки и
+   карточки товара имя под рукой молчит (заказчик 22.10.2026 о «Read the article»:
+   «откуда её дизайн наведение / нажатие?» — марочное имя было придумано здесь). Было —
    один наплыв за `--hover-t`, у закреплённой «Start here» не было и его
    (заказчик 22.10.2026: «наведение / нажатие в блоге не нужно как-то
    отобразить?»). Кромка — слоем над снимком: у кадра `overflow:hidden`. */
 .shot{position:relative}
 .shot::before{content:'';position:absolute;inset:0;z-index:1;border-radius:inherit;box-shadow:inset 0 0 0 var(--line-w) var(--line-card, transparent);pointer-events:none;transition:box-shadow var(--hover-t) var(--ease)}
-.title{transition:color var(--hover-t) var(--ease)}
-@media (hover:hover){
-  .card:hover > .shot{--line-card:var(--edge)}
-  .card:hover .title{color:var(--pop-ink)}
-}
+@media (hover:hover){ .card:hover > .shot{--line-card:var(--edge)} }
 .card:active > .shot{--line-card:var(--edge-hand)}
-.card:active .title{color:var(--pop-ink)}
 @media (prefers-reduced-motion:no-preference){
   .shot img{transition:scale calc(var(--hover-t) * 3) var(--ease)}
   .card:active .shot img{scale:var(--creep)}
@@ -80,12 +77,8 @@
 [data-place='list'] .text{flex:1;gap:var(--air-tight)}
 [data-place='list'] .summary{font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--body-weight);letter-spacing:var(--body-track)}
 [data-place='list'] .foot{margin-block-start:auto;padding-block-start:var(--air-row);display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;column-gap:var(--gap-row)}
-/* «Read the article ↗» — вид «View all» (RailHead.module.css, `.all`; primitives,
-   `sectionHead [data-out]`): слово ролью тела, знак 1.15em со своим зазором; под рукой
-   карточки слово — марочной краской, как имя, стрелка сдвигается. */
-.read{display:inline-flex;align-items:center;gap:.35em;font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--body-weight);color:var(--ink);transition:color var(--hover-t) var(--ease)}
-.read svg{inline-size:1.15em;block-size:1.15em;flex:none;transition:translate var(--hover-t) var(--ease)}
-@media (hover:hover){ .card:hover .read{color:var(--pop-ink)} }
-.card:active .read{color:var(--pop-ink)}
-@media (hover:hover) and (prefers-reduced-motion:no-preference){ .card:hover .read svg{translate:var(--nudge) calc(var(--nudge) * -1)} }
+/* «Read the article ↗» — контрол «View all» (PostCard.tsx: `word` + `data-hand="menu"`,
+   строй `.all` шапки ряда); здесь только кегль — тот же, что у выхода шапки ряда
+   (`sectionHead [data-out]`: роль тела). Краски и движения под рукой у места нет. */
+.read{font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--body-weight)}
 [data-place='list'] .title{font-size:var(--h3-size);line-height:var(--h3-lead);font-weight:var(--h3-weight);letter-spacing:var(--h3-track)}
