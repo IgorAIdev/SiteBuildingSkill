@@ -68,7 +68,8 @@ export default async function DocPage({ params }: Props) {
     <main id="main" className={`${p.wrap} ${p.section}`} data-air="head">
       <PageCrumbs lang={lang} name={r.value.title} href={hrefFor(lang, { doc })} />
       <DocView view={page} table={table} slots={slots} />
-      {faq ? <Faq block={faq} place={NO_AIR} /> : null}
+      {/* Вопросы — внутри коробки страницы (`inset`): своя коробка `wrap` удваивала поле, и заголовок вставал на 48 правее колонки (заказчик 22.10.2026: «FAQ почему не выровнен по левому краю»). */}
+      {faq ? <Faq block={faq} place={NO_AIR} inset /> : null}
     </main>
   )
 }

@@ -17,7 +17,7 @@
 export const CRAFT_FAMILIES = [
   'placeholder', 'measure', 'lane', 'target', 'contrast', 'collision',
   'weight', 'jump', 'name', 'heads', 'dress', 'clip', 'swipe', 'stretch',
-  'broken', 'spill', 'offColumn', 'sideScroll', 'twinGap', 'glued', 'focus', 'wrap', 'anchor', 'covered', 'outline',
+  'broken', 'spill', 'offColumn', 'sideScroll', 'twinGap', 'glued', 'twoWrap', 'focus', 'wrap', 'anchor', 'covered', 'outline',
   'marker', 'sticky', 'fold', 'theme', 'coarse', 'calm', 'ladder', 'wideCtrl',
   'lopsided', 'sunk', 'stolen', 'inkDip', 'markInk', 'field', 'alone',
   'catalogueColumns', 'twoAir', 'airOrder', 'bandSeam', 'h1Size', 'headCase', 'paneTop', 'typeRole', 'brandTier', 'headAir', 'partAir', 'pageTop', 'inkStep', 'bareMove', 'iconRow', 'inkGap', 'lineLong', 'textShort', 'headActs', 'twiceLift', 'sheetSize',
@@ -69,6 +69,7 @@ export const CRAFT_LABELS = {
   spill: 'элемент вылез за правый край страницы (кто именно)',
   offColumn: 'лента с прокруткой шире колонки сайта — уходит под край окна (И598)',
   twinGap: 'у одинаковых карточек одного ряда одно отношение (имя → описание, описание → данные) стоит разными видимыми шагами: запас строк под коротким именем',
+  twoWrap: 'коробка страницы (wrap) внутри коробки страницы: поле удвоено, блок стоит правее колонки — у блока есть inset, страница его не передала',
   glued: 'узел прилип к имени страницы сверху (ближе 8px над h1): ярлык над заголовком — принадлежность уходит в строку данных, над h1 только крошки',
   sideScroll: 'узел прокручивается вбок, хотя полосой не объявлен (ни прилипания, ни data-rail, ни таблицы): строка не перенеслась, и у колонки своя прокрутка вбок',
   focus: 'фокус не виден ничем — клавиатура теряет место',

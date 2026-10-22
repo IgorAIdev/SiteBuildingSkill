@@ -22,10 +22,13 @@ export function PostHead({ view }: { view: PostHeadView }) {
     <>
       <h1>{title}</h1>
       {subtitle ? <p>{subtitle}</p> : null}
-      <p className={`${p.note} ${s.byline}`}>
-        {author ? <span>{author.line} · {author.role}</span> : null}
-        <span>{meta}{topic ? <> · <SiteLink className={s.topic} href={topic.href}>{topic.name}</SiteLink></> : null}</span>
-      </p>
+      {/* Подпись — две группы, как у Healthline, Ritual и cbdshop.bg: кто написал (имя
+          голосом текста, роль под ним тихо) и строка данных (дата, время чтения, рубрика).
+          Было — две строки сноски подряд, «свалено в кучу» (заказчик 22.10.2026). */}
+      <div className={s.byline}>
+        {author ? <span className={s.who}>{author.line}<span className={s.role}>{author.role}</span></span> : null}
+        <span className={s.facts}>{meta}{topic ? <> · <SiteLink className={s.topic} href={topic.href}>{topic.name}</SiteLink></> : null}</span>
+      </div>
     </>
   )
 }

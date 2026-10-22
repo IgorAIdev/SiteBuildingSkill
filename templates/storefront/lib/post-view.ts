@@ -43,13 +43,19 @@ export type PostHeadView = {
   topic: { href: string; name: string } | null; title: string; subtitle: string | null
   author: { line: string; role: string } | null; meta: string
 }
+const capital = (lang: Lang, s: string) => s.charAt(0).toLocaleUpperCase(lang) + s.slice(1)
+
 export function postHeadView(lang: Lang, post: Post): PostHeadView {
   const updated = updatedOf(post)
   return {
     topic: post.topic ? { href: hrefFor(lang, { blogTopic: post.topic.slug }), name: post.topic.name } : null,
     title: post.title, subtitle: post.subtitle ?? post.summary,
     author: post.author ? { line: t(lang, 'blog.by', { name: post.author.name }), role: post.author.role } : null,
-    meta: [t(lang, 'blog.published', { date: dayOf(lang, post.date) }), updated ? t(lang, 'blog.updated', { date: dayOf(lang, updated) }) : null, t(lang, 'blog.minutes', { n: readingMinutes(post) })].filter(Boolean).join(' · '),
+    /* Видна одна дата — правки, если статью правили, иначе выхода (Healthline «Updated
+       on», Ritual, cbdshop.bg): «Published … · updated …» повторяло дату дважды в одной
+       строке (заказчик 22.10.2026: «текст просто свален в кучу»). Обе даты — в разметке
+       Article (`datePublished`, `dateModified`). */
+    meta: [updated ? capital(lang, t(lang, 'blog.updated', { date: dayOf(lang, updated) })) : t(lang, 'blog.published', { date: dayOf(lang, post.date) }), t(lang, 'blog.minutes', { n: readingMinutes(post) })].join(' · '),
   }
 }
 

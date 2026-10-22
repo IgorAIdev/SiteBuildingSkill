@@ -226,7 +226,7 @@ const iconRow = async () => {
 const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines, autofill, textRoles, tileFace }) => {
   const out = { placeholder: [], measure: [], target: [], contrast: [], collision: [],
                 weight: [], jump: [], name: [], heads: [], dress: [], clip: [],
-                swipe: [], stretch: [], broken: [], spill: [], offColumn: [], sideScroll: [], twinGap: [], glued: [], focus: [], wrap: [],
+                swipe: [], stretch: [], broken: [], spill: [], offColumn: [], sideScroll: [], twinGap: [], glued: [], twoWrap: [], focus: [], wrap: [],
                 anchor: [], outline: [], marker: [], dark: [], ladder: [], wideCtrl: [], lopsided: [],
                 markInk: [],
                 covered: [],
@@ -2508,6 +2508,21 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
     }
   }
 
+  /* 13д · коробка страницы в коробке страницы.
+   *
+   * Блок, который на главной сам ставит коробку (`wrap`: холст и поля по бокам),
+   * внутри страницы с коробкой удваивает поле: вопросы статьи встали на 48 правее
+   * колонки (заказчик 22.10.2026: «FAQ почему не выровнен по левому краю»). У
+   * такого блока есть `inset` — страница его передаёт. Класс обёртки — как его пишет
+   * сборщик (`_wrap`), `flush` — коробка под лист, не в счёт. */
+  for (const el of document.querySelectorAll('[class*="_wrap"]:not([class*="flush"])')) {
+    if (!shown(el)) continue
+    const outer = el.parentElement?.closest('[class*="_wrap"]:not([class*="flush"])')
+    if (!outer) continue
+    const gap = Math.round(el.getBoundingClientRect().left - outer.getBoundingClientRect().left - parseFloat(getComputedStyle(outer).paddingLeft))
+    if (gap > 1) out.twoWrap.push(`${name(el)} в ${name(outer)} — поле удвоено, край на ${gap}px правее колонки`)
+  }
+
   /* 13г · над именем страницы ничего не прилипло.
    *
    * Ярлык над h1 (рубрика статьи) стоял вплотную к заглавным, срезанным сверху
@@ -3148,7 +3163,7 @@ async function lanes(items, work, n = LANES) {
 }
 const found = { lane: [], heroLane: [], placeholder: [], measure: [], target: [], contrast: [], collision: [],
                 weight: [], jump: [], name: [], heads: [], dress: [], clip: [],
-                swipe: [], stretch: [], broken: [], spill: [], offColumn: [], sideScroll: [], twinGap: [], glued: [], focus: [], wrap: [],
+                swipe: [], stretch: [], broken: [], spill: [], offColumn: [], sideScroll: [], twinGap: [], glued: [], twoWrap: [], focus: [], wrap: [],
                 anchor: [], outline: [], marker: [], sticky: [], fold: [], theme: [], coarse: [], calm: [],
                 inkDip: [], markInk: [],
                 covered: [],

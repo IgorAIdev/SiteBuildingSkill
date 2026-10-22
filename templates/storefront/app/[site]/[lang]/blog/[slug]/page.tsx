@@ -10,7 +10,7 @@ import { t } from '@/lib/i18n/index.ts'
 import { toMetadata } from '@/lib/seo.ts'
 import { articleLd } from '@/lib/ld.ts'
 import { docView, plainOf } from '@/lib/doc-view.ts'
-import { nextReads, postCard, postHeadView } from '@/lib/post-view.ts'
+import { nextReads, postCard, postHeadView, updatedOf } from '@/lib/post-view.ts'
 import { shelfCard } from '@/lib/view.ts'
 import { cartSubmit, cartCall } from '@/lib/actions/cart.ts'
 import { PageCrumbs } from '@/components/Breadcrumbs.tsx'
@@ -66,7 +66,7 @@ export default async function PostPage({ params }: Props) {
   const faq = post.faq.length ? { type: 'faq' as const, title: t(lang, 'blog.faq'), items: post.faq.map((x) => ({ q: plainOf(x.q), a: plainOf(x.a) })) } : null
   return (
     <main id="main" className={`${p.wrap} ${p.section}`} data-air="head">
-      <JsonLd data={articleLd({ title: post.title, summary: post.summary, date: post.date, href, lang })} />
+      <JsonLd data={articleLd({ title: post.title, summary: post.summary, date: post.date, updated: updatedOf(post), href, lang })} />
       <PageCrumbs lang={lang} blog name={post.title} href={href} />
       <DocView
         view={docView(lang, post)}
@@ -75,7 +75,8 @@ export default async function PostPage({ params }: Props) {
       >
         <PostSources title={t(lang, 'blog.sources')} sources={post.sources} important={t(lang, 'blog.important')} disclaimer={t(lang, 'blog.disclaimer')} />
       </DocView>
-      {faq ? <Faq block={faq} place={NO_AIR} /> : null}
+      {/* Вопросы — внутри коробки страницы (`inset`): своя коробка `wrap` удваивала поле, и заголовок вставал на 48 правее колонки (заказчик 22.10.2026: «FAQ почему не выровнен по левому краю»). */}
+      {faq ? <Faq block={faq} place={NO_AIR} inset /> : null}
       {shelf && cards.length ? <Shelf title={t(lang, 'blog.products')} id="post-products" all={hrefFor(lang, { category: shelf.slug })} cards={cards} cart={CART} /> : null}
       {/* «Читать дальше» — шапкой ряда сайта (RailHead): заголовок, листание и выход
           «View all» в блог, как у ленты статей главной. Своя сборка «h2 + рельса»
