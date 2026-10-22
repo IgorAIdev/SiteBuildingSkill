@@ -12,7 +12,7 @@ import { Dots } from './Dots.tsx'
    замеру пятнадцати лент (shop, blocks.md, «Товар у статьи»): одна вещь за раз, смена
    по ходу чтения (mindbodygreen), без прокрутки внутри колонки (у cbdshop.bg вторая из
    двух карточек пряталась в ней). Раздел, чей заголовок поднялся выше 40 % окна, —
-   текущий; его номер по кругу выбирает карточку. Карточка — та же, что на главной
+   текущий; его номер выбирает карточку своей части статьи. Карточка — та же, что на главной
    (`ProductCard` в виде карточки сайта, с ценой и «в корзину»), одна за раз: заказчик
    22.10.2026: «тут карточка товара нужна одна полная с ценой как на главной, а когда
    скролишь страницу — чтоб карточка сменялась на другую» (тройки строк `ProductRow`
@@ -31,8 +31,12 @@ export function ReadAlong({ heads, label, children }: { heads: { id: string; lab
   /* Смена — на месте, проявлением (ReadAlong.module.css). Прежде ушедшая уезжала вверх, а
      новая въезжала снизу, пока сама статья ехала вверх, — заказчик 22.10.2026: «смена
      карточек странно происходит, предложи другие варианты». */
-  const show = (section: number) => { setAt(section); setOn(section % cards.length) }
-  const marks = heads.length ? cards.map((_, i) => heads[i % heads.length]) : []
+  /* Товары делят статью на равные части по порядку разделов (1-1-2-2-3-3), а не идут по
+     кругу (1-2-3-1-2-3): точки идут вперёд вместе с чтением и не прыгают назад. Точка
+     ведёт к первому разделу своей части. */
+  const part = (section: number) => Math.min(cards.length - 1, Math.floor((section * cards.length) / Math.max(1, heads.length)))
+  const show = (section: number) => { setAt(section); setOn(part(section)) }
+  const marks = heads.length ? cards.map((_, i) => heads[Math.ceil((i * heads.length) / cards.length)] ?? heads[heads.length - 1]) : []
   useEffect(() => {
     if (cards.length < 2) return
     const els = heads.map((h) => document.getElementById(h.id)).filter((e): e is HTMLElement => Boolean(e))
@@ -65,7 +69,7 @@ export function ReadAlong({ heads, label, children }: { heads: { id: string; lab
       {/* Точка ведёт ссылкой к своему разделу: прокрутка сама сменит карточку. */}
       {cards.length > 1 && marks.length ? (
         <div className={s.where}>
-          <Dots slides={marks.map((h, i) => ({ id: h.id, show: `${i + 1} · ${h.label}` }))} current={on} pick={() => {}} />
+          <Dots slides={marks.map((h, i) => ({ id: h.id, show: `${i + 1} · ${h.label}` }))} current={on} pick={() => {}} plain />
           <p className={`${p.note} ${s.section}`}>{heads[at]?.label}</p>
         </div>
       ) : null}

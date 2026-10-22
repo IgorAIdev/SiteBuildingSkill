@@ -10,7 +10,7 @@ import { t } from '@/lib/i18n/index.ts'
 import { toMetadata } from '@/lib/seo.ts'
 import { articleLd } from '@/lib/ld.ts'
 import { docView, plainOf } from '@/lib/doc-view.ts'
-import { nextReads, postCard, postHeadView, updatedOf } from '@/lib/post-view.ts'
+import { alongCount, nextReads, postCard, postHeadView, updatedOf } from '@/lib/post-view.ts'
 import { shelfCard } from '@/lib/view.ts'
 import { cartSubmit, cartCall } from '@/lib/actions/cart.ts'
 import { PageCrumbs } from '@/components/Breadcrumbs.tsx'
@@ -74,7 +74,7 @@ export default async function PostPage({ params }: Props) {
       <DocView
         view={doc}
         head={<PostHead view={postHeadView(lang, post)} />}
-        side={shelf && cards.length ? <ReadAlong heads={doc.toc?.items ?? []} label={t(lang, 'blog.products')}>{cards.slice(0, 6).map((c) => <ProductCard key={c.id} card={c} cart={CART} />)}</ReadAlong> : undefined}
+        side={shelf && cards.length ? <ReadAlong heads={doc.toc?.items ?? []} label={t(lang, 'blog.products')}>{cards.slice(0, alongCount(post)).map((c) => <ProductCard key={c.id} card={c} cart={CART} />)}</ReadAlong> : undefined}
         intro={<PostIntro image={post.image} tldr={post.tldr} tldrLabel={t(lang, 'blog.tldr')} />}
       >
         <PostSources title={t(lang, 'blog.sources')} sources={post.sources} important={t(lang, 'blog.important')} disclaimer={t(lang, 'blog.disclaimer')} />

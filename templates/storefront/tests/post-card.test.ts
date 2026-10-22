@@ -31,10 +31,12 @@ test('list cards keep no line reserves: the description sits right under the nam
 
 const has = (text: string) => listCss.includes(text)
 
-test('the card answers the hand: edge on the picture, name in brand ink, picture creeps', () => {
+/* Имя под рукой молчит — как у двери полки и карточки товара (22.10.2026: «откуда её дизайн
+   наведение / нажатие?» — марочное имя было придумано на месте). */
+test('the card answers the hand like the shop cards: edge on the picture, picture creeps, name silent', () => {
   for (const state of ['hover', 'active']) {
     assert.ok(has(`.card:${state} > .shot{--line-card:`), `${state}: кромка снимка у карточки`)
-    assert.ok(has(`.card:${state} .title{color:var(--pop-ink)}`), `${state}: имя отвечает марочной краской`)
+    assert.ok(!has(`.card:${state} .title{color`), `${state}: имя не перекрашивается`)
     assert.ok(has(`.card:${state} .shot img{scale:var(--creep)}`), `${state}: наплыв снимка у карточки`)
   }
 })

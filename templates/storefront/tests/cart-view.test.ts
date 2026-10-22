@@ -115,10 +115,10 @@ test('the empty cart shows popular products from the source, as shelf cards', as
   assert.match(v.empty.shelf?.cards[0].href ?? '', /^\/en\/product\//)
 })
 
-/* Пустая корзина — не тупик (И689): слово и тихие строки со знаком, как в окне поиска: «все товары»
-   первой, дальше главные полки; в шторке, на странице и в образце — одним `EmptyPaths`. Полок нет —
-   остаётся «все товары»: путь дальше есть всегда. */
-test('the empty cart is a word and quiet category rows, all products first, in the pane and on the page', async () => {
+/* Пустая корзина — не тупик (И689): слово и кнопки категорий сайта в его виде (`CategoryPaths`,
+   `--cat-look`; 22.10.2026 — «согласно дизайн-системе»): «все товары» первой, дальше главные полки;
+   в шторке, на странице и в образце — одним `EmptyPaths`. Полок нет — остаётся «все товары». */
+test('the empty cart is a word and the site category buttons, all products first, in the pane and on the page', async () => {
   const cols = await sample.collections('en')
   assert.ok(cols.ok)
   const v = cartView('en', null, null, { freeFrom: null, popular: [], shelves: cols.value.slice(0, 3) })
@@ -134,8 +134,9 @@ test('the empty cart is a word and quiet category rows, all products first, in t
   const dir = new URL('../components/', import.meta.url)
   for (const user of ['CartView.tsx', 'CartPane.tsx']) assert.match(readFileSync(new URL(user, dir), 'utf8'), /<EmptyPaths /, user)
   const empty = readFileSync(new URL('EmptyPaths.tsx', dir), 'utf8')
-  assert.match(empty, /<ShelfRows /)
-  assert.doesNotMatch(empty, /icon=|loud|CategoryButton/, 'ни знака в круге, ни громкой кнопки, ни кнопок категорий')
+  assert.match(empty, /<CategoryPaths look=\{cat\}/)
+  assert.doesNotMatch(empty, /icon=|loud|CategoryButton|CategoryTile/, 'ни знака в круге, ни громкой кнопки; кнопки — общим компонентом, не на месте')
+  assert.equal(v.empty.cat, 'dot', 'вид кнопок по умолчанию — пилюли')
 })
 
 /* Полоса до бесплатной доставки: порог — из данных магазина, набрано — товары

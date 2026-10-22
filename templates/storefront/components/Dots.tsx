@@ -17,9 +17,11 @@ type Box = { x: number; w: number }
    Ползунок один на строку и перетекает: при смене слайда сначала тянется
    край со стороны новой точки, потом подтягивается другой. С `clock` он
    стоит точкой и растёт по дорожке за время слайда. */
-export function Dots({ slides, current, pick, className = '', clock }: {
+/* `plain` — только точки: текущая полными чернилами, без ползунка полосой (товар у
+   чтения статьи); по умолчанию — ползунок. */
+export function Dots({ slides, current, pick, className = '', clock, plain = false }: {
   slides: readonly { id: string; show: string }[]; current: number; pick: (e: MouseEvent<HTMLAnchorElement>, i: number) => void; className?: string
-  clock?: Clock
+  clock?: Clock; plain?: boolean
 }) {
   const lit = useRef<HTMLLIElement>(null)
   const was = useRef<{ at: number; runs: boolean } | null>(null)
@@ -93,7 +95,7 @@ export function Dots({ slides, current, pick, className = '', clock }: {
 
   return (
     <div className={`${sl.mark} ${className}`}>
-      <ol className={sl.dots} data-clock={runs ? '' : undefined} style={{ '--at': current } as CSSProperties}>
+      <ol className={sl.dots} data-clock={runs ? '' : undefined} data-lit={plain ? 'none' : undefined} style={{ '--at': current } as CSSProperties}>
         {slides.map((x, i) => (
           <li key={x.id}>
             <a className={sl.dot} href={`#${x.id}`} aria-label={x.show} aria-current={i === current ? 'true' : undefined} onClick={(e) => pick(e, i)} />

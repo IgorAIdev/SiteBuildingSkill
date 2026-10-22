@@ -32,6 +32,13 @@ export function readingMinutes(post: Pick<Post, 'tldr' | 'sections' | 'faq'>): n
   return Math.max(1, Math.ceil(n / WORDS_PER_MINUTE))
 }
 
+/** Сколько товаров едет у чтения статьи (ReadAlong): короткая — два, длинная — три
+ *  (заказчик 22.10.2026: «2-3 товара будет достаточно в зависимости от размера статьи:
+ *  если статья короткая — 2, если длинная — 3»). Длина — время чтения; граница — по
+ *  статьям витрины (5–7 минут): до пяти минут — короткая. */
+export const ALONG_LONG_MINUTES = 6
+export const alongCount = (post: Pick<Post, 'tldr' | 'sections' | 'faq'>): number => (readingMinutes(post) >= ALONG_LONG_MINUTES ? 3 : 2)
+
 /** «Actualizat» — только когда правка позже публикации (у cbdshop.bg стояла и
  *  равная дата — шум). */
 export const updatedOf = (post: Pick<Post, 'date' | 'updated'>): string | null => (post.updated && post.updated > post.date ? post.updated : null)

@@ -20,7 +20,7 @@ import { lookNow } from '@/lib/look.ts'
 import { source } from '@/lib/source/index.ts'
 import type { Lang } from '@/lib/locale.ts'
 import { buttonCatalog, type ButtonAxis } from './sheet.ts'
-import { SliderIcon } from './Sliders.tsx'
+import { SliderDots, SliderIcon } from './Sliders.tsx'
 import { ElementTiles } from './Elements.tsx'
 import { t } from '@/lib/i18n/index.ts'
 import { showLabel, type PagesView } from '@/lib/catalog-view.ts'
@@ -426,6 +426,10 @@ export async function ButtonList({ lang }: { lang: Lang }) {
           <li className={s.btnStyle}>
             <span className={s.famSample}><SliderIcon /></span>
             <span className={s.btnName}>Иконка слайдера: точки</span>
+          </li>
+          <li className={s.btnStyle}>
+            <span className={s.famSample}><SliderDots /></span>
+            <span className={s.btnName}>Только точки: товар у чтения статьи</span>
           </li>
         </ul>
       </Part>
