@@ -226,7 +226,7 @@ const iconRow = async () => {
 const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines, autofill, textRoles, tileFace }) => {
   const out = { placeholder: [], measure: [], target: [], contrast: [], collision: [],
                 weight: [], jump: [], name: [], heads: [], dress: [], clip: [],
-                swipe: [], stretch: [], broken: [], spill: [], offColumn: [], sideScroll: [], twinGap: [], glued: [], twoWrap: [], focus: [], wrap: [],
+                swipe: [], stretch: [], broken: [], spill: [], offColumn: [], sideScroll: [], twinGap: [], glued: [], twoWrap: [], hiddenLink: [], focus: [], wrap: [],
                 anchor: [], outline: [], marker: [], dark: [], ladder: [], wideCtrl: [], lopsided: [],
                 markInk: [],
                 covered: [],
@@ -2508,6 +2508,22 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
     }
   }
 
+  /* 13е · ссылка в строке текста, неотличимая от текста.
+   *
+   * Ссылка, стоящая в строке среди слов (у её родителя есть свой текст), отличается
+   * от них краской или чертой — не одним курсором (WCAG 1.4.1). Рубрика «For
+   * beginners» в строке данных статьи стояла краской строки без черты (заказчик
+   * 22.10.2026: «откуда известно, что это ссылка?»). Орган (кнопка, строка меню) — не
+   * ссылка в тексте: у его родителя своего текста нет. */
+  for (const a of document.querySelectorAll('main a[href]')) {
+    if (!shown(a) || !a.textContent.trim()) continue
+    const host = a.parentElement
+    if (!host || !Array.from(host.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim().length > 1)) continue
+    const ca = getComputedStyle(a), ch = getComputedStyle(host)
+    const lined = /underline/.test(ca.textDecorationLine)
+    if (!lined && ca.color === ch.color) out.hiddenLink.push(`${name(a)} «${a.textContent.trim().slice(0, 30)}» — краской текста, без черты`)
+  }
+
   /* 13д · коробка страницы в коробке страницы.
    *
    * Блок, который на главной сам ставит коробку (`wrap`: холст и поля по бокам),
@@ -3163,7 +3179,7 @@ async function lanes(items, work, n = LANES) {
 }
 const found = { lane: [], heroLane: [], placeholder: [], measure: [], target: [], contrast: [], collision: [],
                 weight: [], jump: [], name: [], heads: [], dress: [], clip: [],
-                swipe: [], stretch: [], broken: [], spill: [], offColumn: [], sideScroll: [], twinGap: [], glued: [], twoWrap: [], focus: [], wrap: [],
+                swipe: [], stretch: [], broken: [], spill: [], offColumn: [], sideScroll: [], twinGap: [], glued: [], twoWrap: [], hiddenLink: [], focus: [], wrap: [],
                 anchor: [], outline: [], marker: [], sticky: [], fold: [], theme: [], coarse: [], calm: [],
                 inkDip: [], markInk: [],
                 covered: [],
