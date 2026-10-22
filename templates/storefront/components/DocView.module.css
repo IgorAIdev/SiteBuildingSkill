@@ -55,8 +55,13 @@
 .body{--side-w:var(--col-narrow);--side-gap:var(--air-group)}
 .toc{display:flex;flex-direction:column;gap:var(--sp-2);overflow-y:auto;overscroll-behavior:contain}
 .peek{display:none}
+/* Колонка с тем, что едет с чтением (`side`): оглавление сверху, ниже — приклеенный
+   товар; колонка тянется на всю высоту ряда, чтобы было, по чему ехать. */
+.side{display:flex;flex-direction:column;gap:var(--air-group);align-self:stretch}
+.side > .toc{overflow:visible}
+.along{align-self:stretch}
 @container (max-width:819px){
-  .toc{display:none}
+  .toc,.side{display:none}
   .peek{display:block;margin-block-start:var(--air-row)}
 }
 

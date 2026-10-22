@@ -17,6 +17,8 @@ import { PageCrumbs } from '@/components/Breadcrumbs.tsx'
 import { DocView } from '@/components/DocView.tsx'
 import { JsonLd } from '@/components/JsonLd.tsx'
 import { PostCard } from '@/components/PostCard.tsx'
+import { ProductCard } from '@/components/ProductCard.tsx'
+import { ReadAlong } from '@/components/ReadAlong.tsx'
 import { RailHead } from '@/components/RailHead.tsx'
 import { PostHead, PostIntro, PostSources } from '@/components/PostParts.tsx'
 import { Shelf } from '@/components/Shelf.tsx'
@@ -63,14 +65,16 @@ export default async function PostPage({ params }: Props) {
   const listing = shelf ? await source().listing(lang, { category: shelf.slug, facets: {}, sort: 'popular', page: null }) : null
   const cards = cardsOf(lang, listing)
   const reads = all.ok ? nextReads(post, all.value).map((x) => postCard(lang, x)) : []
+  const doc = docView(lang, post)
   const faq = post.faq.length ? { type: 'faq' as const, title: t(lang, 'blog.faq'), items: post.faq.map((x) => ({ q: plainOf(x.q), a: plainOf(x.a) })) } : null
   return (
     <main id="main" className={`${p.wrap} ${p.section}`} data-air="head">
       <JsonLd data={articleLd({ title: post.title, summary: post.summary, date: post.date, updated: updatedOf(post), href, lang })} />
       <PageCrumbs lang={lang} blog name={post.title} href={href} />
       <DocView
-        view={docView(lang, post)}
+        view={doc}
         head={<PostHead view={postHeadView(lang, post)} />}
+        side={shelf && cards.length ? <ReadAlong ids={doc.toc?.items.map((x) => x.id) ?? []} label={t(lang, 'blog.products')}>{cards.slice(0, 4).map((c) => <ProductCard key={c.id} card={c} cart={CART} />)}</ReadAlong> : undefined}
         intro={<PostIntro image={post.image} tldr={post.tldr} tldrLabel={t(lang, 'blog.tldr')} />}
       >
         <PostSources title={t(lang, 'blog.sources')} sources={post.sources} important={t(lang, 'blog.important')} disclaimer={t(lang, 'blog.disclaimer')} />

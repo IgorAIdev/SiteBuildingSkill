@@ -27,6 +27,8 @@ import { Story } from '@/components/blocks/Story.tsx'
 import { Faq } from '@/components/blocks/Faq.tsx'
 import type { BlockCtx, Place } from '@/components/blocks/types.ts'
 import { DocView } from '@/components/DocView.tsx'
+import { ReadAlong } from '@/components/ReadAlong.tsx'
+import { ProductCard } from '@/components/ProductCard.tsx'
 import { BlogIndex } from '@/components/BlogIndex.tsx'
 import { PostHead, PostIntro, PostSources } from '@/components/PostParts.tsx'
 import { WithdrawForm } from '@/components/WithdrawForm.tsx'
@@ -190,16 +192,17 @@ export async function CatalogPages({ lang }: { lang: Lang }) {
       <Part title="Страница-документ" lede="Условия, возврат, гарантия, конфиденциальность, cookie, «О нас», доставка, анализы: имя, строка о странице и дата правки; у длинного документа на ноутбуке — оглавление ссылками сбоку, приклеенное, на телефоне — одной свёрнутой строкой под шапкой; у договорных (условия, данные, cookie, возврат, гарантия) — номер у каждого раздела и в оглавлении; разделы — заголовок над своим текстом; списки и таблицы — в тексте. При печати шапка, подвал и оглавление не печатаются. Здесь — страница возврата.">
         {doc.ok ? <div lang={lang}><DocView view={docView(lang, doc.value)} /></div> : null}
       </Part>
-      <Part title="Блог" lede="Список статей: имя, строка о блоге и счёт с датой последней правки; рубрики ссылками, текущая отмечена; закреплённая статья «Începe de aici» первой и крупно, остальные — сеткой карточек, новые первыми. Так же устроена страница рубрики, только без закреплённой.">
+      <Part title="Блог" lede="Список статей: имя, строка о блоге и счёт с датой последней правки; рубрики словами, текущая подчёркнута; сетка карточек — закреплённая первой тем же видом, остальные новыми первыми; в карточке снимок обложкой, имя, описание и низ — минуты чтения, рубрика и «Read the article». Так же устроена страница рубрики, только без закреплённой.">
         {posts.ok && topics.ok ? <div lang={lang}><BlogIndex view={blogIndexView(lang, posts.value, topics.value)} label={t(lang, 'blog.topics')} /></div> : null}
       </Part>
-      <Part title="Статья блога" lede="Страница-документ со своими частями: сверху рубрика ссылкой, имя, подзаголовок, автор и строка данных (дата, правка, минуты чтения); обложка с потолком высоты и «Pe scurt» — ответ первым; после текста — источники и тихая оговорка. Ниже на сайте идут вопросы, товары и «Citește mai departe».">
+      <Part title="Статья блога" lede="Страница-документ со своими частями: имя, подзаголовок, подпись — автор и строка данных (дата правки, минуты чтения, рубрика ссылкой); обложка и «In short» — первыми в колонке текста; слева — оглавление и товар у чтения: одна карточка едет с колонкой и сменяется по разделам; после текста — источники и тихая оговорка. Ниже на сайте идут вопросы, товары и «Read next».">
         {post ? (
           <div lang={lang}>
             <DocView
               view={docView(lang, post)}
               head={<PostHead view={postHeadView(lang, post)} />}
               intro={<PostIntro image={post.image} tldr={post.tldr} tldrLabel={t(lang, 'blog.tldr')} />}
+              side={saved.length ? <ReadAlong ids={docView(lang, post).toc?.items.map((x) => x.id) ?? []} label={t(lang, 'blog.products')}>{saved.slice(0, 3).map((c) => <ProductCard key={c.id} card={c} cart={CART} />)}</ReadAlong> : undefined}
             >
               <PostSources title={t(lang, 'blog.sources')} sources={post.sources} important={t(lang, 'blog.important')} disclaimer={t(lang, 'blog.disclaimer')} />
             </DocView>

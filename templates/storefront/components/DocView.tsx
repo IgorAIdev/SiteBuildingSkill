@@ -60,9 +60,9 @@ function SectionBody({ sec, slots }: { sec: SectionView; slots?: DocSlots }) {
    оглавления, а не во всю ширину над ним — заказчик 22.10.2026, вариант А:
    «изображение на всю ширину — это херня»), `children` —
    в колонке текста после разделов (источники, «Important»). */
-export function DocView({ view, table, meta, head, intro, slots, children }: {
+export function DocView({ view, table, meta, head, intro, side, slots, children }: {
   view: DocPageView; table?: ReactNode; meta?: ReactNode; head?: ReactNode; intro?: ReactNode
-  slots?: DocSlots; children?: ReactNode
+  side?: ReactNode; slots?: DocSlots; children?: ReactNode
 }) {
   const items = view.toc ? view.toc.items.map((it) => <li key={it.id}><a className={b.row} href={`#${it.id}`}>{it.label}</a></li>) : null
   const parts = (
@@ -98,10 +98,24 @@ export function DocView({ view, table, meta, head, intro, slots, children }: {
       </div>
       {view.toc ? (
         <div className={`${p.sidebar} ${s.body}`}>
-          <nav className={`${p.aside} ${p.pinned} ${s.toc}`} aria-labelledby="doc-toc" data-print="skip">
-            <p id="doc-toc" className={m.group}>{view.toc.label}</p>
-            <ul className={m.list} data-wrap>{items}</ul>
-          </nav>
+          {/* `side` — то, что едет с чтением (товар у статьи, ReadAlong): оглавление тогда
+              стоит наверху колонки, а приклеен низ — карточка. Оглавление и карточка
+              вместе выше окна (≈730 при 636 под колонку на 800), а прокрутка внутри
+              колонки прячет вторую вещь (cbdshop.bg). Без `side` приклеено оглавление. */}
+          {side ? (
+            <div className={`${p.aside} ${s.side}`} data-print="skip">
+              <nav className={s.toc} aria-labelledby="doc-toc">
+                <p id="doc-toc" className={m.group}>{view.toc.label}</p>
+                <ul className={m.list} data-wrap>{items}</ul>
+              </nav>
+              <div className={`${p.pinned} ${s.along}`}>{side}</div>
+            </div>
+          ) : (
+            <nav className={`${p.aside} ${p.pinned} ${s.toc}`} aria-labelledby="doc-toc" data-print="skip">
+              <p id="doc-toc" className={m.group}>{view.toc.label}</p>
+              <ul className={m.list} data-wrap>{items}</ul>
+            </nav>
+          )}
           {parts}
         </div>
       ) : parts}
