@@ -11,6 +11,7 @@ import { Catalog } from '@/components/Catalog.tsx'
 import { CatalogCopy } from '@/components/CatalogCopy.tsx'
 import { categoryCopy } from '@/lib/content/shop-copy.ts'
 import { Unavailable } from '@/components/StateScreen.tsx'
+import { PageCrumbs } from '@/components/Breadcrumbs.tsx'
 
 type Props = { params: Promise<{ lang: string; cat: string }>; searchParams: Promise<Params> }
 
@@ -37,5 +38,6 @@ export default async function CategoryPage({ params, searchParams }: Props) {
      теми же гранями (catalog-view.ts, `Scope`). */
   const scope = { name: col.value.name, wider: (q: Query) => hrefFor(lang, { catalog: true, ...q }) }
   const copy = categoryCopy(lang, cat)
-  return <Catalog view={catalogView(lang, { title: copy?.heading ?? col.value.name, lede: copy?.lede ?? col.value.description, listing: r.value, asked, at, filters: true, empty: emptyFor(lang, asked, at), scope, counted: { category: cat }, all })} cart={{ submit: cartSubmit, call: cartCall }} after={copy && cleanPage(asked) === 1 ? <CatalogCopy copy={copy} lang={lang} /> : undefined} />
+  const crumbs = <PageCrumbs lang={lang} name={col.value.name} href={hrefFor(lang, { category: cat })} />
+  return <Catalog crumbs={crumbs} view={catalogView(lang, { title: copy?.heading ?? col.value.name, lede: copy?.lede ?? col.value.description, listing: r.value, asked, at, filters: true, empty: emptyFor(lang, asked, at), scope, counted: { category: cat }, all })} cart={{ submit: cartSubmit, call: cartCall }} after={copy && cleanPage(asked) === 1 ? <CatalogCopy copy={copy} lang={lang} /> : undefined} />
 }

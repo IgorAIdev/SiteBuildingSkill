@@ -13,6 +13,7 @@ import { Catalog } from '@/components/Catalog.tsx'
 import { CatalogCopy } from '@/components/CatalogCopy.tsx'
 import { effectCopy } from '@/lib/content/shop-copy.ts'
 import { Unavailable } from '@/components/StateScreen.tsx'
+import { PageCrumbs } from '@/components/Breadcrumbs.tsx'
 
 type Props = { params: Promise<{ lang: string; effect: string }>; searchParams: Promise<Params> }
 
@@ -51,5 +52,6 @@ export default async function EffectPage({ params, searchParams }: Props) {
   const at = (q: Query) => hrefFor(lang, { effect: code, ...q })
   const scope = { name: e.value.name, wider: (q: Query) => hrefFor(lang, { catalog: true, ...q }) }
   const copy = effectCopy(lang, code)
-  return <Catalog view={catalogView(lang, { title: copy?.heading ?? e.value.name, lede: copy?.lede ?? (e.value.description || null), listing, asked: own, at, filters: true, empty: emptyFor(lang, own, at), scope, counted: { effect: code }, all })} cart={{ submit: cartSubmit, call: cartCall }} after={copy && cleanPage(own) === 1 ? <CatalogCopy copy={copy} lang={lang} /> : undefined} />
+  const crumbs = <PageCrumbs lang={lang} name={e.value.name} href={hrefFor(lang, { effect: code })} />
+  return <Catalog crumbs={crumbs} view={catalogView(lang, { title: copy?.heading ?? e.value.name, lede: copy?.lede ?? (e.value.description || null), listing, asked: own, at, filters: true, empty: emptyFor(lang, own, at), scope, counted: { effect: code }, all })} cart={{ submit: cartSubmit, call: cartCall }} after={copy && cleanPage(own) === 1 ? <CatalogCopy copy={copy} lang={lang} /> : undefined} />
 }

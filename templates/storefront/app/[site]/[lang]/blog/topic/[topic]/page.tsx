@@ -6,11 +6,9 @@ import { content } from '@/lib/source/index.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { t } from '@/lib/i18n/index.ts'
 import { toMetadata } from '@/lib/seo.ts'
-import { breadcrumbLd } from '@/lib/ld.ts'
 import { blogIndexView } from '@/lib/post-view.ts'
 import { BlogIndex } from '@/components/BlogIndex.tsx'
-import { Breadcrumbs, trailTo } from '@/components/Breadcrumbs.tsx'
-import { JsonLd } from '@/components/JsonLd.tsx'
+import { PageCrumbs } from '@/components/Breadcrumbs.tsx'
 import { Unavailable } from '@/components/StateScreen.tsx'
 
 type Props = { params: Promise<{ lang: string; topic: string }> }
@@ -34,12 +32,9 @@ export default async function TopicPage({ params }: Props) {
   if (!posts.ok || !topics.ok) return <Unavailable lang={lang} />
   const x = topics.value.find((y) => y.slug === topic)
   if (!x || !posts.value.some((post) => post.topic?.slug === topic)) notFound()
-  const home = { name: t(lang, 'crumb.home'), href: hrefFor(lang, { home: true }) }
-  const blog = { name: t(lang, 'blog.title'), href: hrefFor(lang, { blog: true }) }
   return (
     <main id="main" className={`${p.wrap} ${p.section}`} data-air="head">
-      <JsonLd data={breadcrumbLd([home, blog, { name: x.name, href: hrefFor(lang, { blogTopic: topic }) }])} />
-      <Breadcrumbs trail={trailTo([home, blog], x.name)} label={t(lang, 'crumb.label')} />
+      <PageCrumbs lang={lang} blog name={x.name} href={hrefFor(lang, { blogTopic: topic })} />
       <BlogIndex view={blogIndexView(lang, posts.value, topics.value, x)} label={t(lang, 'blog.topics')} />
     </main>
   )
