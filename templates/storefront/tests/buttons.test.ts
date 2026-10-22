@@ -41,10 +41,13 @@ test('the hero path row has no lead button; the catalog button says «Shop all»
    (слово заказчика 08.10.2026: «только Shop all с заливкой и яркой главной, остальные
    кнопки категорий тихие»). Тихая берёт роли тихой кнопки каталога, а не свои. */
 test('the hero path row has one bright button — «Shop all»; the shelf buttons are quiet and read the quiet roles', () => {
+  /* Ряд ставит общий выбирающий компонент (CategoryPaths, вид сайта `--cat-look`; 22.10.2026). */
   const hero = read('../components/blocks/Hero.tsx')
-  assert.match(hero, /<CategoryButton name=\{t\(ctx\.lang, 'nav\.shopAll'\)\}/)
-  assert.doesNotMatch(hero, /<CategoryButton name=\{t\(ctx\.lang, 'nav\.shopAll'\)\}[^>]*\bquiet\b/)
-  assert.match(hero, /<CategoryButton quiet name=\{c\.name\}/)
+  assert.match(hero, /<CategoryPaths[\s\S]*?all=\{\{ label: t\(ctx\.lang, 'nav\.shopAll'\)/)
+  const paths = read('../components/CategoryPaths.tsx')
+  assert.match(paths, /<CategoryButton name=\{all\.label\}/)
+  assert.doesNotMatch(paths, /<CategoryButton name=\{all\.label\}[^>]*\bquiet\b/)
+  assert.match(paths, /<CategoryButton quiet name=\{x\.label\}/)
   assert.match(read('../components/CategoryButton.tsx'), /data-cat=\{quiet \? 'quiet' : ''\}/)
   const css = bare(read('../styles/btn.module.css'))
   assert.match(css, /\.btn\[data-voice='loud'\]\[data-cat='quiet'\]\{\s*--press-bg:var\(--ctrl-btn-fill, transparent\);\s*--press-ink:var\(--ctrl-btn-ink, var\(--ink\)\);\s*--btn-edge:var\(--ctrl-btn-edge, transparent\)\s*\}/)

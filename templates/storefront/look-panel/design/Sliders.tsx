@@ -27,3 +27,11 @@ export function SliderIcon() {
   const clock = { ms: STAY_MS, on, held: hidden, onEnd: () => setAt((i) => (i + 1) % SLIDES.length), onToggle: () => setOn((v) => !v), stop: 'Остановить', play: 'Запустить' }
   return <Dots slides={SLIDES} current={at} pick={pick} clock={clock} />
 }
+
+/* Только точки — вид указателя у товара статьи (`plain`): ползунка нет, текущая —
+   полными чернилами. Нажмите точку. */
+export function SliderDots() {
+  const [at, setAt] = useState(1)
+  const pick = (e: MouseEvent<HTMLAnchorElement>, i: number) => { e.preventDefault(); setAt(i) }
+  return <Dots slides={SLIDES} current={at} pick={pick} plain />
+}

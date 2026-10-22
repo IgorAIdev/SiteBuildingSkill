@@ -94,6 +94,17 @@
   background:var(--dot-ink, var(--ink));box-shadow:var(--dot-ink-edge, none)
 }
 .dots[data-clock] .lit{inline-size:var(--dot)}
+/* Только точки (`plain`, товар у чтения статьи): ползунка нет — текущая точка
+   полными чернилами, остальные тихие. Точка мельче (от высоты контрола), клетка — цель
+   под рукой (24 мышью, 44 пальцем), поле слева — хвост последней клетки: строка стоит
+   по середине. Заказчик 22.10.2026, указатель под карточкой статьи: «слишком жирная
+   полоса» → из четырёх показанных живой страницей — «Б · только точки». */
+.dots[data-lit='none']{
+  --dot:calc(var(--ctrl-h) * .18);--dot-cell:max(var(--ctrl-target), var(--dot) * 3);
+  padding-inline-start:calc(var(--dot-cell) - var(--dot))
+}
+.dots[data-lit='none'] .lit{display:none}
+.dots[data-lit='none'] .dot[aria-current]::before{background:var(--dot-ink, var(--ink));opacity:1;box-shadow:var(--dot-ink-edge, none)}
 /* Пауза и пуск самолистания (WCAG 2.2.2: движение дольше пяти секунд
    останавливается рукой; в образце — кнопка рядом с точками). Цель — цель
    пальца, знак залитый — из листа. */
