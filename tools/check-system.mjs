@@ -72,6 +72,7 @@ const FAMILIES = {
   placeClips: 'место решает, режется ли знак',
   ownedPart: 'часть общего контрола написана на месте, а не взята его компонентом',
   kindForm: 'смысл плашки на снимке меняет не только краски, а форму',
+  lookChosen: 'место выбрало вид контрола само, мимо вида сайта из панели',
 }
 
 const walk = (dir, test, out = []) => {
@@ -134,6 +135,7 @@ const INSIDE = {
   'components/ShelfRows.tsx': ['components/SearchPane.tsx', 'тихие строки полок под пустым полем окна поиска; показаны настоящим окном поиска в рамке сайта (И691; пустая корзина с 22.10.2026 — плитками полок, EmptyPaths)'],
   'components/SocialSignIn.tsx': ['components/AuthPage.tsx', 'кнопки Google и Facebook под формой входа и создания — часть страницы входа; показаны настоящей страницей в обоих видах (И787)'],
   'components/DocTable.tsx': ['components/ConsentPrefs.tsx', 'таблица документа — своим файлом, чтобы окно в браузере не тянуло DocView (разбор 08.10.2026); показана настоящими таблицами cookie в окне настроек и разделами страницы-документа (И791)'],
+  'components/CategoryPaths.tsx': ['components/EmptyPaths.tsx', 'кнопки полок в виде сайта (`--cat-look`: пилюли или плитки) — общий ряд первого экрана и пустой корзины; показан пустым экраном с путями и героем (22.10.2026)'],
   'components/AddLabel.tsx': ['components/AddToCart.tsx', 'надпись кнопки «в корзину» — слово, «Added · n» и уступка места внутри кнопки страницы товара и карточки, не вещь сама по себе (И469, И763)'],
 }
 const used = new Set(siteCode.flatMap((f) => imports(f).map((i) => i.path)))
@@ -235,6 +237,26 @@ for (const file of [...siteCode, ...designCode]) {
       for (const m of text.matchAll(new RegExp(`\\b${name}\\.(${own.parts.join('|')})\\b`, 'g'))) {
         found.ownedPart.push(`${rel(file)}:${lineOf(text, m.index)}  ${name}.${m[1]} — ${own.what} собрана на месте; брать ${own.owner}`)
       }
+    }
+  }
+}
+
+/* ── lookChosen ───────────────────────────────────────────────────────────
+   Контрол, у которого вид — ось сайта (панель Look), ставит только его выбирающий
+   компонент: место берёт вид, который сайт уже выбрал, а не свой. 22.10.2026 пустая
+   корзина поставила плитки сетки (`CategoryTile`) при опубликованных пилюлях — вид,
+   которого на сайте не было нигде (заказчик: «когда придумываешь дизайн, он должен
+   быть согласно дизайн-системе»). Дизайн-система показывает все виды и не считается.
+   Новая ось с несколькими контролами — строка сюда. */
+const CHOSEN = [
+  { controls: ['components/CategoryButton.tsx', 'components/CategoryTile.tsx'], chooser: 'components/CategoryPaths.tsx', axis: '--cat-look' },
+]
+for (const file of siteCode) {
+  for (const ax of CHOSEN) {
+    if (resolve(file) === resolve(join(SITE, ax.chooser)) || ax.controls.some((c) => resolve(file) === resolve(join(SITE, c)))) continue
+    for (const i of imports(file)) {
+      const hit = ax.controls.find((c) => resolve(i.path) === resolve(join(SITE, c)))
+      if (hit) found.lookChosen.push(`${rel(file)}  ${hit} — вид оси ${ax.axis} выбран местом; брать ${ax.chooser}`)
     }
   }
 }

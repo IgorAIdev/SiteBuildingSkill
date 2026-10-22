@@ -5,10 +5,8 @@ import { hrefFor } from '@/lib/href.ts'
 import { t } from '@/lib/i18n/index.ts'
 import type { BlockCtx, Place } from './types.ts'
 import { shot } from '@/lib/shot.ts'
-import { CategoryButton } from '../CategoryButton.tsx'
+import { CategoryPaths } from '../CategoryPaths.tsx'
 import { TrustLine } from './TrustLine.tsx'
-import { CategoryTile } from '../CategoryTile.tsx'
-import cat from '../CategoryTile.module.css'
 import { heroShelves } from '@/lib/hero-shelves.ts'
 import { MinimalHero } from './MinimalHero.tsx' // look-home:minimal
 import { SportHero } from './SportHero.tsx' // look-home:sport
@@ -69,19 +67,13 @@ export function Hero({ block, ctx }: Props) {
         <div className={`${p.stack} ${s.heroPath}`}>
         {ctx.trust ? <TrustLine block={ctx.trust} ctx={ctx} /> : null}
           <nav aria-label={t(ctx.lang, 'nav.categories')} className={ctx.cat === 'grid' ? s.heroNav : undefined}>
-            {ctx.cat === 'grid' ? (
-              <div className={`${p.stack} ${s.heroGrid}`}>
-                <CategoryButton name={t(ctx.lang, 'nav.shopAll')} sign="shop-awning" href={hrefFor(ctx.lang, { catalog: true })} />
-                <ul className={cat.grid}>
-                  {shelves.map((sh) => <li key={sh.slug}><CategoryTile name={sh.name} sign={sh.sign} href={hrefFor(ctx.lang, { category: sh.slug })} /></li>)}
-                </ul>
-              </div>
-            ) : (
-              <ul className={`${p.rail} ${s.heroShelves}`} data-rail="wrap">
-                <li><CategoryButton name={t(ctx.lang, 'nav.shopAll')} sign="shop-awning" href={hrefFor(ctx.lang, { catalog: true })} /></li>
-                {shelves.map((c) => <li key={c.slug}><CategoryButton quiet name={c.name} sign={c.sign} href={hrefFor(ctx.lang, { category: c.slug })} /></li>)}
-              </ul>
-            )}
+            <CategoryPaths
+              look={ctx.cat ?? 'dot'}
+              all={{ label: t(ctx.lang, 'nav.shopAll'), sign: 'shop-awning', href: hrefFor(ctx.lang, { catalog: true }) }}
+              shelves={shelves.map((sh) => ({ label: sh.name, sign: sh.sign, href: hrefFor(ctx.lang, { category: sh.slug }) }))}
+              list={{ className: `${p.rail} ${s.heroShelves}`, rail: 'wrap' }}
+              gridClass={`${p.stack} ${s.heroGrid}`}
+            />
           </nav>
         </div>
       </div>

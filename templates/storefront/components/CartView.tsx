@@ -51,7 +51,7 @@ export function CartView({ lang, view, submit, call, landmark = true }: { lang: 
         {/* Строка исхода — та же, что у формы корзины (`f.say`, И476): одна на сайт. */}
         {view.notice ? <p className={f.say} data-state={view.notice.kind === 'error' ? 'error' : undefined} role="status">{view.notice.message}</p> : null}
         <CartFresh lang={lang} stamp={view.stamp} />
-        <EmptyPaths level={1} title={view.empty.title} lead={view.empty.lead} shelves={view.empty.shelves} />
+        <EmptyPaths level={1} title={view.empty.title} lead={view.empty.lead} shelves={view.empty.shelves} cat={view.empty.cat} />
         {view.empty.shelf ? <Popular shelf={view.empty.shelf} cart={{ submit, call }} /> : null}
       </Main>
     )

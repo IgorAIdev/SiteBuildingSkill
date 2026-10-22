@@ -207,6 +207,13 @@ const onFloors = (name: string): boolean => isShadow(name) || FLOOR_ROLES.test(n
 /** Проверенный вид → текст блока `<style href="look">`: свойства на корне
  *  (краски — `light-dark()`, как в styles/palette.css, тема решается
  *  `color-scheme`), роли тени — на списке полов, шрифты со своих адресов. */
+/** Вид кнопок категорий сайта (`--cat-look`, панель Look → Home): `dot` — пилюли со
+ *  знаком (умолчание шаблона), `grid` — сетка плиток. Читают его все места, где стоят
+ *  кнопки полок: первый экран и пустая корзина — одной записью, а не каждое своим
+ *  сравнением (правило 10). */
+export type CatLook = 'dot' | 'grid'
+export const catLook = (look: Look): CatLook => (look.vars['--cat-look'] === 'grid' ? 'grid' : 'dot')
+
 export function lookCss(look: Look): string {
   const decl = (keep: (name: string) => boolean) => Object.entries(look.vars).filter(([k]) => keep(k)).map(([k, v]) => `${k}:${withFallback(v, look.fonts)}`).join(';')
   const vars = decl((k) => !onFloors(k))

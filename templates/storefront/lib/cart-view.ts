@@ -8,6 +8,7 @@ import { market } from './market.ts'
 import { shelfCard, type ShelfCard } from './view.ts'
 import { factsLine } from './facts.ts'
 import { shelvesView, type ShelvesView } from './shelves-view.ts'
+import type { CatLook } from './look-values.ts'
 
 export type TotalsView = { rows: { label: string; value: string }[]; total: { label: string; value: string }; note: string }
 /** Шаг счётчика строки корзины: «−» и «+» — кнопки записи (`op`), без
@@ -33,7 +34,7 @@ export type CartPageView = {
   open: { label: string; href: string }
   coupon: { ask: string; label: string; apply: string; open: boolean; applied: { code: string; op: string; label: string }[] }
   notice: Outcome | null; couponNotice: Outcome | null
-  empty: { title: string; lead: string; shelf: ShelfView | null; shelves: ShelvesView }
+  empty: { title: string; lead: string; shelf: ShelfView | null; shelves: ShelvesView; cat: CatLook }
   messages: { timeout: string; failed: string }
   /** Отметка корзины (`cartStamp`): страница сверяет её с корзиной (CartFresh, И696). */
   stamp: string
@@ -41,7 +42,8 @@ export type CartPageView = {
 /** Что страница корзины собрала у источника сверх самой корзины: порог бесплатной
  *  доставки — для полосы цели; ходовые товары и главные полки — для пустой корзины.
  *  Нет — строки нет. Обещаний у кнопки на странице корзины нет (слово заказчика 08.10.2026). */
-export type CartExtras = { freeFrom: Money | null; popular: Card[]; shelves: Collection[] }
+/** `cat` — вид кнопок категорий сайта: пустая корзина ставит полки теми же кнопками, что первый экран. */
+export type CartExtras = { freeFrom: Money | null; popular: Card[]; shelves: Collection[]; cat?: CatLook }
 
 /** Предел количества в строке — один на корзину и карту товара (в договоре
  *  его пока нет, docs/open.md, «Предел количества»). */
@@ -158,6 +160,7 @@ export function cartView(lang: Lang, cart: Cart | null, result: string | null, e
       title: t(lang, 'cart.empty'), lead: t(lang, 'cart.emptyLead'),
       shelf: popular.length ? { title: t(lang, 'cart.popular'), all: hrefFor(lang, { catalog: true }), cards: popular } : null,
       shelves: shelvesView(lang, extras.shelves),
+      cat: extras.cat ?? 'dot',
     },
     messages: { timeout: t(lang, 'cart.error.timeout'), failed: t(lang, 'cart.error.unavailable') },
     stamp: cartStamp(cart),
