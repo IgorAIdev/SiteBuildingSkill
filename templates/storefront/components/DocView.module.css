@@ -59,7 +59,11 @@
    товар; колонка тянется на всю высоту ряда, чтобы было, по чему ехать. */
 .side{display:flex;flex-direction:column;gap:var(--air-group);align-self:stretch}
 .side > .toc{overflow:visible}
-.along{align-self:stretch}
+/* Приклеенный товар встаёт под прилипшую шапку шагом верха страницы (`--air-group`):
+   от шапки до первой строки — тот же шаг, что у крошек и имени каждой страницы
+   (check:craft pageTop). По умолчанию `pinned` встаёт на цель ссылки — с плавающим
+   зазором и воздухом блока, шаг другой. */
+.along{align-self:stretch;--pin-top:calc(var(--chrome-stuck) + var(--air-group))}
 @container (max-width:819px){
   .toc,.side{display:none}
   .peek{display:block;margin-block-start:var(--air-row)}
