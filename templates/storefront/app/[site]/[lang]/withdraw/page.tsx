@@ -4,11 +4,9 @@ import { langOf } from '@/lib/route.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { t } from '@/lib/i18n/index.ts'
 import { toMetadata } from '@/lib/seo.ts'
-import { breadcrumbLd } from '@/lib/ld.ts'
 import { withdraw } from '@/lib/actions/withdraw.ts'
 import { withdrawWords } from '@/lib/doc-view.ts'
-import { Breadcrumbs, trailTo } from '@/components/Breadcrumbs.tsx'
-import { JsonLd } from '@/components/JsonLd.tsx'
+import { PageCrumbs } from '@/components/Breadcrumbs.tsx'
 import { WithdrawForm } from '@/components/WithdrawForm.tsx'
 
 type Props = { params: Promise<{ lang: string }> }
@@ -25,12 +23,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
    — шапка страницы сайта (`pagehead`), форма — мерой формы, как касса. */
 export default async function WithdrawPage({ params }: Props) {
   const lang = await langOf(params)
-  const home = { name: t(lang, 'crumb.home'), href: hrefFor(lang, { home: true }) }
   const title = t(lang, 'withdraw.title')
   return (
     <main id="main" className={`${p.wrap} ${p.section}`} data-air="head">
-      <JsonLd data={breadcrumbLd([home, { name: title, href: hrefFor(lang, { withdraw: true }) }])} />
-      <Breadcrumbs trail={trailTo([home], title)} label={t(lang, 'crumb.label')} />
+      <PageCrumbs lang={lang} name={title} href={hrefFor(lang, { withdraw: true })} />
       <div className={p.stack}>
         <div className={p.pagehead}>
           <h1>{title}</h1>

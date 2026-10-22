@@ -9,12 +9,12 @@ import type { Listing, Result } from '@/lib/source/contract.ts'
 import { hrefFor } from '@/lib/href.ts'
 import { t } from '@/lib/i18n/index.ts'
 import { toMetadata } from '@/lib/seo.ts'
-import { articleLd, breadcrumbLd } from '@/lib/ld.ts'
+import { articleLd } from '@/lib/ld.ts'
 import { docView, plainOf } from '@/lib/doc-view.ts'
 import { nextReads, postCard, postHeadView } from '@/lib/post-view.ts'
 import { shelfCard } from '@/lib/view.ts'
 import { cartSubmit, cartCall } from '@/lib/actions/cart.ts'
-import { Breadcrumbs, trailTo } from '@/components/Breadcrumbs.tsx'
+import { PageCrumbs } from '@/components/Breadcrumbs.tsx'
 import { DocView } from '@/components/DocView.tsx'
 import { Icon } from '@/components/Icon.tsx'
 import { JsonLd } from '@/components/JsonLd.tsx'
@@ -59,8 +59,6 @@ export default async function PostPage({ params }: Props) {
   }
   const post = r.value
   const href = hrefFor(lang, { post: slug })
-  const home = { name: t(lang, 'crumb.home'), href: hrefFor(lang, { home: true }) }
-  const blog = { name: t(lang, 'blog.title'), href: hrefFor(lang, { blog: true }) }
   /* Полка вида товара статьи: у образца вид — поле полки (`form`), у движка
      cbdin вид совпадает с адресом полки. Нет такой полки — нет и ряда. */
   const shelf = post.shelf && cols.ok ? cols.value.find((c) => c.form === post.shelf || c.slug === post.shelf) ?? null : null
@@ -70,9 +68,8 @@ export default async function PostPage({ params }: Props) {
   const faq = post.faq.length ? { type: 'faq' as const, title: t(lang, 'blog.faq'), items: post.faq.map((x) => ({ q: plainOf(x.q), a: plainOf(x.a) })) } : null
   return (
     <main id="main" className={`${p.wrap} ${p.section}`} data-air="head">
-      <JsonLd data={breadcrumbLd([home, blog, { name: post.title, href }])} />
       <JsonLd data={articleLd({ title: post.title, summary: post.summary, date: post.date, href, lang })} />
-      <Breadcrumbs trail={trailTo([home, blog], post.title)} label={t(lang, 'crumb.label')} />
+      <PageCrumbs lang={lang} blog name={post.title} href={href} />
       <DocView
         view={docView(lang, post)}
         head={<PostHead view={postHeadView(lang, post)} />}
