@@ -88,7 +88,7 @@ export function DocView({ view, table, meta, head, intro, slots, children }: {
           <nav className={s.peek} aria-label={view.toc.label} data-print="skip">
             <details className={m.fold}>
               <summary>{view.toc.label} ({view.toc.items.length})<Turn /></summary>
-              <ul className={m.list}>{items}</ul>
+              <ul className={m.list} data-wrap>{items}</ul>
             </details>
           </nav>
         ) : null}
@@ -98,7 +98,7 @@ export function DocView({ view, table, meta, head, intro, slots, children }: {
         <div className={`${p.sidebar} ${s.body}`}>
           <nav className={`${p.aside} ${p.pinned} ${s.toc}`} aria-labelledby="doc-toc" data-print="skip">
             <p id="doc-toc" className={m.group}>{view.toc.label}</p>
-            <ul className={m.list}>{items}</ul>
+            <ul className={m.list} data-wrap>{items}</ul>
           </nav>
           {parts}
         </div>

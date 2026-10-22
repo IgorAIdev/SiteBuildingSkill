@@ -4,7 +4,10 @@
    «успеха» и говорит об этом. Родной `progress`: чтец читает значение и без
    скрипта. Порог и сумма — данные магазина (`lib/cart-view.ts`, `goalView`),
    здесь только вид. Состояний руки у полосы нет: она показывает ход. */
-.goal{display:flex;flex-direction:column;gap:var(--gap-targets);font-size:var(--blurb-size);line-height:var(--blurb-lead);color:var(--ink)}
+/* Слова → полоса — оптикой `--sp-2`: полоса не цель пальца, и зазор между целями
+   (`--gap-targets`) делал её на телефоне дальше от слов, чем на ноутбуке (16 против
+   8; замер 22.10.2026). */
+.goal{display:flex;flex-direction:column;gap:var(--sp-2);font-size:var(--blurb-size);line-height:var(--blurb-lead);color:var(--ink)}
 .say{display:flex;align-items:center;gap:var(--sp-2);margin:0}
 .say b{font-weight:var(--cardprice-weight)}
 .say svg{inline-size:1.25em;block-size:1.25em;flex:none;color:var(--ok)}

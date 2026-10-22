@@ -1240,6 +1240,19 @@ export const auditRoles = (sets, name) => {
       findings.push({ rule: 'соотношение ролей', got: `${o.above} выше ${o.below} на ${gap} ступ.`, need: `${o.steps !== undefined ? `ровно ${o.steps}` : `не меньше ${o.min}`} — ${o.why}` })
     }
   }
+  /* Текст, который читают, — не мельче вторичной ступени (`sm`, пол TYPE.floor.sm 14):
+     сноска стояла ступенью `xs` (12) — строка дат статьи, счёт полки, «прежняя цена»
+     скидки и подсказки полей были мельче крошек (14), то есть подпись мельче
+     навигации (заказчик 22.10.2026: «размер текста… восемь, что ли? даже для крошек
+     больший размер текста»). Строка данных у cbdshop.bg и Healthline — 14 (замер,
+     docs/design/блог.md). Ступень `xs` остаётся надписи-значку (`eyebrow`: «.HR» у
+     марки) и надписям органов (`--ctrl-fs-xs`, число на значке). */
+  const sm = ladder.indexOf('sm')
+  for (const [role, r] of Object.entries(roles)) {
+    if (r.род !== 'текст' || role === 'eyebrow' || sm < 0) continue
+    const at = stepOf(role)
+    if (at >= 0 && at < sm) findings.push({ rule: 'текст для чтения не мельче вторичной ступени', got: `${role}: ступень ${String(r.размер).replace(/^--fs-/, '')}`, need: `не ниже sm (${TYPE.floor.sm}px на телефоне) — подпись не мельче крошек и меню` })
+  }
   /* Толщина — тоже соотношение, ступенями лестницы WEIGHTS (И589). */
   for (const o of WEIGHT_ORDER) {
     if (!roles[o.role] || !roles[o.of]) continue

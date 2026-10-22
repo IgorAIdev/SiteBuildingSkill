@@ -22,7 +22,10 @@
 .state:is(:has(> h1), :has(> .head > h1), [data-flush]){padding-block:0}
 /* Заголовок и строка под ним — одна мысль: воздух `--air-line`, а не группы (headAir, И524). */
 .head{display:grid;gap:var(--air-line)}
-.head > p{margin:0;font-size:var(--blurb-size);line-height:var(--blurb-lead);color:var(--ink-soft)}
+/* Строка под заголовком пустого экрана — роль подписи страницы (`lede`), как у
+   каждой шапки сайта: стояла кеглем описания карточки (14 при 16 у всех подписей;
+   замер 22.10.2026, пустая корзина). */
+.head > p{margin:0;font-size:var(--lede-size);line-height:var(--lede-lead);font-weight:var(--lede-weight);letter-spacing:var(--lede-track);color:var(--ink-soft)}
 /* Поле поиска держит меру строки само (SearchForm.module.css): правило о
    поле живёт у поля, а не у каждого, кто его ставит. */
 /* Экран-страница без поля — по центру: знак в тихом круге (полтора роста

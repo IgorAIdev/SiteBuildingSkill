@@ -23,7 +23,6 @@ export const EN: Record<keyof typeof RO, string> = {
   'blog.count.other': '{n} articles',
   'blog.latest': 'updated on {date}',
   'blog.all': 'All',
-  'blog.startHere': 'Start here',
   'blog.tldr': 'In short',
   'blog.sources': 'Sources',
   'blog.next': 'Read next',

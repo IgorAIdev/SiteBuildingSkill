@@ -16,6 +16,14 @@ export const SIGN: Record<Reach | Social | Pay, string> = {
   visa: 'visa', mastercard: 'mastercard', applepay: 'applepay', googlepay: 'googlepay',
 }
 
+/* Ряд соцсетей подвала — одним пером, линией (`*-line`, Lucide): силуэты марок
+   (Instagram, Facebook, YouTube — заливкой Simple Icons) стояли рядом с самолётиком
+   Telegram нашим пером — два вида знаков в одном ряду (заказчик 22.10.2026: «иконки
+   разного типа — почему и зачем»; то же 01.10.2026: «некоторые иконки могут иметь два
+   типа»). Самолётик — без круга, как решено на cbdin.bg. Меню связи и быстрый заказ
+   держат свои знаки (`SIGN`): там мессенджеры в красках марок, силуэтом. */
+export const SOCIAL_SIGN: Record<Social, string> = { instagram: 'instagram-line', facebook: 'facebook-line', youtube: 'youtube-line', telegram: 'send' }
+
 /* Знак кнопки входа через поставщика (И787) — своя карта: у кнопки входа
    знак самого поставщика своими красками, по его правилам, на любом полу —
    Google «G» четырьмя красками (`google-color`, из кнопки Google Identity

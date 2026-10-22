@@ -10,7 +10,7 @@ import { hasOptional } from '@/lib/consent-view.ts'
 import { ConsentOpen } from './ConsentOpen.tsx'
 import { shopContacts, shopMessengers, shopSocials, chatHref, telHref, mailHref } from '@/lib/contacts.ts'
 import { Icon } from './Icon.tsx'
-import { SIGN } from './marks.ts'
+import { SIGN, SOCIAL_SIGN } from './marks.ts'
 import { Logo } from './Logo.tsx'
 import { Newsletter } from './Newsletter.tsx'
 import { PayMarks } from './PayMarks.tsx'
@@ -81,7 +81,7 @@ export function Footer({ lang, docs, shelves, idPrefix = '' }: { lang: Lang; doc
               что у ссылок рядом (правило 10, И685). Оплата — ниже всех ссылок
               в основании подвала, знаками без плашки (`PayMarks`, И549, И783). */}
           <ul className={`${p.cluster} ${s.social}`} aria-label={t(lang, 'footer.social')}>
-            {shopSocials().filter((x) => x.href).map((x) => <li key={x.key}><a className={b.btn} data-voice="bare" data-pager="" href={x.href} target="_blank" rel="noopener noreferrer" aria-label={x.label}><Icon id={SIGN[x.key]} /></a></li>)}
+            {shopSocials().filter((x) => x.href).map((x) => <li key={x.key}><a className={b.btn} data-voice="bare" data-pager="" href={x.href} target="_blank" rel="noopener noreferrer" aria-label={x.label}><Icon id={SOCIAL_SIGN[x.key]} /></a></li>)}
           </ul>
         </div>
         <div className={`${p.cluster} ${s.cols}`}>

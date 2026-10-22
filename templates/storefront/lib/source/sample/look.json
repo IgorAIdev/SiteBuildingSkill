@@ -208,7 +208,7 @@
     "--body-weight": "400",
     "--body-track": "0",
     "--body-measure": "var(--measure)",
-    "--note-size": "var(--fs-xs)",
+    "--note-size": "var(--fs-sm)",
     "--note-lead": "1.45",
     "--note-weight": "400",
     "--note-track": "0",
