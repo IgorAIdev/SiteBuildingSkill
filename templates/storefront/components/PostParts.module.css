@@ -7,12 +7,17 @@
    теперь потолок режет высоту, снимок обрезается по своему фокусу. */
 .cover{--frame:var(--cover-frame);--frame-cap:50svh;border-radius:var(--r-card);inline-size:100%}
 
-/* «Pe scurt» — тон марки (cbdshop.bg: зелёно-серая плашка с ярлыком), поле и
-   угол — роли листа; ярлык — фишка сайта. Мера строки — текста. */
+/* «In short» — тон марки, поле и угол — роли листа. Имя блока — словом голосом
+   «называет» (вес `label`, кегль текста), как «Key takeaways» у Healthline, а не
+   пилюлей: пилюля — форма кнопки, и ненажимаемое имя читалось кнопкой (заказчик
+   22.10.2026: «пилюли не нужно применять, это у кнопок применяется»; tests/buttons,
+   «pill only on what is pressed»). Имя → текст — шаг малого заголовка. */
 .tldr{
-  display:flex;flex-direction:column;align-items:flex-start;gap:var(--gap-row);
+  display:flex;flex-direction:column;align-items:flex-start;gap:var(--air-tight);
   padding:var(--pad-card);border-radius:var(--r-card);background:var(--pop-tint)
 }
+
+.tldrHead{margin:0;font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--label-weight);color:var(--ink)}
 
 /* Заголовок «Surse» — ступень раздела документа (DocView: `--h2-at` на роль ниже). */
 .heading{--h2-at:var(--h3-size)}

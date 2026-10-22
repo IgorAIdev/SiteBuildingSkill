@@ -43,7 +43,7 @@ export function PostIntro({ image, tldr, tldrLabel }: { image: Image | null; tld
       {image ? <div className={`${p.frame} ${s.cover}`}><img {...shot(image, 'wide')} alt={image.alt} fetchPriority="high" /></div> : null}
       {tldr ? (
         <aside className={s.tldr} aria-label={tldrLabel}>
-          <p className={p.chip} data-pill>{tldrLabel}</p>
+          <p className={s.tldrHead}>{tldrLabel}</p>
           <p>{tldr}</p>
         </aside>
       ) : null}
