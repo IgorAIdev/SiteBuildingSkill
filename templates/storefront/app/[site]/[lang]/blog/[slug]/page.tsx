@@ -74,7 +74,7 @@ export default async function PostPage({ params }: Props) {
       <DocView
         view={doc}
         head={<PostHead view={postHeadView(lang, post)} />}
-        side={shelf && cards.length ? <ReadAlong ids={doc.toc?.items.map((x) => x.id) ?? []} label={t(lang, 'blog.products')}>{cards.slice(0, 6).map((c) => <ProductCard key={c.id} card={c} cart={CART} />)}</ReadAlong> : undefined}
+        side={shelf && cards.length ? <ReadAlong heads={doc.toc?.items ?? []} label={t(lang, 'blog.products')}>{cards.slice(0, 6).map((c) => <ProductCard key={c.id} card={c} cart={CART} />)}</ReadAlong> : undefined}
         intro={<PostIntro image={post.image} tldr={post.tldr} tldrLabel={t(lang, 'blog.tldr')} />}
       >
         <PostSources title={t(lang, 'blog.sources')} sources={post.sources} important={t(lang, 'blog.important')} disclaimer={t(lang, 'blog.disclaimer')} />
