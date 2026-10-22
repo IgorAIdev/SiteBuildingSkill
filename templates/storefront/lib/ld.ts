@@ -39,10 +39,12 @@ export function productLd(product: Product, variant: Variant | null): Record<str
   return ld
 }
 
-/** Статья блога: то, что нарисовано, — имя, строка о ней, дата, издатель. */
-export const articleLd = (a: { title: string; summary: string; date: string; href: string; lang: string }) => ({
+/** Статья блога: то, что нарисовано, — имя, строка о ней, даты, издатель. Дата правки
+ *  (`dateModified`) — только если статью правили: на странице видна она (Google, Article:
+ *  «datePublished» и «dateModified»). */
+export const articleLd = (a: { title: string; summary: string; date: string; updated?: string | null; href: string; lang: string }) => ({
   '@context': 'https://schema.org', '@type': 'Article', headline: a.title, description: a.summary,
-  datePublished: a.date, inLanguage: a.lang, mainEntityOfPage: absolute(a.href),
+  datePublished: a.date, ...(a.updated ? { dateModified: a.updated } : {}), inLanguage: a.lang, mainEntityOfPage: absolute(a.href),
   publisher: { '@type': 'Organization', name: shopCompany().name, url: SITE_URL() },
 })
 export const breadcrumbLd = (trail: { name: string; href: string }[]) => ({

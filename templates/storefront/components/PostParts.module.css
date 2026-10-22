@@ -29,10 +29,13 @@
 /* Сноска — во всю колонку, как текст статьи над ней (И802): коробка уже колонки
    рвала её правую вертикаль (762 при колонке 1386, check:craft lopsided 05.10.2026). */
 .important{font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft)}
-/* Подпись статьи — автор и строка данных одной группой в две строки (PostParts.tsx,
-   `PostHead`): строки идут шагом своего межстрочья, без воздуха между ними. Рубрика —
-   ссылка в конце строки данных, краской строки, с чертой. */
-.byline > span{display:block}
+/* Подпись статьи (PostParts.tsx, `PostHead`) — под подзаголовком шагом строки сноски
+   (`--air-row`), двумя группами через `--air-tight`: кто написал — имя ролью текста
+   голосом «называет» (`label`-вес), роль под ним сноской; строка данных — сноской.
+   Рубрика — ссылка в конце строки данных, краской строки, с чертой. */
+.byline{display:flex;flex-direction:column;gap:var(--air-tight);margin-block-start:var(--air-row)}
+.who{display:flex;flex-direction:column;font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--label-weight);color:var(--ink)}
+.role,.facts{font-size:var(--note-size);line-height:var(--note-lead);font-weight:var(--note-weight);color:var(--ink-soft)}
 .topic{color:inherit;text-underline-offset:.2em}
 /* «Источники» → их список — воздух строки, как заголовок раздела → абзац статьи
    (DocView.module.css, `.part`); стоял шаг стопки по умолчанию — воздух блока 44 / 32

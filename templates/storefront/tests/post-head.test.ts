@@ -16,8 +16,9 @@ test('the article head starts with its name: nothing stands above the h1', () =>
   assert.equal(first, '<h1>', 'первым в шапке статьи — имя (h1); рубрика — в строке данных')
 })
 
-test('author and dates are one byline note, the topic a link inside it', () => {
-  assert.equal((body.match(/p\.note/g) ?? []).length, 1, 'подпись — одна сноска, а не две строки через воздух')
-  const byline = body.slice(body.indexOf('p.note'))
-  assert.match(byline, /topic\.href/, 'рубрика — ссылкой в подписи')
+test('the byline is two groups — who wrote it, then one data row with the topic link', () => {
+  const byline = body.slice(body.indexOf('className={s.byline}'))
+  assert.ok(byline.length < body.length, 'подпись — свой блок `byline`')
+  assert.match(byline, /className=\{s\.who\}[\s\S]*className=\{s\.role\}/, 'автор: имя и роль под ним')
+  assert.match(byline, /className=\{s\.facts\}[\s\S]*topic\.href/, 'строка данных с рубрикой ссылкой')
 })
