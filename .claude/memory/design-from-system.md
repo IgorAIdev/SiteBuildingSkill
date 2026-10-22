@@ -21,3 +21,13 @@ chose (`CategoryPaths` for shelf buttons). A spare panel variant is not the site
 design. Never claim «as you chose» without reading the published look. Rule in
 CLAUDE.md «Новое — из дизайн-системы сайта», check `check:system` family `lookChosen`.
 Related: [[one-pane-one-sheet]], [[verify-pages-use-system]].
+
+Same day, second case (another session's work, 808cecff): blog card «Read the article ↗»
+copied the look of «View all» but invented its own hover/press (brand ink, arrow nudge
+up-right), and the card title turned brand on hover — no other card on the site does
+either. Owner: «где ты взял эту кнопку и откуда её дизайн наведение / нажатие?». Fixed
+by taking the real control (`b.word` + `data-hand="menu"` + RailHead `.all`) and the card
+response of door / product card (edge + creep, name silent). States are part of the
+design system too: before shipping, compare hover and press with the same control
+elsewhere, not only the rest look. A comment «as at X» must be checked against X.
+
