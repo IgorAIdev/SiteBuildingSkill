@@ -1,0 +1,11 @@
+/* Товар у чтения (ReadAlong.tsx). Подпись — подписью группы меню, как «On this page»
+   над оглавлением; карточки лежат одна на другой в одной ячейке, видна текущая. Смена —
+   спокойным проявлением за `--hover-t` × 3; при «уменьшить движение» — сразу. */
+.read{display:flex;flex-direction:column;gap:var(--sp-2)}
+.slots{display:grid}
+.slot{grid-area:1 / 1;visibility:hidden;opacity:0}
+.slot[data-on]{visibility:visible;opacity:1}
+@media (prefers-reduced-motion:no-preference){
+  .slot{transition:opacity calc(var(--hover-t) * 3) var(--ease), visibility 0s linear calc(var(--hover-t) * 3)}
+  .slot[data-on]{transition:opacity calc(var(--hover-t) * 3) var(--ease), visibility 0s}
+}
