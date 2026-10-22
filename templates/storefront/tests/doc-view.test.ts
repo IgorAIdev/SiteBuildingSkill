@@ -205,7 +205,9 @@ test('the contents fold into one line on a narrow box; dates are machine-readabl
   const at = (path: string) => readFileSync(new URL(path, import.meta.url), 'utf8')
   const view = at('../components/DocView.tsx')
   const css = at('../components/DocView.module.css')
-  assert.match(view, /<nav className=\{s\.peek\} aria-label=\{view\.toc\.label\} data-print="skip">\s*<details className=\{m\.fold\}>\s*<summary>\{view\.toc\.label\} \(\{view\.toc\.items\.length\}\)<Turn \/><\/summary>/, 'свёртка оглавления — вид свёртки меню, в своём ориентире nav')
+  assert.match(view, /<nav className=\{s\.peek\} aria-label=\{toc\.label\} data-print="skip">\s*<details className=\{m\.fold\}>\s*<summary>\{toc\.label\} \(\{toc\.items\.length\}\)<Turn \/><\/summary>/, 'свёртка оглавления — вид свёртки меню, в своём ориентире nav')
+  /* У статьи с товаром у чтения оглавления нет — колонку занимает товар (22.10.2026). */
+  assert.match(view, /const toc = side \? null : view\.toc/, 'side занимает колонку оглавления')
   assert.match(css, /\.peek\{display:none\}[\s\S]*?@container \(max-width:819px\)\{\s*\.toc,\.side\{display:none\}\s*\.peek\{display:block;margin-block-start:var\(--air-row\)\}/, 'свёртка — только ниже шва 820, колонка — только выше; свёртка — в шапке документа, шагом строки группы')
   assert.match(view, /<time dateTime=\{view\.updatedIso \?\? undefined\}>\{view\.updated\}<\/time>/)
   assert.match(view, /aria-labelledby="doc-toc" data-print="skip"/)
