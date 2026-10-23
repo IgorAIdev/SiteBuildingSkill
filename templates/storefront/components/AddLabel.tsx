@@ -23,7 +23,10 @@ import { useInCart } from '@/lib/in-cart.ts'
    на две строки — это непозволительно… если не помещается, можно убирать
    иконку, чтоб поместилась цифра количества»). Надпись меряет место в своей
    кнопке и уступает по порядку (`data-fit`, styles/btn.module.css): 0 — всё,
-   1 — без знака, 2 — число со знаком, без слов. Число не уходит никогда.
+   1 — без знака, 2 — число со знаком, без слов, 3 — числа нет и слова не входят
+   даже без знака: один знак (круглая кнопка строки товара в статье, PostProducts:
+   слова «Add to cart» и «Add» вылезали из круга 40 — снимок заказчика 23.10.2026).
+   Число не уходит никогда.
    Мерка — как у «Ещё» в меню полок (NavLinks): длина слова зависит от
    языка, числа — от корзины, и порог в rem угадал бы только один язык. */
 export function AddLabel({ variant, add, short, added }: { variant?: string | null; add: string; short?: string; added: string }) {
@@ -67,5 +70,5 @@ function fit(el: HTMLElement, btn: HTMLElement) {
   const gap = parseFloat(getComputedStyle(el).columnGap) || 0
   const label = width(el.firstElementChild), sign = width(el.lastElementChild)
   const n = el.querySelector('[data-part="n"]')
-  el.dataset.fit = label + gap + sign <= room ? '0' : label <= room || !n ? '1' : '2'
+  el.dataset.fit = label + gap + sign <= room ? '0' : label <= room ? '1' : n ? '2' : '3'
 }

@@ -4,6 +4,7 @@ import { t } from './i18n/index.ts'
 import { hrefFor } from './href.ts'
 import { source, content } from './source/index.ts'
 import { moneyShort } from './money.ts'
+import { NOTICE } from './notice.ts'
 import { effectCopy } from './content/shop-copy.ts'
 import { EFFECT_FACET } from './source/effect.ts'
 import { formOf } from './source/details.ts'
@@ -41,7 +42,8 @@ export type NavGroup = { name: string; links: { label: string; href: string }[] 
  *  обещания магазина. */
 /** Служебная ссылка: адрес, слово и знак строки в низу шторки меню (И770). */
 export type ServiceLink = { href: string; label: string; sign: string | null }
-export type TopBar = { links: ServiceLink[]; promo: { text: string; href: string | null } }
+/** `notice` — объявление магазина (lib/notice.ts) стоит вместо обещания доставки. */
+export type TopBar = { links: ServiceLink[]; promo: { text: string; href: string | null; notice: boolean } }
 export type ShellData = { nav: NavLink[]; docs: Doc[]; service: ServiceLink[]; top: TopBar }
 
 /** Грань, значения которой повторяют полки (Vendure: «category» — oil,
@@ -122,6 +124,9 @@ export async function shellData(lang: Lang): Promise<ShellData> {
   if (posts.ok && posts.value.length) links.push({ href: hrefFor(lang, { blog: true }), label: t(lang, 'nav.blog'), sign: BLOG_SIGN })
   const from = facts.ok ? facts.value.freeDeliveryFrom : null
   const delivery = shown.some((d) => d.slug === DELIVERY) ? hrefFor(lang, { doc: DELIVERY }) : null
-  const promo = { text: from ? t(lang, 'header.freeFrom', { price: moneyShort(from, lang) }) : t(lang, 'header.promise'), href: delivery }
+  const notice = NOTICE[lang]
+  const promo = notice
+    ? { text: notice, href: null, notice: true }
+    : { text: from ? t(lang, 'header.freeFrom', { price: moneyShort(from, lang) }) : t(lang, 'header.promise'), href: delivery, notice: false }
   return { nav, docs: shown, service, top: { links, promo } }
 }

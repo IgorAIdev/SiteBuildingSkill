@@ -69,7 +69,9 @@ const topRow = (lang: Lang, top: TopBar) => (
         <ul>{top.links.map((l) => <li key={l.href}><SiteLink className={b.word} data-hand="menu" href={l.href}>{l.label}</SiteLink></li>)}</ul>
       </nav>
     ) : null}
-    {top.promo.href
+    {/* Объявление магазина (`notice`) — словами без знака, крупно: заказы закрыты, магазин ищет партнёра. */}
+    {top.promo.notice ? <p className={`${s.promo} ${s.notice}`}>{top.promo.text}</p>
+      : top.promo.href
       ? <SiteLink className={`${s.promo} ${b.word}`} data-hand="menu" href={top.promo.href}><Icon id="truck" />{top.promo.text}</SiteLink>
       : <p className={s.promo}><Icon id="truck" />{top.promo.text}</p>}
     <div className={s.topTools}>{tools(lang)}</div>
