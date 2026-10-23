@@ -244,8 +244,11 @@ test('places do not restyle a button: Lab report, search Clear, messenger tiles'
   assert.doesNotMatch(bare(read('../components/SearchPane.module.css')).match(/(?:^|\})\s*\.clear\{([^}]*)\}/)?.[1] ?? '', /color:/)
   /* Мессенджеры быстрого заказа — сам список путей окна помощи (ReachList; слово заказчика
      21.10.2026: не кнопка с обводкой; 23.10.2026: «дизайн система не использовалась» — своей
-     плашки и плиток у окна нет); место ставит только число колонок. */
-  assert.match(read('../components/QuickOrder.tsx'), /<ReachList rows=\{rows\} \/>/)
+     плашки и плиток у окна нет; вариант «А» того же дня — список карточкой, `boxed` самого
+     списка); место ставит только число колонок. */
+  assert.match(read('../components/QuickOrder.tsx'), /<ReachList rows=\{rows\} boxed \/>/)
+  /* Имя пути — ростом меню (И286): 14 под пояснением 16 читалось сноской (23.10.2026). */
+  assert.match(bare(read('../components/ReachList.module.css')), /\.name\{font-size:var\(--menu-size\)/)
   assert.doesNotMatch(read('../components/QuickOrder.tsx'), /rl\.|ReachList\.module\.css/)
   const quick = bare(read('../components/QuickOrder.module.css'))
   assert.doesNotMatch(quick, /\.row\b|svg|padding-|border/)

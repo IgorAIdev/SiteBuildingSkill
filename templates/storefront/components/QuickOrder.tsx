@@ -73,22 +73,21 @@ export function QuickOrder({ view }: { view: QuickView }) {
       <dialog ref={ref} className={pn.pane} data-pane="dialog" aria-labelledby={`${id}-title`}>
         <PaneHead title={view.title} titleId={`${id}-title`} close={view.close} onClose={() => ref.current?.close()} />
         <div className={`${pn.body} ${s.body}`}>
-          <div className={s.intro}>
-            <p className={s.lead}>{view.lead}</p>
-            {/* Что заказывают — строкой товара сводки кассы (OrderItems: снимок, марка, имя,
-                упаковка с количеством, сумма), а не голой строкой текста (слово заказчика
-                23.10.2026: «дизайн система не использовалась»). Видно в окне, а не только в
-                набранном сообщении: у Viber и Instagram текста в ссылке нет, и человеку
-                нужно, что написать. */}
-            <OrderItems items={items} />
-          </div>
-          {/* Мессенджеры — тем же списком путей, что окно помощи и меню трубки (ReachList,
-              правило 10): знак краской своей марки, имя, под ним адрес. До 23.10.2026 у окна
-              были свои кнопки с обводкой, потом своя плашка с плитками — вида, которого на
-              сайте нет нигде больше (слово заказчика: «дизайн система не использовалась»).
+          {/* Что заказывают — первым, строкой товара сводки кассы (OrderItems: снимок, марка,
+              имя, упаковка с количеством, сумма), а не голой строкой текста (слово заказчика
+              23.10.2026: «дизайн система не использовалась»). Видно в окне, а не только в
+              набранном сообщении: у Viber и Instagram текста в ссылке нет, и человеку
+              нужно, что написать. */}
+          <OrderItems items={items} />
+          {/* Куда написать — пояснение подписью группы и мессенджеры тем же списком путей, что
+              окно помощи и меню трубки (ReachList, правило 10), карточкой: рамка, черта между
+              строками, уголок в конце (вариант «А» заказчика 23.10.2026 из трёх нарисованных).
               Вид панели `--quick-look` решает только число колонок: строки — одна, плитки —
               две. */}
-          <div className={s.rows}><ReachList rows={rows} /></div>
+          <div className={s.ways}>
+            <p className={s.lead}>{view.lead}</p>
+            <div className={s.rows}><ReachList rows={rows} boxed /></div>
+          </div>
           <div className={f.field}>
             <label className={f.label} htmlFor={`${id}-phone`}>{view.phone.label}</label>
             <input className={f.box} id={`${id}-phone`} type="tel" inputMode="tel" autoComplete="tel" placeholder={view.phone.hint} value={phone} onChange={(e) => setPhone(e.target.value)} />
