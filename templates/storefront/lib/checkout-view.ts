@@ -102,6 +102,8 @@ export function contactView(lang: Lang, contact: Contact | null): ContactView {
       }),
       [field(lang, 'phone', c.phone, { key: 'field.phone', type: 'tel', auto: 'tel' })],
     ],
+    /* Кнопка называет следующий шаг, как «Continue to payment» на доставке (Baymard: «Continue to
+       Payment», не «Continue»; Shopify — «Continue to shipping»; research/checkout-2026-10-22.md). */
     submit: t(lang, 'checkout.continue'),
     policy: { label: t(lang, 'account.policy'), href: hrefFor(lang, { doc: privacyDoc() }) },
   }

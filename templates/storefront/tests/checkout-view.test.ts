@@ -38,7 +38,7 @@ test('contact: fields keep what the checkout already knows, name and surname sid
     ['lastName', 'text', 'family-name', 'Popescu'],
     ['phone', 'tel', 'tel', '0722 123 456'],
   ])
-  assert.equal(v.submit, 'Continuă')
+  assert.equal(v.submit, 'Continuă spre livrare')
 })
 
 /* Порядок имени — факт языка (И381): по-венгерски фамилия первой, и поле

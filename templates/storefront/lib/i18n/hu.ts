@@ -331,7 +331,7 @@ export const HU: Record<keyof typeof RO, string> = {
   'checkout.step.contact': 'Kapcsolati adatok',
   'checkout.step.delivery': 'Szállítás',
   'checkout.step.payment': 'Fizetés',
-  'checkout.continue': 'Tovább',
+  'checkout.continue': 'Tovább a szállításhoz',
   'checkout.change': 'Módosítás',
   'checkout.changeStep': 'Módosítás: {step}',
   'checkout.back': 'Vissza a kosárhoz',

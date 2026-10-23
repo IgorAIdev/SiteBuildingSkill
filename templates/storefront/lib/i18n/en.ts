@@ -331,7 +331,7 @@ export const EN: Record<keyof typeof RO, string> = {
   'checkout.step.contact': 'Contact details',
   'checkout.step.delivery': 'Delivery',
   'checkout.step.payment': 'Payment',
-  'checkout.continue': 'Continue',
+  'checkout.continue': 'Continue to delivery',
   'checkout.change': 'Change',
   'checkout.changeStep': 'Change: {step}',
   'checkout.back': 'Back to cart',
