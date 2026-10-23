@@ -98,3 +98,14 @@ Yield, Algolia, Klevu, Bloomreach publish none).
    has one, and NN/g reports the right rail is skipped — shown to the owner as a fact, not changed.
 6. **CBD:** no product block next to text about a disease or a cure; effect names are allowed
    (И804), disease names and result promises are not.
+
+## Owner's choice (23.10.2026)
+
+Of three phone variants drawn on the owner's own article (A — rows after the section, B — swipe
+rail after the section, C — links in the text and rows at the end), the owner chose **C**:
+products are named as links in the sentence (`[words](product:<id>)`), and «Products in this
+article» after the text repeats them as product rows with add-to-cart, up to four, in the order
+of mention; an article naming no product shows three bestsellers of its shelf. The rail of 8
+under the FAQ is removed. Implemented in `templates/storefront` (`namedProducts`, `PostProducts`);
+rules — skill `shop` (`blocks.md`, «Товар у статьи», fourth round) and `seo-content`
+(`pages.md`, «Гид и статья»).

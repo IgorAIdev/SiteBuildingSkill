@@ -11,16 +11,21 @@ import { SiteLink } from './SiteLink.tsx'
    22.10.2026: «в статье и 2 и 3 продукта можно показывать, одного маловато»). Факты
    («1000 mg · 10 ml») различают товары одного имени — у образца все масла зовутся
    одинаково. */
-export function ProductRow({ card, facts = false }: { card: ShelfCard; facts?: boolean }) {
+/* `stack` — цена в строке упаковки («1000 mg · 10 ml · €39.90»), а не своей колонкой справа:
+   рядом со строкой стоит ещё и «в корзину» (товары статьи, PostProducts), и колонка цены
+   сжимала имя до трёх строк, а этажом под упаковкой поднимала строку до 117. */
+export function ProductRow({ card, facts = false, stack = false }: { card: ShelfCard; facts?: boolean; stack?: boolean }) {
+  const pack = facts && card.facts ? card.facts : null
   return (
-    <SiteLink className={s.hit} href={card.href}>
+    <SiteLink className={s.hit} href={card.href} data-stack={stack ? '' : undefined}>
       <span className={`${p.frame} ${s.thumb}`}><img {...shot(card.image, 'thumb', true)} alt="" decoding="async" /></span>
       <span className={s.what}>
         {card.brand ? <span className={s.brand} translate="no">{card.brand}</span> : null}
         <span className={s.name}>{card.name}</span>
-        {facts && card.facts ? <span className={s.facts}>{card.facts}</span> : null}
+        {stack ? <span className={s.facts}>{pack ? `${pack} · ` : null}<span className={s.price}>{card.price}</span></span>
+          : pack ? <span className={s.facts}>{pack}</span> : null}
       </span>
-      <span className={s.price}>{card.price}</span>
+      {stack ? null : <span className={s.price}>{card.price}</span>}
     </SiteLink>
   )
 }

@@ -2165,20 +2165,20 @@
     },
     "list": {
      "ro": [
-      "Vrei să eviți complet THC-ul, de exemplu pentru că poți fi testat — alege izolat sau broad spectrum cu THC nedetectat.",
-      "Vrei un produs cât mai apropiat de plantă — full spectrum, verificând în buletin cât THC are lotul.",
+      "Vrei să eviți complet THC-ul, de exemplu pentru că poți fi testat — alege [izolat](product:ulei-cbd-izolat-10) sau broad spectrum cu THC nedetectat.",
+      "Vrei un produs cât mai apropiat de plantă — [full spectrum](product:ulei-cbd-full-spectrum), verificând în buletin cât THC are lotul.",
       "Te deranjează mirosul de cânepă — izolatul e aproape neutru.",
       "Compari prețuri — împarte prețul la miligramele de CBD, nu la mililitri."
      ],
      "en": [
-      "You want to avoid THC completely, for example because you may be tested — choose isolate or broad spectrum with THC not detected.",
-      "You want a product as close to the plant as possible — full spectrum, checking on the report how much THC the batch has.",
+      "You want to avoid THC completely, for example because you may be tested — choose [isolate](product:ulei-cbd-izolat-10) or broad spectrum with THC not detected.",
+      "You want a product as close to the plant as possible — [full spectrum](product:ulei-cbd-full-spectrum), checking on the report how much THC the batch has.",
       "The smell of hemp bothers you — an isolate is almost neutral.",
       "You are comparing prices — divide the price by the milligrams of CBD, not by the millilitres."
      ],
      "hu": [
-      "Teljesen kerülnéd a THC-t, például mert tesztelhetnek — válassz izolátumot vagy széles spektrumú terméket, amelyben a THC nem kimutatható.",
-      "A növényhez minél közelebbi terméket szeretnél — teljes spektrum, de nézd meg a jegyzőkönyvben, mennyi THC van a tételben.",
+      "Teljesen kerülnéd a THC-t, például mert tesztelhetnek — válassz [izolátumot](product:ulei-cbd-izolat-10) vagy széles spektrumú terméket, amelyben a THC nem kimutatható.",
+      "A növényhez minél közelebbi terméket szeretnél — [teljes spektrum](product:ulei-cbd-full-spectrum), de nézd meg a jegyzőkönyvben, mennyi THC van a tételben.",
       "Zavar a kender illata — az izolátum szinte semleges.",
       "Árakat hasonlítasz össze — az árat a CBD milligrammjaival oszd el, ne a milliliterekkel."
      ]

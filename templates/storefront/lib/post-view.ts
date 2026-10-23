@@ -113,3 +113,21 @@ export function nextReads(post: Post, posts: readonly Post[], n = 3): Post[] {
   const same = others.filter((p) => post.topic && p.topic?.slug === post.topic.slug)
   return [...same, ...others.filter((p) => !same.includes(p))].slice(0, n)
 }
+
+/** Товары, которые статья называет ссылкой `[слова](product:<id>)` (lib/doc-view.ts), — по
+ *  порядку первого упоминания, без повторов; текст разделов, списки, сноски и таблицы. Это и
+ *  есть «Products in this article» в конце статьи (вариант «В», слово заказчика 23.10.2026):
+ *  редактор называет товар в тексте — блок в конце собирается сам, второго списка нет. */
+const PRODUCT_LINK = /\]\(product:([a-z0-9-]+)\)/g
+export function namedProducts(post: Pick<Post, 'sections'>): string[] {
+  const seen = new Set<string>()
+  for (const s of post.sections) {
+    const texts = [s.body, ...(s.list ?? []), s.note ?? '', ...(s.table?.rows.flat() ?? [])]
+    for (const text of texts) for (const m of text.matchAll(PRODUCT_LINK)) seen.add(m[1])
+  }
+  return [...seen]
+}
+/** В конце статьи — до четырёх названных товаров (повтор того, что статья назвала: research,
+ *  «блок — 1–3, потолок 5»); статья, не назвавшая товаров, ставит три ходовых своей полки. */
+export const NAMED_MAX = 4
+export const SHELF_FALLBACK = 3
