@@ -10,3 +10,8 @@
 .name{font-weight:var(--prodhead-weight);overflow-wrap:anywhere}
 .facts{font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft)}
 .price{font-weight:var(--cardprice-weight);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* Цена в строке упаковки (`stack`): у строки есть сосед справа — «в корзину» (товары статьи);
+   цена — краской текста, вес цены карточки. */
+.hit[data-stack]{grid-template-columns:var(--ctrl-h-lg) minmax(0, 1fr)}
+.facts .price{color:var(--ink)}

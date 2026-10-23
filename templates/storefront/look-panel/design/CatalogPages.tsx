@@ -31,6 +31,7 @@ import { ReadAlong } from '@/components/ReadAlong.tsx'
 import { ProductCard } from '@/components/ProductCard.tsx'
 import { BlogIndex } from '@/components/BlogIndex.tsx'
 import { PostHead, PostIntro, PostSources } from '@/components/PostParts.tsx'
+import { PostProducts } from '@/components/PostProducts.tsx'
 import { WithdrawForm } from '@/components/WithdrawForm.tsx'
 import { DeliveryTable } from '@/components/DeliveryTable.tsx'
 import { ContactForm } from '@/components/ContactForm.tsx'
@@ -195,7 +196,7 @@ export async function CatalogPages({ lang }: { lang: Lang }) {
       <Part title="Блог" lede="Список статей: имя, строка о блоге и счёт с датой последней правки; рубрики словами, текущая подчёркнута; сетка карточек — закреплённая первой тем же видом, остальные новыми первыми; в карточке снимок обложкой, имя, описание и низ — минуты чтения, рубрика и «Read the article». Так же устроена страница рубрики, только без закреплённой.">
         {posts.ok && topics.ok ? <div lang={lang}><BlogIndex view={blogIndexView(lang, posts.value, topics.value)} label={t(lang, 'blog.topics')} /></div> : null}
       </Part>
-      <Part title="Статья блога" lede="Страница-документ со своими частями: имя, подзаголовок, подпись — автор и строка данных (дата правки, минуты чтения, рубрика ссылкой); обложка и «In short» — первыми в колонке текста; слева — оглавление и товар у чтения: одна карточка едет с колонкой и сменяется по разделам; после текста — источники и тихая оговорка. Ниже на сайте идут вопросы, товары и «Read next».">
+      <Part title="Статья блога" lede="Страница-документ со своими частями: имя, подзаголовок, подпись — автор и строка данных (дата правки, минуты чтения, рубрика ссылкой); обложка и «In short» — первыми в колонке текста; слева — оглавление и товар у чтения: одна карточка едет с колонкой и сменяется по разделам; товары, названные в тексте, — ссылками там, где названы, и строками «Products in this article» после текста (до четырёх; статья без названных — три ходовых своей полки); затем источники и тихая оговорка. Ниже на сайте идут вопросы и «Read next».">
         {post ? (
           <div lang={lang}>
             <DocView
@@ -204,6 +205,7 @@ export async function CatalogPages({ lang }: { lang: Lang }) {
               intro={<PostIntro image={post.image} tldr={post.tldr} tldrLabel={t(lang, 'blog.tldr')} />}
               side={saved.length ? <ReadAlong heads={docView(lang, post).toc?.items ?? []} label={t(lang, 'blog.products')}>{saved.slice(0, 3).map((c) => <ProductCard key={c.id} card={c} cart={{ submit: cartSubmit, call: cartCall }} />)}</ReadAlong> : undefined}
             >
+              {saved.length ? <PostProducts title={t(lang, 'blog.inArticle')} cards={saved.slice(0, 3)} cart={{ submit: cartSubmit, call: cartCall }} /> : null}
               <PostSources title={t(lang, 'blog.sources')} sources={post.sources} important={t(lang, 'blog.important')} disclaimer={t(lang, 'blog.disclaimer')} />
             </DocView>
           </div>

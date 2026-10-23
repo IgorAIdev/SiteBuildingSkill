@@ -45,6 +45,9 @@ export function targetOf(lang: Lang, target: string): { href: string; external: 
   if (target === 'withdraw') return { href: hrefFor(lang, { withdraw: true }), external: false }
   if (target === 'catalog') return { href: hrefFor(lang, { catalog: true }), external: false }
   if (target.startsWith('post:')) return { href: hrefFor(lang, { post: target.slice(5) }), external: false }
+  /* Товар, названный в тексте статьи, — ссылкой на него там, где назван (Baymard: всё, что
+     показано в тексте, должно быть достижимо; research/article-products-2026-10-23.md). */
+  if (target.startsWith('product:')) return { href: hrefFor(lang, { product: target.slice(8) }), external: false }
   if (/^https:\/\/[^\s]+$/.test(target)) return { href: target, external: true }
   return null
 }

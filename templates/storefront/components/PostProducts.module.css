@@ -1,0 +1,13 @@
+/* Товары статьи (PostProducts.tsx) — лист в колонке текста: заголовок ролью части описания
+   (`parthead`, как заголовки разделов статьи рядом), строки товара сайта через волосок, справа
+   у строки — «в корзину» кнопкой-знаком. Лист — поверхность сайта, как лист страницы корзины
+   (Cart.module.css, `.sheet`). От текста над листом — воздух блока. */
+.box{
+  margin-block-start:var(--air-block);display:flex;flex-direction:column;gap:var(--air-tight);
+  padding:var(--pad-card);border-radius:var(--r-card);background:var(--surface)
+}
+.title{margin:0;font-size:var(--parthead-size);line-height:var(--parthead-lead);font-weight:var(--parthead-weight);letter-spacing:var(--parthead-track)}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.item{display:grid;grid-template-columns:minmax(0, 1fr) auto;align-items:center;column-gap:var(--gap-row)}
+.item + .item{border-block-start:var(--line-w) solid var(--rule)}
+.buy{position:relative;display:flex;flex-direction:column;align-items:flex-end}

@@ -25,6 +25,7 @@ export const RO = {
   'blog.sources': 'Surse',
   'blog.next': 'Citește mai departe',
   'blog.products': 'Produse potrivite',
+  'blog.inArticle': 'Produse din acest articol',
   'blog.important': 'Important',
   'blog.disclaimer': 'Articolele sunt informative și nu înlocuiesc sfatul medicului sau al farmacistului. Produsele cu CBD nu sunt medicamente și se vând doar persoanelor peste 18 ani. Regulile diferă de la o țară la alta — verifică legea locului în care te afli.',
   'blog.back': 'Înapoi la ghid',

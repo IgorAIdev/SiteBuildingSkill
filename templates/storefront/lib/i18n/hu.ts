@@ -27,6 +27,7 @@ export const HU: Record<keyof typeof RO, string> = {
   'blog.sources': 'Források',
   'blog.next': 'Olvasd tovább',
   'blog.products': 'Illő termékek',
+  'blog.inArticle': 'A cikkben szereplő termékek',
   'blog.important': 'Fontos',
   'blog.disclaimer': 'A cikkek tájékoztató jellegűek, és nem helyettesítik az orvos vagy a gyógyszerész tanácsát. A CBD-termékek nem gyógyszerek, és csak 18 év felettieknek értékesítjük őket. A szabályok országonként eltérnek — nézd meg, mit mond a helyi jog.',
   'blog.back': 'Vissza az útmutatóhoz',

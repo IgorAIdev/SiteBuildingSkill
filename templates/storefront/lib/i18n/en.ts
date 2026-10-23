@@ -27,6 +27,7 @@ export const EN: Record<keyof typeof RO, string> = {
   'blog.sources': 'Sources',
   'blog.next': 'Read next',
   'blog.products': 'Matching products',
+  'blog.inArticle': 'Products in this article',
   'blog.important': 'Important',
   'blog.disclaimer': 'The articles are for information and do not replace the advice of a doctor or pharmacist. CBD products are not medicines and are sold only to adults over 18. Rules differ from country to country — check the law where you are.',
   'blog.back': 'Back to the guide',
