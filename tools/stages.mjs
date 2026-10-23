@@ -745,6 +745,8 @@ export const STAGES = [
         take: 'прочитать один раз перед сдачей как список; меряется уже семьями check:craft.' },
       { name: 'web-quality-skills/best-practices (SECURITY.md)', url: 'https://github.com/addyosmani/web-quality-skills',
         take: 'заголовки безопасности (CSP, HSTS, X-Content-Type-Options) — это конфиг нгинкса в deploy/, не разметка; сверить один раз перед сдачей. Остальное (doctype, кодировка, viewport, aspect-ratio снимков) уже в check:seo и check:craft.' },
+      { name: 'autopilot (nick-vels/skills) — слепая приёмка и ревью ветки', url: 'https://github.com/nick-vels/skills',
+        take: 'не ставить, читать по адресу (список живой). Перед сдачей: (1) слепая приёмка — skills/autopilot/phases/8-final.md, раздел 1, промпт приёмщика как есть: свежий агент получает только слова заказчика (его сообщения и docs/owner-decisions/), без моих планов и отчётов, ставит витрину из чистого клона и по каждому сказанному отвечает «сделано / частично / нет»; (2) ревью ветки — prompts/review.md, режим «ветка»: три оси порознь (сказанное заказчиком, решённое, годность кода), тесты первыми, список безопасности. Разбор — docs/skills.md.' },
     ],
   },
   {
