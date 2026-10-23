@@ -115,10 +115,12 @@ test('the empty cart shows popular products from the source, as shelf cards', as
   assert.match(v.empty.shelf?.cards[0].href ?? '', /^\/en\/product\//)
 })
 
-/* Пустая корзина — не тупик (И689): слово и кнопки категорий сайта в его виде (`CategoryPaths`,
-   `--cat-look`; 22.10.2026 — «согласно дизайн-системе»): «все товары» первой, дальше главные полки;
-   в шторке, на странице и в образце — одним `EmptyPaths`. Полок нет — остаётся «все товары». */
-test('the empty cart is a word and the site category buttons, all products first, in the pane and on the page', async () => {
+/* Пустая корзина — не тупик (И689): слово и полки, «все товары» первой, дальше главные полки;
+   в шторке, на странице и в образце — одним `EmptyPaths`. В шторке — строки полок со знаком, как в
+   окне поиска (`ShelfRows`; 23.10.2026: «пилюли в шторке не скролятся… так же, как в поиске,
+   иконками»), на странице — кнопки категорий сайта в его виде (`CategoryPaths`, `--cat-look`;
+   22.10.2026 — «согласно дизайн-системе»). Полок нет — остаётся «все товары». */
+test('the empty cart is a word and the shelves, all products first: rows in the pane as in search, site category buttons on the page', async () => {
   const cols = await sample.collections('en')
   assert.ok(cols.ok)
   const v = cartView('en', null, null, { freeFrom: null, popular: [], shelves: cols.value.slice(0, 3) })
@@ -133,8 +135,11 @@ test('the empty cart is a word and the site category buttons, all products first
   assert.equal(cartView('en', null, null).empty.shelves.links.length, 1)
   const dir = new URL('../components/', import.meta.url)
   for (const user of ['CartView.tsx', 'CartPane.tsx']) assert.match(readFileSync(new URL(user, dir), 'utf8'), /<EmptyPaths /, user)
+  assert.match(readFileSync(new URL('CartPane.tsx', dir), 'utf8'), /<EmptyPaths level=\{2\} pane /, 'шторка — строками, как окно поиска')
+  assert.doesNotMatch(readFileSync(new URL('CartView.tsx', dir), 'utf8'), /<EmptyPaths[^>]* pane[ >]/, 'страница — кнопками категорий')
   const empty = readFileSync(new URL('EmptyPaths.tsx', dir), 'utf8')
   assert.match(empty, /<CategoryPaths look=\{cat\}/)
+  assert.match(empty, /<ShelfRows rows=\{shelves\.links\} label=\{shelves\.label\}/, 'строки окна — те же, что в окне поиска')
   assert.doesNotMatch(empty, /icon=|loud|CategoryButton|CategoryTile/, 'ни знака в круге, ни громкой кнопки; кнопки — общим компонентом, не на месте')
   assert.equal(v.empty.cat, 'dot', 'вид кнопок по умолчанию — пилюли')
 })
