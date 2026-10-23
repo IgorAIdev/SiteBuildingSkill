@@ -5,7 +5,9 @@
    знак — доли этого роста (правило 2); ответ на руку — вид «строка»
    (`row` из styles/btn.module.css, И685), как у строк фильтров и поиска;
    форма подложки — тоже вида, одна на все строки сайта (И730). */
-.list{list-style:none;margin:0;padding:0;display:grid}
+/* Колонки — ручка места (`--reach-cols`): быстрый заказ видом «плитки» ставит две, меню
+   трубки и окно помощи — одну (умолчание). */
+.list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(var(--reach-cols, 1), minmax(0, 1fr))}
 .row{
   composes:row from '../styles/btn.module.css';
   display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-content:center;
@@ -22,32 +24,6 @@
 }
 .name{font-weight:var(--label-weight)}
 .value{font-size:var(--ctrl-fs-sm);color:var(--ink-soft);font-variant-numeric:tabular-nums}
-/* Группа — пути одной тихой плашкой, ячейки через волосяную линию (быстрый
-   заказ). Строки без плашки висели в окне россыпью текста, знаки стояли
-   внутрь от края пояснения и поля (разбор impeccable по снимку заказчика
-   21.10.2026: «как будто третьеклассник делал»). Образец — cbdin.bg: строки
-   на нейтральной подложке органа (docs/design/быстрый-заказ.md); линия
-   между — сгруппированный список систем (Apple HIG, inset grouped). Линия —
-   просвет сетки краской `--rule`, ячейка — `--quiet`: одна запись на две
-   колонки плиток и одну колонку строк. Край плашки — край поля под ней. */
-.group{background:var(--rule);border-radius:var(--r-ctrl);overflow:hidden}
-.group > li{background:var(--quiet)}
-/* Ячейка — прямоугольник во весь рост: форму даёт вид `row` по признаку списка `data-cells` (btn.module.css). */
-.group .row{block-size:100%}
-/* Плитка — та же строка столбцом: знак над именем (быстрый заказ, вид
-   «плитки» панели `--quick-look`, И470); вид «строки» возвращает строку.
-   Одежда — одна: тихая строка, подложка под рукой, без обводки (слово
-   заказчика 21.10.2026: «в минимализме всё тихое»). Имя плитки — короткое
-   (`short`), строки — «Order via …» (`long`). */
-.tile{grid-template-columns:1fr;grid-template-rows:auto;justify-items:center;row-gap:calc(var(--ctrl-h-lg) * .12);text-align:center;block-size:100%}
-.tile svg{grid-row:auto}
-.long{display:none}
-@container style(--quick-look: rows){
-  .tile{grid-template-columns:auto 1fr;justify-items:start;text-align:start}
-  .tile svg{grid-row:1 / -1}
-  .short{display:none}
-  .long{display:inline}
-}
 /* Строка без адреса ждёт номера: видна, но тише (И442). */
 .row[aria-disabled='true']{color:var(--ink-soft)}
 

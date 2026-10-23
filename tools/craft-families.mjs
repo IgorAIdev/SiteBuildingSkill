@@ -20,7 +20,7 @@ export const CRAFT_FAMILIES = [
   'broken', 'spill', 'offColumn', 'sideScroll', 'twinGap', 'glued', 'twoWrap', 'hiddenLink', 'focus', 'wrap', 'anchor', 'covered', 'outline',
   'marker', 'sticky', 'fold', 'theme', 'coarse', 'calm', 'ladder', 'wideCtrl',
   'lopsided', 'sunk', 'stolen', 'inkDip', 'markInk', 'field', 'alone',
-  'catalogueColumns', 'twoAir', 'airOrder', 'bandSeam', 'h1Size', 'headCase', 'paneTop', 'typeRole', 'brandTier', 'headAir', 'partAir', 'pageTop', 'inkStep', 'bareMove', 'iconRow', 'inkGap', 'lineLong', 'textShort', 'headActs', 'twiceLift', 'sheetSize',
+  'catalogueColumns', 'twoAir', 'airOrder', 'bandSeam', 'h1Size', 'headCase', 'paneTop', 'typeRole', 'brandTier', 'headAir', 'partAir', 'pageTop', 'inkStep', 'bareMove', 'iconRow', 'inkGap', 'lineLong', 'textShort', 'headActs', 'twiceLift', 'sheetSize', 'foldIndent', 'footAir', 'linkRow', 'headGap',
   'autofill', 'fieldZoom', 'h1Lines', 'twoWays', 'edge', 'fontLate', 'shift', 'heroLane', 'ruleAir', 'rowShape', 'railTail', 'tileGrow',
 ]
 
@@ -97,6 +97,10 @@ export const CRAFT_LABELS = {
   bandSeam: 'у края полосы (смена фона) воздух над краем и под ним не равен по видимому: от низа соседа до края и от края до заглавных первой строки (И738)',
   airOrder: 'шов между разными блоками не больше шва между частями одного блока — подблоки читаются отдельными блоками (И520)',
   headAir: 'заголовок → его текст (лид, описание, справка) стоит одним воздухом --air-line на всех страницах (И524)',
+  foldIndent: 'раскрытия пунктов одного меню (грани масел, эффекты) начинаются с разных вертикалей: у одного своя ветка рисования или своё поле строк (заказчик 23.10.2026: «где единообразие»)',
+  footAir: 'низ карточки (data-foot: время чтения, «Read the article») стоит от текста карточки по краске не ближе, чем карточка от соседней снизу: поле кнопки под палец раздуло строку низа, и просвет внутри сравнялся с просветом между карточками (заказчик 23.10.2026: «ну снова ритмы»)',
+  linkRow: 'ряд коротких ссылок (рубрики, выбранные фильтры с «Clear filters») на телефоне переносится на второй этаж — ряд один и листается вбок, примитив rail с data-rail="wrap" (заказчик 23.10.2026: «Clear filter не нужно переносить в третью строку, запрещено»)',
+  headGap: 'шапки рядов на одной странице стоят от своих карточек по краске разными просветами: шапка без подписи держала пустую строку сетки с зазором (заказчик 23.10.2026: «и то и то рельса с едиными правилами»)',
   inkGap: 'строка слов (data-rhythm: оценка, «Lab report», факты) с разными видимыми просветами: поле кнопки под палец прибавилось к зазору у одних слов и не у других (слово заказчика 21.10.2026)',
   iconRow: 'знаки при словах в одной строке разной видимой высоты (по закрашенным пикселям в настоящем размере, больше 1px): тонкая деталь у края знака не прорисовывается, и знак читается мельче соседей (слово заказчика 21.10.2026)',
   bareMove: 'орган без заливки и кромки сжимается при нажатии: у слова без плиты сжимается одна надпись — оно отвечает только оттенком, как пункт меню (слово заказчика 21.10.2026)',

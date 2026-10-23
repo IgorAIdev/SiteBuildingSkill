@@ -101,25 +101,37 @@ export function DropBody({ link, id }: { link: NavLink; id: string }) {
 /** Раскрытие строки в шторке телефона (как у cbdin.bg): под строкой — список
  *  строк меню (styles/menu.module.css). У «By effect» — эффекты со знаком, у
  *  масел — грани группами и в конце «смотреть всё» на саму полку. Только
- *  названия: пояснений в шторке нет (правило cbdin.bg). */
+ *  названия: пояснений в шторке нет (правило cbdin.bg).
+ *
+ *  Путь рисования ОДИН на любое раскрытие: эффекты — та же группа граней, только без
+ *  подписи. Прежде у эффектов была своя ветка — список без обёртки группы, — и он стоял
+ *  без отступа группы, левее раскрытия масел (слово заказчика 23.10.2026: «а чего подменю
+ *  эффекты вылезли левее, а подменю oil правильно сделано, где единообразие»). Две ветки
+ *  одного раскрытия расходятся при первой же правке одной из них; одна — не может
+ *  (tests/nav-fold.test.ts, check:craft `foldIndent`). */
+type FoldGroup = { name: string | null; links: { label: string; href: string; sign?: string | null }[] }
 function Fold({ link, id, all }: { link: NavLink; id: string; all: string }) {
   const path = usePagePath()
-  return link.facets.length ? (
+  const groups: FoldGroup[] = link.facets.length ? link.facets : [{ name: null, links: link.kids }]
+  return (
     <>
-      <FacetList groups={link.facets} id={id} />
-      <div className={s.sheetGroup}><ul className={m.list}><li><SiteLink className={b.row} href={link.href}><span className={s.name}>{all}</span></SiteLink></li></ul></div>
-    </>
-  ) : (
-    <ul className={m.list}>
-      {link.kids.map((k) => (
-        <li key={k.href}>
-          <SiteLink className={b.row} href={k.href} aria-current={k.href === path ? 'true' : undefined}>
-            {k.sign ? <Icon id={k.sign} /> : null}
-            <span className={s.name}>{k.label}</span>
-          </SiteLink>
-        </li>
+      {groups.map((g, k) => (
+        <div key={g.name ?? k} className={s.sheetGroup}>
+          {g.name ? <p className={m.group} id={`${id}-${k}`}>{g.name}</p> : null}
+          <ul className={m.list} aria-labelledby={g.name ? `${id}-${k}` : undefined}>
+            {g.links.map((x) => (
+              <li key={x.href}>
+                <SiteLink className={b.row} href={x.href} aria-current={x.href === path ? 'true' : undefined}>
+                  {x.sign ? <Icon id={x.sign} /> : null}
+                  <span className={s.name}>{x.label}</span>
+                </SiteLink>
+              </li>
+            ))}
+          </ul>
+        </div>
       ))}
-    </ul>
+      {link.facets.length ? <div className={s.sheetGroup}><ul className={m.list}><li><SiteLink className={b.row} href={link.href}><span className={s.name}>{all}</span></SiteLink></li></ul></div> : null}
+    </>
   )
 }
 

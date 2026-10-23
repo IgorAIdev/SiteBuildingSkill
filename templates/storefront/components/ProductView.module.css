@@ -179,13 +179,11 @@
    «почему иконка движущаяся, почему подчёркнуто?»). Кегль и вес — модуля
    кнопки: свой `font-size` здесь весил как `.btn`, и порядок кусков CSS решал
    рост надписи (разбор 08.10.2026, И790). */
-/* Две строки: наличие с артикулом, ниже — оценка с протоколом партии (слово заказчика 17.10.2026:
-   «рейтинг в отдельной строке ниже наличия»); между строками — воздух подзаголовка → текста. */
+/* Две строки: наличие, ниже — оценка с протоколом партии (слово заказчика 17.10.2026:
+   «рейтинг в отдельной строке ниже наличия»); между строками — воздух подзаголовка → текста.
+   Артикул — в сведениях о товаре (ProductDetails.module.css, 23.10.2026). */
 .proof{display:grid;gap:var(--air-tight)}
 .proofRow{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-1) var(--gap-row)}
-/* Артикул — подписью строки доверия, как счёт отзывов (Rating): рост
-   описания, тон вторичного текста, цифры ровным шагом (И589). */
-.sku{font-size:var(--blurb-size);line-height:var(--blurb-lead);font-weight:var(--blurb-weight);color:var(--ink-soft);font-variant-numeric:tabular-nums}
 
 /* Выбор: группа — подпись и опции вплотную, между группами — воздухом
    `--air-set` (ступенью ниже `--air-row`): выбор — одна строка части
@@ -232,3 +230,11 @@
   background:var(--surface);box-shadow:var(--sh-sticky)
 }
 @container pdp (max-width:819px){ .bar[data-shown]{display:flex} }
+/* Слева в полосе — имя товара над ценой (23.10.2026): имя ролью имени карточки, одной
+   строкой с многоточием — полоса не растёт от длинного имени; кнопка справа не сжимается. */
+.barWhat{display:grid;flex:1 1 auto;min-inline-size:0}
+.barName{
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+  font-size:var(--cardname-size);line-height:var(--cardname-lead);font-weight:var(--cardname-weight);letter-spacing:var(--cardname-track)
+}
+.bar > button{flex:none}

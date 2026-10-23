@@ -16,7 +16,7 @@ export type TotalsView = { rows: { label: string; value: string }[]; total: { la
  *  99): кнопка выключена, но названа. */
 export type StepView = { op: string | null; label: string }
 export type CartLineView = {
-  id: string; href: string; name: string; facts: string; image: Image
+  id: string; href: string; name: string; brand: string | null; facts: string; image: Image
   /** `unit` — цена за штуку, одним числом (на глаз); `unitSay` — она же со словом
    *  «за штуку», для чтеца экрана. */
   unit: string; unitSay: string; total: string
@@ -114,7 +114,7 @@ export function lineFacts(lang: Lang, l: CartLine): string {
 function lineView(lang: Lang, l: CartLine): CartLineView {
   const options = Object.fromEntries(l.options.map((o) => [o.group, o.code]))
   return {
-    id: l.id, href: hrefFor(lang, { product: l.productId, options }), name: l.name,
+    id: l.id, href: hrefFor(lang, { product: l.productId, options }), name: l.name, brand: l.brand,
     facts: lineFacts(lang, l), image: l.image,
     unit: money(l.unit, lang), unitSay: t(lang, 'cart.unit', { price: money(l.unit, lang) }), total: money(l.total, lang),
     stepper: {

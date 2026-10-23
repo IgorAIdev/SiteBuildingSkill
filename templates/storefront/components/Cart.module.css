@@ -52,6 +52,9 @@
    текста в 24 отодвигала факты от имени на 44 (снимок заказчика 22.10.2026:
    «в карт расстояния несколько больший ритмы»), а цель от неё не росла. */
 .name{display:block;font-weight:var(--cardname-weight);color:var(--ink);overflow-wrap:anywhere}
+/* Марка — первой строкой имени, ролью марки полки `maker` (ProductCard.module.css, `.brand`):
+   ступенью ниже имени, тоном вторичного текста (слово заказчика 23.10.2026). */
+.brand{display:block;font-size:var(--maker-size);line-height:var(--maker-lead);font-weight:var(--maker-weight);letter-spacing:var(--maker-track);color:var(--ink-soft)}
 .name::after{content:'';position:absolute;inset:0}
 /* Что строка — ссылка, видно рукой, как у карточки полки (И717; правило вида
    И685: подчёркивание — только у ссылки в тексте): снимок чуть подаётся вперёд
@@ -218,22 +221,25 @@
 .paneGoal{flex:none;padding:var(--pad-inner) var(--pane-pad, var(--pad-card));border-block-end:var(--line-w) solid var(--rule)}
 .pane .list{display:grid;container-type:inline-size}
 .pane .line:last-child{padding-block-end:0;border-block-end:0}
-/* Узкий список (телефон): цена за штуку не делит строку с именем — имени
-   оставалось 98 из 272, четыре строки, — а встаёт строкой фактов справа
-   («2000 mg · 10 ml ······ €39.00»): своей строкой под фактами она
-   добавляла строке 33 пикселя (И764; образец cbdin.bg — цена в строке под
-   именем). Имя и факты встают в сетку строки сами (`.what` растворяется), и
-   воздух «имя → факты» — воздух одной мысли, как на широкой. На широкой
-   шторке цена вверху справа, как в задании. */
+/* Узкий список (телефон) — и в шторке, и на странице корзины: цена за штуку не
+   делит строку с именем — имени оставалось 98 из 272, четыре строки, — а встаёт
+   строкой фактов справа («2000 mg · 10 ml ······ €39.00»): своей строкой под
+   фактами она добавляла строке 33 пикселя (И764; образец cbdin.bg — цена в строке
+   под именем). Имя и факты встают в сетку строки сами (`.what` растворяется), и
+   воздух «имя → факты» — воздух одной мысли, как на широкой. До 23.10.2026 так
+   стояла только шторка, а страница на телефоне держала цену вверху справа, и имя
+   ломалось в две строки (слово заказчика: «цена слишком высоко, её нужно ниже, и
+   место освободится для строки названия»; вариант А в артефакте — как в шторке).
+   На широкой шторке цена вверху справа, как в задании. */
 @container (max-width: 22rem){
   /* Третий ряд — пустой и гибкий: остаток роста снимка уходит в него, а не
      раздвигает имя и факты (без него ряд фактов растягивался до низа снимка). */
-  .pane .line{grid-template-areas:'thumb name name' 'thumb facts unit' 'thumb . .' 'act act act';grid-template-rows:auto auto 1fr auto;row-gap:0}
-  .pane .what{display:contents}
-  .pane .name{grid-area:name}
-  .pane .facts{grid-area:facts;align-self:baseline;margin-block-start:var(--air-line)}
-  .pane .unit{align-self:baseline}
-  .pane .act{margin-block-start:var(--air-row)}
+  .line{grid-template-areas:'thumb name name' 'thumb facts unit' 'thumb . .' 'act act act';grid-template-rows:auto auto 1fr auto;row-gap:0}
+  .what{display:contents}
+  .name{grid-area:name}
+  .facts{grid-area:facts;align-self:baseline;margin-block-start:var(--air-line)}
+  .unit{align-self:baseline}
+  .act{margin-block-start:var(--air-row)}
 }
 /* Код скидки — первым в стоящем низу шторки, над итогом (И693): волосок
    низа уже отбивает его от тела, своя черта сверху не нужна. Низ не отнимает

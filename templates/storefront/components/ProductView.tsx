@@ -56,17 +56,17 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
             </div>
             {/* Оценка и протокол партии — одной строкой под именем: доверие к
                 товару рядом (заказчик 28.09.2026: «lab report правее от звёзд»;
-                И515). Артикул варианта — в конце той же строки (И589: слово
-                заказчика 30.09.2026 «артикул нужно где-то разместить»; eMAG —
-                «Cod produs» под именем). Наличие — первым в этой строке (слово заказчика
-                02.10.2026: «in stock размещать первым в одной строке с отзывами и
-                SKU»; раньше стояло у цены). Нет ничего — строки нет. */}
-            {view.stock || view.sku || view.rating || view.lab || view.trust.length ? (
+                И515). Наличие — первым, своей строкой над оценкой (слово заказчика
+                02.10.2026: «in stock размещать первым»; 17.10.2026: «рейтинг в
+                отдельной строке ниже наличия»). Артикул отсюда ушёл в сведения о
+                товаре (ProductDetails; слово заказчика 23.10.2026 после замера пяти
+                магазинов — наличие у цены у всех, номер товара у четырёх из пяти внизу,
+                в характеристиках). Нет ничего — строки нет. */}
+            {view.stock || view.rating || view.lab || view.trust.length ? (
               <div className={s.proof}>
-                {view.stock || view.sku ? (
+                {view.stock ? (
                   <div className={s.proofRow}>
-                    {view.stock ? <StockMark level={view.stockLevel}>{view.stock}</StockMark> : null}
-                    {view.sku ? <span className={s.sku} translate="no">{view.sku}</span> : null}
+                    <StockMark level={view.stockLevel}>{view.stock}</StockMark>
                   </div>
                 ) : null}
                 {/* Строка доказательств — строка слов: «Lab report» висит полем за края, как слова
@@ -98,9 +98,14 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
           {view.facts ? <KeyFacts facts={view.facts} /> : null}
           {/* Сведения о товаре — в колонке справа, под покупкой (слово заказчика 17.10.2026: «фиксация картинки и скролл
               информации справа»): галерея стоит, пока читается колонка; в одну колонку порядок прежний — после сведений. */}
-          <ProductDetails details={view.details} />
+          <ProductDetails details={view.details} sku={view.sku} />
         </div>
-        <StickyBuy buy="buy" label={view.buy.add} variant={view.buy.variant} added={view.buy.addedShort}><Price now={view.price} was={view.was} /></StickyBuy>
+        {/* Слева в строке у низа окна — имя товара над ценой (слово заказчика 23.10.2026: «слева
+            внизу над ценой нужно название товара»): строка покупки ушла за край, и полоса говорит,
+            что именно покупается. */}
+        <StickyBuy buy="buy" label={view.buy.add} variant={view.buy.variant} added={view.buy.addedShort}>
+          <div className={s.barWhat}><span className={s.barName}>{view.name}</span><Price now={view.price} was={view.was} /></div>
+        </StickyBuy>
       </section>
       {/* Протокол партии — окном общего модуля (styles/pane.module.css):
           немодальное, `popover` — Escape, щелчок мимо и крестик закрывают

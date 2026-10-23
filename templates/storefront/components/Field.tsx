@@ -13,7 +13,12 @@ import { PasswordBox } from './PasswordBox.tsx'
    ввод со знаком «показать» (PasswordBox, И771); правило пароля — строкой
    под полем (`hint`), пока ошибки нет, и ошибка встаёт на её место.
    `at` — приставка id: на странице с несколькими формами (адреса кабинета)
-   поля одного имени не делят один id. */
+   поля одного имени не делят один id.
+   Обязательность видна заранее, а не после ошибки: звёздочка у подписи (слово
+   заказчика 23.10.2026: «пометить нужно, что имя, фамилия и телефон обязательны к
+   вводу»; Baymard — помечать обязательные поля явно). Поле здесь всегда обязательное
+   (`required`), поэтому знак — у каждого; вслух его читает сам `required`, знак — только
+   глазу (`aria-hidden`). */
 export function Field({ field, value, error, side = false, at = '' }: { field: FieldView; value: string; error: string | null; side?: boolean; at?: string }) {
   const id = `${at}f-${field.name}`
   const say = `${id}-say`
@@ -24,7 +29,7 @@ export function Field({ field, value, error, side = false, at = '' }: { field: F
   }
   return (
     <div className={side ? `${f.field} ${p.aside}` : f.field}>
-      <label className={f.label} htmlFor={id}>{field.label}</label>
+      <label className={f.label} htmlFor={id}>{field.label}<span className={f.need} aria-hidden="true">*</span></label>
       {field.options ? (
         <select className={f.pick} {...common}>
           <option value="">{field.options.none}</option>

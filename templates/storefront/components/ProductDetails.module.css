@@ -16,3 +16,7 @@
    заказчика 21.10.2026: «на странице товара с ритмами беда»; check:craft `inkStep`). */
 .details{--stack:var(--air-row);margin-block-start:var(--air-group)}
 .title{margin-block:0 var(--air-tight);font-size:var(--parthead-size);line-height:var(--parthead-lead);font-weight:var(--parthead-weight);letter-spacing:var(--parthead-track)}
+
+/* Артикул — последней строкой сведений (23.10.2026): рост описания, тон вторичного текста,
+   цифры ровным шагом (И589), как прежде в строке наличия. */
+.sku{margin:0;font-size:var(--blurb-size);line-height:var(--blurb-lead);font-weight:var(--blurb-weight);color:var(--ink-soft);font-variant-numeric:tabular-nums}

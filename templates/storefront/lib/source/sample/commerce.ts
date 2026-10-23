@@ -17,7 +17,7 @@ type Line = { id: string; variantId: string; quantity: number }
 type State = { lines: Line[]; coupons: string[]; contact: Contact | null; delivery: DeliveryChoice | null; lastOrder: string | null; seq: number; customer: string | null }
 type Placed = { code: string; placedAt: string; session: string; lines: Line[]; coupons: string[]; contact: Contact; delivery: DeliveryChoice; payment: string; status: OrderStatus }
 /* `now` — часы хранилища: окно заказа меряется ими, тест ставит свои. */
-type Store = { sessions: Map<string, State>; orders: Map<string, Placed>; accounts: Map<string, SampleAccount>; now: () => number }
+type Store = { sessions: Map<string, State>; orders: Map<string, Placed>; accounts: Map<string, SampleAccount>; now: () => number; serial: number }
 
 const MAX = 99
 /* Окно заказа: «спасибо» показывает заказ сессии и второе нажатие узнаёт
@@ -85,7 +85,7 @@ const pastOrder = (code: string, now: number): Placed | null => {
   } : null
 }
 
-const seed = (now: () => number): Store => ({ sessions: new Map<string, State>(), orders: new Map<string, Placed>(), accounts: new Map([[SAMPLE_EMAIL, sampleAccount()]]), now })
+const seed = (now: () => number): Store => ({ sessions: new Map<string, State>(), orders: new Map<string, Placed>(), accounts: new Map([[SAMPLE_EMAIL, sampleAccount()]]), now, serial: FIRST_ORDER - 1 })
 
 /* Корзины образца живут в памяти процесса и пропадают при перезапуске — как
    сказано в замысле. Хранилище — на globalThis: перезагрузка модуля в
@@ -99,7 +99,14 @@ export function resetSample(now: () => number = Date.now): void {
 }
 const live = (session: string | null): State | null => (session ? fixture(session) ?? store().sessions.get(session) ?? null : null)
 const token = () => randomBytes(24).toString('base64url')
-const orderCode = () => `RO${randomBytes(4).toString('hex').toUpperCase()}`
+/* Номер заказа — числом подряд с 1001, как у Shopify (#1001): его диктуют по телефону и
+   пишут в переводе, и восемь знаков «RO8EC7246E» были лишними (слово заказчика 23.10.2026:
+   «ордер намбер сильно проще нужен, 4 цифры будет ок»). Подряд — а не четыре случайные
+   цифры: случайные совпали бы уже через сотни заказов; после 9999 номер просто
+   пятизначный. У Vendure — та же нумерация стратегией сервера
+   (skills/site-building/assets/vendure/plugins/order-number). */
+const FIRST_ORDER = 1001
+const orderCode = () => String(++store().serial)
 
 function variantOf(id: string): { p: SampleProduct; v: SampleVariant } | null {
   for (const p of PRODUCTS) {
@@ -114,7 +121,7 @@ function lineOf(l: Line, lang: Lang): CartLine | null {
   if (!found) return null
   const { p, v } = found
   return {
-    id: l.id, productId: p.id, variantId: v.id, name: p.name[lang],
+    id: l.id, productId: p.id, variantId: v.id, name: p.name[lang], brand: p.brand,
     options: p.groups.map((g) => {
       const code = v.options[g.code] ?? ''
       return { group: g.code, code, name: g.options.find((o) => o.code === code)?.name[lang] ?? code }

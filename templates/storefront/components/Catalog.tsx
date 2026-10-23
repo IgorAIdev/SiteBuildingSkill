@@ -89,10 +89,15 @@ export function Catalog({ view, search, cart, inset = false, ids, crumbs, after 
                     обычной кнопки, как у «Filters» и порядка (И758). */}
                 {view.count ? <p className={s.count} role="status">{view.count}</p> : null}
                 {/* Выбранное — пилюлями в той же строке, «сбросить» — словом (И740):
-                    своей строки у выбранного нет — место по высоте у полки. */}
-                {view.chips.length || view.clear ? <div className={`${p.cluster} ${s.picked}`}>
+                    своей строки у выбранного нет — место по высоте у полки. Ряд — полоса
+                    пути (`rail`, `data-rail="wrap"`): шире шва 560 переносится, на телефоне
+                    стоит одной строкой и листается вбок, «сбросить» — в той же строке, а не
+                    третьей (слово заказчика 23.10.2026: «Clear filter не нужно переносить в
+                    третью строку, запрещено»). Слово висит полем за края (`data-hang`): от
+                    пилюли до него — зазор ряда, а не зазор с полем кнопки. */}
+                {view.chips.length || view.clear ? <div className={`${p.rail} ${s.picked}`} data-rail="wrap">
                   {view.chips.map((c) => <SiteLink key={c.href} className={p.chip} data-pill href={c.href} scroll={false} aria-label={c.said}>{c.label}<Icon id="x" /></SiteLink>)}
-                  {view.clear ? <SiteLink className={b.btn} data-voice="bare" data-size="sm" href={view.clear.href} scroll={false}>{view.clear.label}</SiteLink> : null}
+                  {view.clear ? <SiteLink className={b.btn} data-voice="bare" data-size="sm" data-hang="inline" href={view.clear.href} scroll={false}>{view.clear.label}</SiteLink> : null}
                 </div> : null}
                 {view.sort ? <SortMenu sort={view.sort} id={ids?.sort} /> : null}
               </div>

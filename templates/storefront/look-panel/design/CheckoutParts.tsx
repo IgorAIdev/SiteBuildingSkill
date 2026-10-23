@@ -86,7 +86,7 @@ export async function sampleLines(lang: Lang): Promise<CartLine[]> {
     if (!v || !pr.images[0]) return []
     const quantity = i + 1
     return [{
-      id: `design-${i + 1}`, productId: pr.id, variantId: v.id, name: pr.name,
+      id: `design-${i + 1}`, productId: pr.id, variantId: v.id, name: pr.name, brand: pr.brand,
       options: pr.optionGroups.map((g) => {
         const code = v.options[g.code] ?? ''
         return { group: g.code, code, name: g.options.find((o) => o.code === code)?.name ?? code }

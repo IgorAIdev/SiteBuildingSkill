@@ -28,15 +28,16 @@ test('steps: passed ones are links back, the current one is marked and names the
 })
 
 /* WCAG 1.3.5: у каждого поля о человеке — токен автозаполнения; имя и
-   фамилия — парой в одном ряду (разбор 24.09.2026, O4). */
-test('contact: fields keep what the checkout already knows, name and surname side by side', async () => {
+   фамилия — парой в одном ряду (разбор 24.09.2026, O4); почта — последней
+   (слово заказчика 23.10.2026). */
+test('contact: fields keep what the checkout already knows, name and surname side by side, email last', async () => {
   const v = contactView('ro', (await at(FIXTURES.contact)).contact)
-  assert.deepEqual(v.rows.map((r) => r.map((f) => f.name)), [['email'], ['firstName', 'lastName'], ['phone']])
+  assert.deepEqual(v.rows.map((r) => r.map((f) => f.name)), [['firstName', 'lastName'], ['phone'], ['email']])
   assert.deepEqual(v.rows.flat().map((f) => [f.name, f.type, f.autoComplete, f.value]), [
-    ['email', 'email', 'email', 'ana.popescu@example.com'],
     ['firstName', 'text', 'given-name', 'Ana'],
     ['lastName', 'text', 'family-name', 'Popescu'],
     ['phone', 'tel', 'tel', '0722 123 456'],
+    ['email', 'email', 'email', 'ana.popescu@example.com'],
   ])
   assert.equal(v.submit, 'Continuă spre livrare')
 })
@@ -46,11 +47,11 @@ test('contact: fields keep what the checkout already knows, name and surname sid
 test('contact: the name pair follows the page language — Hungarian asks for the family name first', async () => {
   const known = (await at(FIXTURES.contact, 'hu')).contact
   const hu = contactView('hu', known)
-  assert.deepEqual(hu.rows[1].map((f) => [f.name, f.autoComplete, f.label]), [
+  assert.deepEqual(hu.rows[0].map((f) => [f.name, f.autoComplete, f.label]), [
     ['lastName', 'family-name', 'Vezetéknév'],
     ['firstName', 'given-name', 'Keresztnév'],
   ])
-  assert.deepEqual(contactView('en', known).rows[1].map((f) => f.name), ['firstName', 'lastName'])
+  assert.deepEqual(contactView('en', known).rows[0].map((f) => f.name), ['firstName', 'lastName'])
 })
 
 test('days count by the upper end, in every language', () => {

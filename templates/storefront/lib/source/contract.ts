@@ -276,6 +276,9 @@ export type Content = {
    — закрытый список, имя службы — строка данных. */
 export type CartLine = {
   id: string; productId: string; variantId: string; name: string
+  /** Марка товара — та же, что над именем карточки полки (`Card.brand`); строка корзины печатает
+   *  её первой строкой имени (слово заказчика 23.10.2026). `null` — марка не заявлена. */
+  brand: string | null
   options: { group: string; code: string; name: string }[]
   /** Упаковка варианта — та же, что у карточки полки и страницы товара: из неё строка «3000 mg · 10 ml»
    *  под именем (`lineFacts`); `null` — упаковка не названа, строки нет. */

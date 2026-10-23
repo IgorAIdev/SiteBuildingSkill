@@ -29,7 +29,7 @@ type VOrder = {
   discounts: { description: string; amountWithTax: number }[]
   lines: {
     id: string; quantity: number; unitPriceWithTax: number; linePriceWithTax: number; featuredAsset: Asset | null
-    productVariant: { id: string; name: string; options: { code: string; name: string; group: { code: string; name: string } }[]; product: { slug: string; name: string; translations: Translation[]; featuredAsset: Asset | null; customFields: { volume: string | null; strength: string | null } | null } }
+    productVariant: { id: string; name: string; options: { code: string; name: string; group: { code: string; name: string } }[]; product: { slug: string; name: string; translations: Translation[]; featuredAsset: Asset | null; customFields: { brand?: string | null; volume: string | null; strength: string | null } | null } }
   }[]
   customer: { emailAddress: string; firstName: string; lastName: string; phoneNumber: string | null } | null
   shippingAddress: { streetLine1: string | null; city: string | null; province: string | null; postalCode: string | null; countryCode: string | null } | null
@@ -44,7 +44,7 @@ const ORDER = `
   id code state orderPlacedAt totalQuantity subTotalWithTax totalWithTax shippingWithTax currencyCode couponCodes
   discounts { description amountWithTax }
   lines { id quantity unitPriceWithTax linePriceWithTax featuredAsset { ${ASSET} }
-    productVariant { id name options { code name group { code name } } product { slug name translations { languageCode slug } featuredAsset { ${ASSET} } customFields { volume strength } } } }
+    productVariant { id name options { code name group { code name } } product { slug name translations { languageCode slug } featuredAsset { ${ASSET} } customFields { brand volume strength } } } }
   customer { emailAddress firstName lastName phoneNumber }
   shippingAddress { streetLine1 city province postalCode countryCode }
   shippingLines { priceWithTax shippingMethod { id code name description } }
@@ -111,7 +111,7 @@ export function vendureCommerce(env: VendureEnv & { placeOrders: boolean }, fetc
   const cartOf = async (o: VOrder): Promise<Cart> => {
     const lines: CartLine[] = await Promise.all(o.lines.map(async (l) => ({
       id: l.id, productId: await nativeSlug(l.productVariant.product), variantId: l.productVariant.id,
-      name: l.productVariant.product.name,
+      name: l.productVariant.product.name, brand: l.productVariant.product.customFields?.brand?.trim() || null,
       options: l.productVariant.options.map((x) => ({ group: x.group.code, code: x.code, name: x.name })),
       /* Упаковка — поля товара движка, как у карточки полки (`packOf`). */
       pack: packOf(l.productVariant.product.customFields?.volume, l.productVariant.product.customFields?.strength),

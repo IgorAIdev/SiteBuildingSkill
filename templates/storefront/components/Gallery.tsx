@@ -1,6 +1,5 @@
 'use client'
 import p from '@/styles/primitives.module.css'
-import b from '@/styles/btn.module.css'
 import sl from '@/styles/slides.module.css'
 import s from './Gallery.module.css'
 import type { GalleryView } from '@/lib/product-view.ts'
@@ -42,15 +41,17 @@ export function Gallery({ view, save }: { view: GalleryView; save?: { id: string
           ))}
         </div>
         {view.badge ? <span className={`${p.cut} ${s.badge}`} data-cut="sale"><span className={p.cutText}>{view.badge}</span></span> : null}
-        {/* Стрелки листания кадра — для мыши (слово заказчика 21.10.2026: «на десктопе нужны
-            уголки или стрелки листания»): круги по краям кадра посередине высоты, висящая
-            плита (`data-float`, как «наверх»): на снимке тихий контур терялся бы. Знак — тот
-            же, что у листания ряда (RailPager). Лента кольцом: с последнего — на первый.
-            Палец листает свайпом и точками — там стрелок нет (Gallery.module.css). */}
+        {/* Стрелки листания кадра — тихие уголки (слово заказчика 23.10.2026: «кнопки листания
+            фото нужны уголки тихие, из нашей дизайн-системы»): тот же тихий знак на снимке, что
+            сердце в углу этого кадра (glyph, `data-over="picture"`: стекло палитры, читается над
+            любым снимком; под пальцем рисунок малого органа, цель — запасом наружу). Уголок, а не
+            стрелка хода: он листает здесь, а не ведёт дальше. По краям кадра посередине высоты, у
+            мыши и у пальца (до 23.10.2026 — только у мыши, висящими кругами `data-float`). Лента
+            кольцом: с последнего — на первый. */}
         {many ? (
           <>
-            <button type="button" className={`${b.btn} ${s.step}`} data-side="back" data-pager="" data-float="" aria-label={view.prev} onClick={() => show(current - 1)}><Icon id="arrow-left" /></button>
-            <button type="button" className={`${b.btn} ${s.step}`} data-side="next" data-pager="" data-float="" aria-label={view.next} onClick={() => show(current + 1)}><Icon id="arrow-right" /></button>
+            <button type="button" className={s.step} data-side="back" data-over="picture" aria-label={view.prev} onClick={() => show(current - 1)}><Icon id="chevron-left" /></button>
+            <button type="button" className={s.step} data-side="next" data-over="picture" aria-label={view.next} onClick={() => show(current + 1)}><Icon id="chevron-right" /></button>
           </>
         ) : null}
         {save ? <SaveToggle id={save.id} add={save.add} remove={save.remove} over="picture" className={s.save} /> : null}

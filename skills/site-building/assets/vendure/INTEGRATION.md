@@ -34,6 +34,9 @@
    кабинет по адресу — только доказанным адресом (недоказанные связи снимает
    письмо владельца), запрос `socialSignInProviders` — какие кнопки
    рисовать. Пол — Vendure 3.7.3. Установка — `plugins/social-auth/README.md`.
+10. `plugins/order-number/` — стратегия СЕРВЕРА Vendure: номер заказа числом подряд с
+   1001 (`orderOptions.orderCodeStrategy`; слово заказчика 23.10.2026 «4 цифры будет ок»),
+   последовательность Postgres. Установка — `plugins/order-number/README.md`.
 
 `product.mjs` частично взят из vendurehq/nextjs-starter-vendure (MIT) —
 лицензия рядом, `VENDURE-STARTER-LICENSE.md`. Остальное — собственный код набора.

@@ -6,7 +6,8 @@ import { shot } from '@/lib/shot.ts'
 /* Товары заказа — снимок в колодце, имя, факты варианта с количеством,
    сумма строки. Одни на сводку шагов, сверку перед оплатой и «спасибо»:
    что покупается, видно на каждом шаге, а не только на последнем (разбор
-   24.09.2026, O2); миниатюра — тот же снимок, что в строке корзины. */
+   24.09.2026, O2); миниатюра — тот же снимок, что в строке корзины, марка — первой
+   строкой имени, как в строке корзины (23.10.2026). */
 export function OrderItems({ items }: { items: ItemView[] }) {
   return (
     <ul className={s.items}>
@@ -14,7 +15,7 @@ export function OrderItems({ items }: { items: ItemView[] }) {
         <li key={i.id} className={s.item}>
           <div className={`${p.frame} ${s.shot}`}><img {...shot(i.image, 'thumb', true)} alt="" decoding="async" /></div>
           <div className={s.itemWhat}>
-            <p className={s.itemName}>{i.name}</p>
+            <p className={s.itemName}>{i.brand ? <span className={s.itemBrand} translate="no">{i.brand}</span> : null}{i.name}</p>
             <p className={p.note}>{i.facts}</p>
           </div>
           <p className={s.itemSum}>{i.total}</p>
