@@ -1,6 +1,6 @@
 ---
 name: storefront4-local-only
-description: storefront4 deploys to cbdbuy.be only on the owner's word — 21.10.2026 local-only, 23.10.2026 «выкатывай, мне там смотреть»; how a release lands (release worktree → PR → green CI → merge → Coolify)
+description: storefront4 deploys to cbdbuy.be only on the owner's word — 21.10 local, 23.10 day «выкатывай», 23.10 evening local again (3051 brought to main); how a release lands (release worktree → PR → green CI → merge → Coolify)
 metadata:
   type: project
 ---
@@ -9,6 +9,12 @@ metadata:
 cbdbuy.be мне там нужно смотреть»: выкачено PR #474 (CBD_ecommerce_eu). С 23.10 он смотрит
 cbdbuy.be — правки витрины 4, которые он ждёт увидеть, выкатываются тем же путём, пока он
 не скажет снова «локально».
+23.10.2026 вечером, после выката THC (PR #478) — «сделай, чтоб на ноутбуке была актуальная
+версия, далее локально работаем»: снова только localhost:3051. eu-hr-view (`claude/bare-still`)
+доведена до `main` перемоткой; незакоммиченные правки 21.10 (быстрый заказ, ReachList, подписка
+«10% off») — в `git stash` с подписью, в `main` они уже были в новом виде. Правки витрины 4
+дальше — в eu-hr-view, сборка и перезапуск на 3051; в `main` CBD_ecommerce_eu не вливать, пока
+он не скажет «выкатывай» (вливание = выкат на cbdbuy.be).
 
 **Why:** выкатка на живой домен — слово владельца, а не моё решение; но смотрит он там, где
 сказал ([[fix-where-owner-looks]]).
