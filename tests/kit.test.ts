@@ -1184,12 +1184,13 @@ test('штрих знака в кнопке равен штриху буквы �
 test('штрих знака в строке пути связи равен штриху буквы имени рядом', () => {
   /* Заказчик 03.10.2026, меню трубки: «с этими иконками какой-то вопрос?» (И679).
      Знак в строке брал штрих от кегля тела (1.59), буква имени (14 px, вес 500) —
-     1.26: считать надо от кегля имени. */
+     1.26: считать надо от кегля имени. Имя с 23.10.2026 — ростом меню (И286), и штрих
+     считается от него. */
   /* Тест едет в каждый новый сайт: меню трубки лежит в наборе под `templates/storefront/`, в магазине — в `components/`,
      в пустом проекте его нет вовсе. */
   const file = ['templates/storefront/components/ReachList.module.css', 'components/ReachList.module.css'].find((f) => existsSync(new URL(`../${f}`, import.meta.url)))
   if (!file) return
-  assert.match(read(file), /\.row svg\{[^}]*(?:--icon-stroke|stroke-width):calc\(var\(--ctrl-fs\) \* var\(--icon-stem\)\)/)
+  assert.match(read(file), /\.row(?: > svg:first-child| svg)\{[^}]*(?:--icon-stroke|stroke-width):calc\(var\(--(?:menu-size|ctrl-fs)\) \* var\(--icon-stem\)\)/)
 })
 
 test('кружок со знаком читается на плашке: цвет пола против --plate-sign в обеих темах на каждой шкале набора', () => {

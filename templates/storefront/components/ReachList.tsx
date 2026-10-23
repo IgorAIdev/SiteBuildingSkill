@@ -24,9 +24,10 @@ type Lead = { role: string; name: string; href: string | null }
    Viber открывают приложение и вкладки не требуют. */
 const away = (href: string | null) => (href?.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})
 
-/** Строка пути: знак (или буква имени), имя, адрес; без адреса — надпись. */
-const row = (key: string, href: string | null, sign: ReactNode, name: string, value: string, mark?: string) => {
-  const inner = <>{sign}<span className={s.name}>{name}</span><span className={s.value}>{value}</span></>
+/** Строка пути: знак (или буква имени), имя, адрес; без адреса — надпись. В карточке (`boxed`)
+ *  у строки со ссылкой в конце — уголок «куда ведёт». */
+const row = (key: string, href: string | null, sign: ReactNode, name: string, value: string, mark?: string, go = false) => {
+  const inner = <>{sign}<span className={s.name}>{name}</span><span className={s.value}>{value}</span>{go && href ? <Icon id="chevron-right" className={s.go} /> : null}</>
   return (
     <li key={key}>
       {href
@@ -37,12 +38,14 @@ const row = (key: string, href: string | null, sign: ReactNode, name: string, va
 }
 
 /** Строки — пути из `reachRows` или мессенджеры заказа (быстрый заказ: Instagram без
- *  ссылки стоит надписью). */
-export function ReachList({ rows, lead }: { rows: (Omit<ReachRow, 'key'> & { key: ReachRow['key'] | Messenger })[]; lead?: Lead }) {
+ *  ссылки стоит надписью). `boxed` — список карточкой с чертой между строками и уголком в
+ *  конце строки: так стоит выбор пути в окне быстрого заказа (вариант «А» заказчика
+ *  23.10.2026), где строки без рамки не читались кнопками. */
+export function ReachList({ rows, lead, boxed = false }: { rows: (Omit<ReachRow, 'key'> & { key: ReachRow['key'] | Messenger })[]; lead?: Lead; boxed?: boolean }) {
   return (
-    <ul className={s.list}>
+    <ul className={s.list} data-boxed={boxed ? '' : undefined}>
       {lead ? row('lead', lead.href, <span className={s.face} aria-hidden="true">{lead.name.slice(0, 1)}</span>, lead.role, lead.name) : null}
-      {rows.map((r) => row(r.key, r.href, <Icon id={SIGN[r.key]} />, r.name, r.value, r.key))}
+      {rows.map((r) => row(r.key, r.href, <Icon id={SIGN[r.key]} />, r.name, r.value, r.key, boxed))}
     </ul>
   )
 }
