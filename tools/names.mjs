@@ -72,7 +72,7 @@ export const MODIFIERS = new Set([
   'deck', 'paper', 'ring', 'near', 'far', 'pill', 'sheet', 'card', 'inner', 'xs', 'sm', 'base', 'h2', 'h3', 'h1',
   'size', 'lead', 'weight', 'track', 'strip', 'full', 'floor', 'peek', 'first', 'measure', 'max', 'slope', 'gap', 'pad', 'air', 'h', 'w', 'min', 'fs', 'b',
   't', 'edge', 'head', 'inset', 'gut', 'stuck', 'look', 'fold', 'btn', 'top', 'mark', 'stack', 'targets', 'row',
-  'grid', 'band', 'block', 'group', 'tight', 'lede', 'note', 'cell', 'in', 'off', 'act', 'fit', 'side', 'above', 'at', 'bias',
+  'grid', 'band', 'block', 'group', 'tight', 'lede', 'note', 'cell', 'in', 'off', 'act', 'fit', 'side', 'above', 'at', 'bias', 'cols',
   'uri', 'lift', 'select', 'search', 'plate', 'bleed', 'hand', 'cap', 'slope', 'md', 'lg', 'target',
   'ctrl', 'pop', 'raised', 'overlay', 'strong', 'exit', 'case', 'r', 'sh', 'intro', 'pos', 'narrow', 'wide',
   /* форма главной кнопки (И276): вырез, остриё, выемка, эхо-шеврон */
@@ -149,7 +149,9 @@ export const HOOKS = ['stack', 'cluster', 'switch', 'rail', 'section', 'sheet', 
   /* переключатель (`--toggle-h`, `--toggle-pad`, styles/form.module.css, И791): высота дорожки и поле бегунка — доли роста органа */
   'toggle',
   /* ряд доверия (`--trust-pad`, components/blocks/blocks.module.css): поле строки-ссылки, доводящее её до цели нажатия */
-  'trust']
+  'trust',
+  /* список путей (`--reach-cols`, ReachList.module.css): колонки списка — быстрый заказ видом «плитки» ставит две */
+  'reach']
 
 const VALUE = [
   { rx: new RegExp(`^--${FAMS(COLOUR_FAMILIES)}-\\d{1,2}$`), family: 'ступень цвета', by: 'tools/palette.mjs' },

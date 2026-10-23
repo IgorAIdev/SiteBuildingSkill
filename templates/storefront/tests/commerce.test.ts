@@ -132,7 +132,7 @@ test('placeOrder: every precondition is checked by the source, then the cart is 
   assert.deepEqual(await c.placeOrder(empty, 'ro', 'card', shown), { ok: false, error: 'payment-ineligible' })
   const placed = await c.placeOrder(empty, 'ro', 'ramburs', shown)
   assert.ok(placed.ok)
-  assert.match(placed.value.code, /^RO[0-9A-F]{8}$/)
+  assert.match(placed.value.code, /^\d{4,}$/, 'номер заказа — числом подряд с 1001')
   assert.deepEqual(placed.value.cart.total, EUR(6490 + 499))
   const after = await c.checkout(empty, 'ro')
   assert.ok(after.ok && after.value)

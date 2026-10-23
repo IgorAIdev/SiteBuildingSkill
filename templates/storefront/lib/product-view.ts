@@ -53,6 +53,10 @@ export type BuyView = { variant: string | null; ask: AskView | null; add: string
  *  в текст сообщения входят количество и телефон, а их знает только окно. */
 export type QuickView = {
   open: string; title: string; lead: string; close: string; what: string
+  /** Что заказывают — строкой товара сводки кассы (OrderItems): снимок, марка, имя,
+   *  упаковка; `totals[n - 1]` — сумма за n штук готовой строкой (деньги считает и пишет
+   *  витрина на сервере, окно только выбирает по количеству из счётчика). */
+  item: { name: string; brand: string | null; image: Image; facts: string; totals: string[] }
   greet: string; qty: string; myPhone: string
   rows: { key: Messenger; name: string; label: string; value: string }[]
   phone: { label: string; hint: string }; call: string
@@ -189,9 +193,14 @@ function askOf(lang: Lang, product: Product, selected: Record<string, string>): 
 function quickView(lang: Lang, product: Product, variant: Product['variants'][number] | null): QuickView {
   const pack = variant?.pack ? factsLine(lang, { packs: [variant.pack] }) : null
   const name = [product.brand, product.name].filter(Boolean).join(' ')
+  const unit = (variant ?? product.variants[0])?.price ?? null
   return {
     open: t(lang, 'quick.open'), title: t(lang, 'quick.open'), lead: t(lang, 'quick.lead'), close: t(lang, 'quick.close'),
     what: pack ? `${name} · ${pack}` : name,
+    item: {
+      name: product.name, brand: product.brand, image: product.images[0], facts: pack ?? '',
+      totals: unit ? Array.from({ length: QTY_MAX }, (_, i) => money({ minor: unit.minor * (i + 1), currency: unit.currency }, lang)) : [],
+    },
     greet: t(lang, 'quick.greet'), qty: t(lang, 'quick.qty'), myPhone: t(lang, 'quick.myPhone'),
     rows: orderMessengers().map((m) => ({ key: m.key, name: m.label, label: t(lang, 'quick.via', { name: m.label }), value: m.value })),
     phone: { label: t(lang, 'quick.phone'), hint: market().phone.example }, call: t(lang, 'quick.call'),

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import s from './ReachList.module.css'
 import type { ReachRow } from '@/lib/contacts.ts'
+import type { Messenger } from '@/lib/chat.ts'
 import { Icon } from './Icon.tsx'
 import { SIGN } from './marks.ts'
 import { SiteLink } from './SiteLink.tsx'
@@ -35,7 +36,9 @@ const row = (key: string, href: string | null, sign: ReactNode, name: string, va
   )
 }
 
-export function ReachList({ rows, lead }: { rows: ReachRow[]; lead?: Lead }) {
+/** Строки — пути из `reachRows` или мессенджеры заказа (быстрый заказ: Instagram без
+ *  ссылки стоит надписью). */
+export function ReachList({ rows, lead }: { rows: (Omit<ReachRow, 'key'> & { key: ReachRow['key'] | Messenger })[]; lead?: Lead }) {
   return (
     <ul className={s.list}>
       {lead ? row('lead', lead.href, <span className={s.face} aria-hidden="true">{lead.name.slice(0, 1)}</span>, lead.role, lead.name) : null}

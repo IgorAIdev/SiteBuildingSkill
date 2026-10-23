@@ -39,7 +39,7 @@ export type PickupDetails = {
 export type DeliveryPageView = { title: string; methods: MethodView[]; saved: string | null; choose: string; details: AddressDetails | PickupDetails | null }
 export type Recap = { title: string; lines: string[]; change: { label: string; aria: string; href: string } | null }
 /** Товар в сводке заказа: снимок, имя, факты и количество строкой, сумма. */
-export type ItemView = { id: string; name: string; facts: string; total: string; image: Image }
+export type ItemView = { id: string; name: string; brand: string | null; facts: string; total: string; image: Image }
 /** Сводка заказа рядом с шагом: товары и итоги; на телефоне — раскрывашка
  *  сверху с итогом в строке (`show`, `total`). */
 export type SummaryView = { label: string; show: string; total: string; items: ItemView[]; totals: TotalsView }
@@ -87,20 +87,20 @@ export const NAME_FIELD: Record<NamePart, { name: 'firstName' | 'lastName'; key:
   family: { name: 'lastName', key: 'field.lastName', auto: 'family-name' },
 }
 
-/** Контакты: почта, имя с фамилией парой, телефон. Пара стоит в порядке
- *  языка страницы (`NAME_ORDER`, lib/locale.ts): по-венгерски фамилия первой,
- *  как её пишут и ждут (И381). Автозаполнение — токены WHATWG (WCAG 1.3.5):
- *  браузер подставляет то, что знает, по токену, а не по месту поля. */
+/** Контакты: имя с фамилией парой, телефон, почта последней (слово заказчика 23.10.2026:
+ *  «Email в самый низ»). Пара стоит в порядке языка страницы (`NAME_ORDER`, lib/locale.ts):
+ *  по-венгерски фамилия первой, как её пишут и ждут (И381). Автозаполнение — токены WHATWG
+ *  (WCAG 1.3.5): браузер подставляет то, что знает, по токену, а не по месту поля. */
 export function contactView(lang: Lang, contact: Contact | null): ContactView {
   const c = contact ?? { email: '', firstName: '', lastName: '', phone: '' }
   return {
     rows: [
-      [field(lang, 'email', c.email, { key: 'field.email', type: 'email', auto: 'email' })],
       NAME_ORDER[lang].map((part) => {
         const f = NAME_FIELD[part]
         return field(lang, f.name, c[f.name], { key: f.key, auto: f.auto })
       }),
       [field(lang, 'phone', c.phone, { key: 'field.phone', type: 'tel', auto: 'tel' })],
+      [field(lang, 'email', c.email, { key: 'field.email', type: 'email', auto: 'email' })],
     ],
     /* Кнопка называет следующий шаг, как «Continue to payment» на доставке (Baymard: «Continue to
        Payment», не «Continue»; Shopify — «Continue to shipping»; research/checkout-2026-10-22.md). */
@@ -186,7 +186,7 @@ const deliveryLines = (lang: Lang, d: Delivery): string[] => [methodHead(d), ...
  *  строки и снимок — тот же, что в корзине. */
 export const itemsOf = (lang: Lang, cart: Cart): ItemView[] =>
   cart.lines.map((l: CartLine) => ({
-    id: l.id, name: l.name, image: l.image, total: money(l.total, lang),
+    id: l.id, name: l.name, brand: l.brand, image: l.image, total: money(l.total, lang),
     facts: [lineFacts(lang, l), t(lang, 'order.qty', { n: l.quantity })].filter(Boolean).join(' · '),
   }))
 

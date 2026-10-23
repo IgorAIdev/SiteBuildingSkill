@@ -230,7 +230,7 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
                 anchor: [], outline: [], marker: [], dark: [], ladder: [], wideCtrl: [], lopsided: [],
                 markInk: [],
                 covered: [],
-                lane: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], bareMove: [], iconRow: [], inkGap: [], lineLong: [], textShort: [], headActs: [],
+                lane: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], bareMove: [], iconRow: [], inkGap: [], lineLong: [], textShort: [], headActs: [], foldIndent: [], footAir: [], linkRow: [], headGap: [],
                 autofill: [], fieldZoom: [], h1Lines: [], twoWays: [], edge: [], fontLate: [], shift: [], ruleAir: [], rowShape: [], railTail: [], tileGrow: [] }
   const seen = new Set()
 
@@ -1158,6 +1158,31 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
         const got = parseFloat(getComputedStyle(e).fontSize)
         if (got > top + 0.5) out.paneTop.push(`${name(e)} — ${Math.round(got)}px, а заголовок окна «${title.textContent.trim().slice(0, 30)}» ${Math.round(top)}px`)
       }
+    }
+    /* 4a4c · раскрытия одного меню начинаются с одной вертикали.
+       Раскрытия пунктов шторки (грани масел, эффекты) — один орган: первое, что в
+       раскрытии видно (подпись группы, знак или слово строки), стоит на одной линии у
+       всех. «By effect» раскрывался на двенадцать левее «CBD oil» — у эффектов была
+       своя ветка рисования без обёртки группы и голый ноль поля строк (заказчик
+       23.10.2026: «где единообразие, уже сто раз говорил»). Закрытые раскрытия на миг
+       открываются (`hidden` снимается), мерятся и закрываются обратно. */
+    const folds = [...pane.querySelectorAll('[hidden][id], [id]:not([hidden])')].filter((f) => /paramsPanel/.test(String(f.className)))
+    if (folds.length > 1) {
+      const was = folds.map((f) => f.hidden)
+      folds.forEach((f) => { f.hidden = false })
+      const starts = folds.map((f) => {
+        const r = document.createRange(); r.selectNodeContents(f)
+        const rs = [...r.getClientRects()].filter((q) => q.width > 0 && q.height > 0)
+        return { f, x: rs.length ? Math.round(Math.min(...rs.map((q) => q.left))) : null }
+      }).filter((s) => s.x !== null)
+      if (starts.length > 1) {
+        const xs = starts.map((s) => s.x)
+        if (Math.max(...xs) - Math.min(...xs) > 2) {
+          const said = starts.map((s) => `«${(s.f.closest('li')?.querySelector(':scope > a')?.textContent ?? '').trim().slice(0, 20)}» ${s.x}`).join(', ')
+          out.foldIndent.push(`${name(pane)} — раскрытия начинаются с разных вертикалей: ${said}`)
+        }
+      }
+      folds.forEach((f, i) => { f.hidden = was[i] })
     }
     if (opened) {
       /* Закрывается БЕЗ ХОДА: окно уезжает `--open-t` (`display … allow-discrete`,
@@ -2530,6 +2555,92 @@ const measure = ({ phone, catalogue, target, contrast, vector, iosZoom, h1Lines,
     }
   }
 
+  /* 13е3 · ряд ссылок на телефоне — одна строка, листается вбок.
+   *
+   * Ряд коротких ссылок (рубрики блога, выбранные фильтры с «Clear filters», полки
+   * героя) на телефоне не переносится на второй и третий этаж: этажи съедают первый
+   * экран, а «Clear filters» отрывается от пилюль своей строкой (заказчик 23.10.2026:
+   * «Clear filter не нужно переносить в третью строку, запрещено… если выходит за
+   * границы экрана, пусть скролятся по горизонтали»; «ссылки категории статей должны
+   * скролиться по горизонтали, а не строки занимать»). Ряд — примитив полосы пути
+   * (`rail`, `data-rail="wrap"`): шире шва 560 переносится, уже — одна полоса. Мерится
+   * окно уже 560: ряд из трёх и больше коротких ссылок (ребёнок — ссылка или пункт
+   * с одной ссылкой, без снимка и заголовка), стоящий больше чем в одну строку.
+   * Выбор варианта (форма, `fieldset`, радиогруппа) — не ряд ссылок. */
+  if (innerWidth < 560) {
+    for (const row of document.querySelectorAll('main *')) {
+      const cs = getComputedStyle(row)
+      if (!/flex/.test(cs.display) || cs.flexWrap !== 'wrap' || cs.flexDirection.startsWith('column') || !shown(row)) continue
+      if (row.closest('form, fieldset, [role="radiogroup"], footer, [data-pane]')) continue
+      const kids = Array.from(row.children).filter(shown)
+      if (kids.length < 3) continue
+      const linkish = (k) => (k.matches('a[href]') || (k.querySelectorAll('a[href]').length === 1 && k.querySelectorAll('a, button, input, select').length === 1)) && !k.querySelector('img, picture, h2, h3') && k.textContent.trim().length <= 40
+      if (!kids.every(linkish)) continue
+      const tops = new Set(kids.map((k) => Math.round(k.getBoundingClientRect().top / 4)))
+      if (tops.size > 1) out.linkRow.push(`${name(row)} — ${kids.length} ссылок в ${tops.size} строки: на телефоне ряд один и листается вбок (rail, data-rail="wrap")`)
+    }
+  }
+
+  /* 13е2 · низ карточки ближе к её тексту, чем к соседней карточке.
+   *
+   * Карточки стопкой (лента блога на телефоне): от описания до строки низа («7 min
+   * read · Law», «Read the article») по краске стояло 27, от низа до следующей карточки
+   * — 32 (заказчик 23.10.2026: «ну снова ритмы… почему между описанием и временем
+   * чтения и кнопкой такой же зазор, как между блоками статей»). По коробкам было 8
+   * против 32, и twinGap молчал: поле кнопки под палец раздувало строку низа, и буквы
+   * уезжали вниз внутри коробки. Мерится краска — строки текста, а не коробки: просвет
+   * внутри карточки не больше половины просвета до соседней. Карточки рядом (рельса) —
+   * не стопка, не мерятся. */
+  /* Строки, срезанные многоточием (`line-clamp`), отдают коробки и за срезом: краска —
+     только то, что в коробке своего элемента. */
+  const textInk = (root) => {
+    const rs = []
+    const floor = root.getBoundingClientRect().bottom + 1
+    const walk = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
+    for (let t = walk.nextNode(); t; t = walk.nextNode()) {
+      if (!t.data.trim() || !t.parentElement || !shown(t.parentElement)) continue
+      const r = document.createRange(); r.selectNodeContents(t)
+      for (const q of r.getClientRects()) if (q.width > 0 && q.height > 0 && q.bottom <= floor) rs.push(q)
+    }
+    return rs
+  }
+  for (const list of document.querySelectorAll('main ul, main ol')) {
+    const cards = Array.from(list.children).filter((li) => shown(li) && li.querySelector('[data-foot]'))
+    for (let i = 0; i + 1 < cards.length; i++) {
+      const li = cards[i], next = cards[i + 1]
+      const lb = li.getBoundingClientRect(), nb = next.getBoundingClientRect()
+      if (nb.top < lb.bottom - 1) continue
+      const foot = li.querySelector('[data-foot]')
+      const above = Array.from(li.querySelectorAll('h2, h3, p')).filter((e) => !foot.contains(e) && shown(e)).flatMap(textInk)
+      const low = textInk(foot)
+      if (!above.length || !low.length) continue
+      const inner = Math.round(Math.min(...low.map((q) => q.top)) - Math.max(...above.map((q) => q.bottom)))
+      const outer = Math.round(nb.top - Math.max(...low.map((q) => q.bottom)))
+      if (inner > 0 && outer > 0 && inner * 2 > outer) out.footAir.push(`${name(list)} — низ карточки от её текста ${inner}px по краске, до соседней карточки ${outer}px: внутри больше половины снаружи`)
+    }
+  }
+
+  /* 13е4 · от шапки ряда до ряда — один шаг на странице.
+   *
+   * Шапка ряда (`sectionHead`) над рельсой — с подписью или без — стоит от первой карточки
+   * одним просветом по краске: на главной «Shop by collection» стоял от карточек на 44, а
+   * «CBD oil» с подписью — на 32 (заказчик 23.10.2026: «и то и то рельса с едиными
+   * правилами»). Пустая строка подписи в сетке шапки держала свой зазор. Мерится краска:
+   * низ последней строки шапки (заголовка или подписи) → верх первой карточки ряда. */
+  {
+    const heads = []
+    for (const head of document.querySelectorAll('main [class*="sectionHead"]')) {
+      const rail = head.nextElementSibling
+      if (!shown(head) || !rail || !shown(rail) || !/(^|\s|_)rail(\s|$)/.test(String(rail.className)) || !rail.firstElementChild) continue
+      const low = Array.from(head.querySelectorAll('h2, p')).filter(shown).flatMap(textInk)
+      if (!low.length) continue
+      const gap = Math.round(rail.firstElementChild.getBoundingClientRect().top - Math.max(...low.map((q) => q.bottom)))
+      heads.push({ said: `«${(head.querySelector('h2')?.textContent ?? '').trim().slice(0, 24)}» ${gap}`, gap })
+    }
+    const gaps = heads.map((h) => h.gap)
+    if (gaps.length > 1 && Math.max(...gaps) - Math.min(...gaps) > 2) out.headGap.push(`шапки рядов стоят от карточек по-разному: ${heads.map((h) => h.said).join(', ')}`)
+  }
+
   /* 13е · ссылка в строке текста, неотличимая от текста.
    *
    * Ссылка, стоящая в строке среди слов (у её родителя есть свой текст), отличается
@@ -3208,7 +3319,7 @@ const found = { lane: [], heroLane: [], placeholder: [], measure: [], target: []
                 anchor: [], outline: [], marker: [], sticky: [], fold: [], theme: [], coarse: [], calm: [],
                 inkDip: [], markInk: [],
                 covered: [],
-                ladder: [], wideCtrl: [], lopsided: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], bareMove: [], iconRow: [], inkGap: [], lineLong: [], textShort: [], headActs: [],
+                ladder: [], wideCtrl: [], lopsided: [], sunk: [], stolen: [], field: [], alone: [], catalogueColumns: [], twoAir: [], airOrder: [], bandSeam: [], h1Size: [], headCase: [], paneTop: [], typeRole: [], brandTier: [], headAir: [], partAir: [], pageTop: [], inkStep: [], bareMove: [], iconRow: [], inkGap: [], lineLong: [], textShort: [], headActs: [], foldIndent: [], footAir: [], linkRow: [], headGap: [],
                 twiceLift: [], sheetSize: [],
                 autofill: [], fieldZoom: [], h1Lines: [], twoWays: [], edge: [], fontLate: [], shift: [], ruleAir: [], rowShape: [], railTail: [], tileGrow: [] }
 

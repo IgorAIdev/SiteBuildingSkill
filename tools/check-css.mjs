@@ -3161,6 +3161,41 @@ for (const path of files) {
   }
 }
 
+/* ── НОЛЬ БЕЗ ЕДИНИЦЫ В РУЧКЕ ДЛИНЫ ─────────────────────────────────────
+ *
+ * Ручка, которая где-то носит длину (`--menu-inset:var(--sp-2)`), в другом месте
+ * обнулена голым `0`, а читают её суммой с длиной: `calc(var(--pad-inner) +
+ * var(--menu-inset, 0px))`. Длина плюс число — ошибка типа; браузер выбрасывает
+ * всё свойство (недействительно во время вычисления → начальное значение), и поле
+ * строки падает в ноль. Запасное значение `var(…, 0px)` не спасает — ручка задана.
+ * Дефект, купивший семью: строки «By effect» в шторке меню стояли без поля, на
+ * двенадцать левее строк «CBD oil» (`--menu-inset:0` у раскрытия; заказчик
+ * 23.10.2026: «где единообразие»). Ноль ручки длины пишется с единицей: `0px`. */
+{
+  const decl = new Map()
+  const sums = new Set()
+  const LENGTHY = /\d(?:px|rem|em|%|vw|vh|cqi|ch|lh)\b|var\(--(?:sp|pad|gap|air|ctrl-h|ctrl-face|ctrl-target|icon-size|page|gut|measure|line-w|r)-?/
+  for (const path of files) {
+    const rel = relative(ROOT, path)
+    if (EXEMPT.includes(rel)) continue
+    const css = strip(readFileSync(path, 'utf8'))
+    for (const m of css.matchAll(/(--[\w-]+)\s*:\s*([^;{}]+)/g)) {
+      if (!decl.has(m[1])) decl.set(m[1], [])
+      decl.get(m[1]).push({ rel, line: css.slice(0, m.index).split('\n').length, value: m[2].trim() })
+    }
+    for (const m of css.matchAll(/[\w-]+\s*:\s*([^;{}]*calc\([^;{}]*)/g)) {
+      if (!/\s[+-]\s/.test(m[1])) continue
+      for (const v of m[1].matchAll(/var\((--[\w-]+)/g)) sums.add(v[1])
+    }
+  }
+  for (const [name, list] of decl) {
+    if (!sums.has(name) || !list.some((d) => LENGTHY.test(d.value))) continue
+    for (const d of list) {
+      if (d.value === '0') found.zeroLength.push(`${d.rel}:${d.line}  ${name}:0 — ручку читают суммой с длиной (calc … + var(${name})), голый ноль ломает сумму, и браузер выбрасывает свойство; ноль длины — 0px`)
+    }
+  }
+}
+
 const counts = Object.fromEntries(Object.entries(found).map(([k, v]) => [k, v.length]))
 
 if (process.argv.includes('--update')) {

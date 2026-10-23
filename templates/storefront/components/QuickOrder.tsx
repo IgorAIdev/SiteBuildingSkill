@@ -1,16 +1,15 @@
 'use client'
-import { useEffect, useId, useRef, useState, type MouseEvent } from 'react'
+import { useEffect, useId, useMemo, useRef, useState, type MouseEvent } from 'react'
 import b from '@/styles/btn.module.css'
 import f from '@/styles/form.module.css'
 import pn from '@/styles/pane.module.css'
-import p from '@/styles/primitives.module.css'
 import s from './QuickOrder.module.css'
 import type { QuickView } from '@/lib/product-view.ts'
 import { chatHref } from '@/lib/chat.ts'
 import { Icon } from './Icon.tsx'
 import { PaneHead } from './PaneHead.tsx'
-import { SIGN } from './marks.ts'
-import rl from './ReachList.module.css'
+import { ReachList } from './ReachList.tsx'
+import { OrderItems } from './OrderItems.tsx'
 
 
 /* Быстрый заказ — одно сообщение в мессенджер вместо оформления (слово
@@ -56,8 +55,15 @@ export function QuickOrder({ view }: { view: QuickView }) {
 
   const what = `${view.what} × ${qty} ${view.qty}`
   const text = `${view.greet} ${what}${phone.trim() ? `. ${view.myPhone}: ${phone.trim()}` : ''}`
-  const rows = view.rows.map((r) => ({ ...r, href: chatHref(r, text) }))
+  /* Строки путей и строка товара — по тексту сообщения и количеству: пересобираются,
+     только когда меняются они. */
+  const rows = useMemo(() => view.rows.map((r) => ({ key: r.key, name: r.name, value: r.value, href: chatHref(r, text) })), [view.rows, text])
   const call = rows.find((r) => r.href)?.href ?? null
+  const items = useMemo(() => [{
+    id: 'quick', name: view.item.name, brand: view.item.brand, image: view.item.image,
+    facts: [view.item.facts, `${qty} ${view.qty}`].filter(Boolean).join(' · '),
+    total: view.item.totals[Math.min(qty, view.item.totals.length) - 1] ?? '',
+  }], [view.item, view.qty, qty])
 
   return (
     <>
@@ -69,28 +75,20 @@ export function QuickOrder({ view }: { view: QuickView }) {
         <div className={`${pn.body} ${s.body}`}>
           <div className={s.intro}>
             <p className={s.lead}>{view.lead}</p>
-            {/* Что заказывают — видно в окне, а не только в набранном
-                сообщении: у Viber и Instagram текста в ссылке нет, и человеку
+            {/* Что заказывают — строкой товара сводки кассы (OrderItems: снимок, марка, имя,
+                упаковка с количеством, сумма), а не голой строкой текста (слово заказчика
+                23.10.2026: «дизайн система не использовалась»). Видно в окне, а не только в
+                набранном сообщении: у Viber и Instagram текста в ссылке нет, и человеку
                 нужно, что написать. */}
-            <p className={s.what}>{what}</p>
+            <OrderItems items={items} />
           </div>
-          {/* Мессенджеры — вид панели (`--quick-look`, И470): плитками по две
-              в ряд — знак над именем — или строками «Order via …». Строка —
-              та же тихая строка, что в меню трубки и окне помощи (ReachList,
-              правило 10; слово заказчика 21.10.2026: кнопки с обводкой рядом
-              с тихим окном контактов — разнобой), знак — краской своей марки (`data-mark`,
-              И471: cbdin.bg, WhatsApp Brand Guidelines). Имя ссылки для
-              чтеца — полное «Order via …», видимое слово в нём есть
-              (WCAG 2.5.3). */}
-          <ul className={`${p.grid} ${s.rows} ${rl.group}`} data-size="lg" data-cells="">
-            {rows.map((r) => (
-              <li key={r.key}>
-                {r.href
-                  ? <a className={`${rl.row} ${rl.tile} ${rl.mark}`} data-mark={r.key} href={r.href} target="_blank" rel="noopener noreferrer" aria-label={r.label}><Icon id={SIGN[r.key]} /><span className={`${rl.name} ${rl.short}`}>{r.name}</span><span className={`${rl.name} ${rl.long}`}>{r.label}</span></a>
-                  : <span className={`${rl.row} ${rl.tile} ${rl.mark}`} data-mark={r.key} aria-disabled="true" aria-label={r.label}><Icon id={SIGN[r.key]} /><span className={`${rl.name} ${rl.short}`}>{r.name}</span><span className={`${rl.name} ${rl.long}`}>{r.label}</span></span>}
-              </li>
-            ))}
-          </ul>
+          {/* Мессенджеры — тем же списком путей, что окно помощи и меню трубки (ReachList,
+              правило 10): знак краской своей марки, имя, под ним адрес. До 23.10.2026 у окна
+              были свои кнопки с обводкой, потом своя плашка с плитками — вида, которого на
+              сайте нет нигде больше (слово заказчика: «дизайн система не использовалась»).
+              Вид панели `--quick-look` решает только число колонок: строки — одна, плитки —
+              две. */}
+          <div className={s.rows}><ReachList rows={rows} /></div>
           <div className={f.field}>
             <label className={f.label} htmlFor={`${id}-phone`}>{view.phone.label}</label>
             <input className={f.box} id={`${id}-phone`} type="tel" inputMode="tel" autoComplete="tel" placeholder={view.phone.hint} value={phone} onChange={(e) => setPhone(e.target.value)} />

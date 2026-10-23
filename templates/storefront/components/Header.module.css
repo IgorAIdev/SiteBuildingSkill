@@ -258,8 +258,11 @@
       /* Шапка в две строки (boutique, search): знак стоит в верхней строке, а низ шапки —
          под строкой полок, и черта по низу вставала под чужой полкой («CBD flowers» на
          странице поиска, «CBD Pasta» в избранном; разбор 23.10.2026). Там знак своей
-         страницы отмечен только краской, как на телефоне (И756). */
-      .head:is([data-variant='boutique'], [data-variant='search']):has(.glyph[aria-current='page']):not(:has(.nav:not(:popover-open, [data-leaving]) .links a[aria-current='page'])) .bar::after{content:none} /* look-header:search,boutique */
+         страницы отмечен только краской, как на телефоне (И756). Строка — на вид своя: снятие
+         панели оставляет строки выбранного вида, и чужое имя вида в общей строке оставалось
+         бы в стилях (look-panel/tests/panel.test.ts). */
+      .head[data-variant='boutique']:has(.glyph[aria-current='page']):not(:has(.nav:not(:popover-open, [data-leaving]) .links a[aria-current='page'])) .bar::after{content:none} /* look-header:boutique */
+      .head[data-variant='search']:has(.glyph[aria-current='page']):not(:has(.nav:not(:popover-open, [data-leaving]) .links a[aria-current='page'])) .bar::after{content:none} /* look-header:search */
     }
   }
 }
@@ -532,13 +535,17 @@
   /* Раскрытие — строки меню под строкой полки, сдвинутые на знак строки: слово
      подстроки стоит под словом полки (как у cbdin.bg). Шаг — шаг строк меню. */
   display:flex;flex-direction:column;gap:var(--sp-1);grid-column:1 / -1;
-  --menu-inset:0
+  /* Ноль ручки длины — с единицей: строки читают её суммой с полем строки, и голый `0`
+     ломал сумму — поле строк без подписи группы (эффекты) падало в ноль (check:css
+     `zeroLength`, 23.10.2026). */
+  --menu-inset:0px
 }
 /* Группы граней и «View all» — под словом пункта (как у cbdin.bg): подпись группы и «View
    all» на линии слова «CBD oil», значения — ступенью глубже (`menu.module.css`, строки под
    подписью). Было: подписи на 12, значения на 20, «View all» на 44 — три отступа в одном
-   раскрытии (слово заказчика 21.10.2026 со снимком). Эффекты со знаком строк — без сдвига:
-   знак под знаком пункта, слово под словом. */
+   раскрытии (слово заказчика 21.10.2026 со снимком). Эффекты — та же группа без подписи
+   (NavLinks.tsx, `Fold`): их строки начинаются на той же линии слова, что подпись группы масел
+   (слово заказчика 23.10.2026: эффекты стояли левее — у них не было обёртки группы). */
 .nav:is(:popover-open, [data-leaving]) .paramsPanel .sheetGroup{padding-inline-start:calc(var(--icon-size) + var(--gap-row))}
 
 

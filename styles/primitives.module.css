@@ -214,7 +214,7 @@
    (ряд, сетка, строки меню) отступ решает его узел. Вес класса, а не нулевой:
    сброс `*` стоит в сборке позже и снимал правило под `:where`. */
 .prose :where(ol:not([class]), ul:not([class])){padding-inline-start:var(--measure-mark)}
-:where(ul, ol):where(.cluster, .grid, .stack){list-style:none;padding-inline-start:0;margin-block:0}
+:where(ul, ol):where(.cluster, .grid, .stack, .rail){list-style:none;padding-inline-start:0;margin-block:0}
 
 /* Switcher — две колонки, становящиеся одной без единого медиазапроса.
    Это и есть ответ на «мёртвую зону 700–1050»: там ломалось не потому, что
@@ -1408,6 +1408,11 @@
   grid-template-areas:'title acts' 'lede lede';
   align-items:center;column-gap:var(--gap-row)
 }
+/* Подписи нет — второй строки нет: пустая строка сетки держала свой зазор (`--air-line`), и
+   ряд без подписи стоял от заголовка на 44, а ряд с подписью от неё — на 32 (заказчик
+   23.10.2026 на главной: «расстояние от заголовка до товара и от описания до товара разное,
+   а должно быть одинаковое — и то и то рельса с едиными правилами»; check:craft `headGap`). */
+.sectionHead[data-row]:not(:has(> hgroup > p)){grid-template-areas:'title acts'}
 .sectionHead[data-row] h2{grid-area:title;min-inline-size:0}
 /* every heading on the page reads one size and one leading */
 /* Заголовок держит свою строку и не ужимается: в ряду он ужимался ради

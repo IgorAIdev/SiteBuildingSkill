@@ -22,8 +22,11 @@ export function BlogIndex({ view, label }: { view: BlogIndexView; label: string 
         <p>{view.lede}</p>
         <p className={p.note}>{view.count}</p>
         <nav aria-label={label} className={s.nav}>
-          <ul className={`${p.cluster} ${s.topics}`}>
-            {view.topics.map((x) => <li key={x.href}><SiteLink className={b.word} href={x.href} aria-current={x.current ? 'page' : undefined}>{x.label}</SiteLink></li>)}
+          {/* Рубрики — полосой пути (`rail`, `data-rail="wrap"`): шире шва 560 переносятся, на
+              телефоне — одна строка, листается вбок (слово заказчика 23.10.2026: «ссылки категории
+              статей должны скролиться по горизонтали, а не строки занимать»). */}
+          <ul className={`${p.rail} ${s.topics}`} data-rail="wrap">
+            {view.topics.map((x) => <li key={x.href}><SiteLink className={`${b.word} ${p.tap}`} href={x.href} aria-current={x.current ? 'page' : undefined}>{x.label}</SiteLink></li>)}
           </ul>
         </nav>
       </div>

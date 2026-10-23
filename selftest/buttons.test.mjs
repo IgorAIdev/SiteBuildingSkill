@@ -167,8 +167,10 @@ test('brand under the hand, a floor button keeps its ink, the hero is a light ha
   assert.match(hero, /p\.lede\}/, 'герой — примитив «текст и кадр»')
   assert.match(hero, /p\.frame\}/, 'снимок — кадр с потолком')
   assert.doesNotMatch(hero, /data-ground="deck"/, 'тёмной сцены нет: текст на полу страницы')
-  /* Ряд пути один на вид оси «Кнопки категорий» (14.10.2026): пилюли — `<ul>` с «Shop all» внутри, сетка — «Shop all» над `<ul>` плиток. */
-  assert.equal((hero.match(/<ul /g) ?? []).length, 2, '«В магазин» и полки — один ряд пути в каждом виде: пилюли или сетка')
+  /* Ряд пути один на вид оси «Кнопки категорий» (14.10.2026): пилюли — `<ul>` с «Shop all» внутри, сетка — «Shop all» над `<ul>` плиток.
+     С PR #234 ряд рисует общий орган кнопок полок (`CategoryPaths`: герой и пустая корзина) — герой его берёт, а не рисует. */
+  assert.match(hero, /<CategoryPaths\b/, 'герой берёт ряд пути у CategoryPaths, а не рисует свой')
+  assert.equal((site('components/CategoryPaths.tsx').match(/<ul /g) ?? []).length, 2, '«В магазин» и полки — один ряд пути в каждом виде: пилюли или сетка')
 })
 
 /* Кнопка порядка — знак и выбранное слово, без подписи на виду и без стрелки

@@ -24,10 +24,13 @@ test('the cart row draws its organs at the small-organ face, not at finger heigh
   assert.match(lines, /className=\{`\$\{b\.word\} \$\{p\.tap\} \$\{s\.drop\}`\} data-hand="bad"/)
 })
 
-test('a narrow cart pane puts the unit price on the facts row, not on its own row', () => {
-  /* Третий ряд пустой и гибкий: остаток роста снимка уходит в него, а не раздвигает имя и факты. */
-  assert.match(cart, /@container \(max-width: 22rem\)\{[^@]*grid-template-areas:'thumb name name' 'thumb facts unit' 'thumb \. \.' 'act act act';grid-template-rows:auto auto 1fr auto/)
-  assert.match(cart, /\.pane \.what\{display:contents\}/)
+test('a narrow cart list — pane and page alike — puts the unit price on the facts row, the name full width', () => {
+  /* Третий ряд пустой и гибкий: остаток роста снимка уходит в него, а не раздвигает имя и факты.
+     Страница корзины на телефоне — тот же узкий список, что шторка (слово заказчика 23.10.2026:
+     «цена слишком высоко, её нужно ниже, и место освободится для строки названия»). */
+  assert.match(cart, /@container \(max-width: 22rem\)\{[^@]*\.line\{grid-template-areas:'thumb name name' 'thumb facts unit' 'thumb \. \.' 'act act act';grid-template-rows:auto auto 1fr auto/)
+  assert.match(cart, /@container \(max-width: 22rem\)\{[^@]*\.what\{display:contents\}/)
+  assert.doesNotMatch(cart, /\.pane \.what\{display:contents\}/, 'узкий список один на шторку и страницу')
 })
 
 /* Имя строки — растянутая ссылка: цель пальца — вся строка, своей коробки цели у имени нет.

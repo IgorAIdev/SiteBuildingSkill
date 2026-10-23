@@ -56,6 +56,9 @@
 
 .field{display:flex;flex-direction:column;gap:calc(var(--ctrl-h) * .15);min-inline-size:0}
 .label{font-size:var(--ctrl-fs-sm);font-weight:var(--label-weight);color:var(--ink)}
+/* Знак обязательного поля — звёздочка краской ошибки вплотную за подписью (Field.tsx,
+   23.10.2026): та краска, которой поле скажет «не заполнено», говорит это заранее. */
+.need{margin-inline-start:.15em;color:var(--bad)}
 
 /* Рисунок поля — один; `select.box`, `textarea.box` и `.input` приматива
    берут его же.

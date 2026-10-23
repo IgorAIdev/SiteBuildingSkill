@@ -76,12 +76,16 @@
 /* Ритм карточки списка (замер семи сайтов 22.10.2026 — Allbirds, Into The Gloss, Aesop, Gymshark, Healthline, Ritual, cbdshop.bg; скилл scale, «Шаг 5»): имя → описание — шаг малого заголовка `--air-tight`
    (у сайтов 8–10, 0.5–0.6 кегля описания; стояло 14 — шаг заголовка страницы);
    описание — ролью текста (16 у пяти сайтов из семи; было 14); низ карточки — строка
-   данных и «Read the article» — отдельно, от `--air-row` и прижат к низу ряда (у
-   сайтов 24–35, в 2–3 раза дальше шага внутри). Заказчик 22.10.2026: «расстояния
-   между текстами должны быть чуть меньше, учитывая размер текста». */
+   данных и «Read the article» — тем же шагом карточки `--air-tight` и прижат к низу ряда.
+   Заказчик 22.10.2026: «расстояния между текстами должны быть чуть меньше, учитывая размер
+   текста». До 23.10.2026 низ стоял ещё и полем `--air-row` сверху: по краске 27 от описания
+   при 32 до следующей карточки на телефоне — внутри почти как снаружи (заказчик: «ну снова
+   ритмы… такой же зазор, как между блоками статей»; check:craft `footAir`). У сайтов низ
+   отделён от текста при шаге между карточками в 60 — у нас между карточками 32, и низу
+   место — в шаге карточки, втрое ближе, чем до соседней. */
 [data-place='list'] .text{flex:1;gap:var(--air-tight);justify-content:flex-start}
 [data-place='list'] .summary{font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--body-weight);letter-spacing:var(--body-track)}
-[data-place='list'] .foot{margin-block-start:auto;padding-block-start:var(--air-row);display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;column-gap:var(--gap-row)}
+[data-place='list'] .foot{margin-block-start:auto;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;column-gap:var(--gap-row)}
 /* «Read the article ↗» — контрол «View all» (PostCard.tsx: `word` + `data-hand="menu"`,
    строй `.all` шапки ряда); здесь только кегль — тот же, что у выхода шапки ряда
    (`sectionHead [data-out]`: роль тела). Краски и движения под рукой у места нет. */

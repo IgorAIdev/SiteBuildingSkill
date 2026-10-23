@@ -24,19 +24,14 @@
 .body{display:grid;gap:var(--air-group);align-content:start}
 .intro{display:grid;gap:var(--air-row)}
 .lead{margin:0;font-size:var(--body-size);line-height:var(--body-lead);color:var(--ink-soft)}
-/* Что заказывают — полужирной строкой чернил: это строка, которую уносит
-   сообщение, и её отличает вес, а не плашка (плашка брала две строки
-   высоты и ещё одну серую площадь). */
-.what{margin:0;font-size:var(--body-size);line-height:var(--body-lead);font-weight:var(--cardname-weight);font-variant-numeric:tabular-nums}
+/* Что заказывают — строка товара сводки кассы (OrderItems, Checkout.module.css): снимок,
+   марка, имя, упаковка с количеством, сумма; своей одежды здесь нет (23.10.2026).
 
-/* Мессенджеры — вид панели `--quick-look` (И470): плитки по две в ряд
-   (умолчание) или строки во всю ширину. Обе формы — тихая строка путей
-   (ReachList.module.css, `tile`), собранная тихой плашкой (`group`): без
-   обводки у каждой, ячейки через волосяную линию (слово заказчика
-   21.10.2026). Здесь — только сетка: просвет ячеек — толщина линии. */
-.rows{--cols:2;--cols-min:2;--cell-min:0px;--grid-gap:var(--line-w);list-style:none;margin:0;padding:0}
+   Мессенджеры — список путей окна помощи (ReachList.module.css); вид панели `--quick-look`
+   (И470) решает только колонки: плитки (умолчание) — две, строки — одна. */
+.rows{--reach-cols:2}
 @container style(--quick-look: rows){
-  .rows{--cols:1;--cols-min:1}
+  .rows{--reach-cols:1}
 }
 /* Знак — краской своей марки: класс `mark` списка путей (ReachList.module.css). */
 

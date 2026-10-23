@@ -43,11 +43,13 @@ test('the card answers the hand like the shop cards: edge on the picture, pictur
 })
 
 /* Ступень по отношению (scale, «Шаг 5»; замер семи редакционных лент 22.10.2026): имя
-   карточки → описание — `--air-tight`, низ карточки — от `--air-row`, ряд → ряд —
-   `--air-block`. Было 14 / 14 / 36 — «расстояния между текстами великоваты». */
-test('list cards step by the relation: name to text tight, footer apart, rows by the block air', () => {
-  assert.ok(has("[data-place='list'] .text{flex:1;gap:var(--air-tight);justify-content:flex-start}"), 'имя → описание — --air-tight, строки сверху вниз')
-  assert.ok(has("[data-place='list'] .foot{margin-block-start:auto;padding-block-start:var(--air-row);"), 'низ карточки — от --air-row, прижат к низу ряда')
+   карточки → описание → низ карточки — `--air-tight`, ряд → ряд — `--air-block`. Было 14 /
+   14 / 36 — «расстояния между текстами великоваты»; 23.10.2026 у низа снято своё поле
+   `--air-row`: по краске низ стоял от описания почти как соседняя карточка (27 при 32,
+   заказчик: «ну снова ритмы»; check:craft `footAir`). */
+test('list cards step by the relation: name, text and footer tight, rows by the block air', () => {
+  assert.ok(has("[data-place='list'] .text{flex:1;gap:var(--air-tight);justify-content:flex-start}"), 'имя → описание → низ — --air-tight, строки сверху вниз')
+  assert.ok(has("[data-place='list'] .foot{margin-block-start:auto;display:flex;"), 'низ карточки прижат к низу ряда, своего поля сверху нет')
   const grid = readFileSync(new URL('../components/BlogIndex.module.css', import.meta.url), 'utf8')
   assert.match(grid, /\.grid\{row-gap:var\(--air-block\)\}/, 'ряд карточек → ряд — --air-block')
 })

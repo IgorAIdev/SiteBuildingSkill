@@ -152,11 +152,6 @@
    И733), видом предмета: слово — полное, без подложки, как под рукой. */
 .word:has(+ :popover-open){color:var(--ink)}
 .row{border-radius:var(--r-ctrl);transition:background-color var(--hover-t) var(--ease)}
-/* Строка в сгруппированном списке — ячейка (список с волосяной линией между ячейками,
-   Apple HIG «inset grouped»; быстрый заказ): угол — у группы, подложка под рукой
-   заливает ячейку целиком. Форма и здесь — у вида, по признаку списка `data-cells`,
-   а не углом на месте у узла (`rowShape`, И730). */
-:where([data-cells]) .row{border-radius:0}
 /* Строка с погашенным контролом внутри (галочка грани с нулём, И750) молчит
    под рукой, как погашенная кнопка. */
 @media (hover:hover){ .row:not([aria-disabled='true'], :has(:disabled)):hover{background-color:var(--hover-row)} }
