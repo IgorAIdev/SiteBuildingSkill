@@ -8,6 +8,7 @@ import type { QuickView } from '@/lib/product-view.ts'
 import { chatHref } from '@/lib/chat.ts'
 import { Icon } from './Icon.tsx'
 import { PaneHead } from './PaneHead.tsx'
+import { PolicyLine } from './PolicyLine.tsx'
 import { ReachList } from './ReachList.tsx'
 import { OrderItems } from './OrderItems.tsx'
 
@@ -93,14 +94,19 @@ export function QuickOrder({ view }: { view: QuickView }) {
               «ниже ввод телефона и отправить в одной строке») — пара поля и кнопки сайта
               (`f.send`, короткое поле с действием — как код скидки корзины). Низа у окна нет:
               действие стоит у своего поля. */}
-          <div className={f.send} data-layout="inline">
-            <div className={f.field}>
-              <label className={f.label} htmlFor={`${id}-phone`}>{view.phone.label}</label>
-              <input className={f.box} id={`${id}-phone`} type="tel" inputMode="tel" autoComplete="tel" placeholder={view.phone.hint} value={phone} onChange={(e) => setPhone(e.target.value)} />
+          <div className={s.phone}>
+            <div className={f.send} data-layout="inline">
+              <div className={f.field}>
+                <label className={f.label} htmlFor={`${id}-phone`}>{view.phone.label}</label>
+                <input className={f.box} id={`${id}-phone`} type="tel" inputMode="tel" autoComplete="tel" placeholder={view.phone.hint} value={phone} onChange={(e) => setPhone(e.target.value)} />
+              </div>
+              {call
+                ? <a className={b.btn} data-voice="loud" href={call} target="_blank" rel="noopener noreferrer">{view.call}<Icon id="arrow-right" /></a>
+                : <span className={b.btn} data-voice="loud" aria-disabled="true">{view.call}<Icon id="arrow-right" /></span>}
             </div>
-            {call
-              ? <a className={b.btn} data-voice="loud" href={call} target="_blank" rel="noopener noreferrer">{view.call}<Icon id="arrow-right" /></a>
-              : <span className={b.btn} data-voice="loud" aria-disabled="true">{view.call}<Icon id="arrow-right" /></span>}
+            {/* Как магазин обращается с номером — та же строка, что под формой кассы и кабинета
+                (PolicyLine; GDPR ст. 13); вариант 2 заказчика 23.10.2026 — под полем. */}
+            <PolicyLine link={view.policy} />
           </div>
         </div>
       </dialog>
