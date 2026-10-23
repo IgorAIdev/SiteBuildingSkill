@@ -76,7 +76,7 @@ export function CartPane({ lang, id, src, title, close, pane, shown }: { lang: s
             </CartForm>
           </>
         ) : (
-          <EmptyPaths level={2} title={view.empty.title} lead={view.empty.lead} shelves={view.empty.shelves} cat={view.empty.cat} />
+          <EmptyPaths level={2} pane title={view.empty.title} lead={view.empty.lead} shelves={view.empty.shelves} cat={view.empty.cat} />
         )}
       </div>
       {view && filled ? (

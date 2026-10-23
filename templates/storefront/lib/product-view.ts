@@ -82,10 +82,11 @@ export type ProductPageView = {
   gallery: GalleryView; groups: OptionGroupLinks[]; facts: FactsView | null; details: DetailsView
   /** Протокол партии — знаком и словом у наличия (И512), сам протокол — в окне. */
   lab: (LabView & { chip: string; close: string }) | null
-  /** Факты доверия в строке протокола (заказчик 21.10.2026: «0.2% и сделано в ЕС
+  /** Факты доверия под именем (заказчик 21.10.2026: «0.2% и сделано в ЕС
    *  в строку с lab report, иконки для них»): THC ниже предела рынка — по
-   *  протоколу партии; происхождение — из данных товара. Нет данных — нет факта. */
-  trust: { icon: 'check-shield' | 'leaf'; text: string }[]
+   *  протоколу партии, строкой наличия и протокола; происхождение — из данных
+   *  товара, строкой оценки (23.10.2026). Нет данных — нет факта. */
+  trust: { thc: TrustFact | null; origin: TrustFact | null }
   rating: RatingView | null
   related: ShelfCard[]; relatedTitle: string
   /** Выход ко всей полке товара у «похожих» — та же строка, что у полки
@@ -154,15 +155,18 @@ function labOf(lang: Lang, product: Product, chosen: Product['variants'][number]
   return report ? { ...labView(lang, report), chip: t(lang, 'product.tab.lab'), close: t(lang, 'lab.close') } : null
 }
 
+/** Факт доверия — знак и слово. */
+export type TrustFact = { icon: 'check-shield' | 'leaf'; text: string }
+
 /** Факты доверия: THC партии ниже предела рынка (`market().thcLimit`) и
  *  происхождение сырья. Слово — из данных языка, число — записью языка. */
 function trustOf(lang: Lang, product: Product, chosen: Product['variants'][number] | null): ProductPageView['trust'] {
   const report = product.labReports.find((r) => r.batch === chosen?.batch) ?? product.labReports[0] ?? null
   const limit = market().thcLimit
-  return [
-    ...(report && report.thcPercent < limit ? [{ icon: 'check-shield' as const, text: t(lang, 'product.thcUnder', { limit: percent(lang, limit, 1) }) }] : []),
-    ...(product.origin === 'EU' ? [{ icon: 'leaf' as const, text: t(lang, 'product.origin.EU') }] : []),
-  ]
+  return {
+    thc: report && report.thcPercent < limit ? { icon: 'check-shield', text: t(lang, 'product.thcUnder', { limit: percent(lang, limit, 1) }) } : null,
+    origin: product.origin === 'EU' ? { icon: 'leaf', text: t(lang, 'product.origin.EU') } : null,
+  }
 }
 
 /** Оценка — числом языка страницы (`num`: 4.7 у en, 4,7 у ro и hu), звёзды —

@@ -132,11 +132,11 @@ const INSIDE = {
   'components/FoldGrid.tsx': ['components/Catalog.tsx', 'полка телефона шагами по 24 — сетка карточек каталога на узкой коробке, её устройство (И754)'],
   'components/FoldShelf.tsx': ['components/Catalog.tsx', 'свёртка полки телефона — сколько из 24 показано, «Показать ещё» и «24 of 85» под полкой; своей разметки нет, кнопки и счёт рисует строка листания каталога (И754)'],
   'components/PaneHandle.tsx': ['components/SearchPane.tsx', 'ручка свайпа — полоска у края окна поиска на телефоне (pane-swipe), без окна она не вещь; окно показано в рамке сайта'],
-  'components/ShelfRows.tsx': ['components/SearchPane.tsx', 'тихие строки полок под пустым полем окна поиска; показаны настоящим окном поиска в рамке сайта (И691; пустая корзина с 22.10.2026 — плитками полок, EmptyPaths)'],
+  'components/ShelfRows.tsx': ['components/SearchPane.tsx', 'тихие строки полок под пустым полем окна поиска и в пустой шторке корзины (EmptyPaths `pane`, 23.10.2026); показаны настоящим окном поиска в рамке сайта (И691)'],
   'components/SocialSignIn.tsx': ['components/AuthPage.tsx', 'кнопки Google и Facebook под формой входа и создания — часть страницы входа; показаны настоящей страницей в обоих видах (И787)'],
   'components/DocTable.tsx': ['components/ConsentPrefs.tsx', 'таблица документа — своим файлом, чтобы окно в браузере не тянуло DocView (разбор 08.10.2026); показана настоящими таблицами cookie в окне настроек и разделами страницы-документа (И791)'],
   'components/ProductRow.tsx': ['components/SearchPane.tsx', 'строка товара — находки окна поиска; показана настоящим окном поиска в рамке сайта (у чтения статьи с 22.10.2026 — карточка ProductCard)'],
-  'components/CategoryPaths.tsx': ['components/EmptyPaths.tsx', 'кнопки полок в виде сайта (`--cat-look`: пилюли или плитки) — общий ряд первого экрана и пустой корзины; показан пустым экраном с путями и героем (22.10.2026)'],
+  'components/CategoryPaths.tsx': ['components/EmptyPaths.tsx', 'кнопки полок в виде сайта (`--cat-look`: пилюли или плитки) — общий ряд первого экрана и пустой страницы корзины (шторка — строками, ShelfRows); показан пустым экраном с путями и героем (22.10.2026)'],
   'components/AddLabel.tsx': ['components/AddToCart.tsx', 'надпись кнопки «в корзину» — слово, «Added · n» и уступка места внутри кнопки страницы товара и карточки, не вещь сама по себе (И469, И763)'],
 }
 const used = new Set(siteCode.flatMap((f) => imports(f).map((i) => i.path)))

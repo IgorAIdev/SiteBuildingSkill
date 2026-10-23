@@ -1,6 +1,6 @@
 import p from '@/styles/primitives.module.css'
 import s from './ProductView.module.css'
-import type { ProductPageView } from '@/lib/product-view.ts'
+import type { ProductPageView, TrustFact } from '@/lib/product-view.ts'
 import type { Outcome } from '@/lib/cart-ops.ts'
 import { Breadcrumbs } from './Breadcrumbs.tsx'
 import { Shelf } from './Shelf.tsx'
@@ -54,30 +54,29 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
             <div className={s.title}>
               <h1 className={s.name}>{view.brand ? <span className={s.brand} translate="no">{view.brand} </span> : null}{view.name}</h1>
             </div>
-            {/* Оценка и протокол партии — одной строкой под именем: доверие к
-                товару рядом (заказчик 28.09.2026: «lab report правее от звёзд»;
-                И515). Наличие — первым, своей строкой над оценкой (слово заказчика
-                02.10.2026: «in stock размещать первым»; 17.10.2026: «рейтинг в
-                отдельной строке ниже наличия»). Артикул отсюда ушёл в сведения о
-                товаре (ProductDetails; слово заказчика 23.10.2026 после замера пяти
-                магазинов — наличие у цены у всех, номер товара у четырёх из пяти внизу,
-                в характеристиках). Нет ничего — строки нет. */}
-            {view.stock || view.rating || view.lab || view.trust.length ? (
+            {/* Две строки под именем (слово заказчика 23.10.2026 со снимка телефона: «in stock и lab
+                report и может THC в одной строке, ниже звёзды и остальное… если не помещается, то
+                включай скрол по горизонтали»). Первая — наличие, протокол партии и THC ниже
+                предела: что товар есть и что его проверили; вторая — оценка и сырьё из ЕС. Наличие —
+                первым (02.10.2026), оценка — строкой ниже наличия (17.10.2026). Строка — полоса
+                пути (`rail`, `data-rail="wrap"`): шире шва 560 переносится, уже — едет вбок одной
+                строкой, порядок тот же; на 360 первая строка (341) длиннее колонки (328) на 13.
+                Прежде факты стояли в строке оценки, и она рвалась в третью. Слова висят полем за
+                края (`data-hang`): шаг по краске один — 12 между всеми словами, строка ростом в
+                строку текста (check:craft `inkGap`, `inkStep`). Нет ничего — строки нет. */}
+            {view.stock || view.lab || view.trust.thc || view.rating || view.trust.origin ? (
               <div className={s.proof}>
-                {view.stock ? (
-                  <div className={s.proofRow}>
-                    <StockMark level={view.stockLevel}>{view.stock}</StockMark>
+                {view.stock || view.lab || view.trust.thc ? (
+                  <div className={p.rail} data-rail="wrap">
+                    {view.stock ? <StockMark level={view.stockLevel}>{view.stock}</StockMark> : null}
+                    {view.lab ? <button className={b.btn} data-voice="bare" data-size="sm" data-hang="inline" type="button" popoverTarget="lab-report"><Icon id="flask" />{view.lab.chip}</button> : null}
+                    {view.trust.thc ? <TrustChip fact={view.trust.thc} /> : null}
                   </div>
                 ) : null}
-                {/* Строка доказательств — строка слов: «Lab report» висит полем за края, как слова
-                    доверия рядом (`data-hang`), и шаг по краске один — 12 между всеми словами, а
-                    строка ростом в строку текста. Без вывеса поле кнопки прибавлялось к зазору
-                    (27 / 28 / 14) и поднимало строку до 32 (check:craft `inkGap`, `inkStep`, 23.10.2026). */}
-                {view.rating || view.lab || view.trust.length ? (
-                  <div className={s.proofRow}>
+                {view.rating || view.trust.origin ? (
+                  <div className={p.rail} data-rail="wrap">
                     {view.rating ? <Rating rating={view.rating} /> : null}
-                    {view.lab ? <button className={b.btn} data-voice="bare" data-size="sm" data-hang="inline" type="button" popoverTarget="lab-report"><Icon id="flask" />{view.lab.chip}</button> : null}
-                    {view.trust.map((x) => <span key={x.icon} className={b.btn} data-voice="bare" data-size="sm" data-hang="inline" data-static><Icon id={x.icon} />{x.text}</span>)}
+                    {view.trust.origin ? <TrustChip fact={view.trust.origin} /> : null}
                   </div>
                 ) : null}
               </div>
@@ -121,4 +120,9 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
       ) : null}
     </>
   )
+}
+
+/** Факт доверия под именем — тихим словом со знаком, без нажатия (`data-static`). */
+function TrustChip({ fact }: { fact: TrustFact }) {
+  return <span className={b.btn} data-voice="bare" data-size="sm" data-hang="inline" data-static><Icon id={fact.icon} />{fact.text}</span>
 }
