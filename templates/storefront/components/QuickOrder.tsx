@@ -80,21 +80,24 @@ export function QuickOrder({ view }: { view: QuickView }) {
               нужно, что написать. */}
           <OrderItems items={items} />
           {/* Куда написать — пояснение подписью группы и мессенджеры тем же списком путей, что
-              окно помощи и меню трубки (ReachList, правило 10), карточкой: рамка, черта между
-              строками, уголок в конце (вариант «А» заказчика 23.10.2026 из трёх нарисованных).
+              окно помощи и меню трубки (ReachList, правило 10), той же формы: столбиком, без
+              рамки и черт (слово заказчика 23.10.2026: «у нас же форма связи — там вертикально
+              расположены мессенджеры»; «в форме связи их нет… из быстрого заказа убрать»).
               Вид панели `--quick-look` решает только число колонок: строки — одна, плитки —
               две. */}
           <div className={s.ways}>
             <p className={s.lead}>{view.lead}</p>
-            <div className={s.rows}><ReachList rows={rows} boxed /></div>
+            <div className={s.rows}><ReachList rows={rows} /></div>
           </div>
-          <div className={f.field}>
-            <label className={f.label} htmlFor={`${id}-phone`}>{view.phone.label}</label>
-            <input className={f.box} id={`${id}-phone`} type="tel" inputMode="tel" autoComplete="tel" placeholder={view.phone.hint} value={phone} onChange={(e) => setPhone(e.target.value)} />
-          </div>
-        </div>
-        <div className={pn.foot}>
-          <div className={pn.acts}>
+          {/* Иначе — номер: поле и «Call me back» одной строкой (слово заказчика 23.10.2026:
+              «ниже ввод телефона и отправить в одной строке») — пара поля и кнопки сайта
+              (`f.send`, короткое поле с действием — как код скидки корзины). Низа у окна нет:
+              действие стоит у своего поля. */}
+          <div className={f.send} data-layout="inline">
+            <div className={f.field}>
+              <label className={f.label} htmlFor={`${id}-phone`}>{view.phone.label}</label>
+              <input className={f.box} id={`${id}-phone`} type="tel" inputMode="tel" autoComplete="tel" placeholder={view.phone.hint} value={phone} onChange={(e) => setPhone(e.target.value)} />
+            </div>
             {call
               ? <a className={b.btn} data-voice="loud" href={call} target="_blank" rel="noopener noreferrer">{view.call}<Icon id="arrow-right" /></a>
               : <span className={b.btn} data-voice="loud" aria-disabled="true">{view.call}<Icon id="arrow-right" /></span>}
