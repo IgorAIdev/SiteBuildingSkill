@@ -27,6 +27,8 @@
    (23.10.2026). */
 .ways{display:grid;gap:var(--air-set)}
 .lead{margin:0;font-size:var(--note-size);line-height:var(--note-lead);color:var(--ink-soft)}
+/* Номер с кнопкой и строка «как обращаемся с данными» под ними — одна группа, впритык. */
+.phone{display:grid;gap:var(--air-tight)}
 /* Что заказывают — строка товара сводки кассы (OrderItems, Checkout.module.css): снимок,
    марка, имя, упаковка с количеством, сумма; своей одежды здесь нет (23.10.2026).
 

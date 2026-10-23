@@ -4,6 +4,7 @@ import { standardOf } from './source/stock.ts'
 import { t } from './i18n/index.ts'
 import { money } from './money.ts'
 import { hrefFor } from './href.ts'
+import { privacyDoc } from './company.ts'
 import { dayOf, num, percent } from './format.ts'
 import { pickState, optionLinks, titleOf, type OptionGroupLinks } from './variant.ts'
 import { saleOf, shelfCard, stockText, type ShelfCard, type WasView } from './view.ts'
@@ -60,6 +61,9 @@ export type QuickView = {
   greet: string; qty: string; myPhone: string
   rows: { key: Messenger; name: string; label: string; value: string }[]
   phone: { label: string; hint: string }; call: string
+  /** Как магазин обращается с номером — ссылкой под полем, как под формой кассы (GDPR ст. 13:
+   *  сведения в момент сбора; PolicyLine). */
+  policy: { label: string; href: string }
 }
 /** Снимок галереи: `id` — якорь слайда (ссылка миниатюры ведёт на него и
  *  без скрипта), `show` — имя ссылки миниатюры («Image 2 of 4»). */
@@ -208,6 +212,7 @@ function quickView(lang: Lang, product: Product, variant: Product['variants'][nu
     greet: t(lang, 'quick.greet'), qty: t(lang, 'quick.qty'), myPhone: t(lang, 'quick.myPhone'),
     rows: orderMessengers().map((m) => ({ key: m.key, name: m.label, label: t(lang, 'quick.via', { name: m.label }), value: m.value })),
     phone: { label: t(lang, 'quick.phone'), hint: market().phone.example }, call: t(lang, 'quick.call'),
+    policy: { label: t(lang, 'account.policy'), href: hrefFor(lang, { doc: privacyDoc() }) },
   }
 }
 
