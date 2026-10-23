@@ -60,8 +60,10 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
                 предела: что товар есть и что его проверили; вторая — оценка и сырьё из ЕС. Наличие —
                 первым (02.10.2026), оценка — строкой ниже наличия (17.10.2026). Строка — полоса
                 пути (`rail`, `data-rail="wrap"`): шире шва 560 переносится, уже — едет вбок одной
-                строкой, порядок тот же; на 360 первая строка (341) длиннее колонки (328) на 13.
-                Прежде факты стояли в строке оценки, и она рвалась в третью. Слова висят полем за
+                строкой, порядок тот же. На телефоне (коробка уже шва 560) THC не пишется — слово
+                заказчика 23.10.2026 со снимка 360, где «THC < 0.2 %» уходил за край: «на мобайле про
+                THC не писать, простое решение»; THC партии — в окне протокола рядом. Без
+                него первая строка 222 при колонке 328. Прежде факты стояли в строке оценки, и она рвалась в третью. Слова висят полем за
                 края (`data-hang`): шаг по краске один — 12 между всеми словами, строка ростом в
                 строку текста (check:craft `inkGap`, `inkStep`). Нет ничего — строки нет. */}
             {view.stock || view.lab || view.trust.thc || view.rating || view.trust.origin ? (
@@ -70,7 +72,7 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
                   <div className={p.rail} data-rail="wrap">
                     {view.stock ? <StockMark level={view.stockLevel}>{view.stock}</StockMark> : null}
                     {view.lab ? <button className={b.btn} data-voice="bare" data-size="sm" data-hang="inline" type="button" popoverTarget="lab-report"><Icon id="flask" />{view.lab.chip}</button> : null}
-                    {view.trust.thc ? <TrustChip fact={view.trust.thc} /> : null}
+                    {view.trust.thc ? <TrustChip fact={view.trust.thc} className={s.wideOnly} /> : null}
                   </div>
                 ) : null}
                 {view.rating || view.trust.origin ? (
@@ -123,6 +125,6 @@ export function ProductView({ view, lang, submit, call }: { view: ProductPageVie
 }
 
 /** Факт доверия под именем — тихим словом со знаком, без нажатия (`data-static`). */
-function TrustChip({ fact }: { fact: TrustFact }) {
-  return <span className={b.btn} data-voice="bare" data-size="sm" data-hang="inline" data-static><Icon id={fact.icon} />{fact.text}</span>
+function TrustChip({ fact, className }: { fact: TrustFact; className?: string }) {
+  return <span className={className ? `${b.btn} ${className}` : b.btn} data-voice="bare" data-size="sm" data-hang="inline" data-static><Icon id={fact.icon} />{fact.text}</span>
 }
