@@ -40,6 +40,10 @@
 .topLinks a,.promo{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-1);min-block-size:var(--ctrl-target);min-inline-size:var(--ctrl-target);text-decoration:none}
 .promo{grid-column:2;margin:0}
 .promo svg{inline-size:1.43em;block-size:1.43em;flex:none}
+/* Объявление магазина вместо обещания (`.notice` на месте `.promo`, слово заказчика 23.10.2026: «крупными буквами»):
+   роль подзаголовка части (19 / 500) над служебной строкой 14 — читается первым словом страницы;
+   длинное на телефоне переносится по середине, не уезжает. */
+.notice{font-size:var(--parthead-size);line-height:var(--parthead-lead);font-weight:var(--parthead-weight);letter-spacing:var(--parthead-track);color:var(--ink);text-align:center;padding-block:var(--sp-1)}
 .topTools{grid-column:3;justify-self:end;display:flex;align-items:center;gap:var(--gap-targets)}
 .topTools .glyph{font-size:var(--blurb-size);font-weight:var(--body-weight)}
 /* Язык в строке — сегменты ростом цели, а не малого органа: строка не выше
@@ -298,6 +302,12 @@
 /* look-header:search:end */
 /* Строка полок второй строкой шапки — у «search» и у «boutique». */
 .shelfRow{border-block-start:var(--line-w) solid var(--rule);padding-block:var(--sp-1)} /* look-header:search,boutique */
+/* Полка своей строкой — ростом органа (`--ctrl-h`, как кнопки сайта), не меньше цели пальца.
+   На ноутбуке цель мыши — 24, и строка стояла 33: слова в 5 px от волоска сверху и 4 снизу,
+   ниже служебной строки над знаком (слово заказчика 23.10.2026 со снимка 1253: «может воздух
+   в меню изменить?»). Бриф шапки: строка меню — главное на экране, служебная тише; cbdin.bg —
+   меню 64, Notino — 44; у нас 49. */
+.shelfRow .links > li > a{min-block-size:max(var(--ctrl-h), var(--ctrl-target))} /* look-header:search,boutique */
 
 /* Три места строки — знак, середина, действия — у «boutique». */
 .head[data-variant='boutique'] .bar{display:grid;grid-template-columns:1fr auto 1fr} /* look-header:boutique */
