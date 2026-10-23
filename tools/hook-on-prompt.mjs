@@ -26,20 +26,47 @@
  *   echo '{"prompt":"некрасиво, переделай"}' | node tools/hook-on-prompt.mjs
  */
 
-import { readFileSync } from 'node:fs'
+import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { match, nameOf, designWord, designHint } from './checks.mjs'
+import { redact } from './secrets.mjs'
 
 let raw = ''
 try { raw = readFileSync(0, 'utf8') } catch { /* stdin пуст — нечего разбирать */ }
 
 let prompt = ''
+let session = ''
 try {
   const data = JSON.parse(raw || '{}')
   prompt = data.prompt ?? data.user_prompt ?? data.message ?? ''
+  session = data.session_id ?? ''
 } catch {
   /* не JSON — значит хук позвали текстом; работаем с тем, что дали */
   prompt = raw
 }
+
+/* Слова заказчика — дословно в файл, по сессии (разбор autopilot,
+   docs/skills.md). Разговор сжимается, и первыми уходят его первые слова:
+   через три пересказа просьба сужается, а сверить её не с чем. Файл — эталон
+   слепой приёмки (скилл stages, references/audit.md, проход 4). Ключ из
+   сообщения в файл не попадает — вырезается узорами check:code, а мне идёт
+   строка, что его надо заменить. Папку закрывает от git свой .gitignore — и в
+   магазине, где корневой о ней не знает. Пишется только с номером сессии:
+   ручной прогон `echo … | node tools/hook-on-prompt.mjs` следов не оставляет. */
+try {
+  const { text, found } = redact(prompt)
+  if (session && text.trim()) {
+    const dir = join(process.env.CLAUDE_PROJECT_DIR || process.cwd(), '.claude', 'briefs')
+    mkdirSync(dir, { recursive: true })
+    if (!existsSync(join(dir, '.gitignore'))) writeFileSync(join(dir, '.gitignore'), '*\n')
+    const id = String(session).slice(0, 8)
+    const now = new Date().toLocaleString('sv-SE').slice(0, 16)
+    const file = join(dir, readdirSync(dir).find((f) => f.endsWith(`-${id}.md`)) ?? `${now.slice(0, 10)}-${id}.md`)
+    if (!existsSync(file)) writeFileSync(file, `# Слова заказчика — сессия ${id}\n\nДословно, по порядку; ключи вырезаны. Пишет tools/hook-on-prompt.mjs, читает слепая приёмка (stages, references/audit.md, проход 4). В git не идёт.\n`)
+    appendFileSync(file, `\n## ${now}\n\n${text.trim()}\n`)
+  }
+  if (found.length) console.log(`В сообщении заказчика — ${found.join(', ')}: в запись не попало. Значение не повторять; сказать ему простыми словами, что этот ключ лучше заменить — он уже побывал в переписке.`)
+} catch { /* запись не стоит ошибки на вводе */ }
 
 /* Хук стоит на ПУТИ ЗАКАЗЧИКА: он срабатывает раньше, чем его слова дойдут
    до меня. Поэтому любая его ошибка — это ошибка на вводе, а подсказка

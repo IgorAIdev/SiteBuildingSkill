@@ -50,6 +50,22 @@ const PATTERNS = [
 const ASSIGN = /^[ \t]*(?:export[ \t]+|ENV[ \t]+|ARG[ \t]+|(?:const|let|var)[ \t]+)?([A-Z][A-Z0-9_]*)[ \t]*=[ \t]*(["'`]?)([^\s"'`#]*)/gm
 const CODE = /\.(?:[cm]?js|jsx|tsx?)$/
 
+/** Чужой текст — ввод заказчика — без ключей: найденное заменено меткой,
+ *  названо списком, а значение не печатается нигде. Узоры те же, что у
+ *  проверки: «что считается ключом» живёт в одном месте. */
+export function redact(text) {
+  const found = []
+  const note = (what) => { if (!found.includes(what)) found.push(what) }
+  let out = text
+  for (const [what, re] of PATTERNS) out = out.replace(re, () => { note(what); return `[вырезано: ${what}]` })
+  out = out.replace(ASSIGN, (all, name, quote, value) => {
+    if (!SECRET_NAME.test(name) || value.length < 8 || REFERENCE.test(value)) return all
+    note(name)
+    return `${all.slice(0, all.length - value.length)}[вырезано]`
+  })
+  return { text: out, found }
+}
+
 /** Образец окружения: лежит в git ради имён, значения секретов — пустые. */
 const ENV_SAMPLE = /(?:^|\/)\.env\.(?:example|sample|template|dist)$/
 /** Само окружение — в git не лежит вовсе. */
