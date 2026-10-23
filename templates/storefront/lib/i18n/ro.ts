@@ -329,7 +329,7 @@ export const RO = {
   'checkout.step.contact': 'Date de contact',
   'checkout.step.delivery': 'Livrare',
   'checkout.step.payment': 'Plată',
-  'checkout.continue': 'Continuă',
+  'checkout.continue': 'Continuă spre livrare',
   'checkout.change': 'Modifică',
   'checkout.changeStep': 'Modifică: {step}',
   'checkout.back': 'Înapoi la coș',
