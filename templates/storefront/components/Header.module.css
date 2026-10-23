@@ -385,9 +385,6 @@
   .design{display:none}
   .topRow{grid-template-columns:var(--ctrl-target) minmax(0,1fr) var(--ctrl-target);gap:var(--sp-1)}
   .promo{grid-column:2;justify-self:center}
-  /* Объявление магазина — во всю строку: боковые ячейки пусты, и в средней на 360 оно
-     ложилось в четыре строки (232 из 328); во всю ширину — в три. */
-  .promo.notice{grid-column:1 / -1}
   /* look-header:classic,search,tray,nested,step,capsule:start */
   /* Меню — первым в строке, у начального края (слово заказчика 05.10.2026:
      «мобилка, меню перенеси к левому краю»; И753). Рамка — рост органа, как
